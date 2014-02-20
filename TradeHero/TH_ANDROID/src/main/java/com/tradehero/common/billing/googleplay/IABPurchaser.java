@@ -14,9 +14,9 @@ import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException
 import com.tradehero.common.billing.googleplay.exceptions.IABSubscriptionUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
-import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import org.json.JSONException;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaser<
@@ -33,8 +33,6 @@ abstract public class IABPurchaser<
         IABPurchaseType,
         IABException>
 {
-    public static final String TAG = IABPurchaser.class.getSimpleName();
-
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
@@ -78,7 +76,7 @@ abstract public class IABPurchaser<
 
     @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
     {
-        THLog.d(TAG, "setPurchaseFinishedListener " + purchaseFinishedListener.getClass().getSimpleName());
+        Timber.d("setPurchaseFinishedListener %s", purchaseFinishedListener.getClass().getSimpleName());
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
 
@@ -165,35 +163,36 @@ abstract public class IABPurchaser<
         try
         {
             Bundle buyIntentBundle = createBuyIntentBundle();
-            THLog.d(TAG, "BuyIntentBundle " + buyIntentBundle);
+            Timber.d("BuyIntentBundle " + buyIntentBundle);
 
             PendingIntent pendingIntent = buyIntentBundle.getParcelable(Constants.RESPONSE_BUY_INTENT);
-            THLog.d(TAG, "Launching buy intent for " + getProductDetails(purchaseOrder.getProductIdentifier()) + ". Request code: " + activityRequestCode);
+            Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), activityRequestCode);
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     activityRequestCode, new Intent(),
                     Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
         }
         catch (IntentSender.SendIntentException e)
         {
-            THLog.e(TAG, "SendIntentException while launching purchase flow for skuDetails " + getProductDetails(purchaseOrder.getProductIdentifier()), e);
+            Timber.e("SendIntentException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
             handlePurchaseFailedInternal(new IABSendIntentException("Failed to send intent."));
         }
         catch (RemoteException e)
         {
-            THLog.e(TAG, "RemoteException while launching purchase flow for skuDetails " + getProductDetails(purchaseOrder.getProductIdentifier()), e);
+            Timber.e("RemoteException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
             handlePurchaseFailedInternal(new IABRemoteException("Remote exception while starting purchase flow"));
         }
         catch (IABException e)
         {
-            THLog.e(TAG, "IABException while launching purchase flow for skuDetails " + getProductDetails(purchaseOrder.getProductIdentifier()), e);
+            Timber.e("IABException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
             handlePurchaseFailedInternal(e);
         }
     }
 
     private Bundle createBuyIntentBundle() throws RemoteException, IABException
     {
-        THLog.d(TAG, "Constructing buy intent for " + getProductDetails(purchaseOrder.getProductIdentifier()) + ", item type: " + getProductDetails(
-                purchaseOrder.getProductIdentifier()).getType());
+        Timber.d("Constructing buy intent for %s, item type: %s",
+                getProductDetails(purchaseOrder.getProductIdentifier()),
+                getProductDetails(purchaseOrder.getProductIdentifier()).getType());
         Bundle buyIntentBundle = billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
                 context.getPackageName(),
@@ -203,7 +202,7 @@ abstract public class IABPurchaser<
         int response = Constants.getResponseCodeFromBundle(buyIntentBundle);
         if (response != Constants.BILLING_RESPONSE_RESULT_OK)
         {
-            THLog.d(TAG, "Unable to buy item, Error response: " + Constants.getStatusCodeDescription(response));
+            Timber.d("Unable to buy item, Error response: %s", Constants.getStatusCodeDescription(response));
             throw iabExceptionFactory.get().create(response);
         }
         return buyIntentBundle;
@@ -224,10 +223,10 @@ abstract public class IABPurchaser<
      */
     public boolean handleActivityResult(int requestCode, int resultCode, Intent data)
     {
-        THLog.d(TAG, "handleActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
+        Timber.d("handleActivityResult requestCode: %d, resultCode: %d", requestCode, resultCode);
         if (requestCode != activityRequestCode)
         {
-            THLog.w(TAG, "handleActivityResult. This requestcode was not for me");
+            Timber.w("handleActivityResult. This requestcode was not for me");
             return false;
         }
 
@@ -236,7 +235,7 @@ abstract public class IABPurchaser<
 
         if (data == null)
         {
-            THLog.w(TAG, "Null data in IAB activity result.");
+            Timber.w("Null data in IAB activity result.");
             handlePurchaseFailedInternal(new IABBadResponseException("Null data in IAB result"));
         }
         else
@@ -247,16 +246,16 @@ abstract public class IABPurchaser<
 
             if (resultCode == Activity.RESULT_OK && responseCode == Constants.BILLING_RESPONSE_RESULT_OK)
             {
-                THLog.d(TAG, "Successful resultCode from purchase activity.");
-                THLog.d(TAG, "Purchase data: " + purchaseData);
-                THLog.d(TAG, "Data signature: " + dataSignature);
-                THLog.d(TAG, "Extras: " + data.getExtras());
-                THLog.d(TAG, "Expected item type: " + getProductDetails(purchaseOrder.getProductIdentifier()).getType());
+                Timber.d("Successful resultCode from purchase activity.");
+                Timber.d("Purchase data: %s" + purchaseData);
+                Timber.d("Data signature: %s" + dataSignature);
+                Timber.d("Extras: %s" + data.getExtras());
+                Timber.d("Expected item type: %s" + getProductDetails(purchaseOrder.getProductIdentifier()).getType());
 
                 if (purchaseData == null || dataSignature == null)
                 {
-                    THLog.w(TAG, "BUG: either purchaseData or dataSignature is null.");
-                    THLog.w(TAG, "Extras: " + data.getExtras().toString());
+                    Timber.w("BUG: either purchaseData or dataSignature is null.");
+                    Timber.w("Extras: %s" + data.getExtras().toString());
                     handlePurchaseFailedInternal(new IABUnknownErrorException("IAB returned null purchaseData or dataSignature"));
                 }
                 else
@@ -269,18 +268,18 @@ abstract public class IABPurchaser<
                         // Verify signature
                         if (!Security.verifyPurchase(Constants.BASE_64_PUBLIC_KEY, purchaseData, dataSignature))
                         {
-                            THLog.w(TAG, "Purchase signature verification FAILED for sku " + sku);
+                            Timber.w("Purchase signature verification FAILED for sku " + sku);
                             handlePurchaseFailedInternal(new IABVerificationFailedException("Signature verification failed for sku " + sku));
                         }
                         else
                         {
-                            THLog.d(TAG, "Purchase signature successfully verified.");
+                            Timber.d("Purchase signature successfully verified.");
                             handlePurchaseFinishedInternal(purchase);
                         }
                     }
                     catch (JSONException e)
                     {
-                        THLog.e(TAG, "Failed to parse purchase data.", e);
+                        Timber.e("Failed to parse purchase data.", e);
                         handlePurchaseFailedInternal(new IABBadResponseException("Failed to parse purchase data."));
                     }
                 }
@@ -288,18 +287,17 @@ abstract public class IABPurchaser<
             else if (resultCode == Activity.RESULT_OK)
             {
                 // result code was OK, but in-app billing response was not OK.
-                THLog.w(TAG, "Result code was OK but in-app billing response was not OK: " + Constants.getStatusCodeDescription(responseCode));
+                Timber.w("Result code was OK but in-app billing response was not OK: %s", Constants.getStatusCodeDescription(responseCode));
                 handlePurchaseFailedInternal(iabExceptionFactory.get().create(responseCode));
             }
             else if (resultCode == Activity.RESULT_CANCELED)
             {
-                THLog.w(TAG, "Purchase canceled - Response: " + Constants.getStatusCodeDescription(responseCode));
+                Timber.w("Purchase canceled - Response: " + Constants.getStatusCodeDescription(responseCode));
                 handlePurchaseFailedInternal(iabExceptionFactory.get().create(Constants.IABHELPER_USER_CANCELLED));
             }
             else
             {
-                THLog.w(TAG, "Purchase failed. Result code: " + Integer.toString(resultCode)
-                        + ". Response: " + Constants.getStatusCodeDescription(responseCode));
+                Timber.w("Purchase failed. Result code: %s. Response: %s", Integer.toString(resultCode), Constants.getStatusCodeDescription(responseCode));
                 handlePurchaseFailedInternal(iabExceptionFactory.get().create(Constants.IABHELPER_UNKNOWN_PURCHASE_RESPONSE));
             }
         }

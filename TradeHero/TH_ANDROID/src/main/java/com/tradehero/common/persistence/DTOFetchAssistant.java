@@ -1,11 +1,11 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
-import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 3:47 PM To change this template use File | Settings | File Templates. */
 abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -89,7 +89,7 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
 
     @Override public void onErrorThrown(final DTOKeyType key, final Throwable error)
     {
-        THLog.e(TAG, "Error fetching " + key, error);
+        Timber.e("Error fetching %s", key, error);
     }
     //</editor-fold>
 

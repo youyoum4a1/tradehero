@@ -1,8 +1,6 @@
 package com.tradehero.th.models.alert;
 
 import android.os.AsyncTask;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.alert.AlertIdList;
@@ -15,6 +13,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * This assistant provides a mapping from securityId to alertId.
@@ -22,8 +21,6 @@ import javax.inject.Inject;
  */
 public class SecurityAlertAssistant
 {
-    public static final String TAG = SecurityAlertAssistant.class.getSimpleName();
-
     @Inject AlertCompactListCache alertCompactListCache;
     @Inject AlertCompactCache alertCompactCache;
 
@@ -166,13 +163,13 @@ public class SecurityAlertAssistant
                 }
                 else
                 {
-                    THLog.d(TAG, "populate: AlertId " + alertId + " had a null alertCompact of securityCompact");
+                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertId);
                 }
             }
         }
         else
         {
-            THLog.d(TAG, "populate: alertIds were null");
+            Timber.d("populate: alertIds were null");
         }
     }
 

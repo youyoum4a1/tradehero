@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
-import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/6/14 Time: 5:38 PM Copyright (c) TradeHero
@@ -23,7 +23,6 @@ public class ExtraTileAdapter extends BaseAdapter
 {
     private static final int EXTRA_TILE_FREQUENCY = 16;
     private static final int EXTRA_TILE_MIN_DISTANCE = 10;
-    private static final String TAG = ExtraTileAdapter.class.getName();
 
     private final ListAdapter wrappedAdapter;
     private final LayoutInflater inflater;
@@ -73,13 +72,13 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    //THLog.d(TAG, String.format("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
-                    //        position, position - i, extraTilesMarker[i].second));
+                    Timber.d("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
+                            position, position - i, extraTilesMarker[i].second);
                     return position - i;
                 }
             }
 
-            THLog.d(TAG, String.format("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length));
+            Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
             return position - extraTilesMarker.length;
         }
         else
@@ -217,7 +216,7 @@ public class ExtraTileAdapter extends BaseAdapter
         {
             if (masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                THLog.d(TAG, "Reusing marker!");
+                Timber.d("Reusing marker!");
                 extraTilesMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
             else
@@ -278,7 +277,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
         int[] extraTileIndexes = new int[extraTileCount];
-        THLog.d(TAG, String.format("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount));
+        Timber.d("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount);
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
 
@@ -306,7 +305,7 @@ public class ExtraTileAdapter extends BaseAdapter
     {
         @Override public void onChanged()
         {
-            THLog.d(TAG, "onChanged");
+            Timber.d("onChanged");
             notifyDataSetChanged();
         }
 

@@ -14,18 +14,17 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -43,12 +42,11 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import timber.log.Timber;
 
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     implements WithTutorial
 {
-    private static final String TAG = LeaderboardCommunityFragment.class.getName();
-
     private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
 
@@ -125,7 +123,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
             {
                 THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-                THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+                Timber.e("Error fetching the leaderboard def key list %s", key, error);
             }
         };
     }
@@ -142,7 +140,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             @Override public void onErrorThrown(ProviderListKey key, Throwable error)
             {
                 THToast.show(getString(R.string.error_fetch_provider_info_list));
-                THLog.e(TAG, "Failed retrieving the list of competition providers", error);
+                Timber.e("Failed retrieving the list of competition providers", error);
             }
         };
     }
@@ -319,20 +317,20 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             if (thIntent instanceof ProviderPageIntent)
             {
-                THLog.d(TAG, "Intent is ProviderPageIntent");
+                Timber.d("Intent is ProviderPageIntent");
                 if (webFragment != null)
                 {
-                    THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
                     webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
                 }
                 else
                 {
-                    THLog.d(TAG, "WebFragment is null");
+                    Timber.d("WebFragment is null");
                 }
             }
             else
             {
-                THLog.w(TAG, "Unhandled intent " + thIntent);
+                Timber.w("Unhandled intent %s", thIntent);
             }
         }
     }

@@ -11,7 +11,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionIdList;
@@ -44,14 +43,13 @@ import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/17/14.
  */
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    public static final String TAG = MainCompetitionFragment.class.getSimpleName();
-
     private ActionBar actionBar;
     private ProgressBar progressBar;
     private AbsListView listView;
@@ -391,7 +389,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
-            THLog.d(TAG, "onItemClient");
+            Timber.d("onItemClient");
             handleItemClicked((CompetitionZoneDTO) adapterView.getItemAtPosition(i));
         }
     }
@@ -447,7 +445,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_your_user_profile));
-            THLog.e(TAG, "Error fetching the profile info " + key, error);
+            Timber.e("Error fetching the profile info %s", key, error);
         }
     }
 
@@ -461,7 +459,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onErrorThrown(ProviderId key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_leaderboard_list));
-            THLog.e(TAG, "Error fetching the list of competition info " + key, error);
+            Timber.e("Error fetching the list of competition info %s", key, error);
         }
     }
 }

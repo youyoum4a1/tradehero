@@ -6,11 +6,11 @@ import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABActor<
@@ -69,7 +69,6 @@ abstract public class BaseIABActor<
         IABConsumeFinishedListenerType,
         IABException>
 {
-    public static final String TAG = BaseIABActor.class.getSimpleName();
     public static final int MAX_RANDOM_RETRIES = 50;
 
     protected WeakReference<Activity> weakActivity = new WeakReference<>(null);
@@ -457,31 +456,31 @@ abstract public class BaseIABActor<
 
     protected void notifyIABPurchaseFinished(int requestCode, IABPurchaseOrderType purchaseOrder, IABPurchaseType purchase)
     {
-        THLog.d(TAG, "notifyIABPurchaseFinished Purchase " + purchase);
+        Timber.d("notifyIABPurchaseFinished Purchase " + purchase);
         IABPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
             handler.onPurchaseFinished(requestCode, purchaseOrder, purchase);
         }
         else
         {
-            THLog.d(TAG, "notifyIABPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
         }
     }
 
     protected void notifyIABPurchaseFailed(int requestCode, IABPurchaseOrderType purchaseOrder, IABException exception)
     {
-        THLog.e(TAG, "notifyIABPurchaseFailed There was an exception during the purchase", exception);
+        Timber.e("notifyIABPurchaseFailed There was an exception during the purchase", exception);
         IABPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);
             handler.onPurchaseFailed(requestCode, purchaseOrder, exception);
         }
         else
         {
-            THLog.d(TAG, "onPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
+            Timber.d("onPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
         }
     }
 
@@ -535,31 +534,31 @@ abstract public class BaseIABActor<
 
     protected void notifyPurchaseConsumeSuccess(int requestCode, IABPurchaseType purchase)
     {
-        THLog.d(TAG, "notifyPurchaseConsumeSuccess Purchase info " + purchase);
+        Timber.d("notifyPurchaseConsumeSuccess Purchase info " + purchase);
         IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "notifyPurchaseConsumeSuccess passing on the purchase for requestCode " + requestCode);
+            Timber.d("notifyPurchaseConsumeSuccess passing on the purchase for requestCode " + requestCode);
             handler.onPurchaseConsumed(requestCode, purchase);
         }
         else
         {
-            THLog.d(TAG, "notifyPurchaseConsumeSuccess No THIABPurchaseHandler for requestCode " + requestCode);
+            Timber.d("notifyPurchaseConsumeSuccess No THIABPurchaseHandler for requestCode " + requestCode);
         }
     }
 
     protected void notifyPurchaseConsumeFail(int requestCode, IABPurchaseType purchase, IABException exception)
     {
-        THLog.e(TAG, "notifyPurchaseConsumeFail There was an exception during the consumption", exception);
+        Timber.e("notifyPurchaseConsumeFail There was an exception during the consumption", exception);
         IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "notifyPurchaseConsumeFail passing on the exception for requestCode " + requestCode);
+            Timber.d("notifyPurchaseConsumeFail passing on the exception for requestCode " + requestCode);
             handler.onPurchaseConsumeFailed(requestCode, purchase, exception);
         }
         else
         {
-            THLog.d(TAG, "notifyPurchaseConsumeFail No THIABPurchaseHandler for requestCode " + requestCode);
+            Timber.d("notifyPurchaseConsumeFail No THIABPurchaseHandler for requestCode " + requestCode);
         }
     }
 
@@ -571,7 +570,7 @@ abstract public class BaseIABActor<
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        THLog.d(TAG, "onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
+        Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         IABPurchaser iabPurchaser = iabPurchasers.get(requestCode);
         if (iabPurchaser != null)
         {
@@ -579,7 +578,7 @@ abstract public class BaseIABActor<
         }
         else
         {
-            THLog.w(TAG, "onActivityResult no handler");
+            Timber.w("onActivityResult no handler");
         }
     }
 }

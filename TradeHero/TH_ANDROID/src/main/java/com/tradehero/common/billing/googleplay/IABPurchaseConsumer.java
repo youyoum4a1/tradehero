@@ -7,8 +7,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABInvalidConsumptionException;
 import com.tradehero.common.billing.googleplay.exceptions.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
-import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaseConsumer<
@@ -17,8 +17,6 @@ abstract public class IABPurchaseConsumer<
             IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
 {
-    public static final String TAG = IABPurchaseConsumer.class.getSimpleName();
-
     private int requestCode;
     private boolean consuming = false;
     protected IABPurchaseType purchase;
@@ -168,12 +166,12 @@ abstract public class IABPurchaseConsumer<
                 }
                 catch (RemoteException e)
                 {
-                    THLog.e(TAG, "Remote Exception while fetching inventory.", e);
+                    Timber.e("Remote Exception while fetching inventory.", e);
                     exception = new IABRemoteException("RemoteException while fetching IAB", e);
                 }
                 catch (IABException e)
                 {
-                    THLog.e(TAG, "IAB error.", e);
+                    Timber.e("IAB error.", e);
                     exception = e;
                 }
 
@@ -200,13 +198,13 @@ abstract public class IABPurchaseConsumer<
     {
         String sku = this.purchase.getProductIdentifier().identifier;
         String token = this.purchase.getToken();
-        THLog.d(TAG, "Consuming sku: " + sku + ", token: " + token);
+        Timber.d("Consuming sku: %s, token: %s", sku, token);
         int response = this.billingService.consumePurchase(3, context.getPackageName(), token);
         if (response != Constants.BILLING_RESPONSE_RESULT_OK)
         {
             throw iabExceptionFactory.get().create(response);
         }
-        THLog.d(TAG, "Consumed successfully sku: " + sku);
+        Timber.d("Consumed successfully sku: %s", sku);
     }
 
     public static interface OnIABConsumptionFinishedListener<

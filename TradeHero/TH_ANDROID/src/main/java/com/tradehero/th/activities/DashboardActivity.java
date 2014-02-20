@@ -8,7 +8,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -32,12 +31,11 @@ import com.tradehero.th.utils.FacebookUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity, THIABActorUser
 {
-    public static final String TAG = DashboardActivity.class.getSimpleName();
-
     private DashboardNavigator navigator;
 
     // It is important to have Lazy here because we set the current Activity after the injection
@@ -166,7 +164,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
-        THLog.d(TAG, "onDestroy");
         if (thiabLogicHolder != null)
         {
             thiabLogicHolder.get().onDestroy();
@@ -202,7 +199,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                 }
                 break;
         }
-        THLog.d(TAG, getIntent().getAction());
+        Timber.d(getIntent().getAction());
     }
 
     //<editor-fold desc="DashboardNavigatorActivity">

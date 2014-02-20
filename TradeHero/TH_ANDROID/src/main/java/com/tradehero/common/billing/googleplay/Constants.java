@@ -2,15 +2,13 @@ package com.tradehero.common.billing.googleplay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.tradehero.common.utils.THLog;
+import timber.log.Timber;
 
 /**
  * Created by julien on 4/11/13
  */
 public class Constants
 {
-    public static final String TAG = Constants.class.getSimpleName();
-
     public static final String BASE_64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhVgfcepa4NXGyS5kSGD1TmksVWhZcyMrqqJVBsuQgi+Io0+vFmboFN5n/nYPWWFOPjpvo8ht/11bglW+V+LtPOauk3/lCyFYGMVxuzv55J+YPimNBBnpECIqr6wfHyk0k6h2XPDJeEG2fPV3CIgAWiyNlH3JZVPrmVUIoU4537GACssREjFi7DERyv0JPg9n+0qlBb/NKhpbh00uniDXbNcb9KAb3e+kWI3+qpextDn0k6nt6/nqEFNZMD4JFlbqdrbc9Lfd+Zj2XUO983oVBbuRoIW11UUL5nY6qnjdh+FHG6254mbqoPtWeMnYrMPp3d733WOQdXhsfxwC0Fx99QIDAQAB";
 
     // Billing response codes
@@ -110,7 +108,7 @@ public class Constants
         Object o = b.get(RESPONSE_CODE);
         if (o == null)
         {
-            THLog.d(TAG, "Bundle with null response code, assuming OK (known issue)");
+            Timber.d("Bundle with null response code, assuming OK (known issue)");
             return BILLING_RESPONSE_RESULT_OK;
         }
         else if (o instanceof Integer)
@@ -123,8 +121,8 @@ public class Constants
         }
         else
         {
-            THLog.w(TAG, "Unexpected type for bundle response code.");
-            THLog.w(TAG, o.getClass().getName());
+            Timber.w("Unexpected type for bundle response code.");
+            Timber.w(o.getClass().getName());
             throw new RuntimeException("Unexpected type for bundle response code: " + o.getClass().getName());
         }
     }
@@ -135,7 +133,7 @@ public class Constants
         Object o = i.getExtras().get(Constants.RESPONSE_CODE);
         if (o == null)
         {
-            THLog.d(TAG, "Intent with no response code, assuming OK (known issue)");
+            Timber.d("Intent with no response code, assuming OK (known issue)");
             return Constants.BILLING_RESPONSE_RESULT_OK;
         }
         else if (o instanceof Integer)
@@ -148,8 +146,8 @@ public class Constants
         }
         else
         {
-            THLog.d(TAG, "Unexpected type for intent response code.");
-            THLog.d(TAG, o.getClass().getName());
+            Timber.d("Unexpected type for intent response code.");
+            Timber.d(o.getClass().getName());
             throw new RuntimeException("Unexpected type for intent response code: " + o.getClass().getName());
         }
     }

@@ -2,7 +2,6 @@ package com.tradehero.th.loaders;
 
 import android.content.Context;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
@@ -11,12 +10,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
 public class TimelineListLoader extends PaginationListLoader<TimelineItem>
 {
-    private static final String TAG = TimelineListLoader.class.getSimpleName();
-
     private final UserBaseKey userBaseKey;
 
     private Integer upperItemId;
@@ -41,7 +39,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         {
             --upperItemId;
         }
-        THLog.d(TAG, "Start loading timeline with upperItemId=" + upperItemId + "/ lowerItemId=" + lowerItemId);
+        Timber.d("Start loading timeline with upperItemId=%d/lowerItemId=%d", upperItemId, lowerItemId);
 
         Query query = new Query();
         query.setId(getOwnerId());

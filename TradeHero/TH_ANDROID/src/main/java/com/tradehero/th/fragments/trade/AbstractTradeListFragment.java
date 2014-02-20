@@ -13,7 +13,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -35,22 +34,22 @@ import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by julien on 23/10/13
  */
 abstract public class AbstractTradeListFragment<PositionDTOType extends PositionDTO> extends DashboardFragment
 {
-    public static final String TAG = AbstractTradeListFragment.class.getSimpleName();
-
-    @Inject protected Lazy<TradeListCache> tradeListCache;
-    @Inject protected Lazy<SecurityIdCache> securityIdCache;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected CurrentUserId currentUserId;
+    @Inject Lazy<TradeListCache> tradeListCache;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject CurrentUserId currentUserId;
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
     @InjectView(R.id.trade_list_header) protected TradeListOverlayHeaderView header;
     @InjectView(R.id.trade_list) protected ListView tradeListView;
+
     private ActionBar actionBar;
 
     protected PositionDTOType positionDTO;
@@ -317,7 +316,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         {
             displayProgress(false);
             THToast.show(getString(R.string.error_fetch_trade_list_info));
-            THLog.e(TAG, "Error fetching the list of trades " + key, error);
+            Timber.e("Error fetching the list of trades %s", key, error);
         }
     }
 }

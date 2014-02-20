@@ -11,7 +11,6 @@ import java.util.List;
 abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements LiveDTOCache<DTOKeyType, DTOType>
 {
-    public static final String TAG = PartialDTOCache.class.getSimpleName();
     public static final int DEFAULT_AUTO_FETCH_TASK_MAX_SIZE = 50;
 
     private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;

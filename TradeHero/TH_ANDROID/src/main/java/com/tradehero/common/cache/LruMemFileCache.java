@@ -18,11 +18,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruMemFileCache extends LruCache
 {
-    public static final String TAG = LruMemFileCache.class.getSimpleName();
     public static final String DEFAULT_DIR_NAME = LruMemFileCache.class.getPackage().getName();
     public static final int DEFAULT_BASE_64_PARAM = Base64.NO_PADDING | Base64.NO_WRAP;
 
@@ -66,7 +66,7 @@ public class LruMemFileCache extends LruCache
     public LruMemFileCache(Context context, String dirName)
     {
         super(context);
-        THLog.d(TAG, "Constructing with memory " + PicassoUtils.calculateMemoryCacheSize(context));
+        Timber.d("Constructing with memory " + PicassoUtils.calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
 
@@ -103,17 +103,17 @@ public class LruMemFileCache extends LruCache
             {
                 if (!cacheDir.mkdirs())
                 {
-                    Log.d(TAG, "Could not create dir " + cacheDir.getPath());
+                    Timber.d("Could not create dir %s", cacheDir.getPath());
                 }
                 else
                 {
-                    Log.d(TAG, "Created dirs " + cacheDir.getPath());
+                    Timber.d("Created dirs %s", cacheDir.getPath());
                 }
             }
         }
         else
         {
-            Log.d(TAG, "Dirs exist " + cacheDir.getPath());
+            Timber.d("Dirs exist %s", cacheDir.getPath());
         }
     }
 
@@ -125,7 +125,7 @@ public class LruMemFileCache extends LruCache
         }
         catch (IOException e)
         {
-            THLog.e(TAG, "Failed to open a DiskLruCache", e);
+            Timber.e("Failed to open a DiskLruCache", e);
             this.diskLruCache = null;
         }
     }
@@ -173,7 +173,7 @@ public class LruMemFileCache extends LruCache
                     }
                     catch (IOException e)
                     {
-                        THLog.e(TAG, "Failed to save entry " + key, e);
+                        Timber.e("Failed to save entry %s", key, e);
                         if (entryEdit != null)
                         {
                             entryEdit.abortUnlessCommitted();
@@ -183,7 +183,7 @@ public class LruMemFileCache extends LruCache
             }
             catch (Exception e)
             {
-                THLog.e(TAG, "Failed to save entry " + key, e);
+                Timber.e("Failed to save entry %s", key, e);
             }
         }
     }
@@ -224,11 +224,11 @@ public class LruMemFileCache extends LruCache
                     }
                     catch (IOException e)
                     {
-                        THLog.e(TAG, "Failed to get entry " + key, e);
+                        Timber.e("Failed to get entry %s", key, e);
                     }
                     catch (OutOfMemoryError e)
                     {
-                        THLog.e(TAG, "Failed to decode " + key, e);
+                        Timber.e("Failed to decode %s", key, e);
                     }
 
                     if (retrieved != null)
@@ -238,7 +238,7 @@ public class LruMemFileCache extends LruCache
                 }
                 catch (Exception e)
                 {
-                    THLog.e(TAG, "Failed to get entry " + key, e);
+                    Timber.e("Failed to get entry %s", key, e);
                 }
             }
         }
@@ -268,7 +268,7 @@ public class LruMemFileCache extends LruCache
                 }
                 catch (IOException e)
                 {
-                    THLog.e(TAG, "Failed to flush", e);
+                    Timber.e("Failed to flush", e);
                     THToast.show(R.string.error_cache_flush);
                 }
                 finally

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.utils.THLog;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/15/13 Time: 11:47 AM Copyright (c) TradeHero */
 public class ExtendedDTO implements DTO
@@ -82,7 +82,7 @@ public class ExtendedDTO implements DTO
             {
                 if (VERBOSE)
                 {
-                    THLog.e(TAG, "Tried to set field " + myField.getName() + " from " + other, e);
+                    Timber.e("Tried to set field %s from %s", myField.getName(), other, e);
                 }
             }
         }
@@ -93,7 +93,7 @@ public class ExtendedDTO implements DTO
     {
         if (VERBOSE)
         {
-            THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
+            Timber.w("'%s' is not parsed properly in class: '%s'", key, getClass().getName());
         }
 
         extra.put(key, value);
@@ -122,7 +122,7 @@ public class ExtendedDTO implements DTO
         {
             if (VERBOSE)
             {
-                THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
+                Timber.e("Tried to set key %s with value %s", key, value, e);
             }
             put(key, value);
         }

@@ -5,7 +5,6 @@ import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -22,6 +21,7 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/23/14.
@@ -51,13 +51,13 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
         super.onCreate(savedInstanceState);
         providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
         providerDTO = providerCache.get(providerId);
-        THLog.d(TAG, "providerDTO " + providerDTO);
+        Timber.d("providerDTO %s", providerDTO);
         providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
-        THLog.d(TAG, "providerSpecificResourcesDTO " + providerSpecificResourcesDTO);
+        Timber.d("providerSpecificResourcesDTO %s", providerSpecificResourcesDTO);
 
         CompetitionId competitionId = new CompetitionId(getArguments().getBundle(BUNDLE_KEY_COMPETITION_ID));
         competitionDTO = competitionCache.get(competitionId);
-        THLog.d(TAG, "competitionDTO " + competitionDTO);
+        Timber.d("competitionDTO %s", competitionDTO);
 
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
     }

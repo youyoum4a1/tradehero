@@ -1,18 +1,15 @@
 package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.common.utils.THLog;
 import java.io.IOException;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/14/14.
  */
 public class PagedWatchlistKey
 {
-    public static final String TAG = PagedWatchlistKey.class.getSimpleName();
     public static final String BUNDLE_KEY_PAGE = PagedWatchlistKey.class.getName() + ".page";
 
     public final Integer page;
@@ -58,7 +55,7 @@ public class PagedWatchlistKey
         }
         catch (IOException e)
         {
-            THLog.e(TAG, "Failed toString", e);
+            Timber.e("Failed toString", e);
         }
         return "";
     }

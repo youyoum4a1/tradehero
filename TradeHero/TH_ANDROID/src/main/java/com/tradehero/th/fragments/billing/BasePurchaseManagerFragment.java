@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.lang.ref.WeakReference;
+import timber.log.Timber;
 
 /**
  * It expects its Activity to implement THIABActorUser.
@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements THIABActorUser
 {
-    public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     protected THIABUserInteractor userInteractor;
@@ -53,7 +52,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             }
         }
 
-        THLog.d(TAG, "purchase applicablePortfolio " + applicablePortfolioId);
+        Timber.d("purchase applicablePortfolio %s", applicablePortfolioId);
         userInteractor.setApplicablePortfolioId(applicablePortfolioId);
     }
 

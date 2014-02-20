@@ -3,18 +3,17 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.common.utils.THLog;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/22/14.
  */
 public class LeaderboardKey extends AbstractIntegerDTOKey
 {
-    public static final String TAG = LeaderboardKey.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = LeaderboardKey.class.getName() + ".key";
     public static final String STRING_SET_VALUE_SEPARATOR = ":";
     public static final String STRING_SET_LEFT_KEY = "key";
@@ -86,7 +85,7 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
         }
         catch (IOException e)
         {
-            THLog.e(TAG, "Failed toString", e);
+            Timber.e("Failed toString", e);
             return "";
         }
     }

@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.key.CompetitionId;
@@ -14,7 +13,6 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
 @Singleton public class CompetitionListCache extends StraightDTOCache<ProviderId, CompetitionIdList>
 {
-    public static final String TAG = CompetitionListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @Inject protected CompetitionServiceWrapper competitionServiceWrapper;
@@ -29,7 +27,6 @@ import javax.inject.Singleton;
 
     @Override protected CompetitionIdList fetch(ProviderId key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
         return putInternal(key, competitionServiceWrapper.getCompetitions(key));
     }
 

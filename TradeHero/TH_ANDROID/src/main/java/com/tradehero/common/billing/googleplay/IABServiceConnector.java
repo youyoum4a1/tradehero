@@ -5,23 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created by julien on 5/11/13 */
 public class IABServiceConnector implements ServiceConnection
 {
-    public static final String TAG = IABServiceConnector.class.getSimpleName();
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
@@ -52,7 +50,7 @@ public class IABServiceConnector implements ServiceConnection
         checkNotDisposed();
         checkNotSetup();
 
-        THLog.d(TAG, "Starting in-app billing setup for this " + getClass().getSimpleName());
+        Timber.d("Starting in-app billing setup for this %s", getClass().getSimpleName());
 
         bindBillingServiceIfAvailable();
     }
@@ -94,7 +92,7 @@ public class IABServiceConnector implements ServiceConnection
      */
     public void dispose()
     {
-        THLog.d(TAG, "Disposing this " + getClass().getSimpleName());
+        Timber.d("Disposing this %s", getClass().getSimpleName());
         setupDone = false;
         if (context != null)
         {
@@ -104,7 +102,7 @@ public class IABServiceConnector implements ServiceConnection
             }
             catch (IllegalArgumentException e)
             {
-                THLog.d(TAG, "It happened that we had not bound the service yet. Not to worry");
+                Timber.d("It happened that we had not bound the service yet. Not to worry");
             }
         }
         disposed = true;
@@ -116,13 +114,13 @@ public class IABServiceConnector implements ServiceConnection
     //<editor-fold desc="Service Connection">
     @Override public void onServiceDisconnected(ComponentName name)
     {
-        THLog.d(TAG, "Billing service disconnected.");
+        Timber.d("Billing service disconnected.");
         billingService = null;
     }
 
     @Override public void onServiceConnected(ComponentName name, IBinder binderService)
     {
-        THLog.d(TAG, "Billing service connected.");
+        Timber.d("Billing service connected.");
         billingService = IInAppBillingService.Stub.asInterface(binderService);
         try
         {
@@ -132,14 +130,14 @@ public class IABServiceConnector implements ServiceConnection
         catch (RemoteException e)
         {
             e.printStackTrace();
-            THLog.e(TAG, "RemoteException while setting up in-app billing.", e);
+            Timber.e("RemoteException while setting up in-app billing.", e);
             handleSetupFailedInternal(
                     new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
         }
         catch (IABException e)
         {
             e.printStackTrace();
-            THLog.e(TAG, "IABException while setting up in-app billing.", e);
+            Timber.e("IABException while setting up in-app billing.", e);
             handleSetupFailedInternal(e);
         }
     }
@@ -148,7 +146,7 @@ public class IABServiceConnector implements ServiceConnection
 
     protected void checkInAppBillingV3Support() throws RemoteException, IABException
     {
-        THLog.d(TAG, "Checking for in-app billing 3 support.");
+        Timber.d("Checking for in-app billing 3 support.");
 
         // check for in-app billing v3 support
         int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
@@ -158,19 +156,19 @@ public class IABServiceConnector implements ServiceConnection
             subscriptionSupported = false;
             throw iabExceptionFactory.get().create(responseStatus, "Error checking for billing v3 support.");
         }
-        THLog.d(TAG, "In-app billing version 3 supported for " + context.getPackageName());
+        Timber.d("In-app billing version 3 supported for " + context.getPackageName());
 
         // check for v3 subscriptions support
         responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_SUBS);
         if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
         {
-            THLog.d(TAG, "Subscriptions AVAILABLE.");
+            Timber.d("Subscriptions AVAILABLE.");
             subscriptionSupported = true;
         }
         else
         {
             // We can proceed if subscriptions are not available
-            THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
+            Timber.d("Subscriptions NOT AVAILABLE. Response: " + responseStatus);
         }
 
         setupDone = true;

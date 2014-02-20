@@ -3,10 +3,9 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 10:45 AM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
@@ -31,7 +30,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
     public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload)
     {
         this(sku, 1, developerPayload);
-        THLog.d(TAG, "THIABPurchaseOrder with " + developerPayload);
+        Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
     public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload)
@@ -60,7 +59,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
         }
         catch (IOException e)
         {
-            THLog.e(TAG, "Failed to stringify developerPayload", e);
+            Timber.e("Failed to stringify developerPayload", e);
         }
         return "";
     }

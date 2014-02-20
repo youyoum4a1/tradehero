@@ -9,7 +9,6 @@ import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseExceptio
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 3:31 PM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaseFetcher<
@@ -26,8 +26,6 @@ abstract public class IABPurchaseFetcher<
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
 {
-    public static final String TAG = IABPurchaseFetcher.class.getSimpleName();
-
     protected int requestCode;
     protected boolean fetching;
     protected Map<IABSKUType, IABPurchaseType> purchases;
@@ -78,7 +76,7 @@ abstract public class IABPurchaseFetcher<
                 }
                 catch (JSONException|RemoteException|IABException exception)
                 {
-                    THLog.e(TAG, "Failed querying purchases", exception);
+                    Timber.e("Failed querying purchases", exception);
                     exception.printStackTrace();
                     this.exception = exception;
                 }
@@ -89,7 +87,7 @@ abstract public class IABPurchaseFetcher<
             {
                 if (exception != null)
                 {
-                    THLog.e(TAG, "Failed querying purchases", exception);
+                    Timber.e("Failed querying purchases", exception);
                     exception.printStackTrace();
                 }
                 else
@@ -117,8 +115,8 @@ abstract public class IABPurchaseFetcher<
     protected HashMap<IABSKUType, IABPurchaseType> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
         // Query purchase
-        THLog.d(TAG, "Querying owned items, item type: " + itemType);
-        THLog.d(TAG, "Package name: " + Application.context().getPackageName());
+        Timber.d("Querying owned items, item type: %s", itemType);
+        Timber.d("Package name: %s", Application.context().getPackageName());
         String continueToken = null;
         HashMap<IABSKUType, IABPurchaseType> purchasesMap = new HashMap<>();
 
@@ -127,7 +125,7 @@ abstract public class IABPurchaseFetcher<
             Bundle ownedItems = getPurchases(itemType, continueToken);
 
             int response = Constants.getResponseCodeFromBundle(ownedItems);
-            THLog.d(TAG, "Owned items response: " + String.valueOf(response));
+            Timber.d("Owned items response: %s", String.valueOf(response));
             if (response != Constants.BILLING_RESPONSE_RESULT_OK)
             {
                 throw iabExceptionFactory.get().create(response);
@@ -150,13 +148,13 @@ abstract public class IABPurchaseFetcher<
                 String sku = ownedSkus.get(i);
                 if (Security.verifyPurchase(Constants.BASE_64_PUBLIC_KEY, purchaseData, signature))
                 {
-                    THLog.d(TAG, "Sku is owned: " + sku);
+                    Timber.d("Sku is owned: %s", sku);
                     IABPurchaseType purchase = createPurchase(itemType, purchaseData, signature);
 
                     if (TextUtils.isEmpty(purchase.getToken()))
                     {
-                        THLog.w(TAG, "BUG: empty/null token!");
-                        THLog.d(TAG, "Purchase data: " + purchaseData);
+                        Timber.w("BUG: empty/null token!");
+                        Timber.d("Purchase data: %s", purchaseData);
                     }
 
                     // Record ownership and token
@@ -169,7 +167,7 @@ abstract public class IABPurchaseFetcher<
             }
 
             continueToken = ownedItems.getString(Constants.INAPP_CONTINUATION_TOKEN);
-            THLog.d(TAG, "Continuation token: " + continueToken);
+            Timber.d("Continuation token: %s", continueToken);
         }
         while (!TextUtils.isEmpty(continueToken));
         return purchasesMap;
@@ -177,7 +175,7 @@ abstract public class IABPurchaseFetcher<
 
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException
     {
-        THLog.d(TAG, "Calling getPurchases with continuation token: " + continueToken);
+        Timber.d("Calling getPurchases with continuation token: %s", continueToken);
         return billingService.getPurchases(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, continueToken);
     }
 

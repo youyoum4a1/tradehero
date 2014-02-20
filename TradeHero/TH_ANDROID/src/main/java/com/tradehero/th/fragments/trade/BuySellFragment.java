@@ -42,7 +42,6 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
@@ -86,11 +85,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class BuySellFragment extends AbstractBuySellFragment
     implements SecurityAlertAssistant.OnPopulatedListener, WithTutorial
 {
-    private final static String TAG = BuySellFragment.class.getSimpleName();
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
 
     public final static int ADD_ALERT_RES_ID = R.drawable.add_alert;
@@ -324,7 +323,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             catch (Exception e)
             {
-                THLog.e(TAG, "Failed to create LRU", e);
+                Timber.e("Failed to create LRU", e);
             }
 
             mPicasso = new Picasso.Builder(getActivity())
@@ -1337,7 +1336,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 if (mStockBgLogo != null && BuySellFragment.isUrlOk((String) mStockBgLogo.getTag(R.string.image_url)))
                 {
-                    THLog.i(TAG, "Loading Bg for " + mStockBgLogo.getTag(R.string.image_url));
+                    Timber.i("Loading Bg for %s", mStockBgLogo.getTag(R.string.image_url));
                     mPicasso.load((String) mStockBgLogo.getTag(R.string.image_url))
                             .placeholder(R.drawable.default_image)
                             .error(R.drawable.default_image)
@@ -1471,7 +1470,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="SecurityAlertAssistant.OnPopulatedListener">
     @Override public void onPopulateFailed(SecurityAlertAssistant securityAlertAssistant, Throwable error)
     {
-        THLog.e(TAG, "There was an error getting the alert ids", error);
+        Timber.e("There was an error getting the alert ids", error);
         displayTriggerButton();
     }
 
@@ -1511,7 +1510,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
         {
             super.handleShowSkuDetailsMilestoneFailed(throwable);
-            THLog.e(TAG, "Failed to load the sku details", throwable);
+            Timber.e("Failed to load the sku details", throwable);
         }
     }
 
@@ -1539,7 +1538,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
-            THLog.e(TAG, "Failed to fetch list of compact portfolio", throwable);
+            Timber.e("Failed to fetch list of compact portfolio", throwable);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
@@ -1557,7 +1556,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THLog.e(TAG, "Failed to fetch list of watch list items", error);
+            Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

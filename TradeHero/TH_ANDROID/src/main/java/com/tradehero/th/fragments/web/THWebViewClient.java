@@ -7,7 +7,6 @@ import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -16,19 +15,18 @@ import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/20/14.
  */
 public class THWebViewClient extends WebViewClient
 {
-    public static final String TAG = THWebViewClient.class.getSimpleName();
-
     @Inject THIntentFactory thIntentFactory;
     private final Context context;
     private THIntentPassedListener thIntentPassedListener;
 
-    @Inject protected Lazy<ProviderListCache> providerListCache;
+    @Inject Lazy<ProviderListCache> providerListCache;
 
     public THWebViewClient(Context context)
     {
@@ -39,7 +37,7 @@ public class THWebViewClient extends WebViewClient
 
     @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
     {
-        THLog.d(TAG, "shouldOverrideUrlLoading url " + url + " webView " + view);
+        Timber.d("shouldOverrideUrlLoading url %s webView %s", url, view);
         if (thIntentFactory.isHandlableScheme(Uri.parse(url).getScheme()))
         {
             // This is a tradehero:// scheme. Is it a ProviderPageIntent?
@@ -50,17 +48,17 @@ public class THWebViewClient extends WebViewClient
                 // providers after a successful enrollment
                 providerListCache.get().invalidateAll();
                 url = ((ProviderPageIntent) thIntent).getCompleteForwardUriPath();
-                THLog.d(TAG, "shouldOverrideUrlLoading Changed page url to " + url);
+                Timber.d("shouldOverrideUrlLoading Changed page url to %s", url);
             }
             else
             {
-                THLog.d(TAG, "shouldOverrideUrlLoading Notifying parent with intent");
+                Timber.d("shouldOverrideUrlLoading Notifying parent with intent");
                 notifyThIntentPassed(thIntent);
                 return true;
             }
         }
 
-        THLog.d(TAG, "shouldOverrideUrlLoading Simple passing of URL");
+        Timber.d("shouldOverrideUrlLoading Simple passing of URL");
         view.loadUrl(url);
         return false;
     }

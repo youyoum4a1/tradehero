@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
@@ -10,11 +9,11 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
 @Singleton public class ProviderListCache extends StraightDTOCache<ProviderListKey, ProviderIdList>
 {
-    public static final String TAG = ProviderListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @Inject protected ProviderServiceWrapper providerServiceWrapper;
@@ -29,7 +28,7 @@ import javax.inject.Singleton;
 
     @Override protected ProviderIdList fetch(ProviderListKey key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
+        Timber.d("fetch %s", key);
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {
             return putInternal(key, providerServiceWrapper.getProviders());

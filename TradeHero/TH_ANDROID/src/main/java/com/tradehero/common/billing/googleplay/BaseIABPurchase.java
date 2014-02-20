@@ -15,18 +15,16 @@
 
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 /**
  * Represents an in-app billing purchase.
  */
 public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
 {
-    public static final String TAG = BaseIABPurchase.class.getSimpleName();
-
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
     public static final String JSON_KEY_PRODUCT_ID = "productId";
@@ -61,11 +59,11 @@ public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
         this.purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
 
         // HACK
-        THLog.d(TAG, o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) + " " + "{\"userId\":239284,\"portfolioId\"611105}");
+        Timber.d("%s {\"userId\":239284,\"portfolioId\"611105}", o.optString(JSON_KEY_DEVELOPER_PAY_LOAD));
         if (o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) != null &&
                 o.optString(JSON_KEY_DEVELOPER_PAY_LOAD).equals("{\"userId\":239284,\"portfolioId\"611105}"))
         {
-            THLog.d(TAG, "HACK Fixing bad Json");
+            Timber.d("HACK Fixing bad Json");
             developerPayload = "{\"userId\":239284,\"portfolioId\":611105}";
         }
         else

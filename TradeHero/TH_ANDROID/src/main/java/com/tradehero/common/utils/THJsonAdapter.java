@@ -14,6 +14,7 @@ import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. Date: 7/1/13 Time: 12:49 PM Copyright (c) 2013 thonguyen. All rights
@@ -21,7 +22,6 @@ import retrofit.mime.TypedOutput;
  */
 public class THJsonAdapter implements Converter
 {
-    private static final String TAG = THJsonAdapter.class.getSimpleName();
     private static ConverterType CONVERTER_TYPE = ConverterType.JACKSON;
     private static THJsonAdapter instance = null;
     private Converter converter;
@@ -95,7 +95,7 @@ public class THJsonAdapter implements Converter
         }
         catch (ConversionException ex)
         {
-            THLog.e(TAG, "Conversion error", ex);
+            Timber.e("Conversion error", ex);
             return null;
         }
     }

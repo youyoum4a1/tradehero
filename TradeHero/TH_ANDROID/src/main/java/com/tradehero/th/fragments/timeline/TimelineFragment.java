@@ -12,7 +12,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -24,13 +23,10 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -42,11 +38,11 @@ import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements PortfolioRequestListener
 {
-    public static final String TAG = TimelineFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_USER_ID =
             TimelineFragment.class.getName() + ".showUserId";
 
@@ -343,8 +339,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 @Override public void onFailed(Milestone milestone, Throwable throwable)
                 {
                     // We do not need to inform the player here
-                    THLog.e(TAG, "Error fetching the list of portfolio for user: "
-                            + shownUserBaseKey.key, throwable);
+                    Timber.e("Error fetching the list of portfolio for user: %d", shownUserBaseKey.key, throwable);
                 }
             };
 

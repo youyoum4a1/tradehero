@@ -5,10 +5,10 @@ import android.support.v4.content.AsyncTaskLoader;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 12/13/13.
@@ -19,8 +19,6 @@ abstract public class PagedDTOCacheLoader<
         DTOType extends DTO & List<AnyType>>
         extends AsyncTaskLoader<DTOType>
 {
-    public static final String TAG = PagedDTOCacheLoader.class.getSimpleName();
-
     private DTOKeyType queryKey;
     private DTOType value;
     private boolean querying = false;
@@ -51,7 +49,7 @@ abstract public class PagedDTOCacheLoader<
         }
         setHasNoMorePages(false);
         this.queryKey = queryKey;
-        THLog.d(TAG, "setQueryKey " + this.queryKey);
+        Timber.d("setQueryKey %s", this.queryKey);
         value = null;
     }
 
@@ -67,7 +65,7 @@ abstract public class PagedDTOCacheLoader<
 
     protected void setQuerying(final boolean querying)
     {
-        THLog.d(TAG, "setQuerying " + querying);
+        Timber.d("setQuerying %b", querying);
         boolean isChanged = querying != this.querying;
         this.querying = querying;
         if (isChanged)
@@ -83,7 +81,7 @@ abstract public class PagedDTOCacheLoader<
 
     protected void setHasNoMorePages(final boolean noMorePages)
     {
-        THLog.d(TAG, "setHasNoMorePages " + noMorePages);
+        Timber.d("setHasNoMorePages %b", noMorePages);
         boolean isChanged = noMorePages != this.noMorePages;
         this.noMorePages = noMorePages;
         if (isChanged)
@@ -94,7 +92,7 @@ abstract public class PagedDTOCacheLoader<
 
     @Override public DTOType loadInBackground()
     {
-        THLog.d(TAG, "loadInBackground " + this.queryKey);
+        Timber.d("loadInBackground %s", this.queryKey);
         setQuerying(true);
         DTOType value = null;
         try
@@ -106,12 +104,12 @@ abstract public class PagedDTOCacheLoader<
             }
             else
             {
-                THLog.d(TAG, "Got value count " + value.size());
+                Timber.d("Got value count " + value.size());
             }
         }
         catch (Throwable throwable)
         {
-            THLog.e(TAG, "Failed to get " + this.queryKey + " from cache", throwable);
+            Timber.e("Failed to get %s from cache", this.queryKey, throwable);
         }
         finally
         {
@@ -122,25 +120,25 @@ abstract public class PagedDTOCacheLoader<
 
     public void loadNextPage()
     {
-        THLog.d(TAG, "loadNextPage");
+        Timber.d("loadNextPage");
         if (this.queryKey != null && !isQuerying() && !hasNoMorePages())
         {
             this.queryKey = cloneAtPage(this.queryKey, this.queryKey.getPage() + 1);
-            THLog.d(TAG, "Loading page " + this.queryKey.getPage());
+            Timber.d("Loading page %d", this.queryKey.getPage());
             forceLoad();
         }
         else
         {
-            THLog.d(TAG, "Not loading next page");
+            Timber.d("Not loading next page");
         }
     }
 
     @Override public void deliverResult(DTOType data)
     {
-        THLog.d(TAG, "deliverResult");
+        Timber.d("deliverResult");
         if (isReset())
         {
-            THLog.d(TAG, "deliverResult was reset");
+            Timber.d("deliverResult was reset");
             // An async query came in while the loader is stopped.  We
             // don't need the result.
             if (data != null)
@@ -153,12 +151,12 @@ abstract public class PagedDTOCacheLoader<
         DTOType valueCopy = this.value;
         if (valueCopy == null)
         {
-            THLog.d(TAG, "deliverResult is first");
+            Timber.d("deliverResult is first");
             this.value = data;
         }
         else if (data != null)
         {
-            THLog.d(TAG, "deliverResult add to existing");
+            Timber.d("deliverResult add to existing");
             // We create a new list otherwise the loader manager does not detect the change
             DTOType newList = createEmptyValue();
             newList.addAll(valueCopy);
@@ -168,14 +166,14 @@ abstract public class PagedDTOCacheLoader<
 
         if (isStarted())
         {
-            THLog.d(TAG, "passing super.deliverResult");
+            Timber.d("passing super.deliverResult");
             // If the Loader is currently started, we can immediately
             // deliver its results.
             super.deliverResult(this.value);
         }
         else
         {
-            THLog.d(TAG, "Not started, not passing super.deliverResult");
+            Timber.d("Not started, not passing super.deliverResult");
         }
     }
 
@@ -202,12 +200,12 @@ abstract public class PagedDTOCacheLoader<
         OnQueryingChangedListener queryingChangedListener = this.queryingChangedListenerWeak.get();
         if (queryingChangedListener != null)
         {
-            THLog.d(TAG, "notifyingQueryingChanged");
+            Timber.d("notifyingQueryingChanged");
             queryingChangedListener.onQueryingChanged(querying);
         }
         else
         {
-            THLog.d(TAG, "no listener for notifyingQueryingChanged");
+            Timber.d("no listener for notifyingQueryingChanged");
         }
     }
 

@@ -5,16 +5,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:38 PM To change this template use File | Settings | File Templates. */
 public class QuickPriceButtonSet extends LinearLayout
 {
-    public static final String TAG = QuickPriceButtonSet.class.getSimpleName();
-
     private List<QuickPriceButton> buttons;
     private OnQuickPriceButtonSelectedListener listener;
     private boolean enabled = false;
@@ -62,7 +59,7 @@ public class QuickPriceButtonSet extends LinearLayout
     public void setMaxPrice(double maxPrice)
     {
         this.maxPrice = maxPrice;
-        THLog.d(TAG, "MaxPrice: " + maxPrice);
+        Timber.d("MaxPrice: %f", maxPrice);
         display();
     }
     //</editor-fold>

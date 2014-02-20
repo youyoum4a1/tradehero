@@ -4,7 +4,6 @@ import android.os.Bundle;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
@@ -13,12 +12,12 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 6:56 PM Copyright (c) TradeHero */
 abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-    private static final String TAG = DashboardFragment.class.getName();
     @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -63,7 +62,7 @@ abstract public class DashboardFragment extends BaseFragment
         }
         else
         {
-            THLog.d(TAG, getClass().getName() + " is not implementing WithTutorial interface, but has info menu");
+            Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
         }
     }
 

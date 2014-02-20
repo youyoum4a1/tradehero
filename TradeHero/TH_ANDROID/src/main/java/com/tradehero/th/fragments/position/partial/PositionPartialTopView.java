@@ -10,27 +10,28 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.PositionUtils;
+import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by julien on 30/10/13
  */
 public class PositionPartialTopView extends LinearLayout
 {
-    public static final String TAG = PositionPartialTopView.class.getSimpleName();
-
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
@@ -385,7 +386,7 @@ public class PositionPartialTopView extends LinearLayout
             @Override public void onErrorThrown(SecurityId key, Throwable error)
             {
                 THToast.show("There was an error when fetching the security information");
-                THLog.e(TAG, "Error fetching the security " + key, error);
+                Timber.e("Error fetching the security %s", key, error);
             }
         };
     }

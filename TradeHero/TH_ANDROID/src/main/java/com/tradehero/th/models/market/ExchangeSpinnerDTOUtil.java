@@ -2,8 +2,6 @@ package com.tradehero.th.models.market;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeDTO;
 import java.util.ArrayList;
@@ -11,14 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/16/14.
  */
 @Singleton public class ExchangeSpinnerDTOUtil
 {
-    public static final String TAG = ExchangeSpinnerDTOUtil.class.getSimpleName();
-
     @Inject public ExchangeSpinnerDTOUtil()
     {
     }
@@ -58,7 +55,7 @@ import javax.inject.Singleton;
             }
             catch (IllegalArgumentException ex)
             {
-                THLog.d(TAG, "Exchange logo does not exist: " + ex.getMessage());
+                Timber.d("Exchange logo does not exist: %s", ex.getMessage());
             }
             finally
             {

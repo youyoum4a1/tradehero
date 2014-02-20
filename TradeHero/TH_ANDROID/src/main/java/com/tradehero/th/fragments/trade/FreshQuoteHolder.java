@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.CountDownTimer;
 import com.tradehero.common.utils.IOUtils;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -18,12 +17,11 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 4:49 PM To change this template use File | Settings | File Templates. */
 public class FreshQuoteHolder
 {
-    public final static String TAG = FreshQuoteHolder.class.getSimpleName();
-
     public final static long DEFAULT_MILLI_SEC_QUOTE_REFRESH = 30000;
     public final static long DEFAULT_MILLI_SEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
@@ -182,7 +180,7 @@ public class FreshQuoteHolder
 
             @Override public void failure(RetrofitError error)
             {
-                THLog.e(TAG, "Failed to get quote", error);
+                Timber.e("Failed to get quote", error);
                 notifyNotRefreshing();
             }
 
@@ -211,7 +209,7 @@ public class FreshQuoteHolder
             }
             catch (IOException e)
             {
-                THLog.e(TAG, "Failed to get signature", e);
+                Timber.e("Failed to get signature", e);
             }
         }
         notifyListenersOnFreshQuote(quoteDTO);

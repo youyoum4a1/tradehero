@@ -20,7 +20,6 @@ import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledExcept
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -51,15 +50,13 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * It expects its Activity to implement THIABActorUser.
@@ -68,8 +65,6 @@ public class THIABUserInteractor
         implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
         THIABActorUser
 {
-    public static final String TAG = THIABUserInteractor.class.getSimpleName();
-
     @Inject protected CurrentActivityHolder currentActivityHolder;
 
     private ShowSkuDetailsMilestone showSkuDetailsMilestone;
@@ -135,7 +130,7 @@ public class THIABUserInteractor
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
-                THLog.e(TAG, "Failed to complete ShowSkuDetailsMilestone", throwable);
+                Timber.e("Failed to complete ShowSkuDetailsMilestone", throwable);
                 showSkuDetailsMilestoneException = throwable;
                 handleShowSkuDetailsMilestoneFailed(throwable);
             }
@@ -193,7 +188,7 @@ public class THIABUserInteractor
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
-                    THLog.e(TAG, "onPurchaseFailed requestCode " + requestCode, exception);
+                    Timber.e("onPurchaseFailed requestCode %d", requestCode, exception);
                     if (exception instanceof IABVerificationFailedException)
                     {
                         iabAlertDialogSKUUtil.popVerificationFailed(context);
@@ -246,7 +241,7 @@ public class THIABUserInteractor
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
-                    THLog.e(TAG, "Failed to report to server", error);
+                    Timber.e("Failed to report to server", error);
                     if (progressDialog != null)
                     {
                         progressDialog.hide();
@@ -264,7 +259,7 @@ public class THIABUserInteractor
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
-                    THLog.e(TAG, "Failed to consume purchase", exception);
+                    Timber.e("Failed to consume purchase", exception);
                     if (progressDialog != null)
                     {
                         progressDialog.hide();
@@ -287,7 +282,7 @@ public class THIABUserInteractor
                 @Override
                 public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
                 {
-                    THLog.d(TAG, "onPurchaseRestoreFinished3");
+                    Timber.d("onPurchaseRestoreFinished3");
                     if (progressDialog != null)
                     {
                         progressDialog.hide();
@@ -304,12 +299,12 @@ public class THIABUserInteractor
 
                 @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
                 {
-                    THLog.d(TAG, "onPurchaseRestoreFinished2");
+                    Timber.d("onPurchaseRestoreFinished2");
                 }
 
                 @Override public void onPurchaseRestoreFailed(Throwable throwable)
                 {
-                    THLog.e(TAG, "onPurchaseRestoreFailed", throwable);
+                    Timber.e("onPurchaseRestoreFailed", throwable);
                     if (throwable instanceof Exception)
                     {
                         purchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) throwable);
@@ -425,7 +420,7 @@ public class THIABUserInteractor
             }
             else
             {
-                THLog.d(TAG, "showSkuDetailsMilestone is already running");
+                Timber.d("showSkuDetailsMilestone is already running");
             }
         }
     }
@@ -631,7 +626,7 @@ public class THIABUserInteractor
             @Override public void run()
             {
                 Handler handler = THIABUserInteractor.this.currentActivityHolder.getCurrentHandler();
-                THLog.d(TAG, "handler " + handler);
+                Timber.d("handler %s", handler);
                 if (handler != null)
                 {
                     handler.post(new Runnable()
@@ -773,7 +768,7 @@ public class THIABUserInteractor
         }
         else
         {
-            THLog.w(TAG, "Handler is null");
+            Timber.w("Handler is null");
         }
     }
 
@@ -897,7 +892,7 @@ public class THIABUserInteractor
 
         @Override public void failure(RetrofitError error)
         {
-            THLog.e(TAG, "Failed to un/follow", error);
+            Timber.e("Failed to un/follow", error);
             if (progressDialog != null)
             {
                 progressDialog.hide();

@@ -4,16 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
+import timber.log.Timber;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView
 {
-    public static final String TAG = CompetitionZoneLegalMentionsView.class.getSimpleName();
-
     private TextView rules;
     private TextView terms;
     private ProviderId providerId;
@@ -149,14 +147,14 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
 
     private void pushRulesFragment()
     {
-        THLog.d(TAG, "pushRulesFragment");
+        Timber.d("pushRulesFragment");
         notifyElementClicked(CompetitionZoneLegalDTO.LinkType.RULES);
         // Rely on item click listener
     }
 
     private void pushTermsFragment()
     {
-        THLog.d(TAG, "pushTermsFragment");
+        Timber.d("pushTermsFragment");
         notifyElementClicked(CompetitionZoneLegalDTO.LinkType.TERMS);
     }
 

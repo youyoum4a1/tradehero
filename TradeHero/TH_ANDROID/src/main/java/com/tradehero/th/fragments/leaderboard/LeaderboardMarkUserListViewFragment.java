@@ -31,6 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
@@ -193,12 +194,12 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
             currentLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
             initialLoad();
-            THLog.d(TAG, "onResume " + currentLeaderboardKey);
+            Timber.d("onResume %s", currentLeaderboardKey);
             getActivity().invalidateOptionsMenu();
         }
         else
         {
-            THLog.d(TAG, "onResume filterFragment is null");
+            Timber.d("onResume filterFragment is null");
         }
     }
 

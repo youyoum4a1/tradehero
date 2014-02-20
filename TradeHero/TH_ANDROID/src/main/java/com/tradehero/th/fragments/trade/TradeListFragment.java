@@ -1,20 +1,18 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.persistence.position.PositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/5/14.
  */
 public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
 {
-    public static final String TAG = TradeListFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE = TradeListFragment.class.getName() + ".ownedPositionId";
 
     protected OwnedPositionId ownedPositionId;
@@ -38,12 +36,12 @@ public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
             }
             else
             {
-                THLog.d(TAG, "ownedPositionIdBundle is null");
+                Timber.d("ownedPositionIdBundle is null");
             }
         }
         else
         {
-            THLog.d(TAG, "args is null");
+            Timber.d("args is null");
         }
     }
 

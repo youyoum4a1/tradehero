@@ -1,15 +1,13 @@
 package com.tradehero.common.widget;
 
 import android.widget.AbsListView;
-import com.tradehero.common.utils.THLog;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 12/5/13.
  */
 abstract public class EndlessScrollListener implements AbsListView.OnScrollListener
 {
-    public static final String TAG = EndlessScrollListener.class.getSimpleName();
-
     public static final int DEFAULT_VISIBLE_THRESHOLD = 5;
 
     private int visibleThreshold;
@@ -59,7 +57,7 @@ abstract public class EndlessScrollListener implements AbsListView.OnScrollListe
 
     @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
-        THLog.d(TAG, "onScroll first: " + firstVisibleItem + ", visiCount: " + visibleItemCount + ", totalCount: " + totalItemCount);
+        Timber.d("onScroll first: %d, visiCount: %d, totalCount: %d", firstVisibleItem, visibleItemCount, totalItemCount);
         if (loading)
         {
             if (totalItemCount > previousTotal)

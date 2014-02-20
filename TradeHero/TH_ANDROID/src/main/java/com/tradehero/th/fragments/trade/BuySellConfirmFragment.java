@@ -41,11 +41,10 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class BuySellConfirmFragment extends AbstractBuySellFragment
 {
-    private final static String TAG = BuySellConfirmFragment.class.getSimpleName();
-
     public final static String BUNDLE_KEY_SHARE_FACEBOOK = BuySellConfirmFragment.class.getName() + ".shareFacebook";
     public final static String BUNDLE_KEY_SHARE_TWITTER = BuySellConfirmFragment.class.getName() + ".shareTwitter";
     public final static String BUNDLE_KEY_SHARE_LINKEDIN = BuySellConfirmFragment.class.getName() + ".shareLinkedIn";
@@ -110,7 +109,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
         View view = null;
         view = inflater.inflate(R.layout.fragment_buy_sell_confirm, container, false);
@@ -202,8 +200,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        THLog.d(TAG, "onDestroyView");
-
         DeviceUtil.dismissKeyboard(getActivity());
 
         ButterKnife.reset(this);
@@ -224,7 +220,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
-        THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putBoolean(BUNDLE_KEY_SHARE_FACEBOOK, publishToFb);
         outState.putBoolean(BUNDLE_KEY_SHARE_TWITTER, publishToTw);
@@ -436,7 +431,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         }
         if (getApplicablePortfolioId() == null || getApplicablePortfolioId().portfolioId == null)
         {
-            THLog.e(TAG, "No portfolioId to apply to", new IllegalStateException());
+            Timber.e("No portfolioId to apply to", new IllegalStateException());
             return null;
         }
         return new TransactionFormDTO(

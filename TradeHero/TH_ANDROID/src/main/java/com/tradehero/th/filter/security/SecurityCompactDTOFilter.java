@@ -1,18 +1,16 @@
 package com.tradehero.th.filter.security;
 
 import android.widget.Filter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/24/14.
  */
 abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends SecurityCompactDTO> extends Filter
 {
-    public static final String TAG = SecurityCompactDTOFilter.class.getSimpleName();
-
     protected ListCharSequencePredicateFilter<SecurityCompactDTOType> securityCompactDTOPredicateFilter;
 
     public SecurityCompactDTOFilter(ListCharSequencePredicateFilter<SecurityCompactDTOType> predicateFilter)
@@ -27,7 +25,7 @@ abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends Se
         SecurityFilterResults results = new SecurityFilterResults<SecurityCompactDTOType>();
 
         results.castedValues = securityCompactDTOPredicateFilter.filter(items);
-        THLog.d(TAG, "Count " + (results.castedValues == null ? null : results.castedValues.size()));
+        Timber.d("Count %d", results.castedValues == null ? null : results.castedValues.size());
         results.values = results.castedValues;
         results.count = results.castedValues == null ? 0 : results.castedValues.size();
 

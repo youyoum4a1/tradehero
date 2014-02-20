@@ -2,10 +2,10 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaseRestorer<
@@ -24,8 +24,6 @@ abstract public class IABPurchaseRestorer<
                 IABPurchaseType,
                 IABException>>
 {
-    public static final String TAG = IABPurchaseRestorer.class.getSimpleName();
-
     protected WeakReference<IABActorPurchaseConsumerType> consumeActor = new WeakReference<>(null);
     protected WeakReference<OnIABPurchaseRestorerFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> finishedListener = new WeakReference<>(null);
     protected Milestone milestone;
@@ -50,13 +48,13 @@ abstract public class IABPurchaseRestorer<
         {
             @Override public void onComplete(Milestone milestone)
             {
-                THLog.d(TAG, "onComplete Milestone");
+                Timber.d("onComplete Milestone");
                 launchWholeSequence();
             }
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
-                THLog.d(TAG, "onFailed Milestone");
+                Timber.d("onFailed Milestone");
                 notifyFailedListener(throwable);
             }
         };
@@ -136,7 +134,7 @@ abstract public class IABPurchaseRestorer<
         IABActorPurchaseConsumerType billingActor = getConsumeActor();
         if (!purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
         {
-            THLog.d(TAG, "No point in consuming this purchase");
+            Timber.d("No point in consuming this purchase");
             // No need to add to okPurchases.add(purchase);
             continueSequenceOrNotify();
         }
@@ -147,7 +145,7 @@ abstract public class IABPurchaseRestorer<
         }
         else
         {
-            THLog.w(TAG, "launchOneConsumeSequence: BillingActor just became null");
+            Timber.w("launchOneConsumeSequence: BillingActor just became null");
             failedConsumes.add(purchase);
             continueSequenceOrNotify();
         }

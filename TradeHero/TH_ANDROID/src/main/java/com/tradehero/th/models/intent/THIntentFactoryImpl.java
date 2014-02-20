@@ -1,17 +1,15 @@
 package com.tradehero.th.models.intent;
 
 import android.content.Intent;
-import com.tradehero.common.utils.THLog;
 import java.util.HashMap;
 import java.util.Map;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/10/14.
  */
 public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 {
-    public static final String TAG = THIntentFactoryImpl.class.getSimpleName();
-
     private Map<String, THIntentFactory<? extends THIntent>> factoryMap;
 
     public THIntentFactoryImpl()
@@ -48,7 +46,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
         }
         else
         {
-            THLog.e(TAG, host + " host is unhandled " + intent.getDataString(), new Exception());
+            Timber.e("%s host is unhandled %s", host, intent.getDataString(), new Exception());
         }
 
         return thIntent;

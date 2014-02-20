@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -17,12 +16,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, SecurityPositionDetailDTO>
 {
-    public static final String TAG = BaseBuySellAsyncTask.class.getSimpleName();
-
     protected static final int CODE_OK = 0;
     protected static final int CODE_BUY_SELL_ORDER_NULL = 1;
     protected static final int CODE_RETROFIT_ERROR = 2;
@@ -89,7 +87,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
             }
             catch (RetrofitError e)
             {
-                THLog.e(TAG, "Failed to buy-sell", e);
+                Timber.e("Failed to buy-sell", e);
                 THException wrapped = new THException(e);
                 if (wrapped.getCode() == THException.ExceptionCode.UnknownError)
                 {

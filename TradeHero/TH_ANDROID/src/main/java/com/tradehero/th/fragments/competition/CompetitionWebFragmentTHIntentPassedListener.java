@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -12,6 +11,7 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/29/14.
@@ -35,15 +35,15 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
     {
         if (thIntent instanceof ProviderPageIntent)
         {
-            THLog.d(TAG, "Intent is ProviderPageIntent");
+            Timber.d("Intent is ProviderPageIntent");
             if (getApplicableWebViewFragment() != null)
             {
-                THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
                 getApplicableWebViewFragment().loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
             }
             else
             {
-                THLog.d(TAG, "WebFragment is null");
+                Timber.d("WebFragment is null");
             }
         }
         else if (thIntent instanceof SecurityPushBuyIntent)
@@ -56,7 +56,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         }
         else
         {
-            THLog.w(TAG, "Unhandled intent " + thIntent);
+            Timber.w("Unhandled intent %s", thIntent);
         }
     }
 
@@ -76,6 +76,6 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
                         R.anim.slide_right_in, R.anim.alpha_out,
                         R.anim.slide_left_in, R.anim.slide_right_out
                 }, null);
-        THLog.d(TAG, "onIntentPassed " + thIntent);
+        Timber.d("onIntentPassed %s", thIntent);
     }
 }

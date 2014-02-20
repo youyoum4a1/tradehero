@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -12,15 +11,14 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
-    private static final String TAG = LeaderboardMarkUserLoader.class.getName();
-
     protected PagedLeaderboardKey pagedLeaderboardKey;
 
-    @Inject protected LeaderboardCache leaderboardCache;
+    @Inject LeaderboardCache leaderboardCache;
     private Date markUtc;
 
     public LeaderboardMarkUserLoader(Context context, PagedLeaderboardKey pagedLeaderboardKey)
@@ -48,8 +46,8 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
     @Override public List<LeaderboardUserDTO> loadInBackground()
     {
-        THLog.d(TAG, "loadInBackground " + pagedLeaderboardKey);
-        THLog.d(TAG, String.format("Loader with id = " + getId()));
+        Timber.d("loadInBackground %s", pagedLeaderboardKey);
+        Timber.d("Loader with id = %d", getId());
 
         try
         {
@@ -61,12 +59,12 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
             }
 
             markUtc = fetched.markUtc;
-            THLog.d(TAG, "Leaderboard marked at " + fetched.markUtc);
+            Timber.d("Leaderboard marked at %s", fetched.markUtc);
             return fetched.users;
         }
         catch (Throwable throwable)
         {
-            THLog.e(TAG, "Error loading Leaderboard ranking", throwable);
+            Timber.e("Error loading Leaderboard ranking", throwable);
             return null;
         }
     }

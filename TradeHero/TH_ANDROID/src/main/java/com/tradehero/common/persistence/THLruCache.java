@@ -1,14 +1,13 @@
 package com.tradehero.common.persistence;
 
 import android.support.v4.util.LruCache;
-import com.tradehero.common.utils.THLog;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/3/14.
  */
 public class THLruCache<U, V> extends LruCache<U, V>
 {
-    public static final String TAG = THLruCache.class.getSimpleName();
 
     public THLruCache(int maxSize)
     {
@@ -20,7 +19,7 @@ public class THLruCache<U, V> extends LruCache<U, V>
         super.entryRemoved(evicted, key, oldValue, newValue);
         if (evicted)
         {
-            THLog.d(TAG, "entryRemoved evicted " + evicted + ", key " + key + ", oldValue " + oldValue + ", newValue " + newValue);
+            Timber.d("entryRemoved evicted %d, key %s, oldValue %s, newValue %s", evicted, key, oldValue, newValue);
         }
     }
 }

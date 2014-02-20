@@ -21,7 +21,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -45,13 +44,13 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import retrofit.Callback;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 5:18 PM Copyright (c) TradeHero
  */
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
-    public static final String TAG = BaseAlertEditFragment.class.getSimpleName();
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
@@ -280,7 +279,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         if (targetPriceToggle == null || targetPercentageChangeToggle == null || securityCompactDTO == null || securityCompactDTO.lastPrice == null)
         {
-            THLog.d(TAG, "securityCompact " + securityCompactDTO);
+            Timber.d("securityCompact %s", securityCompactDTO);
             return null;
         }
 

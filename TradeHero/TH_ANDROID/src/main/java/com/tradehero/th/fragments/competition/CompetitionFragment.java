@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -12,24 +11,23 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/16/14.
  */
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
-    public static final String TAG = CompetitionFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    @Inject protected ProviderCache providerCache;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
-
-    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
+
+    @Inject ProviderCache providerCache;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -104,7 +102,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         @Override public void onErrorThrown(ProviderId key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
-            THLog.e(TAG, "Error fetching the provider info " + key, error);
+            Timber.e("Error fetching the provider info " + key, error);
         }
     }
 }

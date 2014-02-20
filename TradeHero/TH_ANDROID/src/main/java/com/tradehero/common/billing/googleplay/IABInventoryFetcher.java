@@ -9,15 +9,18 @@ import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseExceptio
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
-
-import java.util.*;
+import timber.log.Timber;
 
 /**
  * Created by julien on 4/11/13
@@ -28,8 +31,6 @@ abstract public class IABInventoryFetcher<
         extends IABServiceConnector
         implements InventoryFetcher<IABSKUType, IABProductDetailsType, IABException>
 {
-    public static final String TAG = IABInventoryFetcher.class.getSimpleName();
-
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;
     private int requestCode;
@@ -92,17 +93,17 @@ abstract public class IABInventoryFetcher<
                 }
                 catch (RemoteException e)
                 {
-                    THLog.e(TAG, "Remote Exception while fetching inventory.", e);
+                    Timber.e("Remote Exception while fetching inventory.", e);
                     exception = new IABRemoteException("RemoteException while fetching IAB", e);
                 }
                 catch (JSONException e)
                 {
-                    THLog.e(TAG, "Error parsing json.", e);
+                    Timber.e("Error parsing json.", e);
                     exception = new IABBadResponseException("Unable to parse JSON", e);
                 }
                 catch (IABException e)
                 {
-                    THLog.e(TAG, "IAB error.", e);
+                    Timber.e("IAB error.", e);
                     exception = e;
                 }
                 return null;
@@ -194,12 +195,12 @@ abstract public class IABInventoryFetcher<
             int statusCode = Constants.getResponseCodeFromBundle(skuDetails);
             if (statusCode != Constants.BILLING_RESPONSE_RESULT_OK)
             {
-                THLog.d(TAG, "getSkuDetails() failed: " + Constants.getStatusCodeDescription(statusCode));
+                Timber.d("getSkuDetails() failed: %s", Constants.getStatusCodeDescription(statusCode));
                 throw iabExceptionFactory.get().create(statusCode);
             }
             else
             {
-                THLog.d(TAG, "getSkuDetails() returned a bundle with neither an error nor a detail list.");
+                Timber.d("getSkuDetails() returned a bundle with neither an error nor a detail list.");
                 throw new IABBadResponseException(Constants.getStatusCodeDescription(statusCode));
             }
         }
@@ -210,7 +211,7 @@ abstract public class IABInventoryFetcher<
         for (String json : responseList)
         {
             IABProductDetailsType details = createSKUDetails(itemType, json);
-            THLog.d(TAG, "Got iabSKU details: " + details);
+            Timber.d("Got iabSKU details: %s", details);
             map.put(details.getProductIdentifier(), details);
         }
         return map;

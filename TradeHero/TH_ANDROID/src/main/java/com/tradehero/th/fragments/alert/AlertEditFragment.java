@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.alert;
 import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -13,13 +12,13 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/7/14.
  */
 public class AlertEditFragment extends BaseAlertEditFragment
 {
-    public static final String TAG = AlertEditFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     protected AlertId alertId;
@@ -50,7 +49,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
             @Override public void onErrorThrown(AlertId key, Throwable error)
             {
                 THToast.show(new THException(error));
-                THLog.e(TAG, "Failed to get alertDTO", error);
+                Timber.e("Failed to get alertDTO", error);
             }
         };
     }

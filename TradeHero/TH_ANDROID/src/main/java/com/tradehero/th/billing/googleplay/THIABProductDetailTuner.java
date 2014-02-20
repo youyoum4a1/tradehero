@@ -2,14 +2,12 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:25 PM To change this template use File | Settings | File Templates. */
 public class THIABProductDetailTuner implements ProductDetailTuner<IABSKU, THIABProductDetail>
 {
-    public static final String TAG = THIABProductDetailTuner.class.getSimpleName();
-
     public THIABProductDetailTuner()
     {
         super();
@@ -84,7 +82,7 @@ public class THIABProductDetailTuner implements ProductDetailTuner<IABSKU, THIAB
                 break;
 
             default:
-                THLog.d(TAG, "Unhandled productDetails key " + productDetails.getProductIdentifier().identifier);
+                Timber.d("Unhandled productDetails key %s", productDetails.getProductIdentifier().identifier);
         }
     }
 }

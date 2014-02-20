@@ -1,17 +1,15 @@
 package com.tradehero.th.api.yahoo;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.security.SecurityId;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import timber.log.Timber;
 
 /**
  * Created by julien on 10/10/13
@@ -59,7 +57,7 @@ public class News implements DTO
         }
         catch (ParseException e)
         {
-            THLog.e(TAG, "Failed to parse date", e);
+            Timber.e(TAG, "Failed to parse date", e);
         }
         return null;
     }

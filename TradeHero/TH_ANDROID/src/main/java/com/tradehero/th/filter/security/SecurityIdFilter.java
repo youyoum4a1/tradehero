@@ -1,17 +1,16 @@
 package com.tradehero.th.filter.security;
 
 import android.widget.Filter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/24/14.
  */
 abstract public class SecurityIdFilter extends Filter
 {
-    public static final String TAG = SecurityIdFilter.class.getSimpleName();
 
     protected ListCharSequencePredicateFilter<SecurityId> securityIdPatternFilter;
 
@@ -27,7 +26,7 @@ abstract public class SecurityIdFilter extends Filter
         SecurityFilterResults results = new SecurityFilterResults();
 
         results.castedValues = securityIdPatternFilter.filter(items);
-        THLog.d(TAG, "Count " + (results.castedValues == null ? null : results.castedValues.size()));
+        Timber.d("Count %d", results.castedValues == null ? null : results.castedValues.size());
         results.values = results.castedValues;
         results.count = results.castedValues == null ? 0 : results.castedValues.size();
 

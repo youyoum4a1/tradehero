@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.yahoo;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
@@ -9,17 +8,21 @@ import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.xml.xpath.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import timber.log.Timber;
 
 /**
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
@@ -27,8 +30,6 @@ import java.util.List;
  */
 @Singleton public class NewsCache extends StraightDTOCache<SecurityId, NewsList>
 {
-
-    public static final String TAG = NewsCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 15;
 
     @Inject protected Lazy<SecurityCompactCache> securityCache;
@@ -88,11 +89,11 @@ import java.util.List;
         }
         catch (XPathExpressionException e)
         {
-            THLog.e(TAG, "Failed to compile XPath", e);
+            Timber.e("Failed to compile XPath", e);
         }
         catch (IOException e)
         {
-            THLog.e(TAG, "Failed to get response body", e);
+            Timber.e("Failed to get response body", e);
         }
         return null;
     }

@@ -5,7 +5,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -16,6 +15,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 6:24 PM Copyright (c) TradeHero */
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
@@ -134,7 +134,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THLog.e(TAG, "Failed to download current UserProfile", error);
+            Timber.e("Failed to download current UserProfile", error);
             THToast.show(R.string.error_fetch_your_user_profile);
         }
     }

@@ -6,13 +6,11 @@ import android.view.View;
 import android.widget.Toast;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.misc.exception.THException.ExceptionCode;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/19/13 Time: 12:33 PM Copyright (c) TradeHero */
 public class THToast
 {
-    private static final String TAG = THToast.class.getName();
-
     public static void show(String message)
     {
         //THLog.e(TAG, "show " + message, new IllegalArgumentException());
@@ -24,7 +22,7 @@ public class THToast
         }
         else
         {
-            THLog.e(TAG, "Problem: Toast is called from background thread", new Exception("Toast message: " + message));
+            Timber.e("Problem: Toast is called from background thread", new Exception("Toast message: " + message));
         }
     }
 
@@ -36,7 +34,6 @@ public class THToast
     public static void show(THException ex)
     {
         show(ex.getMessage());
-        THLog.e(TAG, ex.getClass().getSimpleName() + ", code: " + ex.getCode() + ", message: " + ex.getMessage(), ex);
     }
 
     /**

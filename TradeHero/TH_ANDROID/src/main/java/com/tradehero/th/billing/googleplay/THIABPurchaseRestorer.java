@@ -6,12 +6,12 @@ import com.tradehero.common.billing.googleplay.IABPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseRestorer extends IABPurchaseRestorer<
@@ -25,8 +25,6 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
                 THIABPurchase,
                 IABException>>
 {
-    public static final String TAG = THIABPurchaseRestorer.class.getSimpleName();
-
     private final WeakReference<Activity> activity;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
@@ -58,7 +56,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         {
             @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, Exception error)
             {
-                THLog.e(TAG, "onPurchaseReportFailed", error);
+                Timber.e("onPurchaseReportFailed", error);
                 haveBillingActorForget(requestCode);
                 failedReports.add(reportedPurchase);
                 continueSequenceOrNotify();
@@ -66,7 +64,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
             @Override public void onPurchaseReported(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
-                THLog.d(TAG, "onPurchaseReported");
+                Timber.d("onPurchaseReported");
                 haveBillingActorForget(requestCode);
                 launchOneConsumeSequence(reportedPurchase);
             }
@@ -84,13 +82,13 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         {
             @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
             {
-                THLog.d(TAG, "onPurchaseConsumed");
+                Timber.d("onPurchaseConsumed");
                 handlePurchaseConsumed(requestCode, purchase);
             }
 
             @Override public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
             {
-                THLog.d(TAG, "onPurchaseConsumeFailed");
+                Timber.d("onPurchaseConsumeFailed");
                 handlePurchaseConsumeFailed(requestCode, purchase, exception);
             }
         };
@@ -154,7 +152,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         }
         else
         {
-            THLog.w(TAG, "launchOneReportSequence: BillingActor just became null");
+            Timber.w("launchOneReportSequence: BillingActor just became null");
             failedReports.add(purchase);
             continueSequenceOrNotify();
         }

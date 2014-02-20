@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import com.squareup.picasso.LruCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.base.Application;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,11 +15,11 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruFileCache extends LruCache
 {
-    public static final String TAG = LruFileCache.class.getSimpleName();
     public static final String DEFAULT_DIR_NAME = LruFileCache.class.getPackage().getName();
     public static final int DEFAULT_MAX_FILE_SIZE = 200;
     private static MessageDigest md5;
@@ -88,17 +87,17 @@ public class LruFileCache extends LruCache
             {
                 if (!cacheDir.mkdirs())
                 {
-                    Log.d(TAG, "Could not create dir " + cacheDir.getPath());
+                    Timber.d("Could not create dir %s", cacheDir.getPath());
                 }
                 else
                 {
-                    Log.d(TAG, "Created dirs " + cacheDir.getPath());
+                    Timber.d("Created dirs %s", cacheDir.getPath());
                 }
             }
         }
         else
         {
-            Log.d(TAG, "Dirs exist " + cacheDir.getPath());
+            Timber.d("Dirs exist %s", cacheDir.getPath());
         }
 
         collectExistingFiles();
@@ -116,7 +115,7 @@ public class LruFileCache extends LruCache
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
                 os.flush();
                 os.close();
-                THLog.i(TAG, "Set key " + key + " to " + file.getPath() + " succeeded ");
+                Timber.i("Set key %s to %s succeeded", key, file.getPath());
             }
             catch (FileNotFoundException e)
             {
@@ -124,7 +123,7 @@ public class LruFileCache extends LruCache
             }
             catch (IOException e)
             {
-                THLog.e(TAG, "Set key " + key + " to " + file.getPath() + " failed ", e);
+                Timber.e("Set key %s to %s failed", key, file.getPath(), e);
             }
         }
     }
@@ -150,13 +149,13 @@ public class LruFileCache extends LruCache
             if (bitmap != null)
             {
                 super.set(key, bitmap);
-                THLog.i(TAG, "Got key from disk " + key);
-                THLog.i(TAG, "Mem cache size " + size());
+                Timber.i("Got key from disk %s", key);
+                Timber.i("Mem cache size %d", size());
             }
         }
         else
         {
-            THLog.i(TAG, "Got key from memory " + key);
+            Timber.i("Got key from memory %s", key);
         }
 
         return bitmap;

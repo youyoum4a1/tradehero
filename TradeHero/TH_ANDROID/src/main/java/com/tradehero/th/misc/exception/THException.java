@@ -1,16 +1,15 @@
 package com.tradehero.th.misc.exception;
 
 import com.facebook.FacebookOperationCanceledException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.base.Application;
 import retrofit.RetrofitError;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 5:20 PM Copyright (c) TradeHero */
 public class THException extends Exception
 {
-    private static final String TAG = THException.class.getName();
     private ExceptionCode code;
 
     public THException(Throwable cause)
@@ -43,7 +42,7 @@ public class THException extends Exception
                 }
                 catch (Exception ex)
                 {
-                    THLog.d(TAG, ex.getMessage());
+                    Timber.d(ex.getMessage());
                 }
                 this.code = ExceptionCode.UnknownError;
                 String errorMessage = dto != null ? dto.Message : Application.getResourceString(R.string.error_unknown);

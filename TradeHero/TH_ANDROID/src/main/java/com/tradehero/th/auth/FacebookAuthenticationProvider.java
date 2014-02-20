@@ -15,7 +15,6 @@ import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import java.lang.ref.WeakReference;
@@ -30,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 @Singleton
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
@@ -362,7 +362,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         catch (Exception e)
         {
-            THLog.e(TAG, "Unable to restore authentication", e);
+            Timber.e("Unable to restore authentication", e);
         }
         return false;
     }
@@ -376,7 +376,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         catch (JSONException e)
         {
-            THLog.e(TAG, "Unable to deauthenticate", e);
+            Timber.e("Unable to deauthenticate", e);
         }
         restoreAuthentication(authData);
     }

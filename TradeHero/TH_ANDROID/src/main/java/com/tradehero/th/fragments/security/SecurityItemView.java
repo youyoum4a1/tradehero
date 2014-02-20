@@ -24,6 +24,7 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO> extends RelativeLayout
@@ -245,7 +246,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             else
             {
                 lastPrice.setText(R.string.na);
-                THLog.d(TAG, "TH: Unable to parse Last Price");
             }
         }
     }
@@ -258,7 +258,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             {
                 if (securityCompactDTO.pc50DMA == null)
                 {
-                    THLog.w(TAG, "displayProfitIndicator, pc50DMA was null");
+                    Timber.w("displayProfitIndicator, pc50DMA was null");
                 }
                 else
                 {

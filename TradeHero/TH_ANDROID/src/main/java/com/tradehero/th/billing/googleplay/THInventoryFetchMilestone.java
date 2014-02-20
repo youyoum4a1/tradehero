@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.BaseMilestone;
 import com.tradehero.common.milestone.DependentMilestone;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -18,12 +17,11 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:50 PM To change this template use File | Settings | File Templates. */
 public class THInventoryFetchMilestone extends BaseMilestone implements DependentMilestone
 {
-    public static final String TAG = THInventoryFetchMilestone.class.getSimpleName();
-
     private boolean running;
     private boolean complete;
     private boolean failed;
@@ -104,7 +102,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         if (areDetailsInCache(skus))
         {
-            THLog.d(TAG, "Details are already in cache");
+            Timber.d("Details are already in cache");
             notifyCompleteListener();
         }
         else

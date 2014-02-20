@@ -15,7 +15,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -25,10 +24,10 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import java.util.Map;
+import timber.log.Timber;
 
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
-    public static final String TAG = EmailSignUpFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = EmailSignUpFragment.class.getName() + ".showButtonBack";
 
     private ProfileInfoView profileView;
@@ -92,7 +91,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 }
                 else
                 {
-                    THLog.e(TAG, "Activity is not a DashboardNavigatorActivity", new Exception());
+                    Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
                 }
                 return true;
         }

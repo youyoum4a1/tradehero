@@ -22,15 +22,14 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import timber.log.Timber;
 
 public class WebViewFragment extends DashboardFragment
 {
-    public static final String TAG = WebViewFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
 
     private WebView webView;
@@ -132,12 +131,12 @@ public class WebViewFragment extends DashboardFragment
 
             @Override public void onConsoleMessage(String message, int lineNumber, String sourceID)
             {
-                THLog.i(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+                Timber.i("%s -- From line %d of %s", message, lineNumber, sourceID);
             }
 
             @Override public boolean onConsoleMessage(ConsoleMessage cm)
             {
-                THLog.i(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+                Timber.i("%s -- From line %d of %s", cm.message(), cm.lineNumber(), cm.sourceId());
                 return true;
             }
              
@@ -178,14 +177,14 @@ public class WebViewFragment extends DashboardFragment
     {
         if (url != null)
         {
-            THLog.d(TAG, "url: " + url);
+            Timber.d("url: %s", url);
             webView.loadUrl(url);
         }
     }
 
     public void setThIntentPassedListener(THIntentPassedListener thIntentPassedListener)
     {
-        THLog.d(TAG, "setThIntentPassedListener " + thIntentPassedListener);
+        Timber.d("setThIntentPassedListener %s", thIntentPassedListener);
         this.parentTHIntentPassedListener = thIntentPassedListener;
     }
 
@@ -198,7 +197,7 @@ public class WebViewFragment extends DashboardFragment
         }
         else
         {
-            THLog.d(TAG, "notifyParentIntentPassed listener is null");
+            Timber.d("notifyParentIntentPassed listener is null");
         }
     }
 

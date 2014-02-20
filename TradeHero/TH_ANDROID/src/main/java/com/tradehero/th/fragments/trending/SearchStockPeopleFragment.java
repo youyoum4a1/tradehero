@@ -18,7 +18,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
@@ -46,12 +45,11 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
-    private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
-
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
@@ -398,11 +396,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (newPage != lastLoadedPage + 1)
         {
-            THLog.e(TAG, "Will not load newPage " + newPage + ", lastLoadedPage " + lastLoadedPage, new Exception());
+            Timber.e("Will not load newPage %d, lastLoadedPage %d", newPage, lastLoadedPage, new Exception());
         }
         if (currentlyLoadingPage != FIRST_PAGE - 1 && currentlyLoadingPage != newPage)
         {
-            THLog.e(TAG, "This page is already loading another one " + currentlyLoadingPage + ", will not load " + newPage, new Exception());
+            Timber.e("This page is already loading another one %d, will not load %d", currentlyLoadingPage, newPage, new Exception());
         }
         cancelSearchTasks();
         currentlyLoadingPage = newPage;
@@ -529,7 +527,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (securityId == null)
         {
-            THLog.e(TAG, "Cannot handle null SecurityId", new IllegalArgumentException());
+            Timber.e("Cannot handle null SecurityId", new IllegalArgumentException());
             return;
         }
         Bundle args = new Bundle();
@@ -541,7 +539,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (userBaseKey == null || userBaseKey.key == null)
         {
-            THLog.e(TAG, "Cannot handle null userBaseKey", new IllegalArgumentException());
+            Timber.e("Cannot handle null userBaseKey", new IllegalArgumentException());
             return;
         }
 
@@ -659,7 +657,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             {
                 throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
             }
-            THLog.d(TAG, "Page loaded: " + lastLoadedPage);
+            Timber.d("Page loaded: %d", lastLoadedPage);
             lastLoadedPage = key.getPage();
             currentlyLoadingPage = FIRST_PAGE - 1;
             nearEndScrollListener.lowerFlag();
@@ -687,7 +685,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         @Override public void onErrorThrown(SecurityListType key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_security_list_info));
-            THLog.e(TAG, "Error fetching the list of securities " + key, error);
+            Timber.e("Error fetching the list of securities " + key, error);
         }
     }
 
@@ -724,7 +722,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         @Override public void onErrorThrown(UserListType key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_people_list_info));
-            THLog.e(TAG, "Error fetching the list of people " + key, error);
+            Timber.e("Error fetching the list of people " + key, error);
         }
     }
     //</editor-fold>

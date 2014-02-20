@@ -1,26 +1,21 @@
 package com.tradehero.th.fragments.billing;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.GooglePlayUtils;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
 @Singleton public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
-    public static final String TAG = PurchaseRestorerAlertUtil.class.getSimpleName();
-
     @Inject public PurchaseRestorerAlertUtil()
     {
     }
@@ -60,7 +55,7 @@ import javax.inject.Singleton;
         {
             alertDialog.setCanceledOnTouchOutside(true);
         }
-        THLog.d(TAG, "Restored purchases: " + countOk + ", failed report: " + countReportFailed + ", failed consume: " + countConsumeFailed);
+        Timber.d("Restored purchases: %d, failed report: %d, failed consume: %d", countOk, countReportFailed, countConsumeFailed);
         return alertDialog;
     }
 

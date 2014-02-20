@@ -1,6 +1,5 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.PushNotificationManager;
@@ -9,14 +8,13 @@ import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/10/14.
  */
 @Singleton public class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
-    public static final String TAG = UrbanAirshipPushNotificationManager.class.getSimpleName();
-
     @Inject public UrbanAirshipPushNotificationManager()
     {
     }
@@ -28,7 +26,7 @@ import javax.inject.Singleton;
 
         { // DEBUG
             String apid = PushManager.shared().getAPID();
-            THLog.d(TAG, "My Application onCreate - App APID: " + apid);
+            Timber.d("My Application onCreate - App APID: %s", apid);
         }
 
         //use CustomPushNotificationBuilder to specify a custom layout

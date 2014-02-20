@@ -2,7 +2,6 @@ package com.tradehero.th.persistence.leaderboard.position;
 
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
@@ -19,11 +18,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 @Singleton public class GetLeaderboardPositionsCache extends PartialDTOCache<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>
 {
-    public static final String TAG = GetLeaderboardPositionsCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
@@ -55,7 +54,7 @@ import retrofit.RetrofitError;
         catch (RetrofitError retrofitError)
         {
             BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
+            Timber.e("Error requesting key %s", key, retrofitError);
         }
         return getLeaderboardPositionsDTO;
     }

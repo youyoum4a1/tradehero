@@ -7,13 +7,11 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/30/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class ImageViewThreadSafe extends ImageView
 {
-    public static final String TAG = ImageView.class.getSimpleName();
-
     public String softId;
 
     //<editor-fold desc="Constructors">
@@ -35,10 +33,10 @@ public class ImageViewThreadSafe extends ImageView
 
     @Override public void setImageBitmap(final Bitmap bm)
     {
-        THLog.i(TAG, "Setting ImageBitmap " + softId);
+        Timber.i("Setting ImageBitmap %s", softId);
         if (Looper.getMainLooper().getThread() == Thread.currentThread())
         {
-            THLog.i(TAG, "Setting own.ImageBitmap " + softId);
+            Timber.i("Setting own.ImageBitmap %s", softId);
             super.setImageBitmap(bm);
             requestLayout();
         }
@@ -48,7 +46,7 @@ public class ImageViewThreadSafe extends ImageView
             {
                 @Override public void run()
                 {
-                    THLog.i(TAG, "Setting super.ImageBitmap " + softId);
+                    Timber.i("Setting super.ImageBitmap %s", softId);
                     ImageViewThreadSafe.super.setImageBitmap(bm);
                 }
             });

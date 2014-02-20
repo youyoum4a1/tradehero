@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 10:49 AM To change this template use File | Settings | File Templates. */
 @Singleton public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
@@ -59,7 +59,7 @@ import javax.inject.Singleton;
 
         for (IABSKU key : thiabPurchaseCache.getKeys())
         {
-            THLog.d(TAG, "Disabling " + key);
+            Timber.d("Disabling %s", key);
             enabledItems.put(key, false);
         }
 

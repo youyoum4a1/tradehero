@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -29,12 +28,11 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
-    private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
-
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
@@ -46,11 +44,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public static boolean alreadyNotifiedMarketClosed = false;
 
-    @Inject protected AlertDialogUtil alertDialogUtil;
+    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
 
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
@@ -448,7 +446,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (freshQuoteHolder != null)
         {
-            THLog.e(TAG, "We should not have been cancelling here " + freshQuoteHolder.identifier, new IllegalStateException());
+            Timber.e("We should not have been cancelling here %s", freshQuoteHolder.identifier, new IllegalStateException());
             freshQuoteHolder.cancel();
         }
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
@@ -514,7 +512,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         @Override public void onErrorThrown(SecurityId key, Throwable error)
         {
             THToast.show(R.string.error_fetch_detailed_security_info);
-            THLog.e(TAG, "Error fetching the security position detail " + key, error);
+            Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
 
@@ -538,7 +536,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
-            THLog.e(TAG, "Error fetching the user profile " + key, error);
+            Timber.e("Error fetching the user profile %s", key, error);
         }
     }
 }

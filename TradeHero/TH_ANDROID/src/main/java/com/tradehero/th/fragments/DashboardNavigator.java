@@ -10,20 +10,16 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TabHost;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
 {
-    public final static String TAG = DashboardNavigator.class.getSimpleName();
     private final FragmentActivity activity;
 
     private static final String BUNDLE_KEY = "key";
@@ -141,7 +137,7 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
     {
-        THLog.d(TAG, "goToTab " + tabType + " with listener " + changeListener);
+        Timber.d("goToTab %s with listener %s", tabType, changeListener);
         if (mTabHost != null)
         {
             mOnTabChangedListener = changeListener;
@@ -184,7 +180,7 @@ public class DashboardNavigator extends Navigator
                 updateTabBarOnNavigate(null);
             }
         }
-        THLog.d(TAG, "BackstackCount " + manager.getBackStackEntryCount());
+        Timber.d("BackstackCount %d", manager.getBackStackEntryCount());
     }
 
     private void updateTabBarOnNavigate(Fragment currentFragment)
@@ -207,11 +203,11 @@ public class DashboardNavigator extends Navigator
 
     private void updateTabBarOnTabChanged(String tabId)
     {
-        THLog.d(TAG, "tabBarChanged to " + tabId + ", backstack " + manager.getBackStackEntryCount());
+        Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
 
         if (mOnTabChangedListener != null)
         {
-            THLog.d(TAG, "Called further onTabChangedListener");
+            Timber.d("Called further onTabChangedListener");
             mOnTabChangedListener.onTabChanged(tabId);
         }
         mOnTabChangedListener = null;

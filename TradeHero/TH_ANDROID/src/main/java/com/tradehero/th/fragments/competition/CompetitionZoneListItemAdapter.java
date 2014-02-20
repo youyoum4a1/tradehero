@@ -4,27 +4,25 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZoneDTO, CompetitionZoneListItemView>
 {
-    public static final String TAG = CompetitionZoneListItemAdapter.class.getName();
-
     public static final int ITEM_TYPE_TRADE_NOW = 0;
     public static final int ITEM_TYPE_HEADER = 1;
     public static final int ITEM_TYPE_PORTFOLIO = 2;
@@ -155,7 +153,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
         View view;
         Object item = getItem(position);
         int itemType = getItemViewType(position);
-        THLog.d(TAG, "getView " + item);
+        Timber.d("getView " + item);
         switch (itemType)
         {
             case ITEM_TYPE_TRADE_NOW:

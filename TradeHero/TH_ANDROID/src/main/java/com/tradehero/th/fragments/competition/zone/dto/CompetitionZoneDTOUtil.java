@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -10,14 +9,13 @@ import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/17/14.
  */
 @Singleton public class CompetitionZoneDTOUtil
 {
-    public static final String TAG = CompetitionZoneDTOUtil.class.getSimpleName();
-
     @Inject public CompetitionZoneDTOUtil()
     {
     }
@@ -77,7 +75,7 @@ import javax.inject.Singleton;
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
-            THLog.d(TAG, "rules title " + context.getString(R.string.provider_competition_rules_title));
+            Timber.d("rules title " + context.getString(R.string.provider_competition_rules_title));
             preparedOrderedItems.add(new CompetitionZoneLegalDTO(
                     context.getString(R.string.provider_competition_rules_title),
                     context.getString(R.string.provider_competition_terms_title)));
