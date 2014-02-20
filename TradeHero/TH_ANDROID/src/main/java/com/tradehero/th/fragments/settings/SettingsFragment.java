@@ -214,7 +214,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        Preference settingFaq = findPreference(getString(R.string.settings_primary_faq));
+        Preference settingFaq = findPreference(getString(R.string.key_settings_primary_faq));
         settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             @Override public boolean onPreferenceClick(Preference preference)
@@ -224,7 +224,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        Preference settingAbout = findPreference(getString(R.string.settings_misc_about));
+        Preference settingAbout = findPreference(getString(R.string.key_settings_misc_about));
 
         if (settingAbout != null)
         {
@@ -238,7 +238,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference sendLoveBlock = findPreference(getString(R.string.settings_primary_send_love));
+        Preference sendLoveBlock = findPreference(getString(R.string.key_settings_primary_send_love));
         if (sendLoveBlock != null)
         {
             sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -251,7 +251,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference sendFeedbackBlock = findPreference(getString(R.string.settings_primary_send_feedback));
+        Preference sendFeedbackBlock = findPreference(getString(R.string.key_settings_primary_send_feedback));
         if (sendFeedbackBlock != null)
         {
             sendFeedbackBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -274,7 +274,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             //});
         }
 
-        Preference profileBlock = findPreference(getString(R.string.settings_primary_profile));
+        Preference profileBlock = findPreference(getString(R.string.key_settings_primary_profile));
         if (profileBlock != null)
         {
             profileBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -287,7 +287,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference paypalBlock = findPreference(getString(R.string.settings_primary_paypal));
+        Preference paypalBlock = findPreference(getString(R.string.key_settings_primary_paypal));
         if (paypalBlock != null)
         {
             paypalBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -300,7 +300,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference transactionHistoryBlock = findPreference(getString(R.string.settings_primary_transaction_history));
+        Preference transactionHistoryBlock = findPreference(getString(R.string.key_settings_primary_transaction_history));
         if (transactionHistoryBlock != null)
         {
             transactionHistoryBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -313,7 +313,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference restorePurchaseBlock = findPreference(getString(R.string.settings_primary_restore_purchases));
+        Preference restorePurchaseBlock = findPreference(getString(R.string.key_settings_primary_restore_purchases));
         if (restorePurchaseBlock != null)
         {
             restorePurchaseBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -326,7 +326,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference resetHelpScreensBlock = findPreference(getString(R.string.settings_misc_reset_help_screens));
+        Preference resetHelpScreensBlock = findPreference(getString(R.string.key_settings_misc_reset_help_screens));
         if (resetHelpScreensBlock != null)
         {
             resetHelpScreensBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -339,7 +339,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference clearCacheBlock = findPreference(getString(R.string.settings_misc_clear_cache));
+        Preference clearCacheBlock = findPreference(getString(R.string.key_settings_misc_clear_cache));
         if (clearCacheBlock != null)
         {
             clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -352,7 +352,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference signOutBlock = findPreference(getString(R.string.settings_misc_sign_out));
+        Preference signOutBlock = findPreference(getString(R.string.key_settings_misc_sign_out));
         if (signOutBlock != null)
         {
             signOutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -365,7 +365,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference aboutBlock = findPreference(getString(R.string.settings_about));
+        Preference aboutBlock = findPreference(getString(R.string.key_settings_misc_about));
         if (aboutBlock != null)
         {
             aboutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -379,7 +379,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         // Sharing
-        facebookSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_facebook));
+        facebookSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_facebook));
         if (facebookSharing != null)
         {
             facebookSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -390,7 +390,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             });
         }
-        twitterSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_twitter));
+        twitterSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_twitter));
         if (twitterSharing != null)
         {
             twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -401,7 +401,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             });
         }
-        linkedInSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_linked_in));
+        linkedInSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_linked_in));
         if (linkedInSharing != null)
         {
             linkedInSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -414,7 +414,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         // notification
-        pushNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push));
+        pushNotification = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push));
         if (pushNotification != null)
         {
             pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -426,7 +426,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        emailNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_email));
+        emailNotification = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_email));
         if (emailNotification != null)
         {
             emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -438,7 +438,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        pushNotificationSound = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push_alert_sound));
+        pushNotificationSound = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push_alert_sound));
         if (pushNotificationSound != null)
         {
             pushNotificationSound.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -451,7 +451,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        pushNotificationVibrate = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push_alert_vibrate));
+        pushNotificationVibrate = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push_alert_vibrate));
         if (pushNotificationVibrate != null)
         {
             pushNotificationVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()

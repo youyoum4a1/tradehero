@@ -12,19 +12,19 @@
       android:title="@string/settings_sharing">
 
     <CheckBoxPreference
-        android:key="@string/settings_sharing_facebook"
+        android:key="@string/key_settings_sharing_facebook"
         android:title="@string/facebook"
         android:icon="@drawable/settings_fb_normal"
         />
 
     <CheckBoxPreference
-        android:key="@string/settings_sharing_twitter"
+        android:key="@string/key_settings_sharing_twitter"
         android:title="@string/settings_sharing_twitter"
         android:icon="@drawable/settings_tweet_normal"
         />
 
     <CheckBoxPreference
-        android:key="@string/settings_sharing_linked_in"
+        android:key="@string/key_settings_sharing_linked_in"
         android:title="@string/settings_sharing_linked_in"
         android:icon="@drawable/settings_linkedin_normal"
         />
@@ -35,19 +35,19 @@
       android:title="@string/setting_general">
 
     <Preference
-        android:key="@string/settings_primary_send_love"
+        android:key="@string/key_settings_primary_send_love"
         android:title="@string/settings_primary_send_love"
         android:icon="@drawable/settings_send_love"
         />
 
     <Preference
-        android:key="@string/settings_primary_send_feedback"
+        android:key="@string/key_settings_primary_send_feedback"
         android:title="@string/settings_primary_send_feedback"
         android:icon="@drawable/settings_send_feedback"
         />
 
     <Preference
-        android:key="@string/settings_primary_faq"
+        android:key="@string/key_settings_primary_faq"
         android:title="@string/settings_primary_faq"
         android:icon="@drawable/settings_faq"
         />
@@ -59,32 +59,32 @@
       >
 
     <Preference
-        android:key="@string/settings_primary_profile"
+        android:key="@string/key_settings_primary_profile"
         android:title="@string/settings_primary_profile"
         android:icon="@drawable/settings_profile"
         />
 
     <Preference
-        android:key="@string/settings_primary_paypal"
+        android:key="@string/key_settings_primary_paypal"
         android:title="@string/settings_primary_paypal"
         android:icon="@drawable/settings_paypal"
         />
 
     <Preference
-        android:key="@string/settings_primary_transaction_history"
+        android:key="@string/key_settings_primary_transaction_history"
         android:title="@string/settings_primary_transaction_history"
         android:icon="@drawable/settings_trans_history"
         />
 
     <Preference
         android:enabled="true"
-        android:key="@string/settings_primary_restore_purchases"
+        android:key="@string/key_settings_primary_restore_purchases"
         android:title="@string/settings_primary_restore_purchases"
         android:icon="@drawable/settings_recover_purchase"
         />
 
     <Preference
-        android:key="@string/settings_misc_sign_out"
+        android:key="@string/key_settings_misc_sign_out"
         android:title="@string/settings_misc_sign_out"
         android:icon="@drawable/settings_sign_out"
         />
@@ -95,24 +95,24 @@
       android:title="@string/settings_notifications">
 
     <CheckBoxPreference
-        android:key="@string/settings_notifications_email"
+        android:key="@string/key_settings_notifications_email"
         android:icon="@drawable/settings_email_noti"
         android:title="@string/settings_notifications_email"/>
 
     <CheckBoxPreference
-        android:key="@string/settings_notifications_push"
+        android:key="@string/key_settings_notifications_push"
         android:title="@string/settings_notifications_push"
         android:icon="@drawable/settings_push_noti"
         />
 
     <CheckBoxPreference
-        android:key="@string/settings_notifications_push_alert_sound"
+        android:key="@string/key_settings_notifications_push_alert_sound"
         android:title="@string/settings_notifications_push_alert_sound"
         android:icon="@drawable/settings_noti_sound"
         />
 
     <CheckBoxPreference
-        android:key="@string/settings_notifications_push_alert_vibrate"
+        android:key="@string/key_settings_notifications_push_alert_vibrate"
         android:title="@string/settings_notifications_push_alert_vibrate"
         android:icon="@drawable/settings_noti_vibrate"
         />
@@ -123,19 +123,19 @@
       android:title="@string/settings_misc">
 
     <Preference
-        android:key="@string/settings_misc_reset_help_screens"
+        android:key="@string/key_settings_misc_reset_help_screens"
         android:icon="@drawable/settings_reset_help_screen"
         android:title="@string/settings_misc_reset_help_screens"
         />
 
     <Preference
-        android:key="@string/settings_misc_clear_cache"
+        android:key="@string/key_settings_misc_clear_cache"
         android:icon="@drawable/settings_clear_cache"
         android:title="@string/settings_misc_clear_cache"
         />
 
     <Preference
-        android:key="@string/settings_misc_about"
+        android:key="@string/key_settings_misc_about"
         android:icon="@drawable/settings_about"
         android:title="@string/settings_misc_about"
         />
@@ -143,7 +143,7 @@
   </PreferenceCategory>
 
   <Preference
-      android:key="@string/settings_misc_version_server"
+      android:key="@string/key_settings_misc_version_server"
       android:title="version"
     />
 
