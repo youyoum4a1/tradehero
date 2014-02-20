@@ -29,7 +29,7 @@ public class Application extends PApplication
             Timber.plant(new CrashReportingTree());
             Timber.plant(new TestFlightTree());
         } else {
-            //Timber.plant(new Timber.DebugTree());
+            Timber.plant(new Timber.DebugTree());
         }
 
         // Supposedly get the count of cores
