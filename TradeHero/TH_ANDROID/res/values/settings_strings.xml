@@ -46,6 +46,7 @@
   <string name="settings_misc_cache_cleared_alert_title">Cache cleared</string>
 
   <string name="settings_misc_about">About</string>
+  <string name="settings_misc_version_server">VersionServer</string>
 
   <string name="settings_update_profile">Update Profile</string>
   <string name="settings_update_profile_successful">Profile successfully updated</string>
@@ -54,7 +55,7 @@
   <string name="settings_about_header">About</string>
   <string name="settings_about_trademark">TM\n</string>
   <string name="settings_version_holder">v%s</string>
-  <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2013 My Manisku Pte. Ltd.</string>
+  <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2014 My Manisku Pte. Ltd.</string>
   <string name="settings_about_registered_company">Registered in Singapore company number 201003309N</string>
   <string name="settings_about_patents_pending">Patents Pending</string>
   <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>

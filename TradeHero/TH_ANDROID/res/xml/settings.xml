@@ -142,4 +142,9 @@
 
   </PreferenceCategory>
 
+  <Preference
+      android:key="@string/settings_misc_version_server"
+      android:title="version"
+    />
+
 </PreferenceScreen>

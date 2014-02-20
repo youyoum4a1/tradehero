@@ -43,6 +43,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -50,6 +51,7 @@ import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -135,6 +137,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
+        initInfo();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -467,6 +470,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             updateSocialConnectStatus();
         }
         // Otherwise we rely on the complete listener
+    }
+
+    private void initInfo()
+    {
+        Preference version = findPreference(getString(R.string.settings_misc_version_server));
+        String serverPath = NetworkConstants.getApiEndPoint().replace("http://", "").replace("https://", "");
+        version.setTitle(Constants.TH_CLIENT_VERSION_VALUE + " - " + serverPath);
     }
 
     private void handleTopBannerClicked()
