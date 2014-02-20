@@ -27,6 +27,4 @@ public class SimpleOneProviderIntent extends OneProviderIntent
     {
         return null;
     }
-
-
 }
