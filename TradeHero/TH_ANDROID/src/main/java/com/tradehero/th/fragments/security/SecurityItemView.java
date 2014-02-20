@@ -14,7 +14,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
@@ -31,7 +30,6 @@ import timber.log.Timber;
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO> extends RelativeLayout
         implements DTOView<SecurityCompactDTOType>
 {
-    private static final String TAG = SecurityItemView.class.getSimpleName();
     public static final float DIVISOR_PC_50_COLOR = 5f;
     public static final int MS_DELAY_FOR_BG_IMAGE  = 200;
 
@@ -287,7 +285,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         else if (securityCompactDTO.marketOpen == null)
         {
-            THLog.w(TAG, "displayMarketClose marketOpen is null");
+            Timber.w("displayMarketClose marketOpen is null");
         }
         else if (securityCompactDTO.marketOpen)
         {
@@ -397,17 +395,17 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                THLog.d(TAG, "loadDefaultImage " + securityCompactDTO.exchange);
+                Timber.d("loadDefaultImage %s", securityCompactDTO.exchange);
                 try
                 {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    THLog.d(TAG, "Found exchange " + exchange);
-                    THLog.d(TAG, "Found exchange logo " + exchange.logoId);
+                    Timber.d("Found exchange %s", exchange);
+                    Timber.d("Found exchange logo %s", exchange.logoId);
                     stockLogo.setImageResource(exchange.logoId);
                 }
                 catch (IllegalArgumentException e)
                 {
-                    THLog.e(TAG, "Unknown Exchange " + securityCompactDTO.exchange, e);
+                    Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
                     loadDefaultImage();
                 }
             }

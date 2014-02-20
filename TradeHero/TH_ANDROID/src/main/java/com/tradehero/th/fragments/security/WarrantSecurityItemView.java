@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantDTO;
@@ -17,8 +16,6 @@ import javax.inject.Inject;
  */
 public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO>
 {
-    public static final String TAG = WarrantSecurityItemView.class.getSimpleName();
-
     protected TextView combinedStrikePriceType;
     protected TextView strikePrice;
     protected TextView strikePriceCcy;

@@ -6,55 +6,67 @@ import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
 
 /**
- * Created with IntelliJ IDEA. User: thonguyen Date: 6/19/13 Time: 3:02 PM Special for debugging
- * purpose
+ * Created with IntelliJ IDEA. User: thonguyen Date: 6/19/13 Time: 3:02 PM Special for debugging purpose
  */
 public class THLog
 {
     private static final String PREFIX = "TradeHero-";
 
     /**
-    * Use Timber instead
-    */
+     * Use Timber instead
+     */
     @Deprecated
     public static void d(String tag, String msg)
     {
-        Log.d(PREFIX + tag, msg);
+        if (!Constants.RELEASE)
+        {
+            Log.d(PREFIX + tag, msg);
+        }
     }
 
     /**
-    * Use Timber instead
-    */
+     * Use Timber instead
+     */
     @Deprecated
     public static void i(String tag, String msg)
     {
-        Log.i(PREFIX + tag, msg);
+        if (!Constants.RELEASE)
+        {
+            Log.i(PREFIX + tag, msg);
+        }
     }
 
     /**
-    * Use Timber instead
-    */
+     * Use Timber instead
+     */
     @Deprecated
     public static void w(String tag, String msg)
     {
-        Log.w(PREFIX + tag, msg);
+        if (!Constants.RELEASE)
+        {
+            Log.w(PREFIX + tag, msg);
+        }
     }
 
     /**
-    * Use Timber instead
-    */
+     * Use Timber instead
+     */
     @Deprecated
     public static void e(String tag, String msg, Throwable ex)
     {
-        String prefixedTag = PREFIX + tag;
-        Log.e(prefixedTag, msg, ex);
-        TestFlightUtils.log(prefixedTag, msg, ex);
+        if (!Constants.RELEASE)
+        {
+            String prefixedTag = PREFIX + tag;
+            Log.e(prefixedTag, msg, ex);
+            TestFlightUtils.log(prefixedTag, msg, ex);
+        }
     }
 
     /**
@@ -63,30 +75,36 @@ public class THLog
     @Deprecated
     public static void d(String tag, String msg, long startNanoTime)
     {
-        long finish = System.nanoTime();
-        float seconds = (finish - startNanoTime) / 1000000f; //for milliseconds
+        if (!Constants.RELEASE)
+        {
+            long finish = System.nanoTime();
+            float seconds = (finish - startNanoTime) / 1000000f; //for milliseconds
 
-        Log.d(tag, String.format("%,.3f milliseconds for %s", seconds, msg));
+            Log.d(tag, String.format("%,.3f milliseconds for %s", seconds, msg));
+        }
     }
 
     /** Display KeyHash which is required by Facebook Application */
     public static void showDeveloperKeyHash()
     {
-        try
+        if (!Constants.RELEASE)
         {
-            PackageInfo info = Application.context()
-                    .getPackageManager()
-                    .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures)
+            try
             {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Timber.d("KeyHash: %s", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                PackageInfo info = Application.context()
+                        .getPackageManager()
+                        .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
+                for (Signature signature : info.signatures)
+                {
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(signature.toByteArray());
+                    Timber.d("KeyHash: %s", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                }
             }
-        }
-        catch (NullPointerException|PackageManager.NameNotFoundException|NoSuchAlgorithmException e)
-        {
-            Timber.d("KeyHash Error", e.getMessage());
+            catch (NullPointerException | PackageManager.NameNotFoundException | NoSuchAlgorithmException e)
+            {
+                Timber.d("KeyHash Error", e.getMessage());
+            }
         }
     }
 }
