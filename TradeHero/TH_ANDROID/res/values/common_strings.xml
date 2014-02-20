@@ -2,7 +2,7 @@
 <resources>
 
   <string name="app_name">TradeHero</string>
-  <string name="version_text">v1.5.9(3451)</string>
+  <string name="version_text">v1.5.10(3500)</string>
 
   <string name="na">N/A</string>
   <string name="empty"/>
@@ -19,7 +19,8 @@
   <string name="test_password">asd123</string>
 
   <!-- Splash screen -->
-  <string name="splash_copyright_1">© Copyright 2012, 2013 My Manisku Pte. Ltd.</string>
+  <string name="splash_version">@string/version_text</string>
+  <string name="splash_copyright_1">© Copyright 2012, 2014 My Manisku Pte. Ltd.</string>
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>
 

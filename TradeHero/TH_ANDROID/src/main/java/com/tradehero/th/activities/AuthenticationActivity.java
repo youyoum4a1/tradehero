@@ -133,7 +133,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             }
         }
 
-        //THUser.clearCurrentUser();
+        THUser.clearCurrentUser();
         switch (view.getId())
         {
             case R.id.authentication_sign_up_button:

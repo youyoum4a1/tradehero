@@ -4,7 +4,7 @@ public class Constants
 {
     // build constants
     // TODO fix
-    public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
+    public static final boolean RELEASE = true; // !BuildConfig.DEBUG;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -30,6 +30,6 @@ public class Constants
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
-    public static final String TH_CLIENT_VERSION_VALUE = "1.5.9.3451";
+    public static final String TH_CLIENT_VERSION_VALUE = "1.5.10.3500";
     public static final String AUTHORIZATION = "Authorization";
 }
