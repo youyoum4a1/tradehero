@@ -104,7 +104,8 @@ import javax.inject.Singleton;
         tradeListCache.get().invalidateAll();
         userProfileCache.get().invalidateAll();
         userFollowerCache.get().invalidateAll();
-        exchangeListCache.get().invalidateAll();
+        // exchange list will never change per user, and need to be preloaded. Beside, autoFetch will automatically update it (?)
+        // exchangeListCache.get().invalidateAll();
         userWatchlistPositionCache.get().invalidateAll();
         watchlistPositionCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
