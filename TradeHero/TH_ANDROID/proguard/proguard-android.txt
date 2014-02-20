@@ -58,23 +58,30 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
+
+-keepattributes Signature
+
+
 # ButterKnife
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
 -keepnames class * { @butterknife.InjectView *;}
 
 # Dagger
--dontwarn dagger.internal.codegen.**
+# http://stackoverflow.com/a/18177491/37020
+# https://plus.google.com/114746422988923214718/posts/fhFucCgy8gr
+-keepattributes *Annotation*
 -keepclassmembers,allowobfuscation class * {
-    @javax.inject.* *;
-    @dagger.* *;
-    <init>();
+  @javax.inject.* *;
+  @dagger.* *;
+  <init>();
 }
--keep class dagger.* { *; }
--keep class javax.inject.* { *; }
--keep class * extends dagger.internal.Binding
--keep class * extends dagger.internal.ModuleAdapter
--keep class * extends dagger.internal.StaticInjection
+-keep class **$$ModuleAdapter
+-keep class **$$InjectAdapter
+-keep class **$$StaticInjection
+-keepnames class dagger.Lazy
+-dontwarn dagger.internal.codegen.**
+-dontwarn com.squareup.javawriter.**
 
 -keepnames class * implements java.io.Serializable
 
@@ -89,7 +96,6 @@
 }
 
 -keep class !com.tradehero.** { *; }
-
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
 -dontwarn retrofit.**
@@ -99,7 +105,7 @@
 
 -dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
 
-# what is this thing?
+# msgpack is used by urbanairship
 -dontwarn org.msgpack.**
 
 
@@ -107,4 +113,9 @@
 -keep public class com.tradehero.th.api.** {
   public void set*(***);
   public *** get*();
+}
+
+# We actually use public field instead of getter and setter for it.
+-keep public class com.tradehero.th.api.** {
+  public <fields>;
 }

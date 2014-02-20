@@ -38,7 +38,7 @@ import javax.inject.Singleton;
 
     public void clear()
     {
-        warrantUsingProviders.clear();;
+        warrantUsingProviders.clear();
     }
 
     public Map<ProviderId, OwnedPortfolioId> getWarrantApplicablePortfolios()
