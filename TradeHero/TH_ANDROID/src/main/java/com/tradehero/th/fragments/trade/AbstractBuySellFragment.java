@@ -80,7 +80,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
         userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(currentUserId.toUserBaseKey()); // We need to keep a strong reference because the cache does not
     }
 
@@ -261,6 +260,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             fetchPositionDetailTask.setListener(null);
         }
+        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
         fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);
         fetchPositionDetailTask.execute();
     }
