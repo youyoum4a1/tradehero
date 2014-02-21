@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +23,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -41,12 +42,11 @@ import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -96,32 +96,33 @@ public class BuySellFragment extends AbstractBuySellFragment
     public final static int EDIT_ALERT_RES_ID = R.drawable.active_alert;
     public final static int INACTIVE_ALERT_RES_ID = R.drawable.alert_inactive;
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
+    public static final int MS_DELAY_FOR_BG_IMAGE  = 200;
 
     private ToggleButton mBuySellSwitch;
 
-    private ImageViewThreadSafe mStockBgLogo;
-    private ImageViewThreadSafe mStockLogo;
+    @InjectView(R.id.stock_bg_logo) protected ImageView mStockBgLogo;
+    @InjectView(R.id.stock_logo) protected ImageView mStockLogo;
 
-    private View mSelectedPortfolioContainer;
-    private TextView mSelectedPortfolio;
+    @InjectView(R.id.portfolio_selector_container) protected View mSelectedPortfolioContainer;
+    @InjectView(R.id.portfolio_selected) protected TextView mSelectedPortfolio;
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
-    private TextView mStockName;
+    @InjectView(R.id.stock_name) protected TextView mStockName;
 
-    private ProgressBar mQuoteRefreshProgressBar;
-    private FrameLayout mInfoFrame;
-    private PricingBidAskView mPricingBidAskView;
-    private TradeQuantityView mTradeQuantityView;
-    private QuickPriceButtonSet mQuickPriceButtonSet;
-    private PageIndicator mBottomPagerIndicator;
-    private ViewPager mBottomViewPager;
+    @InjectView(R.id.quote_refresh_countdown) protected ProgressBar mQuoteRefreshProgressBar;
+    @InjectView(R.id.chart_frame) protected FrameLayout mInfoFrame;
+    @InjectView(R.id.pricing_bid_ask_view) protected PricingBidAskView mPricingBidAskView;
+    @InjectView(R.id.trade_quantity_view) protected TradeQuantityView mTradeQuantityView;
+    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
+    protected PageIndicator mBottomPagerIndicator;
+    @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
-    private Button mBuyBtn;
-    private SeekBar mSlider;
-    private ImageButton mBtnAddCash;
-    private ImageButton mBtnAddTrigger;
-    private ImageView mBtnWatchlist;
+    @InjectView(R.id.btn_buy) protected Button mBuyBtn;
+    @InjectView(R.id.seekBar) protected SeekBar mSlider;
+    @InjectView(R.id.btn_add_cash) protected ImageButton mBtnAddCash;
+    @InjectView(R.id.btn_add_trigger) protected ImageButton mBtnAddTrigger;
+    @InjectView(R.id.btn_watch_list) protected ImageView mBtnWatchlist;
 
     protected SecurityAlertAssistant securityAlertAssistant;
     @Inject protected PortfolioCache portfolioCache;
@@ -144,7 +145,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected SecurityIdList watchedList;
 
-    private Picasso mPicasso;
+    @Inject protected Picasso mPicasso;
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
@@ -177,19 +178,14 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.initViews(view);
 
-        mQuoteRefreshProgressBar = (ProgressBar) view.findViewById(R.id.quote_refresh_countdown);
+        ButterKnife.inject(this, view);
+
         if (mQuoteRefreshProgressBar != null)
         {
             mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
 
-        mStockBgLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_bg_logo);
-        mStockLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_logo);
-        //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
-
-
-        mSelectedPortfolioContainer = view.findViewById(R.id.portfolio_selector_container);
         if (mSelectedPortfolioContainer != null)
         {
             mSelectedPortfolioContainer.setOnClickListener(new OnClickListener()
@@ -201,7 +197,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
 
-        mSelectedPortfolio = (TextView) view.findViewById(R.id.portfolio_selected);
         if (mSelectedPortfolio != null)
         {
             mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
@@ -214,11 +209,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
 
-        mStockName = (TextView) view.findViewById(R.id.stock_name);
-
-        mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
-
-        mBtnWatchlist = (ImageView) view.findViewById(R.id.btn_watch_list);
         if (mBtnWatchlist != null)
         {
             mBtnWatchlist.setOnClickListener(new OnClickListener()
@@ -230,10 +220,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
 
-        mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
-        mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
-
-        mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
         if (mQuickPriceButtonSet != null)
         {
             mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
@@ -243,13 +229,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             mQuickPriceButtonSet.addButton(R.id.toggle50k);
         }
 
-        mSlider = (SeekBar) view.findViewById(R.id.seekBar);
         if (mSlider != null)
         {
             mSlider.setOnSeekBarChangeListener(createSeekBarListener());
         }
 
-        mBtnAddCash = (ImageButton) view.findViewById(R.id.btn_add_cash);
         if (mBtnAddCash != null)
         {
             mBtnAddCash.setOnClickListener(new OnClickListener()
@@ -261,7 +245,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
 
-        mBtnAddTrigger = (ImageButton) view.findViewById(R.id.btn_add_trigger);
         if (mBtnAddTrigger != null)
         {
             mBtnAddTrigger.setOnClickListener(new OnClickListener()
@@ -273,13 +256,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
 
-        mBuyBtn = (Button) view.findViewById(R.id.btn_buy);
         if (mBuyBtn != null)
         {
             mBuyBtn.setOnClickListener(createBuyButtonListener());
         }
 
-        mBottomViewPager = (ViewPager) view.findViewById(R.id.trade_bottom_pager);
         if (bottomViewPagerAdapter == null)
         {
             bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getFragmentManager());
@@ -314,24 +295,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                     getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
                     getResources().getColor(R.color.black)));
         }
-        if (mPicasso == null)
-        {
-            Cache lruFileCache = null;
-            try
-            {
-                lruFileCache = new LruMemFileCache(getActivity());
-            }
-            catch (Exception e)
-            {
-                Timber.e("Failed to create LRU", e);
-            }
-
-            mPicasso = new Picasso.Builder(getActivity())
-                    .downloader(new UrlConnectionDownloader(getActivity()))
-                    .memoryCache(lruFileCache)
-                    .build();
-            //mPicasso.setDebugging(true);
-        }
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -354,15 +317,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         displayExchangeSymbol(actionBar);
-        //displayMarketClose(menu);
-
-        //mBuySellSwitch = (ToggleButton) menu.findItem(R.id.trade_menu_toggle_mode).getActionView();
-        // TODO do styling in styles.xml
-        //mBuySellSwitch.setTextOn(getString(R.string.switch_buy));
-        //mBuySellSwitch.setTextOff(getString(R.string.switch_sell));
-        //mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
-        //mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
-        //displayBuySellSwitch();
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -387,8 +341,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        //THLog.d(TAG, "onDestroyOptionsMenu");
-
         if (mBuySellSwitch != null)
         {
             mBuySellSwitch.setOnCheckedChangeListener(null);
@@ -407,7 +359,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         return super.onOptionsItemSelected(item);
     }
-
     //</editor-fold>
 
     @Override public void onResume()
@@ -453,7 +404,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        //THLog.d(TAG, "onDestroyView");
         detachPortfolioCompactMilestone();
         detachWatchlistFetchTask();
 
@@ -572,8 +522,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayTradeQuantityView();
             displayStockName();
             displayBottomViewPager();
-            storeImageUrlInImageViews();
-            loadImages();
+            loadStockLogo();
         }
     }
 
@@ -737,12 +686,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayActionBarElements();
         displayPageElements();
 
-        if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
-        {
-            //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
-            //        mStockChart);
-        }
-
         if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
         {
             avgDailyVolume = 0;
@@ -775,8 +718,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayQuickPriceButtonSet();
         displaySlider();
         displayTriggerButton();
-        storeImageUrlInImageViews();
-        loadImages();
+        loadStockLogo();
     }
 
     public void displaySelectedPortfolioContainer()
@@ -1088,94 +1030,169 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void storeImageUrlInImageViews()
+    public void loadStockLogo()
     {
-        if (mStockLogo != null && securityCompactDTO != null)
+        if (mStockLogo != null)
         {
-            mStockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-        if (mStockBgLogo != null && securityCompactDTO!= null)
-        {
-            mStockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-    }
-
-    public void loadImages ()
-    {
-        final Callback loadIntoBg = createLogoReadyCallback();
-
-        if (isMyUrlOk())
-        {
-            loadImageInTarget(mStockLogo, foregroundTransformation);
-            // Launching the bg like this will result in double downloading the file.
-            if (mInfoFrame != null)
+            if (mStockBgLogo != null)
             {
-                loadImageInTarget(mStockBgLogo, backgroundTransformation, mInfoFrame.getMeasuredWidth(), mInfoFrame.getMeasuredHeight());
+                mStockBgLogo.setVisibility(View.GONE);
+            }
+            if (isMyUrlOk())
+            {
+                mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        .transform(foregroundTransformation)
+                        .into(mStockLogo, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                                loadStockBgLogoDelayed();
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadStockLogoExchange();
+                            }
+                        });
+            }
+            else
+            {
+                loadStockLogoExchange();
             }
         }
         else
         {
-            // These ensure that views with a missing image do not receive images from elsewhere
-            if (mStockLogo != null && this.securityCompactDTO != null)
+            loadStockBgLogoDelayed();
+        }
+    }
+
+    public void loadStockLogoExchange()
+    {
+        if (mStockLogo != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                int logoId = this.securityCompactDTO.getExchangeLogoId();
-                if (logoId != 0)
+                try
                 {
-                    mStockLogo.setImageResource(logoId);
+                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+                    mStockLogo.setImageResource(exchange.logoId);
+                    loadStockBgLogoDelayed();
+                }
+                catch (IllegalArgumentException e)
+                {
+                    Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
+                    loadStockLogoDefault();
                 }
             }
-            else if (mStockLogo != null)
+            else
             {
-                mPicasso.load((String) null)
-                        .placeholder(R.drawable.default_image)
-                        .error(R.drawable.default_image)
-                        .into(mStockLogo);
+                loadStockLogoDefault();
             }
+        }
+        else
+        {
+            loadStockBgLogoDelayed();
+        }
+    }
 
-            if (mStockLogo != null)
+    public void loadStockLogoDefault()
+    {
+        if (mStockLogo != null)
+        {
+            mStockLogo.setImageResource(R.drawable.default_image);
+        }
+        loadStockBgLogoDelayed();
+    }
+
+    public void loadStockBgLogoDelayed()
+    {
+        getView().postDelayed(new Runnable()
+        {
+            @Override public void run()
             {
-                mPicasso.load((String) null)
-                        .placeholder(R.drawable.default_image)
-                        .error(R.drawable.default_image)
-                        .into(mStockLogo);
+                loadStockBgLogo();
+            }
+        }, MS_DELAY_FOR_BG_IMAGE);
+    }
+
+    public void loadStockBgLogo()
+    {
+        if (mStockBgLogo != null)
+        {
+            if (isMyUrlOk())
+            {
+                RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        .transform(backgroundTransformation);
+                resizeBackground(requestCreator, mStockBgLogo,new Callback()
+                {
+                    @Override public void onSuccess()
+                    {
+                        mStockBgLogo.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override public void onError()
+                    {
+                        loadStockBgLogoExchange();
+                    }
+                });
+            }
+            else
+            {
+                loadStockBgLogoExchange();
             }
         }
     }
 
-    private void loadImageInTarget(final ImageView target, final Transformation t)
+    public void loadStockBgLogoExchange()
     {
-        loadImageInTarget(target, t, 0, 0);
-    }
-
-    private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
-    {
-        KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+        if (mStockBgLogo != null)
         {
-            @Override public void run()
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                if (target != null && target.getTag(R.string.image_url) != null)
+                try
                 {
-                    RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
-                            .placeholder(R.drawable.default_image)
-                            .error(R.drawable.default_image);
-
-                    if (resizeToWidth > 0 && resizeToHeight > 0)
-                    {
-                        requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
-                    }
-
-                    requestCreator.transform(t)
-                            .into(target);
+                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+                    RequestCreator requestCreator = mPicasso.load(exchange.logoId)
+                            .transform(backgroundTransformation);
+                    resizeBackground(requestCreator, mStockBgLogo, null);
+                    mStockBgLogo.setVisibility(View.VISIBLE);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    loadStockBgLogoDefault();
                 }
             }
-        });
+            else
+            {
+                loadStockBgLogoDefault();
+            }
+        }
+    }
+
+    public void loadStockBgLogoDefault()
+    {
+        if (mStockBgLogo != null)
+        {
+            mStockBgLogo.setImageResource(R.drawable.default_image);
+        }
+    }
+
+    protected void resizeBackground(RequestCreator requestCreator, ImageView imageView, Callback callback)
+    {
+        int width = mInfoFrame.getWidth();
+        int height = mInfoFrame.getHeight();
+        if (width > 0 && height > 0)
+        {
+            requestCreator.resize(width, height)
+                    .centerCrop()
+                    .into(imageView, callback);
+        }
     }
     //</editor-fold>
 
     public boolean isMyUrlOk()
     {
-        return (securityPositionDetailDTO != null) && securityPositionDetailDTO.security != null &&
-                isUrlOk(securityPositionDetailDTO.security.imageBlobUrl);
+        return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
     }
 
     public static boolean isUrlOk(String url)
@@ -1414,7 +1431,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             public void onClick(View v)
             {
                 pushBuySellConfirmFragmentIn();
-                return;
             }
         };
     }

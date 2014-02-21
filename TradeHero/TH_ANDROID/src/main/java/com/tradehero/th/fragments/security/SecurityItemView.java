@@ -366,14 +366,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         {
                             @Override public void onSuccess()
                             {
-                                clearHandler();
-                                postDelayed(new Runnable()
-                                {
-                                    @Override public void run()
-                                    {
-                                        loadBgImage();
-                                    }
-                                }, MS_DELAY_FOR_BG_IMAGE);
+                                loadBgImageDelayed();
                             }
 
                             @Override public void onError()
@@ -387,6 +380,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 loadExchangeImage();
             }
         }
+        else
+        {
+            loadBgImageDelayed();
+        }
     }
 
     public void loadExchangeImage()
@@ -395,13 +392,11 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                Timber.d("loadDefaultImage %s", securityCompactDTO.exchange);
                 try
                 {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    Timber.d("Found exchange %s", exchange);
-                    Timber.d("Found exchange logo %s", exchange.logoId);
                     stockLogo.setImageResource(exchange.logoId);
+                    loadBgImageDelayed();
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -414,6 +409,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 loadDefaultImage();
             }
         }
+        else
+        {
+            loadBgImageDelayed();
+        }
     }
 
     public void loadDefaultImage()
@@ -422,6 +421,19 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             stockLogo.setImageResource(R.drawable.default_image);
         }
+        loadBgImageDelayed();
+    }
+
+    public void loadBgImageDelayed()
+    {
+        clearHandler();
+        postDelayed(new Runnable()
+        {
+            @Override public void run()
+            {
+                loadBgImage();
+            }
+        }, MS_DELAY_FOR_BG_IMAGE);
     }
 
     public void loadBgImage()
@@ -492,7 +504,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         int height = getHeight();
         if (width > 0 && height > 0)
         {
-            requestCreator.resize(getWidth(), getHeight())
+            requestCreator.resize(width, height)
                     .centerCrop()
                     .into(imageView, callback);
         }
