@@ -7,8 +7,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 4:29 PM To change this template use File | Settings | File Templates. */
 @RunWith(RobolectricTestRunner.class)
@@ -17,12 +17,12 @@ public class ColorUtilsTest
 {
     @Test public void maxRedValue_shouldBeLargeEnough()
     {
-        assertThat(ColorUtils.MAX_RED_VALUE, greaterThanOrEqualTo(200));
+        assertThat(ColorUtils.MAX_RED_VALUE, equalTo(200));
     }
 
     @Test public void maxGreenValue_shouldBeLargeEnough()
     {
-        assertThat(ColorUtils.MAX_GREEN_VALUE, greaterThanOrEqualTo(200));
+        assertTrue(ColorUtils.MAX_GREEN_VALUE >= 200);
     }
 
     @Test public void getColorForPercentage_onMinus1_shouldReturnRed()

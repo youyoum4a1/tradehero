@@ -1,10 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
-import android.content.SharedPreferences;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.Application;
-import com.tradehero.th.base.THUser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Date;
@@ -21,7 +18,7 @@ import org.robolectric.annotation.Config;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThat;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/24/13 Time: 7:53 PM To change this template use File | Settings | File Templates. */
 @RunWith(RobolectricTestRunner.class)
