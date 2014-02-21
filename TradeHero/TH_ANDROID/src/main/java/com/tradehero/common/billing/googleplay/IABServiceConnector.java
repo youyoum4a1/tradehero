@@ -90,7 +90,7 @@ public class IABServiceConnector implements ServiceConnection
      * Dispose of object, releasing resources. It's very important to call this method when you are done with this object. It will release any
      * resources used by it such as service connections. Naturally, once the object is disposed of, it can't be used again.
      */
-    public void dispose()
+    public void onDestroy()
     {
         Timber.d("Disposing this %s", getClass().getSimpleName());
         setupDone = false;
@@ -237,15 +237,21 @@ public class IABServiceConnector implements ServiceConnection
 
     private void handleSetupFinishedInternal(IABResponse response)
     {
-        handleSetupFinished(response);
-        notifyListenerSetupFinished(response);
+        if (!disposed)
+        {
+            handleSetupFinished(response);
+            notifyListenerSetupFinished(response);
+        }
     }
 
     private void handleSetupFailedInternal(IABException exception)
     {
-        handleSetupFailed(exception);
-        notifyListenerSetupFailed(exception);
-        dispose();
+        if (!disposed)
+        {
+            handleSetupFailed(exception);
+            notifyListenerSetupFailed(exception);
+        }
+        onDestroy();
     }
 
     protected void handleSetupFinished(IABResponse response)

@@ -70,22 +70,29 @@ abstract public class IABPurchaseFetcher<
             private Exception exception;
             @Override protected HashMap<IABSKUType, IABPurchaseType> doInBackground(Void... params)
             {
-                try
+                if (!disposed)
                 {
-                    return queryPurchases();
-                }
-                catch (JSONException|RemoteException|IABException exception)
-                {
-                    Timber.e("Failed querying purchases", exception);
-                    exception.printStackTrace();
-                    this.exception = exception;
+                    try
+                    {
+                        return queryPurchases();
+                    }
+                    catch (JSONException|RemoteException|IABException exception)
+                    {
+                        Timber.e("Failed querying purchases", exception);
+                        exception.printStackTrace();
+                        this.exception = exception;
+                    }
                 }
                 return null;
             }
 
             @Override protected void onPostExecute(HashMap<IABSKUType, IABPurchaseType> skuGooglePurchaseHashMap)
             {
-                if (exception != null)
+                if (disposed)
+                {
+                    // Nothing to do
+                }
+                else if (exception != null)
                 {
                     Timber.e("Failed querying purchases", exception);
                     exception.printStackTrace();

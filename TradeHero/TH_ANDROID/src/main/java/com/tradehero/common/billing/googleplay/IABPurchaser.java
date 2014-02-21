@@ -160,31 +160,33 @@ abstract public class IABPurchaser<
             return;
         }
 
-        try
+        if (!disposed)
         {
-            Bundle buyIntentBundle = createBuyIntentBundle();
-            Timber.d("BuyIntentBundle " + buyIntentBundle);
+            try
+            {
+                Bundle buyIntentBundle = createBuyIntentBundle();
+                Timber.d("BuyIntentBundle " + buyIntentBundle);
 
-            PendingIntent pendingIntent = buyIntentBundle.getParcelable(Constants.RESPONSE_BUY_INTENT);
-            Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), activityRequestCode);
-            getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                    activityRequestCode, new Intent(),
-                    Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
-        }
-        catch (IntentSender.SendIntentException e)
-        {
-            Timber.e("SendIntentException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
-            handlePurchaseFailedInternal(new IABSendIntentException("Failed to send intent."));
-        }
-        catch (RemoteException e)
-        {
-            Timber.e("RemoteException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
-            handlePurchaseFailedInternal(new IABRemoteException("Remote exception while starting purchase flow"));
-        }
-        catch (IABException e)
-        {
-            Timber.e("IABException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
-            handlePurchaseFailedInternal(e);
+                PendingIntent pendingIntent = buyIntentBundle.getParcelable(Constants.RESPONSE_BUY_INTENT);
+                Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), activityRequestCode);
+                getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
+                        activityRequestCode, new Intent(), 0, 0, 0);
+            }
+            catch (IntentSender.SendIntentException e)
+            {
+                Timber.e("SendIntentException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
+                handlePurchaseFailedInternal(new IABSendIntentException("Failed to send intent."));
+            }
+            catch (RemoteException e)
+            {
+                Timber.e("RemoteException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
+                handlePurchaseFailedInternal(new IABRemoteException("Remote exception while starting purchase flow"));
+            }
+            catch (IABException e)
+            {
+                Timber.e("IABException while launching purchase flow for skuDetails %s", getProductDetails(purchaseOrder.getProductIdentifier()), e);
+                handlePurchaseFailedInternal(e);
+            }
         }
     }
 

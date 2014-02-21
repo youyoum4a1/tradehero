@@ -160,19 +160,22 @@ abstract public class IABPurchaseConsumer<
 
             @Override protected Void doInBackground(Void... params)
             {
-                try
+                if (!disposed)
                 {
-                    consumeEffectively();
-                }
-                catch (RemoteException e)
-                {
-                    Timber.e("Remote Exception while fetching inventory.", e);
-                    exception = new IABRemoteException("RemoteException while fetching IAB", e);
-                }
-                catch (IABException e)
-                {
-                    Timber.e("IAB error.", e);
-                    exception = e;
+                    try
+                    {
+                        consumeEffectively();
+                    }
+                    catch (RemoteException e)
+                    {
+                        Timber.e("Remote Exception while fetching inventory.", e);
+                        exception = new IABRemoteException("RemoteException while fetching IAB", e);
+                    }
+                    catch (IABException e)
+                    {
+                        Timber.e("IAB error.", e);
+                        exception = e;
+                    }
                 }
 
                 return null;
@@ -181,7 +184,11 @@ abstract public class IABPurchaseConsumer<
             @Override protected void onPostExecute(Void aVoid)
             {
                 super.onPostExecute(aVoid);
-                if (exception != null)
+                if (disposed)
+                {
+                    // Do nothing
+                }
+                else if (exception != null)
                 {
                     handleConsumeFailedInternal(exception);
                 }

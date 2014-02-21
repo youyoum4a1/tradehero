@@ -121,7 +121,7 @@ abstract public class BaseIABActor<
             {
                 inventoryFetcher.setListener(null);
                 inventoryFetcher.setInventoryFetchedListener(null);
-                inventoryFetcher.dispose();
+                inventoryFetcher.onDestroy();
             }
         }
         iabInventoryFetchers.clear();
@@ -134,7 +134,7 @@ abstract public class BaseIABActor<
             {
                 purchaseFetcher.setListener(null);
                 purchaseFetcher.setFetchListener(null);
-                purchaseFetcher.dispose();
+                purchaseFetcher.onDestroy();
             }
         }
         purchaseFetchers.clear();
@@ -147,7 +147,7 @@ abstract public class BaseIABActor<
             {
                 iabPurchaser.setListener(null);
                 iabPurchaser.setPurchaseFinishedListener(null);
-                iabPurchaser.dispose();
+                iabPurchaser.onDestroy();
             }
         }
         iabPurchasers.clear();
@@ -160,7 +160,7 @@ abstract public class BaseIABActor<
             {
                 iabPurchaseConsumer.setListener(null);
                 iabPurchaseConsumer.setConsumptionFinishedListener(null);
-                iabPurchaseConsumer.dispose();
+                iabPurchaseConsumer.onDestroy();
             }
         }
         iabPurchaseConsumers.clear();

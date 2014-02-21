@@ -87,31 +87,38 @@ abstract public class IABInventoryFetcher<
 
             @Override protected HashMap<IABSKUType, IABProductDetailsType> doInBackground(Void... params)
             {
-                try
+                if (!disposed)
                 {
-                    return internalFetchCompleteInventory();
-                }
-                catch (RemoteException e)
-                {
-                    Timber.e("Remote Exception while fetching inventory.", e);
-                    exception = new IABRemoteException("RemoteException while fetching IAB", e);
-                }
-                catch (JSONException e)
-                {
-                    Timber.e("Error parsing json.", e);
-                    exception = new IABBadResponseException("Unable to parse JSON", e);
-                }
-                catch (IABException e)
-                {
-                    Timber.e("IAB error.", e);
-                    exception = e;
+                    try
+                    {
+                        return internalFetchCompleteInventory();
+                    }
+                    catch (RemoteException e)
+                    {
+                        Timber.e("Remote Exception while fetching inventory.", e);
+                        exception = new IABRemoteException("RemoteException while fetching IAB", e);
+                    }
+                    catch (JSONException e)
+                    {
+                        Timber.e("Error parsing json.", e);
+                        exception = new IABBadResponseException("Unable to parse JSON", e);
+                    }
+                    catch (IABException e)
+                    {
+                        Timber.e("IAB error.", e);
+                        exception = e;
+                    }
                 }
                 return null;
             }
 
             @Override protected void onPostExecute(HashMap<IABSKUType, IABProductDetailsType> skuskuDetailsMap)
             {
-                if (exception != null)
+                if (disposed)
+                {
+                    // Nothing to do
+                }
+                else if (exception != null)
                 {
                     handleInventoryFetchFailure(exception);
                 }
