@@ -8,12 +8,15 @@
     android:orientation="vertical"
     tools:background="@color/black"
     >
+
   <TextView
       style="@style/TutorialTextHeader"
       android:text="@string/tutorial_timeline_header"
       />
+
   <TextView
       style="@style/TutorialTextContent"
       android:text="@string/tutorial_timeline_content"
       />
+
 </LinearLayout>

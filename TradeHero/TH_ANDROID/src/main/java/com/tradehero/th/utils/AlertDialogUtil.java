@@ -115,7 +115,7 @@ import javax.inject.Singleton;
         return alertDialog;
     }
 
-    public Dialog popCustom(final Context context, int layoutResourceId)
+    public Dialog popTutorialContent(final Context context, int layoutResourceId)
     {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -131,7 +131,7 @@ import javax.inject.Singleton;
         });
 
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.dimAmount=0.85f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
+        lp.dimAmount=0.95f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
         dialog.getWindow().setAttributes(lp);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
