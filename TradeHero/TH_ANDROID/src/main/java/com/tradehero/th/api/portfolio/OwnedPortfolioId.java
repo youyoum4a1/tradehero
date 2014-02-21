@@ -75,18 +75,18 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
                 (portfolioId == null ? other.portfolioId == null : portfolioId.equals(other.portfolioId));
     }
 
-    @Override public int compareTo(Object o)
+    @Override public int compareTo(Object other)
     {
-        if (o == null)
+        if (other == null)
         {
             return 1;
         }
 
-        if (o.getClass() == getClass())
+        if (other.getClass() == getClass())
         {
-            return compareTo(getClass().cast(o));
+            return compareTo(getClass().cast(other));
         }
-        return o.getClass().getName().compareTo(getClass().getName());
+        return other.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(OwnedPortfolioId other)
