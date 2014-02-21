@@ -24,7 +24,7 @@ public class THIABPurchaseFetchMilestone
      * The billing actor should be strongly referenced elsewhere
      * @param actorPurchaseFetcher
      */
-    public THIABPurchaseFetchMilestone(THIABActorPurchaseFetcher actorPurchaseFetcher)
+    public THIABPurchaseFetchMilestone(THIABPurchaseFetcherHolder actorPurchaseFetcher)
     {
         super(actorPurchaseFetcher);
     }

@@ -1,6 +1,8 @@
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABRestorePurchaseMilestoneFailedException;
 import com.tradehero.common.milestone.Milestone;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -12,20 +14,24 @@ abstract public class IABPurchaseRestorer<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABActorPurchaseConsumerType extends IABActorPurchaseConsumer<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABConsumeFinishedListenerType,
-                IABException>,
+        IABPurchaseConsumerHolderType extends IABPurchaseConsumerHolder<
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABConsumeFinishedListenerType,
+                        IABException>,
         IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
+    implements BillingPurchaseRestorer<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseType>
 {
-    protected WeakReference<IABActorPurchaseConsumerType> consumeActor = new WeakReference<>(null);
-    protected WeakReference<OnIABPurchaseRestorerFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> finishedListener = new WeakReference<>(null);
+    protected WeakReference<IABPurchaseConsumerHolderType> consumerHolder = new WeakReference<>(null);
+    protected WeakReference<OnIABPurchaseRestorerFinishedListener<IABPurchaseType>> purchaseRestoreFinishedListener = new WeakReference<>(null);
     protected Milestone milestone;
     protected Milestone.OnCompleteListener milestoneListener;
     protected int requestCodeConsumer;
@@ -34,9 +40,9 @@ abstract public class IABPurchaseRestorer<
     protected final List<IABPurchaseType> okPurchases;
     protected final List<IABPurchaseType> failedConsumes;
 
-    public IABPurchaseRestorer(IABActorPurchaseConsumerType consumeActor)
+    public IABPurchaseRestorer(IABPurchaseConsumerHolderType consumeHolder)
     {
-        setConsumeActor(consumeActor);
+        setConsumerHolder(consumeHolder);
         okPurchases = new ArrayList<>();
         failedConsumes = new ArrayList<>();
     }
@@ -55,7 +61,7 @@ abstract public class IABPurchaseRestorer<
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
                 Timber.d("onFailed Milestone");
-                notifyFailedListener(throwable);
+                notifyPurchaseRestoreFailedListener(new IABRestorePurchaseMilestoneFailedException(throwable));
             }
         };
         milestone.setOnCompleteListener(milestoneListener);
@@ -74,33 +80,34 @@ abstract public class IABPurchaseRestorer<
         failedConsumes.clear();
     }
 
-    protected IABActorPurchaseConsumerType getConsumeActor()
+    protected IABPurchaseConsumerHolderType getConsumerHolder()
     {
-        return consumeActor.get();
+        return consumerHolder.get();
     }
 
-    protected void setConsumeActor(IABActorPurchaseConsumerType consumeActor)
+    protected void setConsumerHolder(IABPurchaseConsumerHolderType consumerHolder)
     {
-        this.consumeActor = new WeakReference<>(consumeActor);
+        this.consumerHolder = new WeakReference<>(consumerHolder);
     }
 
     protected void haveBillingActorForget(int requestCode)
     {
-        IABActorPurchaseConsumerType billingActor = getConsumeActor();
-        if (billingActor != null)
+        IABPurchaseConsumerHolderType consumerHolderCopy = getConsumerHolder();
+        if (consumerHolderCopy != null)
         {
-            billingActor.forgetRequestCode(requestCode);
+            consumerHolderCopy.unregisterConsumeFinishedListener(requestCode);
         }
     }
 
-    public OnIABPurchaseRestorerFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType> getFinishedListener()
+    public OnIABPurchaseRestorerFinishedListener<IABPurchaseType> getPurchaseRestoreFinishedListener()
     {
-        return finishedListener.get();
+        return purchaseRestoreFinishedListener.get();
     }
 
-    public void setFinishedListener(OnIABPurchaseRestorerFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType> finishedListener)
+    public void setPurchaseRestoreFinishedListener(
+            OnIABPurchaseRestorerFinishedListener<IABPurchaseType> finishedListener)
     {
-        this.finishedListener = new WeakReference<>(finishedListener);
+        this.purchaseRestoreFinishedListener = new WeakReference<>(finishedListener);
     }
 
     public void launchRestorePurchaseSequence()
@@ -108,21 +115,21 @@ abstract public class IABPurchaseRestorer<
         milestone.launch();
     }
 
-    protected void notifyFinishedListener()
+    protected void notifyPurchaseRestoreFinishedListener()
     {
-        OnIABPurchaseRestorerFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType> finishedListener = getFinishedListener();
+        OnIABPurchaseRestorerFinishedListener<IABPurchaseType> finishedListener = getPurchaseRestoreFinishedListener();
         if (finishedListener != null)
         {
             finishedListener.onPurchaseRestoreFinished(okPurchases, failedConsumes);
         }
     }
 
-    protected void notifyFailedListener(Throwable throwable)
+    protected void notifyPurchaseRestoreFailedListener(IABException iabException)
     {
-        OnIABPurchaseRestorerFinishedListener finishedListener = getFinishedListener();
+        OnIABPurchaseRestorerFinishedListener finishedListener = getPurchaseRestoreFinishedListener();
         if (finishedListener != null)
         {
-            finishedListener.onPurchaseRestoreFailed(throwable);
+            finishedListener.onPurchaseRestoreFailed(iabException);
         }
     }
 
@@ -131,7 +138,7 @@ abstract public class IABPurchaseRestorer<
 
     protected void launchOneConsumeSequence(IABPurchaseType purchase)
     {
-        IABActorPurchaseConsumerType billingActor = getConsumeActor();
+        IABPurchaseConsumerHolderType billingActor = getConsumerHolder();
         if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             Timber.d("No point in consuming this purchase");
@@ -165,12 +172,9 @@ abstract public class IABPurchaseRestorer<
         // Child class needs to decide on the next action
     }
 
-    public static interface OnIABPurchaseRestorerFinishedListener<
-            IABSKUType extends IABSKU,
-            IABOrderIdType extends IABOrderId,
-            IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
+    public static interface OnIABPurchaseRestorerFinishedListener<IABPurchaseType>
     {
         void onPurchaseRestoreFinished(List<IABPurchaseType> consumed, List<IABPurchaseType> consumeFailed);
-        void onPurchaseRestoreFailed(Throwable throwable);
+        void onPurchaseRestoreFailed(IABException iabException);
     }
 }

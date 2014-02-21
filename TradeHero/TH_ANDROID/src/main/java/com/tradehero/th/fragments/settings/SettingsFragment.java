@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -192,9 +193,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 THLog.d(TAG, "onPurchaseRestoreFinished2");
             }
 
-            @Override public void onPurchaseRestoreFailed(Throwable throwable)
+            @Override public void onPurchaseRestoreFailed(IABException iabException)
             {
-                THLog.e(TAG, "onPurchaseRestoreFailed", throwable);
+                THLog.e(TAG, "onPurchaseRestoreFailed", iabException);
                 // Inform
                 userInteractor.conditionalPopBillingNotAvailable();
             }

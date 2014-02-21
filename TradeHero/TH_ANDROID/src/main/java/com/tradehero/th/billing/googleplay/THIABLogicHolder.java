@@ -14,10 +14,10 @@ public interface THIABLogicHolder extends
         THIABProductDetailDomainInformer,
         THIABProductIdentifierFetcherHolder, // This is redundant but allows passing of interface
         THIABInventoryFetcherHolder, // This is redundant but allows passing of interface
-        THIABActorPurchaseFetcher, // This is redundant but allows passing of interface
+        THIABPurchaseFetcherHolder, // This is redundant but allows passing of interface
         THIABPurchaserHolder, // This is redundant but allows passing of interface
         THIABPurchaseReporterHolder, // This is redundant but allows passing of interface
-        THIABActorPurchaseConsumer, // This is redundant but allows passing of interface
+        THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
                         IABSKU,
                         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,

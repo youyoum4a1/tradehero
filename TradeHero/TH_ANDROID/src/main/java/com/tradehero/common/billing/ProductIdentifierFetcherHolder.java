@@ -8,7 +8,8 @@ public interface ProductIdentifierFetcherHolder<
         OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    OnProductIdentifierFetchedListenerType getSkuFetchedListener(int requestCode);
-    int registerSkuFetchedListener(OnProductIdentifierFetchedListenerType productIdentifierFetchedListener);
-    void launchSkuFetchSequence(int requestCode);
+    OnProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode);
+    int registerProductIdentifierFetchedListener(OnProductIdentifierFetchedListenerType productIdentifierFetchedListener);
+    void unregisterProductIdentifierFetchedListener(int requestCode);
+    void launchProductIdentifierFetchSequence(int requestCode);
 }

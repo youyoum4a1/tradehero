@@ -18,7 +18,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        THIABActorPurchaseConsumer,
+        THIABPurchaseConsumerHolder,
         IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKU,
                 THIABOrderId,
@@ -27,7 +27,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 {
     private final WeakReference<Activity> activity;
     private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcher = new WeakReference<>(null);
-    private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
+    private WeakReference<THIABPurchaseFetcherHolder> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
@@ -37,8 +37,8 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     public THIABPurchaseRestorer(
             Activity activity,
             THIABInventoryFetcherHolder actorInventoryFetcher,
-            THIABActorPurchaseFetcher actorPurchaseFetcher,
-            THIABActorPurchaseConsumer billingActorConsumer,
+            THIABPurchaseFetcherHolder actorPurchaseFetcher,
+            THIABPurchaseConsumerHolder billingActorConsumer,
             THIABPurchaseReporterHolder actorPurchaseReporter)
     {
         super(billingActorConsumer);
@@ -112,10 +112,10 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         super.onDestroy();
     }
 
-    protected void notifyFinishedListener()
+    protected void notifyPurchaseRestoreFinishedListener()
     {
-        super.notifyFinishedListener();
-        OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, THIABPurchase> finishedListener = getFinishedListener();
+        super.notifyPurchaseRestoreFinishedListener();
+        OnIABPurchaseRestorerFinishedListener<THIABPurchase> finishedListener = getPurchaseRestoreFinishedListener();
         if (finishedListener instanceof OnPurchaseRestorerFinishedListener)
         {
             ((OnPurchaseRestorerFinishedListener) finishedListener).onPurchaseRestoreFinished(okPurchases, failedReports, failedConsumes);
@@ -136,7 +136,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         }
         else
         {
-            notifyFinishedListener();
+            notifyPurchaseRestoreFinishedListener();
         }
     }
 
@@ -158,7 +158,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         }
     }
 
-    public static interface OnPurchaseRestorerFinishedListener extends OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, THIABPurchase>
+    public static interface OnPurchaseRestorerFinishedListener extends OnIABPurchaseRestorerFinishedListener<THIABPurchase>
     {
         void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed);
     }

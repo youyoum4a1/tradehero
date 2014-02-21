@@ -1,10 +1,11 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.th.billing.googleplay.IABProductIdentifierFetcherHolder;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABLogicHolder<
@@ -42,6 +43,10 @@ public interface IABLogicHolder<
                         IABPurchaseType,
                         IABPurchaseFinishedListenerType,
                         IABExceptionType>,
+        IABProductIdentifierFetcherHolder< // This one is redundant but serves as a highlight to the reader
+                        IABSKUType,
+                        OnProductIdentifierFetchedListenerType,
+                        IABExceptionType>,
         IABInventoryFetcherHolder< // This one is redundant but serves as a highlight to the reader
                         IABSKUType,
                         IABProductDetailType,
@@ -54,16 +59,16 @@ public interface IABLogicHolder<
                         IABPurchaseType,
                         IABPurchaseFinishedListenerType,
                         IABExceptionType>,
-        IABActorPurchaseFetcher<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABPurchaseFetchedListenerType>,
-        IABActorPurchaseConsumer<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABConsumeFinishedListenerType,
-                IABExceptionType>
+        IABPurchaseFetcherHolder<
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABPurchaseFetchedListenerType>,
+        IABPurchaseConsumerHolder<
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABConsumeFinishedListenerType,
+                        IABExceptionType>
 {
 }

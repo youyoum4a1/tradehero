@@ -243,6 +243,7 @@ abstract public class BaseIABLogicHolder<
         parentConsumeFinishedHandlers.remove(requestCode);
     }
 
+    //<editor-fold desc="BillingInventoryFetcherHolder">
     @Override public IABInventoryFetchedListenerType getInventoryFetchedListener(int requestCode)
     {
         WeakReference<IABInventoryFetchedListenerType> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
@@ -275,6 +276,11 @@ abstract public class BaseIABLogicHolder<
         return requestCode;
     }
 
+    @Override public void unRegisterInventoryFetchedListener(int requestCode)
+    {
+        parentInventoryFetchedListeners.remove(requestCode);
+    }
+
     @Override public void launchInventoryFetchSequence(int requestCode)
     {
         latestInventoryFetcherException = null;
@@ -300,6 +306,16 @@ abstract public class BaseIABLogicHolder<
         inventoryFetcher.fetchInventory(requestCode);
     }
 
+    @Override public boolean hadErrorLoadingInventory()
+    {
+        return errorLoadingInventory;
+    }
+
+    @Override public boolean isInventoryReady()
+    {
+        return inventoryReady;
+    }
+
     protected void notifyInventoryFetchedSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
     {
         inventoryReady = true;
@@ -322,17 +338,9 @@ abstract public class BaseIABLogicHolder<
             parentFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
         }
     }
+    //</editor-fold>
 
-    @Override public boolean hadErrorLoadingInventory()
-    {
-        return errorLoadingInventory;
-    }
-
-    @Override public boolean isInventoryReady()
-    {
-        return inventoryReady;
-    }
-
+    //<editor-fold desc="IABPurchaseFetcherHolder">
     @Override public IABPurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
     {
         WeakReference<IABPurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
@@ -363,6 +371,11 @@ abstract public class BaseIABLogicHolder<
         int requestCode = getUnusedRequestCode();
         registerPurchaseFetchedListener(requestCode, purchaseFetchedListener);
         return requestCode;
+    }
+
+    @Override public void unregisterPurchaseFetchedListener(int requestCode)
+    {
+        parentPurchaseFetchedListeners.remove(requestCode);
     }
 
     @Override public void launchFetchPurchaseSequence(int requestCode)
@@ -403,7 +416,9 @@ abstract public class BaseIABLogicHolder<
             parentListener.onFetchPurchasesFailed(requestCode, exception);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="BillingPurchaserHolder">
     /**
      * The listener should be strongly referenced elsewhere.
      * @param purchaseFinishedListener
@@ -426,10 +441,10 @@ abstract public class BaseIABLogicHolder<
         return requestCode;
     }
 
-    //@Override public void unregisterPurchaseFinishedListener(int requestCode)
-    //{
-    //    parentPurchaseFinishedListeners.remove(requestCode);
-    //}
+    @Override public void unregisterPurchaseFinishedListener(int requestCode)
+    {
+        parentPurchaseFinishedListeners.remove(requestCode);
+    }
 
     @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
     {
@@ -491,7 +506,9 @@ abstract public class BaseIABLogicHolder<
             Timber.d("onPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="IABPurchaseConsumerHolder">
     /**
      * The purchaseConsumeHandler should be strongly referenced elsewhere
      * @param requestCode
@@ -507,6 +524,11 @@ abstract public class BaseIABLogicHolder<
         int requestCode = getUnusedRequestCode();
         registerConsumeFinishedListener(requestCode, purchaseConsumeHandler);
         return requestCode;
+    }
+
+    @Override public void unregisterConsumeFinishedListener(int requestCode)
+    {
+        parentConsumeFinishedHandlers.remove(requestCode);
     }
 
     @Override public void launchConsumeSequence(int requestCode, IABPurchaseType purchase)
@@ -569,6 +591,7 @@ abstract public class BaseIABLogicHolder<
             Timber.d("notifyPurchaseConsumeFail No THIABPurchaseHandler for requestCode " + requestCode);
         }
     }
+    //</editor-fold>
 
     abstract protected BaseIABSKUList<IABSKUType> getAllSkus();
     abstract protected IABInventoryFetcherType createInventoryFetcher();

@@ -33,7 +33,7 @@ import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABActorPurchaseConsumer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
@@ -137,7 +137,7 @@ public class THIABUserInteractor
         };
         prepareCallbacks(currentActivityHolder.getCurrentActivity());
 
-        purchaseRestorer.setFinishedListener(purchaseRestorerFinishedListener);
+        purchaseRestorer.setPurchaseRestoreFinishedListener(purchaseRestorerFinishedListener);
         purchaseRestorer.init();
     }
 
@@ -161,7 +161,7 @@ public class THIABUserInteractor
         purchaseRestorerFinishedListener = null;
         if (purchaseRestorer != null)
         {
-            purchaseRestorer.setFinishedListener(null);
+            purchaseRestorer.setPurchaseRestoreFinishedListener(null);
         }
         purchaseRestorer = null;
         followCallback = null;
@@ -302,12 +302,12 @@ public class THIABUserInteractor
                     Timber.d("onPurchaseRestoreFinished2");
                 }
 
-                @Override public void onPurchaseRestoreFailed(Throwable throwable)
+                @Override public void onPurchaseRestoreFailed(IABException iabException)
                 {
-                    Timber.e("onPurchaseRestoreFailed", throwable);
-                    if (throwable instanceof Exception)
+                    Timber.e("onPurchaseRestoreFailed", iabException);
+                    if (iabException instanceof Exception)
                     {
-                        purchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) throwable);
+                        purchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) iabException);
                     }
                 }
             };
@@ -725,7 +725,7 @@ public class THIABUserInteractor
         launchConsumeSequence(getBillingLogicHolder(), reportedPurchase);
     }
 
-    protected void launchConsumeSequence(THIABActorPurchaseConsumer actorConsumer, THIABPurchase reportedPurchase)
+    protected void launchConsumeSequence(THIABPurchaseConsumerHolder actorConsumer, THIABPurchase reportedPurchase)
     {
         int requestCode = actorConsumer.registerConsumeFinishedListener(consumptionFinishedListener);
         actorConsumer.launchConsumeSequence(requestCode, reportedPurchase);

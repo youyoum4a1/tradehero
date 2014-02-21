@@ -8,6 +8,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -95,13 +96,13 @@ public class DashboardActivity extends SherlockFragmentActivity
             {
             }
 
-            @Override public void onPurchaseRestoreFailed(Throwable throwable)
+            @Override public void onPurchaseRestoreFailed(IABException iabException)
             {
                 // We keep silent on this one as we don't want to bother the user if for instance billing is not available
                 // On the other hand, the settings fragment will inform
             }
         };
-        purchaseRestorer.setFinishedListener(purchaseRestorerFinishedListener);
+        purchaseRestorer.setPurchaseRestoreFinishedListener(purchaseRestorerFinishedListener);
         purchaseRestorer.init();
         purchaseRestorer.launchRestorePurchaseSequence();
 
@@ -179,6 +180,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             currentActivityHolder.unsetActivity(this);
         }
+        if (purchaseRestorer != null)
+        {
+            purchaseRestorer.setPurchaseRestoreFinishedListener(null);
+        }
+        purchaseRestorer = null;
+        purchaseRestorerFinishedListener = null;
+
         super.onDestroy();
     }
 

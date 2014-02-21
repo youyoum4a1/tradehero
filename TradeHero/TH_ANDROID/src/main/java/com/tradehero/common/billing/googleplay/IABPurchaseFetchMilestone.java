@@ -21,7 +21,7 @@ abstract public class IABPurchaseFetchMilestone<
     protected boolean running;
     protected boolean complete;
     protected boolean failed;
-    protected WeakReference<IABActorPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType>>
+    protected WeakReference<IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType>>
             actorPurchaseFetcherWeak = new WeakReference<>(null);
     protected IABPurchaseFetchedListenerType purchaseFetchedListener;
     protected int requestCode;
@@ -31,7 +31,7 @@ abstract public class IABPurchaseFetchMilestone<
      * The billing actor should be strongly referenced elsewhere
      * @param actorPurchaseFetcher
      */
-    public IABPurchaseFetchMilestone(IABActorPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> actorPurchaseFetcher)
+    public IABPurchaseFetchMilestone(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> actorPurchaseFetcher)
     {
         super();
         setBillingActor(actorPurchaseFetcher);
@@ -55,7 +55,7 @@ abstract public class IABPurchaseFetchMilestone<
         return running;
     }
 
-    public IABActorPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> getBillingActor()
+    public IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> getBillingActor()
     {
         return actorPurchaseFetcherWeak.get();
     }
@@ -64,7 +64,7 @@ abstract public class IABPurchaseFetchMilestone<
      * The actor should be strongly referenced elsewhere
      * @param billingActor
      */
-    public void setBillingActor(IABActorPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> billingActor)
+    public void setBillingActor(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> billingActor)
     {
         this.actorPurchaseFetcherWeak = new WeakReference<>(billingActor);
     }

@@ -14,11 +14,10 @@ public interface BillingPurchaserHolder<
                 ExceptionType>,
         ExceptionType extends Exception>
 {
-    void forgetRequestCode(int requestCode);
     boolean isBillingAvailable();
 
     BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode);
     int registerPurchaseFinishedListener(BillingPurchaseFinishedListenerType purchaseFinishedListener);
-    //void unregisterPurchaseFinishedListener(int requestCode);
+    void unregisterPurchaseFinishedListener(int requestCode);
     void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder);
 }
