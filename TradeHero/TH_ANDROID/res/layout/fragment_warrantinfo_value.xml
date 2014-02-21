@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:background="@color/btn_linkedin_color_light"
+        tools:background="@drawable/btn_provider_22_philips_macquarie"
         android:padding="8dp">
 
       <TextView
@@ -25,7 +26,8 @@
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
           android:padding="4dp"
-          android:text="help video"
+          tools:text="Learn More About Warrants"
+          tools:textColor="@color/white"
           />
 
     </RelativeLayout>
@@ -75,7 +77,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text=""
+              tools:text="Put"
               android:textSize="13sp" />
         </TableRow>
 
@@ -101,7 +103,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text=""
+              tools:text="T1IW"
               android:textSize="13sp" />
         </TableRow>
 
@@ -127,7 +129,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text=""
+              tools:text="1 Apr 14"
               android:textSize="13sp" />
         </TableRow>
 
@@ -161,7 +163,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text=""
+              tools:text="SG$ 2.000"
               android:textSize="13sp" />
         </TableRow>
 
@@ -187,7 +189,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text=""
+              tools:text="Ascendas REOT"
               android:textSize="13sp"
               />
         </TableRow>
@@ -214,7 +216,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              android:text="@string/na"
+              tools:text="MB"
               android:textSize="13sp"
               />
         </TableRow>

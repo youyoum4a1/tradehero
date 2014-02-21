@@ -10,6 +10,7 @@ public class ProviderSpecificResourcesDTO
     public int mainCompetitionFragmentTitleResId;
     public int helpVideoListFragmentTitleResId;
     public int helpVideoLinkBackgroundResId;
+    public int helpVideoLinkTextColourResId;
     public int timedHeaderLeaderboardTitleResId;
     public int competitionPortfolioTitleResId;
     public int securityListFragmentTitleResId;
@@ -27,6 +28,7 @@ public class ProviderSpecificResourcesDTO
                 "mainCompetitionFragmentTitleResId=" + mainCompetitionFragmentTitleResId +
                 ", helpVideoListFragmentTitleResId=" + helpVideoListFragmentTitleResId +
                 ", helpVideoLinkBackgroundResId=" + helpVideoLinkBackgroundResId +
+                ", helpVideoLinkTextColourResId=" + helpVideoLinkTextColourResId +
                 ", timedHeaderLeaderboardTitleResId=" + timedHeaderLeaderboardTitleResId +
                 ", competitionPortfolioTitleResId=" + competitionPortfolioTitleResId +
                 ", securityListFragmentTitleResId=" + securityListFragmentTitleResId +

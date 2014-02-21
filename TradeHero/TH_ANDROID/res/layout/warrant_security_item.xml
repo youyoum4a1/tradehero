@@ -29,7 +29,7 @@
       android:ellipsize="end"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
-      android:text=""
+      tools:text="Ascendas REOT MB"
       android:textStyle="bold"/>
 
   <ImageView
@@ -45,7 +45,7 @@
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/default_image"/>
+      tools:src="@drawable/flag_country_round_australia"/>
 
   <TableLayout
       android:layout_width="match_parent"

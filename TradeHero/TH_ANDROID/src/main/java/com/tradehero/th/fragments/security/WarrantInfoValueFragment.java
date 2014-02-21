@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -32,14 +34,14 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
 
-    private View mHelpVideoLink;
-    private TextView mHelpVideoText;
-    private TextView mWarrantType;
-    private TextView mWarrantCode;
-    private TextView mWarrantExpiry;
-    private TextView mStrikePrice;
-    private TextView mUnderlying;
-    private TextView mIssuer;
+    @InjectView(R.id.warrant_help_video_link) protected View mHelpVideoLink;
+    @InjectView(R.id.warrant_help_video_text) protected TextView mHelpVideoText;
+    @InjectView(R.id.vwarrant_type) protected TextView mWarrantType;
+    @InjectView(R.id.vwarrant_code) protected TextView mWarrantCode;
+    @InjectView(R.id.vwarrant_expiry) protected TextView mWarrantExpiry;
+    @InjectView(R.id.vwarrant_strike_price) protected TextView mStrikePrice;
+    @InjectView(R.id.vwarrant_underlying) protected TextView mUnderlying;
+    @InjectView(R.id.vwarrant_issuer) protected TextView mIssuer;
 
     @Inject protected SecurityCompactCache securityCompactCache;
     protected WarrantDTO warrantDTO;
@@ -63,9 +65,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         return view;
     }
 
-    private void initViews(View v)
+    private void initViews(View view)
     {
-        mHelpVideoLink = v.findViewById(R.id.warrant_help_video_link);
+        ButterKnife.inject(this, view);
+
         if (mHelpVideoLink != null)
         {
             mHelpVideoLink.setOnClickListener(new View.OnClickListener()
@@ -76,13 +79,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 }
             });
         }
-        mHelpVideoText = (TextView) v.findViewById(R.id.warrant_help_video_text);
-        mWarrantType = (TextView) v.findViewById(R.id.vwarrant_type);
-        mWarrantCode = (TextView) v.findViewById(R.id.vwarrant_code);
-        mWarrantExpiry = (TextView) v.findViewById(R.id.vwarrant_expiry);
-        mStrikePrice = (TextView) v.findViewById(R.id.vwarrant_strike_price);
-        mUnderlying = (TextView) v.findViewById(R.id.vwarrant_underlying);
-        mIssuer = (TextView) v.findViewById(R.id.vwarrant_issuer);
     }
 
     @Override public void onResume()
@@ -195,6 +191,15 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             if (providerDTO != null)
             {
                 mHelpVideoText.setText(providerDTO.helpVideoText);
+            }
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkTextColourResId > 0)
+            {
+                mHelpVideoText.setTextColor(getResources().getColor(
+                        providerSpecificResourcesDTO.helpVideoLinkTextColourResId));
+           }
+            else
+            {
+                mHelpVideoText.setTextColor(getResources().getColor(R.color.black));
             }
         }
     }

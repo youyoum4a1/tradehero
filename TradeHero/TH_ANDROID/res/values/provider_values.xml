@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="provider_3_colour_main">#e6ad03</color>
+  <color name="provider_3_colour_gradient">#ffce3b</color>
+
+  <color name="provider_22_colour_main">#0C2962</color>
+  <color name="provider_22_colour_gradient">#2C55A6</color>
+  
+</resources>
