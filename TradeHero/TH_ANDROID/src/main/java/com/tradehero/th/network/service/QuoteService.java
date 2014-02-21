@@ -18,6 +18,13 @@ public interface QuoteService
             @Path("securitySymbol") String securitySymbol,
             Callback<SignatureContainer<QuoteDTO>> callback);
 
+
+    @GET("/securities/{exchange}/{securitySymbol}/quote")
+    void getRawQuote(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            Callback<Response> callback);
+
     @GET("/securities/{exchange}/{securitySymbol}/quote")
     SignatureContainer<QuoteDTO> getQuote(
             @Path("exchange") String exchange,

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Repurposes requests
@@ -52,6 +53,13 @@ import retrofit.RetrofitError;
     {
         basicCheck(securityId);
         this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol, callback);
+    }
+
+    public void getRawQuote(SecurityId securityId, Callback<Response> callback)
+            throws RetrofitError
+    {
+        basicCheck(securityId);
+        this.quoteService.getRawQuote(securityId.exchange, securityId.securitySymbol, callback);
     }
     //</editor-fold>
 }

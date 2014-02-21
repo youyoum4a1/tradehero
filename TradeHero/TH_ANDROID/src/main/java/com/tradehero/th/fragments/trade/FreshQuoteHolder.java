@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.CountDownTimer;
 import com.tradehero.common.utils.IOUtils;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.Converter;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import timber.log.Timber;
@@ -35,7 +38,8 @@ public class FreshQuoteHolder
     private boolean refreshing = false;
     public String identifier = "noId";
 
-    @Inject protected Lazy<QuoteServiceWrapper> quoteServiceWrapper;
+    @Inject Converter converter;
+    @Inject Lazy<QuoteServiceWrapper> quoteServiceWrapper;
 
     //<editor-fold desc="Constructors">
     public FreshQuoteHolder(SecurityId securityId)
@@ -166,18 +170,18 @@ public class FreshQuoteHolder
         {
             refreshing = true;
             notifyListenersRefreshing();
-            quoteServiceWrapper.get().getQuote(securityId, createCallback());
+            quoteServiceWrapper.get().getRawQuote(securityId, createCallbackForRawResponse());
         }
     }
 
-    private Callback<SignatureContainer<QuoteDTO>> createCallback()
+    private Callback<Response> createCallbackForRawResponse()
     {
-        return  new retrofit.Callback<SignatureContainer<QuoteDTO>>()
+        return  new retrofit.Callback<Response>()
         {
-            @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+            @Override public void success(Response response, Response dumpResponse)
             {
                 notifyNotRefreshing();
-                handleReceivedQuote(signedQuoteDTO, response);
+                handleReceivedQuote(response);
             }
 
             @Override public void failure(RetrofitError error)
@@ -194,53 +198,119 @@ public class FreshQuoteHolder
         };
     }
 
-    private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+    @SuppressWarnings("unchecked")
+    private void handleReceivedQuote(Response response)
     {
         QuoteDTO quoteDTO = null;
-        if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
+        TypedInput body = response.getBody();
+        InputStream is = null;
+        try
         {
-            quoteDTO = signedQuoteDTO.signedObject;
+            // TODO this thing should not be done in UI thread :(
+            is = body.in();
+            byte[] bodyBytes = IOUtils.streamToBytes(is);
 
-            TypedInput body = response.getBody();
+            body = new TypedByteArray(body.mimeType(), bodyBytes);
 
-            if (body instanceof TypedByteArray)
+            QuoteSignatureContainer signatureContainer = (QuoteSignatureContainer) converter.fromBody(body, QuoteSignatureContainer.class);
+            quoteDTO = signatureContainer.signedObject;
+            quoteDTO.rawResponse = new String(bodyBytes);
+        }
+        catch (Exception ex)
+        {
+            THToast.show(R.string.error_fetch_quote);
+        }
+        finally
+        {
+            if (is != null)
             {
-                signedQuoteDTO.signedObject.rawResponse = new String(((TypedByteArray)body).getBytes());
-            }
-            else
-            {
-                InputStream is = null;
                 try
                 {
-                    if (body != null && body.mimeType() != null)
-                    {
-                        is = body.in();
-                        byte[] responseBytes = IOUtils.streamToBytes(is);
-                        signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
-                    }
+                    is.close();
                 }
-                catch (IOException e)
+                catch (IOException ignored)
                 {
-                    Timber.e("Failed to get signature", e);
-                }
-                finally
-                {
-                    if (is != null)
-                    {
-                        try
-                        {
-                            is.close();
-                        }
-                        catch (IOException ignored)
-                        {
-                        }
-                    }
                 }
             }
         }
+
         notifyListenersOnFreshQuote(quoteDTO);
         scheduleNextQuoteRequest();
     }
+
+    //<editor-fold desc="Handle callback from quote service which return SignatureContainer<QuoteDTO>">
+    //private Callback<SignatureContainer<QuoteDTO>> createCallback()
+    //{
+    //    return  new retrofit.Callback<SignatureContainer<QuoteDTO>>()
+    //    {
+    //        @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+    //        {
+    //            notifyNotRefreshing();
+    //            handleReceivedQuote(signedQuoteDTO, response);
+    //        }
+    //
+    //        @Override public void failure(RetrofitError error)
+    //        {
+    //            Timber.e("Failed to get quote", error);
+    //            notifyNotRefreshing();
+    //        }
+    //
+    //        private void notifyNotRefreshing()
+    //        {
+    //            refreshing = false;
+    //            notifyListenersRefreshing();
+    //        }
+    //    };
+    //}
+    //
+    //private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+    //{
+    //    QuoteDTO quoteDTO = null;
+    //    if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
+    //    {
+    //        quoteDTO = signedQuoteDTO.signedObject;
+    //
+    //        TypedInput body = response.getBody();
+    //
+    //        if (body instanceof TypedByteArray)
+    //        {
+    //            signedQuoteDTO.signedObject.rawResponse = new String(((TypedByteArray)body).getBytes());
+    //        }
+    //        else
+    //        {
+    //            InputStream is = null;
+    //            try
+    //            {
+    //                if (body != null && body.mimeType() != null)
+    //                {
+    //                    is = body.in();
+    //                    byte[] responseBytes = IOUtils.streamToBytes(is);
+    //                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
+    //                }
+    //            }
+    //            catch (IOException e)
+    //            {
+    //                Timber.e("Failed to get signature", e);
+    //            }
+    //            finally
+    //            {
+    //                if (is != null)
+    //                {
+    //                    try
+    //                    {
+    //                        is.close();
+    //                    }
+    //                    catch (IOException ignored)
+    //                    {
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    notifyListenersOnFreshQuote(quoteDTO);
+    //    scheduleNextQuoteRequest();
+    //}
+    //</editor-fold>
 
     private void scheduleNextQuoteRequest()
     {
@@ -282,4 +352,6 @@ public class FreshQuoteHolder
         void onIsRefreshing(boolean refreshing);
         void onFreshQuote(QuoteDTO quoteDTO);
     }
+
+    private static class QuoteSignatureContainer extends SignatureContainer<QuoteDTO> { }
 }
