@@ -7,7 +7,7 @@
       android:id="@+id/security_search_menu_elements"
       android:actionLayout="@layout/menu_elements_security_search_alone"
       android:visible="true"
-      android:showAsAction="ifRoom"
+      android:showAsAction="always"
       android:enabled="true"
       />
 
