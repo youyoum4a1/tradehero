@@ -32,6 +32,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
 /**
@@ -158,6 +159,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerCacheListener = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
+    }
+
+    @Override public void onDestroyView()
+    {
+        DeviceUtil.dismissKeyboard(getActivity());
+        super.onDestroyView();
     }
 
     protected void detachProviderFetchTask()
