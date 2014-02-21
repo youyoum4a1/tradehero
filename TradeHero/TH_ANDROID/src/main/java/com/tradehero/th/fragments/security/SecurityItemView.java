@@ -141,7 +141,16 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
         if (andDisplay)
         {
-            display();
+            displayStockName();
+            displayExchangeSymbol();
+            displayCurrencyDisplay();
+            displayDate();
+            displayLastPrice();
+            displayProfitIndicator();
+            displayMarketClose();
+            displaySecurityType();
+            displayCountryLogo();
+            loadImage();
         }
     }
 
@@ -357,7 +366,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         {
                             @Override public void onSuccess()
                             {
-                                loadBgImageDelayed();
+                                //loadBgImageDelayed();
                             }
 
                             @Override public void onError()
@@ -373,7 +382,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         else
         {
-            loadBgImageDelayed();
+            //loadBgImageDelayed();
         }
     }
 
@@ -387,7 +396,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     stockLogo.setImageResource(exchange.logoId);
-                    loadBgImageDelayed();
+                    //loadBgImageDelayed();
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -402,7 +411,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         else
         {
-            loadBgImageDelayed();
+            //loadBgImageDelayed();
         }
     }
 
@@ -412,7 +421,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             stockLogo.setImageResource(R.drawable.default_image);
         }
-        loadBgImageDelayed();
+        //loadBgImageDelayed();
     }
 
     public void loadBgImageDelayed()
