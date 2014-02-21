@@ -86,7 +86,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         super.onAttachedToWindow();
         if (stockBgLogo != null)
         {
-            stockBgLogo.setVisibility(GONE);
+            stockBgLogo.setVisibility(INVISIBLE);
         }
         if (mPicasso != null)
         {
@@ -141,16 +141,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
         if (andDisplay)
         {
-            displayStockName();
-            displayExchangeSymbol();
-            displayCurrencyDisplay();
-            displayDate();
-            displayLastPrice();
-            displayProfitIndicator();
-            displayMarketClose();
-            displaySecurityType();
-            displayCountryLogo();
-            loadImage();
+            display();
         }
     }
 
@@ -356,7 +347,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (stockBgLogo != null)
             {
-                stockBgLogo.setVisibility(GONE);
+                stockBgLogo.setVisibility(INVISIBLE);
             }
             if (isMyUrlOk())
             {

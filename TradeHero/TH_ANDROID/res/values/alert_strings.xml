@@ -8,7 +8,6 @@
   <string name="stock_alert_inactive">Inactive</string>
   <string name="stock_alert_target_price">Target Price</string>
   <string name="stock_alert_active_until">Active Until</string>
-  <string name="stock_alert_info_active_until_date_format">d MMM yyyy HH:mm</string>
   <string name="stock_alert_current_price">Current Price</string>
   <string name="stock_alert_price_info_as_of_date">as of %s</string>
   <string name="stock_alert_price_info_as_of_date_format">d MMM yyyy HH:mm</string>
