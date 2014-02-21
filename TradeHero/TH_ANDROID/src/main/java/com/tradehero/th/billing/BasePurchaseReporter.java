@@ -3,9 +3,6 @@ package com.tradehero.th.billing;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.lang.ref.WeakReference;
 

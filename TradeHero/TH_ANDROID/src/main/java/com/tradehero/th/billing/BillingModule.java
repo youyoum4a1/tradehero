@@ -5,7 +5,6 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import dagger.Module;
 import dagger.Provides;
-
 import javax.inject.Singleton;
 
 /**

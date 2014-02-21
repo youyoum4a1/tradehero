@@ -19,7 +19,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.tradehero.common.billing.Base64;
 import com.tradehero.common.billing.Base64DecoderException;
-
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;

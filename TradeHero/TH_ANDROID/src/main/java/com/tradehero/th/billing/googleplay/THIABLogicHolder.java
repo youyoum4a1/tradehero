@@ -3,6 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import android.app.Activity;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
@@ -63,9 +64,9 @@ public class THIABLogicHolder
 {
     public static final String TAG = THIABLogicHolder.class.getSimpleName();
 
-    protected Map<Integer /*requestCode*/, THIABSKUFetcher> skuFetchers;
-    protected Map<Integer /*requestCode*/, IABSKUFetcher.OnSKUFetchedListener<IABSKU>> skuFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABSKUFetcher.OnSKUFetchedListener<IABSKU>>> parentSkuFetchedListeners;
+    protected Map<Integer /*requestCode*/, THIABProductIdentifierFetcher> skuFetchers;
+    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>> skuFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>>> parentSkuFetchedListeners;
 
     protected Map<Integer /*requestCode*/, THIABPurchaseReporter> purchaseReporters;
     protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>> purchaseReportedListeners;
@@ -94,11 +95,11 @@ public class THIABLogicHolder
 
     @Override public void onDestroy()
     {
-        for (THIABSKUFetcher skuFetcher : skuFetchers.values())
+        for (THIABProductIdentifierFetcher skuFetcher : skuFetchers.values())
         {
             if (skuFetcher != null)
             {
-                skuFetcher.setListener(null);
+                skuFetcher.setProductIdentifierListener(null);
             }
         }
         skuFetchers.clear();
@@ -142,12 +143,12 @@ public class THIABLogicHolder
         parentPurchaseReportedHandlers.remove(requestCode);
     }
 
-    protected void registerSkuFetchedListener(int requestCode, IABSKUFetcher.OnSKUFetchedListener<IABSKU> skuFetchedListener)
+    protected void registerSkuFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> skuFetchedListener)
     {
         parentSkuFetchedListeners.put(requestCode, new WeakReference<>(skuFetchedListener));
     }
 
-    @Override public int registerSkuFetchedListener(IABSKUFetcher.OnSKUFetchedListener<IABSKU> skuFetchedListener)
+    @Override public int registerSkuFetchedListener(ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> skuFetchedListener)
     {
         int requestCode = getUnusedRequestCode();
         registerSkuFetchedListener(requestCode, skuFetchedListener);
@@ -156,28 +157,31 @@ public class THIABLogicHolder
 
     @Override public void launchSkuFetchSequence(int requestCode)
     {
-        IABSKUFetcher.OnSKUFetchedListener<IABSKU> skuFetchedListener = new IABSKUFetcher.OnSKUFetchedListener<IABSKU>()
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>
+                skuFetchedListener = new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>()
         {
-            @Override public void onFetchedSKUs(int requestCode, Map<String, List<IABSKU>> availableSkus)
+            @Override public void onFetchedProductIdentifiers(int requestCode,
+                    Map<String, List<IABSKU>> availableSkus)
             {
                 notifySkuFetchedSuccess(requestCode, availableSkus);
             }
 
-            @Override public void onFetchSKUsFailed(int requestCode, Exception exception)
+            @Override public void onFetchProductIdentifiersFailed(int requestCode,
+                    IABException exception)
             {
                 notifySkuFetchedFailed(requestCode, exception);
             }
         };
         skuFetchedListeners.put(requestCode, skuFetchedListener);
-        THIABSKUFetcher skuFetcher = new THIABSKUFetcher();
-        skuFetcher.setListener(skuFetchedListener);
+        THIABProductIdentifierFetcher skuFetcher = new THIABProductIdentifierFetcher();
+        skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchSkus(requestCode);
+        skuFetcher.fetchProductIdentifiers(requestCode);
     }
 
-    @Override public IABSKUFetcher.OnSKUFetchedListener<IABSKU> getSkuFetchedListener(int requestCode)
+    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> getSkuFetchedListener(int requestCode)
     {
-        WeakReference<IABSKUFetcher.OnSKUFetchedListener<IABSKU>> weakListener = parentSkuFetchedListeners.get(requestCode);
+        WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>> weakListener = parentSkuFetchedListeners.get(requestCode);
         if (weakListener == null)
         {
             return null;
@@ -187,19 +191,19 @@ public class THIABLogicHolder
 
     protected void notifySkuFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableSkus)
     {
-        IABSKUFetcher.OnSKUFetchedListener<IABSKU> fetchedListener = getSkuFetchedListener(requestCode);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> fetchedListener = getSkuFetchedListener(requestCode);
         if (fetchedListener != null)
         {
-            fetchedListener.onFetchedSKUs(requestCode, availableSkus);
+            fetchedListener.onFetchedProductIdentifiers(requestCode, availableSkus);
         }
     }
 
-    protected void notifySkuFetchedFailed(int requestCode, Exception exception)
+    protected void notifySkuFetchedFailed(int requestCode, IABException exception)
     {
-        IABSKUFetcher.OnSKUFetchedListener<IABSKU> fetchedListener = getSkuFetchedListener(requestCode);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> fetchedListener = getSkuFetchedListener(requestCode);
         if (fetchedListener != null)
         {
-            fetchedListener.onFetchSKUsFailed(requestCode, exception);
+            fetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
         }
     }
 

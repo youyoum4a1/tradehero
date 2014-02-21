@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;

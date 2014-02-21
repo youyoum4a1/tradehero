@@ -1,7 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;

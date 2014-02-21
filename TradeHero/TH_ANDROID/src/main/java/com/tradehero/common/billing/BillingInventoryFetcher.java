@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
 
@@ -7,21 +8,27 @@ import java.util.Map;
 public interface BillingInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        ExceptionType extends Exception>
+        BillingExceptionType extends BillingException>
 {
+    int getRequestCode();
+    OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener();
+    void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> onInventoryFetchedListener);
     List<ProductIdentifierType> getProductIdentifiers();
     void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers);
-    OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, ExceptionType> getInventoryFetchedListener();
-    void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, ExceptionType> onInventoryFetchedListener);
     void fetchInventory(int requestCode);
-    int getRequestCode();
 
     public static interface OnInventoryFetchedListener<
             ProductIdentifierType,
             ProductDetailsType,
             ExceptionType>
     {
-        void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailsType> inventory);
-        void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, ExceptionType exception);
+        void onInventoryFetchSuccess(
+                int requestCode,
+                List<ProductIdentifierType> productIdentifiers,
+                Map<ProductIdentifierType, ProductDetailsType> inventory);
+        void onInventoryFetchFail(
+                int requestCode,
+                List<ProductIdentifierType> productIdentifiers,
+                ExceptionType exception);
     }
 }

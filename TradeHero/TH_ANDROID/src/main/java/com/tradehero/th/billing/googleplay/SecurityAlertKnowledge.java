@@ -50,14 +50,14 @@ import javax.inject.Singleton;
 
         switch (localSKU.identifier)
         {
-            case THIABSKUFetcher.SERVER_ALERT_1:
-                return new IABSKU(THIABSKUFetcher.ALERT_1);
+            case THIABConstants.SERVER_ALERT_1:
+                return new IABSKU(THIABConstants.ALERT_1);
 
-            case THIABSKUFetcher.SERVER_ALERT_5:
-                return new IABSKU(THIABSKUFetcher.ALERT_5);
+            case THIABConstants.SERVER_ALERT_5:
+                return new IABSKU(THIABConstants.ALERT_5);
 
-            case THIABSKUFetcher.SERVER_ALERT_UNLIMITED:
-                return new IABSKU(THIABSKUFetcher.ALERT_UNLIMITED);
+            case THIABConstants.SERVER_ALERT_UNLIMITED:
+                return new IABSKU(THIABConstants.ALERT_UNLIMITED);
 
         }
 
