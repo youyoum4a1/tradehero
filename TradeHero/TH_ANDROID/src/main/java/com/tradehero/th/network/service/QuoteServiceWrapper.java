@@ -6,7 +6,6 @@ import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
@@ -42,21 +41,26 @@ import retrofit.client.Response;
 
     //<editor-fold desc="Get Quote">
     public SignatureContainer<QuoteDTO> getQuote(SecurityId securityId)
-            throws RetrofitError
     {
         basicCheck(securityId);
         return this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol);
     }
 
     public void getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
-            throws RetrofitError
     {
         basicCheck(securityId);
         this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol, callback);
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Raw Quote">
+    public Response getRawQuote(SecurityId securityId)
+    {
+        basicCheck(securityId);
+        return this.quoteService.getRawQuote(securityId.exchange, securityId.securitySymbol);
+    }
 
     public void getRawQuote(SecurityId securityId, Callback<Response> callback)
-            throws RetrofitError
     {
         basicCheck(securityId);
         this.quoteService.getRawQuote(securityId.exchange, securityId.securitySymbol, callback);
