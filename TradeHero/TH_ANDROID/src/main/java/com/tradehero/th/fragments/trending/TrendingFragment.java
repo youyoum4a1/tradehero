@@ -345,7 +345,6 @@ public class TrendingFragment extends SecurityListFragment
     private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     //</editor-fold>
 
-
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_trending_screen;

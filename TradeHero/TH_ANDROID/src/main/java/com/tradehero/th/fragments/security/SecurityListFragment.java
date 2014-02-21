@@ -68,10 +68,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         ButterKnife.inject(this, view);
 
-        if (mProgressSpinner != null)
-        {
-            mProgressSpinner.setVisibility(View.GONE);
-        }
+        showProgressSpinner(false);
 
         listViewScrollListener = new SecurityListFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
 
