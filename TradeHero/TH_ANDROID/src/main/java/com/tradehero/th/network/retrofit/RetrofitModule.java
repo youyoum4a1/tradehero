@@ -1,5 +1,7 @@
 package com.tradehero.th.network.retrofit;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
@@ -146,9 +148,24 @@ public class RetrofitModule
     }
     //</editor-fold>
 
-    @Provides @Singleton Converter provideConverter()
+    @Provides @Singleton ObjectMapper provideObjectMapper()
     {
-        return new JacksonConverter(new ObjectMapper());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        // TODO confirm this is correct here
+        objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.ANY));
+        return objectMapper;
+    }
+
+    @Provides @Singleton Converter provideConverter(ObjectMapper objectMapper)
+    {
+        return new JacksonConverter(objectMapper);
     }
 
     @Provides @Singleton Server provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
