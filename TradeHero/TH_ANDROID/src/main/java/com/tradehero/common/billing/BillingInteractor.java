@@ -3,7 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
-public interface BillingActorUser<
+public interface BillingInteractor<
         ProductIdentifierType extends ProductIdentifier,
         OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
@@ -22,7 +22,7 @@ public interface BillingActorUser<
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType>,
-        BillingActorType extends BillingLogicHolder<
+        BillingLogicHolderType extends BillingLogicHolder<
                         ProductIdentifierType,
                         OnProductIdentifierFetchedListenerType,
                         ProductDetailType,
@@ -34,6 +34,6 @@ public interface BillingActorUser<
                         BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    void setBillingActor(BillingActorType billingActor);
-    BillingActorType getBillingActor();
+    void setBillingLogicHolder(BillingLogicHolderType billingActor);
+    BillingLogicHolderType getBillingLogicHolder();
 }

@@ -3,17 +3,17 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.view.View;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
 /**
- * It expects its Activity to implement THIABActorUser.
+ * It expects its Activity to implement THIABInteractor.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
-        implements THIABActorUser
+        implements THIABInteractor
 {
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
@@ -25,7 +25,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setBillingActor(((THIABActorUser) getActivity()).getBillingActor());
+        setBillingLogicHolder(((THIABInteractor) getActivity()).getBillingLogicHolder());
         createUserInteractor();
     }
 
@@ -78,13 +78,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return userInteractor.getApplicablePortfolioId();
     }
 
-    //<editor-fold desc="THIABActorUser">
-    public THIABLogicHolder getBillingActor()
+    //<editor-fold desc="THIABInteractor">
+    public THIABLogicHolder getBillingLogicHolder()
     {
         return billingActor.get();
     }
 
-    public void setBillingActor(THIABLogicHolder billingActor)
+    public void setBillingLogicHolder(THIABLogicHolder billingActor)
     {
         this.billingActor = new WeakReference<>(billingActor);
     }

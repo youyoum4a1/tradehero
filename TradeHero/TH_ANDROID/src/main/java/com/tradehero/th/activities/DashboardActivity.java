@@ -14,7 +14,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABActorUser;
+import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity, THIABActorUser
+        implements DashboardNavigatorActivity, THIABInteractor
 {
     private DashboardNavigator navigator;
 
@@ -74,10 +74,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     private void launchIAB()
     {
         purchaseRestorer = new THIABPurchaseRestorer(this,
-                getBillingActor(),
-                getBillingActor(),
-                getBillingActor(),
-                getBillingActor());
+                getBillingLogicHolder(),
+                getBillingLogicHolder(),
+                getBillingLogicHolder(),
+                getBillingLogicHolder());
         purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
             @Override
@@ -214,12 +214,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
-    @Override public void setBillingActor(THIABLogicHolder billingActor)
+    @Override public void setBillingLogicHolder(THIABLogicHolder billingActor)
     {
         throw new UnsupportedOperationException("Not implemented"); // You should not use this method
     }
 
-    @Override public THIABLogicHolder getBillingActor()
+    @Override public THIABLogicHolder getBillingLogicHolder()
     {
         return thiabLogicHolder.get();
     }

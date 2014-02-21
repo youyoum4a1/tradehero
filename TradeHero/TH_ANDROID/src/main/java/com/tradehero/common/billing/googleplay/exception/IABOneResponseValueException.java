@@ -29,6 +29,16 @@ abstract public class IABOneResponseValueException extends IABException
         super(response, message, cause);
     }
 
+    public IABOneResponseValueException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
+
+    public IABOneResponseValueException(Throwable cause)
+    {
+        super(cause);
+    }
+
     abstract protected int getOnlyValidResponse();
 
     protected void validate()

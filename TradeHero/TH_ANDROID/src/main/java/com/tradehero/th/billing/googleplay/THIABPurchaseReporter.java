@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -8,6 +9,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -28,8 +30,8 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>,
-        Exception>
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
+        IABException>
 {
     public static final String TAG = THIABPurchaseReporter.class.getSimpleName();
 
@@ -110,7 +112,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 new THIABPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
     }
 
-    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws Exception
+    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws IABException
     {
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
@@ -135,7 +137,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
     }
 
-    protected UserProfileDTO reportAlertPurchaseSync(THIABPurchase purchase) throws Exception
+    protected UserProfileDTO reportAlertPurchaseSync(THIABPurchase purchase) throws IABException
     {
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
@@ -166,7 +168,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         catch (Exception e)
         {
             // Since the purchase cannot be found, the previous error was the correct one
-            throw thrown;
+            throw new IABException(thrown);
         }
     }
 
@@ -178,7 +180,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     protected void handleCallbackFailed(RetrofitError error)
     {
         THLog.e(TAG, "Failed reporting to TradeHero server", error);
-        notifyListenerReportFailed(error);
+        notifyListenerReportFailed(new PurchaseReportRetrofitException(error));
     }
 
     protected void handleCallbackStatusSuccess(AlertPlanStatusDTO alertPlanStatusDTO, Response response, RetrofitError errorFromReport)

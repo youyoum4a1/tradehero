@@ -3,7 +3,6 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
-import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.IABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
@@ -17,7 +16,7 @@ public interface THIABLogicHolder extends
         THIABInventoryFetcherHolder, // This is redundant but allows passing of interface
         THIABActorPurchaseFetcher, // This is redundant but allows passing of interface
         THIABPurchaserHolder, // This is redundant but allows passing of interface
-        THIABActorPurchaseReporter, // This is redundant but allows passing of interface
+        THIABPurchaseReporterHolder, // This is redundant but allows passing of interface
         THIABActorPurchaseConsumer, // This is redundant but allows passing of interface
         IABLogicHolder<
                         IABSKU,

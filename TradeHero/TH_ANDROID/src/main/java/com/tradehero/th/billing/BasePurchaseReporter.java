@@ -3,6 +3,7 @@ package com.tradehero.th.billing;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.lang.ref.WeakReference;
 
@@ -15,47 +16,43 @@ abstract public class BasePurchaseReporter<
                 ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType,
-                ThrowableType>,
-        ThrowableType extends Throwable>
+                BillingExceptionType>,
+        BillingExceptionType extends BillingException>
     implements PurchaseReporter<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
         OnPurchaseReportedListenerType,
-        ThrowableType>
+        BillingExceptionType>
 {
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();
 
     protected int requestCode;
     protected ProductPurchaseType purchase;
-    private WeakReference<OnPurchaseReportedListenerType> listener = new WeakReference<>(null);
+    private OnPurchaseReportedListenerType listener;
 
-    public OnPurchaseReportedListenerType getListener()
+    public OnPurchaseReportedListenerType getPurchaseReporterListener()
     {
-        return this.listener.get();
+        return this.listener;
     }
 
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param listener
-     */
-    public void setListener(final OnPurchaseReportedListenerType listener)
+    public void setPurchaseReporterListener(final OnPurchaseReportedListenerType listener)
     {
-        this.listener = new WeakReference<>(listener);
+        this.listener = listener;
     }
 
     protected void notifyListenerSuccess(final UserProfileDTO updatedUserPortfolio)
     {
-        OnPurchaseReportedListenerType listener1 = getListener();
+        OnPurchaseReportedListenerType listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReported(requestCode, this.purchase, updatedUserPortfolio);
         }
     }
 
-    protected void notifyListenerReportFailed(final ThrowableType error)
+    protected void notifyListenerReportFailed(final BillingExceptionType error)
     {
-        OnPurchaseReportedListenerType listener1 = getListener();
+        OnPurchaseReportedListenerType listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReportFailed(requestCode, this.purchase, error);

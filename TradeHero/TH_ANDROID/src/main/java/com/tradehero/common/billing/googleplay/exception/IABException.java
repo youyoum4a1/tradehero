@@ -47,6 +47,16 @@ public class IABException extends BillingException
         this(new IABResult(response, message), cause);
     }
 
+    public IABException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
+
+    public IABException(Throwable cause)
+    {
+        super(cause);
+    }
+
     /** Returns the IAB result (error) that this exception signals. */
     public IABResult getResult()
     {

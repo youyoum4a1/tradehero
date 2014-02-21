@@ -426,6 +426,11 @@ abstract public class BaseIABLogicHolder<
         return requestCode;
     }
 
+    //@Override public void unregisterPurchaseFinishedListener(int requestCode)
+    //{
+    //    parentPurchaseFinishedListeners.remove(requestCode);
+    //}
+
     @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
     {
         BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>()

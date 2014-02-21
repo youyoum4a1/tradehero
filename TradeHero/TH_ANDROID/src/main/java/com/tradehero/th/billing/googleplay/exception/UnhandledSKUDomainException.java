@@ -1,27 +1,37 @@
 package com.tradehero.th.billing.googleplay.exception;
 
+import com.tradehero.common.billing.googleplay.IABResult;
+import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
+import com.tradehero.th.billing.googleplay.THIABConstants;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
-public class UnhandledSKUDomainException extends RuntimeException
+public class UnhandledSKUDomainException extends IABOneResponseValueException
 {
     public static final String TAG = UnhandledSKUDomainException.class.getSimpleName();
+    public static final int VALID_RESPONSE = THIABConstants.UNHANDLED_DOMAIN;
 
-    public UnhandledSKUDomainException()
+    public UnhandledSKUDomainException(IABResult r)
     {
-        super();
+        super(r);
     }
 
-    public UnhandledSKUDomainException(String detailMessage)
+    public UnhandledSKUDomainException(IABResult r, Exception cause)
     {
-        super(detailMessage);
+        super(r, cause);
     }
 
-    public UnhandledSKUDomainException(String detailMessage, Throwable throwable)
+    public UnhandledSKUDomainException(String message)
     {
-        super(detailMessage, throwable);
+        super(VALID_RESPONSE, message);
     }
 
-    public UnhandledSKUDomainException(Throwable throwable)
+    public UnhandledSKUDomainException(String message, Exception cause)
     {
-        super(throwable);
+        super(VALID_RESPONSE, message, cause);
+    }
+
+    @Override protected int getOnlyValidResponse()
+    {
+        return VALID_RESPONSE;
     }
 }

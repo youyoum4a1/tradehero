@@ -1,10 +1,15 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.googleplay.IABConstants;
+
 /**
  * Created by xavier on 2/21/14.
  */
-public class THIABConstants
+public class THIABConstants extends IABConstants
 {
+    public static final int UNHANDLED_DOMAIN = -2000;
+    public static final int PURCHASE_REPORT_RETROFIT_ERROR = -2001;
+
     // Below are the codes as they are understood on Google Play
     public static final String EXTRA_CASH_T0_KEY = "com.myhero.th.extracash.t0";
     public static final String EXTRA_CASH_T1_KEY = "com.myhero.th.extracash.t1";

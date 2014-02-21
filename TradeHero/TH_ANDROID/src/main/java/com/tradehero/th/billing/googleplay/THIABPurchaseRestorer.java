@@ -28,10 +28,10 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     private final WeakReference<Activity> activity;
     private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
-    private WeakReference<THIABActorPurchaseReporter> actorPurchaseReporter = new WeakReference<>(null);
+    private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
-    private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception> purchaseReportedListener;
+    private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener;
     private final List<THIABPurchase> failedReports;
 
     public THIABPurchaseRestorer(
@@ -39,7 +39,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
             THIABInventoryFetcherHolder actorInventoryFetcher,
             THIABActorPurchaseFetcher actorPurchaseFetcher,
             THIABActorPurchaseConsumer billingActorConsumer,
-            THIABActorPurchaseReporter actorPurchaseReporter)
+            THIABPurchaseReporterHolder actorPurchaseReporter)
     {
         super(billingActorConsumer);
         this.activity = new WeakReference<>(activity);
@@ -52,9 +52,9 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     @Override public void init()
     {
         super.init();
-        purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>()
+        purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
         {
-            @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, Exception error)
+            @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, IABException error)
             {
                 Timber.e("onPurchaseReportFailed", error);
                 haveBillingActorForget(requestCode);
@@ -144,10 +144,10 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     {
         THIABPurchase purchase = remainingPurchasesToWorkOn.get(0);
         remainingPurchasesToWorkOn.remove(purchase);
-        THIABActorPurchaseReporter actorReporter = actorPurchaseReporter.get();
+        THIABPurchaseReporterHolder actorReporter = actorPurchaseReporter.get();
         if (actorReporter != null)
         {
-            requestCodeReporter = actorReporter.registerPurchaseReportedHandler(purchaseReportedListener);
+            requestCodeReporter = actorReporter.registerPurchaseReportedListener(purchaseReportedListener);
             actorReporter.launchReportSequence(requestCodeReporter, purchase);
         }
         else

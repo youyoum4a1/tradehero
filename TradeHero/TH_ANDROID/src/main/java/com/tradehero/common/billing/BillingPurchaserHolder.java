@@ -19,5 +19,6 @@ public interface BillingPurchaserHolder<
 
     BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode);
     int registerPurchaseFinishedListener(BillingPurchaseFinishedListenerType purchaseFinishedListener);
+    //void unregisterPurchaseFinishedListener(int requestCode);
     void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder);
 }

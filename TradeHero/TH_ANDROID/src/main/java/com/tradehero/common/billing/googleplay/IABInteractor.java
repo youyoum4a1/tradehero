@@ -1,14 +1,14 @@
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.billing.BillingInteractor;
 import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.common.billing.BillingActorUser;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
-public interface IABActorUser<
+public interface IABInteractor<
         IABSKUType extends IABSKU,
         OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
@@ -33,16 +33,16 @@ public interface IABActorUser<
                         BillingPurchaseFinishedListenerType,
                         IABExceptionType>,
         IABExceptionType extends IABException>
-    extends BillingActorUser<
-        IABSKUType,
-        OnProductIdentifierFetchedListenerType,
-        IABProductDetailType,
-        InventoryFetchedListenerType,
-        IABPurchaseOrderType,
-        IABOrderIdType,
-        IABPurchaseType,
-        BillingPurchaseFinishedListenerType,
-        IABActorType,
-        IABExceptionType>
+    extends BillingInteractor<
+            IABSKUType,
+            OnProductIdentifierFetchedListenerType,
+            IABProductDetailType,
+            InventoryFetchedListenerType,
+            IABPurchaseOrderType,
+            IABOrderIdType,
+            IABPurchaseType,
+            BillingPurchaseFinishedListenerType,
+            IABActorType,
+            IABExceptionType>
 {
 }

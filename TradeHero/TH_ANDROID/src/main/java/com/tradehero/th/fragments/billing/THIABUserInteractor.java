@@ -31,11 +31,11 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
+import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THIABActorPurchaseReporter;
+import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
-import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
@@ -59,11 +59,11 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
- * It expects its Activity to implement THIABActorUser.
+ * It expects its Activity to implement THIABInteractor.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 public class THIABUserInteractor
         implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
-        THIABActorUser
+        THIABInteractor
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
 
@@ -96,7 +96,7 @@ public class THIABUserInteractor
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        Exception> purchaseReportedListener;
+        IABException> purchaseReportedListener;
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
         IABSKU,
         THIABOrderId,
@@ -229,7 +229,7 @@ public class THIABUserInteractor
 
         if (purchaseReportedListener == null)
         {
-            purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>()
+            purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
             {
                 @Override public void onPurchaseReported(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                 {
@@ -237,7 +237,7 @@ public class THIABUserInteractor
                     handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
                 }
 
-                @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, Exception error)
+                @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, IABException error)
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
@@ -443,8 +443,8 @@ public class THIABUserInteractor
         return billingActorCopy != null && billingActorCopy.isInventoryReady();
     }
 
-    //<editor-fold desc="THIABActorUser">
-    public THIABLogicHolder getBillingActor()
+    //<editor-fold desc="THIABInteractor">
+    public THIABLogicHolder getBillingLogicHolder()
     {
         return billingActor;
     }
@@ -453,7 +453,7 @@ public class THIABUserInteractor
      * The billingActor should be strongly referenced elsewhere
      * @param billingActor
      */
-    public void setBillingActor(THIABLogicHolder billingActor)
+    public void setBillingLogicHolder(THIABLogicHolder billingActor)
     {
         throw new IllegalStateException("You cannot change the billing Actor");
     }
@@ -496,8 +496,8 @@ public class THIABUserInteractor
                         {
                             inventoryFetchedForgetListener = createForgetFetchedListener();
                         }
-                        int requestCode = getBillingActor().registerInventoryFetchedListener(inventoryFetchedForgetListener);
-                        getBillingActor().launchInventoryFetchSequence(requestCode);
+                        int requestCode = getBillingLogicHolder().registerInventoryFetchedListener(inventoryFetchedForgetListener);
+                        getBillingLogicHolder().launchInventoryFetchSequence(requestCode);
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -511,12 +511,12 @@ public class THIABUserInteractor
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {
-                getBillingActor().forgetRequestCode(requestCode);
+                getBillingLogicHolder().forgetRequestCode(requestCode);
             }
 
             @Override public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers, IABException exception)
             {
-                getBillingActor().forgetRequestCode(requestCode);
+                getBillingLogicHolder().forgetRequestCode(requestCode);
             }
         };
     }
@@ -635,7 +635,7 @@ public class THIABUserInteractor
                         {
                             iabAlertDialogSKUUtil.popBuyDialog(
                                     currentActivityHolder.getCurrentActivity(),
-                                    getBillingActor(),
+                                    getBillingLogicHolder(),
                                     THIABUserInteractor.this,
                                     skuDomain,
                                     titleResId,
@@ -658,7 +658,7 @@ public class THIABUserInteractor
 
     protected void launchPurchaseSequence(THIABPurchaseOrder purchaseOrder)
     {
-        launchPurchaseSequence(getBillingActor(), purchaseOrder);
+        launchPurchaseSequence(getBillingLogicHolder(), purchaseOrder);
     }
 
     protected void launchPurchaseSequence(THIABPurchaserHolder actorPurchaser, THIABPurchaseOrder purchaseOrder)
@@ -695,10 +695,10 @@ public class THIABUserInteractor
 
     protected void launchReportPurchaseSequence(THIABPurchase purchase)
     {
-        launchReportPurchaseSequence(getBillingActor(), purchase);
+        launchReportPurchaseSequence(getBillingLogicHolder(), purchase);
     }
 
-    protected void launchReportPurchaseSequence(THIABActorPurchaseReporter actorPurchaseReporter, THIABPurchase purchase)
+    protected void launchReportPurchaseSequence(THIABPurchaseReporterHolder actorPurchaseReporter, THIABPurchase purchase)
     {
         Activity activity = this.currentActivityHolder.getCurrentActivity();
         if (activity != null)
@@ -709,7 +709,7 @@ public class THIABUserInteractor
                     activity.getString(R.string.store_billing_report_api_launching_window_message),
                     true);
         }
-        int requestCode = actorPurchaseReporter.registerPurchaseReportedHandler(purchaseReportedListener);
+        int requestCode = actorPurchaseReporter.registerPurchaseReportedListener(purchaseReportedListener);
         actorPurchaseReporter.launchReportSequence(requestCode, purchase);
     }
 
@@ -722,7 +722,7 @@ public class THIABUserInteractor
 
     protected void launchConsumeSequence(THIABPurchase reportedPurchase)
     {
-        launchConsumeSequence(getBillingActor(), reportedPurchase);
+        launchConsumeSequence(getBillingLogicHolder(), reportedPurchase);
     }
 
     protected void launchConsumeSequence(THIABActorPurchaseConsumer actorConsumer, THIABPurchase reportedPurchase)
