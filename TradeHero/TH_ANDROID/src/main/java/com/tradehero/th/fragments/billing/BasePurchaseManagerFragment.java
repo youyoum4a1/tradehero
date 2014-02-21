@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.view.View;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     protected THIABUserInteractor userInteractor;
-    protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+    protected WeakReference<THIABLogicHolder> billingActor = new WeakReference<>(null);
 
     abstract protected void initViews(View view);
 
@@ -79,12 +79,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
 
     //<editor-fold desc="THIABActorUser">
-    public THIABActor getBillingActor()
+    public THIABLogicHolder getBillingActor()
     {
         return billingActor.get();
     }
 
-    public void setBillingActor(THIABActor billingActor)
+    public void setBillingActor(THIABLogicHolder billingActor)
     {
         this.billingActor = new WeakReference<>(billingActor);
     }

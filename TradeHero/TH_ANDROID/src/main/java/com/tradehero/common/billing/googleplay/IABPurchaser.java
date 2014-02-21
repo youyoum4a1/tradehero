@@ -14,7 +14,6 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
-import java.lang.ref.WeakReference;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -36,7 +35,7 @@ abstract public class IABPurchaser<
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
-    private WeakReference<OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListener = new WeakReference<>(null);
+    private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener;
 
     public IABPurchaser(Activity activity)
     {
@@ -71,13 +70,13 @@ abstract public class IABPurchaser<
 
     @Override public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> getPurchaseFinishedListener()
     {
-        return purchaseFinishedListener.get();
+        return purchaseFinishedListener;
     }
 
     @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
     {
         Timber.d("setPurchaseFinishedListener %s", purchaseFinishedListener.getClass().getSimpleName());
-        this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
+        this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
     @Override public void purchase(int activityRequestCode, IABPurchaseOrderType purchaseOrder)

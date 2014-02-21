@@ -13,9 +13,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.THIABActor;
-import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
+import com.tradehero.th.billing.googleplay.THIABActorUser;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -40,7 +40,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    @Inject protected Lazy<THIABLogicHolder> thiabLogicHolder;
+    @Inject protected Lazy<THIABLogicHolderFull> thiabLogicHolder;
 
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
@@ -214,12 +214,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
-    @Override public void setBillingActor(THIABActor billingActor)
+    @Override public void setBillingActor(THIABLogicHolder billingActor)
     {
         throw new UnsupportedOperationException("Not implemented"); // You should not use this method
     }
 
-    @Override public THIABActor getBillingActor()
+    @Override public THIABLogicHolder getBillingActor()
     {
         return thiabLogicHolder.get();
     }

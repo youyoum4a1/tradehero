@@ -26,7 +26,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
                 IABException>>
 {
     private final WeakReference<Activity> activity;
-    private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcher = new WeakReference<>(null);
+    private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseReporter> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
@@ -36,7 +36,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     public THIABPurchaseRestorer(
             Activity activity,
-            THIABActorInventoryFetcher actorInventoryFetcher,
+            THIABInventoryFetcherHolder actorInventoryFetcher,
             THIABActorPurchaseFetcher actorPurchaseFetcher,
             THIABActorPurchaseConsumer billingActorConsumer,
             THIABActorPurchaseReporter actorPurchaseReporter)
@@ -152,7 +152,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         }
         else
         {
-            Timber.w("launchOneReportSequence: BillingActor just became null");
+            Timber.w("launchOneReportSequence: BillingLogicHolder just became null");
             failedReports.add(purchase);
             continueSequenceOrNotify();
         }

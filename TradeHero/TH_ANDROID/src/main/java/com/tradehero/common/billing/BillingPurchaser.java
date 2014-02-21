@@ -33,7 +33,13 @@ public interface BillingPurchaser<
          * @param purchaseOrder
          * @param purchase
          */
-        void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase);
-        void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, ExceptionType exception);
+        void onPurchaseFinished(
+                int requestCode,
+                PurchaseOrderType purchaseOrder,
+                ProductPurchaseType purchase);
+        void onPurchaseFailed(
+                int requestCode,
+                PurchaseOrderType purchaseOrder,
+                ExceptionType exception);
     }
 }

@@ -1,8 +1,8 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.BillingActor;
+import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -22,9 +22,8 @@ public class BillingModule
 {
     public static final String TAG = BillingModule.class.getSimpleName();
 
-    @Provides @Singleton
-    BillingActor provideBillingActor(CurrentActivityHolder currentActivityHolder)
+    @Provides @Singleton BillingLogicHolder provideBillingActor(CurrentActivityHolder currentActivityHolder)
     {
-        return new THIABLogicHolder(currentActivityHolder.getCurrentActivity());
+        return new THIABLogicHolderFull(currentActivityHolder.getCurrentActivity());
     }
 }

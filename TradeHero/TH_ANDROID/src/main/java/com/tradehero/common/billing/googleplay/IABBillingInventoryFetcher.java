@@ -12,7 +12,6 @@ import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ abstract public class IABBillingInventoryFetcher<
     private List<IABSKUType> iabSKUs;
     private int requestCode;
 
-    private WeakReference<OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryListener = new WeakReference<>(null);
+    private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABBillingInventoryFetcher(Context ctx)
@@ -233,11 +232,11 @@ abstract public class IABBillingInventoryFetcher<
 
     @Override public OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> getInventoryFetchedListener()
     {
-        return inventoryListener.get();
+        return inventoryListener;
     }
 
     @Override public void setInventoryFetchedListener(OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> onInventoryFetchedListener)
     {
-        this.inventoryListener = new WeakReference<>(onInventoryFetchedListener);
+        this.inventoryListener = onInventoryFetchedListener;
     }
 }

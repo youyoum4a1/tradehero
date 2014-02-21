@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.lang.ref.WeakReference;
@@ -13,8 +14,9 @@ import java.util.Map;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
-abstract public class BaseIABActor<
+abstract public class BaseIABLogicHolder<
         IABSKUType extends IABSKU,
+        OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABException>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherType extends IABBillingInventoryFetcher<
                         IABSKUType,
@@ -57,17 +59,18 @@ abstract public class BaseIABActor<
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
-    implements IABActor<
-        IABSKUType,
-        IABProductDetailType,
-        IABInventoryFetchedListenerType,
-        IABPurchaseOrderType,
-        IABOrderIdType,
-        IABPurchaseType,
-        IABPurchaseFetchedListenerType,
-        IABPurchaseFinishedListenerType,
-        IABConsumeFinishedListenerType,
-        IABException>
+    implements IABLogicHolder<
+            IABSKUType,
+            OnProductIdentifierFetchedListenerType,
+            IABProductDetailType,
+            IABInventoryFetchedListenerType,
+            IABPurchaseOrderType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABPurchaseFetchedListenerType,
+            IABPurchaseFinishedListenerType,
+            IABConsumeFinishedListenerType,
+            IABException>
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
@@ -92,7 +95,7 @@ abstract public class BaseIABActor<
     protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABConsumeFinishedListenerType>> parentConsumeFinishedHandlers;
 
-    public BaseIABActor(Activity activity)
+    public BaseIABLogicHolder(Activity activity)
     {
         super();
         setActivity(activity);

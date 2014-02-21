@@ -21,12 +21,12 @@ public class THIABModule
 {
     public static final String TAG = THIABModule.class.getSimpleName();
 
-    @Provides @Singleton THIABLogicHolder provideTHIABLogicHolder(CurrentActivityHolder currentActivityHolder)
+    @Provides @Singleton THIABLogicHolderFull provideTHIABLogicHolder(CurrentActivityHolder currentActivityHolder)
     {
-        return new THIABLogicHolder(currentActivityHolder.getCurrentActivity());
+        return new THIABLogicHolderFull(currentActivityHolder.getCurrentActivity());
     }
 
-    @Provides @Singleton THIABActor provideTHIABActor(THIABLogicHolder thiabLogicHolder)
+    @Provides @Singleton THIABLogicHolder provideTHIABActor(THIABLogicHolderFull thiabLogicHolder)
     {
         return thiabLogicHolder;
     }

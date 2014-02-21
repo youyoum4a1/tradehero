@@ -145,7 +145,7 @@ abstract public class IABPurchaseRestorer<
         }
         else
         {
-            Timber.w("launchOneConsumeSequence: BillingActor just became null");
+            Timber.w("launchOneConsumeSequence: BillingLogicHolder just became null");
             failedConsumes.add(purchase);
             continueSequenceOrNotify();
         }

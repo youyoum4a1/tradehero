@@ -20,7 +20,7 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
 
     @Inject protected CurrentUserId currentUserId;
 
-    public PurchaseRestorerRequiredMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, THIABActorPurchaseFetcher actorPurchaseFetcher)
+    public PurchaseRestorerRequiredMilestone(Context context, THIABInventoryFetcherHolder actorInventoryFetcher, THIABActorPurchaseFetcher actorPurchaseFetcher)
     {
         super();
         DaggerUtils.inject(this);

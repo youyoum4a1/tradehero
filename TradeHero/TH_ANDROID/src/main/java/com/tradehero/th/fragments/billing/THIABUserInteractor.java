@@ -31,10 +31,10 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
-import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABActorPurchaser;
+import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
@@ -76,7 +76,7 @@ public class THIABUserInteractor
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
-    @Inject protected THIABActor billingActor;
+    @Inject protected THIABLogicHolder billingActor;
     protected THIABPurchaseRestorer purchaseRestorer;
     protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
     protected OwnedPortfolioId applicablePortfolioId;
@@ -326,7 +326,7 @@ public class THIABUserInteractor
 
     protected void haveActorForget(int requestCode)
     {
-        THIABActor actor = this.billingActor;
+        THIABLogicHolder actor = this.billingActor;
         if (actor != null)
         {
             actor.forgetRequestCode(requestCode);
@@ -427,24 +427,24 @@ public class THIABUserInteractor
 
     protected boolean isBillingAvailable()
     {
-        THIABActor billingActorCopy = this.billingActor;
+        THIABLogicHolder billingActorCopy = this.billingActor;
         return billingActorCopy != null && billingActorCopy.isBillingAvailable();
     }
 
     protected boolean hadErrorLoadingInventory()
     {
-        THIABActor billingActorCopy = this.billingActor;
+        THIABLogicHolder billingActorCopy = this.billingActor;
         return billingActorCopy != null && billingActorCopy.hadErrorLoadingInventory();
     }
 
     protected boolean isInventoryReady()
     {
-        THIABActor billingActorCopy = this.billingActor;
+        THIABLogicHolder billingActorCopy = this.billingActor;
         return billingActorCopy != null && billingActorCopy.isInventoryReady();
     }
 
     //<editor-fold desc="THIABActorUser">
-    public THIABActor getBillingActor()
+    public THIABLogicHolder getBillingActor()
     {
         return billingActor;
     }
@@ -453,7 +453,7 @@ public class THIABUserInteractor
      * The billingActor should be strongly referenced elsewhere
      * @param billingActor
      */
-    public void setBillingActor(THIABActor billingActor)
+    public void setBillingActor(THIABLogicHolder billingActor)
     {
         throw new IllegalStateException("You cannot change the billing Actor");
     }
@@ -661,7 +661,7 @@ public class THIABUserInteractor
         launchPurchaseSequence(getBillingActor(), purchaseOrder);
     }
 
-    protected void launchPurchaseSequence(THIABActorPurchaser actorPurchaser, THIABPurchaseOrder purchaseOrder)
+    protected void launchPurchaseSequence(THIABPurchaserHolder actorPurchaser, THIABPurchaseOrder purchaseOrder)
     {
         int requestCode = actorPurchaser.registerPurchaseFinishedListener(purchaseFinishedListener);
         actorPurchaser.launchPurchaseSequence(requestCode, purchaseOrder);

@@ -27,14 +27,14 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean failed;
     private final Context context;
     private final IABSKUListType iabskuListType;
-    private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
+    private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcherWeak = new WeakReference<>(null);
     private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
     protected IABSKUListRetrievedAsyncMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, IABSKUListType iabskuListType)
+    public THInventoryFetchMilestone(Context context, THIABInventoryFetcherHolder actorInventoryFetcher, IABSKUListType iabskuListType)
     {
         super();
         running = false;
@@ -107,7 +107,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         else
         {
-            THIABActorInventoryFetcher actorInventoryFetcher = actorInventoryFetcherWeak.get();
+            THIABInventoryFetcherHolder actorInventoryFetcher = actorInventoryFetcherWeak.get();
             if (actorInventoryFetcher == null)
             {
                 notifyFailedListener(new NullPointerException("actorInventoryFetcher was null"));
