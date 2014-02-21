@@ -28,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
@@ -49,6 +48,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
@@ -672,12 +672,12 @@ public class THIABUserInteractor
         Activity activity = this.currentActivityHolder.getCurrentActivity();
         if (activity != null)
         {
-            progressDialog = ProgressDialog.show(
+            progressDialog = ProgressDialogUtil.show(
                     activity,
-                    Application.getResourceString(R.string.store_billing_loading_info_window_title),
-                    Application.getResourceString(R.string.store_billing_loading_info_window_message),
-                    true,
-                    true,
+                    R.string.store_billing_loading_info_window_title,
+                    R.string.store_billing_loading_info_window_message
+            );
+            progressDialog.setOnCancelListener(
                     new DialogInterface.OnCancelListener()
                     {
                         @Override public void onCancel(DialogInterface dialog)
