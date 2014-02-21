@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import com.squareup.picasso.LruCache;
 import com.tradehero.th.base.Application;
 import java.io.File;

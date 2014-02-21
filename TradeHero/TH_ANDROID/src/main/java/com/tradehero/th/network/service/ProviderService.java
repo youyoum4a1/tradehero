@@ -4,7 +4,6 @@ import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.List;
-import java.util.Map;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.GET;

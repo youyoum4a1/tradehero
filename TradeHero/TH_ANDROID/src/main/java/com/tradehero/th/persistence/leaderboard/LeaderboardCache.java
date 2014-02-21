@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import butterknife.InjectView;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import dagger.Lazy;

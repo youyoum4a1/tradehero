@@ -1,7 +1,6 @@
 package com.tradehero.common.widget;
 
 import android.widget.AbsListView;
-import com.tradehero.common.utils.THLog;
 
 /**
  * It raises the flag when near the end.

@@ -2,7 +2,6 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.th.R;
-
 import com.tradehero.th.base.Application;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.HashMap;
 import java.util.Map;

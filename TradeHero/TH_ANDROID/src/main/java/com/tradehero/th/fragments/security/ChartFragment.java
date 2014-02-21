@@ -20,7 +20,6 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 
 /**

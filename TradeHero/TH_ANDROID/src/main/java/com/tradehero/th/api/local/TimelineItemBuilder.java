@@ -3,7 +3,6 @@ package com.tradehero.th.api.local;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.LinkedList;
 import java.util.List;
 

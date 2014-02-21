@@ -1,10 +1,5 @@
 package com.tradehero.th.api.form;
 
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:04 PM Copyright (c) TradeHero */
 public class UserFormDTO
 {

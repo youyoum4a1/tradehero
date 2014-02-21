@@ -1,13 +1,11 @@
     package com.tradehero.th.api.security;
 
-import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.market.Exchange;
-import com.tradehero.th.utils.SecurityUtils;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+    import com.tradehero.th.api.ExtendedDTO;
+    import com.tradehero.th.api.market.Exchange;
+    import com.tradehero.th.utils.SecurityUtils;
+    import java.util.ArrayList;
+    import java.util.Date;
+    import java.util.List;
 
     /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
 public class SecurityCompactDTO extends ExtendedDTO

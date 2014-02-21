@@ -1,27 +1,29 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.users.*;
-
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.Body;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;

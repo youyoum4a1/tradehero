@@ -1,7 +1,5 @@
 package com.tradehero.common.milestone;
 
-import com.tradehero.common.utils.THLog;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 

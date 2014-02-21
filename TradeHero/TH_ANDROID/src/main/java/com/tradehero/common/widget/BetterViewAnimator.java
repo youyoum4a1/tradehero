@@ -1,7 +1,6 @@
 package com.tradehero.common.widget;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ViewAnimator;

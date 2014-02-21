@@ -5,7 +5,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import java.util.List;

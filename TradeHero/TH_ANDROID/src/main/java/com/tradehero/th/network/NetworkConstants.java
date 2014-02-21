@@ -15,6 +15,6 @@ public class NetworkConstants
 
     public static String getApiEndPoint()
     {
-        return Constants.RELEASE ? TRADEHERO_PROD_ENDPOINT : TRADEHERO_DEV_ENDPOINT;
+        return Constants.RELEASE ? TRADEHERO_PROD_ENDPOINT : TRADEHERO_PROD_ENDPOINT;
     }
 }

@@ -1,16 +1,5 @@
 package com.tradehero.common.http;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
-import android.widget.ImageView;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 11:35 AM To change this template use File | Settings | File Templates. */
 /*
 public class BitmapDownloader implements Runnable

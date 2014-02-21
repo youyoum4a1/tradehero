@@ -1,7 +1,6 @@
 package com.tradehero.th.loaders;
 
 import android.net.Uri;
-import com.tradehero.th.api.social.UserFriendsDTO;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/24/14 Time: 11:18 AM Copyright (c) TradeHero

@@ -11,9 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
 
 /**
  * Created by xavier on 1/17/14.

@@ -1,16 +1,11 @@
 package com.tradehero.th.utils.dagger;
 
-import android.content.Context;
-import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
-import com.tradehero.th.utils.FacebookUtils;
-import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.TwitterUtils;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collection;

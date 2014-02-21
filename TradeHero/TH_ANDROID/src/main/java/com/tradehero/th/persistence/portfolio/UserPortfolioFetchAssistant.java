@@ -7,7 +7,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

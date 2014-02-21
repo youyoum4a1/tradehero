@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -12,12 +13,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import android.widget.Button;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.Constants;
 
 /** Created with IntelliJ IDEA. User: nia Date: 18/10/13 Time: 5:21 PM To change this template use File | Settings | File Templates. */

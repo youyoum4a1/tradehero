@@ -1,6 +1,5 @@
 package com.tradehero.common.persistence;
 
-import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;

@@ -6,7 +6,6 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 

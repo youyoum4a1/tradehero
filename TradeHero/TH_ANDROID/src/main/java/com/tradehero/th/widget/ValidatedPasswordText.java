@@ -2,7 +2,6 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.common.utils.THToast;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:30 AM Copyright (c) TradeHero */
 public class ValidatedPasswordText extends SelfValidatedText

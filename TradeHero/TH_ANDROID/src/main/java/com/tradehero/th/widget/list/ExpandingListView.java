@@ -5,10 +5,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.tradehero.th.adapters.ExpandableItem;
-import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.adapters.ExpandableItem;
 
 /**
  * Listens for item clicks and expands or collapses the selected view depending on

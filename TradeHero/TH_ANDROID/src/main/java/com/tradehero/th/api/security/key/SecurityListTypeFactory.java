@@ -3,7 +3,6 @@ package com.tradehero.th.api.security.key;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

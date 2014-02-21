@@ -1,6 +1,5 @@
 package com.tradehero.th.filter.security;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;

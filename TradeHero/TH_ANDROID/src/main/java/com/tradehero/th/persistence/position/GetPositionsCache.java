@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.position;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;

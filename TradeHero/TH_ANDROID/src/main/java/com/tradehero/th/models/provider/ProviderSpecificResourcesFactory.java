@@ -1,6 +1,5 @@
 package com.tradehero.th.models.provider;
 
-import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;

@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

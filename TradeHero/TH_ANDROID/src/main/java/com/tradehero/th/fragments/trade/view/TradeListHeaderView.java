@@ -16,8 +16,8 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 28/10/13

@@ -40,11 +40,10 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import retrofit.client.Response;
-
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserItemView extends RelativeLayout

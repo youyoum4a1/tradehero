@@ -13,7 +13,6 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;

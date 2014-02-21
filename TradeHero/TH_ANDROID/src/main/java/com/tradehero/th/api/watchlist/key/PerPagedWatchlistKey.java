@@ -1,9 +1,6 @@
 package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.common.utils.THLog;
-import java.io.IOException;
 
 /**
  * Created by xavier on 2/14/14.

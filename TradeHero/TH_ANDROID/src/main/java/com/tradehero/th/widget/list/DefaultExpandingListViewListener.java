@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
-import com.tradehero.th.adapters.ExpandableListItem;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/31/13 Time: 4:15 PM Copyright (c) TradeHero */

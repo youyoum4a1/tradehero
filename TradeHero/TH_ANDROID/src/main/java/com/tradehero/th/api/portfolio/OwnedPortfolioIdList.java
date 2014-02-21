@@ -1,7 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
-import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 7:46 PM To change this template use File | Settings | File Templates. */

@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Base64;
 import android.view.View;
 import com.tradehero.th.R;
 

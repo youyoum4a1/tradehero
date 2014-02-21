@@ -4,7 +4,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -9,13 +9,6 @@ import android.widget.TextView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.network.service.UserService;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import javax.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

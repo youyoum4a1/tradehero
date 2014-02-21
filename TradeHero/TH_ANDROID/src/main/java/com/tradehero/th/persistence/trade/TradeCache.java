@@ -3,8 +3,6 @@ package com.tradehero.th.persistence.trade;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.api.trade.TradeId;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

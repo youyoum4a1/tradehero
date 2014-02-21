@@ -28,7 +28,6 @@ import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment

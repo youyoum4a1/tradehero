@@ -1,7 +1,5 @@
 package com.tradehero.common.persistence;
 
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-
 /** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 10:52 AM Copyright (c) TradeHero */
 public class LeaderboardQuery extends Query
 {

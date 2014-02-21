@@ -9,17 +9,11 @@ import com.tradehero.common.time.TimeUnitHourInDay;
 import com.tradehero.common.time.TimeUnitMilliSecondInSecond;
 import com.tradehero.common.time.TimeUnitMinuteInHour;
 import com.tradehero.common.time.TimeUnitSecondInMinute;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.Date;
-import java.util.List;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
-import org.ocpsoft.prettytime.units.Day;
-import org.ocpsoft.prettytime.units.Hour;
-import org.ocpsoft.prettytime.units.Minute;
-import org.ocpsoft.prettytime.units.Second;
 
 /**
  * Created by xavier on 1/23/14.

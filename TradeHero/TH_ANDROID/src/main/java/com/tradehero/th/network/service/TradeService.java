@@ -1,13 +1,11 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.trade.TradeDTO;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
-
-import java.util.List;
 
 /**
  * Created by julien on 22/10/13

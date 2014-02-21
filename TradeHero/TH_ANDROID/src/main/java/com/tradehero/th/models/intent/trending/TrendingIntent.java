@@ -1,6 +1,5 @@
 package com.tradehero.th.models.intent.trending;
 
-import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;

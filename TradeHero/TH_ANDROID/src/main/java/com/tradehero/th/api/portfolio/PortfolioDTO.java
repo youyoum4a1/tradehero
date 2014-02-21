@@ -2,11 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
 import java.util.Date;
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:06 PM Copyright (c) TradeHero */
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO

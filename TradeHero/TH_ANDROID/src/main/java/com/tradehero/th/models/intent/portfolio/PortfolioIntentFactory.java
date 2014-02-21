@@ -2,13 +2,10 @@ package com.tradehero.th.models.intent.portfolio;
 
 import android.content.Intent;
 import com.tradehero.th.R;
-import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import com.tradehero.th.models.intent.position.OnePortfolioIntent;
 import com.tradehero.th.models.intent.position.OpenPortfolioIntent;
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by xavier on 1/10/14.

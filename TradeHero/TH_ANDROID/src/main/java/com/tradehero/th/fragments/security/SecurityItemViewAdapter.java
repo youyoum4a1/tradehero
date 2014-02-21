@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.Filter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;

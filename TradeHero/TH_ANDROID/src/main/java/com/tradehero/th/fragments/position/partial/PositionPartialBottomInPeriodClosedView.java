@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 

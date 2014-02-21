@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 
 /**
  * I don't know who wrote this but need to be refactor as soon as possible

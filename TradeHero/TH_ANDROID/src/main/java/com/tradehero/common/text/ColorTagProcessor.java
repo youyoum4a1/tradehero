@@ -2,7 +2,6 @@ package com.tradehero.common.text;
 
 import android.graphics.Color;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 6:03 PM Copyright (c) TradeHero */

@@ -5,10 +5,9 @@ import com.tradehero.th.network.retrofit.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/28/13 Time: 4:24 PM Copyright (c) TradeHero */
 public abstract class AbstractUserAvailabilityRequester extends CallbackWithSpecificNotifiers<UserAvailabilityDTO>

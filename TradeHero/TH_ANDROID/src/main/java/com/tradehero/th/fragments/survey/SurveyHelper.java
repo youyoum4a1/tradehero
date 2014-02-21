@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.survey;
 
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.Collections;

@@ -3,7 +3,10 @@ package com.tradehero.th.fragments.portfolio.header;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -19,7 +22,6 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 

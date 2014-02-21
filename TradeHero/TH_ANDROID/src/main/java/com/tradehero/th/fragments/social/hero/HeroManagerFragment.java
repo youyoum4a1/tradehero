@@ -1,10 +1,8 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;

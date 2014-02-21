@@ -6,9 +6,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
 
 /**
  * Created by xavier on 2/12/14.

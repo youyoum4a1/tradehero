@@ -1,10 +1,10 @@
 package com.tradehero.th.persistence.security;
 
+import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;

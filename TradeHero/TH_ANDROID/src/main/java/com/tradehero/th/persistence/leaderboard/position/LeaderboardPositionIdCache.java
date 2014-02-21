@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.leaderboard.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

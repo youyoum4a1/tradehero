@@ -4,12 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
-import retrofit.RetrofitError;
-
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:25 AM Copyright (c) TradeHero */
 public class ServerValidatedUsernameText extends ServerValidatedText

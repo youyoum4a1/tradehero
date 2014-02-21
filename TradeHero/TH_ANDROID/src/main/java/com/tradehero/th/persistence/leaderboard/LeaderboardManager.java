@@ -1,9 +1,8 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.common.cache.DatabaseCache;
-import com.tradehero.th.persistence.user.UserStore;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;

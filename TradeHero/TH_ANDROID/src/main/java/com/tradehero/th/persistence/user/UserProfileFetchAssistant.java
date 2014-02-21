@@ -2,9 +2,9 @@ package com.tradehero.th.persistence.user;
 
 import android.content.Context;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOFetchAssistant;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.common.persistence.DTOFetchAssistant;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.DaggerUtils;

@@ -3,8 +3,6 @@ package com.tradehero.th.persistence.user;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.network.service.UserService;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

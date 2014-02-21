@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.portfolio.header;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
@@ -13,7 +12,6 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 
 /**

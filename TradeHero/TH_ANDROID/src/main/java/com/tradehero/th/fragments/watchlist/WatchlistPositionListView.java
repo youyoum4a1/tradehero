@@ -2,11 +2,8 @@ package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**

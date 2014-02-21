@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionCompactId;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

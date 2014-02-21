@@ -2,9 +2,7 @@ package com.tradehero.th.models.intent.security;
 
 import android.content.Intent;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.models.intent.THIntentSubFactory;
-import com.tradehero.th.models.intent.trending.TrendingIntent;
 import java.util.List;
 
 /**

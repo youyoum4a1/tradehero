@@ -1,7 +1,6 @@
 package com.tradehero.th.api.trade;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
-import com.tradehero.th.api.position.OwnedPositionId;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 7:50 PM To change this template use File | Settings | File Templates. */

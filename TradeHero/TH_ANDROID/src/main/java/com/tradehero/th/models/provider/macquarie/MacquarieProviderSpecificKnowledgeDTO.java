@@ -1,6 +1,5 @@
 package com.tradehero.th.models.provider.macquarie;
 
-import com.tradehero.th.R;
 import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
 
 /**

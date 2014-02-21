@@ -1,8 +1,8 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
 import retrofit.Callback;

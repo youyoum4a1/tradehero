@@ -3,8 +3,8 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 
 /**
  * Created by julien on 31/10/13

@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
-import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;

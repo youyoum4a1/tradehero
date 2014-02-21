@@ -1,10 +1,8 @@
 package com.tradehero.common.persistence;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.tradehero.th.base.Application;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 3:45 PM Copyright (c) TradeHero */

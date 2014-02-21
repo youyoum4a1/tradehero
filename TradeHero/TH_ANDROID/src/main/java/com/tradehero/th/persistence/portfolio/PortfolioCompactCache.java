@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.network.service.PortfolioService;

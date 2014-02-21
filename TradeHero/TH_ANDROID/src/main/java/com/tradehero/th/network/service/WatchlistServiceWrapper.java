@@ -11,8 +11,6 @@ import com.tradehero.th.api.watchlist.key.SkipCacheSecurityPerPagedWatchlistKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Query;
 
 /**
  * Created by xavier on 2/14/14.

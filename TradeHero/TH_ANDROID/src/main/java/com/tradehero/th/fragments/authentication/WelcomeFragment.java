@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.os.Bundle;
-import android.view.animation.AnimationUtils;
-import com.tradehero.th.R;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 
 public class WelcomeFragment extends AuthenticationFragment

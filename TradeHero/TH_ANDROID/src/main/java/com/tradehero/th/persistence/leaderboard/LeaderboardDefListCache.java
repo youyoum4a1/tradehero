@@ -2,8 +2,8 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
