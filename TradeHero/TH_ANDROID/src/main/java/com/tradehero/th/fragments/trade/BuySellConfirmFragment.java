@@ -479,7 +479,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         @Override protected void onPreExecute()
         {
             transactionDialog =
-                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.processing, R.string.alert_dialog_please_wait);
             super.onPreExecute();
         }
 
