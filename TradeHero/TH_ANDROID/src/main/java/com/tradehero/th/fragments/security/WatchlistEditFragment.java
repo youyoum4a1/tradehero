@@ -312,9 +312,10 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         @Override protected void finish()
         {
-            if (progressBar != null)
+            ProgressDialog progressBarCopy = progressBar;
+            if (progressBarCopy != null)
             {
-                progressBar.dismiss();
+                progressBarCopy.dismiss();
             }
         }
 
