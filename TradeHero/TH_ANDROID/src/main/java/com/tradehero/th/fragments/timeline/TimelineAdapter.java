@@ -9,7 +9,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.utils.TestFlightUtils;
 
 public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
         implements
@@ -35,11 +34,9 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
         {
             case PULL_FROM_START:
                 getLoader().loadNext();
-                TestFlightUtils.passCheckpoint("timeline.pull.from_top");
                 break;
             case PULL_FROM_END:
                 getLoader().loadPrevious();
-                TestFlightUtils.passCheckpoint("timeline.pull.from_bottom");
                 break;
         }
     }

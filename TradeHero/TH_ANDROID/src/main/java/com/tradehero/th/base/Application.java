@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
-import com.tradehero.common.log.TestFlightTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.models.push.PushNotificationManager;
@@ -27,7 +26,6 @@ public class Application extends PApplication
 
         if (Constants.RELEASE) {
             Timber.plant(new CrashReportingTree());
-            Timber.plant(new TestFlightTree());
         } else {
             Timber.plant(new Timber.DebugTree());
         }

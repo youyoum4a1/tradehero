@@ -7,7 +7,6 @@ import android.util.Base64;
 import android.util.Log;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.TestFlightUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
@@ -65,7 +64,6 @@ public class THLog
         {
             String prefixedTag = PREFIX + tag;
             Log.e(prefixedTag, msg, ex);
-            TestFlightUtils.log(prefixedTag, msg, ex);
         }
     }
 
