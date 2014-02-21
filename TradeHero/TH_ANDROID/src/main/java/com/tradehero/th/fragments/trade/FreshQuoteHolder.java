@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import timber.log.Timber;
 
@@ -198,32 +199,41 @@ public class FreshQuoteHolder
         QuoteDTO quoteDTO = null;
         if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
         {
+            quoteDTO = signedQuoteDTO.signedObject;
+
             TypedInput body = response.getBody();
-            InputStream is = null;
-            try
+
+            if (body instanceof TypedByteArray)
             {
-                if (body != null && body.mimeType() != null)
-                {
-                    quoteDTO = signedQuoteDTO.signedObject;
-                    is = body.in();
-                    byte[] responseBytes = IOUtils.streamToBytes(is);
-                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
-                }
+                signedQuoteDTO.signedObject.rawResponse = new String(((TypedByteArray)body).getBytes());
             }
-            catch (IOException e)
+            else
             {
-                Timber.e("Failed to get signature", e);
-            }
-            finally
-            {
-                if (is != null)
+                InputStream is = null;
+                try
                 {
-                    try
+                    if (body != null && body.mimeType() != null)
                     {
-                        is.close();
+                        is = body.in();
+                        byte[] responseBytes = IOUtils.streamToBytes(is);
+                        signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
                     }
-                    catch (IOException ignored)
+                }
+                catch (IOException e)
+                {
+                    Timber.e("Failed to get signature", e);
+                }
+                finally
+                {
+                    if (is != null)
                     {
+                        try
+                        {
+                            is.close();
+                        }
+                        catch (IOException ignored)
+                        {
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.tradehero.common.utils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,5 +30,16 @@ public class IOUtils
             }
         }
         return baos.toByteArray();
+    }
+
+    public static byte[] streamToBytes(InputStream stream, int length) throws IOException
+    {
+        if (stream != null)
+        {
+            byte[] buf = new byte[length];
+            stream.read(buf, 0, length);
+            return buf;
+        }
+        return null;
     }
 }
