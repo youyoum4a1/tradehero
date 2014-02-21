@@ -9,6 +9,7 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,18 +199,33 @@ public class FreshQuoteHolder
         if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
         {
             TypedInput body = response.getBody();
+            InputStream is = null;
             try
             {
                 if (body != null && body.mimeType() != null)
                 {
-                    byte[] responseBytes = IOUtils.streamToBytes(body.in());
-                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
                     quoteDTO = signedQuoteDTO.signedObject;
+                    is = body.in();
+                    byte[] responseBytes = IOUtils.streamToBytes(is);
+                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
                 }
             }
             catch (IOException e)
             {
                 Timber.e("Failed to get signature", e);
+            }
+            finally
+            {
+                if (is != null)
+                {
+                    try
+                    {
+                        is.close();
+                    }
+                    catch (IOException ignored)
+                    {
+                    }
+                }
             }
         }
         notifyListenersOnFreshQuote(quoteDTO);
