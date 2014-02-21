@@ -1,6 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ import javax.inject.Singleton;
         {
             return R.drawable.buy_alerts_5;
         }
-        else if (count >= Constants.ALERT_PLAN_UNLIMITED)
+        else if (count >= IABConstants.ALERT_PLAN_UNLIMITED)
         {
             return R.drawable.buy_alerts_infinite;
         }

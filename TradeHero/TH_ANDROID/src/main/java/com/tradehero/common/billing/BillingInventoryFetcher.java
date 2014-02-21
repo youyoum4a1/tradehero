@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/22/13 Time: 5:11 PM To change this template use File | Settings | File Templates. */
-public interface InventoryFetcher<
+public interface BillingInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         ExceptionType extends Exception>
@@ -17,9 +17,9 @@ public interface InventoryFetcher<
     int getRequestCode();
 
     public static interface OnInventoryFetchedListener<
-            ProductIdentifierType extends ProductIdentifier,
-            ProductDetailsType extends ProductDetail<ProductIdentifierType>,
-            ExceptionType extends Exception>
+            ProductIdentifierType,
+            ProductDetailsType,
+            ExceptionType>
     {
         void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailsType> inventory);
         void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, ExceptionType exception);

@@ -4,7 +4,7 @@ package com.tradehero.common.billing;
 public interface BillingActorInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, ExceptionType>,
+        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, ExceptionType>,
         ExceptionType extends Exception>
 {
     void forgetRequestCode(int requestCode);

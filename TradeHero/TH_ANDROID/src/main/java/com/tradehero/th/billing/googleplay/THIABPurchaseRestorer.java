@@ -4,7 +4,7 @@ import android.app.Activity;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;

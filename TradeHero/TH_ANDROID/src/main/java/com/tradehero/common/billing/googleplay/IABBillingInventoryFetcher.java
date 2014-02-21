@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
-import com.tradehero.common.billing.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
+import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -25,11 +25,11 @@ import timber.log.Timber;
 /**
  * Created by julien on 4/11/13
  */
-abstract public class IABInventoryFetcher<
+abstract public class IABBillingInventoryFetcher<
             IABSKUType extends IABSKU,
             IABProductDetailsType extends IABProductDetail<IABSKUType>>
         extends IABServiceConnector
-        implements InventoryFetcher<IABSKUType, IABProductDetailsType, IABException>
+        implements BillingInventoryFetcher<IABSKUType, IABProductDetailsType, IABException>
 {
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;
@@ -38,7 +38,7 @@ abstract public class IABInventoryFetcher<
     private WeakReference<OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryListener = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
-    public IABInventoryFetcher(Context ctx)
+    public IABBillingInventoryFetcher(Context ctx)
     {
         super(ctx);
         this.inventory = new HashMap<>();
@@ -157,11 +157,12 @@ abstract public class IABInventoryFetcher<
             return new HashMap<>();
         }
 
-        HashMap<IABSKUType, IABProductDetailsType> map = internalFetchSKUType(Constants.ITEM_TYPE_INAPP);
+        HashMap<IABSKUType, IABProductDetailsType> map = internalFetchSKUType(IABConstants.ITEM_TYPE_INAPP);
 
         if (areSubscriptionsSupported())
         {
-            HashMap<IABSKUType, IABProductDetailsType> subscriptionsMap = internalFetchSKUType(Constants.ITEM_TYPE_SUBS);
+            HashMap<IABSKUType, IABProductDetailsType> subscriptionsMap = internalFetchSKUType(
+                    IABConstants.ITEM_TYPE_SUBS);
             map.putAll(subscriptionsMap);
         }
 
@@ -176,7 +177,7 @@ abstract public class IABInventoryFetcher<
             identifiers.add(iabSKU.identifier);
         }
         Bundle querySkus = new Bundle();
-        querySkus.putStringArrayList(Constants.GET_SKU_DETAILS_ITEM_LIST, identifiers);
+        querySkus.putStringArrayList(IABConstants.GET_SKU_DETAILS_ITEM_LIST, identifiers);
         return querySkus;
     }
 
@@ -197,22 +198,23 @@ abstract public class IABInventoryFetcher<
         }
         Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType, querySkus);
 
-        if (!skuDetails.containsKey(Constants.RESPONSE_GET_SKU_DETAILS_LIST))
+        if (!skuDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
         {
-            int statusCode = Constants.getResponseCodeFromBundle(skuDetails);
-            if (statusCode != Constants.BILLING_RESPONSE_RESULT_OK)
+            int statusCode = IABConstants.getResponseCodeFromBundle(skuDetails);
+            if (statusCode != IABConstants.BILLING_RESPONSE_RESULT_OK)
             {
-                Timber.d("getSkuDetails() failed: %s", Constants.getStatusCodeDescription(statusCode));
+                Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
+                        statusCode));
                 throw iabExceptionFactory.get().create(statusCode);
             }
             else
             {
                 Timber.d("getSkuDetails() returned a bundle with neither an error nor a detail list.");
-                throw new IABBadResponseException(Constants.getStatusCodeDescription(statusCode));
+                throw new IABBadResponseException(IABConstants.getStatusCodeDescription(statusCode));
             }
         }
 
-        ArrayList<String> responseList = skuDetails.getStringArrayList(Constants.RESPONSE_GET_SKU_DETAILS_LIST);
+        ArrayList<String> responseList = skuDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
 
         HashMap<IABSKUType, IABProductDetailsType> map = new HashMap<>();
         for (String json : responseList)

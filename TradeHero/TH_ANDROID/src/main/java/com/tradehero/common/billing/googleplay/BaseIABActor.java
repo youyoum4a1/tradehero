@@ -2,10 +2,10 @@ package com.tradehero.common.billing.googleplay;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +16,10 @@ import timber.log.Timber;
 abstract public class BaseIABActor<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
-        IABInventoryFetcherType extends IABInventoryFetcher<
-                IABSKUType,
-                IABProductDetailType>,
-        IABInventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<
+        IABInventoryFetcherType extends IABBillingInventoryFetcher<
+                        IABSKUType,
+                        IABProductDetailType>,
+        IABInventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
                 IABSKUType,
                 IABProductDetailType,
                 IABException>,
@@ -77,7 +77,7 @@ abstract public class BaseIABActor<
     protected Exception latestInventoryFetcherException; // TODO here too
 
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
-    protected Map<Integer /*requestCode*/, InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>> inventoryFetchedListeners;
+    protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>> inventoryFetchedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABInventoryFetchedListenerType>>parentInventoryFetchedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
@@ -275,8 +275,8 @@ abstract public class BaseIABActor<
     @Override public void launchInventoryFetchSequence(int requestCode)
     {
         latestInventoryFetcherException = null;
-        InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
-                fetchedListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>()
+        BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
+                fetchedListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>()
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
             {

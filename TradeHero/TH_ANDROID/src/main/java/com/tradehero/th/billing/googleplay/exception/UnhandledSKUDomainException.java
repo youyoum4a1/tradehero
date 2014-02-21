@@ -1,7 +1,5 @@
 package com.tradehero.th.billing.googleplay.exception;
 
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
 public class UnhandledSKUDomainException extends RuntimeException
 {

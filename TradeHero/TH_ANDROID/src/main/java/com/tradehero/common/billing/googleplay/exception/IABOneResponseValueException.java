@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.googleplay.exceptions;
+package com.tradehero.common.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 

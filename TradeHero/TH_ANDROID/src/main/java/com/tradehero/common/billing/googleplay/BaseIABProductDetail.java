@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import java.util.Comparator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +29,7 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
     //<editor-fold desc="Constructors">
     public BaseIABProductDetail(String jsonSkuDetails) throws JSONException
     {
-        this(Constants.ITEM_TYPE_INAPP, jsonSkuDetails);
+        this(IABConstants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
     public BaseIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException

@@ -3,10 +3,10 @@ package com.tradehero.common.billing.googleplay;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.RemoteException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABInvalidConsumptionException;
-import com.tradehero.common.billing.googleplay.exceptions.IABMissingTokenException;
-import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionException;
+import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
+import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
@@ -81,7 +81,7 @@ abstract public class IABPurchaseConsumer<
             throw new IllegalArgumentException("Product Identifier's identifier cannot be null");
         }
 
-        if (!purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
+        if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             handleConsumeFailedInternal(new IABInvalidConsumptionException("Can only consume inApp purchase types"));
         }
@@ -207,7 +207,7 @@ abstract public class IABPurchaseConsumer<
         String token = this.purchase.getToken();
         Timber.d("Consuming sku: %s, token: %s", sku, token);
         int response = this.billingService.consumePurchase(3, context.getPackageName(), token);
-        if (response != Constants.BILLING_RESPONSE_RESULT_OK)
+        if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             throw iabExceptionFactory.get().create(response);
         }

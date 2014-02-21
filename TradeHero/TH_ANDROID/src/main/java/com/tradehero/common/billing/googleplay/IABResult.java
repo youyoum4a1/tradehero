@@ -33,17 +33,18 @@ public class IABResult
         this.response = response;
         if (message == null || message.trim().length() == 0)
         {
-            this.message = Constants.getStatusCodeDescription(response);
+            this.message = IABConstants.getStatusCodeDescription(response);
         }
         else
         {
-            this.message = message + " (response: " + Constants.getStatusCodeDescription(response) + ")";
+            this.message = message + " (response: " + IABConstants.getStatusCodeDescription(
+                    response) + ")";
         }
     }
 
     public boolean isSuccess()
     {
-        return response == Constants.BILLING_RESPONSE_RESULT_OK;
+        return response == IABConstants.BILLING_RESPONSE_RESULT_OK;
     }
 
     public boolean isFailure()

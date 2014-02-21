@@ -1,7 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
+import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -11,7 +11,7 @@ import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
+import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
@@ -232,9 +232,9 @@ import javax.inject.Singleton;
                         WebViewFragment.class,
 
                         IABServiceConnector.class,
-                        IABInventoryFetcher.class,
+                        IABBillingInventoryFetcher.class,
                         THIABPurchaseFetcher.class,
-                        THIABInventoryFetcher.class,
+                        THIABBillingInventoryFetcher.class,
                         THIABPurchaser.class,
                         THIABPurchaseReporter.class,
                         THIABLogicHolder.class,

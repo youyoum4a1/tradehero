@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.Milestone;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ abstract public class IABPurchaseRestorer<
     protected void launchOneConsumeSequence(IABPurchaseType purchase)
     {
         IABActorPurchaseConsumerType billingActor = getConsumeActor();
-        if (!purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
+        if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             Timber.d("No point in consuming this purchase");
             // No need to add to okPurchases.add(purchase);

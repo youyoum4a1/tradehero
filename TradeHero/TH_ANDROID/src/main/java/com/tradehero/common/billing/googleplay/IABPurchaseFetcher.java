@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
+import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -109,10 +109,10 @@ abstract public class IABPurchaseFetcher<
 
     protected HashMap<IABSKUType, IABPurchaseType> queryPurchases() throws JSONException, RemoteException, IABException
     {
-        HashMap<IABSKUType, IABPurchaseType> map = queryPurchases(Constants.ITEM_TYPE_INAPP);
+        HashMap<IABSKUType, IABPurchaseType> map = queryPurchases(IABConstants.ITEM_TYPE_INAPP);
         if (areSubscriptionsSupported())
         {
-            HashMap<IABSKUType, IABPurchaseType> subscriptionMap = queryPurchases(Constants.ITEM_TYPE_SUBS);
+            HashMap<IABSKUType, IABPurchaseType> subscriptionMap = queryPurchases(IABConstants.ITEM_TYPE_SUBS);
             map.putAll(subscriptionMap);
         }
         getPurchaseCache().put(map);
@@ -131,29 +131,29 @@ abstract public class IABPurchaseFetcher<
         {
             Bundle ownedItems = getPurchases(itemType, continueToken);
 
-            int response = Constants.getResponseCodeFromBundle(ownedItems);
+            int response = IABConstants.getResponseCodeFromBundle(ownedItems);
             Timber.d("Owned items response: %s", String.valueOf(response));
-            if (response != Constants.BILLING_RESPONSE_RESULT_OK)
+            if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
             {
                 throw iabExceptionFactory.get().create(response);
             }
-            if (!ownedItems.containsKey(Constants.RESPONSE_INAPP_ITEM_LIST)
-                    || !ownedItems.containsKey(Constants.RESPONSE_INAPP_PURCHASE_DATA_LIST)
-                    || !ownedItems.containsKey(Constants.RESPONSE_INAPP_SIGNATURE_LIST))
+            if (!ownedItems.containsKey(IABConstants.RESPONSE_INAPP_ITEM_LIST)
+                    || !ownedItems.containsKey(IABConstants.RESPONSE_INAPP_PURCHASE_DATA_LIST)
+                    || !ownedItems.containsKey(IABConstants.RESPONSE_INAPP_SIGNATURE_LIST))
             {
                 throw new IABBadResponseException("Bundle returned from getPurchases() doesn't contain required fields.");
             }
 
-            ArrayList<String> ownedSkus = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_ITEM_LIST);
-            ArrayList<String> purchaseDataList = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_PURCHASE_DATA_LIST);
-            ArrayList<String> signatureList = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_SIGNATURE_LIST);
+            ArrayList<String> ownedSkus = ownedItems.getStringArrayList(IABConstants.RESPONSE_INAPP_ITEM_LIST);
+            ArrayList<String> purchaseDataList = ownedItems.getStringArrayList(IABConstants.RESPONSE_INAPP_PURCHASE_DATA_LIST);
+            ArrayList<String> signatureList = ownedItems.getStringArrayList(IABConstants.RESPONSE_INAPP_SIGNATURE_LIST);
 
             for (int i = 0; i < purchaseDataList.size(); ++i)
             {
                 String purchaseData = purchaseDataList.get(i);
                 String signature = signatureList.get(i);
                 String sku = ownedSkus.get(i);
-                if (Security.verifyPurchase(Constants.BASE_64_PUBLIC_KEY, purchaseData, signature))
+                if (Security.verifyPurchase(IABConstants.BASE_64_PUBLIC_KEY, purchaseData, signature))
                 {
                     Timber.d("Sku is owned: %s", sku);
                     IABPurchaseType purchase = createPurchase(itemType, purchaseData, signature);
@@ -173,7 +173,7 @@ abstract public class IABPurchaseFetcher<
                 }
             }
 
-            continueToken = ownedItems.getString(Constants.INAPP_CONTINUATION_TOKEN);
+            continueToken = ownedItems.getString(IABConstants.INAPP_CONTINUATION_TOKEN);
             Timber.d("Continuation token: %s", continueToken);
         }
         while (!TextUtils.isEmpty(continueToken));

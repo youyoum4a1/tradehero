@@ -13,15 +13,16 @@
  * limitations under the License.
  */
 
-package com.tradehero.common.billing.googleplay.exceptions;
+package com.tradehero.common.billing.googleplay.exception;
 
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.IABResult;
 
 /**
  * Exception thrown when something went wrong with in-app billing. An IabException has an associated IABResult (an error). To get the IAB result that
  * caused this exception to be thrown, call {@link #getResult()}.
  */
-public class IABException extends Exception
+public class IABException extends BillingException
 {
     IABResult mResult;
 

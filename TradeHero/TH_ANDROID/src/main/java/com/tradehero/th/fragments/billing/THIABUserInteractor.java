@@ -7,17 +7,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.InventoryFetcher;
+import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
-import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
-import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException;
-import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
-import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
+import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
+import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
+import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
+import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
+import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -78,7 +78,7 @@ public class THIABUserInteractor
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     @Inject protected THIABActor billingActor;
     protected THIABPurchaseRestorer purchaseRestorer;
-    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
+    protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
     protected OwnedPortfolioId applicablePortfolioId;
     private Runnable runOnPurchaseComplete;
 
@@ -205,7 +205,7 @@ public class THIABUserInteractor
                     {
                         iabAlertDialogSKUUtil.popRemoteError(context);
                     }
-                    else if (exception instanceof IABAlreadyOwnedException)
+                    else if (exception instanceof IABItemAlreadyOwnedException)
                     {
                         iabAlertDialogSKUUtil.popSKUAlreadyOwned(context, thiabProductDetailCache.get().get(purchaseOrder.getProductIdentifier()));
                     }
@@ -505,9 +505,9 @@ public class THIABUserInteractor
         return alertDialog;
     }
 
-    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> createForgetFetchedListener()
+    protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> createForgetFetchedListener()
     {
-        return new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
+        return new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {

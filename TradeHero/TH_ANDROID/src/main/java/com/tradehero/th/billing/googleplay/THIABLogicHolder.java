@@ -1,15 +1,14 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
+import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -28,15 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolder
     extends BaseIABActor<
         IABSKU,
         THIABProductDetail,
-        THIABInventoryFetcher,
-        InventoryFetcher.OnInventoryFetchedListener<
+        THIABBillingInventoryFetcher,
+        BillingInventoryFetcher.OnInventoryFetchedListener<
                 IABSKU,
                 THIABProductDetail,
                 IABException>,
@@ -312,9 +310,9 @@ public class THIABLogicHolder
         return mixed;
     }
 
-    @Override protected THIABInventoryFetcher createInventoryFetcher()
+    @Override protected THIABBillingInventoryFetcher createInventoryFetcher()
     {
-        return new THIABInventoryFetcher(getActivity());
+        return new THIABBillingInventoryFetcher(getActivity());
     }
 
     @Override protected THIABPurchaseFetcher createPurchaseFetcher()

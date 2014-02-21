@@ -1,10 +1,10 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
-import com.tradehero.common.billing.InventoryFetcher;
+import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.BaseMilestone;
 import com.tradehero.common.milestone.DependentMilestone;
 import com.tradehero.common.milestone.Milestone;
@@ -28,7 +28,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private final Context context;
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
-    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
+    private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
     protected IABSKUListRetrievedAsyncMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
@@ -43,7 +43,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         this.context = context;
         this.actorInventoryFetcherWeak = new WeakReference<>(actorInventoryFetcher);
         this.iabskuListType = iabskuListType;
-        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
+        fetchListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {

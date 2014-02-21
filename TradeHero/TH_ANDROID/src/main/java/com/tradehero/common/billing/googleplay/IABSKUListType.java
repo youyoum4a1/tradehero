@@ -11,12 +11,12 @@ public class IABSKUListType extends AbstractStringDTOKey
 
     public static IABSKUListType getInApp()
     {
-        return new IABSKUListType(Constants.ITEM_TYPE_INAPP);
+        return new IABSKUListType(IABConstants.ITEM_TYPE_INAPP);
     }
 
     public static IABSKUListType getSubs()
     {
-        return new IABSKUListType(Constants.ITEM_TYPE_SUBS);
+        return new IABSKUListType(IABConstants.ITEM_TYPE_SUBS);
     }
 
     //<editor-fold desc="Constructors">

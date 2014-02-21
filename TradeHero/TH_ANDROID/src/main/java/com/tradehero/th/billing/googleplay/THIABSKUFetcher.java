@@ -1,6 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.BaseSKUFetcher;
 import com.tradehero.th.billing.SKUFetcher;
@@ -53,9 +53,9 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
         inAppIABSKUs.add(new IABSKU(ALERT_UNLIMITED));
 
         inAppIABSKUs.add(new IABSKU(RESET_PORTFOLIO_0));
-        availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppIABSKUs);
+        availableSkus.put(IABConstants.ITEM_TYPE_INAPP, inAppIABSKUs);
 
-        availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<IABSKU>());
+        availableSkus.put(IABConstants.ITEM_TYPE_SUBS, new ArrayList<IABSKU>());
     }
 
     @Override public void fetchSkus(int requestCode)

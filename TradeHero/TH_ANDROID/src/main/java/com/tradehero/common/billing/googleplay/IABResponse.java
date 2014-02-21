@@ -30,17 +30,17 @@ public class IABResponse
         this.status = status;
         if (message == null || message.trim().length() == 0)
         {
-            this.message = Constants.getStatusCodeDescription(status);
+            this.message = IABConstants.getStatusCodeDescription(status);
         }
         else
         {
-            this.message = message + " (response: " + Constants.getStatusCodeDescription(status) + ")";
+            this.message = message + " (response: " + IABConstants.getStatusCodeDescription(status) + ")";
         }
     }
 
     public boolean isSuccess()
     {
-        return status == Constants.BILLING_RESPONSE_RESULT_OK;
+        return status == IABConstants.BILLING_RESPONSE_RESULT_OK;
     }
 
     public boolean isFailure()

@@ -4,7 +4,7 @@ package com.tradehero.common.billing;
 public interface BillingActorUser<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<
+        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
                 ProductIdentifierType,
                 ProductDetailType,
                 ExceptionType>,

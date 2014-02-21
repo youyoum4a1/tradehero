@@ -18,11 +18,11 @@ public interface BillingPurchaser<
      *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
      *  */
     public static interface OnPurchaseFinishedListener<
-            ProductIdentifierType extends ProductIdentifier,
-            PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
-            OrderIdType extends OrderId,
-            ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-            ExceptionType extends Exception>
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            ExceptionType>
     {
         /**
          * Called to notify that an in-app purchase finished. If the purchase was successful,

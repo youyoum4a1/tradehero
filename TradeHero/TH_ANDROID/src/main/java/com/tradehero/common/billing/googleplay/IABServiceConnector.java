@@ -8,8 +8,8 @@ import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -69,7 +69,7 @@ public class IABServiceConnector implements ServiceConnection
         {
             // no service available to handle that Intent
             handleSetupFailedInternal(
-                    new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
+                    new IABException(IABConstants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
         }
     }
 
@@ -125,14 +125,14 @@ public class IABServiceConnector implements ServiceConnection
         try
         {
             checkInAppBillingV3Support();
-            handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
+            handleSetupFinishedInternal(new IABResponse(IABConstants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
         }
         catch (RemoteException e)
         {
             e.printStackTrace();
             Timber.e("RemoteException while setting up in-app billing.", e);
             handleSetupFailedInternal(
-                    new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+                    new IABException(IABConstants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
         }
         catch (IABException e)
         {
@@ -149,8 +149,8 @@ public class IABServiceConnector implements ServiceConnection
         Timber.d("Checking for in-app billing 3 support.");
 
         // check for in-app billing v3 support
-        int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
-        if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
+        int responseStatus = purchaseTypeSupportStatus(IABConstants.ITEM_TYPE_INAPP);
+        if (responseStatus != IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             // if in-app purchase aren't supported, neither are subscriptions.
             subscriptionSupported = false;
@@ -159,8 +159,8 @@ public class IABServiceConnector implements ServiceConnection
         Timber.d("In-app billing version 3 supported for " + context.getPackageName());
 
         // check for v3 subscriptions support
-        responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_SUBS);
-        if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
+        responseStatus = purchaseTypeSupportStatus(IABConstants.ITEM_TYPE_SUBS);
+        if (responseStatus == IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             Timber.d("Subscriptions AVAILABLE.");
             subscriptionSupported = true;
@@ -176,7 +176,7 @@ public class IABServiceConnector implements ServiceConnection
 
     /**
      *
-     * @param itemType is Constants.ITEM_TYPE_INAPP or Constants.ITEM_TYPE_SUBS
+     * @param itemType is IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
      * @return
      * @throws RemoteException
      */

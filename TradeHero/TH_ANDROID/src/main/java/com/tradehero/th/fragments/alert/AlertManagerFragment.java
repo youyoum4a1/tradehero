@@ -15,7 +15,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -246,7 +246,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 alertPlanCount.setText(R.string.stock_alerts_no_alerts);
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
             }
-            else if (count < Constants.ALERT_PLAN_UNLIMITED)
+            else if (count < IABConstants.ALERT_PLAN_UNLIMITED)
             {
                 alertPlanCount.setText(String.format(getString(R.string.stock_alert_count_alert_format), count));
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
@@ -279,7 +279,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void handleManageSubscriptionClicked()
     {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.GOOGLE_PLAY_ACCOUNT_URL));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
         getActivity().startActivity(intent);
     }
 
