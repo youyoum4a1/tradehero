@@ -39,7 +39,7 @@
   <string name="alert_dialog_buy_sell_order_null_message">We failed to prepare the buy or sell order.</string>
   <string name="alert_dialog_buy_sell_order_null_cancel">Okay</string>
 
-  <string name="alert_dialog_buy_sell_retrofit_failed_title">Oh Oh</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_title">Failed</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_message">We failed to execute your order.\nYou may confirm the trade did not go through and try again.</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_cancel">Okay</string>
 
