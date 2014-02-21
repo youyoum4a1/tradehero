@@ -22,8 +22,11 @@ public class ColorTagProcessor extends RichSpanTextProcessor
 
     @Override protected Object getSpanElement(String replacement, String[] matchStrings)
     {
-        // TODO use input color
-        return new ForegroundColorSpan(Color.RED);
+        if (matchStrings.length >= 3) {
+            return new ForegroundColorSpan(Color.parseColor(matchStrings[1]));
+        } else {
+            return null;
+        }
     }
 
     @Override protected Pattern getPattern()
