@@ -58,8 +58,7 @@ abstract public class DashboardFragment extends BaseFragment
     {
         if (this instanceof WithTutorial)
         {
-            alertDialogUtil.popTutorialContent(getActivity(),
-                    ((WithTutorial) this).getTutorialLayout());
+            alertDialogUtil.popTutorialContent(getActivity(), ((WithTutorial) this).getTutorialLayout());
         }
         else
         {
