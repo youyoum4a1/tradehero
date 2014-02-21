@@ -206,15 +206,27 @@ public class FreshQuoteHolder
         InputStream is = null;
         try
         {
-            // TODO this thing should not be done in UI thread :(
-            is = body.in();
-            byte[] bodyBytes = IOUtils.streamToBytes(is);
+            if (body != null && body.mimeType() != null)
+            {
+                if (!(body instanceof TypedByteArray))
+                {
+                    // TODO this thing should not be done in UI thread :(
+                    is = body.in();
+                    byte[] bodyBytes = IOUtils.streamToBytes(is);
 
-            body = new TypedByteArray(body.mimeType(), bodyBytes);
+                    body = new TypedByteArray(body.mimeType(), bodyBytes);
+                }
 
-            QuoteSignatureContainer signatureContainer = (QuoteSignatureContainer) converter.fromBody(body, QuoteSignatureContainer.class);
-            quoteDTO = signatureContainer.signedObject;
-            quoteDTO.rawResponse = new String(bodyBytes);
+                QuoteSignatureContainer signatureContainer = (QuoteSignatureContainer) converter.fromBody(body, QuoteSignatureContainer.class);
+                if (signatureContainer != null)
+                {
+                    quoteDTO = signatureContainer.signedObject;
+                    if (quoteDTO != null)
+                    {
+                        quoteDTO.rawResponse = new String(((TypedByteArray) body).getBytes());
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
