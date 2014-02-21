@@ -86,7 +86,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         super.onAttachedToWindow();
         if (stockBgLogo != null)
         {
-            stockBgLogo.setVisibility(INVISIBLE);
+            stockBgLogo.setVisibility(GONE);
         }
         if (mPicasso != null)
         {
@@ -356,7 +356,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (stockBgLogo != null)
             {
-                stockBgLogo.setVisibility(INVISIBLE);
+                stockBgLogo.setVisibility(GONE);
             }
             if (isMyUrlOk())
             {
