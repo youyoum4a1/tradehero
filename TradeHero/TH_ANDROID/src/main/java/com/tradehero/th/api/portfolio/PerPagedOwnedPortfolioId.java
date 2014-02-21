@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
@@ -70,7 +71,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
         return perPage.compareTo(other.perPage);
     }
 
-    @Override public boolean isValid()
+    @JsonIgnore @Override public boolean isValid()
     {
         return super.isValid() && perPage != null;
     }

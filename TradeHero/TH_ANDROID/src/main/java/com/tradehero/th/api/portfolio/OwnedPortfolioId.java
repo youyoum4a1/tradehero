@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -109,7 +110,7 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
         return portfolioId.compareTo(other.portfolioId);
     }
 
-    public boolean isValid()
+    @JsonIgnore public boolean isValid()
     {
         return userId != null && portfolioId != null;
     }
@@ -126,19 +127,19 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
         }
     }
 
-    public Bundle getArgs()
+    @JsonIgnore public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);
         return args;
     }
 
-    public UserBaseKey getUserBaseKey()
+    @JsonIgnore public UserBaseKey getUserBaseKey()
     {
         return new UserBaseKey(userId);
     }
 
-    public PortfolioId getPortfolioId()
+    @JsonIgnore public PortfolioId getPortfolioId()
     {
         return new PortfolioId(portfolioId);
     }

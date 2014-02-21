@@ -1,6 +1,7 @@
 package com.tradehero.th.api.trade;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -81,7 +82,7 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return tradeId.compareTo(other.tradeId);
     }
 
-    @Override public boolean isValid()
+    @JsonIgnore @Override public boolean isValid()
     {
         return super.isValid() && this.tradeId != null;
     }
@@ -97,7 +98,7 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return String.format("[userId=%d; portfolioId=%d; positionId=%d; tradeId=%d]", userId, portfolioId, positionId, tradeId);
     }
 
-    public TradeId getTradeId()
+    @JsonIgnore public TradeId getTradeId()
     {
         return new TradeId(this.tradeId);
     }

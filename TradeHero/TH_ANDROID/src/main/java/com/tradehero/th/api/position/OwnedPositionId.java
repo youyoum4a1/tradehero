@@ -1,6 +1,7 @@
 package com.tradehero.th.api.position;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
@@ -73,7 +74,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
         return positionId.compareTo(other.positionId);
     }
 
-    @Override public boolean isValid()
+    @JsonIgnore @Override public boolean isValid()
     {
         return super.isValid() && this.positionId != null;
     }
@@ -84,7 +85,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
     }
 
-    public boolean isLocked()
+    @JsonIgnore public boolean isLocked()
     {
         return this.positionId < 0;
     }
