@@ -16,16 +16,17 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.news.NewsHeadlineList;
+import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.yahoo.NewsCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
@@ -48,10 +49,10 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
-    protected NewsList yahooNewsList;
-    @Inject Lazy<NewsCache> yahooNewsCache;
-    private DTOCache.Listener<SecurityId, NewsList> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, NewsList> yahooNewsCacheFetchTask;
+    protected NewsHeadlineList newsHeadlineList;
+    @Inject Lazy<NewsHeadlineCache> newsCache;
+    private DTOCache.Listener<SecurityId, NewsHeadlineList> yahooNewsCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
     private MenuItem marketCloseIcon;
@@ -59,7 +60,7 @@ public class StockInfoFragment extends DashboardFragment
     private ViewPager topPager;
     private InfoTopStockPagerAdapter topViewPagerAdapter;
     private PageIndicator topPagerIndicator;
-    private YahooNewsAdapter yahooNewsAdapter;
+    private NewsHeadlineAdapter newsHeadlineAdapter;
     private ListView yahooNewsListView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -71,17 +72,17 @@ public class StockInfoFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        yahooNewsAdapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
+        newsHeadlineAdapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
 
-        yahooNewsListView = (ListView) view.findViewById(R.id.list_yahooNews);
+        yahooNewsListView = (ListView) view.findViewById(R.id.list_news_headline);
         if (yahooNewsListView != null)
         {
-            yahooNewsListView.setAdapter(yahooNewsAdapter);
+            yahooNewsListView.setAdapter(newsHeadlineAdapter);
             yahooNewsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-                    handleNewsClicked((News) adapterView.getItemAtPosition(position));
+                    handleNewsClicked((YahooNewsHeadline) adapterView.getItemAtPosition(position));
                 }
             });
         }
@@ -172,7 +173,7 @@ public class StockInfoFragment extends DashboardFragment
             yahooNewsListView.setOnItemClickListener(null);
         }
         yahooNewsListView = null;
-        yahooNewsAdapter = null;
+        newsHeadlineAdapter = null;
         topViewPagerAdapter = null;
         topPager = null;
         topPagerIndicator = null;
@@ -239,16 +240,16 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
     {
-        NewsList newsList = yahooNewsCache.get().get(securityId);
-        if (newsList != null)
+        NewsHeadlineList newsHeadlineList = newsCache.get().get(securityId);
+        if (newsHeadlineList != null)
         {
-            linkWith(newsList, andDisplay);
+            linkWith(newsHeadlineList, andDisplay);
         }
         else
         {
-            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsList>()
+            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsHeadlineList>()
             {
-                @Override public void onDTOReceived(SecurityId key, NewsList value, boolean fromCache)
+                @Override public void onDTOReceived(SecurityId key, NewsHeadlineList value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }
@@ -256,7 +257,7 @@ public class StockInfoFragment extends DashboardFragment
                 @Override public void onErrorThrown(SecurityId key, Throwable error)
                 {
                     THToast.show(R.string.error_fetch_news_list);
-                    THLog.e(TAG, "Failed to fetch NewsList for " + securityId, error);
+                    THLog.e(TAG, "Failed to fetch NewsHeadlineList for " + securityId, error);
                 }
             };
 
@@ -264,7 +265,7 @@ public class StockInfoFragment extends DashboardFragment
             {
                 yahooNewsCacheFetchTask.cancel(true);
             }
-            yahooNewsCacheFetchTask = yahooNewsCache.get().getOrFetch(securityId, yahooNewsCacheListener);
+            yahooNewsCacheFetchTask = newsCache.get().getOrFetch(securityId, yahooNewsCacheListener);
             yahooNewsCacheFetchTask.execute();
         }
     }
@@ -280,9 +281,9 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(NewsList newsList, boolean andDisplay)
+    private void linkWith(NewsHeadlineList newsHeadlineList, boolean andDisplay)
     {
-        this.yahooNewsList = newsList;
+        this.newsHeadlineList = newsHeadlineList;
 
         if (andDisplay)
         {
@@ -348,9 +349,9 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayYahooNewsList()
     {
-        if (yahooNewsAdapter != null)
+        if (newsHeadlineAdapter != null)
         {
-            yahooNewsAdapter.setItems(yahooNewsList);
+            newsHeadlineAdapter.setItems(newsHeadlineList);
         }
     }
 
@@ -359,7 +360,7 @@ public class StockInfoFragment extends DashboardFragment
         alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
-    protected void handleNewsClicked(News news)
+    protected void handleNewsClicked(YahooNewsHeadline news)
     {
         if (news != null && news.getUrl() != null)
         {

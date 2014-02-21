@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.security.YahooNewsView
+<com.tradehero.th.fragments.news.NewsHeadlineView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,17 +9,17 @@
     android:padding="10dp">
 
   <TextView
-      android:id="@+id/title_yahooNews"
+      android:id="@+id/news_title_title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       tools:text="Google to be bought by private equity"
       />
 
   <TextView
-      android:id="@+id/date_yahooNews"
+      android:id="@+id/news_title_date"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       tools:text="A big one"
       />
 
-</com.tradehero.th.fragments.security.YahooNewsView>
+</com.tradehero.th.fragments.news.NewsHeadlineView>

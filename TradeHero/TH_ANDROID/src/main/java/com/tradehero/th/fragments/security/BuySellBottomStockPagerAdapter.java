@@ -96,7 +96,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
                     fragment = new StockInfoValueFragment();
                     break;
                 case 2:
-                    fragment = new YahooNewsFragment();
+                    fragment = new NewsTitleListFragment();
                     break;
 
                 default:

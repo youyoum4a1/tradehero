@@ -8,31 +8,32 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.news.NewsHeadline;
+import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.persistence.yahoo.NewsCache;
+import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
  * Created by julien on 10/10/13
- * Display a ListView of Yahoo News object for a given SecurityId - It uses the NewsCache to get or fetch the Yahoo news
- * as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
+ * Display a ListView of News object for a given SecurityId - It uses the NewsHeadlineCache to get or fetch the news
+ * from an abstract provider as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
  * The task is cancelled when the fragment is paused.
  */
-public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
+public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHeadlineList>
 {
-    private final static String TAG = YahooNewsFragment.class.getSimpleName();
+    private final static String TAG = NewsTitleListFragment.class.getSimpleName();
 
-    private DTOCache.GetOrFetchTask<SecurityId, NewsList> fetchTask;
-    @Inject protected Lazy<NewsCache> yahooNewsCache;
+    private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> fetchTask;
+    @Inject protected Lazy<NewsHeadlineCache> newsTitleCache;
     private ListView listView;
-    private YahooNewsAdapter adapter;
+    private NewsHeadlineAdapter adapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -42,16 +43,16 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_yahoo_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
         initViews(view);
         return view;
     }
 
     private void initViews(View view)
     {
-        adapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
+        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
 
-        listView = (ListView) view.findViewById(R.id.list_yahooNews);
+        listView = (ListView) view.findViewById(R.id.list_news_headline);
         if (listView != null)
         {
             listView.setAdapter(adapter);
@@ -59,7 +60,7 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-                    handleNewsClicked((News) adapterView.getItemAtPosition(position));
+                    handleNewsClicked((NewsHeadline) adapterView.getItemAtPosition(position));
                 }
             });
         }
@@ -69,7 +70,7 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
     {
         if (securityId != null)
         {
-            yahooNewsCache.get().unRegisterListener(this);
+            newsTitleCache.get().unRegisterListener(this);
         }
 
         if (fetchTask != null)
@@ -96,11 +97,11 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            yahooNewsCache.get().registerListener(this);
-            NewsList news = yahooNewsCache.get().get(this.securityId);
+            newsTitleCache.get().registerListener(this);
+            NewsHeadlineList news = newsTitleCache.get().get(this.securityId);
             if (news == null)
             {
-                this.fetchTask = yahooNewsCache.get().getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
+                this.fetchTask = newsTitleCache.get().getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
                 this.fetchTask.execute();
             }
             else
@@ -112,10 +113,10 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     @Override public void display()
     {
-        displayYahooNewsListView();
+        displayNewsListView();
     }
 
-    public void displayYahooNewsListView()
+    public void displayNewsListView()
     {
         if (adapter != null)
         {
@@ -124,7 +125,7 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
         }
     }
 
-    protected void handleNewsClicked(News news)
+    protected void handleNewsClicked(NewsHeadline news)
     {
         if (news != null && news.getUrl() != null)
         {

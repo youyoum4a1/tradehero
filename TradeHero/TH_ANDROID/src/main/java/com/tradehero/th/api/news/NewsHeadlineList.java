@@ -1,26 +1,26 @@
-package com.tradehero.th.api.yahoo;
+package com.tradehero.th.api.news;
 
 import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 7:27 PM To change this template use File | Settings | File Templates. */
-public class NewsList extends ArrayList<News> implements DTO
+public class NewsHeadlineList extends ArrayList<NewsHeadline> implements DTO
 {
-    public static final String TAG = NewsList.class.getSimpleName();
+    public static final String TAG = NewsHeadlineList.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    public NewsList()
+    public NewsHeadlineList()
     {
         super();
     }
 
-    public NewsList(int capacity)
+    public NewsHeadlineList(int capacity)
     {
         super(capacity);
     }
 
-    public NewsList(Collection<? extends News> collection)
+    public NewsHeadlineList(Collection<? extends NewsHeadline> collection)
     {
         super(collection);
     }

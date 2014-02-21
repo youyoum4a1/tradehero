@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.yahoo;
+package com.tradehero.th.persistence.news.yahoo;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.news.NewsHeadlineList;
+import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.io.IOException;
@@ -28,14 +28,14 @@ import timber.log.Timber;
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
  * This class uses internally the SecurityCompactCache (see the fetch method implementation)
  */
-@Singleton public class NewsCache extends StraightDTOCache<SecurityId, NewsList>
+@Singleton public class YahooNewsHeadlineCache extends NewsHeadlineCache
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
     @Inject protected Lazy<SecurityCompactCache> securityCache;
-    @Inject protected Lazy<YahooNewsService> yahooService;
+    @Inject protected YahooNewsService yahooService;
 
-    @Inject public NewsCache()
+    @Inject public YahooNewsHeadlineCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
@@ -47,7 +47,7 @@ import timber.log.Timber;
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override protected NewsList fetch(SecurityId key) throws Throwable
+    @Override protected NewsHeadlineList fetch(SecurityId key) throws Throwable
     {
         String yahooSymbol = getYahooSymbol(key);
         Response rawResponse = null;
@@ -69,19 +69,19 @@ import timber.log.Timber;
         return yahooSymbol;
     }
 
-    private NewsList fetchYahooNews(String yahooSymbol, Response rawResponse) throws Throwable
+    private NewsHeadlineList fetchYahooNews(String yahooSymbol, Response rawResponse) throws Throwable
     {
-        rawResponse = yahooService.get().getNews(yahooSymbol);
+        rawResponse = yahooService.getNews(yahooSymbol);
 
         if (rawResponse == null)
         {
             return null;
         }
 
-        return new NewsList(tryParseResponse(rawResponse));
+        return new NewsHeadlineList(tryParseResponse(rawResponse));
     }
 
-    private List<News> tryParseResponse(Response response)
+    private List<YahooNewsHeadline> tryParseResponse(Response response)
     {
         try
         {
@@ -98,7 +98,7 @@ import timber.log.Timber;
         return null;
     }
 
-    private List<News> parseResponse(Response response) throws XPathExpressionException, IOException
+    private List<YahooNewsHeadline> parseResponse(Response response) throws XPathExpressionException, IOException
     {
         XPathExpression xpathItems = getxPathExpression();
         InputSource input = new InputSource(response.getBody().in());
@@ -113,13 +113,13 @@ import timber.log.Timber;
         return xPath.compile("//item");
     }
 
-    private List<News> processItems(NodeList nodes)
+    private List<YahooNewsHeadline> processItems(NodeList nodes)
     {
-        List<News> result = new ArrayList<>();
+        List<YahooNewsHeadline> result = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++)
         {
             Node node = nodes.item(i);
-            result.add(new News(node));
+            result.add(new YahooNewsHeadline(node));
         }
         return result;
     }

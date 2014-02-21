@@ -54,7 +54,7 @@ import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.security.YahooNewsFragment;
+import com.tradehero.th.fragments.security.NewsTitleListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -131,6 +131,7 @@ import javax.inject.Singleton;
                 ChartModule.class,
                 ActivityModule.class,
                 THIABModule.class,
+                NewsModule.class,
         },
         injects =
                 {
@@ -161,7 +162,7 @@ import javax.inject.Singleton;
                         PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         MarkdownTextView.class,
 
-                        YahooNewsFragment.class,
+                        NewsTitleListFragment.class,
                         ChartFragment.class,
                         StockInfoValueFragment.class,
                         WarrantInfoValueFragment.class,

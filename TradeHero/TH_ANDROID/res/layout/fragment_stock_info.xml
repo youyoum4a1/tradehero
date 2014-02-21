@@ -20,7 +20,7 @@
       android:id="@+id/top_pager_indicator"
       android:layout_height="wrap_content"
       android:layout_width="fill_parent"
-      android:layout_above="@+id/list_yahooNews"
+      android:layout_above="@+id/list_news_headline"
       android_auto:strokeWidth="1dp"
       android_auto:lineWidth="30dp"
       android_auto:unselectedColor="#FFbbbbbb"
@@ -34,7 +34,7 @@
     />
 
   <ListView
-      android:id="@+id/list_yahooNews"
+      android:id="@+id/list_news_headline"
       android:layout_width="match_parent"
       android:layout_height="200dp"
       android:layout_alignParentBottom="true"

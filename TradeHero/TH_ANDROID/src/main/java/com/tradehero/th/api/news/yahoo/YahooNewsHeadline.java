@@ -1,6 +1,6 @@
-package com.tradehero.th.api.yahoo;
+package com.tradehero.th.api.news.yahoo;
 
-import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.news.NewsHeadline;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,20 +14,20 @@ import timber.log.Timber;
 /**
  * Created by julien on 10/10/13
  */
-public class News implements DTO
+public class YahooNewsHeadline implements NewsHeadline
 {
-    private final static String TAG = News.class.getSimpleName();
+    private final static String TAG = YahooNewsHeadline.class.getSimpleName();
 
     private final static DateFormat dateFormat = getDateFormat();
     private String title;
     private String url;
     private Date date;
 
-    public News()
+    public YahooNewsHeadline()
     {
     }
 
-    public News(Node xmlNode)
+    public YahooNewsHeadline(Node xmlNode)
     {
         NodeList elements = xmlNode.getChildNodes();
         for (int i = 0; i < elements.getLength(); ++i)
