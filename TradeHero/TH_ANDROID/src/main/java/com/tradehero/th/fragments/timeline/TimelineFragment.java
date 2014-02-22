@@ -57,7 +57,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private UserProfileView userProfileView;
 
     private TimelineAdapter timelineAdapter;
-    private ActionBar actionBar;
+
+    protected ActionBar actionBar;
 
     protected UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
@@ -65,6 +66,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+
     private int displayingProfileHeaderLayoutId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,10 +85,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.actionBar.setDisplayOptions(
                 (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        if (shownProfile != null)
-        {
-            this.actionBar.setTitle(shownProfile.displayName);
-        }
+
+        displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -236,8 +236,26 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
+
+        displayActionBarTitle();
     }
     //</editor-fold>
+
+
+    protected void displayActionBarTitle()
+    {
+        if (actionBar != null)
+        {
+            if (shownProfile != null)
+            {
+                actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            }
+            else
+            {
+                actionBar.setTitle(R.string.loading_loading);
+            }
+        }
+    }
 
     //<editor-fold desc="Init milestones">
     protected void createUserProfileRetrievedMilestone()

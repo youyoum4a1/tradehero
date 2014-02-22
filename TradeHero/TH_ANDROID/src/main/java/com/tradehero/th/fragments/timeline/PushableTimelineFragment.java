@@ -9,7 +9,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
@@ -25,12 +24,10 @@ import retrofit.client.Response;
  */
 public class PushableTimelineFragment extends TimelineFragment
 {
-    public static final String TAG = PushableTimelineFragment.class.getSimpleName();
+    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
-    private ActionBar actionBar;
     private MenuItem menuFollow;
     private MenuItem followingStamp;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
     private TextView followButton;
 
     @Override protected void createUserInteractor()
@@ -58,7 +55,6 @@ public class PushableTimelineFragment extends TimelineFragment
         }
 
         followingStamp = menu.findItem(R.id.ic_following);
-        displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -96,7 +92,6 @@ public class PushableTimelineFragment extends TimelineFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        this.actionBar = null;
         this.menuFollow = null;
         this.followingStamp = null;
         super.onDestroyOptionsMenu();
@@ -135,21 +130,6 @@ public class PushableTimelineFragment extends TimelineFragment
             }
         }
         return null;
-    }
-
-    public void displayActionBarTitle()
-    {
-        if (actionBar != null)
-        {
-            if (shownProfile != null)
-            {
-                actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
-            }
-            else
-            {
-                actionBar.setTitle(R.string.loading_loading);
-            }
-        }
     }
 
     public void displayFollowButton()
