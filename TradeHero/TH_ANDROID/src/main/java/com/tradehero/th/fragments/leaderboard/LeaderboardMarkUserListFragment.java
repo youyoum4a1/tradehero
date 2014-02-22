@@ -14,7 +14,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
@@ -33,10 +32,10 @@ import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
+public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    public static final String TAG = LeaderboardMarkUserListViewFragment.class.getSimpleName();
-    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListViewFragment.class.getName();
+    public static final String TAG = LeaderboardMarkUserListFragment.class.getSimpleName();
+    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SharedPreferences preferences;
@@ -79,20 +78,21 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         initViews(view);
         inflateHeaderView(inflater, container);
-        inflateEmptyView(inflater, container);
+
+        if (leaderboardMarkUserListView != null)
+        {
+            leaderboardMarkUserListView.setEmptyView(inflateEmptyView(inflater, container));
+        }
         return view;
     }
 
-    private void inflateEmptyView(LayoutInflater inflater, ViewGroup container)
+    protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
     {
-        if (leaderboardMarkUserListView != null)
-        {
-            if (leaderboardId == LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)
-            {
-                View friendLeaderboardEmptyView = inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
-                leaderboardMarkUserListView.setEmptyView(friendLeaderboardEmptyView);
-            }
-        }
+        /*
+         TODO I haven't seen a basic leaderboard empty view except the one from Friend leaderboard
+         on iOS app, therefore, I will use a dummy empty view here
+         */
+        return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
     protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)

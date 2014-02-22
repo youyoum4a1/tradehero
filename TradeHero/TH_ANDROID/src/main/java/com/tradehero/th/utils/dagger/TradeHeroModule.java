@@ -27,14 +27,14 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
-import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -220,13 +220,13 @@ import javax.inject.Singleton;
                         LeaderboardDefView.class,
                         LeaderboardManager.class,
                         LeaderboardMarkUserLoader.class,
-                        LeaderboardMarkUserListViewFragment.class,
+                        LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
                         LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
                         LeaderboardMarkUserListView.class,
-                        FriendLeaderboardMarkUserListViewFragment.class,
-                        CompetitionLeaderboardMarkUserListViewFragment.class,
+                        FriendLeaderboardMarkUserListFragment.class,
+                        CompetitionLeaderboardMarkUserListFragment.class,
                         LeaderboardFilterFragment.class,
 
                         WebViewFragment.class,

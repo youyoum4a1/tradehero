@@ -1,6 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import dagger.Module;
 import dagger.Provides;
@@ -12,7 +12,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 @Module(
         injects = {
                 TimelineItemView.class,
-                LeaderboardMarkUserListViewFragment.class,
+                LeaderboardMarkUserListFragment.class,
         },
         complete = false
 )

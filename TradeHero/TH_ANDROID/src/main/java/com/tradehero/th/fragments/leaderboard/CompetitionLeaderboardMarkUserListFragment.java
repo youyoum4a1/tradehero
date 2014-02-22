@@ -26,11 +26,11 @@ import timber.log.Timber;
 /**
  * Created by xavier on 1/23/14.
  */
-public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
+public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
-    public static final String TAG = CompetitionLeaderboardMarkUserListViewFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".providerId";
-    public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".competitionId";
+    public static final String TAG = CompetitionLeaderboardMarkUserListFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
+    public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
 
     @Inject ProviderCache providerCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -141,27 +141,27 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
 
         @Override protected WebViewFragment getApplicableWebViewFragment()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.webViewFragment;
+            return CompetitionLeaderboardMarkUserListFragment.this.webViewFragment;
         }
 
         @Override protected OwnedPortfolioId getApplicablePortfolioId()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.getApplicablePortfolioId();
+            return CompetitionLeaderboardMarkUserListFragment.this.getApplicablePortfolioId();
         }
 
         @Override protected ProviderId getProviderId()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.providerId;
+            return CompetitionLeaderboardMarkUserListFragment.this.providerId;
         }
 
         @Override protected Navigator getNavigator()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.getNavigator();
+            return CompetitionLeaderboardMarkUserListFragment.this.getNavigator();
         }
 
         @Override protected Class<?> getClassToPop()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.class;
+            return CompetitionLeaderboardMarkUserListFragment.class;
         }
     }
 }

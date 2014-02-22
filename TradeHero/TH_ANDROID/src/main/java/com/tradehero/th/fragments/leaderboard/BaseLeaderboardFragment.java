@@ -106,11 +106,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
+                getNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
                 break;
 
             default:
-                getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
+                getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }

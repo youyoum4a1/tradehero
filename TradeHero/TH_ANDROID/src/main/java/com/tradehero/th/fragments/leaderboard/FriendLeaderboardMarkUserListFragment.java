@@ -1,12 +1,15 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 6:26 PM Copyright (c) TradeHero */
-public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
+public class FriendLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     @Override protected int getMenuResource()
     {
@@ -45,6 +48,11 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
     @Override protected void saveCurrentFilterKey()
     {
         // Do nothing really
+    }
+
+    @Override protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
+    {
+        return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
 
     private void setFriendOfFriendFilter(boolean isFoF)
