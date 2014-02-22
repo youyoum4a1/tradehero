@@ -76,9 +76,13 @@ public class WebViewFragment extends DashboardFragment
 
             case R.id.webview_view_in_browser:
             {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(webView.getUrl()));
-                getActivity().startActivity(intent);
+                String url = webView.getUrl();
+                if (url != null)
+                {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    getActivity().startActivity(intent);
+                }
             }
             break;
         }
