@@ -165,7 +165,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        if (leaderboardMarkUserListView.getRefreshableView().getAdapter() == null)
+        if (leaderboardMarkUserListAdapter == null)
         {
             leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                     getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
@@ -187,10 +187,15 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         if (leaderboardFilterFragment != null)
         {
             PerPagedFilteredLeaderboardKey newLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
-            Timber.d("" + newLeaderboardKey.equals(currentLeaderboardKey));
-            currentLeaderboardKey = newLeaderboardKey;
             leaderboardFilterFragment = null;
-            initialLoad();
+            Timber.d("" + newLeaderboardKey.equals(currentLeaderboardKey));
+
+            if (!newLeaderboardKey.equals(currentLeaderboardKey))
+            {
+                currentLeaderboardKey = newLeaderboardKey;
+                leaderboardMarkUserListView.setRefreshing();
+                initialLoad();
+            }
             getActivity().invalidateOptionsMenu();
         }
         else
