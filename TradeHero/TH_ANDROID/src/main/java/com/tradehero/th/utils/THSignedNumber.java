@@ -165,6 +165,7 @@ public class THSignedNumber
     {
         int precision = 4;
         double absNumber = Math.abs(number);
+
         if (absNumber >= 1000)
         {
             precision = 0;
@@ -181,9 +182,13 @@ public class THSignedNumber
         {
             precision = 3;
         }
-        else
+        else if (absNumber >= 0.0001)
         {
             precision = 4;
+        }
+        else
+        {
+            precision = 1;
         }
         return precision;
     }
