@@ -52,6 +52,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.timeline_list_view) PullToRefreshListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
+
     private UserProfileView userProfileView;
 
     private TimelineAdapter timelineAdapter;
@@ -102,27 +103,26 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        userProfileView.setOnClickListener(new View.OnClickListener()
+        if (userProfileView != null)
         {
-            @Override public void onClick(View v)
+            userProfileView.setOnClickListener(new View.OnClickListener()
             {
-                userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.GONE);
-                userProfileView.showNext();
-                userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.VISIBLE);
-            }
-        });
-        userProfileView.setPortfolioRequestListener(this);
-
-        timelineListView.getRefreshableView().addHeaderView(userProfileView);
+                @Override public void onClick(View v)
+                {
+                    userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.GONE);
+                    userProfileView.showNext();
+                    userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.VISIBLE);
+                }
+            });
+            userProfileView.setPortfolioRequestListener(this);
+            timelineListView.getRefreshableView().addHeaderView(userProfileView);
+        }
     }
 
-    @Override public void onResume()
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onResume();
-        if (displayingProfileHeaderLayoutId != 0)
-        {
-            userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
-        }
+        super.onActivityCreated(savedInstanceState);
 
         UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
@@ -131,9 +131,21 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderCallback());
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
+        {
+            userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
+        }
+    }
+
     @Override public void onPause()
     {
-        displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
+        if (userProfileView != null)
+        {
+            displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
+        }
         super.onPause();
     }
 
@@ -167,12 +179,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.shownUserBaseKey = userBaseKey;
 
-        timelineAdapter = createTimelineAdapter();
-        timelineListView.setAdapter(timelineAdapter);
-        timelineListView.setOnRefreshListener(timelineAdapter);
-        timelineListView.setOnScrollListener(timelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
-        timelineListView.setRefreshing();
+        if (timelineListView.getRefreshableView().getAdapter() == null)
+        {
+            timelineAdapter = createTimelineAdapter();
+            timelineListView.setAdapter(timelineAdapter);
+            timelineListView.setOnRefreshListener(timelineAdapter);
+            timelineListView.setOnScrollListener(timelineAdapter);
+            timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+            timelineListView.setRefreshing();
+        }
 
         if (userBaseKey != null)
         {
