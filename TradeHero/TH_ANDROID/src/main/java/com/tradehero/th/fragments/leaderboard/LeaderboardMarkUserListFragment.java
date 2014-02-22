@@ -165,23 +165,20 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
-        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
-        leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-        leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
-        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
-        leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+        if (leaderboardMarkUserListAdapter == null)
+        {
+            leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
+                    getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
+            leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
+            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
+            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+            leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+        }
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        initialLoad();
     }
 
     @Override public void onResume()
@@ -189,10 +186,16 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         super.onResume();
         if (leaderboardFilterFragment != null)
         {
-            currentLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
+            PerPagedFilteredLeaderboardKey newLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
-            initialLoad();
-            Timber.d("onResume %s", currentLeaderboardKey);
+            Timber.d("" + newLeaderboardKey.equals(currentLeaderboardKey));
+
+            if (!newLeaderboardKey.equals(currentLeaderboardKey))
+            {
+                currentLeaderboardKey = newLeaderboardKey;
+                leaderboardMarkUserListView.setRefreshing();
+                initialLoad();
+            }
             getActivity().invalidateOptionsMenu();
         }
         else

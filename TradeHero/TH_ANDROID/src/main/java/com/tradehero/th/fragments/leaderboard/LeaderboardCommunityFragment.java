@@ -346,16 +346,16 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getSector()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+        bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
+        getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
 
     private void pushLeaderboardDefExchange()
     {
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getExchange()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+        bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
+        getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
     //</editor-fold>
 
