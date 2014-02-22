@@ -56,7 +56,8 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
             {
                 @Override public void onClick(View view)
                 {
-                    setFilteredLeaderboardKey(getStartingFilter(getResources(), 0));
+                    int leaderboardKey = perPagedFilteredLeaderboardKey != null ? perPagedFilteredLeaderboardKey.key : 0;
+                    setFilteredLeaderboardKey(getStartingFilter(getResources(), leaderboardKey));
                 }
             });
         }
