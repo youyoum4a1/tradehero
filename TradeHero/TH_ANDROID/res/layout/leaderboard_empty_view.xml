@@ -5,4 +5,5 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:text="@string/leaderboard_empty"
+    android:padding="5dp"
     />
