@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
@@ -244,13 +243,19 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
-        invalidateCachedItemView();
+        //invalidateCachedItemView();
     }
 
     /**
      * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
      * this crazy way works and is the only way I found to clear ListView's recycle (reusing item view)
      */
+
+    /**
+     * Update 22 Feb 2014: We are not using different mode for leaderboard item type anymore,
+     * Instead, filter mode feature is implemented, therefore, no need to clear listview's recycle!!!
+     */
+    @Deprecated
     protected void invalidateCachedItemView()
     {
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
@@ -296,8 +301,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
         {
-            int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
-            boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
             LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), currentLeaderboardKey);
             leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
             return leaderboardMarkUserLoader;

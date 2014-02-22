@@ -64,6 +64,6 @@ public class FriendLeaderboardMarkUserListFragment extends LeaderboardMarkUserLi
                 isFoF);
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
-        invalidateCachedItemView();
+        //invalidateCachedItemView();
     }
 }
