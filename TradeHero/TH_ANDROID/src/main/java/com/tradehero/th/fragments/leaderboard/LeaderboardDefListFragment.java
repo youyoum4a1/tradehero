@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -18,16 +17,15 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
-public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
+public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
-    private static final String TAG = LeaderboardDefListViewFragment.class.getName();
-
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchListener;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
     private ListView contentListView;
@@ -147,7 +145,7 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-            THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+            Timber.e("Error fetching the leaderboard def key list %s", key, error);
         }
     }
 }
