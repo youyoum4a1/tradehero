@@ -45,7 +45,7 @@ public class PushableTimelineFragment extends TimelineFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         //super.onCreateOptionsMenu(menu, inflater);
         menuFollow = menu.findItem(R.id.btn_follow_this_user);
-        followButton = (TextView) menuFollow.getActionView().findViewById(R.id.menu_followed_button);
+        followButton = (TextView) menuFollow.getActionView().findViewById(R.id.follow_button);
         if (followButton != null)
         {
             followButton.setOnClickListener(new View.OnClickListener()

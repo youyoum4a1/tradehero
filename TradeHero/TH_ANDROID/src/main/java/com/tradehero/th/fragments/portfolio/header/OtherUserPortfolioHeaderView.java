@@ -3,10 +3,11 @@ package com.tradehero.th.fragments.portfolio.header;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -32,11 +33,11 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 {
     public static final String TAG = OtherUserPortfolioHeaderView.class.getSimpleName();
 
-    private View userViewContainer;
-    private ImageView userImageView;
-    private TextView usernameTextView;
-    private ImageView followingImageView;
-    private ImageButton followButton;
+    @InjectView(R.id.portfolio_person_container) View userViewContainer;
+    @InjectView(R.id.portfolio_header_avatar) ImageView userImageView;
+    @InjectView(R.id.header_portfolio_username) TextView usernameTextView;
+    @InjectView(R.id.header_portfolio_following_image) ImageView followingImageView;
+    @InjectView(R.id.follow_button) TextView followButton;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userCache;
@@ -70,16 +71,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        initViews();
-    }
-
-    private void initViews()
-    {
-        userViewContainer = findViewById(R.id.portfolio_person_container);
-        userImageView = (ImageView) findViewById(R.id.portfolio_header_avatar);
-        usernameTextView = (TextView) findViewById(R.id.header_portfolio_username);
-        followingImageView = (ImageView) findViewById(R.id.header_portfolio_following_image);
-        followButton = (ImageButton) findViewById(R.id.header_portfolio_follow_button);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
