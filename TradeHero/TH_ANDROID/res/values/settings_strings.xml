@@ -52,7 +52,7 @@
   <string name="settings_update_profile_successful">Profile successfully updated</string>
   <string name="settings_privacy">Privacy Policy</string>
   <string name="settings_terms">Terms and Conditions</string>
-  <string name="settings_about_header">About</string>
+  <string name="settings_about_title">About</string>
   <string name="settings_about_trademark">TM\n</string>
   <string name="settings_version_holder">v%s</string>
   <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2014 My Manisku Pte. Ltd.</string>

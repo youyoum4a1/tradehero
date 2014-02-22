@@ -4,9 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/menu_settings"
-      android:icon="@drawable/icon_menu"
-      android:title="@string/action_settings"
-      android:showAsAction="ifRoom"/>
+      android:id="@+id/hardware_menu_about"
+      android:title="@string/action_menu_about"
+      android:showAsAction="never"/>
+
+  <item
+      android:id="@+id/hardware_menu_settings"
+      android:title="@string/action_menu_settings"
+      android:showAsAction="never"/>
 
 </menu>

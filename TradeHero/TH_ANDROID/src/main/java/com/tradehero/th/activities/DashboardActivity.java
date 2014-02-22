@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -20,7 +21,9 @@ import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -117,9 +120,14 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (currentUserProfile != null && currentUserProfile.isAdmin)
+        MenuInflater menuInflater = getSupportMenuInflater();
+        if (currentUserProfile != null)
         {
-            getSupportMenuInflater().inflate(R.menu.admin_menu, menu);
+            menuInflater.inflate(R.menu.hardware_menu, menu);
+            if (currentUserProfile.isAdmin)
+            {
+                menuInflater.inflate(R.menu.admin_menu, menu);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -131,9 +139,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             case R.id.admin_settings:
                 getDashboardNavigator().pushFragment(AdminSettingsFragment.class);
-                break;
+                return true;
+            case R.id.hardware_menu_settings:
+                pushFragmentIfNecessary(SettingsFragment.class);
+                return true;
+            case R.id.hardware_menu_about:
+                pushFragmentIfNecessary(AboutFragment.class);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
+    {
+        Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        if (!(fragmentClass.isInstance(currentDashboardFragment)))
+        {
+            getNavigator().pushFragment(fragmentClass);
+        }
     }
 
     @Override protected void onResume()
@@ -146,21 +169,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchActions();
 
         super.onResume();
-    }
-
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        switch (keyCode)
-        {
-            case KeyEvent.KEYCODE_MENU:
-                Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
-                if (!(currentDashboardFragment instanceof SettingsFragment))
-                {
-                    getNavigator().openSettings();
-                }
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override protected void onDestroy()

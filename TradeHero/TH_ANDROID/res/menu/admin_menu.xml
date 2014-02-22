@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/admin_settings"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:icon="@drawable/admin"
       android:title="@string/admin_setting"
       />

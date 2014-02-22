@@ -119,11 +119,6 @@ public class Navigator
     //    return pushFragment(fragmentClass, args, getSafeAnimation());
     //}
 
-    public void openSettings()
-    {
-        pushFragment(SettingsFragment.class);
-    }
-
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass)
     {
         return pushFragment(fragmentClass, null);

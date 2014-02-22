@@ -27,6 +27,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -95,7 +96,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             case R.id.menu_settings:
                 DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-                navigator.openSettings();
+                navigator.pushFragment(SettingsFragment.class);
                 return true;
         }
         return super.onOptionsItemSelected(item);
