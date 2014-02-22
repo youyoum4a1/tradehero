@@ -180,7 +180,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.shownUserBaseKey = userBaseKey;
 
-        if (timelineListView.getRefreshableView().getAdapter() == null)
+        if (timelineAdapter == null)
         {
             timelineAdapter = createTimelineAdapter();
             timelineListView.setAdapter(timelineAdapter);

@@ -19,11 +19,11 @@ import javax.inject.Inject;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/7/14 Time: 5:36 PM Copyright (c) TradeHero
  */
-public class SurveyTileView extends ImageView
+public final class SurveyTileView extends ImageView
 {
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<Picasso> picasso;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<Picasso> picasso;
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
 
     private UserProfileDTO userProfileDTO;
