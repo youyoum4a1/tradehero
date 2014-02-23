@@ -68,6 +68,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     private int displayingProfileHeaderLayoutId;
+    private boolean cancelRefreshingOnResume;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -120,7 +121,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -138,6 +138,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
         {
             userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
+        }
+
+        if (cancelRefreshingOnResume)
+        {
+            timelineListView.onRefreshComplete();
+            cancelRefreshingOnResume = false;
         }
     }
 
@@ -241,7 +247,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-
     protected void displayActionBarTitle()
     {
         if (actionBar != null)
@@ -290,6 +295,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 if (timelineListView != null)
                 {
                     timelineListView.onRefreshComplete();
+                    cancelRefreshingOnResume = true;
                 }
             }
 
