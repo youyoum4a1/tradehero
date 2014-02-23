@@ -12,8 +12,6 @@ import java.lang.ref.WeakReference;
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
 public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>
 {
-    private static final String TAG = UserProfileDetailView.class.getName();
-
     protected UserProfileDetailViewHolder userProfileDetailViewHolder;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 

@@ -21,8 +21,6 @@ import javax.inject.Inject;
  */
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    public static final String TAG = UserProfileDetailViewHolder.class.getSimpleName();
-
     protected View profileTop;
     protected TextView firstLastName;
     protected TextView memberSince;
@@ -124,7 +122,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                firstLastName.setText(context.getString(R.string.user_profile_first_last_name_display, userProfileDTO.firstName, userProfileDTO.lastName));
+                firstLastName.setText(context.getString(
+                        R.string.user_profile_first_last_name_display,
+                        userProfileDTO.firstName != null ? userProfileDTO.firstName: "",
+                        userProfileDTO.lastName != null ? userProfileDTO.lastName : ""));
             }
             else
             {
