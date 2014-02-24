@@ -129,11 +129,11 @@ abstract public class AbstractPositionListFragment<
                         handlePositionItemClicked(adapterView, view, position, id);
                     }
 
-                    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
+                    @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
                     {
                     }
 
-                    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
+                    @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
                     {
                     }
                 });

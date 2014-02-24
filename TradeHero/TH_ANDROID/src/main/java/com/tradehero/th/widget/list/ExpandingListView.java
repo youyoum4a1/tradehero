@@ -62,7 +62,7 @@ public class ExpandingListView extends ListView
                     viewObject.setExpanded(true);
                     if (expandingListItemListener != null)
                     {
-                        expandingListItemListener.onItemDidExpand(parent, view, position, id);
+                        expandingListItemListener.onItemExpanded(parent, view, position, id);
                     }
                 }
                 else
@@ -71,7 +71,7 @@ public class ExpandingListView extends ListView
                     viewObject.setExpanded(false);
                     if (expandingListItemListener != null)
                     {
-                        expandingListItemListener.onItemDidCollapse(parent, view, position, id);
+                        expandingListItemListener.onItemCollapsed(parent, view, position, id);
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class ExpandingListView extends ListView
     public static interface ExpandingListItemListener extends OnItemClickListener
     {
         public void onItemClick (AdapterView<?> parent, View view, int position, long id);
-        public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id);
-        public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id);
+        public void onItemExpanded(AdapterView<?> parent, View view, int position, long id);
+        public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id);
     }
 }

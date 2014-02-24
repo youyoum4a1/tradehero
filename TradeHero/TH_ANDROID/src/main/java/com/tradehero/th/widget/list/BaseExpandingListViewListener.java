@@ -47,12 +47,12 @@ public class BaseExpandingListViewListener implements ExpandingListView.Expandin
         }
     }
 
-    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
+    @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
     {
         // nothing
     }
 
-    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
+    @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
     {
         // nothing
     }
