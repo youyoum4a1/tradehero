@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
@@ -56,7 +57,7 @@ public class TransformationModule
     }
 
     @Provides @ForUserPhotoBackground
-    public Transformation provideUserImageBackgroundTransformation(Context context)
+    public Transformation provideUserImageBackgroundTransformation(Context context, Picasso picasso)
     {
         AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
         {
@@ -65,7 +66,7 @@ public class TransformationModule
                 return "toGaussianGrayscale11";
             }
         };
-        transformation.add(new GrayscaleTransformation());
+        transformation.add(new GrayscaleTransformation(picasso));
         transformation.add(new FastBlurTransformation(30));
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
@@ -74,7 +75,7 @@ public class TransformationModule
     }
 
     @Provides @ForSecurityItemBackground
-    public Transformation provideSecurityItemBackgroundTransformation(Context context)
+    public Transformation provideSecurityItemBackgroundTransformation(Context context, Picasso picasso)
     {
         AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
         {
@@ -83,7 +84,7 @@ public class TransformationModule
                 return "toFastBlurGrayScale";
             }
         };
-        transformation.add(new GrayscaleTransformation());
+        transformation.add(new GrayscaleTransformation(picasso));
         transformation.add(new FastBlurTransformation(10));
         transformation.add(new RoundedCornerTransformation(
                 context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
@@ -98,7 +99,7 @@ public class TransformationModule
     }
 
     @Provides @ForSearchPeopleItemBackground
-    public Transformation provideSearchPeopleItemBackgroundTransformation(Context context)
+    public Transformation provideSearchPeopleItemBackgroundTransformation(Context context, Picasso picasso)
     {
         AbstractSequentialTransformation backgroundTransformation = new AbstractSequentialTransformation()
         {
@@ -107,7 +108,7 @@ public class TransformationModule
                 return "toRoundedGaussianGrayscale2";
             }
         };
-        backgroundTransformation.add(new GrayscaleTransformation());
+        backgroundTransformation.add(new GrayscaleTransformation(picasso));
         backgroundTransformation.add(new GaussianTransformation());
         backgroundTransformation.add(new RoundedCornerTransformation(
                 context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),

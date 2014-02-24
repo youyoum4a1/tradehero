@@ -1,64 +1,71 @@
 package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.tradehero.th.R;
+import java.io.IOException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:33 PM To change this template use File | Settings | File Templates. */
-public class GrayscaleTransformation implements com.squareup.picasso.Transformation
+import static android.graphics.Bitmap.createBitmap;
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
+import static android.graphics.Shader.TileMode.REPEAT;
+
+public class GrayscaleTransformation implements Transformation
 {
-    public static final String TAG = GrayscaleTransformation.class.getSimpleName();
 
-    private static ColorMatrix getDefaultColorMatrix()
+    private final Picasso picasso;
+
+    public GrayscaleTransformation(Picasso picasso)
     {
-        ColorMatrix cm = new ColorMatrix(
-            new float[] {
-                    1f, 1f, 1f,  0, 0,
-                    1f, 1f, 1f,  0, 0,
-                    1f, 1f, 1f,  0, 0,
-                    0,   0,  0, 1f, 0
-            });
-        cm.setSaturation(0);
-        return cm;
+        this.picasso = picasso;
     }
 
-    private ColorMatrix colorMatrix;
-
-    public GrayscaleTransformation()
+    @Override public Bitmap transform(Bitmap source)
     {
-        super();
-        this.colorMatrix = getDefaultColorMatrix();
-    }
-
-    public GrayscaleTransformation(ColorMatrix colorMatrix)
-    {
-        this.colorMatrix = colorMatrix;
-    }
-
-    @Override public Bitmap transform(Bitmap bmpOriginal)
-    {
-        int width, height;
-        height = bmpOriginal.getHeight();
-        width = bmpOriginal.getWidth();
-
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, 0, 0, paint);
-
-        if (bmpOriginal != bmpGrayscale)
+        Bitmap result = createBitmap(source.getWidth(), source.getHeight(), source.getConfig());
+        Bitmap noise;
+        try
         {
-            bmpOriginal.recycle();
+            noise = picasso.load(R.drawable.noise).get();
         }
-        return bmpGrayscale;
+        catch (IOException e)
+        {
+            throw new RuntimeException("Failed to apply transformation! Missing resource.");
+        }
+
+        BitmapShader shader = new BitmapShader(noise, REPEAT, REPEAT);
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setColorFilter(filter);
+
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(source, 0, 0, paint);
+
+        paint.setColorFilter(null);
+        paint.setShader(shader);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
+
+        source.recycle();
+        noise.recycle();
+
+        return result;
     }
 
     @Override public String key()
     {
-        return "toGrayscale";
+        return "grayscaleTransformation()";
     }
 }

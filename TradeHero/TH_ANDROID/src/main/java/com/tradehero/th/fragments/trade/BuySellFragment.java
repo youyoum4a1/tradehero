@@ -102,8 +102,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @InjectView(R.id.portfolio_selector_container) protected View mSelectedPortfolioContainer;
     @InjectView(R.id.portfolio_selected) protected TextView mSelectedPortfolio;
-    private PopupMenu mPortfolioSelectorMenu;
-    private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     @InjectView(R.id.stock_name) protected TextView mStockName;
 
@@ -112,7 +110,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.pricing_bid_ask_view) protected PricingBidAskView mPricingBidAskView;
     @InjectView(R.id.trade_quantity_view) protected TradeQuantityView mTradeQuantityView;
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
-    protected PageIndicator mBottomPagerIndicator;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
     @InjectView(R.id.btn_buy) protected Button mBuyBtn;
@@ -121,15 +118,21 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.btn_add_trigger) protected ImageButton mBtnAddTrigger;
     @InjectView(R.id.btn_watch_list) protected ImageView mBtnWatchlist;
 
+    @Inject PortfolioCache portfolioCache;
+    @Inject PortfolioCompactListCache portfolioCompactListCache;
+    @Inject PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject WatchlistPositionCache watchlistPositionCache;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
+    @Inject Picasso picasso;
+
+    private PopupMenu mPortfolioSelectorMenu;
+    private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
+
     protected SecurityAlertAssistant securityAlertAssistant;
-    @Inject protected PortfolioCache portfolioCache;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    @Inject protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    @Inject protected PortfolioCompactCache portfolioCompactCache;
-    @Inject protected UserWatchlistPositionCache userWatchlistPositionCache;
-    @Inject protected WatchlistPositionCache watchlistPositionCache;
-    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-    @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
+    protected PageIndicator mBottomPagerIndicator;
     protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
     protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchTask;
@@ -142,7 +145,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected SecurityIdList watchedList;
 
-    @Inject protected Picasso mPicasso;
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
@@ -286,7 +288,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return "toRoundedGaussianGrayscale11";
                 }
             };
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation(picasso));
             ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
             ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
                     getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
@@ -1037,7 +1039,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             if (isMyUrlOk())
             {
-                mPicasso.load(securityCompactDTO.imageBlobUrl)
+                picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(foregroundTransformation)
                         .into(mStockLogo, new Callback()
                         {
@@ -1118,7 +1120,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (isMyUrlOk())
             {
-                RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
+                RequestCreator requestCreator = picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(backgroundTransformation);
                 resizeBackground(requestCreator, mStockBgLogo,new Callback()
                 {
@@ -1149,7 +1151,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 try
                 {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    RequestCreator requestCreator = mPicasso.load(exchange.logoId)
+                    RequestCreator requestCreator = picasso.load(exchange.logoId)
                             .transform(backgroundTransformation);
                     resizeBackground(requestCreator, mStockBgLogo, null);
                     mStockBgLogo.setVisibility(View.VISIBLE);
@@ -1351,7 +1353,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 if (mStockBgLogo != null && BuySellFragment.isUrlOk((String) mStockBgLogo.getTag(R.string.image_url)))
                 {
                     Timber.i("Loading Bg for %s", mStockBgLogo.getTag(R.string.image_url));
-                    mPicasso.load((String) mStockBgLogo.getTag(R.string.image_url))
+                    picasso.load((String) mStockBgLogo.getTag(R.string.image_url))
                             .placeholder(R.drawable.default_image)
                             .error(R.drawable.default_image)
                             .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
@@ -1364,7 +1366,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     int logoId = securityPositionDetailDTO.security.getExchangeLogoId();
                     if (logoId != 0)
                     {
-                        mPicasso.load(logoId)
+                        picasso.load(logoId)
                             .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
                             .centerCrop()
                             .transform(foregroundTransformation)
