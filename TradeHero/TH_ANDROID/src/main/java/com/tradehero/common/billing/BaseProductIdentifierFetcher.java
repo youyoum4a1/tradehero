@@ -1,8 +1,6 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,18 +13,16 @@ abstract public class BaseProductIdentifierFetcher<
     public static final String TAG = BaseProductIdentifierFetcher.class.getSimpleName();
 
     protected int requestCode;
-    protected Map<String, List<ProductIdentifierType>> availableProductIdentifiers;
     protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener;
 
     public BaseProductIdentifierFetcher()
     {
         super();
-        availableProductIdentifiers = new HashMap<>();
     }
 
-    public void dispose()
+    @Override public void fetchProductIdentifiers(int requestCode)
     {
-        productIdentifierFetchedListener = null;
+        this.requestCode = requestCode;
     }
 
     @Override public int getRequestCode()
@@ -45,13 +41,12 @@ abstract public class BaseProductIdentifierFetcher<
         this.productIdentifierFetchedListener = listener;
     }
 
-    protected void notifyListenerFetched()
+    protected void notifyListenerFetched(Map<String, List<ProductIdentifierType>> productIdentifiers)
     {
         OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> listenerCopy = getProductIdentifierListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onFetchedProductIdentifiers(requestCode,
-                    Collections.unmodifiableMap(availableProductIdentifiers));
+            listenerCopy.onFetchedProductIdentifiers(requestCode, productIdentifiers);
         }
     }
 

@@ -1,18 +1,19 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.BaseProductIdentifierFetcher;
-import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
-public class THIABProductIdentifierFetcher extends BaseProductIdentifierFetcher<
+public class THIABProductIdentifierFetcher
+    extends BaseProductIdentifierFetcher<
         IABSKU,
         IABException>
     implements IABProductIdentifierFetcher<
@@ -21,9 +22,13 @@ public class THIABProductIdentifierFetcher extends BaseProductIdentifierFetcher<
 {
     public static final String TAG = THIABProductIdentifierFetcher.class.getSimpleName();
 
+    protected Map<String, List<IABSKU>> availableProductIdentifiers;
+
     public THIABProductIdentifierFetcher()
     {
         super();
+        availableProductIdentifiers = new HashMap<>();
+
         // TODO hard-coded while there is nothing coming from the server.
         List<IABSKU> inAppIABSKUs = new ArrayList<>();
         List<IABSKU> subsIABSKUs = new ArrayList<>();
@@ -47,8 +52,8 @@ public class THIABProductIdentifierFetcher extends BaseProductIdentifierFetcher<
 
     @Override public void fetchProductIdentifiers(int requestCode)
     {
-        this.requestCode = requestCode;
-        notifyListenerFetched();
+        super.fetchProductIdentifiers(requestCode);
+        notifyListenerFetched(Collections.unmodifiableMap(availableProductIdentifiers));
     }
 
     @Override public Map<String, List<IABSKU>> fetchProductIdentifiersSync()

@@ -44,12 +44,12 @@ abstract public class IABBillingInventoryFetcher<
         DaggerUtils.inject(this);
     }
 
-    public List<IABSKUType> getProductIdentifiers()
+    @Override public List<IABSKUType> getProductIdentifiers()
     {
         return iabSKUs;
     }
 
-    public void setProductIdentifiers(List<IABSKUType> productIdentifiers)
+    @Override public void setProductIdentifiers(List<IABSKUType> productIdentifiers)
     {
         this.iabSKUs = productIdentifiers;
     }
@@ -61,7 +61,7 @@ abstract public class IABBillingInventoryFetcher<
 
     abstract protected IABProductDetailsType createSKUDetails(String itemType, String json) throws JSONException;
 
-    public void fetchInventory(int requestCode)
+    @Override public void fetchInventory(int requestCode)
     {
         this.requestCode = requestCode;
         this.startConnectionSetup();
