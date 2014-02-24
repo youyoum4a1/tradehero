@@ -129,7 +129,7 @@ public class DashboardNavigator extends Navigator
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
 
-        mTabHost.addTab(makeTabSpec(tabType), tabType.fragmentClass, bundle);
+        mTabHost.addTab(makeNewTabSpec(tabType), tabType.fragmentClass, bundle);
     }
 
     public void goToPage(final THIntent thIntent)
