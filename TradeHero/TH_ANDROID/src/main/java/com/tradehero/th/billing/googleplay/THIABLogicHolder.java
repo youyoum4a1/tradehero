@@ -12,7 +12,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface THIABLogicHolder extends
         THIABProductDetailDomainInformer,
-        THIABProductIdentifierFetcherHolder, // This is redundant but allows passing of interface
         THIABInventoryFetcherHolder, // This is redundant but allows passing of interface
         THIABPurchaseFetcherHolder, // This is redundant but allows passing of interface
         THIABPurchaserHolder, // This is redundant but allows passing of interface
@@ -20,6 +19,7 @@ public interface THIABLogicHolder extends
         THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
                         IABSKU,
+                        THIABProductIdentifierFetcherHolder,
                         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,
                         THIABProductDetail,
                         BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,

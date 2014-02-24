@@ -9,7 +9,9 @@ public interface ProductIdentifierFetcherHolder<
         BillingExceptionType extends BillingException>
 {
     OnProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode);
-    int registerProductIdentifierFetchedListener(OnProductIdentifierFetchedListenerType productIdentifierFetchedListener);
+    boolean isUnusedRequestCode(int requestCode);
+    void registerProductIdentifierFetchedListener(int requestCode, OnProductIdentifierFetchedListenerType productIdentifierFetchedListener);
     void unregisterProductIdentifierFetchedListener(int requestCode);
     void launchProductIdentifierFetchSequence(int requestCode);
+    void onDestroy();
 }

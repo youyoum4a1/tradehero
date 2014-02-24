@@ -34,7 +34,7 @@ import javax.inject.Inject;
 public class THIABLogicHolderFull
     extends BaseIABLogicHolder<
             IABSKU,
-            THIABProductIdentifierFetcher,
+            THIABProductIdentifierFetcherHolder,
             ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
                     IABSKU,
                     IABException>,
@@ -83,10 +83,6 @@ public class THIABLogicHolderFull
     {
         super(activity);
 
-        skuFetchers = new HashMap<>();
-        productIdentifierFetchedListeners = new HashMap<>();
-        parentProductIdentifierFetchedListeners = new HashMap<>();
-
         purchaseReporters = new HashMap<>();
         purchaseReportedListeners = new HashMap<>();
         parentPurchaseReportedHandlers = new HashMap<>();
@@ -96,17 +92,6 @@ public class THIABLogicHolderFull
 
     @Override public void onDestroy()
     {
-        for (THIABProductIdentifierFetcher skuFetcher : skuFetchers.values())
-        {
-            if (skuFetcher != null)
-            {
-                skuFetcher.setProductIdentifierListener(null);
-            }
-        }
-        skuFetchers.clear();
-        productIdentifierFetchedListeners.clear();
-        parentProductIdentifierFetchedListeners.clear();
-
         for (THIABPurchaseReporter purchaseReporter: purchaseReporters.values())
         {
             if (purchaseReporter != null)
@@ -123,9 +108,6 @@ public class THIABLogicHolderFull
     @Override protected boolean isUnusedRequestCode(int randomNumber)
     {
         return super.isUnusedRequestCode(randomNumber) &&
-                !skuFetchers.containsKey(randomNumber) &&
-                !productIdentifierFetchedListeners.containsKey(randomNumber) &&
-                !parentProductIdentifierFetchedListeners.containsKey(randomNumber) &&
                 !purchaseReporters.containsKey(randomNumber) &&
                 !purchaseReportedListeners.containsKey(randomNumber) &&
                 !parentPurchaseReportedHandlers.containsKey(randomNumber);
@@ -134,10 +116,6 @@ public class THIABLogicHolderFull
     @Override public void forgetRequestCode(int requestCode)
     {
         super.forgetRequestCode(requestCode);
-
-        skuFetchers.remove(requestCode);
-        productIdentifierFetchedListeners.remove(requestCode);
-        parentProductIdentifierFetchedListeners.remove(requestCode);
 
         purchaseReporters.remove(requestCode);
         purchaseReportedListeners.remove(requestCode);
@@ -255,9 +233,9 @@ public class THIABLogicHolderFull
         return mixed;
     }
 
-    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher()
+    @Override protected THIABProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
     {
-        return new THIABProductIdentifierFetcher();
+        return new THBaseIABProductIdentifierFetcherHolder();
     }
 
     @Override protected THIABBillingInventoryFetcher createInventoryFetcher()

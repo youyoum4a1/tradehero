@@ -5,9 +5,9 @@ import android.content.Intent;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
+import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcher;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +17,7 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABLogicHolder<
         IABSKUType extends IABSKU,
-        IABProductIdentifierFetcherType extends IABProductIdentifierFetcher<
-                IABSKUType,
-                IABException>,
+        IABProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<IABSKUType, IABProductIdentifierFetchedListenerType, IABException>,
         IABProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
                 IABSKUType,
                 IABException>,
@@ -67,6 +65,7 @@ abstract public class BaseIABLogicHolder<
                 IABException>>
     implements IABLogicHolder<
             IABSKUType,
+        IABProductIdentifierFetcherHolderType,
             IABProductIdentifierFetchedListenerType,
             IABProductDetailType,
             IABInventoryFetchedListenerType,
@@ -85,9 +84,7 @@ abstract public class BaseIABLogicHolder<
     protected boolean errorLoadingInventory = false; // TODO here too
     protected Exception latestInventoryFetcherException; // TODO here too
 
-    protected Map<Integer /*requestCode*/, IABProductIdentifierFetcherType> skuFetchers;
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABException>> productIdentifierFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABProductIdentifierFetchedListenerType>> parentProductIdentifierFetchedListeners;
+    protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
 
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
     protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>> inventoryFetchedListeners;
@@ -109,6 +106,9 @@ abstract public class BaseIABLogicHolder<
     {
         super();
         setActivity(activity);
+
+        productIdentifierFetcherHolder = createProductIdentifierFetcherHolder();
+
         iabInventoryFetchers = new HashMap<>();
         inventoryFetchedListeners = new HashMap<>();
         parentInventoryFetchedListeners = new HashMap<>();
@@ -128,7 +128,11 @@ abstract public class BaseIABLogicHolder<
 
     public void onDestroy()
     {
-        // TODO product id fetcher
+        if (productIdentifierFetcherHolder != null)
+        {
+            productIdentifierFetcherHolder.onDestroy();
+        }
+
         for (IABInventoryFetcherType inventoryFetcher : iabInventoryFetchers.values())
         {
             if (inventoryFetcher != null)
@@ -219,9 +223,7 @@ abstract public class BaseIABLogicHolder<
     protected boolean isUnusedRequestCode(int randomNumber)
     {
         return
-                !skuFetchers.containsKey(randomNumber) &&
-                !productIdentifierFetchedListeners.containsKey(randomNumber) &&
-                !parentProductIdentifierFetchedListeners.containsKey(randomNumber) &&
+                productIdentifierFetcherHolder.isUnusedRequestCode(randomNumber) &&
 
                 !iabInventoryFetchers.containsKey(randomNumber) &&
                 !inventoryFetchedListeners.containsKey(randomNumber) &&
@@ -242,6 +244,8 @@ abstract public class BaseIABLogicHolder<
 
     @Override public void forgetRequestCode(int requestCode)
     {
+        productIdentifierFetcherHolder.unregisterProductIdentifierFetchedListener(requestCode);
+
         iabInventoryFetchers.remove(requestCode);
         inventoryFetchedListeners.remove(requestCode);
         parentInventoryFetchedListeners.remove(requestCode);
@@ -258,79 +262,6 @@ abstract public class BaseIABLogicHolder<
         consumptionFinishedListeners.remove(requestCode);
         parentConsumeFinishedHandlers.remove(requestCode);
     }
-
-    //<editor-fold desc="ProductIdentifierFetcherHolder">
-    protected void registerProductIdentifierFetchedListener(int requestCode, IABProductIdentifierFetchedListenerType productIdentifierFetchedListener)
-    {
-        parentProductIdentifierFetchedListeners.put(requestCode, new WeakReference<>(productIdentifierFetchedListener));
-    }
-
-    @Override public int registerProductIdentifierFetchedListener(IABProductIdentifierFetchedListenerType productIdentifierFetchedListener)
-    {
-        int requestCode = getUnusedRequestCode();
-        registerProductIdentifierFetchedListener(requestCode, productIdentifierFetchedListener);
-        return requestCode;
-    }
-
-    @Override public void unregisterProductIdentifierFetchedListener(int requestCode)
-    {
-        parentProductIdentifierFetchedListeners.remove(requestCode);
-    }
-
-    @Override public void launchProductIdentifierFetchSequence(int requestCode)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABException> skuFetchedListener =
-                new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABException>()
-        {
-            @Override public void onFetchedProductIdentifiers(int requestCode,
-                    Map<String, List<IABSKUType>> availableSkus)
-            {
-                notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
-            }
-
-            @Override public void onFetchProductIdentifiersFailed(int requestCode,
-                    IABException exception)
-            {
-                notifyProductIdentifierFetchedFailed(requestCode, exception);
-            }
-        };
-        productIdentifierFetchedListeners.put(requestCode, skuFetchedListener);
-        IABProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
-        skuFetcher.setProductIdentifierListener(skuFetchedListener);
-        skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchProductIdentifiers(requestCode);
-    }
-
-    @Override public IABProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode)
-    {
-        WeakReference<IABProductIdentifierFetchedListenerType> weakListener = parentProductIdentifierFetchedListeners
-                .get(requestCode);
-        if (weakListener == null)
-        {
-            return null;
-        }
-        return weakListener.get();
-    }
-
-    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKUType>> availableSkus)
-    {
-        IABProductIdentifierFetchedListenerType fetchedListener = getProductIdentifierFetchedListener(requestCode);
-        if (fetchedListener != null)
-        {
-            fetchedListener.onFetchedProductIdentifiers(requestCode, availableSkus);
-        }
-    }
-
-    protected void notifyProductIdentifierFetchedFailed(int requestCode, IABException exception)
-    {
-        IABProductIdentifierFetchedListenerType fetchedListener = getProductIdentifierFetchedListener(
-                requestCode);
-        if (fetchedListener != null)
-        {
-            fetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
-        }
-    }
-    //</editor-fold>
 
     //<editor-fold desc="BillingInventoryFetcherHolder">
     @Override public IABInventoryFetchedListenerType getInventoryFetchedListener(int requestCode)
@@ -683,7 +614,7 @@ abstract public class BaseIABLogicHolder<
     //</editor-fold>
 
     abstract protected BaseIABSKUList<IABSKUType> getAllSkus();
-    abstract protected IABProductIdentifierFetcherType createProductIdentifierFetcher();
+    abstract protected IABProductIdentifierFetcherHolderType createProductIdentifierFetcherHolder();
     abstract protected IABInventoryFetcherType createInventoryFetcher();
     abstract protected IABPurchaseFetcherType createPurchaseFetcher();
     abstract protected IABPurchaserType createPurchaser();
