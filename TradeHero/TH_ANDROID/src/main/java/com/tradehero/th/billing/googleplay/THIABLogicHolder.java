@@ -10,7 +10,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface THIABLogicHolder extends
         THIABProductDetailDomainInformer,
-        THIABPurchaseFetcherHolder, // This is redundant but allows passing of interface
         THIABPurchaseReporterHolder, // This is redundant but allows passing of interface
         THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
@@ -26,6 +25,8 @@ public interface THIABLogicHolder extends
 {
     @Deprecated
     THIABInventoryFetcherHolder getInventoryFetcherHolder();
+    @Deprecated
+    THIABPurchaseFetcherHolder getPurchaseFetcherHolder();
     @Deprecated
     THIABPurchaserHolder getPurchaserHolder();
 }

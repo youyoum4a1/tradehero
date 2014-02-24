@@ -47,13 +47,12 @@ public class THIABLogicHolderFull
             THIABPurchaseOrder,
             THIABOrderId,
             THIABPurchase,
-            THIABPurchaseFetcher,
+            THIABPurchaseFetcherHolder,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<
                     IABSKU,
                     THIABOrderId,
                     THIABPurchase,
                     IABException>,
-            THIABPurchaser,
             THIABPurchaserHolder,
             BillingPurchaser.OnPurchaseFinishedListener<
                     IABSKU,
@@ -110,6 +109,11 @@ public class THIABLogicHolderFull
     @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
     {
         return inventoryFetcherHolder;
+    }
+
+    @Override public THIABPurchaseFetcherHolder getPurchaseFetcherHolder()
+    {
+        return purchaseFetcherHolder;
     }
 
     @Override public THIABPurchaserHolder getPurchaserHolder()
@@ -255,9 +259,9 @@ public class THIABLogicHolderFull
         return new THBaseIABInventoryFetcherHolder(getActivity());
     }
 
-    @Override protected THIABPurchaseFetcher createPurchaseFetcher()
+    @Override protected THIABPurchaseFetcherHolder createPurchaseFetcherHolder()
     {
-        return new THIABPurchaseFetcher(getActivity());
+        return new THBaseIABPurchaseFetcherHolder(getActivity());
     }
 
     @Override protected THIABPurchaserHolder createPurchaserHolder()

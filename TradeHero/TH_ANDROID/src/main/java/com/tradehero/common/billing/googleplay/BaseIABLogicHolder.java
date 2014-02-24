@@ -38,20 +38,15 @@ abstract public class BaseIABLogicHolder<
         IABPurchaseType extends IABPurchase<
                 IABSKUType,
                 IABOrderIdType>,
-        IABPurchaseFetcherType extends IABPurchaseFetcher<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
+        IABPurchaseFetcherHolderType extends IABPurchaseFetcherHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
+                IABPurchaseFetchedListenerType,
                 IABException>,
-        IABPurchaserType extends IABPurchaser<
+        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 IABSKUType,
-                IABProductDetailType,
                 IABOrderIdType,
-                IABPurchaseOrderType,
                 IABPurchaseType,
                 IABException>,
         IABPurchaserHolderType extends IABPurchaserHolder<
@@ -93,11 +88,8 @@ abstract public class BaseIABLogicHolder<
 
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
     protected IABInventoryFetcherHolderType inventoryFetcherHolder;
+    protected IABPurchaseFetcherHolderType purchaseFetcherHolder;
     protected IABPurchaserHolderType purchaserHolder;
-
-    protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
-    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseFetchedListenerType>> parentPurchaseFetchedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
     protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListeners;
@@ -110,11 +102,7 @@ abstract public class BaseIABLogicHolder<
 
         productIdentifierFetcherHolder = createProductIdentifierFetcherHolder();
         inventoryFetcherHolder = createInventoryFetcherHolder();
-
-        purchaseFetchers = new HashMap<>();
-        purchaseFetchedListeners = new HashMap<>();
-        parentPurchaseFetchedListeners = new HashMap<>();
-
+        purchaseFetcherHolder = createPurchaseFetcherHolder();
         purchaserHolder = createPurchaserHolder();
 
         iabPurchaseConsumers = new HashMap<>();
@@ -132,19 +120,6 @@ abstract public class BaseIABLogicHolder<
         {
             inventoryFetcherHolder.onDestroy();
         }
-
-        for (IABPurchaseFetcherType purchaseFetcher : purchaseFetchers.values())
-        {
-            if (purchaseFetcher != null)
-            {
-                purchaseFetcher.setListener(null);
-                purchaseFetcher.setPurchaseFetchedListener(null);
-                purchaseFetcher.onDestroy();
-            }
-        }
-        purchaseFetchers.clear();
-        purchaseFetchedListeners.clear();
-        parentPurchaseFetchedListeners.clear();
 
         if (purchaserHolder != null)
         {
@@ -204,11 +179,8 @@ abstract public class BaseIABLogicHolder<
         return
                 productIdentifierFetcherHolder.isUnusedRequestCode(randomNumber) &&
                 inventoryFetcherHolder.isUnusedRequestCode(randomNumber) &&
+                purchaseFetcherHolder.isUnusedRequestCode(randomNumber) &&
                 purchaserHolder.isUnusedRequestCode(randomNumber) &&
-
-                !purchaseFetchers.containsKey(randomNumber) &&
-                !purchaseFetchedListeners.containsKey(randomNumber) &&
-                !parentPurchaseFetchedListeners.containsKey(randomNumber) &&
 
                 !iabPurchaseConsumers.containsKey(randomNumber) &&
                 !consumptionFinishedListeners.containsKey(randomNumber) &&
@@ -219,11 +191,8 @@ abstract public class BaseIABLogicHolder<
     {
         productIdentifierFetcherHolder.unregisterProductIdentifierFetchedListener(requestCode);
         inventoryFetcherHolder.unRegisterInventoryFetchedListener(requestCode);
+        purchaseFetcherHolder.unregisterPurchaseFetchedListener(requestCode);
         purchaserHolder.unregisterPurchaseFinishedListener(requestCode);
-
-        purchaseFetchers.remove(requestCode);
-        purchaseFetchedListeners.remove(requestCode);
-        parentPurchaseFetchedListeners.remove(requestCode);
 
         iabPurchaseConsumers.remove(requestCode);
         consumptionFinishedListeners.remove(requestCode);
@@ -231,81 +200,6 @@ abstract public class BaseIABLogicHolder<
     }
 
     //<editor-fold desc="IABPurchaseFetcherHolder">
-    @Override public IABPurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
-    {
-        WeakReference<IABPurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
-        if (weakListener == null)
-        {
-            return null;
-        }
-        return weakListener.get();
-    }
-
-    /**
-     * The listener needs to be strongly referenced elsewhere.
-     * @param requestCode
-     * @param purchaseFetchedListener
-     */
-    protected void registerPurchaseFetchedListener(int requestCode, IABPurchaseFetchedListenerType purchaseFetchedListener)
-    {
-        parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
-    }
-
-    /**
-     * The listener needs to be strongly referenced elsewhere.
-     * @param purchaseFetchedListener
-     * @return
-     */
-    @Override public int registerPurchaseFetchedListener(IABPurchaseFetchedListenerType purchaseFetchedListener)
-    {
-        int requestCode = getUnusedRequestCode();
-        registerPurchaseFetchedListener(requestCode, purchaseFetchedListener);
-        return requestCode;
-    }
-
-    @Override public void unregisterPurchaseFetchedListener(int requestCode)
-    {
-        parentPurchaseFetchedListeners.remove(requestCode);
-    }
-
-    @Override public void launchFetchPurchaseSequence(int requestCode)
-    {
-        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetchedListener = new BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
-        {
-            @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
-            {
-                notifyPurchaseFetchedFailed(requestCode, exception);
-            }
-
-            @Override public void onFetchedPurchases(int requestCode, Map<IABSKUType, IABPurchaseType> purchases)
-            {
-                notifyPurchaseFetchedSuccess(requestCode, purchases);
-            }
-        };
-        purchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
-        IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
-        purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
-        purchaseFetchers.put(requestCode, purchaseFetcher);
-        purchaseFetcher.fetchPurchases(requestCode);
-    }
-
-    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<IABSKUType, IABPurchaseType> purchases)
-    {
-        IABPurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
-        if (parentListener != null)
-        {
-            parentListener.onFetchedPurchases(requestCode, purchases);
-        }
-    }
-
-    protected void notifyPurchaseFetchedFailed(int requestCode, IABException exception)
-    {
-        IABPurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
-        if (parentListener != null)
-        {
-            parentListener.onFetchPurchasesFailed(requestCode, exception);
-        }
-    }
     //</editor-fold>
 
     //<editor-fold desc="IABPurchaseConsumerHolder">
@@ -396,9 +290,9 @@ abstract public class BaseIABLogicHolder<
     abstract protected BaseIABSKUList<IABSKUType> getAllSkus();
     abstract protected IABProductIdentifierFetcherHolderType createProductIdentifierFetcherHolder();
     abstract protected IABInventoryFetcherHolderType createInventoryFetcherHolder();
+    abstract protected IABPurchaseFetcherHolderType createPurchaseFetcherHolder();
     abstract protected IABPurchaserHolderType createPurchaserHolder();
 
-    abstract protected IABPurchaseFetcherType createPurchaseFetcher();
     abstract protected IABPurchaseConsumerType createPurchaseConsumer();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)

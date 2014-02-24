@@ -120,7 +120,6 @@ public class THIABUserInteractor
         purchaseRestorer = new THIABPurchaseRestorer(currentActivityHolder.getCurrentActivity(),
                 billingActor,
                 billingActor,
-                billingActor,
                 billingActor);
         showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {

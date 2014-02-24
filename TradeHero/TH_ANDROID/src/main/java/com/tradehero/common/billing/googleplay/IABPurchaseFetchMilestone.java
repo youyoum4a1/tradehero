@@ -79,9 +79,12 @@ abstract public class IABPurchaseFetchMilestone<
 
     @Override public void launch()
     {
-        this.requestCode = getBillingActor().registerPurchaseFetchedListener(purchaseFetchedListener);
-        getBillingActor().launchFetchPurchaseSequence(requestCode);
+        this.requestCode = getAvailableRequestCode();
+        getBillingActor().registerPurchaseFetchedListener(this.requestCode, purchaseFetchedListener);
+        getBillingActor().launchFetchPurchaseSequence(this.requestCode);
     }
+
+    abstract protected int getAvailableRequestCode();
 
     @Override public void onDestroy()
     {

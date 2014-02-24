@@ -4,6 +4,7 @@ import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetchMilestone;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 11:36 AM To change this template use File | Settings | File Templates. */
@@ -21,13 +22,21 @@ public class THIABPurchaseFetchMilestone
 {
     public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 
+    protected THIABLogicHolder logicHolder;
+
     /**
      * The billing actor should be strongly referenced elsewhere
-     * @param actorPurchaseFetcher
+     * @param logicHolder
      */
-    public THIABPurchaseFetchMilestone(THIABPurchaseFetcherHolder actorPurchaseFetcher)
+    public THIABPurchaseFetchMilestone(THIABLogicHolder logicHolder)
     {
-        super(actorPurchaseFetcher);
+        super(logicHolder.getPurchaseFetcherHolder());
+        this.logicHolder = logicHolder;
+    }
+
+    @Override protected int getAvailableRequestCode()
+    {
+        return logicHolder.getUnusedRequestCode();
     }
 
     @Override protected BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseFetchedListener()

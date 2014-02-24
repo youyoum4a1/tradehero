@@ -27,7 +27,6 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 {
     private final WeakReference<Activity> activity;
     private THIABLogicHolder logicHolder;
-    private WeakReference<THIABPurchaseFetcherHolder> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
@@ -37,14 +36,12 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     public THIABPurchaseRestorer(
             Activity activity,
             THIABLogicHolder logicHolder,
-            THIABPurchaseFetcherHolder actorPurchaseFetcher,
             THIABPurchaseConsumerHolder billingActorConsumer,
             THIABPurchaseReporterHolder actorPurchaseReporter)
     {
         super(billingActorConsumer);
         this.activity = new WeakReference<>(activity);
         this.logicHolder = logicHolder;
-        this.actorPurchaseFetcher = new WeakReference<>(actorPurchaseFetcher);
         this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
         failedReports = new ArrayList<>();
     }
@@ -73,7 +70,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(activity.get(), logicHolder, actorPurchaseFetcher.get());
+        return new PurchaseRestorerRequiredMilestone(activity.get(), logicHolder);
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseConsumerListener()
