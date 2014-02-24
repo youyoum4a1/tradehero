@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.interactor;
 
 import android.os.Bundle;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 

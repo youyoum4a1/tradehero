@@ -25,7 +25,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;

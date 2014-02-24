@@ -12,7 +12,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import javax.inject.Inject;
 import retrofit.client.Response;

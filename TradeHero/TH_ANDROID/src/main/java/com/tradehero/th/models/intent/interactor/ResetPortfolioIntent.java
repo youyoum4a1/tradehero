@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.interactor;
 
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/24/14 Time: 5:52 PM Copyright (c) TradeHero

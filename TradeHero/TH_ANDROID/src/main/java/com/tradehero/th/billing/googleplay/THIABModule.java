@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

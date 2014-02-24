@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing;
+package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,18 +29,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
-import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
-import com.tradehero.th.billing.googleplay.THIABInteractor;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
-import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
+import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.fragments.billing.ShowSkuDetailsMilestone;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;

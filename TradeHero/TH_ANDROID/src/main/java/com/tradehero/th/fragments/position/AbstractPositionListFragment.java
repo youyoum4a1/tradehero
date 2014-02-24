@@ -28,7 +28,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;

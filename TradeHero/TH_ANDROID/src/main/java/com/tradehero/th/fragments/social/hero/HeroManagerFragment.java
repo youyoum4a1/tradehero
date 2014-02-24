@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.social.HeroCache;
