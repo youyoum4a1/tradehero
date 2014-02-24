@@ -11,16 +11,12 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 public interface THIABLogicHolder extends
         THIABProductDetailDomainInformer,
         THIABPurchaseReporterHolder, // This is redundant but allows passing of interface
-        THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
                         IABSKU,
                         THIABProductDetail,
                         THIABPurchaseOrder,
                         THIABOrderId,
                         THIABPurchase,
-                        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
-                        BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>,
-                        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
                         IABException>
 {
     @Deprecated
@@ -29,4 +25,6 @@ public interface THIABLogicHolder extends
     THIABPurchaseFetcherHolder getPurchaseFetcherHolder();
     @Deprecated
     THIABPurchaserHolder getPurchaserHolder();
+    @Deprecated
+    THIABPurchaseConsumerHolder getPurchaseConsumerHolder();
 }

@@ -14,10 +14,10 @@ public interface IABPurchaseConsumerHolder<
                 IABExceptionType>,
         IABExceptionType extends IABException>
 {
-    boolean isBillingAvailable();
-
+    boolean isUnusedRequestCode(int requestCode);
     IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode);
-    int registerConsumeFinishedListener(IABConsumeFinishedListenerType purchaseConsumeHandler);
+    void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler);
     void unregisterConsumeFinishedListener(int requestCode);
     void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
+    void onDestroy();
 }

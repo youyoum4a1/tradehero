@@ -11,19 +11,12 @@ public interface BillingInteractor<
         ProductPurchaseType extends ProductPurchase<
                 ProductIdentifierType,
                 OrderIdType>,
-        BillingPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingLogicHolderType extends BillingLogicHolder<
                         ProductIdentifierType,
                         ProductDetailType,
                         PurchaseOrderType,
                         OrderIdType,
                         ProductPurchaseType,
-                        BillingPurchaseFinishedListenerType,
                         BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {

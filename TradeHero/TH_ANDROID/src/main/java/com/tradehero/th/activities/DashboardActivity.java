@@ -79,7 +79,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         purchaseRestorer = new THIABPurchaseRestorer(this,
                 getBillingLogicHolder(),
-                getBillingLogicHolder(),
                 getBillingLogicHolder());
         purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {

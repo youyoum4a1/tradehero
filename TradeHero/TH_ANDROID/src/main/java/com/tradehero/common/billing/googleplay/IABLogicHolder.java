@@ -12,22 +12,6 @@ public interface IABLogicHolder<
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends
         BillingLogicHolder<
@@ -36,13 +20,6 @@ public interface IABLogicHolder<
                         IABPurchaseOrderType,
                         IABOrderIdType,
                         IABPurchaseType,
-                        IABPurchaseFinishedListenerType,
-                        IABExceptionType>,
-        IABPurchaseConsumerHolder<
-                        IABSKUType,
-                        IABOrderIdType,
-                        IABPurchaseType,
-                        IABConsumeFinishedListenerType,
                         IABExceptionType>
 {
 }

@@ -16,8 +16,11 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         IABSKU,
+        THIABProductDetail,
+        THIABPurchaseOrder,
         THIABOrderId,
         THIABPurchase,
+        THIABLogicHolder,
         THIABPurchaseConsumerHolder,
         IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKU,
@@ -36,10 +39,9 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     public THIABPurchaseRestorer(
             Activity activity,
             THIABLogicHolder logicHolder,
-            THIABPurchaseConsumerHolder billingActorConsumer,
             THIABPurchaseReporterHolder actorPurchaseReporter)
     {
-        super(billingActorConsumer);
+        super(logicHolder, logicHolder.getPurchaseConsumerHolder());
         this.activity = new WeakReference<>(activity);
         this.logicHolder = logicHolder;
         this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);

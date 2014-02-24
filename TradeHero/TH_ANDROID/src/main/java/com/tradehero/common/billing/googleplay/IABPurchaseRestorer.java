@@ -12,8 +12,17 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaseRestorer<
         IABSKUType extends IABSKU,
+        IABProductDetailType extends IABProductDetail<IABSKUType>,
+        IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
+        IABLogicHolderType extends IABLogicHolder<
+                IABSKUType,
+                IABProductDetailType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException>,
         IABPurchaseConsumerHolderType extends IABPurchaseConsumerHolder<
                         IABSKUType,
                         IABOrderIdType,
@@ -30,6 +39,7 @@ abstract public class IABPurchaseRestorer<
         IABOrderIdType,
         IABPurchaseType>
 {
+    protected IABLogicHolderType logicHolder;
     protected WeakReference<IABPurchaseConsumerHolderType> consumerHolder = new WeakReference<>(null);
     protected WeakReference<OnIABPurchaseRestorerFinishedListener<IABPurchaseType>> purchaseRestoreFinishedListener = new WeakReference<>(null);
     protected Milestone milestone;
@@ -40,9 +50,10 @@ abstract public class IABPurchaseRestorer<
     protected final List<IABPurchaseType> okPurchases;
     protected final List<IABPurchaseType> failedConsumes;
 
-    public IABPurchaseRestorer(IABPurchaseConsumerHolderType consumeHolder)
+    public IABPurchaseRestorer(IABLogicHolderType logicHolder, IABPurchaseConsumerHolderType consumeHolder)
     {
         setConsumerHolder(consumeHolder);
+        this.logicHolder = logicHolder;
         okPurchases = new ArrayList<>();
         failedConsumes = new ArrayList<>();
     }
@@ -138,17 +149,18 @@ abstract public class IABPurchaseRestorer<
 
     protected void launchOneConsumeSequence(IABPurchaseType purchase)
     {
-        IABPurchaseConsumerHolderType billingActor = getConsumerHolder();
+        IABPurchaseConsumerHolderType purchaseConsumerHolder = getConsumerHolder();
         if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             Timber.d("No point in consuming this purchase");
             // No need to add to okPurchases.add(purchase);
             continueSequenceOrNotify();
         }
-        else if (billingActor != null)
+        else if (purchaseConsumerHolder != null)
         {
-            requestCodeConsumer = billingActor.registerConsumeFinishedListener(purchaseConsumerListener);
-            billingActor.launchConsumeSequence(requestCodeConsumer, purchase);
+            requestCodeConsumer = logicHolder.getUnusedRequestCode();
+            purchaseConsumerHolder.registerConsumeFinishedListener(requestCodeConsumer, purchaseConsumerListener);
+            purchaseConsumerHolder.launchConsumeSequence(requestCodeConsumer, purchase);
         }
         else
         {
