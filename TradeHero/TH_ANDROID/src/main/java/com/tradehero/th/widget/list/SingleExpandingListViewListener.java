@@ -35,7 +35,7 @@ public class SingleExpandingListViewListener extends BaseExpandingListViewListen
                 ((ExpandableItem) o).setExpanded(false);
                 if (i >= firstVisibleItemPosition && i <= lastVisibleItemPosition)
                 {
-                    View child = parent.getChildAt(i);
+                    View child = parent.getChildAt(i-firstVisibleItemPosition);
                     collapseView(child);
                 }
             }
