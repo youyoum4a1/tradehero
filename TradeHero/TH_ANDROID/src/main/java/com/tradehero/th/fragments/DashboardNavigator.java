@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.r11.app.FragmentTabHost;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -25,6 +26,9 @@ public class DashboardNavigator extends Navigator
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
     private TabHost.OnTabChangeListener mOnTabChangedListener;
+    private Animation slideInAnimation;
+    private Animation slideOutAnimation;
+    private View tabBarView;
 
     public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
     {
@@ -32,6 +36,39 @@ public class DashboardNavigator extends Navigator
         this.activity = (FragmentActivity) context;
 
         initTabs();
+        initAnimation();
+    }
+
+    private void initAnimation()
+    {
+        slideInAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_in);
+        slideOutAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_out);
+
+        Animation.AnimationListener animationListener = new Animation.AnimationListener()
+        {
+            @Override public void onAnimationStart(Animation animation)
+            {
+                if (mTabHost != null)
+                {
+                    mTabHost.getTabWidget().setEnabled(false);
+                }
+            }
+
+            @Override public void onAnimationEnd(Animation animation)
+            {
+                if (mTabHost != null)
+                {
+                    mTabHost.getTabWidget().setEnabled(true);
+                }
+            }
+
+            @Override public void onAnimationRepeat(Animation animation)
+            {
+
+            }
+        };
+        slideInAnimation.setAnimationListener(animationListener);
+        slideOutAnimation.setAnimationListener(animationListener);
     }
 
     private void initTabs()
@@ -53,6 +90,8 @@ public class DashboardNavigator extends Navigator
 
         mTabHost.getTabWidget().setDividerDrawable(null);
         mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
+
+        tabBarView = mTabHost.findViewById(android.R.id.tabhost);
     }
 
     /**
@@ -215,21 +254,19 @@ public class DashboardNavigator extends Navigator
 
     private void showTabBar()
     {
-        View tabBar = mTabHost.findViewById(android.R.id.tabhost);
-        if (tabBar != null && tabBar.getVisibility() != View.VISIBLE)
+        if (tabBarView != null && tabBarView.getVisibility() != View.VISIBLE)
         {
-            tabBar.setVisibility(View.VISIBLE);
-            tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_in));
+            tabBarView.setVisibility(View.VISIBLE);
+            tabBarView.startAnimation(slideInAnimation);
         }
     }
 
     private void hideTabBar()
     {
-        View tabBar = mTabHost.findViewById(android.R.id.tabhost);
-        if (tabBar != null && tabBar.getVisibility() != View.GONE)
+        if (tabBarView != null && tabBarView.getVisibility() != View.GONE)
         {
-            tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out));
-            tabBar.setVisibility(View.GONE);
+            tabBarView.startAnimation(slideOutAnimation);
+            tabBarView.setVisibility(View.GONE);
         }
     }
 }
