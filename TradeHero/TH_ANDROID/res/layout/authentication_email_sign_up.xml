@@ -25,7 +25,7 @@
 
     <include
         android:id="@+id/profile_info"
-        layout="@layout/profile_info" />
+        layout="@layout/profile_info"/>
 
     <Button
         android:id="@+id/authentication_sign_up_button"

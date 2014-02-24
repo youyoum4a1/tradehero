@@ -17,7 +17,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -46,17 +45,17 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
-    public static final String TAG = SettingsProfileFragment.class.getSimpleName();
+    private static final int REQUEST_GALLERY = 111;
     public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = SettingsProfileFragment.class.getName() + ".showButtonBack";
 
     protected View.OnClickListener onClickListener;
     protected Button updateButton;
     private ProfileInfoView profileView;
 
-    private static final int REQUEST_GALLERY = 111;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -85,6 +84,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         profileView.addValidationListenerOnFields(this);
 
         updateButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
+        updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
@@ -119,7 +119,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 }
                 else
                 {
-                    THLog.e(TAG, "Activity is not a DashboardNavigatorActivity", new Exception());
+                    Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
                 }
                 return true;
         }
