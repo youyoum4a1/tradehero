@@ -27,9 +27,6 @@ abstract public class BaseIABLogicHolder<
                 IABProductDetailType,
                 IABInventoryFetchedListenerType,
                 IABException>,
-        IABInventoryFetcherType extends IABBillingInventoryFetcher<
-                IABSKUType,
-                IABProductDetailType>,
         IABInventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
                 IABSKUType,
                 IABProductDetailType,

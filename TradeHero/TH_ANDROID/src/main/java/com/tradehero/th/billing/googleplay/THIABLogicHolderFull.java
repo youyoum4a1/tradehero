@@ -40,7 +40,6 @@ public class THIABLogicHolderFull
                     IABException>,
             THIABProductDetail,
             THIABInventoryFetcherHolder,
-            THIABBillingInventoryFetcher,
             BillingInventoryFetcher.OnInventoryFetchedListener<
                     IABSKU,
                     THIABProductDetail,
