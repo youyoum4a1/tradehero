@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 public interface BillingLogicHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
@@ -20,11 +19,6 @@ public interface BillingLogicHolder<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
-        BillingInventoryFetcherHolder<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        InventoryFetchedListenerType,
-                        BillingExceptionType>,
         BillingPurchaserHolder<
                         ProductIdentifierType,
                         PurchaseOrderType,
@@ -34,6 +28,7 @@ public interface BillingLogicHolder<
                         BillingExceptionType>
 {
     boolean isBillingAvailable();
+    int getUnusedRequestCode();
     void forgetRequestCode(int requestCode);
     void onDestroy();
 }

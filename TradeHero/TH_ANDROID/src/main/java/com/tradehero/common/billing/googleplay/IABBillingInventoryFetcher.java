@@ -28,7 +28,10 @@ abstract public class IABBillingInventoryFetcher<
             IABSKUType extends IABSKU,
             IABProductDetailsType extends IABProductDetail<IABSKUType>>
         extends IABServiceConnector
-        implements BillingInventoryFetcher<IABSKUType, IABProductDetailsType, IABException>
+        implements BillingInventoryFetcher<
+            IABSKUType,
+            IABProductDetailsType,
+            IABException>
 {
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;

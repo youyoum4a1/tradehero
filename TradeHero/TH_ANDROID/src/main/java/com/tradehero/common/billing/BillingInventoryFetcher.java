@@ -19,16 +19,16 @@ public interface BillingInventoryFetcher<
 
     public static interface OnInventoryFetchedListener<
             ProductIdentifierType,
-            ProductDetailsType,
-            ExceptionType>
+            ProductDetailType,
+            BillingExceptionType>
     {
         void onInventoryFetchSuccess(
                 int requestCode,
                 List<ProductIdentifierType> productIdentifiers,
-                Map<ProductIdentifierType, ProductDetailsType> inventory);
+                Map<ProductIdentifierType, ProductDetailType> inventory);
         void onInventoryFetchFail(
                 int requestCode,
                 List<ProductIdentifierType> productIdentifiers,
-                ExceptionType exception);
+                BillingExceptionType exception);
     }
 }

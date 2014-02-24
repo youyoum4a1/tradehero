@@ -27,21 +27,21 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean failed;
     private final Context context;
     private final IABSKUListType iabskuListType;
-    private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcherWeak = new WeakReference<>(null);
+    private WeakReference<THIABLogicHolder> logicHolderWeak = new WeakReference<>(null);
     private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
     protected IABSKUListRetrievedAsyncMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(Context context, THIABInventoryFetcherHolder actorInventoryFetcher, IABSKUListType iabskuListType)
+    public THInventoryFetchMilestone(Context context, THIABLogicHolder logicHolder, IABSKUListType iabskuListType)
     {
         super();
         running = false;
         complete = false;
         failed = false;
         this.context = context;
-        this.actorInventoryFetcherWeak = new WeakReference<>(actorInventoryFetcher);
+        this.logicHolderWeak = new WeakReference<>(logicHolder);
         this.iabskuListType = iabskuListType;
         fetchListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
@@ -78,7 +78,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         {
             dependsOn.onDestroy();
         }
-        actorInventoryFetcherWeak = null;
+        logicHolderWeak = null;
         fetchListener = null;
         dependsOn = null;
         dependCompleteListener = null;
@@ -107,15 +107,17 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         else
         {
-            THIABInventoryFetcherHolder actorInventoryFetcher = actorInventoryFetcherWeak.get();
-            if (actorInventoryFetcher == null)
+            THIABLogicHolder logicHolder = logicHolderWeak.get();
+            if (logicHolder == null)
             {
-                notifyFailedListener(new NullPointerException("actorInventoryFetcher was null"));
+                notifyFailedListener(new NullPointerException("logicHolder was null"));
             }
             else
             {
-                int requestCode = actorInventoryFetcher.registerInventoryFetchedListener(fetchListener);
-                actorInventoryFetcher.launchInventoryFetchSequence(requestCode);
+                // TODO refactor with proper calls
+                int requestCode = logicHolder.getUnusedRequestCode();
+                logicHolder.getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, fetchListener);
+                logicHolder.getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, skus);
             }
         }
     }

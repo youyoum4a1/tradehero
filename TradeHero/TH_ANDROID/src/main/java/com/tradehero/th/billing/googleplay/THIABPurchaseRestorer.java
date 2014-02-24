@@ -26,7 +26,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
                 IABException>>
 {
     private final WeakReference<Activity> activity;
-    private WeakReference<THIABInventoryFetcherHolder> actorInventoryFetcher = new WeakReference<>(null);
+    private THIABLogicHolder logicHolder;
     private WeakReference<THIABPurchaseFetcherHolder> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
@@ -36,14 +36,14 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     public THIABPurchaseRestorer(
             Activity activity,
-            THIABInventoryFetcherHolder actorInventoryFetcher,
+            THIABLogicHolder logicHolder,
             THIABPurchaseFetcherHolder actorPurchaseFetcher,
             THIABPurchaseConsumerHolder billingActorConsumer,
             THIABPurchaseReporterHolder actorPurchaseReporter)
     {
         super(billingActorConsumer);
         this.activity = new WeakReference<>(activity);
-        this.actorInventoryFetcher = new WeakReference<>(actorInventoryFetcher);
+        this.logicHolder = logicHolder;
         this.actorPurchaseFetcher = new WeakReference<>(actorPurchaseFetcher);
         this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
         failedReports = new ArrayList<>();
@@ -73,7 +73,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(activity.get(), actorInventoryFetcher.get(), actorPurchaseFetcher.get());
+        return new PurchaseRestorerRequiredMilestone(activity.get(), logicHolder, actorPurchaseFetcher.get());
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseConsumerListener()

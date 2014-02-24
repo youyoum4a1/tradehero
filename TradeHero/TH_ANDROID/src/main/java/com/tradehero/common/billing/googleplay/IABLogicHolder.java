@@ -12,7 +12,6 @@ import com.tradehero.th.billing.googleplay.IABProductIdentifierFetcherHolder;
 public interface IABLogicHolder<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
@@ -36,16 +35,10 @@ public interface IABLogicHolder<
         BillingLogicHolder<
                         IABSKUType,
                         IABProductDetailType,
-                        InventoryFetchedListenerType,
                         IABPurchaseOrderType,
                         IABOrderIdType,
                         IABPurchaseType,
                         IABPurchaseFinishedListenerType,
-                        IABExceptionType>,
-        IABInventoryFetcherHolder< // This one is redundant but serves as a highlight to the reader
-                        IABSKUType,
-                        IABProductDetailType,
-                        InventoryFetchedListenerType,
                         IABExceptionType>,
         IABPurchaserHolder< // This one is redundant but serves as a highlight to the reader
                         IABSKUType,

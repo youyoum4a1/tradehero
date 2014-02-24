@@ -39,6 +39,7 @@ public class THIABLogicHolderFull
                     IABSKU,
                     IABException>,
             THIABProductDetail,
+            THIABInventoryFetcherHolder,
             THIABBillingInventoryFetcher,
             BillingInventoryFetcher.OnInventoryFetchedListener<
                     IABSKU,
@@ -105,7 +106,12 @@ public class THIABLogicHolderFull
         super.onDestroy();
     }
 
-    @Override protected boolean isUnusedRequestCode(int randomNumber)
+    @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
+    {
+        return inventoryFetcherHolder;
+    }
+
+    @Override public boolean isUnusedRequestCode(int randomNumber)
     {
         return super.isUnusedRequestCode(randomNumber) &&
                 !purchaseReporters.containsKey(randomNumber) &&
@@ -238,9 +244,9 @@ public class THIABLogicHolderFull
         return new THBaseIABProductIdentifierFetcherHolder();
     }
 
-    @Override protected THIABBillingInventoryFetcher createInventoryFetcher()
+    @Override protected THIABInventoryFetcherHolder createInventoryFetcherHolder()
     {
-        return new THIABBillingInventoryFetcher(getActivity());
+        return new THBaseIABInventoryFetcherHolder(getActivity());
     }
 
     @Override protected THIABPurchaseFetcher createPurchaseFetcher()

@@ -6,10 +6,6 @@ import com.tradehero.common.billing.exception.BillingException;
 public interface BillingInteractor<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
-                ProductIdentifierType,
-                ProductDetailType,
-                BillingExceptionType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<
@@ -24,7 +20,6 @@ public interface BillingInteractor<
         BillingLogicHolderType extends BillingLogicHolder<
                         ProductIdentifierType,
                         ProductDetailType,
-                        InventoryFetchedListenerType,
                         PurchaseOrderType,
                         OrderIdType,
                         ProductPurchaseType,

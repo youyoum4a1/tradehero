@@ -50,6 +50,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -434,13 +435,13 @@ public class THIABUserInteractor
     protected boolean hadErrorLoadingInventory()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.hadErrorLoadingInventory();
+        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().hadErrorLoadingInventory();
     }
 
     protected boolean isInventoryReady()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.isInventoryReady();
+        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().isInventoryReady();
     }
 
     //<editor-fold desc="THIABInteractor">
@@ -496,8 +497,9 @@ public class THIABUserInteractor
                         {
                             inventoryFetchedForgetListener = createForgetFetchedListener();
                         }
-                        int requestCode = getBillingLogicHolder().registerInventoryFetchedListener(inventoryFetchedForgetListener);
-                        getBillingLogicHolder().launchInventoryFetchSequence(requestCode);
+                        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+                        getBillingLogicHolder().getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
+                        getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();

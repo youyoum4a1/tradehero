@@ -13,7 +13,10 @@ import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:48 PM To change this template use File | Settings | File Templates. */
-public class THIABBillingInventoryFetcher extends IABBillingInventoryFetcher<IABSKU, THIABProductDetail>
+public class THIABBillingInventoryFetcher
+        extends IABBillingInventoryFetcher<
+        IABSKU,
+        THIABProductDetail>
 {
     public static final String TAG = THIABBillingInventoryFetcher.class.getSimpleName();
 

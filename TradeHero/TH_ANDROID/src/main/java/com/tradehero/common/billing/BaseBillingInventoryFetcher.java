@@ -1,25 +1,8 @@
 package com.tradehero.common.billing;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.RemoteException;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.common.billing.googleplay.IABResponse;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.th.base.Application;
-import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
-import timber.log.Timber;
 
 /**
  * Created by julien on 4/11/13
@@ -40,12 +23,12 @@ abstract public class BaseBillingInventoryFetcher<
         super();
     }
 
-    public List<ProductIdentifierType> getProductIdentifiers()
+    @Override public List<ProductIdentifierType> getProductIdentifiers()
     {
         return productIdentifiers;
     }
 
-    public void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers)
+    @Override public void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers)
     {
         this.productIdentifiers = productIdentifiers;
     }
