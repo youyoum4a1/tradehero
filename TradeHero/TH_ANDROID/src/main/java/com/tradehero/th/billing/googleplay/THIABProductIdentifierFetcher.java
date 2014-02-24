@@ -14,7 +14,6 @@ import java.util.Map;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
 public class THIABProductIdentifierFetcher extends BaseProductIdentifierFetcher<
         IABSKU,
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,
         IABException>
     implements IABProductIdentifierFetcher<
         IABSKU,
