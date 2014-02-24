@@ -11,7 +11,6 @@ public interface PurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        UserProfileDTOType extends UserProfileDTO,
         OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,

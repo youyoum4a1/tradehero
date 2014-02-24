@@ -13,7 +13,6 @@ public interface IABPurchaseReporterHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        UserProfileDTOType extends UserProfileDTO,
         OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
                 IABSKUType,
                 IABOrderIdType,
@@ -24,7 +23,6 @@ public interface IABPurchaseReporterHolder<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
-            UserProfileDTOType,
             OnPurchaseReportedListenerType,
         IABExceptionType>
 {

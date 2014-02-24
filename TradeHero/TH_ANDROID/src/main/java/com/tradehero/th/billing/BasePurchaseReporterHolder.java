@@ -26,7 +26,6 @@ abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        UserProfileDTOType extends UserProfileDTO,
         PurchaseReporterType extends PurchaseReporter<
             ProductIdentifierType,
             OrderIdType,
@@ -42,7 +41,6 @@ abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
-        UserProfileDTOType,
         OnPurchaseReportedListenerType,
         BillingExceptionType>
 {

@@ -11,7 +11,6 @@ public interface THIABPurchaseReporterHolder extends
                 IABSKU,
                 THIABOrderId,
                 THIABPurchase,
-                UserProfileDTO,
                 PurchaseReporter.OnPurchaseReportedListener<
                         IABSKU,
                         THIABOrderId,

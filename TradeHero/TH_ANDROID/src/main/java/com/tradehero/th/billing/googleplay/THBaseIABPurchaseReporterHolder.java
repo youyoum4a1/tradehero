@@ -20,7 +20,6 @@ public class THBaseIABPurchaseReporterHolder
             IABSKU,
             THIABOrderId,
             THIABPurchase,
-            UserProfileDTO,
             THIABPurchaseReporter,
             PurchaseReporter.OnPurchaseReportedListener<
                 IABSKU,
