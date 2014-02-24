@@ -1,5 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.billing.BillingPurchaseFetcher;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.BaseMilestone;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -10,10 +12,11 @@ abstract public class IABPurchaseFetchMilestone<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<
+        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 IABSKUType,
                 IABOrderIdType,
-                IABPurchaseType>>
+                IABPurchaseType,
+                IABException>>
         extends BaseMilestone
 {
     public static final String TAG = IABPurchaseFetchMilestone.class.getSimpleName();
@@ -21,7 +24,7 @@ abstract public class IABPurchaseFetchMilestone<
     protected boolean running;
     protected boolean complete;
     protected boolean failed;
-    protected WeakReference<IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType>>
+    protected WeakReference<IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType, IABException>>
             actorPurchaseFetcherWeak = new WeakReference<>(null);
     protected IABPurchaseFetchedListenerType purchaseFetchedListener;
     protected int requestCode;
@@ -31,7 +34,7 @@ abstract public class IABPurchaseFetchMilestone<
      * The billing actor should be strongly referenced elsewhere
      * @param actorPurchaseFetcher
      */
-    public IABPurchaseFetchMilestone(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> actorPurchaseFetcher)
+    public IABPurchaseFetchMilestone(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType, IABException> actorPurchaseFetcher)
     {
         super();
         setBillingActor(actorPurchaseFetcher);
@@ -55,7 +58,7 @@ abstract public class IABPurchaseFetchMilestone<
         return running;
     }
 
-    public IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> getBillingActor()
+    public IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType, IABException> getBillingActor()
     {
         return actorPurchaseFetcherWeak.get();
     }
@@ -64,7 +67,7 @@ abstract public class IABPurchaseFetchMilestone<
      * The actor should be strongly referenced elsewhere
      * @param billingActor
      */
-    public void setBillingActor(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType> billingActor)
+    public void setBillingActor(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABPurchaseFetchedListenerType, IABException> billingActor)
     {
         this.actorPurchaseFetcherWeak = new WeakReference<>(billingActor);
     }

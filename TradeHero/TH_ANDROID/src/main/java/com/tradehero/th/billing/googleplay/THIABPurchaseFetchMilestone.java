@@ -1,7 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetchMilestone;
-import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.Map;
@@ -13,10 +13,11 @@ public class THIABPurchaseFetchMilestone
                 IABSKU,
                 THIABOrderId,
                 THIABPurchase,
-                IABPurchaseFetcher.OnPurchaseFetchedListener<
+                BillingPurchaseFetcher.OnPurchaseFetchedListener<
                         IABSKU,
                         THIABOrderId,
-                        THIABPurchase>>
+                        THIABPurchase,
+                        IABException>>
 {
     public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 
@@ -29,9 +30,9 @@ public class THIABPurchaseFetchMilestone
         super(actorPurchaseFetcher);
     }
 
-    @Override protected IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase> createPurchaseFetchedListener()
+    @Override protected BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseFetchedListener()
     {
-        return new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase>()
+        return new BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
         {
             @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
             {

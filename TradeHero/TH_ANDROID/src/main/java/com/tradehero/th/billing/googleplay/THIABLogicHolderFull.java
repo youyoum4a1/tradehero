@@ -2,12 +2,12 @@ package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
-import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -48,10 +48,11 @@ public class THIABLogicHolderFull
             THIABOrderId,
             THIABPurchase,
             THIABPurchaseFetcher,
-            IABPurchaseFetcher.OnPurchaseFetchedListener<
+            BillingPurchaseFetcher.OnPurchaseFetchedListener<
                     IABSKU,
                     THIABOrderId,
-                    THIABPurchase>,
+                    THIABPurchase,
+                    IABException>,
             THIABPurchaser,
             THIABPurchaserHolder,
             BillingPurchaser.OnPurchaseFinishedListener<

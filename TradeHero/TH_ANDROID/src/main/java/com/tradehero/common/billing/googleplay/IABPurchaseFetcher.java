@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
@@ -25,11 +26,16 @@ abstract public class IABPurchaseFetcher<
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
+    implements BillingPurchaseFetcher<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABException>
 {
     protected int requestCode;
     protected boolean fetching;
     protected Map<IABSKUType, IABPurchaseType> purchases;
-    protected WeakReference<OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> fetchListener = new WeakReference<>(null);
+    protected WeakReference<OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> fetchListener = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABPurchaseFetcher(Context ctx)
@@ -38,9 +44,14 @@ abstract public class IABPurchaseFetcher<
         purchases = new HashMap<>();
     }
 
+    @Override public int getRequestCode()
+    {
+        return requestCode;
+    }
+
     abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
-    public void fetchPurchases(int requestCode)
+    @Override public void fetchPurchases(int requestCode)
     {
         checkNotFetching();
         this.requestCode = requestCode;
@@ -188,19 +199,20 @@ abstract public class IABPurchaseFetcher<
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String signature) throws JSONException;
 
-    public OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> getFetchListener()
+    @Override public OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getFetchListener()
     {
         return fetchListener.get();
     }
 
-    public void setFetchListener(OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> fetchListener)
+    @Override public void setPurchaseFetchedListener(
+            OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener)
     {
         this.fetchListener = new WeakReference<>(fetchListener);
     }
 
     protected void notifyListenerFetched()
     {
-        OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listenerCopy = getFetchListener();
+        OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listenerCopy = getFetchListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchedPurchases(requestCode, this.purchases);
@@ -209,19 +221,10 @@ abstract public class IABPurchaseFetcher<
 
     protected void notifyListenerFetchFailed(IABException exception)
     {
-        OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listenerCopy = getFetchListener();
+        OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listenerCopy = getFetchListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchPurchasesFailed(requestCode, exception);
         }
-    }
-
-    public static interface OnPurchaseFetchedListener<
-            IABSKUType extends IABSKU,
-            IABOrderIdType extends IABOrderId,
-            IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
-    {
-        void onFetchedPurchases(int requestCode, Map<IABSKUType, IABPurchaseType> purchases);
-        void onFetchPurchasesFailed(int requestCode, IABException exception);
     }
 }

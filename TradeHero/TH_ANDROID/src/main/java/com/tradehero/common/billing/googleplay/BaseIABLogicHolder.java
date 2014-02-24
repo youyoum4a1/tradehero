@@ -3,14 +3,13 @@ package com.tradehero.common.billing.googleplay;
 import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
-import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
@@ -43,10 +42,11 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType>,
-        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<
+        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 IABSKUType,
                 IABOrderIdType,
-                IABPurchaseType>,
+                IABPurchaseType,
+                IABException>,
         IABPurchaserType extends IABPurchaser<
                 IABSKUType,
                 IABProductDetailType,
@@ -96,7 +96,7 @@ abstract public class BaseIABLogicHolder<
     protected IABPurchaserHolderType purchaserHolder;
 
     protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
-    protected Map<Integer /*requestCode*/, IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> purchaseFetchedListeners;
+    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFetchedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseFetchedListenerType>> parentPurchaseFetchedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
@@ -138,7 +138,7 @@ abstract public class BaseIABLogicHolder<
             if (purchaseFetcher != null)
             {
                 purchaseFetcher.setListener(null);
-                purchaseFetcher.setFetchListener(null);
+                purchaseFetcher.setPurchaseFetchedListener(null);
                 purchaseFetcher.onDestroy();
             }
         }
@@ -270,7 +270,7 @@ abstract public class BaseIABLogicHolder<
 
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
-        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseFetchedListener = new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>()
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetchedListener = new BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
         {
             @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
             {
@@ -284,7 +284,7 @@ abstract public class BaseIABLogicHolder<
         };
         purchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
         IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
-        purchaseFetcher.setFetchListener(purchaseFetchedListener);
+        purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
         purchaseFetcher.fetchPurchases(requestCode);
     }

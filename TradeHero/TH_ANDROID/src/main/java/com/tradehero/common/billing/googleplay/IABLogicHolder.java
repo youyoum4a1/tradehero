@@ -2,6 +2,7 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
@@ -15,10 +16,11 @@ public interface IABLogicHolder<
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<
+        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 IABSKUType,
                 IABOrderIdType,
-                IABPurchaseType>,
+                IABPurchaseType,
+                IABExceptionType>,
         IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKUType,
                 IABPurchaseOrderType,
@@ -44,7 +46,8 @@ public interface IABLogicHolder<
                         IABSKUType,
                         IABOrderIdType,
                         IABPurchaseType,
-                        IABPurchaseFetchedListenerType>,
+                        IABPurchaseFetchedListenerType,
+                        IABExceptionType>,
         IABPurchaseConsumerHolder<
                         IABSKUType,
                         IABOrderIdType,

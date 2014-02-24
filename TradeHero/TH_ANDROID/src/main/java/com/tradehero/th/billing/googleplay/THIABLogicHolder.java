@@ -1,11 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
-import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
@@ -21,7 +19,7 @@ public interface THIABLogicHolder extends
                         THIABPurchaseOrder,
                         THIABOrderId,
                         THIABPurchase,
-                        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase>,
+                        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
                         BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>,
                         IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
                         IABException>
