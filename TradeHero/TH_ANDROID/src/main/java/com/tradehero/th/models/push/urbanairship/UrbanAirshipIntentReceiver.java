@@ -29,7 +29,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.Application;
@@ -39,16 +38,15 @@ import com.urbanairship.push.PushManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import timber.log.Timber;
 
 public class UrbanAirshipIntentReceiver extends BroadcastReceiver
 {
-    private static final String TAG = UrbanAirshipIntentReceiver.class.getSimpleName();
-
     public static String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";
 
     @Override public void onReceive(Context context, Intent intent)
     {
-        Log.i(TAG, "Received intent: " + intent.toString());
+        Timber.i("Received intent: %s", intent.toString());
         String action = intent.getAction();
 
         if (action.equals(PushManager.ACTION_PUSH_RECEIVED))
@@ -65,7 +63,7 @@ public class UrbanAirshipIntentReceiver extends BroadcastReceiver
         }
         else if (action.equals(GCMMessageHandler.ACTION_GCM_DELETED_MESSAGES))
         {
-            Log.i(TAG, "The GCM service deleted " + intent.getStringExtra(GCMMessageHandler.EXTRA_GCM_TOTAL_DELETED) + " messages.");
+            Timber.i("The GCM service deleted %s messages.", intent.getStringExtra(GCMMessageHandler.EXTRA_GCM_TOTAL_DELETED));
         }
     }
 
@@ -73,16 +71,14 @@ public class UrbanAirshipIntentReceiver extends BroadcastReceiver
     {
         int id = intent.getIntExtra(PushManager.EXTRA_NOTIFICATION_ID, 0);
 
-        Log.i(TAG, "Received push notification. Alert: "
-                + intent.getStringExtra(PushManager.EXTRA_ALERT)
-                + " [NotificationID=" + id + "]");
+        Timber.i("Received push notification. Alert: %s [NotificationID=%d]", intent.getStringExtra(PushManager.EXTRA_ALERT), id);
 
         logPushExtras(intent);
     }
 
     private void handleNotificationOpened(Context context, Intent intent)
     {
-        Log.i(TAG, "User clicked notification. Message: " + intent.getStringExtra(PushManager.EXTRA_ALERT));
+        Timber.i("User clicked notification. Message: %s", intent.getStringExtra(PushManager.EXTRA_ALERT));
 
         logPushExtras(intent);
 
@@ -91,8 +87,9 @@ public class UrbanAirshipIntentReceiver extends BroadcastReceiver
 
     private void handleRegistrationFinished(Context context, Intent intent)
     {
-        Log.i(TAG, "Registration complete. APID:" + intent.getStringExtra(PushManager.EXTRA_APID)
-                + ". Valid: " + intent.getBooleanExtra(PushManager.EXTRA_REGISTRATION_VALID, false));
+        Timber.i("Registration complete. APID: %s. Valid: %b",
+                intent.getStringExtra(PushManager.EXTRA_APID),
+                intent.getBooleanExtra(PushManager.EXTRA_REGISTRATION_VALID, false));
 
         // Notify any app-specific listeners
         Intent launch = new Intent(UAirship.getPackageName() + APID_UPDATED_ACTION_SUFFIX);
@@ -134,7 +131,7 @@ public class UrbanAirshipIntentReceiver extends BroadcastReceiver
             {
                 continue;
             }
-            Log.i(TAG, "Push Notification Extra: [" + key + " : " + intent.getStringExtra(key) + "]");
+            Timber.i("Push Notification Extra: [%s : %s]", key, intent.getStringExtra(key));
         }
     }
 }

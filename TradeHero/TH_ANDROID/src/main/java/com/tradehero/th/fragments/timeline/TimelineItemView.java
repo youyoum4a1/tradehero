@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
@@ -41,7 +43,6 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -54,12 +55,16 @@ import retrofit.client.Response;
 public class TimelineItemView extends LinearLayout implements
         DTOView<TimelineItem>, View.OnClickListener
 {
-    private static final String TAG = TimelineItemView.class.getName();
-    private TextView username;
-    private MarkdownTextView content;
-    private ImageView avatar;
-    private ImageView vendorImage;
-    private TextView time;
+    @InjectView(R.id.timeline_user_profile_name) TextView username;
+    @InjectView(R.id.timeline_item_content) TextView content;
+    @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
+    @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
+    @InjectView(R.id.timeline_time) TextView time;
+
+    @InjectView(R.id.timeline_action_button_trade_wrapper) View tradeActionButton;
+    @InjectView(R.id.timeline_action_button_share_wrapper) View shareActionButton;
+    @InjectView(R.id.timeline_action_button_monitor_wrapper) View monitorActionButton;
+    @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @Inject Provider<PrettyTime> prettyTime;
     @Inject CurrentUserId currentUserId;
@@ -70,12 +75,8 @@ public class TimelineItemView extends LinearLayout implements
     @Inject Lazy<UserTimelineService> userTimelineService;
 
     private TimelineItem currentTimelineItem;
-    private View tradeActionButton;
-    private View shareActionButton;
-    private View monitorActionButton;
     private PopupMenu sharePopupMenu;
     private PopupMenu monitorPopupMenu;
-    private ImageView watchlistIndicator;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -91,7 +92,6 @@ public class TimelineItemView extends LinearLayout implements
     public TimelineItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
 
@@ -103,18 +103,7 @@ public class TimelineItemView extends LinearLayout implements
 
     private void init()
     {
-        username = (TextView) findViewById(R.id.timeline_user_profile_name);
-        avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
-        content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
-        time = (TextView) findViewById(R.id.timeline_time);
-        vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
-
-        tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
-        shareActionButton = findViewById(R.id.timeline_action_button_share_wrapper);
-        monitorActionButton = findViewById(R.id.timeline_action_button_monitor_wrapper);
-
-        watchlistIndicator = (ImageView) findViewById(R.id.in_watchlist_indicator);
-
+        ButterKnife.inject(this);
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
     }
