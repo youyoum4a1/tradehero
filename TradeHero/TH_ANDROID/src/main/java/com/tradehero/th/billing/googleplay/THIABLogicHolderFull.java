@@ -103,10 +103,10 @@ public class THIABLogicHolderFull
         return purchaseReporterHolder;
     }
 
-    @Override public boolean isUnusedRequestCode(int randomNumber)
+    @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return super.isUnusedRequestCode(randomNumber) &&
-                purchaseReporterHolder.isUnusedRequestCode(randomNumber);
+        return super.isUnusedRequestCode(requestCode) &&
+                purchaseReporterHolder.isUnusedRequestCode(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)

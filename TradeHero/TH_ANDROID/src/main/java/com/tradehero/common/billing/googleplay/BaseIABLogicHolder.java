@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Intent;
+import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -68,6 +69,13 @@ abstract public class BaseIABLogicHolder<
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
+    extends BaseBillingLogicHolder<
+        IABSKUType,
+        IABProductDetailType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABException>
     implements IABLogicHolder<
             IABSKUType,
             IABProductDetailType,
@@ -76,16 +84,12 @@ abstract public class BaseIABLogicHolder<
             IABPurchaseType,
             IABException>
 {
-    public static final int MAX_RANDOM_RETRIES = 50;
-
+    protected IABServiceConnector availabilityTester;
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
     protected IABInventoryFetcherHolderType inventoryFetcherHolder;
     protected IABPurchaseFetcherHolderType purchaseFetcherHolder;
     protected IABPurchaserHolderType purchaserHolder;
     protected IABPurchaseConsumerHolderType purchaseConsumerHolder;
-
-    protected Boolean billingAvailable = null;
-    protected IABServiceConnector availabilityTester;
 
     public BaseIABLogicHolder()
     {
@@ -95,11 +99,16 @@ abstract public class BaseIABLogicHolder<
         purchaseFetcherHolder = createPurchaseFetcherHolder();
         purchaserHolder = createPurchaserHolder();
         purchaseConsumerHolder = createPurchaseConsumeHolder();
-        testBillingAvailable();
     }
 
     @Override public void onDestroy()
     {
+        super.onDestroy();
+        if (availabilityTester != null)
+        {
+            availabilityTester.onDestroy();
+        }
+
         if (productIdentifierFetcherHolder != null)
         {
             productIdentifierFetcherHolder.onDestroy();
@@ -126,43 +135,25 @@ abstract public class BaseIABLogicHolder<
         }
     }
 
-    public void testBillingAvailable()
+    @Override protected void testBillingAvailable()
     {
-        // TODO
+        availabilityTester = new AvailabilityTester();
+        availabilityTester.startConnectionSetup();
     }
 
-    @Override public Boolean isBillingAvailable() // TODO review to make less HACKy
-    {
-        return billingAvailable;
-    }
-
-    @Override public int getUnusedRequestCode()
-    {
-        int retries = MAX_RANDOM_RETRIES;
-        int randomNumber;
-        while (retries-- > 0)
-        {
-            randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
-            if (isUnusedRequestCode(randomNumber))
-            {
-                return randomNumber;
-            }
-        }
-        throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
-    }
-
-    public boolean isUnusedRequestCode(int randomNumber)
+    @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return
-                productIdentifierFetcherHolder.isUnusedRequestCode(randomNumber) &&
-                inventoryFetcherHolder.isUnusedRequestCode(randomNumber) &&
-                purchaseFetcherHolder.isUnusedRequestCode(randomNumber) &&
-                purchaserHolder.isUnusedRequestCode(randomNumber) &&
-                purchaseConsumerHolder.isUnusedRequestCode(randomNumber);
+                productIdentifierFetcherHolder.isUnusedRequestCode(requestCode) &&
+                inventoryFetcherHolder.isUnusedRequestCode(requestCode) &&
+                purchaseFetcherHolder.isUnusedRequestCode(requestCode) &&
+                purchaserHolder.isUnusedRequestCode(requestCode) &&
+                purchaseConsumerHolder.isUnusedRequestCode(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
+        super.forgetRequestCode(requestCode);
         productIdentifierFetcherHolder.forgetRequestCode(requestCode);
         inventoryFetcherHolder.forgetRequestCode(requestCode);
         purchaseFetcherHolder.forgetRequestCode(requestCode);
@@ -180,5 +171,25 @@ abstract public class BaseIABLogicHolder<
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         purchaserHolder.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public class AvailabilityTester extends IABServiceConnector
+    {
+        protected AvailabilityTester()
+        {
+            super();
+        }
+
+        @Override protected void handleSetupFinished(IABResponse response)
+        {
+            super.handleSetupFinished(response);
+            notifyBillingAvailable();
+        }
+
+        @Override protected void handleSetupFailed(IABException exception)
+        {
+            super.handleSetupFailed(exception);
+            notifyBillingNotAvailable(exception);
+        }
     }
 }

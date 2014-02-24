@@ -13,7 +13,8 @@ public interface BillingLogicHolder<
 {
     Boolean isBillingAvailable();
     int getUnusedRequestCode();
+    boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
-    //void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
+    void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingException> billingAvailableListener);
     void onDestroy();
 }
