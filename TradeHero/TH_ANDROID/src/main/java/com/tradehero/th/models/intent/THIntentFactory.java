@@ -1,6 +1,7 @@
 package com.tradehero.th.models.intent;
 
 import android.content.Intent;
+import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import java.util.List;
@@ -10,8 +11,6 @@ import java.util.List;
  */
 abstract public class THIntentFactory<THIntentType extends THIntent>
 {
-    public static final String TAG = THIntentFactory.class.getSimpleName();
-
     public THIntentFactory()
     {
     }
@@ -30,7 +29,8 @@ abstract public class THIntentFactory<THIntentType extends THIntent>
 
     public boolean isHandlableIntent(Intent intent)
     {
-        return isHandlableScheme(intent.getData().getScheme());
+        Uri data = intent.getData();
+        return data != null && isHandlableScheme(data.getScheme());
     }
 
     public boolean isHandlableScheme(String scheme)
