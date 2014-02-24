@@ -11,10 +11,6 @@ import com.tradehero.th.billing.googleplay.IABProductIdentifierFetcherHolder;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABLogicHolder<
         IABSKUType extends IABSKU,
-        ProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
-                IABSKUType, IABProductIdentifierFetchedListenerType,
-                IABExceptionType>,
-        IABProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
@@ -39,8 +35,6 @@ public interface IABLogicHolder<
     extends
         BillingLogicHolder<
                         IABSKUType,
-                        ProductIdentifierFetcherHolderType,
-                        IABProductIdentifierFetchedListenerType,
                         IABProductDetailType,
                         InventoryFetchedListenerType,
                         IABPurchaseOrderType,

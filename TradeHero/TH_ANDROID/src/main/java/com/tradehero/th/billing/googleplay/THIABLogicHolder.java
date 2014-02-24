@@ -19,8 +19,6 @@ public interface THIABLogicHolder extends
         THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
                         IABSKU,
-                        THIABProductIdentifierFetcherHolder,
-                        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,
                         THIABProductDetail,
                         BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,
                         THIABPurchaseOrder,

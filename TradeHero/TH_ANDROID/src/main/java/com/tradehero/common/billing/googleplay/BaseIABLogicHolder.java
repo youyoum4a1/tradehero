@@ -65,8 +65,6 @@ abstract public class BaseIABLogicHolder<
                 IABException>>
     implements IABLogicHolder<
             IABSKUType,
-        IABProductIdentifierFetcherHolderType,
-            IABProductIdentifierFetchedListenerType,
             IABProductDetailType,
             IABInventoryFetchedListenerType,
             IABPurchaseOrderType,

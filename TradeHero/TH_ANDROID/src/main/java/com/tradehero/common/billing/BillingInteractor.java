@@ -5,10 +5,6 @@ import com.tradehero.common.billing.exception.BillingException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingInteractor<
         ProductIdentifierType extends ProductIdentifier,
-        ProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
-                ProductIdentifierType, OnProductIdentifierFetchedListenerType,
-                BillingExceptionType>,
-        OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
                 ProductIdentifierType,
@@ -27,8 +23,6 @@ public interface BillingInteractor<
                 BillingExceptionType>,
         BillingLogicHolderType extends BillingLogicHolder<
                         ProductIdentifierType,
-                        ProductIdentifierFetcherHolderType,
-                        OnProductIdentifierFetchedListenerType,
                         ProductDetailType,
                         InventoryFetchedListenerType,
                         PurchaseOrderType,

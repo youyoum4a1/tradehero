@@ -10,8 +10,6 @@ public interface IABPurchaseFetcherHolder<
                 IABOrderIdType,
                 IABPurchaseType>>
 {
-    boolean isBillingAvailable();
-
     IABPurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode);
     int registerPurchaseFetchedListener(IABPurchaseFetchedListenerType purchaseFetchedListener);
     void unregisterPurchaseFetchedListener(int requestCode);

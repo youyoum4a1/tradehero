@@ -28,8 +28,6 @@ public interface IABInteractor<
                 IABExceptionType>,
         IABActorType extends BillingLogicHolder<
                         IABSKUType,
-                        ProductIdentifierFetcherHolderType,
-                        OnProductIdentifierFetchedListenerType,
                         IABProductDetailType,
                         InventoryFetchedListenerType,
                         IABPurchaseOrderType,
@@ -40,8 +38,6 @@ public interface IABInteractor<
         IABExceptionType extends IABException>
     extends BillingInteractor<
             IABSKUType,
-            ProductIdentifierFetcherHolderType,
-            OnProductIdentifierFetchedListenerType,
             IABProductDetailType,
             InventoryFetchedListenerType,
             IABPurchaseOrderType,
