@@ -5,14 +5,13 @@ import android.util.AttributeSet;
 import android.widget.AdapterView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.list.DefaultExpandingListViewListener;
+import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListView extends PullToRefreshListView
 {
-    @Inject
-    protected DefaultExpandingListViewListener defaultExpandingListViewListener;
+    @Inject SingleExpandingListViewListener defaultExpandingListViewListener;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListView(Context context)

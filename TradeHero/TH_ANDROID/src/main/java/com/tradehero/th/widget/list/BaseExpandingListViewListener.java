@@ -7,21 +7,21 @@ import com.tradehero.th.adapters.ExpandableItem;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/31/13 Time: 4:15 PM Copyright (c) TradeHero */
-public class DefaultExpandingListViewListener implements ExpandingListView.ExpandingListItemListener
+public class BaseExpandingListViewListener implements ExpandingListView.ExpandingListItemListener
 {
     @Inject
-    public DefaultExpandingListViewListener()
+    public BaseExpandingListViewListener()
     {
         super();
     }
 
-    private void expandView(View view)
+    protected void expandView(View view)
     {
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
         expandingLayout.setVisibility(View.VISIBLE);
     }
 
-    private void collapseView(View view)
+    protected void collapseView(View view)
     {
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
         expandingLayout.setVisibility(View.GONE);

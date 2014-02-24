@@ -49,8 +49,6 @@ import retrofit.client.Response;
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
-    public static final String TAG = LeaderboardMarkUserItemView.class.getSimpleName();
-
     @Inject protected Lazy<Picasso> picasso;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
