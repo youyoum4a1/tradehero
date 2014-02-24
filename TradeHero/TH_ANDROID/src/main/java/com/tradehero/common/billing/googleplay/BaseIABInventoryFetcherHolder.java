@@ -96,8 +96,6 @@ abstract public class BaseIABInventoryFetcherHolder<
         {
             if (inventoryFetcher != null)
             {
-                inventoryFetcher.setListener(null);
-                inventoryFetcher.setInventoryFetchedListener(null);
                 inventoryFetcher.onDestroy();
             }
         }

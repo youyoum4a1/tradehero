@@ -43,6 +43,12 @@ abstract public class IABPurchaser<
         super();
     }
 
+    @Override public void onDestroy()
+    {
+        purchaseFinishedListener = null;
+        super.onDestroy();
+    }
+
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
     abstract protected IABProductDetailType getProductDetails(IABSKUType iabskuType);
 

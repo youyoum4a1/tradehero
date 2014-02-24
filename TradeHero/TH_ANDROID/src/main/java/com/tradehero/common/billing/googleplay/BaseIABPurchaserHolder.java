@@ -113,8 +113,6 @@ abstract public class BaseIABPurchaserHolder<
         {
             if (iabPurchaser != null)
             {
-                iabPurchaser.setListener(null);
-                iabPurchaser.setPurchaseFinishedListener(null);
                 iabPurchaser.onDestroy();
             }
         }

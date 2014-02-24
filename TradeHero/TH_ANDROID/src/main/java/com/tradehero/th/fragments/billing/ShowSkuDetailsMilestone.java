@@ -26,7 +26,7 @@ public class ShowSkuDetailsMilestone extends BaseMilestoneGroup
         super();
 
         this.userBaseKey = userBaseKey;
-        add(new THInventoryFetchMilestone(context, logicHolder, iabskuListType));
+        add(new THInventoryFetchMilestone(logicHolder, iabskuListType));
         add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
         add(new UserProfileRetrievedMilestone(userBaseKey));
     }

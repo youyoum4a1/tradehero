@@ -20,7 +20,7 @@ abstract public class IABPurchaseConsumer<
     private int requestCode;
     private boolean consuming = false;
     protected IABPurchaseType purchase;
-    private WeakReference<OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListener = new WeakReference<>(null);
+    private OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
     public IABPurchaseConsumer()
@@ -28,6 +28,12 @@ abstract public class IABPurchaseConsumer<
         super();
     }
     //</editor-fold>
+
+    @Override public void onDestroy()
+    {
+        consumptionFinishedListener = null;
+        super.onDestroy();
+    }
 
     protected Activity getActivity()
     {
@@ -51,16 +57,12 @@ abstract public class IABPurchaseConsumer<
 
     public OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getConsumptionFinishedListener()
     {
-        return consumptionFinishedListener.get();
+        return consumptionFinishedListener;
     }
 
-    /**
-     * the listener should be strongly referenced elsewhere
-     * @param consumptionFinishedListener
-     */
     public void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener)
     {
-        this.consumptionFinishedListener = new WeakReference<>(consumptionFinishedListener);
+        this.consumptionFinishedListener = consumptionFinishedListener;
     }
 
     public void consume(int requestCode, IABPurchaseType purchase)

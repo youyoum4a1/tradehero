@@ -34,13 +34,19 @@ abstract public class IABPurchaseFetcher<
     protected int requestCode;
     protected boolean fetching;
     protected Map<IABSKUType, IABPurchaseType> purchases;
-    protected WeakReference<OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> fetchListener = new WeakReference<>(null);
+    protected OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener;
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABPurchaseFetcher()
     {
         super();
         purchases = new HashMap<>();
+    }
+
+    @Override public void onDestroy()
+    {
+        fetchListener = null;
+        super.onDestroy();
     }
 
     @Override public int getRequestCode()
@@ -200,13 +206,13 @@ abstract public class IABPurchaseFetcher<
 
     @Override public OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getFetchListener()
     {
-        return fetchListener.get();
+        return fetchListener;
     }
 
     @Override public void setPurchaseFetchedListener(
             OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener)
     {
-        this.fetchListener = new WeakReference<>(fetchListener);
+        this.fetchListener = fetchListener;
     }
 
     protected void notifyListenerFetched()

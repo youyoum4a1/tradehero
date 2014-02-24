@@ -20,11 +20,11 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
 
     @Inject protected CurrentUserId currentUserId;
 
-    public PurchaseRestorerRequiredMilestone(Context context, THIABLogicHolder logicHolder)
+    public PurchaseRestorerRequiredMilestone(THIABLogicHolder logicHolder)
     {
         super();
         DaggerUtils.inject(this);
-        add(new THInventoryFetchMilestone(context, logicHolder, IABSKUListType.getInApp()));
+        add(new THInventoryFetchMilestone(logicHolder, IABSKUListType.getInApp()));
         add(new THIABPurchaseFetchMilestone(logicHolder));
         add(new PortfolioCompactListRetrievedMilestone(currentUserId.toUserBaseKey()));
     }

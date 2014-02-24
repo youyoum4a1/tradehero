@@ -133,8 +133,6 @@ abstract public class BaseIABPurchaseConsumerHolder<
         {
             if (iabPurchaseConsumer != null)
             {
-                iabPurchaseConsumer.setListener(null);
-                iabPurchaseConsumer.setConsumptionFinishedListener(null);
                 iabPurchaseConsumer.onDestroy();
             }
         }

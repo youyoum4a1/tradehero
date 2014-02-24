@@ -70,7 +70,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(currentActivityHolder.getCurrentActivity(), logicHolder);
+        return new PurchaseRestorerRequiredMilestone(logicHolder);
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseConsumerListener()

@@ -82,8 +82,6 @@ abstract public class BaseIABPurchaseFetcherHolder<
         {
             if (purchaseFetcher != null)
             {
-                purchaseFetcher.setListener(null);
-                purchaseFetcher.setPurchaseFetchedListener(null);
                 purchaseFetcher.onDestroy();
             }
         }

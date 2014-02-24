@@ -25,7 +25,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean running;
     private boolean complete;
     private boolean failed;
-    private final Context context;
+    @Inject protected Context context;
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABLogicHolder> logicHolderWeak = new WeakReference<>(null);
     private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
@@ -34,13 +34,13 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(Context context, THIABLogicHolder logicHolder, IABSKUListType iabskuListType)
+    public THInventoryFetchMilestone(THIABLogicHolder logicHolder, IABSKUListType iabskuListType)
     {
         super();
+        DaggerUtils.inject(this);
         running = false;
         complete = false;
         failed = false;
-        this.context = context;
         this.logicHolderWeak = new WeakReference<>(logicHolder);
         this.iabskuListType = iabskuListType;
         fetchListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
@@ -69,7 +69,6 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         };
         dependsOn = new IABSKUListRetrievedAsyncMilestone(iabskuListType);
         dependsOn.setOnCompleteListener(dependCompleteListener);
-        DaggerUtils.inject(this);
     }
 
     @Override public void onDestroy()

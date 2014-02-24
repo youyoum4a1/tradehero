@@ -40,6 +40,12 @@ abstract public class IABBillingInventoryFetcher<
         this.inventory = new HashMap<>();
     }
 
+    @Override public void onDestroy()
+    {
+        inventoryListener = null;
+        super.onDestroy();
+    }
+
     @Override public List<IABSKUType> getProductIdentifiers()
     {
         return iabSKUs;

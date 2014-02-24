@@ -11,8 +11,9 @@ public interface BillingLogicHolder<
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
 {
-    boolean isBillingAvailable();
+    Boolean isBillingAvailable();
     int getUnusedRequestCode();
     void forgetRequestCode(int requestCode);
+    //void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
     void onDestroy();
 }

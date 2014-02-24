@@ -425,10 +425,10 @@ public class THIABUserInteractor
         }
     }
 
-    protected boolean isBillingAvailable()
+    protected Boolean isBillingAvailable()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.isBillingAvailable();
+        return billingActorCopy == null ? null : billingActorCopy.isBillingAvailable();
     }
 
     protected boolean hadErrorLoadingInventory()
@@ -461,7 +461,8 @@ public class THIABUserInteractor
 
     public AlertDialog conditionalPopBillingNotAvailable()
     {
-        if (!isBillingAvailable())
+        Boolean billingAvailable = isBillingAvailable();
+        if (billingAvailable == null || !billingAvailable) // TODO wait when is null
         {
             return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
         }
@@ -470,7 +471,8 @@ public class THIABUserInteractor
 
     public AlertDialog popErrorConditional()
     {
-        if (!isBillingAvailable())
+        Boolean billingAvailable = isBillingAvailable();
+        if (billingAvailable == null || !billingAvailable) // TODO wait when is null
         {
             return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
         }

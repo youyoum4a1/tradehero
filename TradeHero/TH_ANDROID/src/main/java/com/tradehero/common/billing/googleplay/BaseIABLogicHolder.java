@@ -84,6 +84,9 @@ abstract public class BaseIABLogicHolder<
     protected IABPurchaserHolderType purchaserHolder;
     protected IABPurchaseConsumerHolderType purchaseConsumerHolder;
 
+    protected Boolean billingAvailable = null;
+    protected IABServiceConnector availabilityTester;
+
     public BaseIABLogicHolder()
     {
         super();
@@ -92,9 +95,10 @@ abstract public class BaseIABLogicHolder<
         purchaseFetcherHolder = createPurchaseFetcherHolder();
         purchaserHolder = createPurchaserHolder();
         purchaseConsumerHolder = createPurchaseConsumeHolder();
+        testBillingAvailable();
     }
 
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         if (productIdentifierFetcherHolder != null)
         {
@@ -115,11 +119,21 @@ abstract public class BaseIABLogicHolder<
         {
             purchaseConsumerHolder.onDestroy();
         }
+
+        if (availabilityTester != null)
+        {
+            availabilityTester.onDestroy();
+        }
     }
 
-    @Override public boolean isBillingAvailable() // TODO review to make less HACKy
+    public void testBillingAvailable()
     {
-        return true;
+        // TODO
+    }
+
+    @Override public Boolean isBillingAvailable() // TODO review to make less HACKy
+    {
+        return billingAvailable;
     }
 
     @Override public int getUnusedRequestCode()
