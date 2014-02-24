@@ -106,7 +106,7 @@ abstract public class IABPurchaseRestorer<
         IABPurchaseConsumerHolderType consumerHolderCopy = getConsumerHolder();
         if (consumerHolderCopy != null)
         {
-            consumerHolderCopy.unregisterConsumeFinishedListener(requestCode);
+            consumerHolderCopy.forgetRequestCode(requestCode);
         }
     }
 

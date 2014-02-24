@@ -15,9 +15,9 @@ public interface IABPurchaseConsumerHolder<
         IABExceptionType extends IABException>
 {
     boolean isUnusedRequestCode(int requestCode);
+    void forgetRequestCode(int requestCode);
     IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode);
     void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler);
-    void unregisterConsumeFinishedListener(int requestCode);
     void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
     void onDestroy();
 }

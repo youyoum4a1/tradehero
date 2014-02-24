@@ -112,7 +112,7 @@ public class THIABLogicHolderFull
     @Override public void forgetRequestCode(int requestCode)
     {
         super.forgetRequestCode(requestCode);
-        purchaseReporterHolder.unregisterPurchaseReportedListener(requestCode);
+        purchaseReporterHolder.forgetRequestCode(requestCode);
     }
 
     @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)

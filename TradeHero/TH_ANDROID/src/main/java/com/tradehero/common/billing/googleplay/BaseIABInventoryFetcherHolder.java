@@ -43,9 +43,15 @@ abstract public class BaseIABInventoryFetcherHolder<
                 !iabInventoryFetchers.containsKey(randomNumber);
     }
 
-    @Override public void unRegisterInventoryFetchedListener(int requestCode)
+    @Override public void forgetRequestCode(int requestCode)
     {
-        super.unRegisterInventoryFetchedListener(requestCode);
+        super.forgetRequestCode(requestCode);
+        IABInventoryFetcherType inventoryFetcher = iabInventoryFetchers.get(requestCode);
+        if (inventoryFetcher != null)
+        {
+            inventoryFetcher.setListener(null);
+            inventoryFetcher.setInventoryFetchedListener(null);
+        }
         iabInventoryFetchers.remove(requestCode);
     }
 

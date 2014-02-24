@@ -149,11 +149,11 @@ abstract public class BaseIABLogicHolder<
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        productIdentifierFetcherHolder.unregisterProductIdentifierFetchedListener(requestCode);
-        inventoryFetcherHolder.unRegisterInventoryFetchedListener(requestCode);
-        purchaseFetcherHolder.unregisterPurchaseFetchedListener(requestCode);
-        purchaserHolder.unregisterPurchaseFinishedListener(requestCode);
-        purchaseConsumerHolder.unregisterConsumeFinishedListener(requestCode);
+        productIdentifierFetcherHolder.forgetRequestCode(requestCode);
+        inventoryFetcherHolder.forgetRequestCode(requestCode);
+        purchaseFetcherHolder.forgetRequestCode(requestCode);
+        purchaserHolder.forgetRequestCode(requestCode);
+        purchaseConsumerHolder.forgetRequestCode(requestCode);
     }
 
     abstract protected BaseIABSKUList<IABSKUType> getAllSkus();

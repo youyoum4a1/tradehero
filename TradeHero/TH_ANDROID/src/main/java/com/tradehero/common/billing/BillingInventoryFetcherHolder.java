@@ -11,9 +11,9 @@ public interface BillingInventoryFetcherHolder<
         BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);
+    void forgetRequestCode(int requestCode);
     InventoryFetchedListenerType getInventoryFetchedListener(int requestCode);
     void registerInventoryFetchedListener(int requestCode, InventoryFetchedListenerType inventoryFetchedListener);
-    void unRegisterInventoryFetchedListener(int requestCode);
     void launchInventoryFetchSequence(int requestCode, List<ProductIdentifierType> allIds);
     @Deprecated
     boolean isInventoryReady();

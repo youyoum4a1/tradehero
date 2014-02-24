@@ -61,11 +61,16 @@ abstract public class BasePurchaseReporterHolder<
                 !parentPurchaseReportedHandlers.containsKey(requestCode);
     }
 
-    @Override public void unregisterPurchaseReportedListener(int requestCode)
+    @Override public void forgetRequestCode(int requestCode)
     {
-        purchaseReporters.remove(requestCode);
         purchaseReportedListeners.remove(requestCode);
         parentPurchaseReportedHandlers.remove(requestCode);
+        PurchaseReporterType purchaseReporter = purchaseReporters.get(requestCode);
+        if (purchaseReporter != null)
+        {
+            purchaseReporter.setPurchaseReporterListener(null);
+        }
+        purchaseReporters.remove(requestCode);
     }
 
     @Override public OnPurchaseReportedListenerType getPurchaseReportListener(int requestCode)

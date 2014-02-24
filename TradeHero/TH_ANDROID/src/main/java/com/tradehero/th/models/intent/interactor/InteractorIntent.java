@@ -15,7 +15,6 @@ public abstract class InteractorIntent extends THIntent
         return null;
     }
 
-
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);

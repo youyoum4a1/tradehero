@@ -1,16 +1,18 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.utils.DaggerUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
@@ -28,21 +30,20 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
                 THIABPurchase,
                 IABException>>
 {
-    private final WeakReference<Activity> activity;
-    private THIABLogicHolder logicHolder;
+    @Inject protected CurrentActivityHolder currentActivityHolder;
+    @Inject THIABLogicHolder logicHolder;
     private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
     private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener;
     private final List<THIABPurchase> failedReports;
 
-    public THIABPurchaseRestorer(Activity activity, THIABLogicHolder logicHolder)
+    public THIABPurchaseRestorer(THIABLogicHolder logicHolder)
     {
         super(logicHolder, logicHolder.getPurchaseConsumerHolder());
-        this.activity = new WeakReference<>(activity);
-        this.logicHolder = logicHolder;
         this.actorPurchaseReporter = new WeakReference<>(logicHolder.getPurchaseReporterHolder());
         failedReports = new ArrayList<>();
+        DaggerUtils.inject(this);
     }
 
     @Override public void init()
@@ -69,7 +70,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(activity.get(), logicHolder);
+        return new PurchaseRestorerRequiredMilestone(currentActivityHolder.getCurrentActivity(), logicHolder);
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseConsumerListener()

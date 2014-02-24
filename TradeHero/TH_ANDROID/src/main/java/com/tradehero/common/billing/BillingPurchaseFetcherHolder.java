@@ -17,9 +17,9 @@ public interface BillingPurchaseFetcherHolder<
         BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);
+    void forgetRequestCode(int requestCode);
     PurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode);
     void registerPurchaseFetchedListener(int requestCode, PurchaseFetchedListenerType purchaseFetchedListener);
-    void unregisterPurchaseFetchedListener(int requestCode);
     void launchFetchPurchaseSequence(int requestCode);
     void onDestroy();
 }

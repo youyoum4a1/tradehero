@@ -45,6 +45,12 @@ abstract public class BaseBillingPurchaserHolder<
                 !parentPurchaseFinishedListeners.containsKey(requestCode);
     }
 
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        purchaseFinishedListeners.remove(requestCode);
+        parentPurchaseFinishedListeners.remove(requestCode);
+    }
+
     /**
      * The listener should be strongly referenced elsewhere.
      * @param purchaseFinishedListener
@@ -53,12 +59,6 @@ abstract public class BaseBillingPurchaserHolder<
     @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaseFinishedListenerType purchaseFinishedListener)
     {
         parentPurchaseFinishedListeners.put(requestCode, new WeakReference<>(purchaseFinishedListener));
-    }
-
-    @Override public void unregisterPurchaseFinishedListener(int requestCode)
-    {
-        purchaseFinishedListeners.remove(requestCode);
-        parentPurchaseFinishedListeners.remove(requestCode);
     }
 
     @Override public BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode)

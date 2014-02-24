@@ -34,6 +34,12 @@ abstract public class BaseProductIdentifierFetcherHolder<
                 !parentProductIdentifierFetchedListeners.containsKey(randomNumber);
     }
 
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        productIdentifierFetchedListeners.remove(requestCode);
+        parentProductIdentifierFetchedListeners.remove(requestCode);
+    }
+
     @Override public ProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode)
     {
         WeakReference<ProductIdentifierFetchedListenerType> weakListener = parentProductIdentifierFetchedListeners
@@ -48,11 +54,6 @@ abstract public class BaseProductIdentifierFetcherHolder<
     @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetchedListenerType productIdentifierFetchedListener)
     {
         parentProductIdentifierFetchedListeners.put(requestCode, new WeakReference<>(productIdentifierFetchedListener));
-    }
-
-    @Override public void unregisterProductIdentifierFetchedListener(int requestCode)
-    {
-        parentProductIdentifierFetchedListeners.remove(requestCode);
     }
 
     protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)

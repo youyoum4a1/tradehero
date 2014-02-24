@@ -19,9 +19,9 @@ public interface PurchaseReporterHolder<
         BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);
+    void forgetRequestCode(int requestCode);
     OnPurchaseReportedListenerType getPurchaseReportListener(int requestCode);
     void registerPurchaseReportedListener(int requestCode, OnPurchaseReportedListenerType purchaseReportedListener);
-    void unregisterPurchaseReportedListener(int requestCode);
     void launchReportSequence(int requestCode, ProductPurchaseType purchase);
     UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType;
     void onDestroy();

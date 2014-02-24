@@ -120,7 +120,7 @@ public class THIABUserInteractor
     {
         super();
         DaggerUtils.inject(this);
-        purchaseRestorer = new THIABPurchaseRestorer(currentActivityHolder.getCurrentActivity(), billingActor);
+        purchaseRestorer = new THIABPurchaseRestorer(billingActor);
         showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)

@@ -49,6 +49,19 @@ abstract public class BaseIABPurchaseConsumerHolder<
                 !parentConsumeFinishedHandlers.containsKey(requestCode);
     }
 
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        consumptionFinishedListeners.remove(requestCode);
+        parentConsumeFinishedHandlers.remove(requestCode);
+        IABPurchaseConsumerType purchaseConsumer = iabPurchaseConsumers.get(requestCode);
+        if (purchaseConsumer != null)
+        {
+            purchaseConsumer.setListener(null);
+            purchaseConsumer.setConsumptionFinishedListener(null);
+        }
+        iabPurchaseConsumers.remove(requestCode);
+    }
+
     @Override public IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode)
     {
         WeakReference<IABConsumeFinishedListenerType> weakHandler = parentConsumeFinishedHandlers.get(requestCode);
@@ -62,13 +75,6 @@ abstract public class BaseIABPurchaseConsumerHolder<
     @Override public void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler)
     {
         parentConsumeFinishedHandlers.put(requestCode, new WeakReference<>(purchaseConsumeHandler));
-    }
-
-    @Override public void unregisterConsumeFinishedListener(int requestCode)
-    {
-        iabPurchaseConsumers.remove(requestCode);
-        consumptionFinishedListeners.remove(requestCode);
-        parentConsumeFinishedHandlers.remove(requestCode);
     }
 
     @Override public void launchConsumeSequence(int requestCode, IABPurchaseType purchase)

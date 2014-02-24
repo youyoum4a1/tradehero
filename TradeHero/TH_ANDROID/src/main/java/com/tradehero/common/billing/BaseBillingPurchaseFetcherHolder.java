@@ -42,6 +42,12 @@ abstract public class BaseBillingPurchaseFetcherHolder<
                 !parentPurchaseFetchedListeners.containsKey(requestCode);
     }
 
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        purchaseFetchedListeners.remove(requestCode);
+        parentPurchaseFetchedListeners.remove(requestCode);
+    }
+
     @Override public PurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
     {
         WeakReference<PurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
@@ -60,12 +66,6 @@ abstract public class BaseBillingPurchaseFetcherHolder<
     @Override public void registerPurchaseFetchedListener(int requestCode, PurchaseFetchedListenerType purchaseFetchedListener)
     {
         parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
-    }
-
-    @Override public void unregisterPurchaseFetchedListener(int requestCode)
-    {
-        purchaseFetchedListeners.remove(requestCode);
-        parentPurchaseFetchedListeners.remove(requestCode);
     }
 
     protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)

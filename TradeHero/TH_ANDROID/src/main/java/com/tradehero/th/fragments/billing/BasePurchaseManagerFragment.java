@@ -13,7 +13,6 @@ import timber.log.Timber;
  * It expects its Activity to implement THIABInteractor.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
-        implements THIABInteractor
 {
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
@@ -21,12 +20,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected THIABUserInteractor userInteractor;
     @Inject protected THIABLogicHolder billingActor;
 
+    protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+
     abstract protected void initViews(View view);
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setBillingLogicHolder(((THIABInteractor) getActivity()).getBillingLogicHolder());
         createUserInteractor();
     }
 
@@ -89,16 +89,4 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         return userInteractor.getApplicablePortfolioId();
     }
-
-    //<editor-fold desc="THIABInteractor">
-    public THIABLogicHolder getBillingLogicHolder()
-    {
-        return billingActor;
-    }
-
-    public void setBillingLogicHolder(THIABLogicHolder billingActor)
-    {
-        this.billingActor = billingActor;
-    }
-    //</editor-fold>
 }

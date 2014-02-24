@@ -43,9 +43,15 @@ abstract public class BaseIABPurchaseFetcherHolder<
             !purchaseFetchers.containsKey(requestCode);
     }
 
-    @Override public void unregisterPurchaseFetchedListener(int requestCode)
+    @Override public void forgetRequestCode(int requestCode)
     {
-        super.unregisterPurchaseFetchedListener(requestCode);
+        super.forgetRequestCode(requestCode);
+        IABPurchaseFetcherType purchaseFetcher = purchaseFetchers.get(requestCode);
+        if (purchaseFetcher != null)
+        {
+            purchaseFetcher.setListener(null);
+            purchaseFetcher.setPurchaseFetchedListener(null);
+        }
         purchaseFetchers.remove(requestCode);
     }
 

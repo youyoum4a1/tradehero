@@ -38,6 +38,12 @@ abstract public class BaseBillingInventoryFetcherHolder<
                         !parentInventoryFetchedListeners.containsKey(randomNumber);
     }
 
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        inventoryFetchedListeners.remove(requestCode);
+        parentInventoryFetchedListeners.remove(requestCode);
+    }
+
     @Override public InventoryFetchedListenerType getInventoryFetchedListener(int requestCode)
     {
         WeakReference<InventoryFetchedListenerType> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
@@ -56,11 +62,6 @@ abstract public class BaseBillingInventoryFetcherHolder<
     @Override public void registerInventoryFetchedListener(int requestCode, InventoryFetchedListenerType inventoryFetchedListener)
     {
         parentInventoryFetchedListeners.put(requestCode, new WeakReference<>(inventoryFetchedListener));
-    }
-
-    @Override public void unRegisterInventoryFetchedListener(int requestCode)
-    {
-        parentInventoryFetchedListeners.remove(requestCode);
     }
 
     protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
