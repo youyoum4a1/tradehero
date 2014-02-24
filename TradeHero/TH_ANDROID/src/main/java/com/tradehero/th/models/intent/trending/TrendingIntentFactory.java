@@ -7,15 +7,14 @@ import com.tradehero.th.models.intent.security.SecurityBuyIntent;
 import com.tradehero.th.models.intent.security.SecuritySellIntent;
 import com.tradehero.th.models.intent.security.SecurityTradeIntent;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/10/14.
  */
 public class TrendingIntentFactory extends THIntentSubFactory<TrendingIntent>
 {
-    public static final String TAG = TrendingIntentFactory.class.getSimpleName();
-
-    public TrendingIntentFactory()
+    @Inject public TrendingIntentFactory()
     {
     }
 

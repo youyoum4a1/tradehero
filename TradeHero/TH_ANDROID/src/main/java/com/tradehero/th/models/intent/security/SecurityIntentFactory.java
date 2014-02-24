@@ -4,6 +4,7 @@ import android.content.Intent;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/23/14.
@@ -12,7 +13,7 @@ public class SecurityIntentFactory extends THIntentSubFactory<SecurityPushBuyInt
 {
     public static final String TAG = SecurityIntentFactory.class.getSimpleName();
 
-    public SecurityIntentFactory()
+    @Inject public SecurityIntentFactory()
     {
         super();
     }

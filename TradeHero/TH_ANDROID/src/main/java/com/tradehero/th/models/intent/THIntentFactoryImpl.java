@@ -3,6 +3,7 @@ package com.tradehero.th.models.intent;
 import android.content.Intent;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
@@ -12,7 +13,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 {
     private Map<String, THIntentFactory<? extends THIntent>> factoryMap;
 
-    public THIntentFactoryImpl()
+    @Inject public THIntentFactoryImpl()
     {
         factoryMap = new HashMap<>();
     }
