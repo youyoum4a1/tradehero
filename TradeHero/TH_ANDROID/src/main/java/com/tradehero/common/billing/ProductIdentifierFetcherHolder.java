@@ -8,8 +8,8 @@ public interface ProductIdentifierFetcherHolder<
         OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    OnProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode);
     boolean isUnusedRequestCode(int requestCode);
+    OnProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode);
     void registerProductIdentifierFetchedListener(int requestCode, OnProductIdentifierFetchedListenerType productIdentifierFetchedListener);
     void unregisterProductIdentifierFetchedListener(int requestCode);
     void launchProductIdentifierFetchSequence(int requestCode);

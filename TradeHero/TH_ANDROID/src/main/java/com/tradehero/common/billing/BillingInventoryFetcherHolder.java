@@ -7,8 +7,6 @@ public interface BillingInventoryFetcherHolder<
         InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, ExceptionType>,
         ExceptionType extends Exception>
 {
-    boolean isBillingAvailable();
-
     InventoryFetchedListenerType getInventoryFetchedListener(int requestCode);
     int registerInventoryFetchedListener(InventoryFetchedListenerType inventoryFetchedListener);
     void unRegisterInventoryFetchedListener(int requestCode);

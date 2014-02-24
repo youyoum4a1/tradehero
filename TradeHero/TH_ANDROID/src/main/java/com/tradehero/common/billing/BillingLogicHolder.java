@@ -37,5 +37,7 @@ public interface BillingLogicHolder<
                         BillingPurchaseFinishedListenerType,
                         BillingExceptionType>
 {
+    boolean isBillingAvailable();
     void forgetRequestCode(int requestCode);
+    void onDestroy();
 }

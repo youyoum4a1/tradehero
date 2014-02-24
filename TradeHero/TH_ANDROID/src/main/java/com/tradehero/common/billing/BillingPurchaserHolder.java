@@ -14,8 +14,6 @@ public interface BillingPurchaserHolder<
                 ExceptionType>,
         ExceptionType extends Exception>
 {
-    boolean isBillingAvailable();
-
     BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode);
     int registerPurchaseFinishedListener(BillingPurchaseFinishedListenerType purchaseFinishedListener);
     void unregisterPurchaseFinishedListener(int requestCode);
