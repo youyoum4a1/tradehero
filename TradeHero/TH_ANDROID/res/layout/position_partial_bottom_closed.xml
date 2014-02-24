@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-  >
+    >
 
   <TableLayout
       android:id="@+id/position_partial_bottom_closed_container"

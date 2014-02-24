@@ -252,7 +252,11 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     {
         int itemViewType = getItemViewType(position);
         int layoutToInflate = getLayoutForPosition(position);
-        convertView = inflater.inflate(layoutToInflate, parent, false);
+
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(layoutToInflate, parent, false);
+        }
 
         Object item = getItem(position);
 
