@@ -60,6 +60,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 {
                     userInteractor.doAction(action);
                 }
+                args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
             }
         }
 
