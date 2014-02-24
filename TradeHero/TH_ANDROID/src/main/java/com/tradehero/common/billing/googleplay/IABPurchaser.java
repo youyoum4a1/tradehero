@@ -38,9 +38,9 @@ abstract public class IABPurchaser<
     private int activityRequestCode;
     private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener;
 
-    public IABPurchaser(Activity activity)
+    public IABPurchaser()
     {
-        super(activity);
+        super();
     }
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;

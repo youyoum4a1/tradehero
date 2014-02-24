@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.content.Context;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcherHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -22,16 +21,13 @@ public class THBaseIABPurchaseFetcherHolder
             IABException>>
     implements THIABPurchaseFetcherHolder
 {
-    protected Context context;
-
-    public THBaseIABPurchaseFetcherHolder(Context context)
+    public THBaseIABPurchaseFetcherHolder()
     {
         super();
-        this.context = context;
     }
 
     @Override protected THIABPurchaseFetcher createPurchaseFetcher()
     {
-        return new THIABPurchaseFetcher(context);
+        return new THIABPurchaseFetcher();
     }
 }

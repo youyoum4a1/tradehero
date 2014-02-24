@@ -6,7 +6,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
@@ -19,7 +19,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     protected THIABUserInteractor userInteractor;
-    protected WeakReference<THIABLogicHolder> billingActor = new WeakReference<>(null);
+    @Inject protected THIABLogicHolder billingActor;
 
     abstract protected void initViews(View view);
 
@@ -93,12 +93,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     //<editor-fold desc="THIABInteractor">
     public THIABLogicHolder getBillingLogicHolder()
     {
-        return billingActor.get();
+        return billingActor;
     }
 
     public void setBillingLogicHolder(THIABLogicHolder billingActor)
     {
-        this.billingActor = new WeakReference<>(billingActor);
+        this.billingActor = billingActor;
     }
     //</editor-fold>
 }

@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.content.Context;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -22,9 +21,9 @@ public class THIABBillingInventoryFetcher
 
     @Inject protected Lazy<THIABProductDetailCache> skuDetailCache;
 
-    public THIABBillingInventoryFetcher(Context ctx)
+    public THIABBillingInventoryFetcher()
     {
-        super(ctx);
+        super();
     }
 
     @Override protected THIABProductDetail createSKUDetails(String itemType, String json) throws JSONException

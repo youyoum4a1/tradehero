@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import dagger.Module;
 import dagger.Provides;
@@ -21,14 +20,9 @@ public class THIABModule
 {
     public static final String TAG = THIABModule.class.getSimpleName();
 
-    @Provides @Singleton THIABLogicHolderFull provideTHIABLogicHolder(CurrentActivityHolder currentActivityHolder)
+    @Provides @Singleton THIABLogicHolder provideTHIABLogicHolder(THIABLogicHolderFull thiabLogicHolderFull)
     {
-        return new THIABLogicHolderFull(currentActivityHolder.getCurrentActivity());
-    }
-
-    @Provides @Singleton THIABLogicHolder provideTHIABActor(THIABLogicHolderFull thiabLogicHolder)
-    {
-        return thiabLogicHolder;
+        return thiabLogicHolderFull;
     }
 
     @Provides THIABUserInteractor provideTHIABUserInteractor()

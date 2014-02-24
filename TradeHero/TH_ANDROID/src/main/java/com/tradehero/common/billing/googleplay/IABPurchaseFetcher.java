@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -38,9 +37,9 @@ abstract public class IABPurchaseFetcher<
     protected WeakReference<OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> fetchListener = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
-    public IABPurchaseFetcher(Context ctx)
+    public IABPurchaseFetcher()
     {
-        super(ctx);
+        super();
         purchases = new HashMap<>();
     }
 

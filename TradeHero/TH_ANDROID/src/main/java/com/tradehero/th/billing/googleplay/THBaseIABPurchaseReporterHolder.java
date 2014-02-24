@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporterHolder;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;

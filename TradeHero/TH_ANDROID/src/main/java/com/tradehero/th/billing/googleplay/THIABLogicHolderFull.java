@@ -1,33 +1,20 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.BasePurchaseReporter;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
@@ -75,9 +62,9 @@ public class THIABLogicHolderFull
     @Inject protected Lazy<IABSKUListCache> iabskuListCache;
     @Inject protected Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THIABLogicHolderFull(Activity activity)
+    public THIABLogicHolderFull()
     {
-        super(activity);
+        super();
         purchaseReporterHolder = createPurchaseReporterHolder();
         DaggerUtils.inject(this);
     }
@@ -152,22 +139,22 @@ public class THIABLogicHolderFull
 
     @Override protected THIABInventoryFetcherHolder createInventoryFetcherHolder()
     {
-        return new THBaseIABInventoryFetcherHolder(getActivity());
+        return new THBaseIABInventoryFetcherHolder();
     }
 
     @Override protected THIABPurchaseFetcherHolder createPurchaseFetcherHolder()
     {
-        return new THBaseIABPurchaseFetcherHolder(getActivity());
+        return new THBaseIABPurchaseFetcherHolder();
     }
 
     @Override protected THIABPurchaserHolder createPurchaserHolder()
     {
-        return new THBaseIABPurchaserHolder(getActivity());
+        return new THBaseIABPurchaserHolder();
     }
 
     @Override protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
     {
-        return new THBaseIABPurchaseConsumerHolder(getActivity());
+        return new THBaseIABPurchaseConsumerHolder();
     }
 
     protected THIABPurchaseReporterHolder createPurchaseReporterHolder()

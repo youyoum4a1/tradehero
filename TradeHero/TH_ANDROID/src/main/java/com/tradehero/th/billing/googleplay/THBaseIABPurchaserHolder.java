@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -26,16 +25,13 @@ public class THBaseIABPurchaserHolder
         IABException>
     implements THIABPurchaserHolder
 {
-    protected Activity activity;
-
-    public THBaseIABPurchaserHolder(Activity activity)
+    public THBaseIABPurchaserHolder()
     {
         super();
-        this.activity = activity;
     }
 
     @Override protected THIABPurchaser createPurchaser()
     {
-        return new THIABPurchaser(activity);
+        return new THIABPurchaser();
     }
 }

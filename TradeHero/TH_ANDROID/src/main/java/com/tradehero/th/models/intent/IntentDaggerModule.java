@@ -1,7 +1,6 @@
 package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
-import com.tradehero.th.models.intent.interactor.InteractorIntentFactory;
 import com.tradehero.th.models.intent.interactor.ResetPortfolioIntentFactory;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.security.SecurityIntentFactory;

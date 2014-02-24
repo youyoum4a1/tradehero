@@ -1,11 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -17,10 +15,9 @@ public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THI
 
     @Inject protected Lazy<THIABProductDetailCache> skuDetailCache;
 
-    public THIABPurchaser(Activity activity)
+    public THIABPurchaser()
     {
-        super(activity);
-        DaggerUtils.inject(this);
+        super();
     }
 
     @Override protected THIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException

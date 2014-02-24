@@ -24,7 +24,7 @@ public class IABServiceConnector implements ServiceConnection
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
-    protected Context context;
+    @Inject protected Context context;
 
     protected IInAppBillingService billingService;
 
@@ -35,13 +35,8 @@ public class IABServiceConnector implements ServiceConnection
     protected WeakReference<ConnectorListener> listener = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
-    public IABServiceConnector(Context ctx)
+    public IABServiceConnector()
     {
-        this.context = ctx;
-        if (this.context == null)
-        {
-            throw new NullPointerException("Context cannot be null");
-        }
         DaggerUtils.inject(this);
     }
 

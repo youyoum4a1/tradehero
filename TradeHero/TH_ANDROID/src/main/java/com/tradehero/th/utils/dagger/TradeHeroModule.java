@@ -11,6 +11,7 @@ import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
+import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
@@ -34,8 +35,8 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -241,6 +242,7 @@ import javax.inject.Singleton;
                         THIABLogicHolderFull.class,
                         THIABPurchaseConsumer.class,
                         THInventoryFetchMilestone.class,
+                        THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,

@@ -1,7 +1,5 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.googleplay.IABPurchase;
-
 /**
  * Created by xavier on 2/21/14.
  */

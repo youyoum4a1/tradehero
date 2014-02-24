@@ -33,14 +33,14 @@ import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
+import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -444,7 +444,7 @@ public class THIABUserInteractor
     }
 
     //<editor-fold desc="THIABInteractor">
-    public THIABLogicHolder getBillingLogicHolder()
+    @Override public THIABLogicHolder getBillingLogicHolder()
     {
         return billingActor;
     }
@@ -453,7 +453,7 @@ public class THIABUserInteractor
      * The billingActor should be strongly referenced elsewhere
      * @param billingActor
      */
-    public void setBillingLogicHolder(THIABLogicHolder billingActor)
+    @Override public void setBillingLogicHolder(THIABLogicHolder billingActor)
     {
         throw new IllegalStateException("You cannot change the billing Actor");
     }
@@ -626,7 +626,8 @@ public class THIABUserInteractor
         {
             @Override public void run()
             {
-                Handler handler = THIABUserInteractor.this.currentActivityHolder.getCurrentHandler();
+                Handler handler =
+                        THIABUserInteractor.this.currentActivityHolder.getCurrentHandler();
                 Timber.d("handler %s", handler);
                 if (handler != null)
                 {
@@ -855,6 +856,7 @@ public class THIABUserInteractor
                         true,
                         true
                 );
+                progressDialog.setCanceledOnTouchOutside(true);
             }
             userService.get().follow(userBaseKey.key, followCallback);
         }

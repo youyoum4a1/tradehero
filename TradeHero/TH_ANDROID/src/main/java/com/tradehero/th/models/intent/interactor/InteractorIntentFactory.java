@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentFactory;
-import javax.inject.Inject;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/24/14 Time: 5:57 PM Copyright (c) TradeHero

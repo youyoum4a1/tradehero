@@ -1,23 +1,18 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -38,13 +33,11 @@ abstract public class IABBillingInventoryFetcher<
     private int requestCode;
 
     private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
-    @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
-    public IABBillingInventoryFetcher(Context ctx)
+    public IABBillingInventoryFetcher()
     {
-        super(ctx);
+        super();
         this.inventory = new HashMap<>();
-        DaggerUtils.inject(this);
     }
 
     @Override public List<IABSKUType> getProductIdentifiers()

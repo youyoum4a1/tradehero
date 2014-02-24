@@ -23,9 +23,9 @@ abstract public class IABPurchaseConsumer<
     private WeakReference<OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
-    public IABPurchaseConsumer(Activity activity)
+    public IABPurchaseConsumer()
     {
-        super(activity);
+        super();
     }
     //</editor-fold>
 

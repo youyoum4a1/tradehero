@@ -1,10 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.content.Context;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.json.JSONException;
 
@@ -17,10 +15,9 @@ public class THIABPurchaseFetcher
     @Inject protected THIABPurchaseCache thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseFetcher(Context ctx)
+    public THIABPurchaseFetcher()
     {
-        super(ctx);
-        DaggerUtils.inject(this);
+        super();
     }
     //</editor-fold>
 

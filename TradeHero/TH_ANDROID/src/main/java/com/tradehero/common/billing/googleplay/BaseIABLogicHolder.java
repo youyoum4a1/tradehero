@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
@@ -8,7 +7,6 @@ import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABLogicHolder<
@@ -80,19 +78,15 @@ abstract public class BaseIABLogicHolder<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-    protected WeakReference<Activity> weakActivity = new WeakReference<>(null);
-
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
     protected IABInventoryFetcherHolderType inventoryFetcherHolder;
     protected IABPurchaseFetcherHolderType purchaseFetcherHolder;
     protected IABPurchaserHolderType purchaserHolder;
     protected IABPurchaseConsumerHolderType purchaseConsumerHolder;
 
-    public BaseIABLogicHolder(Activity activity)
+    public BaseIABLogicHolder()
     {
         super();
-        setActivity(activity);
-
         productIdentifierFetcherHolder = createProductIdentifierFetcherHolder();
         inventoryFetcherHolder = createInventoryFetcherHolder();
         purchaseFetcherHolder = createPurchaseFetcherHolder();
@@ -121,20 +115,6 @@ abstract public class BaseIABLogicHolder<
         {
             purchaseConsumerHolder.onDestroy();
         }
-    }
-
-    public Activity getActivity()
-    {
-        return weakActivity.get();
-    }
-
-    /**
-     * The activity should be strongly referenced elsewhere
-     * @param activity
-     */
-    public void setActivity(Activity activity)
-    {
-        this.weakActivity = new WeakReference<>(activity);
     }
 
     @Override public boolean isBillingAvailable() // TODO review to make less HACKy

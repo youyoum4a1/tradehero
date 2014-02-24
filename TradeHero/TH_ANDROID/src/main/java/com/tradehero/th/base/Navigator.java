@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 

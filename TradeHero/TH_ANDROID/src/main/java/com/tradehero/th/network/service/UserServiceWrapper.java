@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.http.POST;
-import retrofit.http.Path;
 
 /**
  * Repurposes queries

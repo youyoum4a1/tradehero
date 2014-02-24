@@ -4,7 +4,6 @@ import android.content.Context;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
