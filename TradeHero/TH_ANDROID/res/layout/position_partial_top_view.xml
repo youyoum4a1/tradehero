@@ -1,162 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.tradehero.th.fragments.position.partial.PositionPartialTopView
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/position_partial_top"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:paddingRight="@dimen/position_padding_right"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
-  <ImageView
-      android:id="@+id/stock_logo"
-      android:layout_width="0dp"
-      android:layout_weight="1"
-      android:layout_height="match_parent"
-      android:layout_margin="2dp"
-      android:scaleType="fitCenter"
-      android:contentDescription="@null"
-      tools:src="@drawable/superman_facebook"
-      />
-
-  <RelativeLayout
-      android:id="@+id/stock_quick_info"
-      android:orientation="vertical"
-      android:layout_width="0dp"
-      android:layout_weight="2"
-      android:layout_height="match_parent"
-      android:layout_marginLeft="4dp"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="2dp"
+  <com.tradehero.th.fragments.position.partial.PositionPartialTopView
+      android:id="@+id/position_partial_top"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:paddingRight="@dimen/position_padding_right"
       >
 
-    <TextView
-        android:id="@+id/stock_symbol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:layout_alignParentTop="true"
-        tools:text="LSE:VOD"
+    <ImageView
+        android:id="@+id/stock_logo"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
         />
-
-    <TextView
-        android:id="@+id/company_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_centerInParent="true"
-        android:textSize="10sp"
-        tools:text="Vodaphone"
-        />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-      <TextView
-          android:id="@+id/stock_movement_indicator"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:maxLines="1"
-          tools:text="@string/arrow_prefix_negative"
-          />
-
-      <TextView
-          android:id="@+id/stock_last_price"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:lines="1"
-          android:textSize="10sp"
-          tools:text="US$ 0.08"
-          />
-
-      <ImageView
-          android:id="@+id/ic_market_close"
-          android:layout_width="12dp"
-          android:layout_height="12dp"
-          android:layout_marginLeft="4dp"
-          android:layout_marginTop="2dp"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:src="@drawable/market_sleep_grey"
-          />
-
-    </LinearLayout>
-
-  </RelativeLayout>
-
-  <RelativeLayout
-      android:id="@+id/quick_position_info"
-      android:orientation="vertical"
-      android:layout_width="0dp"
-      android:layout_weight="1"
-      android:layout_height="match_parent"
-      android:layout_marginLeft="4dp"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="2dp"
-      >
-
-    <TextView
-        android:id="@+id/position_percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_alignParentTop="true"
-        tools:text="5.8%"
-        />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="4dp"
-          android:text="@string/leaderboard_p_n_l"
-          android:textSize="10sp"
-          android:textColor="@color/text_gray_normal"
-          />
-
-      <TextView
-          android:id="@+id/position_last_amount"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:maxLines="1"
-          android:textSize="10sp"
-          tools:text="US$ 5.29k"
-          />
-
-    </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/btn_trade_history"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentRight="true"
+        android:id="@+id/stock_quick_info"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
         >
 
-      <ImageView
+      <TextView
+          android:id="@+id/stock_symbol"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_margin="16dp"
-          android:layout_centerInParent="true"
-          android:scaleType="fitCenter"
-          android:src="@drawable/settings_forward_light"
-          android:contentDescription="@null"
-          android:background="@null"
+          android:textStyle="bold"
+          android:maxLines="1"
+          android:layout_alignParentTop="true"
+          tools:text="LSE:VOD"
           />
+
+      <TextView
+          android:id="@+id/company_name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:layout_centerInParent="true"
+          android:textSize="10sp"
+          tools:text="Vodaphone"
+          />
+
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/stock_movement_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            tools:text="@string/arrow_prefix_negative"
+            />
+
+        <TextView
+            android:id="@+id/stock_last_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="10sp"
+            tools:text="US$ 0.08"
+            />
+
+        <ImageView
+            android:id="@+id/ic_market_close"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/market_sleep_grey"
+            />
+
+      </LinearLayout>
 
     </RelativeLayout>
 
-  </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/quick_position_info"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        >
 
-</com.tradehero.th.fragments.position.partial.PositionPartialTopView>
+      <TextView
+          android:id="@+id/position_percentage"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:layout_alignParentTop="true"
+          tools:text="5.8%"
+          />
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:text="@string/leaderboard_p_n_l"
+            android:textSize="10sp"
+            android:textColor="@color/text_gray_normal"
+            />
+
+        <TextView
+            android:id="@+id/position_last_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="10sp"
+            tools:text="US$ 5.29k"
+            />
+
+      </LinearLayout>
+
+      <RelativeLayout
+          android:id="@+id/btn_trade_history"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_centerInParent="true"
+          android:layout_alignParentRight="true"
+          >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/settings_forward_light"
+            android:contentDescription="@null"
+            android:background="@null"
+            />
+
+      </RelativeLayout>
+
+    </RelativeLayout>
+
+  </com.tradehero.th.fragments.position.partial.PositionPartialTopView>
+</merge>

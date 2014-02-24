@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/expanding_layout"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <TableLayout
-      android:id="@+id/position_partial_bottom_open_container"
+  <com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
+      android:id="@+id/expanding_layout"
+      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-    <include
-        layout="@layout/position_partial_bottom_open_merge"
-        />
+    <TableLayout
+        android:id="@+id/position_partial_bottom_open_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-  </TableLayout>
+      <include
+          layout="@layout/position_partial_bottom_open_merge"
+          />
 
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/position_partial_bottom_open_container"
-      >
+    </TableLayout>
 
-    <include
-        layout="@layout/position_partial_shortcut_buttons"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/position_partial_bottom_open_container"
+        >
 
-  </RelativeLayout>
+      <include
+          layout="@layout/position_partial_shortcut_buttons"
+          />
 
-</com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>
+    </RelativeLayout>
+
+  </com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>
+</merge>
