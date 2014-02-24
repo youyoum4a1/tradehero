@@ -105,6 +105,13 @@ public class DashboardNavigator extends Navigator
         }
         mTabHost = null;
         mOnTabChangedListener = null;
+
+        tabBarView = null;
+
+        slideInAnimation.setAnimationListener(null);
+        slideOutAnimation.setAnimationListener(null);
+        slideInAnimation = null;
+        slideOutAnimation = null;
     }
 
     private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
