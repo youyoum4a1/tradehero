@@ -632,7 +632,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handleSendLoveClicked()
     {
         THToast.show("Love");
-        final String appName = "TradeHero";
+        final String appName = Constants.PLAYSTORE_APP_ID;
         try
         {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
