@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.content.Intent;
 import com.tradehero.common.billing.BillingPurchaserHolder;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -25,4 +26,5 @@ public interface IABPurchaserHolder<
                 IABPurchaseFinishedListenerType,
                 IABExceptionType>
 {
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

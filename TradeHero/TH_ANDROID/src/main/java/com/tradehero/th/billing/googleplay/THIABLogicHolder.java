@@ -13,7 +13,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 public interface THIABLogicHolder extends
         THIABProductDetailDomainInformer,
         THIABPurchaseFetcherHolder, // This is redundant but allows passing of interface
-        THIABPurchaserHolder, // This is redundant but allows passing of interface
         THIABPurchaseReporterHolder, // This is redundant but allows passing of interface
         THIABPurchaseConsumerHolder, // This is redundant but allows passing of interface
         IABLogicHolder<
@@ -29,4 +28,6 @@ public interface THIABLogicHolder extends
 {
     @Deprecated
     THIABInventoryFetcherHolder getInventoryFetcherHolder();
+    @Deprecated
+    THIABPurchaserHolder getPurchaserHolder();
 }

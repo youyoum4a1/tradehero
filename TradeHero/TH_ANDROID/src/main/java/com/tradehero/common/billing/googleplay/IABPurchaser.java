@@ -23,19 +23,20 @@ abstract public class IABPurchaser<
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
-        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
+        IABExceptionType extends IABException>
         extends IABServiceConnector
     implements BillingPurchaser<
         IABSKUType,
-        IABOrderIdType,
         IABPurchaseOrderType,
+        IABOrderIdType,
         IABPurchaseType,
-        IABException>
+        IABExceptionType>
 {
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
-    private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener;
+    private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener;
 
     public IABPurchaser(Activity activity)
     {
@@ -68,12 +69,12 @@ abstract public class IABPurchaser<
         }
     }
 
-    @Override public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> getPurchaseFinishedListener()
+    @Override public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> getPurchaseFinishedListener()
     {
         return purchaseFinishedListener;
     }
 
-    @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
+    @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener)
     {
         Timber.d("setPurchaseFinishedListener %s", purchaseFinishedListener.getClass().getSimpleName());
         this.purchaseFinishedListener = purchaseFinishedListener;

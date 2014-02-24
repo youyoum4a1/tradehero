@@ -15,7 +15,9 @@ public interface BillingInventoryFetcherHolder<
     void registerInventoryFetchedListener(int requestCode, InventoryFetchedListenerType inventoryFetchedListener);
     void unRegisterInventoryFetchedListener(int requestCode);
     void launchInventoryFetchSequence(int requestCode, List<ProductIdentifierType> allIds);
+    @Deprecated
     boolean isInventoryReady();
+    @Deprecated
     boolean hadErrorLoadingInventory();
     void onDestroy();
 }

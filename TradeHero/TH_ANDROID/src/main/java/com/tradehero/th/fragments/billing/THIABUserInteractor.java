@@ -660,12 +660,13 @@ public class THIABUserInteractor
 
     protected void launchPurchaseSequence(THIABPurchaseOrder purchaseOrder)
     {
-        launchPurchaseSequence(getBillingLogicHolder(), purchaseOrder);
+        launchPurchaseSequence(getBillingLogicHolder().getPurchaserHolder(), purchaseOrder);
     }
 
     protected void launchPurchaseSequence(THIABPurchaserHolder actorPurchaser, THIABPurchaseOrder purchaseOrder)
     {
-        int requestCode = actorPurchaser.registerPurchaseFinishedListener(purchaseFinishedListener);
+        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+        actorPurchaser.registerPurchaseFinishedListener(requestCode, purchaseFinishedListener);
         actorPurchaser.launchPurchaseSequence(requestCode, purchaseOrder);
     }
 

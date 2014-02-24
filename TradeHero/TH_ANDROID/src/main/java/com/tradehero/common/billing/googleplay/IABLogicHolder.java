@@ -40,13 +40,6 @@ public interface IABLogicHolder<
                         IABPurchaseType,
                         IABPurchaseFinishedListenerType,
                         IABExceptionType>,
-        IABPurchaserHolder< // This one is redundant but serves as a highlight to the reader
-                        IABSKUType,
-                        IABPurchaseOrderType,
-                        IABOrderIdType,
-                        IABPurchaseType,
-                        IABPurchaseFinishedListenerType,
-                        IABExceptionType>,
         IABPurchaseFetcherHolder<
                         IABSKUType,
                         IABOrderIdType,

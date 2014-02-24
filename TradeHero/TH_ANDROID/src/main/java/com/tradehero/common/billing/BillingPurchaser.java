@@ -1,16 +1,18 @@
 package com.tradehero.common.billing;
 
+import com.tradehero.common.billing.exception.BillingException;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:16 PM To change this template use File | Settings | File Templates. */
 public interface BillingPurchaser<
         ProductIdentifierType extends ProductIdentifier,
-        OrderIdType extends OrderId,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
+        OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        ExceptionType extends Exception>
+        BillingExceptionType extends BillingException>
 {
     int getRequestCode();
-    OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, ExceptionType> getPurchaseFinishedListener();
-    void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, ExceptionType> purchaseFinishedListener);
+    OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFinishedListener();
+    void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener);
     void purchase(int requestCode, PurchaseOrderType purchaseOrder);
 
     /**
@@ -18,11 +20,11 @@ public interface BillingPurchaser<
      *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
      *  */
     public static interface OnPurchaseFinishedListener<
-            ProductIdentifierType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType,
-            ExceptionType>
+            ProductIdentifierType extends ProductIdentifier,
+            PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
+            OrderIdType extends OrderId,
+            ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+            BillingExceptionType extends BillingException>
     {
         /**
          * Called to notify that an in-app purchase finished. If the purchase was successful,
@@ -33,13 +35,7 @@ public interface BillingPurchaser<
          * @param purchaseOrder
          * @param purchase
          */
-        void onPurchaseFinished(
-                int requestCode,
-                PurchaseOrderType purchaseOrder,
-                ProductPurchaseType purchase);
-        void onPurchaseFailed(
-                int requestCode,
-                PurchaseOrderType purchaseOrder,
-                ExceptionType exception);
+        void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase);
+        void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException);
     }
 }

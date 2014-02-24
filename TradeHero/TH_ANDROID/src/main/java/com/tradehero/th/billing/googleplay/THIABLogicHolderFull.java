@@ -53,6 +53,7 @@ public class THIABLogicHolderFull
                     THIABOrderId,
                     THIABPurchase>,
             THIABPurchaser,
+            THIABPurchaserHolder,
             BillingPurchaser.OnPurchaseFinishedListener<
                     IABSKU,
                     THIABPurchaseOrder,
@@ -108,6 +109,11 @@ public class THIABLogicHolderFull
     @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
     {
         return inventoryFetcherHolder;
+    }
+
+    @Override public THIABPurchaserHolder getPurchaserHolder()
+    {
+        return purchaserHolder;
     }
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
@@ -253,9 +259,9 @@ public class THIABLogicHolderFull
         return new THIABPurchaseFetcher(getActivity());
     }
 
-    @Override protected THIABPurchaser createPurchaser()
+    @Override protected THIABPurchaserHolder createPurchaserHolder()
     {
-        return new THIABPurchaser(getActivity());
+        return new THBaseIABPurchaserHolder(getActivity());
     }
 
     @Override protected THIABPurchaseConsumer createPurchaseConsumer()

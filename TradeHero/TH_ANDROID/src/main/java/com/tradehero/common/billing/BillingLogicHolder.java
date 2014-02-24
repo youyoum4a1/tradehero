@@ -18,14 +18,6 @@ public interface BillingLogicHolder<
                 ProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
-    extends
-        BillingPurchaserHolder<
-                        ProductIdentifierType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingPurchaseFinishedListenerType,
-                        BillingExceptionType>
 {
     boolean isBillingAvailable();
     int getUnusedRequestCode();
