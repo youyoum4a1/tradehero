@@ -44,13 +44,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private TextView leaderboardMarkUserMarkingTime;
 
     protected int leaderboardId;
+    protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
 
-    protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
+    protected LeaderboardFilterFragment leaderboardFilterFragment;
 
     protected PerPagedLeaderboardKeyPreference savedPreference;
-
-    protected LeaderboardFilterFragment leaderboardFilterFragment;
     protected PerPagedLeaderboardKey currentLeaderboardKey;
 
     @Override public void onCreate(Bundle savedInstanceState)

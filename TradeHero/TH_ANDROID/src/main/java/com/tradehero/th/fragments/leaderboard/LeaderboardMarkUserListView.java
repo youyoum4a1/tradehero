@@ -11,7 +11,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListView extends PullToRefreshListView
 {
-    @Inject SingleExpandingListViewListener defaultExpandingListViewListener;
+    @Inject SingleExpandingListViewListener singleExpandingListViewListener;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListView(Context context)
@@ -44,7 +44,7 @@ public class LeaderboardMarkUserListView extends PullToRefreshListView
     private void init()
     {
         DaggerUtils.inject(this);
-        super.setOnItemClickListener(defaultExpandingListViewListener);
+        super.setOnItemClickListener(singleExpandingListViewListener);
     }
 
     @Override protected void onDetachedFromWindow()

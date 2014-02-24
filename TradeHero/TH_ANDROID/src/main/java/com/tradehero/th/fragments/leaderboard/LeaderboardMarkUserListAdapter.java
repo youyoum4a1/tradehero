@@ -2,8 +2,10 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -50,6 +52,12 @@ public class LeaderboardMarkUserListAdapter extends
     {
         dtoView.linkWith(userInteractor.get(), false);
         dtoView.linkWith(currentUserProfileDTO, true);
+
+        final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
+        if (expandingLayout != null)
+        {
+            expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)

@@ -17,14 +17,26 @@ public class BaseExpandingListViewListener implements ExpandingListView.Expandin
 
     protected void expandView(View view)
     {
-        final View expandingLayout = view.findViewById(R.id.expanding_layout);
-        expandingLayout.setVisibility(View.VISIBLE);
+        if (view != null)
+        {
+            final View expandingLayout = view.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
+            {
+                expandingLayout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     protected void collapseView(View view)
     {
-        final View expandingLayout = view.findViewById(R.id.expanding_layout);
-        expandingLayout.setVisibility(View.GONE);
+        if (view != null)
+        {
+            final View expandingLayout = view.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
+            {
+                expandingLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
