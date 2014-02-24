@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.THLog;
@@ -30,7 +31,6 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
         IABException>
 {
     public static final String TAG = THIABPurchaseReporter.class.getSimpleName();

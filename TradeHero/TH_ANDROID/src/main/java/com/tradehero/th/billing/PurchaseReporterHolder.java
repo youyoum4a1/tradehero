@@ -19,10 +19,11 @@ public interface PurchaseReporterHolder<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    void forgetRequestCode(int requestCode);
-
+    boolean isUnusedRequestCode(int requestCode);
     OnPurchaseReportedListenerType getPurchaseReportListener(int requestCode);
-    int registerPurchaseReportedListener(OnPurchaseReportedListenerType purchaseReportedListener);
+    void registerPurchaseReportedListener(int requestCode, OnPurchaseReportedListenerType purchaseReportedListener);
+    void unregisterPurchaseReportedListener(int requestCode);
     void launchReportSequence(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTOType launchReportSequenceSync(ProductPurchaseType purchase) throws BillingException;
+    UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType;
+    void onDestroy();
 }

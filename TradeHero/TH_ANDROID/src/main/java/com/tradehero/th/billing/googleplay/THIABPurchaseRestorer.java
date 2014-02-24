@@ -36,15 +36,12 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener;
     private final List<THIABPurchase> failedReports;
 
-    public THIABPurchaseRestorer(
-            Activity activity,
-            THIABLogicHolder logicHolder,
-            THIABPurchaseReporterHolder actorPurchaseReporter)
+    public THIABPurchaseRestorer(Activity activity, THIABLogicHolder logicHolder)
     {
         super(logicHolder, logicHolder.getPurchaseConsumerHolder());
         this.activity = new WeakReference<>(activity);
         this.logicHolder = logicHolder;
-        this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
+        this.actorPurchaseReporter = new WeakReference<>(logicHolder.getPurchaseReporterHolder());
         failedReports = new ArrayList<>();
     }
 
@@ -146,7 +143,8 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         THIABPurchaseReporterHolder actorReporter = actorPurchaseReporter.get();
         if (actorReporter != null)
         {
-            requestCodeReporter = actorReporter.registerPurchaseReportedListener(purchaseReportedListener);
+            requestCodeReporter = logicHolder.getUnusedRequestCode();
+            actorReporter.registerPurchaseReportedListener(requestCodeReporter, purchaseReportedListener);
             actorReporter.launchReportSequence(requestCodeReporter, purchase);
         }
         else

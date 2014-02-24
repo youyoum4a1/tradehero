@@ -11,23 +11,18 @@ public interface PurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    OnPurchaseReportedListenerType getPurchaseReporterListener();
-    void setPurchaseReporterListener(final OnPurchaseReportedListenerType listener);
+    PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseReporterListener();
+    void setPurchaseReporterListener(final PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener);
     void reportPurchase(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase) throws Exception;
+    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase) throws BillingExceptionType;
 
     public static interface OnPurchaseReportedListener<
-            ProductIdentifierType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType>
+            ProductIdentifierType extends ProductIdentifier,
+            OrderIdType extends OrderId,
+            ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+            BillingExceptionType extends BillingException>
     {
         void onPurchaseReported(
                 int requestCode,

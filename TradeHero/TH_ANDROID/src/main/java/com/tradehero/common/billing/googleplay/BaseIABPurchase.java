@@ -23,7 +23,7 @@ import timber.log.Timber;
 /**
  * Represents an in-app billing purchase.
  */
-public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
+abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";

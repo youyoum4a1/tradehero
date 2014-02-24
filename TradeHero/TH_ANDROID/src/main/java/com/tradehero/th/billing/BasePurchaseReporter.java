@@ -12,38 +12,32 @@ abstract public class BasePurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements PurchaseReporter<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
-        OnPurchaseReportedListenerType,
         BillingExceptionType>
 {
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();
 
     protected int requestCode;
     protected ProductPurchaseType purchase;
-    private OnPurchaseReportedListenerType listener;
+    private PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener;
 
-    public OnPurchaseReportedListenerType getPurchaseReporterListener()
+    @Override public PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseReporterListener()
     {
         return this.listener;
     }
 
-    public void setPurchaseReporterListener(final OnPurchaseReportedListenerType listener)
+    @Override public void setPurchaseReporterListener(final PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener)
     {
         this.listener = listener;
     }
 
     protected void notifyListenerSuccess(final UserProfileDTO updatedUserPortfolio)
     {
-        OnPurchaseReportedListenerType listener1 = getPurchaseReporterListener();
+        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReported(requestCode, this.purchase, updatedUserPortfolio);
@@ -52,7 +46,7 @@ abstract public class BasePurchaseReporter<
 
     protected void notifyListenerReportFailed(final BillingExceptionType error)
     {
-        OnPurchaseReportedListenerType listener1 = getPurchaseReporterListener();
+        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReportFailed(requestCode, this.purchase, error);

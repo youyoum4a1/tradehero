@@ -120,9 +120,7 @@ public class THIABUserInteractor
     {
         super();
         DaggerUtils.inject(this);
-        purchaseRestorer = new THIABPurchaseRestorer(currentActivityHolder.getCurrentActivity(),
-                billingActor,
-                billingActor);
+        purchaseRestorer = new THIABPurchaseRestorer(currentActivityHolder.getCurrentActivity(), billingActor);
         showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)
@@ -699,7 +697,7 @@ public class THIABUserInteractor
 
     protected void launchReportPurchaseSequence(THIABPurchase purchase)
     {
-        launchReportPurchaseSequence(getBillingLogicHolder(), purchase);
+        launchReportPurchaseSequence(getBillingLogicHolder().getPurchaseReporterHolder(), purchase);
     }
 
     protected void launchReportPurchaseSequence(THIABPurchaseReporterHolder actorPurchaseReporter, THIABPurchase purchase)
@@ -713,7 +711,8 @@ public class THIABUserInteractor
                     activity.getString(R.string.store_billing_report_api_launching_window_message),
                     true);
         }
-        int requestCode = actorPurchaseReporter.registerPurchaseReportedListener(purchaseReportedListener);
+        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+        actorPurchaseReporter.registerPurchaseReportedListener(requestCode, purchaseReportedListener);
         actorPurchaseReporter.launchReportSequence(requestCode, purchase);
     }
 
