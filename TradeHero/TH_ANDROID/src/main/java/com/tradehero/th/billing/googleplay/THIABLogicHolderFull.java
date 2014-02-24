@@ -34,6 +34,7 @@ import javax.inject.Inject;
 public class THIABLogicHolderFull
     extends BaseIABLogicHolder<
             IABSKU,
+            THIABProductIdentifierFetcher,
             ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
                     IABSKU,
                     IABException>,
@@ -67,12 +68,6 @@ public class THIABLogicHolderFull
     implements THIABLogicHolder
 {
     public static final String TAG = THIABLogicHolderFull.class.getSimpleName();
-
-    protected Map<Integer /*requestCode*/, THIABProductIdentifierFetcher> skuFetchers;
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>>
-            productIdentifierFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>>>
-            parentProductIdentifierFetchedListeners;
 
     protected Map<Integer /*requestCode*/, THIABPurchaseReporter> purchaseReporters;
     protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>> purchaseReportedListeners;
@@ -148,83 +143,6 @@ public class THIABLogicHolderFull
         purchaseReportedListeners.remove(requestCode);
         parentPurchaseReportedHandlers.remove(requestCode);
     }
-
-    //<editor-fold desc="ProductIdentifierFetcherHolder">
-    protected void registerProductIdentifierFetchedListener(int requestCode,
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> productIdentifierFetchedListener)
-    {
-        parentProductIdentifierFetchedListeners.put(requestCode, new WeakReference<>(productIdentifierFetchedListener));
-    }
-
-    @Override public int registerProductIdentifierFetchedListener(
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> productIdentifierFetchedListener)
-    {
-        int requestCode = getUnusedRequestCode();
-        registerProductIdentifierFetchedListener(requestCode, productIdentifierFetchedListener);
-        return requestCode;
-    }
-
-    @Override public void unregisterProductIdentifierFetchedListener(int requestCode)
-    {
-        parentProductIdentifierFetchedListeners.remove(requestCode);
-    }
-
-    @Override public void launchProductIdentifierFetchSequence(int requestCode)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>
-                skuFetchedListener = new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>()
-        {
-            @Override public void onFetchedProductIdentifiers(int requestCode,
-                    Map<String, List<IABSKU>> availableSkus)
-            {
-                notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
-            }
-
-            @Override public void onFetchProductIdentifiersFailed(int requestCode,
-                    IABException exception)
-            {
-                notifyProductIdentifierFetchedFailed(requestCode, exception);
-            }
-        };
-        productIdentifierFetchedListeners.put(requestCode, skuFetchedListener);
-        THIABProductIdentifierFetcher skuFetcher = new THIABProductIdentifierFetcher();
-        skuFetcher.setProductIdentifierListener(skuFetchedListener);
-        skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchProductIdentifiers(requestCode);
-    }
-
-    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> getProductIdentifierFetchedListener(
-            int requestCode)
-    {
-        WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>> weakListener = parentProductIdentifierFetchedListeners
-                .get(requestCode);
-        if (weakListener == null)
-        {
-            return null;
-        }
-        return weakListener.get();
-    }
-
-    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableSkus)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> fetchedListener = getProductIdentifierFetchedListener(
-                requestCode);
-        if (fetchedListener != null)
-        {
-            fetchedListener.onFetchedProductIdentifiers(requestCode, availableSkus);
-        }
-    }
-
-    protected void notifyProductIdentifierFetchedFailed(int requestCode, IABException exception)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException> fetchedListener = getProductIdentifierFetchedListener(
-                requestCode);
-        if (fetchedListener != null)
-        {
-            fetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
-        }
-    }
-    //</editor-fold>
 
     @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)
     {
@@ -335,6 +253,11 @@ public class THIABLogicHolderFull
             mixed.addAll(subs);
         }
         return mixed;
+    }
+
+    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher()
+    {
+        return new THIABProductIdentifierFetcher();
     }
 
     @Override protected THIABBillingInventoryFetcher createInventoryFetcher()

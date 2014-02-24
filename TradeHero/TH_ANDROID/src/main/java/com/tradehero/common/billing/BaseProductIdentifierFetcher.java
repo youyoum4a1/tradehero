@@ -11,13 +11,13 @@ abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierType extends ProductIdentifier,
         OnProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>,
         BillingExceptionType extends BillingException>
-        implements ProductIdentifierFetcher<ProductIdentifierType, OnProductIdentifierFetchedListenerType, BillingExceptionType>
+        implements ProductIdentifierFetcher<ProductIdentifierType, BillingExceptionType>
 {
     public static final String TAG = BaseProductIdentifierFetcher.class.getSimpleName();
 
     protected int requestCode;
     protected Map<String, List<ProductIdentifierType>> availableProductIdentifiers;
-    protected OnProductIdentifierFetchedListenerType productIdentifierFetchedListener;
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener;
 
     public BaseProductIdentifierFetcher()
     {
@@ -35,13 +35,13 @@ abstract public class BaseProductIdentifierFetcher<
         return requestCode;
     }
 
-    @Override public OnProductIdentifierFetchedListenerType getProductIdentifierListener()
+    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> getProductIdentifierListener()
     {
         return productIdentifierFetchedListener;
     }
 
     @Override public void setProductIdentifierListener(
-            OnProductIdentifierFetchedListenerType listener)
+            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> listener)
     {
         this.productIdentifierFetchedListener = listener;
     }

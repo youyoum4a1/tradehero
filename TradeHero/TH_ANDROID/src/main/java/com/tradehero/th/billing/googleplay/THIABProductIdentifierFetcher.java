@@ -18,7 +18,6 @@ public class THIABProductIdentifierFetcher extends BaseProductIdentifierFetcher<
         IABException>
     implements IABProductIdentifierFetcher<
         IABSKU,
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,
         IABException>
 {
     public static final String TAG = THIABProductIdentifierFetcher.class.getSimpleName();

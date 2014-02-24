@@ -1,6 +1,8 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.googleplay.IABProductIdentifierFetcher;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingLogicHolder<
@@ -20,21 +22,21 @@ public interface BillingLogicHolder<
         BillingExceptionType extends BillingException>
     extends
         ProductIdentifierFetcherHolder<
-                ProductIdentifierType,
-                OnProductIdentifierFetchedListenerType,
-                BillingExceptionType>,
+                        ProductIdentifierType,
+                        OnProductIdentifierFetchedListenerType,
+                        BillingExceptionType>,
         BillingInventoryFetcherHolder<
                         ProductIdentifierType,
                         ProductDetailType,
                         InventoryFetchedListenerType,
-                BillingExceptionType>,
+                        BillingExceptionType>,
         BillingPurchaserHolder<
                         ProductIdentifierType,
                         PurchaseOrderType,
                         OrderIdType,
                         ProductPurchaseType,
                         BillingPurchaseFinishedListenerType,
-                BillingExceptionType>
+                        BillingExceptionType>
 {
     void forgetRequestCode(int requestCode);
 }
