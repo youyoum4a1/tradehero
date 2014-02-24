@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -11,6 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.POST;
+import retrofit.http.Path;
 
 /**
  * Repurposes queries
@@ -214,6 +217,40 @@ import retrofit.RetrofitError;
         {
             this.userService.searchUsers(key.searchString, key.page, key.perPage, callback);
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Follow Hero">
+    public UserProfileDTO follow(UserBaseKey userBaseKey)
+    {
+        return userService.follow(userBaseKey.key);
+    }
+
+    public void follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    {
+        userService.follow(userBaseKey.key, callback);
+    }
+
+    public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
+    {
+        return userService.follow(userBaseKey.key, purchaseDTO);
+    }
+
+    public void follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    {
+        userService.follow(userBaseKey.key, purchaseDTO, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Unfollow Hero">
+    public UserProfileDTO unfollow(UserBaseKey userBaseKey)
+    {
+        return userService.unfollow(userBaseKey.key);
+    }
+
+    public void unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    {
+        userService.unfollow(userBaseKey.key, callback);
     }
     //</editor-fold>
 }
