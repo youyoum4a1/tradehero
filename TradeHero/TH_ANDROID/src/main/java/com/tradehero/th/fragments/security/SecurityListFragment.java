@@ -232,6 +232,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
 
+    public AbsListView getSecurityListView()
+    {
+        return securityListView;
+    }
+
     //<editor-fold desc="Listeners">
     protected class SecurityListFlagNearEndScrollListener extends FlagNearEndScrollListener
     {

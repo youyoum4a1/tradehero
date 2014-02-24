@@ -9,10 +9,13 @@
   <string name="action_menu_settings">Settings</string>
 
   <string name="network_error">Please check your network connection!</string>
-
-  <string name="date_format_gmt_day_and_time">dd MMM HH:mm \'GMT\'</string>
-  <string name="date_format_day_and_time">dd MMM HH:mm</string>
-
+  <!-- data format-->
+  <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
+  <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy">dd MMM yyyy</string>
+  <string name="data_format_dd_mmm_hh_mm">dd MMM HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
+  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">dd MMM HH:mm \'GMT\'</string>
 
   <!-- TEMP stuff -->
   <string name="test_email">neeraj@eatechnologies.com</string>

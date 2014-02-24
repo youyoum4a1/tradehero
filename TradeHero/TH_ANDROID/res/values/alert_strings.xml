@@ -10,7 +10,7 @@
   <string name="stock_alert_active_until">Active Until</string>
   <string name="stock_alert_current_price">Current Price</string>
   <string name="stock_alert_price_info_as_of_date">as of %s</string>
-  <string name="stock_alert_price_info_as_of_date_format">d MMM yyyy HH:mm</string>
+  <string name="stock_alert_price_info_as_of_date_format">@string/data_format_d_mmm_yyyy_hh_mm</string>
   <string name="stock_alert_notification_received">Notifications Received</string>
   <string name="stock_alert_edit">Edit</string>
   <string name="stock_alert_edit_menu_save">Save</string>

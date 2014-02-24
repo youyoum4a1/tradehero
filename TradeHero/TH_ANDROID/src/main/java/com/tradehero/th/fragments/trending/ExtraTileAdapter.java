@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import java.util.ArrayList;
@@ -23,9 +25,13 @@ public class ExtraTileAdapter extends BaseAdapter
 {
     private static final int EXTRA_TILE_FREQUENCY = 16;
     private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+    private int itemHeight = 0;
 
     private final ListAdapter wrappedAdapter;
     private final LayoutInflater inflater;
+
+    private Context mContext;
+    private SharedPreferences mPref;
 
     private Pair<TileType, Integer>[] extraTilesMarker;
 
@@ -37,6 +43,8 @@ public class ExtraTileAdapter extends BaseAdapter
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
         wrappedAdapter.registerDataSetObserver(wrappedAdapterDataSetObserver);
+        mContext = context;
+        mPref = mContext.getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
     }
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
@@ -135,6 +143,16 @@ public class ExtraTileAdapter extends BaseAdapter
         {
             convertView = inflater.inflate(TileType.at(viewType).getLayoutResourceId(), parent, false);
         }
+
+        itemHeight = mPref.getInt("trending_item_height", 0);
+        if (itemHeight != 0 && convertView.getHeight() != itemHeight)
+        {
+            //use image well but convert not well
+            ImageView image = (ImageView)convertView;
+            ViewGroup.LayoutParams lp = image.getLayoutParams();
+            lp.height = itemHeight;
+        }
+
         return convertView;
     }
 

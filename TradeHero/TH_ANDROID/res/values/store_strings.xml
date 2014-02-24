@@ -104,7 +104,7 @@
 
   <string name="manage_heroes_following_since">following since %s</string>
   <string name="manage_heroes_not_following_since">stopped following on %s</string>
-  <string name="manage_heroes_datetime_format">dd MMM yyyy</string>
+  <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
   <string name="manage_heroes_active_header">FOLLOWING HEROES</string>
   <string name="manage_heroes_inactive_header">INACTIVE HEROES</string>
 
@@ -134,7 +134,7 @@
 
   <string name="manage_followers_payout_none">There have been no payout.</string>
   <string name="manage_followers_payout_list_header">%d PAYOUTS</string>
-  <string name="manage_followers_payout_hero_datetime_format">dd MMM yyyy kk:mm z</string>
+  <string name="manage_followers_payout_hero_datetime_format">@string/data_format_dd_mmm_yyyy_kk_mm_z</string>
 
   <string name="manage_followers_follower_none">You have no follower.</string>
   <string name="manage_followers_list_header">%d FOLLOWERS</string>
@@ -143,7 +143,7 @@
   <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">Transactions</string>
   <string name="manage_follower_payment_duration">Paid for %d days:</string>
-  <string name="manage_follower_payment_datetime_format">dd MMM yyyy</string>
+  <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
 
   <!-- Manage Alerts -->
   <string name="manage_alerts_plan">"Plan: "</string>

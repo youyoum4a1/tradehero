@@ -15,7 +15,6 @@
   <string name="portfolio_header_total_value">Total Value</string>
   <string name="portfolio_header_cash_value">Cash Value</string>
 
-
   <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
   <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
 

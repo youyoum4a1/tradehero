@@ -36,13 +36,13 @@ public class DateUtils
 
     public static String getFormattedDate(Date utcDate)
     {
-        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.date_format_day_and_time));
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_hh_mm));
         return requiredFormat.format(utcDate);
     }
 
     public static String getFormattedUtcDate(Date utcDate)
     {
-        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.date_format_gmt_day_and_time));
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm_gmt));
         return requiredFormat.format(utcDate);
     }
 }

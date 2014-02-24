@@ -88,4 +88,7 @@
   <dimen name="search_stock_people_padding">8dp</dimen>
   <dimen name="leaderboard_separator_height">10dp</dimen>
   <dimen name="leaderboard_separator_height_negated">-10dp</dimen>
+  <dimen name="trending_list_padding_left_and_right">8dp</dimen>
+  <dimen name="trending_list_padding_bottom">95dp</dimen>
+  <dimen name="trending_list_padding_top">85dp</dimen>
 </resources>

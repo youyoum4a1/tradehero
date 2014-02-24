@@ -1,7 +1,10 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
@@ -14,6 +17,7 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
         extends ArrayDTOAdapter<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
 {
     private final static String TAG = SecurityItemViewAdapter.class.getSimpleName();
+    public int itemHeight = 0;
 
     protected List<SecurityCompactDTOType> originalItems;
 
@@ -53,6 +57,26 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
     {
         Object item = getItem(position);
         return item == null ? 0 : item.hashCode();
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+    {
+        convertView = conditionalInflate(convertView, viewGroup);
+
+        SecurityItemView dtoView = (SecurityItemView) convertView;
+        SecurityCompactDTOType dto = (SecurityCompactDTOType) getItem(position);
+        dtoView.display(dto);
+        fineTune(position, dto, dtoView);
+        if (itemHeight == 0 && convertView.getHeight() > 0)
+        {
+            itemHeight = convertView.getHeight();
+            SharedPreferences pref = context.getSharedPreferences("trade_hero",
+                    Context.MODE_WORLD_WRITEABLE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("trending_item_height", itemHeight);
+            editor.apply();
+        }
+        return convertView;
     }
 
     protected class SecurityItemFilter

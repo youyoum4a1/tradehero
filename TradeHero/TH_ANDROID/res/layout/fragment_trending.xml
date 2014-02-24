@@ -31,7 +31,6 @@
       layout="@layout/fragment_trending_filter"
       android:id="@+id/trending_filter_selector_view"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/trending_filter_view_pager_height"
       android:layout_alignParentTop="true"
       />
 
