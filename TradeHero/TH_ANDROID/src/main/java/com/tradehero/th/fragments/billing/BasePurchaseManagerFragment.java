@@ -16,6 +16,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements THIABInteractor
 {
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     protected THIABUserInteractor userInteractor;
     protected WeakReference<THIABLogicHolder> billingActor = new WeakReference<>(null);
@@ -49,6 +50,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             if (portfolioIdBundle != null)
             {
                 applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);
+            }
+
+            Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
+            if (thIntentBundle != null)
+            {
+                int action = thIntentBundle.getInt(THIABUserInteractor.BUNDLE_KEY_ACTION);
+                if (action > 0)
+                {
+                    userInteractor.doAction(action);
+                }
             }
         }
 

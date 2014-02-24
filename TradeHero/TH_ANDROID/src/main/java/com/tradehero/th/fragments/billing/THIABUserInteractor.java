@@ -66,6 +66,9 @@ public class THIABUserInteractor
         implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
         THIABInteractor
 {
+    public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
+    public static final int ACTION_RESET_PORTFOLIO = 1;
+
     @Inject protected CurrentActivityHolder currentActivityHolder;
 
     private ShowSkuDetailsMilestone showSkuDetailsMilestone;
@@ -873,6 +876,16 @@ public class THIABUserInteractor
         }
 
         userService.get().unfollow(userBaseKey.key, followCallback);
+    }
+
+    public void doAction(int action)
+    {
+        switch (action)
+        {
+            case ACTION_RESET_PORTFOLIO:
+                conditionalPopBuyResetPortfolio();
+                break;
+        }
     }
 
     protected class UserInteractorFollowHeroCallback extends FollowHeroCallback

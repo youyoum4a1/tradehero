@@ -14,6 +14,7 @@ import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 import timber.log.Timber;
@@ -141,6 +142,19 @@ public class DashboardNavigator extends Navigator
 
     public void goToPage(final THIntent thIntent)
     {
+        if (thIntent == null)
+        {
+            return;
+        }
+
+        if (thIntent.getDashboardType() == null)
+        {
+            Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
+            currentDashboardFragment.getArguments().putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_THINTENT_BUNDLE, thIntent.getBundle());
+            currentDashboardFragment.onResume();
+            return;
+        }
+
         final String expectedTag = activity.getString(thIntent.getDashboardType().stringResId);
         goToTab(
                 thIntent.getDashboardType(),

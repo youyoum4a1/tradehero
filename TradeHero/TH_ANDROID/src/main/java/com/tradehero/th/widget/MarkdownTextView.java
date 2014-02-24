@@ -1,6 +1,8 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,14 +12,16 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.models.intent.THIntentFactory;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:18 AM Copyright (c) TradeHero */
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
+    @Inject THIntentFactory thIntentFactory;
     @Inject RichTextCreator parser;
     @Inject CurrentUserId currentUserId;
 
@@ -66,6 +70,8 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 if (matchStrings.length < 3) break;
                 String link = matchStrings[2];
 
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                getNavigator().goToPage(thIntentFactory.create(i));
                 break;
         }
     }
@@ -78,7 +84,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
-    private Navigator getNavigator()
+    private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }

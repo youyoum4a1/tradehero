@@ -14,6 +14,7 @@
   <string name="intent_host_profile">profile</string>
   <string name="intent_host_portfolio">portfolio</string>
   <string name="intent_host_store">store</string>
+  <string name="intent_host_reset_portfolio">reset-portfolio</string>
 
   <string name="intent_host_providers">providers</string>
   <string name="intent_host_security">security</string>
