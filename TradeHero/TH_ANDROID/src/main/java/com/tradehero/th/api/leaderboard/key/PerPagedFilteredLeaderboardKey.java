@@ -172,6 +172,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
             return parentComp;
         }
 
+        // TODO this is very confusing
         return (winRatio == null ? (other.winRatio == null ? 0 : 1) : winRatio.compareTo(other.winRatio)) *
                 (averageMonthlyTradeCount == null ? (other.averageMonthlyTradeCount == null ? 0 : 1) : averageMonthlyTradeCount.compareTo(
                         other.averageMonthlyTradeCount)) *

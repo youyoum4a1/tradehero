@@ -135,7 +135,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                  null, // PerPage but we don't care
                  (float) resources.getInteger(R.integer.leaderboard_filter_win_ratio_min),
                  (float) resources.getInteger(R.integer.leaderboard_filter_monthly_activity_min),
-                 (float) resources.getInteger(R.integer.leaderboard_filter_holding_period_min),
+                 (float) 0,
                  null, // MinSharpeRatio but we don't care
                  null // MaxPosRoiVolatility but we don't care
          );
