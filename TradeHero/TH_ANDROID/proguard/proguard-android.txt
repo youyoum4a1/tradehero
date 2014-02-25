@@ -103,6 +103,14 @@
     public static *** e(...);
 }
 
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** d(...);
+    public static *** e(...);
+}
+
 -keep class !com.tradehero.** { *; }
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
