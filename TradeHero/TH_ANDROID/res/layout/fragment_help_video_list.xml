@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.tradehero.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:id="@+id/help_video_list_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@null"
-  >
+    >
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
 
   <ListView
       android:id="@+id/help_videos_list"
@@ -15,11 +22,12 @@
       android:clipToPadding="false"
       />
 
-  <ProgressBar
+  <TextView
       android:id="@android:id/empty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
+      android:text="@string/empty_video_list"
+      android:layout_gravity="center"
+      android:visibility="invisible"
       />
-
-</RelativeLayout>
+</com.tradehero.common.widget.BetterViewAnimator>

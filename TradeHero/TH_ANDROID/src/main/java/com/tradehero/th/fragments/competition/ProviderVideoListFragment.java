@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoIdList;
@@ -25,23 +27,27 @@ import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/16/14.
  */
 public class ProviderVideoListFragment extends CompetitionFragment
 {
-    public static final String TAG = ProviderVideoListFragment.class.getSimpleName();
+    @Inject HelpVideoListCache helpVideoListCache;
+    @Inject HelpVideoCache helpVideoCache;
+
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(android.R.id.empty) View emptyView;
+    @InjectView(R.id.help_videos_list) AbsListView videoListView;
+    @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
     private ActionBar actionBar;
-    private ProgressBar progressBar;
-    private AbsListView videoListView;
-    @Inject protected HelpVideoListCache helpVideoListCache;
-    @Inject protected HelpVideoCache helpVideoCache;
     private HelpVideoIdList helpVideoIds;
     private DTOCache.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
     private DTOCache.GetOrFetchTask<HelpVideoListKey, HelpVideoIdList> helpVideoListFetchTask;
     private ProviderVideoAdapter providerVideoAdapter;
+    private int currentDisplayedChild;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -52,20 +58,16 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     @Override protected void initViews(View view)
     {
-        this.helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
-        this.providerVideoAdapter = new ProviderVideoAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.help_video_item_view);
-        this.providerVideoAdapter.setItems(new ArrayList<HelpVideoId>());
+        ButterKnife.inject(this, view);
+        helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
+        providerVideoAdapter = new ProviderVideoAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.help_video_item_view);
+        providerVideoAdapter.setItems(new ArrayList<HelpVideoId>());
 
-        this.progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-        if (this.progressBar != null)
+        if (videoListView != null)
         {
-            this.progressBar.setVisibility(View.VISIBLE);
-        }
-        this.videoListView = (AbsListView) view.findViewById(R.id.help_videos_list);
-        if (this.videoListView != null)
-        {
-            this.videoListView.setAdapter(this.providerVideoAdapter);
-            this.videoListView.setOnItemClickListener(new ProviderVideoListFragmentItemClickListener());
+            videoListView.setAdapter(providerVideoAdapter);
+            videoListView.setOnItemClickListener(new ProviderVideoListFragmentItemClickListener());
+            videoListView.setEmptyView(emptyView);
         }
     }
 
@@ -82,7 +84,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @Override public void onDestroyOptionsMenu()
     {
         super.onDestroyOptionsMenu();
-        this.actionBar = null;
+        actionBar = null;
     }
     //</editor-fold>
 
@@ -90,48 +92,45 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         super.onResume();
 
+        if (currentDisplayedChild != 0)
+        {
+            helpVideoListScreen.setDisplayedChildByLayoutId(currentDisplayedChild);
+        }
+
         detachListVideoFetchTask();
 
-        HelpVideoIdList cachedHelpVideos = this.helpVideoListCache.get(new HelpVideoListKey(this.providerId));
-        if (cachedHelpVideos != null)
-        {
-            linkWith(cachedHelpVideos, true);
-            if (this.progressBar != null)
-            {
-                this.progressBar.setVisibility(View.GONE);
-            }
-        }
-        else
-        {
-            this.helpVideoListFetchTask = this.helpVideoListCache.getOrFetch(new HelpVideoListKey(this.providerId), this.helpVideoListCacheListener);
-            if (this.progressBar != null)
-            {
-                this.progressBar.setVisibility(View.VISIBLE);
-            }
-            this.helpVideoListFetchTask.execute();
-        }
+        helpVideoListFetchTask = helpVideoListCache.getOrFetch(new HelpVideoListKey(providerId), false, helpVideoListCacheListener);
+        helpVideoListFetchTask.execute();
+    }
+
+    @Override public void onPause()
+    {
+        currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
+
+        super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         detachListVideoFetchTask();
-        this.helpVideoListCacheListener = null;
-        this.providerVideoAdapter = null;
-        if (this.videoListView != null)
+        helpVideoListCacheListener = null;
+        providerVideoAdapter = null;
+        if (videoListView != null)
         {
-            this.videoListView.setOnItemClickListener(null);
+            videoListView.setOnItemClickListener(null);
+            videoListView.setEmptyView(null);
         }
-        this.videoListView = null;
+        videoListView = null;
         super.onDestroyView();
     }
 
     private void detachListVideoFetchTask()
     {
-        if (this.helpVideoListFetchTask != null)
+        if (helpVideoListFetchTask != null)
         {
-            this.helpVideoListFetchTask.setListener(null);
+            helpVideoListFetchTask.setListener(null);
         }
-        this.helpVideoListFetchTask = null;
+        helpVideoListFetchTask = null;
     }
 
     @Override public boolean isTabBarVisible()
@@ -150,7 +149,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void linkWith(HelpVideoIdList helpVideoIds, boolean andDisplay)
     {
-        this.helpVideoIds = helpVideoIds;
+        helpVideoIds = helpVideoIds;
         if (andDisplay)
         {
             updateAdapter();
@@ -159,25 +158,25 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void updateAdapter()
     {
-        this.providerVideoAdapter.setItems(this.helpVideoIds);
-        this.providerVideoAdapter.notifyDataSetChanged();
+        providerVideoAdapter.setItems(helpVideoIds);
+        providerVideoAdapter.notifyDataSetChanged();
     }
 
     private void displayActionBarTitle()
     {
-        if (this.actionBar != null)
+        if (actionBar != null)
         {
             if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoListFragmentTitleResId > 0)
             {
-                this.actionBar.setTitle(providerSpecificResourcesDTO.helpVideoListFragmentTitleResId);
+                actionBar.setTitle(providerSpecificResourcesDTO.helpVideoListFragmentTitleResId);
             }
-            else if (this.providerDTO == null || this.providerDTO.name == null)
+            else if (providerDTO == null || providerDTO.name == null)
             {
-                this.actionBar.setTitle("");
+                actionBar.setTitle("");
             }
             else
             {
-                this.actionBar.setTitle(this.providerDTO.name);
+                actionBar.setTitle(providerDTO.name);
             }
         }
     }
@@ -188,7 +187,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         HelpVideoDTO cachedHelpVideo = helpVideoCache.get(helpVideoId);
         if (cachedHelpVideo == null)
         {
-            THLog.d(TAG, "There is no Help Video in cache for id " + helpVideoId);
+            Timber.d("There is no Help Video in cache for id %d", helpVideoId);
             THToast.show(R.string.error_fetch_help_video_info);
             return;
         }
@@ -204,12 +203,12 @@ public class ProviderVideoListFragment extends CompetitionFragment
         if (getActivity().getPackageManager().queryIntentActivities(intent,
                 PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
         {
-            THLog.d(TAG, "There is no package that can play the video for id " + helpVideoId + ", dto " + cachedHelpVideo);
+            Timber.d("There is no package that can play the video for id %d, dto %s", helpVideoId, cachedHelpVideo);
             THToast.show(R.string.error_help_video_no_package_available_to_play);
             return;
         }
 
-        THLog.d(TAG, "Launching video intent on " + cachedHelpVideo.embedCode);
+        Timber.d("Launching video intent on %s", cachedHelpVideo.embedCode);
         startActivity(intent);
     }
 
@@ -217,23 +216,20 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value, boolean fromCache)
         {
-            this.onFinished();
+            onFinished();
             linkWith(value, true);
         }
 
         @Override public void onErrorThrown(HelpVideoListKey key, Throwable error)
         {
-            this.onFinished();
+            onFinished();
             THToast.show(getString(R.string.error_fetch_help_video_list_info));
-            THLog.e(TAG, "Error fetching the list of help videos " + key, error);
+            Timber.d("Error fetching the list of help videos %s", key, error);
         }
 
         private void onFinished()
         {
-            if (ProviderVideoListFragment.this.progressBar != null)
-            {
-                ProviderVideoListFragment.this.progressBar.setVisibility(View.GONE);
-            }
+            helpVideoListScreen.setDisplayedChildByLayoutId(R.id.help_videos_list);
         }
     }
 
