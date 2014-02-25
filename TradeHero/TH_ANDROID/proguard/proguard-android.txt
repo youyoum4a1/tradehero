@@ -8,8 +8,12 @@
 # Optimization is turned off by default. Dex does not like code run
 # through the ProGuard optimize and preverify steps (and performs some
 # of these optimizations on its own).
--dontoptimize
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+-optimizationpasses 5
+-allowaccessmodification
 -dontpreverify
+#-dontoptimize
+#-dontpreverify
 # Note that if you want to enable optimization, you cannot just
 # include optimization flags in your own project configuration file;
 # instead you will need to point to the
@@ -140,3 +144,4 @@
   public <fields>;
 }
 
+-keep @org.junit.runner.RunWith public class *
