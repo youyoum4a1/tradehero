@@ -18,6 +18,7 @@ import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
@@ -247,6 +248,7 @@ import javax.inject.Singleton;
                         THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseRestorer.class,
+                        THIABPurchaseFetchMilestone.class,
                         BaseIABLogicHolder.AvailabilityTester.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,

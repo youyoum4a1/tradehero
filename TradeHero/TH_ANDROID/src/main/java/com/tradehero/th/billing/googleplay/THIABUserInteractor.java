@@ -384,8 +384,6 @@ public class THIABUserInteractor
         }
 
         showSkuDetailsMilestone = new ShowSkuDetailsMilestone(
-                currentActivityHolder.getCurrentActivity(),
-                billingActor,
                 IABSKUListType.getInApp(),
                 this.applicablePortfolioId.getUserBaseKey());
         showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);

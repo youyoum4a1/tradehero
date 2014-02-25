@@ -25,21 +25,20 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean complete;
     private boolean failed;
     private final IABSKUListType iabskuListType;
-    private WeakReference<THIABLogicHolder> logicHolderWeak = new WeakReference<>(null);
+    @Inject protected THIABLogicHolder logicHolder;
     private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
     protected IABSKUListRetrievedAsyncMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(THIABLogicHolder logicHolder, IABSKUListType iabskuListType)
+    public THInventoryFetchMilestone(IABSKUListType iabskuListType)
     {
         super();
         DaggerUtils.inject(this);
         running = false;
         complete = false;
         failed = false;
-        this.logicHolderWeak = new WeakReference<>(logicHolder);
         this.iabskuListType = iabskuListType;
         fetchListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
@@ -75,7 +74,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         {
             dependsOn.onDestroy();
         }
-        logicHolderWeak = null;
+        logicHolder = null;
         fetchListener = null;
         dependsOn = null;
         dependCompleteListener = null;
@@ -104,7 +103,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         else
         {
-            THIABLogicHolder logicHolder = logicHolderWeak.get();
+            THIABLogicHolder logicHolder = this.logicHolder;
             if (logicHolder == null)
             {
                 notifyFailedListener(new NullPointerException("logicHolder was null"));

@@ -4,24 +4,25 @@ import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetchMilestone;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.Map;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 11:36 AM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseFetchMilestone
-        extends
-        IABPurchaseFetchMilestone<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                        IABSKU,
-                        THIABOrderId,
-                        THIABPurchase,
-                        IABException>>
+        extends IABPurchaseFetchMilestone<
+            IABSKU,
+            THIABOrderId,
+            THIABPurchase,
+            BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    IABSKU,
+                    THIABOrderId,
+                    THIABPurchase,
+                    IABException>>
 {
     public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 
-    protected THIABLogicHolder logicHolder;
+    @Inject protected THIABLogicHolder logicHolder;
 
     /**
      * The billing actor should be strongly referenced elsewhere
@@ -30,7 +31,7 @@ public class THIABPurchaseFetchMilestone
     public THIABPurchaseFetchMilestone(THIABLogicHolder logicHolder)
     {
         super(logicHolder.getPurchaseFetcherHolder());
-        this.logicHolder = logicHolder;
+        DaggerUtils.inject(this);
     }
 
     @Override protected int getAvailableRequestCode()

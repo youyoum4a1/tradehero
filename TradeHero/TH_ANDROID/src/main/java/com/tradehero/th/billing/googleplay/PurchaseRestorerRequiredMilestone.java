@@ -23,7 +23,7 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
     {
         super();
         DaggerUtils.inject(this);
-        add(new THInventoryFetchMilestone(logicHolder, IABSKUListType.getInApp()));
+        add(new THInventoryFetchMilestone(IABSKUListType.getInApp()));
         add(new THIABPurchaseFetchMilestone(logicHolder));
         add(new PortfolioCompactListRetrievedMilestone(currentUserId.toUserBaseKey()));
     }
