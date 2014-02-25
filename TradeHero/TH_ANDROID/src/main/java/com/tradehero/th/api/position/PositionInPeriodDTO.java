@@ -92,8 +92,8 @@ public class PositionInPeriodDTO extends PositionDTO
 
         if (investedInPeriod == 0)
         {
-            throw new IllegalArgumentException("Wrong values " + this);
-            //return null;
+            //throw new IllegalArgumentException("Wrong values " + this);
+            return null;
         }
 
         return plInPeriod / investedInPeriod;

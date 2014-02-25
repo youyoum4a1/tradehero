@@ -1,18 +1,20 @@
 package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -22,15 +24,24 @@ import timber.log.Timber;
  */
 public class CurrentUserPortfolioHeaderView extends LinearLayout implements PortfolioHeaderView
 {
-    @Inject Lazy<PortfolioCompactCache> portfolioCache;
-    private PortfolioCompactDTO portfolio;
+    private OwnedPortfolioId ownedPortfolioId;
+
+    @Inject PortfolioCompactCache portfolioCompactCache;
+    private PortfolioCompactDTO portfolioCompactDTO;
+
+    @Inject PortfolioCache portfolioCache;
+    private PortfolioDTO portfolioDTO;
 
     private TextView totalValueTextView;
     private TextView cashValueTextView;
-    private DTOCache.Listener<PortfolioId, PortfolioCompactDTO> portfolioCacheListener;
-    private DTOCache.GetOrFetchTask<PortfolioId, PortfolioCompactDTO> fetchPortfolioTask;
+    private DTOCache.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactCacheListener;
+    private DTOCache.GetOrFetchTask<PortfolioId, PortfolioCompactDTO> fetchPortfolioCompactTask;
+    private DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
+    private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioTask;
 
-    //<editor-fold desc="Description">
+    private boolean isAttached = false;
+
+    //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)
     {
         super(context);
@@ -54,11 +65,18 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         initViews();
     }
 
+    private void initViews()
+    {
+        totalValueTextView = (TextView) findViewById(R.id.header_portfolio_total_value);
+        cashValueTextView = (TextView) findViewById(R.id.header_portfolio_cash_value);
+    }
+
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        this.isAttached = true;
 
-        portfolioCacheListener = new DTOCache.Listener<PortfolioId, PortfolioCompactDTO>()
+        portfolioCompactCacheListener = new DTOCache.Listener<PortfolioId, PortfolioCompactDTO>()
         {
             @Override public void onDTOReceived(PortfolioId key, PortfolioCompactDTO value, boolean fromCache)
             {
@@ -67,46 +85,137 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
             @Override public void onErrorThrown(PortfolioId key, Throwable error)
             {
-                Timber.e("There was problem receiving portfolio for %s", key, error);
+                THToast.show(R.string.error_fetch_portfolio_info);
+            }
+        };
+        portfolioCacheListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        {
+            @Override
+            public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            {
+                display(value);
+            }
+
+            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+            {
+                THToast.show(R.string.error_fetch_portfolio_info);
             }
         };
 
+        conditionalStartPortfolioCompactTask();
+        conditionalStartPortfolioTask();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        isAttached = false;
+        portfolioCompactDTO = null;
+        portfolioDTO = null;
+
+        detachPortfolioCompactTask();
+        portfolioCompactCacheListener = null;
+        detachPortfolioTask();
+        portfolioCacheListener = null;
+        super.onDetachedFromWindow();
+    }
+
+    protected void detachPortfolioCompactTask()
+    {
+        if (fetchPortfolioCompactTask != null)
+        {
+            fetchPortfolioCompactTask.setListener(null);
+        }
+        fetchPortfolioCompactTask = null;
+    }
+
+    protected void detachPortfolioTask()
+    {
         if (fetchPortfolioTask != null)
         {
             fetchPortfolioTask.setListener(null);
+        }
+        fetchPortfolioTask = null;
+    }
+
+    @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
+    {
+        this.ownedPortfolioId = id;
+
+        detachPortfolioCompactTask();
+        fetchPortfolioCompactTask = this.portfolioCompactCache.getOrFetch(id.getPortfolioId(), false, portfolioCompactCacheListener);
+
+        detachPortfolioTask();
+        fetchPortfolioTask = this.portfolioCache.getOrFetch(id, false, portfolioCacheListener);
+
+        if (isAttached)
+        {
+            fetchPortfolioCompactTask.execute();
+            fetchPortfolioTask.execute();
+        }
+    }
+
+    protected void conditionalStartPortfolioCompactTask()
+    {
+        if (fetchPortfolioCompactTask != null)
+        {
+            fetchPortfolioCompactTask.setListener(portfolioCompactCacheListener);
+            if (fetchPortfolioCompactTask.getStatus() == AsyncTask.Status.PENDING)
+            {
+                fetchPortfolioCompactTask.execute();
+            }
+        }
+    }
+
+    protected void conditionalStartPortfolioTask()
+    {
+        if (fetchPortfolioTask != null)
+        {
+            fetchPortfolioTask.setListener(portfolioCacheListener);
+            if (fetchPortfolioTask.getStatus() == AsyncTask.Status.FINISHED)
+            {
+                fetchPortfolioTask.execute();
+            }
         }
     }
 
     private void display(PortfolioCompactDTO portfolioCompactDTO)
     {
-        this.portfolio = portfolioCompactDTO;
+        this.portfolioCompactDTO = portfolioCompactDTO;
 
-        if (portfolio != null)
+        displayTotalValueTextView();
+        displayCashValueTextView();
+    }
+
+    private void display(PortfolioDTO portfolioDTO)
+    {
+        this.portfolioDTO = portfolioDTO;
+
+        displayTotalValueTextView();
+        displayCashValueTextView();
+    }
+
+    private void displayTotalValueTextView()
+    {
+        if (totalValueTextView != null)
         {
-            if (totalValueTextView != null)
+            if (this.portfolioCompactDTO != null && this.portfolioDTO != null)
             {
-                String valueString = String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, portfolio.totalValue);
+                String valueString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
                 totalValueTextView.setText(valueString);
-            }
-
-            if (cashValueTextView != null)
-            {
-                String cashString = String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, portfolio.cashBalance);
-                cashValueTextView.setText(cashString);
             }
         }
     }
 
-    private void initViews()
+    private void displayCashValueTextView()
     {
-        totalValueTextView = (TextView) findViewById(R.id.header_portfolio_total_value);
-        cashValueTextView = (TextView) findViewById(R.id.header_portfolio_cash_value);
-    }
-
-    @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
-    {
-        fetchPortfolioTask = this.portfolioCache.get().getOrFetch(id.getPortfolioId(), false, portfolioCacheListener);
-        fetchPortfolioTask.execute();
+        if (cashValueTextView != null)
+        {
+            if (this.portfolioCompactDTO != null && this.portfolioDTO != null)
+            {
+                String cashString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
+                cashValueTextView.setText(cashString);
+            }
+        }
     }
 
     @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)

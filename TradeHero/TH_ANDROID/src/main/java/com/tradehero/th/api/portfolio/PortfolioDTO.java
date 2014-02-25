@@ -1,7 +1,9 @@
 package com.tradehero.th.api.portfolio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +35,16 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 
     public int countTrades;
     public int countExchanges;
+
+    @JsonIgnore
+    public String getNiceCurrency()
+    {
+        if (Currency != null && !Currency.isEmpty())
+        {
+            return Currency;
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+    }
 
     @Override public String toString()
     {
