@@ -24,7 +24,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -244,7 +244,7 @@ import javax.inject.Singleton;
                         THIABPurchaseReporter.class,
                         THIABLogicHolderFull.class,
                         THIABPurchaseConsumer.class,
-                        THInventoryFetchMilestone.class,
+                        THIABInventoryFetchMilestone.class,
                         THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseRestorer.class,

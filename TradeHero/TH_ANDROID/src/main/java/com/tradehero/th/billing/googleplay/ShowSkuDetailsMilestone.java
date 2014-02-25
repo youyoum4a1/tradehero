@@ -15,6 +15,6 @@ public class ShowSkuDetailsMilestone extends ShowProductDetailsMilestone
     public ShowSkuDetailsMilestone(IABSKUListType iabskuListType, final UserBaseKey userBaseKey)
     {
         super(userBaseKey);
-        add(new THInventoryFetchMilestone(iabskuListType));
+        add(new THIABInventoryFetchMilestone(iabskuListType));
     }
 }
