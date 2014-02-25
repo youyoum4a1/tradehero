@@ -366,7 +366,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         {
                             @Override public void onSuccess()
                             {
-                                //loadBgImageDelayed();
+                                loadBgImageDelayed();
                             }
 
                             @Override public void onError()
@@ -382,7 +382,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         else
         {
-            //loadBgImageDelayed();
+            loadBgImageDelayed();
         }
     }
 
@@ -396,7 +396,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     stockLogo.setImageResource(exchange.logoId);
-                    //loadBgImageDelayed();
+                    loadBgImageDelayed();
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -411,7 +411,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         else
         {
-            //loadBgImageDelayed();
+            loadBgImageDelayed();
         }
     }
 
@@ -421,7 +421,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             stockLogo.setImageResource(R.drawable.default_image);
         }
-        //loadBgImageDelayed();
+        loadBgImageDelayed();
     }
 
     public void loadBgImageDelayed()
@@ -438,30 +438,30 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadBgImage()
     {
-        if (stockBgLogo != null)
-        {
-            if (isMyUrlOk())
-            {
-                RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
-                        .transform(backgroundTransformation);
-                resizeBackground(requestCreator, stockBgLogo,new Callback()
-                            {
-                                @Override public void onSuccess()
-                                {
-                                    stockBgLogo.setVisibility(VISIBLE);
-                                }
-
-                                @Override public void onError()
-                                {
-                                    loadBgExchange();
-                                }
-                            });
-            }
-            else
-            {
-                loadBgExchange();
-            }
-        }
+        //if (stockBgLogo != null)
+        //{
+        //    if (isMyUrlOk())
+        //    {
+        //        RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
+        //                .transform(backgroundTransformation);
+        //        resizeBackground(requestCreator, stockBgLogo,new Callback()
+        //                    {
+        //                        @Override public void onSuccess()
+        //                        {
+        //                            stockBgLogo.setVisibility(VISIBLE);
+        //                        }
+        //
+        //                        @Override public void onError()
+        //                        {
+        //                            loadBgExchange();
+        //                        }
+        //                    });
+        //    }
+        //    else
+        //    {
+        //        loadBgExchange();
+        //    }
+        //}
     }
 
     public void loadBgExchange()
