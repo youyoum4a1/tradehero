@@ -82,7 +82,6 @@ abstract public class IABPurchaser<
 
     @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener)
     {
-        Timber.d("setPurchaseFinishedListener %s", purchaseFinishedListener.getClass().getSimpleName());
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
