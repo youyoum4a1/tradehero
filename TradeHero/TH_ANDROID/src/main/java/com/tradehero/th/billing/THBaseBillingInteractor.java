@@ -19,7 +19,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -57,6 +59,8 @@ abstract public class THBaseBillingInteractor<
     @Inject protected BillingAlertDialogUtil billingAlertDialogUtil;
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject protected CurrentUserId currentUserId;
+    protected UserProfileDTO userProfileDTO;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected OwnedPortfolioId applicablePortfolioId;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
@@ -175,28 +179,6 @@ abstract public class THBaseBillingInteractor<
 
     abstract protected ShowProductDetailsMilestone createShowProductDetailsMilestone(ProductIdentifierListKey listKey);
 
-    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.hide();
-        }
-    }
-
-    protected void runWhatWaitingForProductDetailsMilestone()
-    {
-        Runnable runnable = runOnShowProductDetailsMilestoneComplete;
-        if (runnable != null)
-        {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-            runOnShowProductDetailsMilestoneComplete = null;
-            runnable.run();
-        }
-    }
-
     public void waitForSkuDetailsMilestoneComplete(Runnable runnable)
     {
         if (showProductDetailsMilestone.isComplete())
@@ -224,26 +206,38 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void popDialogLoadingInfo()
+    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
     {
-        Activity activity = this.currentActivityHolder.getCurrentActivity();
-        if (activity != null)
+        if (progressDialog != null)
         {
-            progressDialog = ProgressDialogUtil.show(
-                    activity,
-                    R.string.store_billing_loading_info_window_title,
-                    R.string.store_billing_loading_info_window_message
-            );
-            progressDialog.setOnCancelListener(
-                    new DialogInterface.OnCancelListener()
-                    {
-                        @Override public void onCancel(DialogInterface dialog)
-                        {
-                            runOnShowProductDetailsMilestoneComplete = null;
-                        }
-                    });
-            progressDialog.setCanceledOnTouchOutside(true);
-            progressDialog.setCancelable(true);
+            progressDialog.hide();
+        }
+    }
+
+    protected void handleShowProductDetailsMilestoneComplete()
+    {
+        // At this stage, we know the applicable portfolio is available in the cache
+        if (this.applicablePortfolioId.portfolioId == null)
+        {
+            this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
+        }
+        // We also know that the userProfile is in the cache
+        this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
+
+        runWhatWaitingForProductDetailsMilestone();
+    }
+
+    protected void runWhatWaitingForProductDetailsMilestone()
+    {
+        Runnable runnable = runOnShowProductDetailsMilestoneComplete;
+        if (runnable != null)
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+            runOnShowProductDetailsMilestoneComplete = null;
+            runnable.run();
         }
     }
     //</editor-fold>
@@ -283,4 +277,28 @@ abstract public class THBaseBillingInteractor<
         }
     }
     //</editor-fold>
+
+    protected void popDialogLoadingInfo()
+    {
+        Activity activity = this.currentActivityHolder.getCurrentActivity();
+        if (activity != null)
+        {
+            progressDialog = ProgressDialogUtil.show(
+                    activity,
+                    R.string.store_billing_loading_info_window_title,
+                    R.string.store_billing_loading_info_window_message
+            );
+            progressDialog.setOnCancelListener(
+                    new DialogInterface.OnCancelListener()
+                    {
+                        @Override public void onCancel(DialogInterface dialog)
+                        {
+                            runOnShowProductDetailsMilestoneComplete = null;
+                        }
+                    });
+            progressDialog.setCanceledOnTouchOutside(true);
+            progressDialog.setCancelable(true);
+        }
+    }
+
 }

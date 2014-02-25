@@ -96,8 +96,6 @@ public class THIABUserInteractor
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<UserService> userService;
     protected Callback<UserProfileDTO> followCallback;
-    private UserProfileDTO userProfileDTO;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     public THIABUserInteractor()
     {
@@ -341,29 +339,10 @@ public class THIABUserInteractor
         prepareProductDetailsPrerequisites(IABSKUListType.getInApp());
     }
 
-    protected void handleShowProductDetailsMilestoneComplete()
-    {
-        // At this stage, we know the applicable portfolio is available in the cache
-        if (this.applicablePortfolioId.portfolioId == null)
-        {
-            this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
-        }
-        // We also know that the userProfile is in the cache
-        this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
-
-        runWhatWaitingForProductDetailsMilestone();
-    }
-
     protected boolean hadErrorLoadingInventory()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
         return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().hadErrorLoadingInventory();
-    }
-
-    protected boolean isInventoryReady()
-    {
-        THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().isInventoryReady();
     }
 
     //<editor-fold desc="THIABInteractor">
@@ -442,11 +421,6 @@ public class THIABUserInteractor
         }
     }
 
-    public void popBuyVirtualDollars()
-    {
-        popBuyVirtualDollars(null);
-    }
-
     public void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
     {
         popBuyDialog(THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
@@ -463,11 +437,6 @@ public class THIABUserInteractor
         {
             popBuyFollowCredits(runOnPurchaseComplete);
         }
-    }
-
-    public void popBuyFollowCredits()
-    {
-        popBuyFollowCredits(null);
     }
 
     public void popBuyFollowCredits(Runnable runOnPurchaseComplete)
@@ -488,11 +457,6 @@ public class THIABUserInteractor
         }
     }
 
-    public void popBuyStockAlerts()
-    {
-        popBuyStockAlerts(null);
-    }
-
     public void popBuyStockAlerts(Runnable runOnPurchaseComplete)
     {
         popBuyDialog(THIABProductDetail.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
@@ -511,19 +475,9 @@ public class THIABUserInteractor
         }
     }
 
-    public void popBuyResetPortfolio()
-    {
-        popBuyResetPortfolio(null);
-    }
-
     public void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
     {
         popBuyDialog(THIABProductDetail.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
-    }
-
-    public void popBuyDialog(final String skuDomain, final int titleResId)
-    {
-        popBuyDialog(skuDomain, titleResId, null);
     }
 
     public void popBuyDialog(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
@@ -532,8 +486,7 @@ public class THIABUserInteractor
         {
             @Override public void run()
             {
-                Handler handler =
-                        THIABUserInteractor.this.currentActivityHolder.getCurrentHandler();
+                Handler handler = currentActivityHolder.getCurrentHandler();
                 Timber.d("handler %s", handler);
                 if (handler != null)
                 {
