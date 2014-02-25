@@ -12,7 +12,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -49,6 +48,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 abstract public class AbstractPositionListFragment<
@@ -62,7 +62,6 @@ abstract public class AbstractPositionListFragment<
         PortfolioHeaderView.OnTimelineRequestedListener,
         WithTutorial
 {
-    public static final String TAG = PositionListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = AbstractPositionListFragment.class.getName() + ".showPortfolioId";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = AbstractPositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = AbstractPositionListFragment.class.getName() + ".expandedListFlags";
@@ -72,7 +71,7 @@ abstract public class AbstractPositionListFragment<
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
     protected ExpandingListView positionsListView;
@@ -91,7 +90,6 @@ abstract public class AbstractPositionListFragment<
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
 
         if (savedInstanceState != null)
@@ -390,7 +388,7 @@ abstract public class AbstractPositionListFragment<
         }
         else
         {
-            THLog.e(TAG, "Was passed a null clickedPositionDTO", new IllegalArgumentException());
+            Timber.e("Was passed a null clickedPositionDTO", new IllegalArgumentException());
         }
     }
 
@@ -404,7 +402,7 @@ abstract public class AbstractPositionListFragment<
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
-        THLog.d(TAG, "onFollowRequested " + userBaseKey);
+        Timber.d("onFollowRequested %s", userBaseKey);
         popFollowUser(userBaseKey);
     }
     //</editor-fold>
@@ -460,7 +458,7 @@ abstract public class AbstractPositionListFragment<
         }
         else
         {
-            THLog.d(TAG, "SecurityId was lost for clickedPositionDTO " + clickedPositionDTO);
+            Timber.d("SecurityId was lost for clickedPositionDTO %s", clickedPositionDTO);
             THToast.show(R.string.error_find_security_id_to_int);
         }
     }
@@ -471,7 +469,7 @@ abstract public class AbstractPositionListFragment<
         if (securityId == null)
         {
             THToast.show(R.string.error_find_security_id_to_int);
-            THLog.e(TAG, "SecurityId is null", new IllegalStateException());
+            Timber.d("SecurityId is null", new IllegalStateException());
         }
         else
         {
@@ -520,7 +518,7 @@ abstract public class AbstractPositionListFragment<
         {
             displayProgress(false);
             THToast.show(getString(R.string.error_fetch_position_list_info));
-            THLog.e(TAG, "Error fetching the positionList info " + key, error);
+            Timber.e("Error fetching the positionList info %s", key, error);
         }
     }
 

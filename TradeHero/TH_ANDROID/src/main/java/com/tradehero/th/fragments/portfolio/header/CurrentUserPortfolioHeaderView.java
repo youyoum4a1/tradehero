@@ -14,6 +14,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by julien on 21/10/13
@@ -66,7 +67,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
             @Override public void onErrorThrown(PortfolioId key, Throwable error)
             {
-                //To change body of implemented methods use File | Settings | File Templates.
+                Timber.e("There was problem receiving portfolio for %s", key, error);
             }
         };
 
