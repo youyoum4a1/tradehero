@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
+import com.tradehero.th.fragments.billing.googleplay.SKUDetailsAdapter;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, StoreSKUDetailView>
@@ -30,10 +31,11 @@ public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, S
 
     @Override protected View getHeaderView(int position, View convertView, ViewGroup viewGroup)
     {
-        SKUQuickDescriptionView quickDescription = convertView instanceof SKUQuickDescriptionView ?
-                (SKUQuickDescriptionView) convertView :
-                (SKUQuickDescriptionView) inflater.inflate(R.layout.store_quick_message, viewGroup, false);
-        quickDescription.linkWithSkuDomain(skuDomain, true);
+        ProductDetailQuickDescriptionView
+                quickDescription = convertView instanceof ProductDetailQuickDescriptionView ?
+                (ProductDetailQuickDescriptionView) convertView :
+                (ProductDetailQuickDescriptionView) inflater.inflate(R.layout.store_quick_message, viewGroup, false);
+        quickDescription.linkWithProductDomain(skuDomain, true);
         return quickDescription;
     }
 

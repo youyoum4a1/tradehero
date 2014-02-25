@@ -38,6 +38,11 @@ public interface THBillingInteractor<
             BillingLogicHolderType,
             BillingExceptionType>
 {
+    public static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";
+    public static final String DOMAIN_FOLLOW_CREDITS = "followCredits";
+    public static final String DOMAIN_STOCK_ALERTS = "stockAlerts";
+    public static final String DOMAIN_RESET_PORTFOLIO = "resetPortfolio";
+
     void registerFollowRequestedListener(OnFollowResultListener followRequestedListener);
     void followHero(UserBaseKey userBaseKey);
 }

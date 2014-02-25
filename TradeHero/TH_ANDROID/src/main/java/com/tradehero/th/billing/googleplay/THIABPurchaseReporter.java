@@ -8,6 +8,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
@@ -65,15 +66,15 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         // TODO do something when info is not available
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
-            case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
+            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
                 portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
                 break;
 
-            case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
+            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
                 portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
                 break;
 
-            case THIABProductDetail.DOMAIN_STOCK_ALERTS:
+            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
                 if (portfolioId != null)
                 {
                     alertPlanService.get().subscribeToAlertPlan(
@@ -88,7 +89,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 }
                 break;
 
-            case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
+            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
                 userService.get().addCredit(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
@@ -116,16 +117,16 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
-            case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
+            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
                 return portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO());
 
-            case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
+            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
                 return portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO());
 
-            case THIABProductDetail.DOMAIN_STOCK_ALERTS:
+            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
                 return reportAlertPurchaseSync(purchase);
 
-            case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
+            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
                 return userService.get().addCredit(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO());

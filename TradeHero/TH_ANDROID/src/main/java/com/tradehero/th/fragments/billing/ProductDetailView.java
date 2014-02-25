@@ -6,15 +6,18 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
+import com.tradehero.common.billing.ProductDetail;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
-public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
-        extends RelativeLayout implements DTOView<SKUDetailsType>
+abstract public class ProductDetailView<
+        ProductIdentifierType extends ProductIdentifier,
+        ProductDetailType extends ProductDetail<ProductIdentifierType>>
+        extends RelativeLayout implements DTOView<ProductDetailType>
 {
-    public static final String TAG = SKUDetailView.class.getSimpleName();
+    public static final String TAG = ProductDetailView.class.getSimpleName();
 
     public static int BG_COLOR_DISABLED_RES_ID = R.color.gray_2;
     public static int BG_COLOR_ENABLED_RES_ID = R.color.gray_3;
@@ -25,20 +28,20 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
     protected TextView deliverableText;
 
     protected boolean selected;
-    protected SKUDetailsType skuDetails;
+    protected ProductDetailType skuDetails;
 
     //<editor-fold desc="Constructors">
-    public SKUDetailView(Context context)
+    public ProductDetailView(Context context)
     {
         super(context);
     }
 
-    public SKUDetailView(Context context, AttributeSet attrs)
+    public ProductDetailView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public SKUDetailView(Context context, AttributeSet attrs, int defStyle)
+    public ProductDetailView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -75,14 +78,14 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
         displayHintSelected();
     }
 
-    @Override public void display(SKUDetailsType skuDetails)
+    @Override public void display(ProductDetailType productDetail)
     {
-        linkWith(skuDetails, true);
+        linkWith(productDetail, true);
     }
 
-    public void linkWith(SKUDetailsType skuDetails, boolean andDisplay)
+    public void linkWith(ProductDetailType productDetail, boolean andDisplay)
     {
-        this.skuDetails = skuDetails;
+        this.skuDetails = productDetail;
         if (andDisplay)
         {
             display();
@@ -110,25 +113,6 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
         }
     }
 
-    protected void displayPrice()
-    {
-        if (skuPrice != null)
-        {
-            if (skuDetails != null)
-            {
-                skuPrice.setText(skuDetails.price);
-            }
-        }
-    }
-
-    protected void displayDeliverableText()
-    {
-        if (deliverableText != null)
-        {
-            if (skuDetails != null)
-            {
-                deliverableText.setText(skuDetails.description);
-            }
-        }
-    }
+    abstract protected void displayPrice();
+    abstract protected void displayDeliverableText();
 }

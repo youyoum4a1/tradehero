@@ -29,6 +29,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.ShowProductDetailsMilestone;
 import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
@@ -423,7 +424,7 @@ public class THIABUserInteractor
 
     public void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyFollowCredits()
@@ -441,7 +442,7 @@ public class THIABUserInteractor
 
     public void popBuyFollowCredits(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetail.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyStockAlerts()
@@ -459,7 +460,7 @@ public class THIABUserInteractor
 
     public void popBuyStockAlerts(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetail.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyResetPortfolio()
@@ -477,7 +478,7 @@ public class THIABUserInteractor
 
     public void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetail.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
     }
 
     public void popBuyDialog(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)

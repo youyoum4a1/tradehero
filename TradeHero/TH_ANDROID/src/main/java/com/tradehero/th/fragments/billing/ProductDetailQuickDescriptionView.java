@@ -5,28 +5,28 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
+import com.tradehero.th.billing.THBillingInteractor;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 5:07 PM To change this template use File | Settings | File Templates. */
-public class SKUQuickDescriptionView extends RelativeLayout
+public class ProductDetailQuickDescriptionView extends RelativeLayout
 {
-    public static final String TAG = SKUQuickDescriptionView.class.getSimpleName();
+    public static final String TAG = ProductDetailQuickDescriptionView.class.getSimpleName();
 
     private TextView quickDescription;
-    private String skuDomain;
+    private String productDomain;
 
     //<editor-fold desc="Constructors">
-    public SKUQuickDescriptionView(Context context)
+    public ProductDetailQuickDescriptionView(Context context)
     {
         super(context);
     }
 
-    public SKUQuickDescriptionView(Context context, AttributeSet attrs)
+    public ProductDetailQuickDescriptionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public SKUQuickDescriptionView(Context context, AttributeSet attrs, int defStyle)
+    public ProductDetailQuickDescriptionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -43,9 +43,9 @@ public class SKUQuickDescriptionView extends RelativeLayout
         quickDescription = (TextView) findViewById(R.id.quick_description);
     }
 
-    public void linkWithSkuDomain(String domain, boolean andDisplay)
+    public void linkWithProductDomain(String domain, boolean andDisplay)
     {
-        this.skuDomain = domain;
+        this.productDomain = domain;
         if (andDisplay)
         {
             display();
@@ -61,7 +61,7 @@ public class SKUQuickDescriptionView extends RelativeLayout
     {
         if (quickDescription != null)
         {
-            if (skuDomain != null)
+            if (productDomain != null)
             {
                 quickDescription.setText(getQuickTextResId());
             }
@@ -70,15 +70,15 @@ public class SKUQuickDescriptionView extends RelativeLayout
 
     public int getQuickTextResId()
     {
-        switch (skuDomain)
+        switch (productDomain)
         {
-            case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
+            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
                 return R.string.store_buy_virtual_dollar_window_message;
-            case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
+            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
                 return R.string.store_buy_follow_credits_window_message;
-            case THIABProductDetail.DOMAIN_STOCK_ALERTS:
+            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
                 return R.string.store_buy_stock_alerts_window_message;
-            case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
+            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
                 return R.string.store_buy_reset_portfolio_window_message;
 
             default:

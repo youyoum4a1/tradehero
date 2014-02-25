@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
+import com.tradehero.th.fragments.billing.googleplay.SKUDetailView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
 public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>

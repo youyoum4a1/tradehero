@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
@@ -40,21 +41,22 @@ public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
             String skuDomain,
             int titleResId,
             Runnable runOnPurchaseComplete,
-            Map<IABSKU, Boolean> enabledItems)
+            Map<ProductIdentifier, Boolean> enabledItems)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
-        detailsAdapter.setSkuDetailsComparator(new THIABProductDetailComparator<>());
+        detailsAdapter.setProductDetailComparator(new THIABProductDetailComparator<>());
         detailsAdapter.setEnabledItems(enabledItems);
-        detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetail>());
+        detailsAdapter.setProductDetailComparator(
+                new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetail>());
         List<THIABProductDetail> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
         return popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);
     }
 
-    public HashMap<IABSKU, Boolean> getEnabledItems()
+    public HashMap<ProductIdentifier, Boolean> getEnabledItems()
     {
-        HashMap<IABSKU, Boolean> enabledItems = new HashMap<>();
+        HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
 
         for (IABSKU key : thiabPurchaseCache.getKeys())
         {
