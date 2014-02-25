@@ -88,6 +88,12 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         }
     }
 
+    @Override protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    {
+        return new LeaderboardMarkUserListAdapter(
+                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_competition_mode);
+    }
+
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())

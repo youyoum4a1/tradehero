@@ -166,8 +166,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         if (leaderboardMarkUserListAdapter == null)
         {
-            leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                    getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
+            leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
             leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
@@ -178,6 +177,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+    }
+
+    protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    {
+        return new LeaderboardMarkUserListAdapter(
+                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
     }
 
     @Override public void onResume()
