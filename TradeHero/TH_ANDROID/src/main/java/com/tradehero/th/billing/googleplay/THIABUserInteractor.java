@@ -448,15 +448,6 @@ public class THIABUserInteractor
     {
         return billingActor;
     }
-
-    /**
-     * The billingActor should be strongly referenced elsewhere
-     * @param billingActor
-     */
-    @Override public void setBillingLogicHolder(THIABLogicHolder billingActor)
-    {
-        throw new IllegalStateException("You cannot change the billing Actor");
-    }
     //</editor-fold>
 
     public AlertDialog popErrorConditional()

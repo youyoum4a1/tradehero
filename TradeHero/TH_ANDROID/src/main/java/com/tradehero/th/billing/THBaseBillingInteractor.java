@@ -61,7 +61,7 @@ abstract public class THBaseBillingInteractor<
         return billingActorCopy == null ? null : billingActorCopy.isBillingAvailable();
     }
 
-    public AlertDialog conditionalPopBillingNotAvailable()
+    @Override public AlertDialog conditionalPopBillingNotAvailable()
     {
         Boolean billingAvailable = isBillingAvailable();
         if (billingAvailable == null || !billingAvailable) // TODO wait when is null
@@ -82,7 +82,7 @@ abstract public class THBaseBillingInteractor<
         });
     }
 
-    protected AlertDialog popBillingUnavailable()
+    @Override public AlertDialog popBillingUnavailable()
     {
         return billingAlertDialogUtil.popBillingUnavailable(
                 currentActivityHolder.getCurrentActivity(),
@@ -91,13 +91,29 @@ abstract public class THBaseBillingInteractor<
     }
     //</editor-fold>
 
+    //<editor-fold desc="Purchase Virtual Dollars">
+    abstract public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId);
+
+    public void setPurchaseVirtualDollarListener(OnPurchaseVirtualDollarListener purchaseVirtualDollarListener)
+    {
+        this.purchaseVirtualDollarListener = purchaseVirtualDollarListener;
+    }
+
     protected OnBillingAvailableListener<BillingExceptionType> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId)
     {
-        return new THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener();
+        return new THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener(ownedPortfolioId);
     }
 
     protected class THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
     {
+        protected OwnedPortfolioId applicablePortfolioId;
+
+        public THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId portfolioId)
+        {
+            super();
+            this.applicablePortfolioId = portfolioId;
+        }
+
         @Override public void onBillingAvailable()
         {
             // TODO
@@ -105,16 +121,12 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void onBillingNotAvailable(BillingExceptionType billingException)
         {
-            postPopBillingUnavailable();
+            OnPurchaseVirtualDollarListener listenerCopy = purchaseVirtualDollarListener;
+            if (listenerCopy != null)
+            {
+                listenerCopy.onPurchasedVirtualDollarFailed(applicablePortfolioId, billingException);
+            }
         }
     }
-
-
-
-    public void setPurchaseVirtualDollarListener(OnPurchaseVirtualDollarListener purchaseVirtualDollarListener)
-    {
-        this.purchaseVirtualDollarListener = purchaseVirtualDollarListener;
-    }
-
-    abstract public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId);
+    //</editor-fold>
 }

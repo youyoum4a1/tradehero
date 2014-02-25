@@ -81,7 +81,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         storeItemAdapter.notifyDataSetChanged();
-        userInteractor.conditionalPopBillingNotAvailable();
     }
 
     @Override public void onDestroyView()
