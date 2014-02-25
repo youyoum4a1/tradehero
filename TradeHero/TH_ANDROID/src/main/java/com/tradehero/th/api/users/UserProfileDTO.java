@@ -4,6 +4,7 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,10 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public int tradesSharedCount_FB;
 
     public List<UserAlertPlanDTO> userAlertPlans;
+    public List<UserCreditPlanDTO> userCreditPlans;
     public List<ProviderDTO> enrolledProviders;
+
+    public boolean competitionAutoEnrollOnFirstLaunch;
 
     public boolean isFollowingUser(int userId)
     {

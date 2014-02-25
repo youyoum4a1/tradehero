@@ -16,6 +16,7 @@ public class UserBaseDTO  extends ExtendedDTO
     public Date memberSince;
     public String activeSurveyURL;
     public String activeSurveyImageURL;
+    public String countryCode;
     public boolean isAdmin;
 
     public UserBaseDTO()
