@@ -20,6 +20,8 @@
   <string name="competition_leaderboard_timer_days">DAYS</string>
   <string name="competition_leaderboard_timer_time_separator">:</string>
 
+  <string name="competition_enrollment_web_view_done">Done</string>
+
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>

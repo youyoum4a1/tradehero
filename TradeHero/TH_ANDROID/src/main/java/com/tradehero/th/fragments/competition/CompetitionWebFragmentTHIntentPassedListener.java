@@ -6,7 +6,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -25,7 +25,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         super();
     }
 
-    abstract protected WebViewFragment getApplicableWebViewFragment();
+    abstract protected BaseWebViewFragment getApplicableWebViewFragment();
     abstract protected OwnedPortfolioId getApplicablePortfolioId();
     abstract protected ProviderId getProviderId();
     abstract protected Navigator getNavigator();

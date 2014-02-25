@@ -36,6 +36,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
@@ -56,7 +57,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
-    private WebViewFragment webViewFragment;
+    private BaseWebViewFragment webViewFragment;
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
@@ -341,8 +342,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) getNavigator().pushFragment(
-                WebViewFragment.class, args);
+        this.webViewFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -401,7 +401,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             super();
         }
 
-        @Override protected WebViewFragment getApplicableWebViewFragment()
+        @Override protected BaseWebViewFragment getApplicableWebViewFragment()
         {
             return webViewFragment;
         }
