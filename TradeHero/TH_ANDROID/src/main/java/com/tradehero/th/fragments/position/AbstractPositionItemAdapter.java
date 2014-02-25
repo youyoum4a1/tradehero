@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
@@ -26,6 +27,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     protected List<Integer> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
+    protected PortfolioDTO portfolioDTO;
 
     protected final Context context;
     protected final LayoutInflater inflater;
@@ -177,6 +179,11 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         notifyDataSetChanged();
     }
 
+    public void linkWith(PortfolioDTO portfolioDTO)
+    {
+        this.portfolioDTO = portfolioDTO;
+    }
+
     protected ExpandableListItem<PositionDTOType> createExpandableItem(PositionDTOType dto)
     {
         return new ExpandableListItem<>(dto);
@@ -267,13 +274,17 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         else if (itemViewType == PositionItemType.Locked.value)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTOType) null, true);
+            cell.linkWith((PositionDTOType) null, false);
+            cell.linkWith(portfolioDTO, false);
+            cell.display();
         }
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
             ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
             AbstractPositionView cell = (AbstractPositionView) convertView;
-            cell.linkWith(expandableWrapper, true);
+            cell.linkWith(expandableWrapper, false);
+            cell.linkWith(portfolioDTO, false);
+            cell.display();
             cell.setListener(new AbstractPositionItemAdapterPositionListener());
         }
 

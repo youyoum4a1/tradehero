@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 
 /**
@@ -20,6 +21,7 @@ abstract public class AbstractPartialBottomView<
 
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
+    protected PortfolioDTO portfolioDTO;
 
     //<editor-fold desc="Constructors">
     public AbstractPartialBottomView(Context context)
@@ -68,7 +70,16 @@ abstract public class AbstractPartialBottomView<
         this.positionDTO = positionDTO;
         if (andDisplay)
         {
-            displayModelPart();
+            // Let children do it
+        }
+    }
+
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        if (andDisplay)
+        {
+
         }
     }
 

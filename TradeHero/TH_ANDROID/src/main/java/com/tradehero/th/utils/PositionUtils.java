@@ -15,12 +15,12 @@ public class PositionUtils
 
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
-    public static String getSumInvested(Context context, PositionDTO position)
+    public static String getSumInvested(Context context, PositionDTO position, String refCurrency)
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
             THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sumInvestedAmountRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sumInvestedAmountRefCcy, false, refCurrency);
             return formattedNumber.toString();
         }
         else
@@ -29,14 +29,14 @@ public class PositionUtils
         }
     }
 
-    public static String getValueAtStart(Context context, PositionInPeriodDTO position)
+    public static String getValueAtStart(Context context, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null &&
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
             THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, false, refCurrency);
             return formattedNumber.toString();
         }
         else
@@ -45,7 +45,7 @@ public class PositionUtils
         }
     }
 
-    public static String getRealizedPL(Context context, PositionDTO position)
+    public static String getRealizedPL(Context context, PositionDTO position, String refCurrency)
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
@@ -53,7 +53,7 @@ public class PositionUtils
                     THSignedNumber.TYPE_MONEY,
                     position.realizedPLRefCcy,
                     true,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                    refCurrency,
                     THSignedNumber.TYPE_SIGN_MINUS_ONLY);
             return formattedNumber.toString();
         }
@@ -63,12 +63,12 @@ public class PositionUtils
         }
     }
 
-    public static String getInPeriodRealizedPL(Context context, PositionInPeriodDTO position)
+    public static String getInPeriodRealizedPL(Context context, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
             THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.totalPLInPeriodRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.totalPLInPeriodRefCcy, false, refCurrency);
             return formattedNumber.toString();
         }
         else
@@ -77,12 +77,12 @@ public class PositionUtils
         }
     }
 
-    public static String getMarketValue(Context context, PositionDTO position)
+    public static String getMarketValue(Context context, PositionDTO position, String refCurrency)
     {
         if (position != null)
         {
             THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueRefCcy, false, refCurrency);
             return formattedNumber.toString();
         }
         else
@@ -91,12 +91,12 @@ public class PositionUtils
         }
     }
 
-    public static String getUnrealizedPL(Context context, PositionDTO position)
+    public static String getUnrealizedPL(Context context, PositionDTO position, String refCurrency)
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
             THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.unrealizedPLRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.unrealizedPLRefCcy, false, refCurrency);
             return formattedNumber.toString();
         }
         else
@@ -138,13 +138,13 @@ public class PositionUtils
         }
     }
 
-    public static String getAdditionalInvested(Context context, PositionInPeriodDTO position)
+    public static String getAdditionalInvested(Context context, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
             THSignedNumber formatSumPurchasesInPeriodRefCcy =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sum_purchasesInPeriodRefCcy, false);
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sum_purchasesInPeriodRefCcy, false, refCurrency);
             return formatSumPurchasesInPeriodRefCcy.toString();
         }
         else

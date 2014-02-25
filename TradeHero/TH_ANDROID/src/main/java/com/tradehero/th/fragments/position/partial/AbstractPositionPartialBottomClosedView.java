@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
@@ -57,6 +58,31 @@ abstract public class AbstractPositionPartialBottomClosedView<
         periodHeld = (TextView) findViewById(R.id.period_value);
     }
 
+    @Override public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        super.linkWith(portfolioDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayRealisedPLValue();
+            displayTotalInvested();
+
+        }
+    }
+
+    @Override public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
+    {
+        super.linkWith(positionDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayRealisedPLValue();
+            displayRoiValue();
+            displayTotalInvested();
+            displayOpenedDate();
+            displayClosedDate();
+            displayPeriodHeld();
+        }
+    }
+
     @Override public void displayModelPart()
     {
         super.displayModelPart();
@@ -72,7 +98,10 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (realisedPLValue != null)
         {
-            realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO));
+            if (portfolioDTO != null)
+            {
+                realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+            }
         }
     }
 
@@ -85,7 +114,10 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (totalInvestedValue != null)
         {
-            totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO));
+            if (portfolioDTO != null)
+            {
+                totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+            }
         }
     }
 

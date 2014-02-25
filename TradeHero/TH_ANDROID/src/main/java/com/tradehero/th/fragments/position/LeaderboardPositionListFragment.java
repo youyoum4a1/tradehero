@@ -47,12 +47,12 @@ public class LeaderboardPositionListFragment
         positionItemAdapter.setCellListener(this);
     }
 
-    @Override protected DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createCacheListener()
+    @Override protected DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetLeaderboardPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createCacheFetchTask()
+    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask()
     {
         return getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
     }

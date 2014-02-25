@@ -39,26 +39,19 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
     {
         if (ownedPortfolioId != null && ownedPortfolioId.isValid())
         {
-            if (getPositionsCacheListener == null)
-            {
-                getPositionsCacheListener = createCacheListener();
-            }
-            if (fetchGetPositionsDTOTask != null)
-            {
-                fetchGetPositionsDTOTask.setListener(null);
-            }
-            fetchGetPositionsDTOTask = createCacheFetchTask();
+            detachGetPositionsTask();
+            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask();
             displayProgress(true);
             fetchGetPositionsDTOTask.execute();
         }
     }
 
-    @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createCacheListener()
+    @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createCacheFetchTask()
+    @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask()
     {
         return getPositionsCache.get().getOrFetch(ownedPortfolioId, getPositionsCacheListener);
     }

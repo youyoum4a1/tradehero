@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -40,15 +41,12 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @InjectView(R.id.follow_button) TextView followButton;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userCache;
+    @Inject UserProfileCache userCache;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
-    @Inject Lazy<Picasso> picasso;
+    @Inject Picasso picasso;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
-
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
@@ -77,20 +75,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        getUserCacheListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-            {
-                display(value);
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                THLog.e(TAG, "There was an error fetching the profile of " + key, error);
-                THToast.show(R.string.error_fetch_user_profile);
-            }
-        };
 
         if (followButton != null)
         {
@@ -131,14 +115,13 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             userViewContainer.setOnClickListener(null);
         }
-        if (fetchUserProfileTask != null)
-        {
-            fetchUserProfileTask.setListener(null);
-        }
-        fetchUserProfileTask = null;
-        getUserCacheListener = null;
 
         super.onDetachedFromWindow();
+    }
+
+    @Override public void linkWith(UserProfileDTO userProfileDTO)
+    {
+        display(userProfileDTO);
     }
 
     private void display(UserProfileDTO user)
@@ -148,10 +131,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         configureFollowItemsVisibility();
     }
 
-    @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
+    @Override public void linkWith(PortfolioDTO portfolioDTO)
     {
-        fetchUserProfileTask = this.userCache.get().getOrFetch(id.getUserBaseKey(), false, getUserCacheListener);
-        fetchUserProfileTask.execute();
+        // Nothing to do
     }
 
     private void configureUserViews()
@@ -163,7 +145,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
         if (this.userImageView != null)
         {
-            picasso.get().load(this.userProfileDTO.picture)
+            picasso.load(this.userProfileDTO.picture)
                     .transform(peopleIconTransformation)
                     .into(this.userImageView, new Callback()
                     {
@@ -182,14 +164,14 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void displayDefaultUserImage()
     {
-        picasso.get().load(R.drawable.superman_facebook)
+        picasso.load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(this.userImageView);
     }
 
     private void configureFollowItemsVisibility()
     {
-        UserProfileDTO currentUser = this.userCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
         if (this.userProfileDTO == null)
         {
             this.followingImageView.setVisibility(GONE);

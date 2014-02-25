@@ -1,6 +1,8 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
@@ -52,6 +54,13 @@ public class PositionDTO extends PositionDTOCompact
         return new UserBaseKey(userId);
     }
 
+    @JsonIgnore
+    public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        return new OwnedPortfolioId(userId, portfolioId);
+    }
+
+    @JsonIgnore
     public OwnedPositionId getOwnedPositionId()
     {
         return new OwnedPositionId(userId, portfolioId, id);

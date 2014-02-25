@@ -12,6 +12,7 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -49,6 +50,7 @@ public class PositionPartialTopView extends LinearLayout
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
+    protected PortfolioDTO portfolioDTO;
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
@@ -118,6 +120,15 @@ public class PositionPartialTopView extends LinearLayout
         if (positionDTO != null)
         {
             linkWith(securityIdCache.get().get(positionDTO.getSecurityIntegerId()), andDisplay);
+        }
+    }
+
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        if (andDisplay)
+        {
+            displayPositionLastAmount();
         }
     }
 
@@ -333,7 +344,7 @@ public class PositionPartialTopView extends LinearLayout
         if (positionLastAmount != null)
         {
             THSignedNumber number = null;
-            if (positionDTO != null)
+            if (positionDTO != null && portfolioDTO != null)
             {
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
@@ -342,7 +353,7 @@ public class PositionPartialTopView extends LinearLayout
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.realizedPLRefCcy,
                             true,
-                            SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                            portfolioDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                             );
                 }
@@ -352,7 +363,7 @@ public class PositionPartialTopView extends LinearLayout
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.marketValueRefCcy,
                             true,
-                            SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                            portfolioDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                     );
                 }

@@ -15,6 +15,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -28,6 +30,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
@@ -44,6 +47,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
@@ -53,12 +57,35 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     private ActionBar actionBar;
 
     protected PositionDTOType positionDTO;
+    protected List<OwnedTradeId> ownedTradeIds;
+    protected PortfolioDTO portfolioDTO;
 
     protected AbstractTradeListItemAdapter<PositionDTOType> adapter;
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCache.GetOrFetchTask<OwnedPositionId, OwnedTradeIdList> fetchTradesTask;
-    private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesListener;
+    private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesCacheListener;
+    private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioTask;
+    private PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        getTradesCacheListener = new GetTradesListener();
+        portfolioCacheListener = new PortfolioCacheListener();
+        this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
+        {
+            @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView)
+            {
+                pushBuySellFragment(true);
+            }
+
+            @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView)
+            {
+                pushBuySellFragment(false);
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -74,21 +101,8 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     {
         if (view != null)
         {
-            this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
-            {
-                @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView)
-                {
-                    pushBuySellFragment(true);
-                }
-
-                @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView)
-                {
-                    pushBuySellFragment(false);
-                }
-            };
-
             createAdapter();
-             adapter.setTradeListHeaderClickListener(this.buttonListener);
+            adapter.setTradeListHeaderClickListener(this.buttonListener);
 
             if (tradeListView != null)
             {
@@ -100,6 +114,23 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     }
 
     abstract protected void createAdapter();
+
+    protected void rePurposeAdapter()
+    {
+        if (this.positionDTO != null && this.portfolioDTO != null && this.ownedTradeIds != null)
+        {
+            createAdapter();
+            adapter.setTradeListHeaderClickListener(this.buttonListener);
+            adapter.setShownPositionDTO(positionDTO);
+            adapter.linkWith(portfolioDTO);
+            adapter.setUnderlyingItems(this.ownedTradeIds);
+            if (tradeListView != null)
+            {
+                tradeListView.setAdapter(adapter);
+            }
+        }
+    }
+
 
     private void registerOverlayHeaderListener()
     {
@@ -172,14 +203,9 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
 
     @Override public void onDestroyView()
     {
-        if (fetchTradesTask != null)
-        {
-            fetchTradesTask.setListener(null);
-        }
-        fetchTradesTask = null;
-        getTradesListener = null;
+        detachFetchTradesTask();
+        detachFetchPortfolioTask();
         tradeListView = null;
-        buttonListener = null;
         if (adapter != null)
         {
             adapter.setTradeListHeaderClickListener(null);
@@ -188,19 +214,42 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        buttonListener = null;
+        getTradesCacheListener = null;
+        portfolioCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachFetchTradesTask()
+    {
+        if (fetchTradesTask != null)
+        {
+            fetchTradesTask.setListener(null);
+        }
+        fetchTradesTask = null;
+    }
+
+    protected void detachFetchPortfolioTask()
+    {
+        if (fetchPortfolioTask != null)
+        {
+            fetchPortfolioTask.setListener(null);
+        }
+        fetchPortfolioTask = null;
+    }
+
     protected void fetchTrades()
     {
         if (positionDTO != null)
         {
-            if (getTradesListener == null)
-            {
-                getTradesListener = new GetTradesListener();
-            }
             if (fetchTradesTask != null)
             {
                 fetchTradesTask.setListener(null);
             }
-            fetchTradesTask = tradeListCache.get().getOrFetch(positionDTO.getOwnedPositionId(), getTradesListener);
+            fetchTradesTask = tradeListCache.get().getOrFetch(positionDTO.getOwnedPositionId(),
+                    getTradesCacheListener);
             displayProgress(true);
             fetchTradesTask.execute();
         }
@@ -209,9 +258,10 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
-        if (this.adapter != null)
+        rePurposeAdapter();
+        if (positionDTO != null)
         {
-            this.adapter.setShownPositionDTO(positionDTO);
+            fetchPortfolio(positionDTO.getOwnedPortfolioId());
         }
         if (andDisplay)
         {
@@ -221,21 +271,32 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
 
     public void linkWith(List<OwnedTradeId> ownedTradeIds, boolean andDisplay)
     {
-        adapter.setUnderlyingItems(ownedTradeIds);
-        getView().post(
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-        );
+        this.ownedTradeIds = ownedTradeIds;
+        rePurposeAdapter();
 
         if (andDisplay)
         {
             display();
+        }
+    }
+
+    protected void fetchPortfolio(OwnedPortfolioId ownedPortfolioId)
+    {
+        detachFetchPortfolioTask();
+        if (ownedPortfolioId != null)
+        {
+            fetchPortfolioTask = portfolioCache.getOrFetch(ownedPortfolioId, false, portfolioCacheListener);
+            fetchPortfolioTask.execute();
+        }
+    }
+
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        rePurposeAdapter();
+        if (andDisplay)
+        {
+            // TODO
         }
     }
 
@@ -315,8 +376,23 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
         {
             displayProgress(false);
-            THToast.show(getString(R.string.error_fetch_trade_list_info));
+            THToast.show(R.string.error_fetch_trade_list_info);
             Timber.e("Error fetching the list of trades %s", key, error);
+        }
+    }
+
+    private class PortfolioCacheListener implements PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO>
+    {
+        @Override
+        public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_info);
+            Timber.e("Error fetching the portfolio %s", key, error);
         }
     }
 }

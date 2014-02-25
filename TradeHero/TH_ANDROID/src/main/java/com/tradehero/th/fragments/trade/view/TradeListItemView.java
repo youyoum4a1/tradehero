@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -39,6 +40,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
     private AbstractTradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
+    private PortfolioDTO portfolioDTO;
 
     private String currencyDisplay; //cached value - cleared in onDetach
 
@@ -124,6 +126,15 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         }
     }
 
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        if (andDisplay)
+        {
+            displayExpandableSection();
+        }
+    }
+
     public void display()
     {
         if (trade == null)
@@ -144,7 +155,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
         if (this.quantityTextView != null && trade != null)
         {
-            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getCurrencyDisplay(), trade.unit_price);
+            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unit_price);
             this.quantityTextView.setText(quantityString);
         }
 
@@ -160,15 +171,15 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
     private void displayExpandableSection()
     {
-        if (this.averagePriceTextView != null && trade != null)
+        if (this.averagePriceTextView != null && trade != null && portfolioDTO != null)
         {
-            String avgPriceString = String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, trade.average_price_after_trade);
+            String avgPriceString = String.format("%s %,.2f", portfolioDTO.getNiceCurrency(), trade.average_price_after_trade);
             this.averagePriceTextView.setText(avgPriceString);
         }
 
         if (this.realizedPLTextView != null && trade != null)
         {
-            String realizedPLString = String.format("%s %+,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, trade.realized_pl_after_trade);
+            String realizedPLString = String.format("%s %+,.2f", portfolioDTO.getNiceCurrency(), trade.realized_pl_after_trade);
             this.realizedPLTextView.setText(realizedPLString);
             this.realizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(trade.realized_pl_after_trade)));
         }
@@ -186,7 +197,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
             }
             else
             {
-                String realizedPLString = String.format("%s %+,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, position.unrealizedPLRefCcy);
+                String realizedPLString = String.format("%s %+,.2f", portfolioDTO.getNiceCurrency(), position.unrealizedPLRefCcy);
                 this.unrealizedPLTextView.setText(realizedPLString);
                 unrealizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(position.unrealizedPLRefCcy)));
             }
@@ -208,7 +219,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         }
     }
 
-    private String getCurrencyDisplay()
+    private String getSecurityCurrencyDisplay()
     {
         if (currencyDisplay == null)
         {

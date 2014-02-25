@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.portfolio.header;
 
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
  * Created by julien on 21/10/13
@@ -9,7 +11,8 @@ import com.tradehero.th.api.users.UserBaseKey;
  */
 public interface PortfolioHeaderView
 {
-    public void bindOwnedPortfolioId(OwnedPortfolioId id);
+    public void linkWith(UserProfileDTO userProfileDTO);
+    public void linkWith(PortfolioDTO portfolioDTO);
     void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener);
     void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener);
 

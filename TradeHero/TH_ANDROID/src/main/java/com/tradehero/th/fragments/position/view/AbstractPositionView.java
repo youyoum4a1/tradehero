@@ -8,10 +8,13 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.PositionListener;
 import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 30/10/13
@@ -36,6 +39,7 @@ public abstract class AbstractPositionView<
     protected boolean hasHistoryButton = true;
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
+    protected PortfolioDTO portfolioDTO;
 
     protected PositionListener<PositionDTOType> listener = null;
 
@@ -221,9 +225,9 @@ public abstract class AbstractPositionView<
     {
         this.positionDTO = positionDTO;
 
-        if (topView != null)
+        if (this.topView != null)
         {
-            topView.linkWith(positionDTO, andDisplay);
+            this.topView.linkWith(positionDTO, andDisplay);
         }
         if (this.bottomView != null)
         {
@@ -236,6 +240,22 @@ public abstract class AbstractPositionView<
         }
     }
 
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        if (this.topView != null)
+        {
+            this.topView.linkWith(portfolioDTO, andDisplay);
+        }
+        if (this.bottomView != null)
+        {
+            this.bottomView.linkWith(portfolioDTO, andDisplay);
+        }
+        if (andDisplay)
+        {
+        }
+    }
+
     public PositionDTOType getPositionDTO()
     {
         THLog.d(TAG, "getPositionDTO " + positionDTO);
@@ -243,7 +263,7 @@ public abstract class AbstractPositionView<
         return positionDTO;
     }
 
-    protected void display()
+    public void display()
     {
         displayTopView();
         displayBottomView();

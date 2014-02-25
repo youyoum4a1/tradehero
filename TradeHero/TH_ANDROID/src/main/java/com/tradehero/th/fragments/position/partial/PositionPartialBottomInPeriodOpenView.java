@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
@@ -61,6 +62,18 @@ public class PositionPartialBottomInPeriodOpenView
         if (inPeriodViewHolder != null)
         {
             inPeriodViewHolder.linkWith(positionDTO, andDisplay);
+        }
+        if (andDisplay)
+        {
+        }
+    }
+
+    @Override public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        super.linkWith(portfolioDTO, andDisplay);
+        if (inPeriodViewHolder != null)
+        {
+            inPeriodViewHolder.linkWith(portfolioDTO, andDisplay);
         }
         if (andDisplay)
         {

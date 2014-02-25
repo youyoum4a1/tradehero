@@ -46,7 +46,6 @@ import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
-import com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -181,7 +180,6 @@ import javax.inject.Singleton;
                         PositionListFragment.PositionListTHIABUserInteractor.class,
                         LeaderboardPositionListFragment.class,
                         LeaderboardPositionListFragment.LeaderboardPositionListTHIABUserInteractor.class,
-                        CurrentUserPortfolioHeaderView.class,
                         OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,

@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.PositionUtils;
 
@@ -21,6 +22,7 @@ public class PositionLockedView extends LinearLayout
     private TextView totalInvestedValue;
 
     private PositionDTO positionDTO;
+    private PortfolioDTO portfolioDTO;
 
     //<editor-fold desc="Constructors">
     public PositionLockedView(Context context)
@@ -63,7 +65,18 @@ public class PositionLockedView extends LinearLayout
         }
     }
 
-    protected void display()
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        if (andDisplay)
+        {
+            displayUnrealisedPLValue();
+            displayRealisedPLValue();
+            displayTotalInvested();
+        }
+    }
+
+    public void display()
     {
         if (colorIndicator != null && positionDTO != null)
         {
@@ -80,7 +93,10 @@ public class PositionLockedView extends LinearLayout
     {
         if (unrealisedPLValue != null)
         {
-            unrealisedPLValue.setText(PositionUtils.getUnrealizedPL(getContext(), positionDTO));
+            if (portfolioDTO != null)
+            {
+                unrealisedPLValue.setText(PositionUtils.getUnrealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+            }
         }
     }
 
@@ -88,7 +104,10 @@ public class PositionLockedView extends LinearLayout
     {
         if (realisedPLValue != null)
         {
-            realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO));
+            if (portfolioDTO != null)
+            {
+                realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+            }
         }
     }
 
@@ -96,7 +115,10 @@ public class PositionLockedView extends LinearLayout
     {
         if (totalInvestedValue != null)
         {
-            totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO));
+            if (portfolioDTO != null)
+            {
+                totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+            }
         }
     }
 

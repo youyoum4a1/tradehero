@@ -43,6 +43,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.List;
@@ -71,6 +72,7 @@ abstract public class AbstractPositionListFragment<
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
+    @Inject UserProfileCache userProfileCache;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
@@ -79,6 +81,8 @@ abstract public class AbstractPositionListFragment<
 
     protected OwnedPortfolioId ownedPortfolioId;
     protected GetPositionsDTOType getPositionsDTO;
+    protected PortfolioDTO portfolioDTO;
+    protected UserProfileDTO userProfileDTO;
 
     protected AbstractPositionItemAdapter<PositionDTOType> positionItemAdapter;
 
@@ -87,6 +91,12 @@ abstract public class AbstractPositionListFragment<
 
     protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> fetchGetPositionsDTOTask;
     protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> getPositionsCacheListener;
+
+    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -106,6 +116,32 @@ abstract public class AbstractPositionListFragment<
 
     @Override protected void initViews(View view)
     {
+        getPositionsCacheListener = createGetPositionsCacheListener();
+        userProfileCacheListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            {
+                linkWith(value, true);
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show(R.string.error_fetch_user_profile);
+            }
+        };
+        portfolioCacheListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        {
+            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            {
+                linkWith(value, true);
+            }
+
+            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+            {
+                THToast.show(R.string.error_fetch_portfolio_info);
+            }
+        };
+
         if (view != null)
         {
             progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
@@ -207,17 +243,11 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onPause()
     {
-        getPositionsCacheListener = null;
         if (portfolioHeaderView != null)
         {
             portfolioHeaderView.setFollowRequestedListener(null);
             portfolioHeaderView.setTimelineRequestedListener(null);
         }
-        if (fetchGetPositionsDTOTask != null)
-        {
-            fetchGetPositionsDTOTask.setListener(null);
-        }
-        fetchGetPositionsDTOTask = null;
 
         if (positionsListView != null)
         {
@@ -254,6 +284,14 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onDestroyView()
     {
+        detachPortfolioTask();
+        detachGetPositionsTask();
+        detachUserProfileTask();
+
+        getPositionsCacheListener = null;
+        userProfileCacheListener = null;
+        portfolioCacheListener = null;
+
         if (positionsListView != null)
         {
             positionsListView.setOnScrollListener(null);
@@ -271,6 +309,22 @@ abstract public class AbstractPositionListFragment<
     public void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
     {
         this.ownedPortfolioId = ownedPortfolioId;
+        this.portfolioDTO = null;
+        this.userProfileDTO = null;
+
+        detachPortfolioTask();
+        detachUserProfileTask();
+        if (ownedPortfolioId != null)
+        {
+            fetchPortfolioDTOTask = createPortfolioFetchTask(ownedPortfolioId);
+            fetchPortfolioDTOTask.execute();
+            if (ownedPortfolioId.userId != null)
+            {
+                fetchUserProfileTask = createUserProfileFetchTask(ownedPortfolioId.getUserBaseKey());
+                fetchUserProfileTask.execute();
+            }
+        }
+
         fetchSimplePage();
         if (andDisplay)
         {
@@ -280,24 +334,65 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void fetchSimplePage();
+    abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheListener();
+    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheFetchTask();
 
-    abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createCacheListener();
-
-    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createCacheFetchTask();
-
-    public void linkWith(GetPositionsDTOType getPositionsDTO, boolean andDisplay)
+    protected void detachGetPositionsTask()
     {
-        this.getPositionsDTO = getPositionsDTO;
-        if (this.getPositionsDTO != null)
+        if (fetchGetPositionsDTOTask != null)
+        {
+            fetchGetPositionsDTOTask.setListener(null);
+        }
+        fetchGetPositionsDTOTask = null;
+    }
+
+    protected void detachUserProfileTask()
+    {
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.setListener(null);
+        }
+        fetchUserProfileTask = null;
+    }
+
+    protected void detachPortfolioTask()
+    {
+        if (fetchPortfolioDTOTask != null)
+        {
+            fetchPortfolioDTOTask.setListener(null);
+        }
+        fetchPortfolioDTOTask = null;
+    }
+
+    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> createUserProfileFetchTask(UserBaseKey userBaseKey)
+    {
+        return userProfileCache.getOrFetch(userBaseKey, false, userProfileCacheListener);
+    }
+
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId)
+    {
+        return portfolioCache.get().getOrFetch(ownedPortfolioId, false, portfolioCacheListener);
+    }
+
+    protected void rePurposeAdapter()
+    {
+        if (this.getPositionsDTO != null && this.portfolioDTO != null)
         {
             createPositionItemAdapter();
             positionItemAdapter.setItems(getPositionsDTO.positions);
+            positionItemAdapter.linkWith(portfolioDTO);
             restoreExpandingStates();
             if (positionsListView != null)
             {
                 positionsListView.setAdapter(positionItemAdapter);
             }
         }
+    }
+
+    public void linkWith(GetPositionsDTOType getPositionsDTO, boolean andDisplay)
+    {
+        this.getPositionsDTO = getPositionsDTO;
+        rePurposeAdapter();
 
         if (andDisplay)
         {
@@ -326,6 +421,25 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
+    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        this.userProfileDTO = userProfileDTO;
+        if (andDisplay)
+        {
+            displayHeaderView();
+        }
+    }
+
+    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
+    {
+        this.portfolioDTO = portfolioDTO;
+        rePurposeAdapter();
+        if (andDisplay)
+        {
+            displayHeaderView();
+        }
+    }
+
     public void display()
     {
         displayHeaderView();
@@ -336,7 +450,8 @@ abstract public class AbstractPositionListFragment<
     {
         if (this.portfolioHeaderView != null)
         {
-            this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
+            this.portfolioHeaderView.linkWith(this.portfolioDTO);
+            this.portfolioHeaderView.linkWith(this.userProfileDTO);
         }
     }
 
