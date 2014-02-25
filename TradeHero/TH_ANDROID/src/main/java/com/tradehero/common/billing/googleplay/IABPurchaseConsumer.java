@@ -7,7 +7,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionException;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
@@ -37,7 +36,7 @@ abstract public class IABPurchaseConsumer<
 
     protected Activity getActivity()
     {
-        return (Activity) context;
+        return currentActivityHolder.getCurrentActivity();
     }
 
     abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
@@ -208,7 +207,7 @@ abstract public class IABPurchaseConsumer<
         String sku = this.purchase.getProductIdentifier().identifier;
         String token = this.purchase.getToken();
         Timber.d("Consuming sku: %s, token: %s", sku, token);
-        int response = this.billingService.consumePurchase(3, context.getPackageName(), token);
+        int response = this.billingService.consumePurchase(3, currentActivityHolder.getCurrentActivity().getPackageName(), token);
         if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             throw iabExceptionFactory.get().create(response);

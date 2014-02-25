@@ -11,7 +11,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.th.base.Application;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -199,7 +198,7 @@ abstract public class IABPurchaseFetcher<
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException
     {
         Timber.d("Calling getPurchases with continuation token: %s", continueToken);
-        return billingService.getPurchases(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, continueToken);
+        return billingService.getPurchases(TARGET_BILLING_API_VERSION3, currentActivityHolder.getCurrentActivity().getPackageName(), itemType, continueToken);
     }
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String signature) throws JSONException;

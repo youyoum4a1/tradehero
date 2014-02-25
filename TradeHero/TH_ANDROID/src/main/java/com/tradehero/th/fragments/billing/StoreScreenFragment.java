@@ -204,7 +204,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
             {
                 alreadyNotifiedNeedCreateAccount = true;
-                iabAlertDialogUtil.popBillingUnavailable(getActivity());
+                popBillingUnavailable();
             }
             // Nothing to do presumably
         }

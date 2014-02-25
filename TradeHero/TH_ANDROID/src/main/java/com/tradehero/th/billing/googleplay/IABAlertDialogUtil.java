@@ -7,16 +7,15 @@ import android.content.Intent;
 import android.provider.Settings;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.th.R;
+import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.fragments.billing.SKUDetailView;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
 import com.tradehero.th.utils.ActivityUtil;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
-@Singleton public class IABAlertDialogUtil extends AlertDialogUtil
+public class IABAlertDialogUtil extends BillingAlertDialogUtil
 {
     public static final String TAG = IABAlertDialogUtil.class.getSimpleName();
 
@@ -24,25 +23,10 @@ import javax.inject.Singleton;
 
     @Inject public IABAlertDialogUtil()
     {
+        super();
     }
 
-    public AlertDialog popBillingUnavailable(final Context context)
-    {
-        return popWithOkCancelButton(context,
-                R.string.store_billing_unavailable_window_title,
-                R.string.store_billing_unavailable_window_description,
-                R.string.store_billing_unavailable_act,
-                R.string.store_billing_unavailable_cancel,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        goToCreateAccount(context);
-                    }
-                });
-    }
-
-    public void goToCreateAccount(final Context context)
+    @Override public void goToCreateAccount(final Context context)
     {
         Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button

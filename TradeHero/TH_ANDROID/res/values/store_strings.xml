@@ -12,8 +12,8 @@
   <string name="store_manage_followers">Manage Followers</string>
   <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
 
-  <string name="store_billing_unavailable_window_title">Oh!</string>
-  <string name="store_billing_unavailable_window_description">The TradeHero Store will function properly when you have a Google account set up and you enable the billing function.</string>
+  <string name="store_billing_unavailable_window_title">No store account</string>
+  <string name="store_billing_unavailable_window_description">The %s will function properly when you have an account set up and you enable the billing function.</string>
   <string name="store_billing_unavailable_cancel">Got it</string>
   <string name="store_billing_unavailable_act">Add an account now</string>
 

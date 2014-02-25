@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.content.Context;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
@@ -25,7 +24,6 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean running;
     private boolean complete;
     private boolean failed;
-    @Inject protected Context context;
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABLogicHolder> logicHolderWeak = new WeakReference<>(null);
     private BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;

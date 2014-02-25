@@ -10,11 +10,10 @@ import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
-@Singleton public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
+public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
     @Inject public PurchaseRestorerAlertUtil()
     {

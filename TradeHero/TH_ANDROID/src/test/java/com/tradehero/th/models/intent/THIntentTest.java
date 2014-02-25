@@ -27,12 +27,12 @@ public class THIntentTest
 
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
+        THIntent.currentActivityHolder = null;
     }
 
     @Test public void defaultActionIsView()

@@ -10,6 +10,7 @@ import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -24,7 +25,7 @@ public class IABServiceConnector implements ServiceConnection
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
-    @Inject protected Context context;
+    @Inject protected CurrentActivityHolder currentActivityHolder;
 
     protected IInAppBillingService billingService;
 
@@ -57,8 +58,8 @@ public class IABServiceConnector implements ServiceConnection
         if (isServiceAvailable(serviceIntent))
         {
             // service available to handle that Intent
-            ComponentName myService = context.startService(serviceIntent);
-            context.bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
+            ComponentName myService = currentActivityHolder.getCurrentActivity().startService(serviceIntent);
+            currentActivityHolder.getCurrentActivity().bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
         }
         else
         {
@@ -77,7 +78,7 @@ public class IABServiceConnector implements ServiceConnection
 
     protected boolean isServiceAvailable(Intent serviceIntent)
     {
-        List<ResolveInfo> intentService = context.getPackageManager().queryIntentServices(serviceIntent, 0);
+        List<ResolveInfo> intentService = currentActivityHolder.getCurrentActivity().getPackageManager().queryIntentServices(serviceIntent, 0);
         return intentService!= null && !intentService.isEmpty();
     }
 
@@ -89,11 +90,11 @@ public class IABServiceConnector implements ServiceConnection
     {
         Timber.d("Disposing this %s", getClass().getSimpleName());
         setupDone = false;
-        if (context != null)
+        if (currentActivityHolder != null)
         {
             try
             {
-                context.unbindService(this);
+                currentActivityHolder.getCurrentActivity().unbindService(this);
             }
             catch (IllegalArgumentException e)
             {
@@ -101,7 +102,7 @@ public class IABServiceConnector implements ServiceConnection
             }
         }
         disposed = true;
-        context = null;
+        currentActivityHolder = null;
         billingService = null;
         listener = null;
     }
@@ -151,7 +152,7 @@ public class IABServiceConnector implements ServiceConnection
             subscriptionSupported = false;
             throw iabExceptionFactory.get().create(responseStatus, "Error checking for billing v3 support.");
         }
-        Timber.d("In-app billing version 3 supported for " + context.getPackageName());
+        Timber.d("In-app billing version 3 supported for " + currentActivityHolder.getCurrentActivity().getPackageName());
 
         // check for v3 subscriptions support
         responseStatus = purchaseTypeSupportStatus(IABConstants.ITEM_TYPE_SUBS);
@@ -177,7 +178,8 @@ public class IABServiceConnector implements ServiceConnection
      */
     protected int purchaseTypeSupportStatus(String itemType) throws RemoteException
     {
-        return billingService.isBillingSupported(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType);
+        return billingService.isBillingSupported(TARGET_BILLING_API_VERSION3,
+                currentActivityHolder.getCurrentActivity().getPackageName(), itemType);
     }
 
     protected void checkNotDisposed()

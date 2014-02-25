@@ -28,7 +28,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.billing.ShowSkuDetailsMilestone;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
@@ -53,8 +55,16 @@ import timber.log.Timber;
  * It expects its Activity to implement THIABInteractor.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 public class THIABUserInteractor
-        implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
-        THIABInteractor
+    extends THBaseBillingInteractor<
+        IABSKU,
+        THIABProductDetail,
+        THIABPurchaseOrder,
+        THIABOrderId,
+        THIABPurchase,
+        THIABLogicHolder,
+        IABException>
+    implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
+    THIABInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
     public static final int ACTION_RESET_PORTFOLIO = 1;
@@ -155,6 +165,17 @@ public class THIABUserInteractor
         }
         purchaseRestorer = null;
         followCallback = null;
+        billingActor = null;
+    }
+
+    @Override protected BillingAlertDialogUtil getBillingAlertDialogUtil()
+    {
+        return iabAlertDialogSKUUtil;
+    }
+
+    @Override public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId)
+    {
+        throw new IllegalStateException("Not implemented");
     }
 
     public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
@@ -415,12 +436,6 @@ public class THIABUserInteractor
         }
     }
 
-    protected Boolean isBillingAvailable()
-    {
-        THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy == null ? null : billingActorCopy.isBillingAvailable();
-    }
-
     protected boolean hadErrorLoadingInventory()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
@@ -447,24 +462,16 @@ public class THIABUserInteractor
     {
         throw new IllegalStateException("You cannot change the billing Actor");
     }
-    //</editor-fold>
 
-    public AlertDialog conditionalPopBillingNotAvailable()
-    {
-        Boolean billingAvailable = isBillingAvailable();
-        if (billingAvailable == null || !billingAvailable) // TODO wait when is null
-        {
-            return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
-        }
-        return null;
-    }
+
+    //</editor-fold>
 
     public AlertDialog popErrorConditional()
     {
         Boolean billingAvailable = isBillingAvailable();
         if (billingAvailable == null || !billingAvailable) // TODO wait when is null
         {
-            return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
+            return popBillingUnavailable();
         }
         else if (hadErrorLoadingInventory())
         {

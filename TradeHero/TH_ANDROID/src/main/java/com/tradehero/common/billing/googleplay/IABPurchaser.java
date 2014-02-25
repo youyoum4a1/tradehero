@@ -54,7 +54,7 @@ abstract public class IABPurchaser<
 
     protected Activity getActivity()
     {
-        return (Activity) context;
+        return currentActivityHolder.getCurrentActivity();
     }
 
     @Override public int getRequestCode()
@@ -204,7 +204,7 @@ abstract public class IABPurchaser<
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType());
         Bundle buyIntentBundle = billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
-                context.getPackageName(),
+                currentActivityHolder.getCurrentActivity().getPackageName(),
                 purchaseOrder.getProductIdentifier().identifier,
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType(),
                 purchaseOrder.getDeveloperPayload());

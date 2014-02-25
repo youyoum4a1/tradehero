@@ -4,10 +4,9 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 4:07 PM To change this template use File | Settings | File Templates. */
-@Singleton public class AlertDialogUtilBuySell extends AlertDialogUtil
+public class AlertDialogUtilBuySell extends AlertDialogUtil
 {
     public static final String TAG = AlertDialogUtilBuySell.class.getSimpleName();
 

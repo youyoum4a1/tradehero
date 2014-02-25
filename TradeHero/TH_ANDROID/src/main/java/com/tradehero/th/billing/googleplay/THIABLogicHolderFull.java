@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.content.res.Resources;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -10,6 +11,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.th.R;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -76,6 +78,11 @@ public class THIABLogicHolderFull
             purchaseReporterHolder.onDestroy();
         }
         super.onDestroy();
+    }
+
+    @Override public String getBillingHolderName(Resources resources)
+    {
+        return resources.getString(R.string.th_iab_logic_holder_name);
     }
 
     @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()

@@ -1,11 +1,14 @@
 package com.tradehero.th.models.intent.position;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.TestConstants;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -30,12 +33,12 @@ public class OnePortfolioIntentTest
 
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
+        THIntent.currentActivityHolder = null;
     }
 
     @Test public void portfolioActionUriPathIsWellFormed()

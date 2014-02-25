@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 10:49 AM To change this template use File | Settings | File Templates. */
-@Singleton public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
+public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
 {
     public static final String TAG = IABAlertDialogSKUUtil.class.getSimpleName();
 

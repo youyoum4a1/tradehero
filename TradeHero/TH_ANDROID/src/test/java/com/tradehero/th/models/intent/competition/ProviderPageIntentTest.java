@@ -6,8 +6,8 @@ import com.tradehero.TestConstants;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
+import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import org.junit.After;
@@ -33,12 +33,12 @@ public class ProviderPageIntentTest
     @Before public void setUp()
     {
         DaggerUtils.inject(this);
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
+        THIntent.currentActivityHolder = null;
     }
 
     @Test public void providerActionUriPathIsWellFormed1()

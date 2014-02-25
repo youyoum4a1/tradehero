@@ -2,6 +2,7 @@ package com.tradehero.th.models.intent.trending;
 
 import com.tradehero.TestConstants;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import junit.framework.Assert;
 import org.junit.After;
@@ -25,12 +26,12 @@ public class TrendingIntentTest
 
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
+        THIntent.currentActivityHolder = null;
     }
 
     @Test public void constructorSetsPath()

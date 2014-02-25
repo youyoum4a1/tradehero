@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import java.lang.ref.WeakReference;
 
@@ -22,6 +23,11 @@ public class CurrentActivityHolder
     public Activity getCurrentActivity()
     {
         return currentActivityWeak.get();
+    }
+
+    public Context getCurrentContext()
+    {
+        return getCurrentActivity().getApplicationContext();
     }
 
     public void setCurrentActivity(Activity currentActivity)
