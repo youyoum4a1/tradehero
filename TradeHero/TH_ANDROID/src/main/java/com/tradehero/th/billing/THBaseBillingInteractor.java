@@ -99,12 +99,9 @@ abstract public class THBaseBillingInteractor<
         this.purchaseVirtualDollarListener = purchaseVirtualDollarListener;
     }
 
-    protected OnBillingAvailableListener<BillingExceptionType> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId)
-    {
-        return new THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener(ownedPortfolioId);
-    }
+    abstract protected OnBillingAvailableListener<BillingExceptionType> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId);
 
-    protected class THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
+    abstract protected class THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
     {
         protected OwnedPortfolioId applicablePortfolioId;
 
@@ -112,11 +109,6 @@ abstract public class THBaseBillingInteractor<
         {
             super();
             this.applicablePortfolioId = portfolioId;
-        }
-
-        @Override public void onBillingAvailable()
-        {
-            // TODO
         }
 
         @Override public void onBillingNotAvailable(BillingExceptionType billingException)

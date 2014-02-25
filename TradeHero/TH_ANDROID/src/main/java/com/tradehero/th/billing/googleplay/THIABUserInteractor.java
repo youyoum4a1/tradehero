@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
@@ -28,11 +29,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
-import com.tradehero.th.fragments.billing.ShowSkuDetailsMilestone;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -168,10 +167,35 @@ public class THIABUserInteractor
         billingActor = null;
     }
 
+
+
+
+    //<editor-fold desc="Purchase Virtual Dollars">
     @Override public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId)
     {
         throw new IllegalStateException("Not implemented");
     }
+
+    @Override protected OnBillingAvailableListener<IABException> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId)
+    {
+        return new THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener(ownedPortfolioId);
+    }
+
+    protected class THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener extends THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener
+    {
+        public THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId portfolioId)
+        {
+            super(portfolioId);
+        }
+
+        @Override public void onBillingAvailable()
+        {
+            // TODO wait for inventory
+        }
+    }
+    //</editor-fold>
+
+
 
     public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
     {
