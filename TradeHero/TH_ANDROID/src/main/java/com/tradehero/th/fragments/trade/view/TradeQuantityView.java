@@ -15,6 +15,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
@@ -370,7 +371,7 @@ public class TradeQuantityView extends TableLayout
             Double plValue = SecurityPositionDetailDTOUtil.projectedPLValue(securityPositionDetailDTO, quoteDTO, shareQuantity);
             if (plValue != null)
             {
-                mProjectedPLValue.setText(String.format("US$ %,.2f", plValue));
+                mProjectedPLValue.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, plValue));
                 mProjectedPLValue.setTextColor(plValue == 0 ? colorPlNeutral : plValue > 0 ? colorPlGain : colorPlLoss);
             }
             else

@@ -11,6 +11,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -83,13 +84,13 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         {
             if (totalValueTextView != null)
             {
-                String valueString = String.format("US$ %,.0f", portfolio.totalValue);
+                String valueString = String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, portfolio.totalValue);
                 totalValueTextView.setText(valueString);
             }
 
             if (cashValueTextView != null)
             {
-                String cashString = String.format("US$ %,.0f", portfolio.cashBalance);
+                String cashString = String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, portfolio.cashBalance);
                 cashValueTextView.setText(cashString);
             }
         }
