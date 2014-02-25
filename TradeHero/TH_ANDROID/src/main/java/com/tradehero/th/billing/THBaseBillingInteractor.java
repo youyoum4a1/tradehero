@@ -44,6 +44,7 @@ abstract public class THBaseBillingInteractor<
 {
     protected OnPurchaseVirtualDollarListener purchaseVirtualDollarListener;
 
+    @Inject BillingAlertDialogUtil billingAlertDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
 
     //<editor-fold desc="Constructors">
@@ -52,8 +53,6 @@ abstract public class THBaseBillingInteractor<
         super();
     }
     //</editor-fold>
-
-    abstract protected BillingAlertDialogUtil getBillingAlertDialogUtil();
 
     protected Boolean isBillingAvailable()
     {
@@ -105,7 +104,7 @@ abstract public class THBaseBillingInteractor<
 
     protected AlertDialog popBillingUnavailable()
     {
-        return getBillingAlertDialogUtil().popBillingUnavailable(
+        return billingAlertDialogUtil.popBillingUnavailable(
                 currentActivityHolder.getCurrentActivity(),
                 getBillingLogicHolder().getBillingHolderName(
                         currentActivityHolder.getCurrentActivity().getResources()));

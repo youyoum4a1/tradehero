@@ -168,11 +168,6 @@ public class THIABUserInteractor
         billingActor = null;
     }
 
-    @Override protected BillingAlertDialogUtil getBillingAlertDialogUtil()
-    {
-        return iabAlertDialogSKUUtil;
-    }
-
     @Override public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId)
     {
         throw new IllegalStateException("Not implemented");
