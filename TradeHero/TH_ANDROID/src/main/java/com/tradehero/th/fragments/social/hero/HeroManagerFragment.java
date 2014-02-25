@@ -288,14 +288,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             super();
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        @Override protected void handleShowProductDetailsMilestoneComplete()
         {
-            super.handleShowSkuDetailsMilestoneComplete();
+            super.handleShowProductDetailsMilestoneComplete();
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
         {
-            super.handleShowSkuDetailsMilestoneFailed(throwable);
+            super.handleShowProductDetailsMilestoneFailed(throwable);
         }
 
         @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)

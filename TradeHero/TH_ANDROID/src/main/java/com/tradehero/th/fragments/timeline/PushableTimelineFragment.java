@@ -164,9 +164,9 @@ public class PushableTimelineFragment extends TimelineFragment
             super();
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        @Override protected void handleShowProductDetailsMilestoneComplete()
         {
-            super.handleShowSkuDetailsMilestoneComplete();
+            super.handleShowProductDetailsMilestoneComplete();
             displayFollowButton();
         }
 

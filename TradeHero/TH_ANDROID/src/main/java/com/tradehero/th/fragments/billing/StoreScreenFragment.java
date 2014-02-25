@@ -197,7 +197,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             super();
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
         {
             // TODO warn if there are things unset
             if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)

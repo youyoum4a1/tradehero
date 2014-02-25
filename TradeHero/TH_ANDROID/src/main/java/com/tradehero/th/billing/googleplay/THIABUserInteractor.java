@@ -20,26 +20,22 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.ShowProductDetailsMilestone;
 import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +51,7 @@ import timber.log.Timber;
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 public class THIABUserInteractor
     extends THBaseBillingInteractor<
+        IABSKUListType,
         IABSKU,
         THIABProductDetail,
         THIABPurchaseOrder,
@@ -68,21 +65,10 @@ public class THIABUserInteractor
     public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
-    @Inject protected CurrentActivityHolder currentActivityHolder;
-
-    private ShowSkuDetailsMilestone showSkuDetailsMilestone;
-    private Milestone.OnCompleteListener showSkuDetailsMilestoneListener;
-    private Runnable runOnShowSkuDetailsMilestoneComplete;
-    protected Throwable showSkuDetailsMilestoneException;
-
-    private ProgressDialog progressDialog;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     @Inject protected THIABLogicHolder billingActor;
     protected THIABPurchaseRestorer purchaseRestorer;
     protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
-    protected OwnedPortfolioId applicablePortfolioId;
     private Runnable runOnPurchaseComplete;
 
     @Inject protected IABAlertDialogSKUUtil iabAlertDialogSKUUtil;
@@ -112,26 +98,23 @@ public class THIABUserInteractor
     protected Callback<UserProfileDTO> followCallback;
     private UserProfileDTO userProfileDTO;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
     public THIABUserInteractor()
     {
         super();
         DaggerUtils.inject(this);
         purchaseRestorer = new THIABPurchaseRestorer(billingActor);
-        showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
+        showProductDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)
             {
-                handleShowSkuDetailsMilestoneComplete();
+                handleShowProductDetailsMilestoneComplete();
             }
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
                 Timber.e("Failed to complete ShowSkuDetailsMilestone", throwable);
-                showSkuDetailsMilestoneException = throwable;
-                handleShowSkuDetailsMilestoneFailed(throwable);
+                handleShowProductDetailsMilestoneFailed(throwable);
             }
         };
         prepareCallbacks(currentActivityHolder.getCurrentActivity());
@@ -143,20 +126,14 @@ public class THIABUserInteractor
     public void onPause()
     {
         inventoryFetchedForgetListener = null;
-        runOnShowSkuDetailsMilestoneComplete = null;
+        super.onPause();
     }
 
     public void onDestroy()
     {
-        if (progressDialog != null)
-        {
-            progressDialog.hide();
-            progressDialog = null;
-        }
         purchaseFinishedListener = null;
         purchaseReportedListener = null;
         consumptionFinishedListener = null;
-        showSkuDetailsMilestoneListener = null;
         purchaseRestorerFinishedListener = null;
         if (purchaseRestorer != null)
         {
@@ -165,10 +142,17 @@ public class THIABUserInteractor
         purchaseRestorer = null;
         followCallback = null;
         billingActor = null;
+        super.onDestroy();
     }
 
+    //<editor-fold desc="Inventory Preparation">
+    @Override protected ShowProductDetailsMilestone createShowProductDetailsMilestone(
+            IABSKUListType iabskuListType)
+    {
+        return new ShowSkuDetailsMilestone(iabskuListType, currentUserId.toUserBaseKey());
+    }
 
-
+    //</editor-fold>
 
     //<editor-fold desc="Purchase Virtual Dollars">
     @Override public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId)
@@ -197,18 +181,7 @@ public class THIABUserInteractor
 
 
 
-    public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
-    {
-        this.applicablePortfolioId = applicablePortfolioId;
-        preparePrerequisites();
-    }
-
-    public OwnedPortfolioId getApplicablePortfolioId()
-    {
-        return applicablePortfolioId;
-    }
-
-    private void prepareCallbacks(final Context context)
+    protected void prepareCallbacks(final Context context)
     {
         if (purchaseFinishedListener == null)
         {
@@ -363,43 +336,12 @@ public class THIABUserInteractor
         }
     }
 
-    protected void preparePrerequisites()
+    protected void prepareProductDetailsPrerequisites()
     {
-        if (this.applicablePortfolioId == null)
-        {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
-        }
-        if (this.applicablePortfolioId.userId == null)
-        {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), this.applicablePortfolioId.portfolioId);
-        }
-
-        if (this.applicablePortfolioId.portfolioId == null)
-        {
-            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
-            if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
-            {
-                this.applicablePortfolioId = ownedPortfolioId;
-            }
-        }
-
-        showSkuDetailsMilestone = new ShowSkuDetailsMilestone(
-                IABSKUListType.getInApp(),
-                this.applicablePortfolioId.getUserBaseKey());
-        showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
-        showSkuDetailsMilestoneException = null;
-        showSkuDetailsMilestone.launch();
+        prepareProductDetailsPrerequisites(IABSKUListType.getInApp());
     }
 
-    protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.hide();
-        }
-    }
-
-    protected void handleShowSkuDetailsMilestoneComplete()
+    protected void handleShowProductDetailsMilestoneComplete()
     {
         // At this stage, we know the applicable portfolio is available in the cache
         if (this.applicablePortfolioId.portfolioId == null)
@@ -409,48 +351,7 @@ public class THIABUserInteractor
         // We also know that the userProfile is in the cache
         this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
 
-        runWhatWaitingForSkuDetailsMilestone();
-    }
-
-    protected void runWhatWaitingForSkuDetailsMilestone()
-    {
-        Runnable runnable = runOnShowSkuDetailsMilestoneComplete;
-        if (runnable != null)
-        {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-            runOnShowSkuDetailsMilestoneComplete = null;
-            runnable.run();
-        }
-    }
-
-    public void waitForSkuDetailsMilestoneComplete(Runnable runnable)
-    {
-        if (showSkuDetailsMilestone.isComplete())
-        {
-            if (runnable != null)
-            {
-                runnable.run();
-            }
-        }
-        else
-        {
-            if (runnable != null)
-            {
-                popDialogLoadingInfo();
-                runOnShowSkuDetailsMilestoneComplete = runnable;
-            }
-            if (showSkuDetailsMilestone.isFailed() || !showSkuDetailsMilestone.isRunning())
-            {
-                showSkuDetailsMilestone.launch();
-            }
-            else
-            {
-                Timber.d("showSkuDetailsMilestone is already running");
-            }
-        }
+        runWhatWaitingForProductDetailsMilestone();
     }
 
     protected boolean hadErrorLoadingInventory()
@@ -675,27 +576,6 @@ public class THIABUserInteractor
         actorPurchaser.launchPurchaseSequence(requestCode, purchaseOrder);
     }
 
-    protected void popDialogLoadingInfo()
-    {
-        Activity activity = this.currentActivityHolder.getCurrentActivity();
-        if (activity != null)
-        {
-            progressDialog = ProgressDialogUtil.show(
-                    activity,
-                    R.string.store_billing_loading_info_window_title,
-                    R.string.store_billing_loading_info_window_message
-            );
-            progressDialog.setOnCancelListener(
-                    new DialogInterface.OnCancelListener()
-                    {
-                        @Override public void onCancel(DialogInterface dialog)
-                        {
-                            runOnShowSkuDetailsMilestoneComplete = null;
-                        }
-                    });
-        }
-    }
-
     protected void popFailedToLoadRequiredInfo()
     {
         iabAlertDialogSKUUtil.popFailedToLoadRequiredInfo(currentActivityHolder.getCurrentActivity());
@@ -801,7 +681,7 @@ public class THIABUserInteractor
                     {
                         @Override public void onCancel(DialogInterface dialog)
                         {
-                            runOnShowSkuDetailsMilestoneComplete = null;
+                            runOnShowProductDetailsMilestoneComplete = null;
                         }
                     });
         }

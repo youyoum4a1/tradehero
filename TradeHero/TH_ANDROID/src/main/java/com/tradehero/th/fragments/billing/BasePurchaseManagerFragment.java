@@ -74,6 +74,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onPause();
     }
 
+    @Override public void onStop()
+    {
+        userInteractor.onStop();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         if (userInteractor != null)

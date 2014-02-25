@@ -1512,9 +1512,9 @@ public class BuySellFragment extends AbstractBuySellFragment
             super();
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        @Override protected void handleShowProductDetailsMilestoneComplete()
         {
-            super.handleShowSkuDetailsMilestoneComplete();
+            super.handleShowProductDetailsMilestoneComplete();
             // Like this we retest for the possibility to buy and sell
             if (securityPositionDetailDTO != null)
             {
@@ -1522,9 +1522,9 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         }
 
-        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
         {
-            super.handleShowSkuDetailsMilestoneFailed(throwable);
+            super.handleShowProductDetailsMilestoneFailed(throwable);
             Timber.e("Failed to load the sku details", throwable);
         }
     }
