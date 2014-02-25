@@ -457,8 +457,6 @@ public class THIABUserInteractor
     {
         throw new IllegalStateException("You cannot change the billing Actor");
     }
-
-
     //</editor-fold>
 
     public AlertDialog popErrorConditional()

@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import com.tradehero.common.billing.exception.BillingException;
 
@@ -14,6 +15,7 @@ public interface BillingLogicHolder<
 {
     String getBillingHolderName(Resources resources);
     Boolean isBillingAvailable();
+    void onActivityResult(int requestCode, int resultCode, Intent data);
     int getUnusedRequestCode();
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);

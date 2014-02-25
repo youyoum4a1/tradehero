@@ -22,4 +22,6 @@ public interface BillingInteractor<
 {
     void setBillingLogicHolder(BillingLogicHolderType billingActor);
     BillingLogicHolderType getBillingLogicHolder();
+
+    Boolean isBillingAvailable();
 }

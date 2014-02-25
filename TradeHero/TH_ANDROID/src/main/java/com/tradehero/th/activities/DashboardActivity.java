@@ -14,9 +14,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.THIABInteractor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -36,13 +34,14 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity, THIABInteractor
+        implements DashboardNavigatorActivity
 {
     private DashboardNavigator navigator;
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    @Inject protected Lazy<THIABLogicHolderFull> thiabLogicHolder;
+    // TODO BillingLogicHolder
+    @Inject protected Lazy<THIABLogicHolder> billingLogicHolder;
 
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
@@ -75,7 +74,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void launchIAB()
     {
-        purchaseRestorer = new THIABPurchaseRestorer(getBillingLogicHolder());
+        purchaseRestorer = new THIABPurchaseRestorer(billingLogicHolder.get());
         purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
             @Override
@@ -167,11 +166,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
-        if (thiabLogicHolder != null)
-        {
-            thiabLogicHolder.get().onDestroy();
-        }
-        thiabLogicHolder = null;
+        billingLogicHolder = null;
         if (navigator != null)
         {
             navigator.onDestroy();
@@ -224,21 +219,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
-    @Override public void setBillingLogicHolder(THIABLogicHolder billingActor)
-    {
-        throw new UnsupportedOperationException("Not implemented"); // You should not use this method
-    }
-
-    @Override public THIABLogicHolder getBillingLogicHolder()
-    {
-        return thiabLogicHolder.get();
-    }
-
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
-        thiabLogicHolder.get().onActivityResult(requestCode, resultCode, data);
+        billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
     }
 }

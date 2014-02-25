@@ -44,13 +44,7 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    @Override public Boolean isBillingAvailable()
-    {
-        return billingAvailable;
-    }
-
-    abstract protected void testBillingAvailable();
-
+    //<editor-fold desc="Request Code Management">
     @Override public int getUnusedRequestCode()
     {
         int retries = MAX_RANDOM_RETRIES;
@@ -75,6 +69,15 @@ abstract public class BaseBillingLogicHolder<
     {
         billingAvailableListeners.remove(requestCode);
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Billing Available">
+    @Override public Boolean isBillingAvailable()
+    {
+        return billingAvailable;
+    }
+
+    abstract protected void testBillingAvailable();
 
     @Override public void registerBillingAvailableListener(int requestCode,
             OnBillingAvailableListener<BillingException> billingAvailableListener)
@@ -113,4 +116,5 @@ abstract public class BaseBillingLogicHolder<
             billingAvailableListeners.remove(requestCode);
         }
     }
+    //</editor-fold>
 }
