@@ -30,6 +30,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     protected THIntentPassedListener parentTHIntentPassedListener;
     protected THIntentPassedListener thIntentPassedListener;
     protected THWebViewClient thWebViewClient;
+    protected THWebChromeClient webChromeClient;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -77,34 +78,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
 
-        WebChromeClient webChromeClient = new WebChromeClient()
-        {
-            @Override public void onProgressChanged(WebView view, int newProgress)
-            {
-                super.onProgressChanged(view, newProgress);
-            }
-
-            @Override public void onReceivedTitle(WebView view, String title)
-            {
-                super.onReceivedTitle(view, title);
-                if (BaseWebViewFragment.this.actionBar != null && view != null) // It may be null if the fragment has already had its view destroyed
-                {
-                    BaseWebViewFragment.this.actionBar.setTitle(view.getTitle());
-                }
-            }
-
-            @Override public void onConsoleMessage(String message, int lineNumber, String sourceID)
-            {
-                Timber.i("%s -- From line %d of %s", message, lineNumber, sourceID);
-            }
-
-            @Override public boolean onConsoleMessage(ConsoleMessage cm)
-            {
-                Timber.i("%s -- From line %d of %s", cm.message(), cm.lineNumber(), cm.sourceId());
-                return true;
-            }
-
-        };
+        webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
 
         this.thIntentPassedListener = new THIntentPassedListener()
@@ -120,13 +94,28 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         webView.setWebViewClient(thWebViewClient);
     }
 
+    protected void onProgressChanged(WebView view, int newProgress)
+    {
+    }
+
     @Override public void onDestroyView()
     {
+        if (this.webChromeClient != null)
+        {
+            // Just to avoid calling back to destroyed fragment
+            this.webChromeClient.setBaseWebViewFragment(null);
+        }
+        this.webChromeClient = null;
         if (this.thWebViewClient != null)
         {
             this.thWebViewClient.setThIntentPassedListener(null);
         }
         this.thWebViewClient = null;
+        if (webView != null)
+        {
+            webView.setWebChromeClient(null);
+        }
+        webView = null;
         this.thIntentPassedListener = null;
         super.onDestroyView();
     }

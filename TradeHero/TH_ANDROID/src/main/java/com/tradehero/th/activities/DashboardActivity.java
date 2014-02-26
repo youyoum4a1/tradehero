@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -57,6 +58,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // request the progress-bar feature for the activity
+        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
 

@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
+import android.app.Activity;
+import android.webkit.WebView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -35,4 +37,13 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     }
     //</editor-fold>
 
+    @Override protected void onProgressChanged(WebView view, int newProgress)
+    {
+        super.onProgressChanged(view, newProgress);
+        Activity activity = getActivity();
+        if (activity != null)
+        {
+            activity.setProgress(newProgress * 100);
+        }
+    }
 }
