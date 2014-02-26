@@ -44,6 +44,7 @@ public class PositionPartialTopView extends LinearLayout
     private TextView stockLastPrice;
     private ImageView marketClose;
     private TextView positionPercent;
+    private TextView positionLastAmountHeader;
     private TextView positionLastAmount;
     private View tradeHistoryButton;
 
@@ -88,6 +89,7 @@ public class PositionPartialTopView extends LinearLayout
         stockLastPrice = (TextView) findViewById(R.id.stock_last_price);
         marketClose = (ImageView) findViewById(R.id.ic_market_close);
         positionPercent = (TextView) findViewById(R.id.position_percentage);
+        positionLastAmountHeader = (TextView) findViewById(R.id.position_last_amount_header);
         positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
         tradeHistoryButton = findViewById(R.id.btn_trade_history);
     }
@@ -115,6 +117,7 @@ public class PositionPartialTopView extends LinearLayout
         if (andDisplay)
         {
             displayPositionPercent();
+            displayPositionLastAmountHeader();
             displayPositionLastAmount();
         }
         if (positionDTO != null)
@@ -186,6 +189,7 @@ public class PositionPartialTopView extends LinearLayout
         displayMarketClose();
 
         displayPositionPercent();
+        displayPositionLastAmountHeader();
         displayPositionLastAmount();
     }
 
@@ -335,6 +339,22 @@ public class PositionPartialTopView extends LinearLayout
             else
             {
                 PositionUtils.setROISinceInception(positionPercent, positionDTO);
+            }
+        }
+    }
+
+    public void displayPositionLastAmountHeader()
+    {
+        if (positionLastAmountHeader != null)
+        {
+            Boolean isOpen = positionDTO == null ? null : positionDTO.isOpen();
+            if (isOpen == null || isOpen)
+            {
+                positionLastAmountHeader.setVisibility(GONE);
+            }
+            else
+            {
+                positionLastAmountHeader.setVisibility(VISIBLE);
             }
         }
     }
