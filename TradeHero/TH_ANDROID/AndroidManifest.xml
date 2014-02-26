@@ -33,7 +33,7 @@
       android:name="com.tradehero.th.permission.C2D_MESSAGE"
       android:protectionLevel="signature" />
   <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE" />
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
   <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
   <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
