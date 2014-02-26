@@ -340,15 +340,20 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null)
             {
-                countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+                countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId(getDefaultLogoResId()));
             }
             else
             {
-                countryLogo.setImageResource(R.drawable.default_image);
+                countryLogo.setImageResource(getDefaultLogoResId());
             }
         }
     }
     //</editor-fold>
+
+    public int getDefaultLogoResId()
+    {
+        return R.drawable.default_image;
+    }
 
     public void loadImage()
     {
@@ -392,17 +397,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                try
-                {
-                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    stockLogo.setImageResource(exchange.logoId);
-                    loadBgImageDelayed();
-                }
-                catch (IllegalArgumentException e)
-                {
-                    Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
-                    loadDefaultImage();
-                }
+                stockLogo.setImageResource(securityCompactDTO.getExchangeLogoId(getDefaultLogoResId()));
+                loadBgImageDelayed();
             }
             else
             {
@@ -419,7 +415,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (stockLogo != null)
         {
-            stockLogo.setImageResource(R.drawable.default_image);
+            stockLogo.setImageResource(getDefaultLogoResId());
         }
         loadBgImageDelayed();
     }
@@ -470,18 +466,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
             {
-                try
-                {
-                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    RequestCreator requestCreator = mPicasso.load(exchange.logoId)
-                            .transform(backgroundTransformation);
-                    resizeBackground(requestCreator, stockBgLogo, null);
-                    stockBgLogo.setVisibility(VISIBLE);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    loadBgDefault();
-                }
+                RequestCreator requestCreator = mPicasso.load(securityCompactDTO.getExchangeLogoId(getDefaultLogoResId()))
+                        .transform(backgroundTransformation);
+                resizeBackground(requestCreator, stockBgLogo, null);
+                stockBgLogo.setVisibility(VISIBLE);
             }
             else
             {
@@ -494,7 +482,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (stockBgLogo != null)
         {
-            stockBgLogo.setImageResource(R.drawable.default_image);
+            stockBgLogo.setImageResource(getDefaultLogoResId());
         }
     }
 

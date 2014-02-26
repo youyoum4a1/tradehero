@@ -121,13 +121,18 @@ public class SecurityCompactDTO extends ExtendedDTO
 
     public int getExchangeLogoId()
     {
+        return getExchangeLogoId(0);
+    }
+
+    public int getExchangeLogoId(int defaultResId)
+    {
         try
         {
             return Exchange.valueOf(exchange).logoId;
         }
         catch (IllegalArgumentException ex)
         {
-            return 0;
+            return defaultResId;
         }
     }
 
