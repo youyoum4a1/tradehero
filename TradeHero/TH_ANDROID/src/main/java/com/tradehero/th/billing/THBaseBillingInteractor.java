@@ -14,8 +14,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.R;
@@ -23,10 +21,6 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -55,10 +49,7 @@ abstract public class THBaseBillingInteractor<
                 PurchaseOrderType,
                 OrderIdType,
                 ProductPurchaseType,
-                BillingExceptionType> &
-            ProductDetailDomainInformer<
-                ProductIdentifierType,
-                ProductDetailType>,
+                BillingExceptionType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,
                 ProductDetailType>,
@@ -126,12 +117,6 @@ abstract public class THBaseBillingInteractor<
         purchaseFinishedListener = createPurchaseFinishedListener();
         purchaseReportedListener = createPurchaseReportedListener();
     }
-
-    protected BillingPurchaseFinishedListenerType purchaseFinishedListener;
-    abstract protected BillingPurchaseFinishedListenerType createPurchaseFinishedListener();
-
-    protected PurchaseReportedListenerType purchaseReportedListener;
-    abstract protected PurchaseReportedListenerType createPurchaseReportedListener();
 
     public void onPause()
     {
@@ -334,22 +319,47 @@ abstract public class THBaseBillingInteractor<
                 Timber.d("handler %s", handler);
                 if (handler != null)
                 {
-                    handler.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            getBillingAlertDialogUtil().popBuyDialog(
-                                    currentActivityHolder.getCurrentActivity(),
-                                    getTHBillingLogicHolder(),
-                                    THBaseBillingInteractor.this,
-                                    skuDomain,
-                                    titleResId,
-                                    runOnPurchaseComplete);
-                        }
-                    });
+                    handler.post(createShowProductDetailRunnable(skuDomain, titleResId,
+                            runOnPurchaseComplete));
                 }
             }
         });
+    }
+
+    protected Runnable createShowProductDetailRunnable(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
+    {
+        return new THBaseBillingInteractShowProductDetailRunnable(skuDomain, titleResId, runOnPurchaseComplete);
+    }
+
+    protected class THBaseBillingInteractShowProductDetailRunnable implements Runnable
+    {
+        final public String skuDomain;
+        final public int titleResId;
+        protected Runnable runOnPurchaseComplete;
+
+        public THBaseBillingInteractShowProductDetailRunnable(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
+        {
+            super();
+            this.skuDomain = skuDomain;
+            this.titleResId = titleResId;
+            this.runOnPurchaseComplete = runOnPurchaseComplete;
+        }
+
+        public void setRunOnPurchaseComplete(Runnable runOnPurchaseComplete)
+        {
+            this.runOnPurchaseComplete = runOnPurchaseComplete;
+        }
+
+        @Override public void run()
+        {
+            getBillingAlertDialogUtil().popBuyDialog(
+                    currentActivityHolder.getCurrentActivity(),
+                    getTHBillingLogicHolder(),
+                    THBaseBillingInteractor.this,
+                    skuDomain,
+                    titleResId,
+                    runOnPurchaseComplete);
+        }
     }
 
     protected Runnable runOnPurchaseComplete;
@@ -363,8 +373,39 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchasing Sequence">
+    protected BillingPurchaseFinishedListenerType purchaseFinishedListener;
+    abstract protected BillingPurchaseFinishedListenerType createPurchaseFinishedListener();
     abstract protected void launchPurchaseSequence(ProductIdentifierType productIdentifier);
     abstract protected void launchPurchaseSequence(PurchaseOrderType purchaseOrder);
+
+    protected class THBaseBillingInteractorOnPurchaseFinishedListener implements BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>
+    {
+        protected final CurrentActivityHolder activityHolder;
+
+        public THBaseBillingInteractorOnPurchaseFinishedListener(final CurrentActivityHolder activityHolder)
+        {
+            super();
+            this.activityHolder = activityHolder;
+        }
+
+        @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+        {
+            haveLogicHolderForget(requestCode);
+            // Children should call report or whatever is relevant
+        }
+
+        @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+        {
+            haveLogicHolderForget(requestCode);
+            runOnPurchaseComplete = null;
+            Timber.e("onPurchaseFailed requestCode %d", requestCode, billingException);
+        }
+    }
 
     protected void launchPurchaseSequence(BillingPurchaserHolderType purchaserHolder, PurchaseOrderType purchaseOrder)
     {
@@ -375,7 +416,43 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Reporting Sequence">
+    protected PurchaseReportedListenerType purchaseReportedListener;
+    abstract protected PurchaseReportedListenerType createPurchaseReportedListener();
     abstract protected void launchReportPurchaseSequence(ProductPurchaseType purchase);
+
+    protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>
+    {
+        protected final CurrentActivityHolder activityHolder;
+
+        public THBaseBillingInteractorOnPurchaseReportedListener(final CurrentActivityHolder activityHolder)
+        {
+            super();
+            this.activityHolder = activityHolder;
+        }
+
+        @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+        {
+            haveLogicHolderForget(requestCode);
+            handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
+            // Children should continue with the sequence
+        }
+
+        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+        {
+            haveLogicHolderForget(requestCode);
+            runOnPurchaseComplete = null;
+            Timber.e("Failed to report to server", error);
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+            getBillingAlertDialogUtil().popFailedToReport(activityHolder.getCurrentActivity());
+        }
+    }
 
     protected void launchReportPurchaseSequence(PurchaseReporterHolderType purchaseReporterHolder, ProductPurchaseType purchase)
     {
@@ -453,70 +530,6 @@ abstract public class THBaseBillingInteractor<
                     });
             progressDialog.setCanceledOnTouchOutside(true);
             progressDialog.setCancelable(true);
-        }
-    }
-
-
-    protected class THBaseBillingInteractorOnPurchaseFinishedListener implements BillingPurchaser.OnPurchaseFinishedListener<
-            ProductIdentifierType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType>
-    {
-        protected final CurrentActivityHolder activityHolder;
-
-        public THBaseBillingInteractorOnPurchaseFinishedListener(final CurrentActivityHolder activityHolder)
-        {
-            super();
-            this.activityHolder = activityHolder;
-        }
-
-        @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
-        {
-            haveLogicHolderForget(requestCode);
-            // Children should call report or whatever is relevant
-        }
-
-        @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
-        {
-            haveLogicHolderForget(requestCode);
-            runOnPurchaseComplete = null;
-            Timber.e("onPurchaseFailed requestCode %d", requestCode, billingException);
-        }
-    }
-
-    protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<
-            ProductIdentifierType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType>
-    {
-        protected final CurrentActivityHolder activityHolder;
-
-        public THBaseBillingInteractorOnPurchaseReportedListener(final CurrentActivityHolder activityHolder)
-        {
-            super();
-            this.activityHolder = activityHolder;
-        }
-
-        @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
-        {
-            haveLogicHolderForget(requestCode);
-            handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
-            // Children should continue with the sequence
-        }
-
-        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
-        {
-            haveLogicHolderForget(requestCode);
-            runOnPurchaseComplete = null;
-            Timber.e("Failed to report to server", error);
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-            getBillingAlertDialogUtil().popFailedToReport(activityHolder.getCurrentActivity());
         }
     }
 }
