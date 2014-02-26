@@ -95,8 +95,12 @@ public class PositionUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.unrealizedPLRefCcy, false, refCurrency);
+            THSignedNumber formattedNumber = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    position.unrealizedPLRefCcy,
+                    true,
+                    refCurrency,
+                    THSignedNumber.TYPE_SIGN_MINUS_ONLY);
             return formattedNumber.toString();
         }
         else
