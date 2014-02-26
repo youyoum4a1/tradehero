@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing;
+package com.tradehero.th.billing.googleplay;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,9 +13,9 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
-public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
+public class IABPurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
-    @Inject public PurchaseRestorerAlertUtil()
+    @Inject public IABPurchaseRestorerAlertUtil()
     {
     }
 

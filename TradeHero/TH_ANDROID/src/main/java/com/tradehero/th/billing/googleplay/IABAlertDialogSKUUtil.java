@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
+import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

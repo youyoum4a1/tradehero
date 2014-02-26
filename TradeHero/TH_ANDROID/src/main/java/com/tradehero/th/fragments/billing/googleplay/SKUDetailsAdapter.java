@@ -17,8 +17,10 @@ abstract public class SKUDetailsAdapter<
 {
     public static final String TAG = SKUDetailsAdapter.class.getSimpleName();
 
-    public SKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public SKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, inflater, layoutResourceId, skuDomain);
     }
+    //</editor-fold>
 }

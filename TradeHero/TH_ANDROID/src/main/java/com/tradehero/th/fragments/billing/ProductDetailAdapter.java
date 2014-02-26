@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -29,11 +28,13 @@ abstract public class ProductDetailAdapter<
 
     protected Comparator<ProductDetailType> productDetailComparator;
     protected Map<ProductIdentifier, Boolean> enabledItems;
+    protected String skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
     {
         super(context, inflater, layoutResourceId);
+        this.skuDomain = skuDomain;
     }
     //</editor-fold>
 
@@ -92,7 +93,15 @@ abstract public class ProductDetailAdapter<
         return getItemViewType(i) == ITEM_TYPE_HEADER ? null : super.getItem(i - 1);
     }
 
-    abstract protected View getHeaderView(int position, View convertView, ViewGroup viewGroup);
+    protected View getHeaderView(int position, View convertView, ViewGroup viewGroup)
+    {
+        ProductDetailQuickDescriptionView
+                quickDescription = convertView instanceof ProductDetailQuickDescriptionView ?
+                (ProductDetailQuickDescriptionView) convertView :
+                (ProductDetailQuickDescriptionView) inflater.inflate(R.layout.store_quick_message, viewGroup, false);
+        quickDescription.linkWithProductDomain(skuDomain, true);
+        return quickDescription;
+    }
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
@@ -133,5 +142,15 @@ abstract public class ProductDetailAdapter<
         }
         Boolean status = enabledItems.get(id);
         return status == null || status;
+    }
+
+    public String getSkuDomain()
+    {
+        return skuDomain;
+    }
+
+    public void setSkuDomain(String skuDomain)
+    {
+        this.skuDomain = skuDomain;
     }
 }

@@ -30,7 +30,6 @@ import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.ShowProductDetailsMilestone;
 import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -73,7 +72,7 @@ public class THIABUserInteractor
     private Runnable runOnPurchaseComplete;
 
     @Inject protected IABAlertDialogSKUUtil iabAlertDialogSKUUtil;
-    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject protected IABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
 
     protected BillingPurchaser.OnPurchaseFinishedListener<
@@ -290,12 +289,12 @@ public class THIABUserInteractor
                         progressDialog.hide();
                     }
 
-                    purchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                             context,
                             consumed,
                             reportFailed,
                             consumeFailed,
-                            purchaseRestorerAlertUtil.createFailedRestoreClickListener(context, new Exception()),
+                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(context, new Exception()),
                             true); // TODO have a better exception
                 }
 
@@ -309,7 +308,7 @@ public class THIABUserInteractor
                     Timber.e("onPurchaseRestoreFailed", iabException);
                     if (iabException instanceof Exception)
                     {
-                        purchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) iabException);
+                        IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) iabException);
                     }
                 }
             };

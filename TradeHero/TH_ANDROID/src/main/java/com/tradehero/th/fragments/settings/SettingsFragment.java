@@ -33,10 +33,10 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.googleplay.IABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -79,7 +79,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
     @Inject LruMemFileCache lruCache;
-    @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject IABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
 
@@ -180,12 +180,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished3");
-                purchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         consumed,
                         reportFailed,
                         consumeFailed,
-                        purchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
+                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
             }
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
