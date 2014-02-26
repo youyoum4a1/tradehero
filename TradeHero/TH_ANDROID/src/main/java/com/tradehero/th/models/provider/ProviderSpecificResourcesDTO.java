@@ -8,6 +8,7 @@ public class ProviderSpecificResourcesDTO
     public static final String TAG = ProviderSpecificResourcesDTO.class.getSimpleName();
 
     public int mainCompetitionFragmentTitleResId;
+    public int notJoinedBannerImageResId;
     public int helpVideoListFragmentTitleResId;
     public int helpVideoLinkBackgroundResId;
     public int helpVideoLinkTextColourResId;
