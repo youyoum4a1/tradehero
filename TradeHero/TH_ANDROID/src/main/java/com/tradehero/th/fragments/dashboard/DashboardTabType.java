@@ -17,9 +17,9 @@ public enum DashboardTabType
     PORTFOLIO(R.string.dashboard_portfolio, R.drawable.portfolio_selector, PortfolioListFragment.class),
     STORE(R.string.dashboard_store, R.drawable.store_selector, StoreScreenFragment.class);
 
+    public final int viewResId;
     public final int stringResId;
     public final int drawableResId;
-    public final int viewResId;
 
     public final Class<? extends Fragment> fragmentClass;
 

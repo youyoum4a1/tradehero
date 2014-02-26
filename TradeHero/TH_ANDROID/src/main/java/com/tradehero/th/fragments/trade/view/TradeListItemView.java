@@ -177,7 +177,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
             this.averagePriceTextView.setText(avgPriceString);
         }
 
-        if (this.realizedPLTextView != null && trade != null)
+        if (this.realizedPLTextView != null && trade != null && portfolioDTO != null)
         {
             String realizedPLString = String.format("%s %+,.2f", portfolioDTO.getNiceCurrency(), trade.realized_pl_after_trade);
             this.realizedPLTextView.setText(realizedPLString);
@@ -195,7 +195,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
             {
                 this.unrealizedPLTextView.setText(R.string.na);
             }
-            else
+            else if (portfolioDTO != null)
             {
                 String realizedPLString = String.format("%s %+,.2f", portfolioDTO.getNiceCurrency(), position.unrealizedPLRefCcy);
                 this.unrealizedPLTextView.setText(realizedPLString);

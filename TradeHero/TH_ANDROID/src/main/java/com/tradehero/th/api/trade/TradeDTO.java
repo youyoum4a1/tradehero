@@ -13,8 +13,12 @@ public class TradeDTO implements DTO
     public Date date_time;
     public double exchange_rate;
     public int quantity_after_trade;
+
+    // This price is a refCcy price
     public double average_price_after_trade;
+    // This price is a refCcy price
     public double realized_pl_after_trade;
+
     public String commentText;
 
     public boolean isLastTrade;
