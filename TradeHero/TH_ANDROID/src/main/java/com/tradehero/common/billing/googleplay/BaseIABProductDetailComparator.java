@@ -5,7 +5,9 @@ import java.util.Comparator;
 /**
  * Created by xavier on 2/10/14.
  */
-public class BaseIABProductDetailComparator<BaseIABProductDetailType extends BaseIABProductDetail> implements Comparator<BaseIABProductDetailType>
+public class BaseIABProductDetailComparator<
+        BaseIABProductDetailType extends BaseIABProductDetail>
+        implements Comparator<BaseIABProductDetailType>
 {
     public static final String TAG = BaseIABProductDetailComparator.class.getSimpleName();
 

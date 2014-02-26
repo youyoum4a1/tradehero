@@ -1,7 +1,6 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -21,7 +20,7 @@ public interface THBillingInteractor<
             ProductPurchaseType extends ProductPurchase<
                     ProductIdentifierType,
                     OrderIdType>,
-            BillingLogicHolderType extends BillingLogicHolder<
+            THBillingLogicHolderType extends THBillingLogicHolder<
                     ProductIdentifierType,
                     ProductDetailType,
                     PurchaseOrderType,
@@ -35,14 +34,16 @@ public interface THBillingInteractor<
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
-            BillingLogicHolderType,
+            THBillingLogicHolderType,
             BillingExceptionType>
 {
-    public static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";
-    public static final String DOMAIN_FOLLOW_CREDITS = "followCredits";
-    public static final String DOMAIN_STOCK_ALERTS = "stockAlerts";
-    public static final String DOMAIN_RESET_PORTFOLIO = "resetPortfolio";
+    static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";
+    static final String DOMAIN_FOLLOW_CREDITS = "followCredits";
+    static final String DOMAIN_STOCK_ALERTS = "stockAlerts";
+    static final String DOMAIN_RESET_PORTFOLIO = "resetPortfolio";
 
-    void registerFollowRequestedListener(OnFollowResultListener followRequestedListener);
-    void followHero(UserBaseKey userBaseKey);
+    THBillingLogicHolderType getTHBillingLogicHolder();
+
+    //void registerFollowRequestedListener(OnFollowResultListener followRequestedListener);
+    //void followHero(UserBaseKey userBaseKey);
 }

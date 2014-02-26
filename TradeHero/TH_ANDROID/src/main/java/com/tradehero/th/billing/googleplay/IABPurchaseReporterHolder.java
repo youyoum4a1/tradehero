@@ -23,6 +23,6 @@ public interface IABPurchaseReporterHolder<
             IABOrderIdType,
             IABPurchaseType,
             OnPurchaseReportedListenerType,
-        IABExceptionType>
+            IABExceptionType>
 {
 }

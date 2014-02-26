@@ -1,25 +1,43 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
+import android.view.LayoutInflater;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.fragments.billing.StoreSKUDetailView;
 import com.tradehero.th.fragments.billing.googleplay.SKUDetailView;
 import com.tradehero.th.fragments.billing.googleplay.SKUDetailsAdapter;
+import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
-public class IABAlertDialogUtil extends BillingAlertDialogUtil
+public class IABAlertDialogUtil extends BillingAlertDialogUtil<
+        IABSKU,
+        THIABProductDetail,
+        THIABProductDetailDomainInformer,
+        StoreSKUDetailView,
+        THSKUDetailsAdapter>
 {
     public static final String TAG = IABAlertDialogUtil.class.getSimpleName();
 
     @Inject public ActivityUtil activityUtil;
+    @Inject THIABPurchaseCache thiabPurchaseCache;
 
     @Inject public IABAlertDialogUtil()
     {
@@ -77,7 +95,7 @@ public class IABAlertDialogUtil extends BillingAlertDialogUtil
     }
 
     public <SKUDetailsType extends BaseIABProductDetail>
-        AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
+    AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
     {
         return popWithOkCancelButton(context,
                 skuDetails == null ?
@@ -124,13 +142,6 @@ public class IABAlertDialogUtil extends BillingAlertDialogUtil
                 R.string.store_billing_send_intent_error_cancel);
     }
 
-    public AlertDialog popFailedToReport(final Context context)
-    {
-        return popWithNegativeButton(context, R.string.store_billing_report_api_error_window_title,
-                R.string.store_billing_report_api_error_window_description,
-                R.string.store_billing_report_api_error_cancel);
-    }
-
     public AlertDialog popFailedToLoadRequiredInfo(final Context context)
     {
         return popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
@@ -160,43 +171,6 @@ public class IABAlertDialogUtil extends BillingAlertDialogUtil
         Intent emailIntent = VersionUtils.getSupportEmailIntent(VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
         activityUtil.sendSupportEmail(context, emailIntent);
-    }
-
-    public <SKUDetailsType extends BaseIABProductDetail, SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
-    AlertDialog popBuyDialog(
-            final Context context,
-            final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
-            int titleResId,
-            final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener,
-            final Runnable runOnPurchaseComplete)
-    {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(titleResId)
-                .setIcon(R.drawable.th_app_logo)
-                .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        if (clickListener != null)
-                        {
-                            clickListener.onDialogSKUDetailsClicked(dialogInterface, i, (SKUDetailsType) detailsAdapter.getItem(i), runOnPurchaseComplete);
-                        }
-                        dialogInterface.cancel();
-                    }
-                })
-                .setCancelable(true);
-                //.setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel, new DialogInterface.OnClickListener()
-                //{
-                //    public void onClick(DialogInterface dialog, int id)
-                //    {
-                //        dialog.cancel();
-                //    }
-                //});
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-        alertDialog.setCanceledOnTouchOutside(true);
-        return alertDialog;
     }
 
     public AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
@@ -235,8 +209,33 @@ public class IABAlertDialogUtil extends BillingAlertDialogUtil
                 okClickListener);
     }
 
-    public static interface OnDialogSKUDetailsClickListener<BaseIABProductDetailsType extends BaseIABProductDetail>
+    //<editor-fold desc="SKU related">
+    @Override protected THSKUDetailsAdapter createProductDetailAdapter(Activity activity,
+            LayoutInflater layoutInflater, String skuDomain)
     {
-        void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, BaseIABProductDetailsType skuDetails, Runnable runOnPurchaseComplete);
+        return new THSKUDetailsAdapter(activity, layoutInflater, skuDomain);
     }
+
+    @Override protected Comparator<THIABProductDetail> createProductDetailComparator()
+    {
+        return new BaseIABProductDetailsDecreasingPriceComparator<>();
+    }
+
+    @Override public HashMap<ProductIdentifier, Boolean> getEnabledItems()
+    {
+        HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
+
+        for (IABSKU key : thiabPurchaseCache.getKeys())
+        {
+            Timber.d("Disabling %s", key);
+            enabledItems.put(key, false);
+        }
+
+        if (enabledItems.size() == 0)
+        {
+            enabledItems = null;
+        }
+        return enabledItems;
+    }
+    //</editor-fold>
 }
