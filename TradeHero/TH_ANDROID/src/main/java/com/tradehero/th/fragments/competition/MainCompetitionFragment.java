@@ -37,7 +37,6 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
@@ -340,8 +339,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         this.webViewFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -375,13 +374,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
         {
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getRulesPage(providerId));
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getRulesPage(providerId));
         }
         else
         {
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getTermsPage(providerId));
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getTermsPage(providerId));
         }
-        getNavigator().pushFragment(WebViewFragment.class, args);
+        getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
     }
     //</editor-fold>
 
