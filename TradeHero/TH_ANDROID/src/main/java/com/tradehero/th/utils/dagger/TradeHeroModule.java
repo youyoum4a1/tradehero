@@ -30,6 +30,7 @@ import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
@@ -277,6 +278,8 @@ import javax.inject.Singleton;
 
                         UserFriendDTOView.class,
                         FriendListLoader.class,
+
+                        CompetitionWebViewFragment.class,
                 },
         staticInjections =
                 {

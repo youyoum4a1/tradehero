@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.competition;
 
-import android.content.Intent;
-import android.net.Uri;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
