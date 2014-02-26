@@ -235,6 +235,8 @@ import javax.inject.Singleton;
 
                         WebViewFragment.class,
 
+                        CompetitionWebViewFragment.class,
+
                         IABServiceConnector.class,
                         IABBillingInventoryFetcher.class,
                         THIABPurchaseFetcher.class,

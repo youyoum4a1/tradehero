@@ -28,9 +28,10 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -62,7 +63,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
 
     private THIntentPassedListener thIntentPassedListener;
-    private WebViewFragment webFragment;
+    private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private AdapterView.OnItemClickListener leaderboardCommunityListOnClickListener;
     private int currentDisplayedChildLayoutId;
@@ -297,11 +298,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         else if (providerDTO != null)
         {
             Bundle args = new Bundle();
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-            webFragment = (WebViewFragment) getNavigator().pushFragment(WebViewFragment.class, args);
+            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
