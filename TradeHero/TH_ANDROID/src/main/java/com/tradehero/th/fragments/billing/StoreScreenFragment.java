@@ -16,7 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -33,7 +33,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserId currentUserId;
-    @Inject IABAlertDialogUtil iabAlertDialogUtil;
+    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
@@ -179,7 +179,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void popPleaseWait()
     {
-        iabAlertDialogUtil.popWithNegativeButton(getActivity(),
+        THIABAlertDialogUtil.popWithNegativeButton(getActivity(),
                 R.string.error_incomplete_info_title,
                 R.string.error_incomplete_info_message,
                 R.string.error_incomplete_info_cancel);

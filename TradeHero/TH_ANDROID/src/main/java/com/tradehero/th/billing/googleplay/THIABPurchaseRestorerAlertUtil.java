@@ -5,17 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.GooglePlayUtils;
-import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
-public class IABPurchaseRestorerAlertUtil extends IABAlertDialogUtil
+public class THIABPurchaseRestorerAlertUtil extends THIABAlertDialogUtil
 {
-    @Inject public IABPurchaseRestorerAlertUtil()
+    @Inject public THIABPurchaseRestorerAlertUtil()
     {
     }
 

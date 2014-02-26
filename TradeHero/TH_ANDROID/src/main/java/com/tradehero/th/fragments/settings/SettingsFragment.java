@@ -33,7 +33,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.IABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
@@ -79,7 +79,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
     @Inject LruMemFileCache lruCache;
-    @Inject IABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
 

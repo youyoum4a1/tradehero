@@ -38,7 +38,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,6 @@ public class THIABUserInteractor
         THIABOrderId,
         THIABPurchase,
         THIABLogicHolder,
-        THIABProductDetailDomainInformer,
         StoreSKUDetailView,
         THSKUDetailsAdapter,
         BillingPurchaser.OnPurchaseFinishedListener<
@@ -89,8 +87,8 @@ public class THIABUserInteractor
     protected THIABPurchaseRestorer purchaseRestorer;
     protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
 
-    @Inject protected IABAlertDialogUtil iabAlertDialogUtil;
-    @Inject protected IABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject protected THIABAlertDialogUtil THIABAlertDialogUtil;
+    @Inject protected THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
 
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
@@ -146,7 +144,7 @@ public class THIABUserInteractor
                     {
                         progressDialog.hide();
                     }
-                    iabAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(activityHolder.getCurrentContext(), exception);
+                    THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(activityHolder.getCurrentContext(), exception);
                 }
 
                 @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
@@ -246,9 +244,9 @@ public class THIABUserInteractor
     //</editor-fold>
 
 
-    @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABProductDetailDomainInformer, StoreSKUDetailView, THSKUDetailsAdapter> getBillingAlertDialogUtil()
+    @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, StoreSKUDetailView, THSKUDetailsAdapter> getBillingAlertDialogUtil()
     {
-        return iabAlertDialogUtil;
+        return THIABAlertDialogUtil;
     }
 
     //<editor-fold desc="Inventory Preparation">
@@ -673,33 +671,33 @@ public class THIABUserInteractor
             super.onPurchaseFailed(requestCode, purchaseOrder, exception);
             if (exception instanceof IABVerificationFailedException)
             {
-                iabAlertDialogUtil.popVerificationFailed(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popVerificationFailed(activityHolder.getCurrentActivity());
             }
             else if (exception instanceof IABUserCancelledException)
             {
-                iabAlertDialogUtil.popUserCancelled(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popUserCancelled(activityHolder.getCurrentActivity());
             }
             else if (exception instanceof IABBadResponseException)
             {
-                iabAlertDialogUtil.popBadResponse(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popBadResponse(activityHolder.getCurrentActivity());
             }
             else if (exception instanceof IABRemoteException)
             {
-                iabAlertDialogUtil.popRemoteError(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popRemoteError(activityHolder.getCurrentActivity());
             }
             else if (exception instanceof IABItemAlreadyOwnedException)
             {
-                iabAlertDialogUtil.popSKUAlreadyOwned(activityHolder.getCurrentActivity(),
+                THIABAlertDialogUtil.popSKUAlreadyOwned(activityHolder.getCurrentActivity(),
                         thiabProductDetailCache.get()
                                 .get(purchaseOrder.getProductIdentifier()));
             }
             else if (exception instanceof IABSendIntentException)
             {
-                iabAlertDialogUtil.popSendIntent(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popSendIntent(activityHolder.getCurrentActivity());
             }
             else
             {
-                iabAlertDialogUtil.popUnknownError(activityHolder.getCurrentActivity());
+                THIABAlertDialogUtil.popUnknownError(activityHolder.getCurrentActivity());
             }
         }
     }

@@ -55,8 +55,8 @@ abstract public class THBaseBillingInteractor<
                 PurchaseOrderType,
                 OrderIdType,
                 ProductPurchaseType,
-                BillingExceptionType>,
-        ProductDetailDomainInformerType extends ProductDetailDomainInformer<
+                BillingExceptionType> &
+            ProductDetailDomainInformer<
                 ProductIdentifierType,
                 ProductDetailType>,
         ProductDetailViewType extends ProductDetailView<
@@ -168,7 +168,7 @@ abstract public class THBaseBillingInteractor<
     abstract protected BillingAlertDialogUtil<
         ProductIdentifierType,
         ProductDetailType,
-        ProductDetailDomainInformerType,
+        THBillingLogicHolderType,
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
 
@@ -338,14 +338,13 @@ abstract public class THBaseBillingInteractor<
                     {
                         @Override public void run()
                         {
-                            // TODO fix
-                    //        getBillingAlertDialogUtil().popBuyDialog(
-                    //                currentActivityHolder.getCurrentActivity(),
-                    //                getTHBillingLogicHolder(),
-                    //                THBaseBillingInteractor.this,
-                    //                skuDomain,
-                    //                titleResId,
-                    //                runOnPurchaseComplete);
+                            getBillingAlertDialogUtil().popBuyDialog(
+                                    currentActivityHolder.getCurrentActivity(),
+                                    getTHBillingLogicHolder(),
+                                    THBaseBillingInteractor.this,
+                                    skuDomain,
+                                    titleResId,
+                                    runOnPurchaseComplete);
                         }
                     });
                 }

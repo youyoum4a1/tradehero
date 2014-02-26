@@ -14,7 +14,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.IABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
@@ -51,7 +51,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
-    @Inject IABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override public void onCreate(Bundle savedInstanceState)

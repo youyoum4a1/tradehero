@@ -14,32 +14,28 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.fragments.billing.StoreSKUDetailView;
-import com.tradehero.th.fragments.billing.googleplay.SKUDetailView;
-import com.tradehero.th.fragments.billing.googleplay.SKUDetailsAdapter;
 import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
-public class IABAlertDialogUtil extends BillingAlertDialogUtil<
+public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
-        THIABProductDetailDomainInformer,
+        THIABLogicHolder,
         StoreSKUDetailView,
         THSKUDetailsAdapter>
 {
-    public static final String TAG = IABAlertDialogUtil.class.getSimpleName();
+    public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
 
     @Inject public ActivityUtil activityUtil;
     @Inject THIABPurchaseCache thiabPurchaseCache;
 
-    @Inject public IABAlertDialogUtil()
+    @Inject public THIABAlertDialogUtil()
     {
         super();
     }

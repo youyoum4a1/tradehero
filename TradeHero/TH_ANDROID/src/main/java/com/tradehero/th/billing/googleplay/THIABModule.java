@@ -23,9 +23,9 @@ public class THIABModule
 {
     public static final String TAG = THIABModule.class.getSimpleName();
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(IABAlertDialogUtil iabAlertDialogUtil)
+    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
-        return iabAlertDialogUtil;
+        return THIABAlertDialogUtil;
     }
 
     @Provides @Singleton ProductDetailCache provideProductDetailCache(THIABProductDetailCache productDetailCache)
