@@ -149,7 +149,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void linkWith(HelpVideoIdList helpVideoIds, boolean andDisplay)
     {
-        helpVideoIds = helpVideoIds;
+        this.helpVideoIds = helpVideoIds;
         if (andDisplay)
         {
             updateAdapter();
