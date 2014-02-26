@@ -280,8 +280,6 @@ import javax.inject.Singleton;
 
                         UserFriendDTOView.class,
                         FriendListLoader.class,
-
-                        CompetitionWebViewFragment.class,
                 },
         staticInjections =
                 {
