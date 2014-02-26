@@ -6,10 +6,11 @@ import android.view.View;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -23,6 +24,7 @@ public class LeaderboardCompetitionView extends ImageView
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     private ProviderId providerId;
     private ProviderDTO providerDTO;
 
@@ -69,12 +71,12 @@ public class LeaderboardCompetitionView extends ImageView
         {
             setVisibility(View.VISIBLE);
 
-            // TODO this is a hack, to overcome the problem of not possible to get 9-patch image from server side
-            if (providerDTO.id == 22 && !providerDTO.isUserEnrolled) // phillips competition
+            ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
+            if (!providerDTO.isUserEnrolled &&
+                    providerSpecificResourcesDTO != null &&
+                    providerSpecificResourcesDTO.notJoinedBannerImageResId != 0)
             {
-                picasso.get()
-                        .load(R.drawable.lb_philip_macquarie_large_notjoined)
-                        .into(this);
+                setImageResource(providerSpecificResourcesDTO.notJoinedBannerImageResId);
             }
             else
             {
