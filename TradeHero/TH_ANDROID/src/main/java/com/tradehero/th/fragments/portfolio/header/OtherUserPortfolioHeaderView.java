@@ -138,27 +138,30 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void configureUserViews()
     {
-        if (this.usernameTextView != null)
+        if (userProfileDTO != null)
         {
-            this.usernameTextView.setText(this.userProfileDTO.displayName);
-        }
+            if (usernameTextView != null)
+            {
+                usernameTextView.setText(userProfileDTO.displayName);
+            }
 
-        if (this.userImageView != null)
-        {
-            picasso.load(this.userProfileDTO.picture)
-                    .transform(peopleIconTransformation)
-                    .into(this.userImageView, new Callback()
-                    {
-                        @Override public void onSuccess()
+            if (this.userImageView != null)
+            {
+                picasso.load(this.userProfileDTO.picture)
+                        .transform(peopleIconTransformation)
+                        .into(this.userImageView, new Callback()
                         {
+                            @Override public void onSuccess()
+                            {
 
-                        }
+                            }
 
-                        @Override public void onError()
-                        {
-                            displayDefaultUserImage();
-                        }
-                    });
+                            @Override public void onError()
+                            {
+                                displayDefaultUserImage();
+                            }
+                        });
+            }
         }
     }
 
