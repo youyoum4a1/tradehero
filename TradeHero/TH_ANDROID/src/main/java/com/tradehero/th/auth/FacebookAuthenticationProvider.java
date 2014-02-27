@@ -193,7 +193,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Activity activity = this.baseActivity.get();
-        if (activity != null)
+        if (activity != null && session != null)
         {
             this.session.onActivityResult(activity, requestCode, resultCode, data);
         }
