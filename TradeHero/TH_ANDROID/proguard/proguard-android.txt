@@ -124,7 +124,9 @@
   public void set*(***);
   public *** get*();
 }
--keep public class com.tradehero.th.network.service.** { *; }
+-keep public interface com.tradehero.th.network.service.** { *; }
+-keep public class com.tradehero.th.billing.** { *; }
+-keep public class com.tradehero.common.billing.** { *; }
 
 # We actually use public field instead of getter and setter for it.
 -keep public class com.tradehero.th.api.** {
