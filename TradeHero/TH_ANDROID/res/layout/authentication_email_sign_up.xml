@@ -23,9 +23,7 @@
       android:focusableInTouchMode="true"
       android:gravity="top">
 
-    <include
-        android:id="@+id/profile_info"
-        layout="@layout/profile_info"/>
+    <include layout="@layout/profile_info"/>
 
     <Button
         android:id="@+id/authentication_sign_up_button"

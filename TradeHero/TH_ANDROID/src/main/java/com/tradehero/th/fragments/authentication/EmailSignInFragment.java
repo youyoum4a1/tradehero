@@ -27,8 +27,6 @@ import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
-    private final static String TAG = EmailSignInFragment.class.getName();
-
     private SelfValidatedText email;
     private ValidatedPasswordText password;
     private TextView forgotPasswordLink;
