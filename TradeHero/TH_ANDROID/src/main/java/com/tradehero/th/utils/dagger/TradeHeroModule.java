@@ -8,13 +8,13 @@ import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
+import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
@@ -24,7 +24,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -86,6 +85,7 @@ import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
+import com.tradehero.th.fragments.trade.view.TradeQuantityView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -161,6 +161,7 @@ import javax.inject.Singleton;
                         BuySellFragment.class,
                         BuySellConfirmFragment.class,
                         BuySellConfirmFragment.BuySellAsyncTask.class,
+                        TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
@@ -253,7 +254,6 @@ import javax.inject.Singleton;
                         BaseIABLogicHolder.AvailabilityTester.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
-                        PositionDTOCompactList.class,
                         UserProfileRetrievedMilestone.class,
                         PurchaseRestorerRequiredMilestone.class,
                         THIABUserInteractor.class,

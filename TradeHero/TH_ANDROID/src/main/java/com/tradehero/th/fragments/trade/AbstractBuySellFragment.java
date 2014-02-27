@@ -11,6 +11,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -19,7 +22,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -48,10 +50,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject SecurityPositionDetailDTOUtil securityPositionDetailDTOUtil;
+    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
+    protected PositionDTOCompactList positionDTOCompactList;
+    protected PortfolioCompactDTO portfolioCompactDTO;
     protected boolean querying = false;
     protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
@@ -60,7 +66,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
-    @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -96,11 +101,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             if (args.containsKey(BUNDLE_KEY_QUANTITY_BUY))
             {
-                mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY);
+                linkWithBuyQuantity(args.getInt(BUNDLE_KEY_QUANTITY_BUY), true);
             }
             if (args.containsKey(BUNDLE_KEY_QUANTITY_SELL))
             {
-                mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL);
+                linkWithSellQuantity(args.getInt(BUNDLE_KEY_QUANTITY_SELL), true);
             }
 
             Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
@@ -115,7 +120,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         // Prevent reuse of previous values when changing securities
         securityCompactDTO = null;
-        securityPositionDetailDTO = null;
         quoteDTO = null;
         freshQuoteListener = createFreshQuoteListener();
     }
@@ -192,7 +196,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroyView()
     {
         detachFetchPositionDetailTask();
-
         detachFetchUserProfileTask();
 
         freshQuoteListener = null;
@@ -201,8 +204,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         securityPositionDetailCacheListener = null;
         userProfileCacheListener = null;
@@ -239,17 +241,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return userProfileDTOUtil.getMaxPurchasableShares(this.userProfileDTO, this.quoteDTO);
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(this.portfolioCompactDTO, this.quoteDTO);
     }
 
     public Integer getMaxSellableShares()
     {
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
+        if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null && positionDTOCompactList != null)
         {
-            return SecurityPositionDetailDTOUtil.getMaxSellableShares(this.securityPositionDetailDTO, this.quoteDTO,
-                    getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO
-            );
+            return positionDTOCompactList.getMaxSellableShares(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO);
         }
         return 0;
     }
@@ -326,9 +328,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 securityId.securitySymbol,
                 securityCompactDTO.currencyDisplay,
                 quoteDTO.ask,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere else
+                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
                 SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere else
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere else
+                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
                 getTotalCostForBuy());
     }
 
@@ -346,9 +348,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 securityId.securitySymbol,
                 securityCompactDTO.currencyDisplay,
                 quoteDTO.bid,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
+                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
                 SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
+                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
                 getNetProceedsForSell());
     }
 
@@ -356,7 +358,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         this.securityId = securityId;
         this.securityCompactDTO = null;
-        this.securityPositionDetailDTO = null;
 
         if (securityId == null)
         {
@@ -402,25 +403,29 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
-        if (!securityPositionDetailDTO.getSecurityId().equals(this.securityId))
-        {
-            throw new IllegalArgumentException("This security compact is not for " + this.securityId);
-        }
-
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-
         if (securityPositionDetailDTO != null)
         {
             linkWith(securityPositionDetailDTO.security, andDisplay);
+            linkWith(securityPositionDetailDTO.positions, andDisplay);
         }
         else
         {
             linkWith((SecurityCompactDTO) null, andDisplay);
+            linkWith((PositionDTOCompactList) null, andDisplay);
         }
 
         if (andDisplay)
         {
             // Nothing to do in this class
+        }
+    }
+
+    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    {
+        this.positionDTOCompactList = positionDTOCompacts;
+        if (andDisplay)
+        {
+
         }
     }
 
@@ -440,6 +445,67 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             // Nothing to do in this class
         }
+    }
+
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        this.portfolioCompactDTO = portfolioCompactDTO;
+        if (andDisplay)
+        {
+            // TODO slider and max purchasable shares
+        }
+    }
+
+    protected void linkWithBuyOrSellQuantity(Integer newQuantity, boolean andDisplay)
+    {
+        if (isTransactionTypeBuy)
+        {
+            linkWithBuyQuantity(newQuantity, andDisplay);
+        }
+        else
+        {
+            linkWithSellQuantity(newQuantity, andDisplay);
+        }
+    }
+
+    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    {
+        this.mBuyQuantity = clampedBuyQuantity(buyQuantity);
+    }
+
+    protected Integer clampedBuyQuantity(Integer candidate)
+    {
+        Integer maxPurchasable = getMaxPurchasableShares();
+        if (candidate == null || maxPurchasable == null)
+        {
+            return candidate;
+        }
+        return Math.min(candidate, maxPurchasable);
+    }
+
+    protected void clampBuyQuantity(boolean andDisplay)
+    {
+        linkWithBuyQuantity(mBuyQuantity, andDisplay);
+    }
+
+    protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
+    {
+        this.mSellQuantity = clampedSellQuantity(sellQuantity);
+    }
+
+    protected Integer clampedSellQuantity(Integer candidate)
+    {
+        Integer maxSellable = getMaxSellableShares();
+        if (candidate == null || maxSellable == null)
+        {
+            return candidate;
+        }
+        return Math.max(candidate, maxSellable);
+    }
+
+    protected void clampSellQuantity(boolean andDisplay)
+    {
+        linkWithSellQuantity(mSellQuantity, andDisplay);
     }
 
     protected void prepareFreshQuoteHolder()

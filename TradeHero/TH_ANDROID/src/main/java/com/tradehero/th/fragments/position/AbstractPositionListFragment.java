@@ -306,21 +306,21 @@ abstract public class AbstractPositionListFragment<
         super.onDestroyView();
     }
 
-    public void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
+    public void linkWith(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
-        this.ownedPortfolioId = ownedPortfolioId;
+        this.ownedPortfolioId = purchaseApplicablePortfolioId;
         this.portfolioDTO = null;
         this.userProfileDTO = null;
 
         detachPortfolioTask();
         detachUserProfileTask();
-        if (ownedPortfolioId != null)
+        if (purchaseApplicablePortfolioId != null)
         {
-            fetchPortfolioDTOTask = createPortfolioFetchTask(ownedPortfolioId);
+            fetchPortfolioDTOTask = createPortfolioFetchTask(purchaseApplicablePortfolioId);
             fetchPortfolioDTOTask.execute();
-            if (ownedPortfolioId.userId != null)
+            if (purchaseApplicablePortfolioId.userId != null)
             {
-                fetchUserProfileTask = createUserProfileFetchTask(ownedPortfolioId.getUserBaseKey());
+                fetchUserProfileTask = createUserProfileFetchTask(purchaseApplicablePortfolioId.getUserBaseKey());
                 fetchUserProfileTask.execute();
             }
         }

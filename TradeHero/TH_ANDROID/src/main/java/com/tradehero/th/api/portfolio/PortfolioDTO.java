@@ -13,7 +13,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public double initialCash;
     public Date creationDate;
     public String description;
-    public String Currency;
 
     public Double roiSinceInception;
     public Double roiSinceInceptionAnnualized;
@@ -39,9 +38,9 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     @JsonIgnore
     public String getNiceCurrency()
     {
-        if (Currency != null && !Currency.isEmpty())
+        if (currencyDisplay != null && !currencyDisplay.isEmpty())
         {
-            return Currency;
+            return currencyDisplay;
         }
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
@@ -66,7 +65,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", initialCash=" + initialCash +
                 ", creationDate=" + creationDate +
                 ", description='" + description + '\'' +
-                ", Currency='" + Currency + '\'' +
                 ", roiSinceInception=" + roiSinceInception +
                 ", roiSinceInceptionAnnualized=" + roiSinceInceptionAnnualized +
                 ", plSinceInception=" + plSinceInception +

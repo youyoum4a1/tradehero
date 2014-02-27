@@ -1,7 +1,9 @@
 package com.tradehero.th.api.portfolio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:05 PM Copyright (c) TradeHero */
@@ -21,6 +23,9 @@ public class PortfolioCompactDTO implements DTO
     public int closedPositionsCount;
     public int watchlistPositionsCount;
     public Date markingAsOfUtc;
+    public String currencyISO;
+    public String currencyDisplay;
+    public Double refCcyToUsdRate;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -50,7 +55,7 @@ public class PortfolioCompactDTO implements DTO
 
     @Override public int hashCode()
     {
-        return new Integer(id).hashCode();
+        return Integer.valueOf(id).hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -64,7 +69,26 @@ public class PortfolioCompactDTO implements DTO
         {
             return false;
         }
-        return new Integer(id).equals(other.id);
+        return Integer.valueOf(id).equals(other.id);
+    }
+
+    @JsonIgnore public double getCashBalanceUsd()
+    {
+        return cashBalance * getProperRefCcyToUsdRate();
+    }
+
+    @JsonIgnore public String getCurrencyDisplayOrUsd()
+    {
+        if (currencyDisplay != null)
+        {
+            return currencyDisplay;
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+    }
+
+    @JsonIgnore public double getProperRefCcyToUsdRate()
+    {
+        return refCcyToUsdRate == null ? 1 : refCcyToUsdRate;
     }
 
     @Override public String toString()
@@ -82,6 +106,8 @@ public class PortfolioCompactDTO implements DTO
                 ", closedPositionsCount=" + closedPositionsCount +
                 ", watchlistPositionsCount=" + watchlistPositionsCount +
                 ", markingAsOfUtc=" + markingAsOfUtc +
+                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", refCcyToUsdRate=" + refCcyToUsdRate +
                 '}';
     }
 }

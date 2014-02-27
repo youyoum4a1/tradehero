@@ -32,11 +32,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.AbstractSequentialTransformation;
-import com.tradehero.common.graphics.FastBlurTransformation;
-import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedCornerTransformation;
-import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -46,6 +41,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -66,6 +62,8 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.trade.view.TradeQuantityView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
+import com.tradehero.th.models.graphics.ForSecurityItemBackground;
+import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
@@ -119,9 +117,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.btn_watch_list) protected ImageView mBtnWatchlist;
 
     @Inject PortfolioCache portfolioCache;
+    @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -145,8 +143,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected SecurityIdList watchedList;
 
-    private Transformation foregroundTransformation;
-    private Transformation backgroundTransformation;
+    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
+    @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -273,26 +271,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mBottomPagerIndicator != null && mBottomViewPager != null)
         {
             mBottomPagerIndicator.setViewPager(mBottomViewPager, 0);
-        }
-
-        if (foregroundTransformation == null)
-        {
-            foregroundTransformation = new WhiteToTransparentTransformation();
-        }
-        if (backgroundTransformation == null)
-        {
-            backgroundTransformation = new AbstractSequentialTransformation()
-            {
-                @Override public String key()
-                {
-                    return "toRoundedGaussianGrayscale11";
-                }
-            };
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation(picasso));
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
-                    getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                    getResources().getColor(R.color.black)));
         }
     }
 
@@ -497,9 +475,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.linkWith(securityId, andDisplay);
 
-        detachWatchlistFetchTask();
-        this.userWatchlistPositionCacheFetchTask = userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(), userWatchlistPositionCacheListener);
-        this.userWatchlistPositionCacheFetchTask.execute();
+        fetchWatchlist();
 
         if (andDisplay)
         {
@@ -507,10 +483,25 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    public void fetchWatchlist()
+    {
+        detachWatchlistFetchTask();
+        this.userWatchlistPositionCacheFetchTask = userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(), userWatchlistPositionCacheListener);
+        this.userWatchlistPositionCacheFetchTask.execute();
+    }
+
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
         buildUsedMenuPortfolios();
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.linkWith(securityCompactDTO, andDisplay);
+        }
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.linkWith(securityCompactDTO, andDisplay);
+        }
         if (andDisplay)
         {
             displayMarketClose();
@@ -518,7 +509,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
             displayPricingBidAskView();
-            displayTradeQuantityView();
             displayStockName();
             displayBottomViewPager();
             loadStockLogo();
@@ -538,10 +528,22 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
             displayPricingBidAskView();
-            displayTradeQuantityView();
             displayQuickPriceButtonSet();
             displaySlider();
             displayBuySellSwitch();
+        }
+    }
+
+    @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    {
+        super.linkWith(positionDTOCompacts, andDisplay);
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.linkWith(positionDTOCompacts, andDisplay);
+        }
+        if (andDisplay)
+        {
+
         }
     }
 
@@ -551,9 +553,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
         flipToBuyIfCannotSell();
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.linkWith(userProfileDTO, andDisplay);
+        }
         if (andDisplay)
         {
-            displayTradeQuantityView();
             displayQuickPriceButtonSet();
             displaySlider();
         }
@@ -565,11 +570,56 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
         flipToBuyIfCannotSell();
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.linkWith(quoteDTO, andDisplay);
+        }
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.linkWith(quoteDTO, andDisplay);
+        }
         if (andDisplay)
         {
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayQuickPriceButtonSet();
+            displaySlider();
+        }
+    }
+
+    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    {
+        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        if (purchaseApplicablePortfolioId != null)
+        {
+            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioId()), andDisplay);
+        }
+        else
+        {
+            linkWith((PortfolioCompactDTO) null, andDisplay);
+        }
+        if (andDisplay)
+        {
+            displaySelectedPortfolio();
+        }
+    }
+
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(portfolioCompactDTO, andDisplay);
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.linkWith(portfolioCompactDTO, andDisplay);
+        }
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.linkWith(portfolioCompactDTO, andDisplay);
+        }
+        clampBuyQuantity(andDisplay);
+        clampSellQuantity(andDisplay);
+        if (andDisplay)
+        {
+            // TODO max purchasable shares
             displaySlider();
         }
     }
@@ -583,6 +633,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @Override protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    {
+        super.linkWithBuyQuantity(buyQuantity, andDisplay);
+        if (mTradeQuantityView != null && isTransactionTypeBuy)
+        {
+            // We use the mBuyQuantity field, not the buyQuantity variable because it has been clamped
+            mTradeQuantityView.setShareQuantity(mBuyQuantity);
+        }
+    }
+
+    @Override protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
+    {
+        super.linkWithSellQuantity(sellQuantity, andDisplay);
+        if (mTradeQuantityView != null && !isTransactionTypeBuy)
+        {
+            // We use the mBuyQuantity field, not the buyQuantity variable because it has been clamped
+            mTradeQuantityView.setShareQuantity(mSellQuantity);
+        }
+    }
+
     protected void setInitialBuyQuantityIfCan()
     {
         if (mBuyQuantity == null)
@@ -590,7 +660,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             Integer maxPurchasableShares = getMaxPurchasableShares();
             if (maxPurchasableShares != null)
             {
-                mBuyQuantity = (int) Math.ceil(((double) maxPurchasableShares) / 2);
+                linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2), true);
             }
         }
     }
@@ -602,7 +672,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             Integer maxSellableShares = getMaxSellableShares();
             if (maxSellableShares != null)
             {
-                mSellQuantity = maxSellableShares;
+                linkWithSellQuantity(maxSellableShares, true);
             }
         }
     }
@@ -748,9 +818,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mSelectedPortfolio != null)
         {
-            if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0)
+            if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
             {
-                OwnedPortfolioId currentOwnedPortfolioId = getApplicablePortfolioId();
                 MenuOwnedPortfolioId chosen = null;
 
                 final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
@@ -758,7 +827,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 while (iterator.hasNext())
                 {
                     lastElement = iterator.next();
-                    if (currentOwnedPortfolioId.equals(lastElement))
+                    if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
                     {
                         chosen = lastElement;
                     }
@@ -777,16 +846,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mPricingBidAskView != null)
         {
-            if (securityPositionDetailDTO != null)
-            {
-                mPricingBidAskView.display(securityPositionDetailDTO);
-            }
-            else
-            {
-                mPricingBidAskView.display(securityCompactDTO);
-            }
-
-            mPricingBidAskView.display(quoteDTO);
+            mPricingBidAskView.display();
         }
     }
 
@@ -794,31 +854,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mTradeQuantityView != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null && applicablePortfolioId.portfolioId != null)
-            {
-                mTradeQuantityView.linkWith(applicablePortfolioId.getPortfolioId(), true);
-            }
-            if (securityPositionDetailDTO != null)
-            {
-                mTradeQuantityView.linkWith(securityPositionDetailDTO, true);
-            }
-            else
-            {
-                mTradeQuantityView.linkWith(securityCompactDTO, true);
-            }
-
-            mTradeQuantityView.linkWith(quoteDTO, true);
-            mTradeQuantityView.linkWith(userProfileDTO, true);
-
-            if (isTransactionTypeBuy)
-            {
-                mTradeQuantityView.setShareQuantity(mBuyQuantity);
-            }
-            else
-            {
-                mTradeQuantityView.setShareQuantity(mSellQuantity);
-            }
+            mTradeQuantityView.display();
         }
     }
 
@@ -967,17 +1003,16 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mBuySellSwitch != null)
         {
-            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0 ||
-                    getApplicablePortfolioId() == null)
+            if (positionDTOCompactList == null || positionDTOCompactList.size() == 0 || purchaseApplicableOwnedPortfolioId == null)
             {
                 mBuySellSwitch.setVisibility(View.GONE);
             }
             else
             {
-                // TODO handle the case when we have move than 1 position
-                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(this.quoteDTO,
-                        getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO);
-                if (shareCount == null || shareCount == 0)
+                Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
+                        this.quoteDTO,
+                        portfolioCompactDTO);
+                if (maxSellableShares == null || maxSellableShares == 0)
                 {
                     mBuySellSwitch.setVisibility(View.GONE);
                 }
@@ -1205,7 +1240,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mTradeQuantityView != null)
         {
             mTradeQuantityView.setBuy(transactionTypeBuy);
-            displayTradeQuantityView();
+            if (isTransactionTypeBuy)
+            {
+                mTradeQuantityView.setShareQuantity(mBuyQuantity);
+            }
+            else
+            {
+                mTradeQuantityView.setShareQuantity(mSellQuantity);
+            }
         }
         if (mPricingBidAskView != null)
         {
@@ -1321,8 +1363,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             mSelectedPortfolio.setText(menuItem.getTitle());
         }
 
-        OwnedPortfolioId applicableOwnedPortfolioId = (MenuOwnedPortfolioId) menuItem.getTitle();
-        userInteractor.setApplicablePortfolioId(applicableOwnedPortfolioId);
+        linkWithApplicable((MenuOwnedPortfolioId) menuItem.getTitle(), true);
         return true;
     }
 
@@ -1361,9 +1402,9 @@ public class BuySellFragment extends AbstractBuySellFragment
                             .transform(foregroundTransformation)
                             .into(mStockBgLogo);
                 }
-                else if (mStockBgLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
+                else if (mStockBgLogo != null && securityCompactDTO != null)
                 {
-                    int logoId = securityPositionDetailDTO.security.getExchangeLogoId();
+                    int logoId = securityCompactDTO.getExchangeLogoId();
                     if (logoId != 0)
                     {
                         picasso.load(logoId)
@@ -1410,11 +1451,11 @@ public class BuySellFragment extends AbstractBuySellFragment
 
                     if (isTransactionTypeBuy)
                     {
-                        mBuyQuantity = progress;
+                        linkWithBuyQuantity(progress, true);
                     }
                     else
                     {
-                        mSellQuantity = progress;
+                        linkWithSellQuantity(progress, true);
                     }
                 }
                 displayBuyButton();
@@ -1444,17 +1485,17 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     // Nothing to do
                 }
-                else if (isTransactionTypeBuy && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
-                {
-                    mBuyQuantity = (int) Math.floor(priceSelected / (quoteDTO.ask * quoteDTO.toUSDRate));
-                }
-                else if (!isTransactionTypeBuy && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
-                {
-                    mSellQuantity = (int) Math.floor(priceSelected / (quoteDTO.bid * quoteDTO.toUSDRate));
-                }
                 else
                 {
-                    // Nothing to do
+                    Double priceRefCcy = quoteDTO.getPriceRefCcy(portfolioCompactDTO, isTransactionTypeBuy);
+                    if (priceRefCcy == null || priceRefCcy == 0)
+                    {
+                        // Nothing to do
+                    }
+                    else
+                    {
+                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
+                    }
                 }
                 displaySlider();
                 displayTradeQuantityView();
@@ -1516,10 +1557,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             super.handleShowProductDetailsMilestoneComplete();
             // Like this we retest for the possibility to buy and sell
-            if (securityPositionDetailDTO != null)
-            {
-                BuySellFragment.this.linkWith(securityPositionDetailDTO, true);
-            }
+            display(); // TODO
         }
 
         @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
@@ -1548,7 +1586,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
             displaySlider();
-            displayTradeQuantityView();
         }
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
