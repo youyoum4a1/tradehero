@@ -60,8 +60,16 @@ public class CompetitionZoneListItemTradeNowView extends AbstractCompetitionZone
         {
             if (competitionZoneDTO != null)
             {
-                picasso.load(((CompetitionZoneTradeNowDTO) competitionZoneDTO).imageUrl)
-                             .into(tradeNowIcon);
+                CompetitionZoneTradeNowDTO tradeNowDTO = (CompetitionZoneTradeNowDTO) competitionZoneDTO;
+                if (tradeNowDTO.imageResId > 0)
+                {
+                    tradeNowIcon.setImageResource(tradeNowDTO.imageResId);
+                }
+                else
+                {
+                    picasso.load(tradeNowDTO.imageUrl)
+                            .into(tradeNowIcon);
+                }
             }
         }
     }

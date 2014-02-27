@@ -20,8 +20,8 @@ public class CompetitionZoneDTO implements DTO
 
     @Override public int hashCode()
     {
-        return (title == null ? new Integer(0) : title).hashCode() ^
-                (description == null ? new Integer(0) : description).hashCode();
+        return (title == null ? Integer.valueOf(0) : title).hashCode() ^
+                (description == null ? Integer.valueOf(0) : description).hashCode();
     }
 
     @Override public String toString()

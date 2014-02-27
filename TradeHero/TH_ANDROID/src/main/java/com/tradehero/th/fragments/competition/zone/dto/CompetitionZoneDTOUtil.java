@@ -6,6 +6,8 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,6 +18,8 @@ import timber.log.Timber;
  */
 @Singleton public class CompetitionZoneDTOUtil
 {
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+
     @Inject public CompetitionZoneDTOUtil()
     {
     }
@@ -30,7 +34,15 @@ import timber.log.Timber;
         if (providerDTO != null)
         {
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
-            preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerDTO.tradeButtonImageUrl));
+            ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.tradeNowBtnImageResId > 0)
+            {
+                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerSpecificResourcesDTO.tradeNowBtnImageResId, providerDTO.tradeButtonImageUrl));
+            }
+            else
+            {
+                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, 0, providerDTO.tradeButtonImageUrl));
+            }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));

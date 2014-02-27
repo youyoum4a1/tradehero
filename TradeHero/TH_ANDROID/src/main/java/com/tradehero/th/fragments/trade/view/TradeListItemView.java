@@ -47,7 +47,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
 
-    // all the 3 caches below are needed to get the security currency display
+    // all the 3 caches below are needed to get the security currencyDisplay display
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
     // 2) in securityIdCache lookup the SecurityId (exchange + symbol) corresponding to the SecurityIntegerId
     // 3) in securityCache get the SecurityCompactDTO

@@ -72,11 +72,10 @@ public class LeaderboardCompetitionView extends ImageView
             setVisibility(View.VISIBLE);
 
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
-            if (!providerDTO.isUserEnrolled &&
-                    providerSpecificResourcesDTO != null &&
-                    providerSpecificResourcesDTO.notJoinedBannerImageResId != 0)
+            int joinBannerResId = providerSpecificResourcesDTO == null ? 0 : providerSpecificResourcesDTO.getJoinBannerResId(providerDTO.isUserEnrolled);
+            if (joinBannerResId != 0)
             {
-                setImageResource(providerSpecificResourcesDTO.notJoinedBannerImageResId);
+                setImageResource(joinBannerResId);
             }
             else
             {
