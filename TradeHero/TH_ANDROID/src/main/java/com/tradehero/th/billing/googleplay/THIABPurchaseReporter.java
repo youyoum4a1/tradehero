@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -24,6 +23,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseReporter extends BasePurchaseReporter<
@@ -32,8 +32,6 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         THIABPurchase,
         IABException>
 {
-    public static final String TAG = THIABPurchaseReporter.class.getSimpleName();
-
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
@@ -65,10 +63,21 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
         // TODO do something when info is not available
         THIABProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
-        if (cachedSkuDetail == null || purchase == null)
+        if (cachedSkuDetail == null)
         {
             return;
         }
+        if (purchase == null)
+        {
+            Timber.e("Purchase is null: domain=%s", cachedSkuDetail.domain);
+            return;
+        }
+        if (portfolioId == null)
+        {
+            Timber.e("portfolioId is null: domain=%s", cachedSkuDetail.domain);
+            return;
+        }
+
         switch (cachedSkuDetail.domain)
         {
             case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
@@ -89,7 +98,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 }
                 else
                 {
-                    THLog.d(TAG, "reportPurchase portfolioId is null for " + purchase);
+                    Timber.e("reportPurchase portfolioId is null %s", purchase);
                     // TODO decide what to do
                 }
                 break;
@@ -183,7 +192,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
     protected void handleCallbackFailed(RetrofitError error)
     {
-        THLog.e(TAG, "Failed reporting to TradeHero server", error);
+        Timber.e("Failed reporting to TradeHero server", error);
         notifyListenerReportFailed(new PurchaseReportRetrofitException(error));
     }
 
