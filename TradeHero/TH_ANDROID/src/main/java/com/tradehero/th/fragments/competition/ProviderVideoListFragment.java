@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.tradehero.th.api.competition.key.HelpVideoId;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -193,9 +196,33 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
         // openVideoInExternalPlayer(cachedHelpVideo);
 
+        openVideoInChromeBrowser(cachedHelpVideo);
+
+        // openVideoWithInApp(cachedHelpVideo);
+    }
+
+    /**
+     * We have problem outOfMemory with this way, don't use it
+     * @param cachedHelpVideo
+     */
+    private void openVideoWithInApp(HelpVideoDTO cachedHelpVideo)
+    {
         Intent intent = new Intent(getActivity(), WebViewActivity.class);
         intent.putExtra(WebViewActivity.HTML_DATA, cachedHelpVideo.embedCode);
         startActivity(intent);
+    }
+
+    private void openVideoInChromeBrowser(HelpVideoDTO cachedHelpVideo)
+    {
+        Intent i = new Intent();
+
+        i.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
+        i.setAction(Intent.ACTION_VIEW);
+
+        String dataUri = "data:text/html," + URLEncoder.encode(cachedHelpVideo.embedCode).replaceAll("\\+","%20");
+        i.setData(Uri.parse(dataUri));
+
+        startActivity(i);
     }
 
     private void openVideoInExternalPlayer(HelpVideoDTO cachedHelpVideo)
