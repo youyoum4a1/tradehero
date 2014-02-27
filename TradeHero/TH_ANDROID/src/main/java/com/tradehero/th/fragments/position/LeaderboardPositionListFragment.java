@@ -69,7 +69,7 @@ public class LeaderboardPositionListFragment
 
     @Override protected void fetchSimplePage()
     {
-        if (ownedPortfolioId != null && ownedPortfolioId.isValid())
+        if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
             if (getLeaderboardPositionsCacheListener == null)
             {
