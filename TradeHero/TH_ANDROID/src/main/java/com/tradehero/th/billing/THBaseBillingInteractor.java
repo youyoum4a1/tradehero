@@ -263,14 +263,18 @@ abstract public class THBaseBillingInteractor<
     protected void handleShowProductDetailsMilestoneComplete()
     {
         // At this stage, we know the applicable portfolio is available in the cache
-        if (this.applicablePortfolioId == null || this.applicablePortfolioId.portfolioId == null)
+        if (this.applicablePortfolioId != null)
         {
-            this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
-        }
-        // We also know that the userProfile is in the cache
-        this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
+            if (this.applicablePortfolioId.portfolioId == null)
+            {
+                this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
+            }
 
-        runWhatWaitingForProductDetailsMilestone();
+            // We also know that the userProfile is in the cache
+            this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
+
+            runWhatWaitingForProductDetailsMilestone();
+        }
     }
 
     protected void runWhatWaitingForProductDetailsMilestone()
