@@ -12,6 +12,7 @@ import com.tradehero.th.utils.Constants;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
+import java.io.File;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:47 AM Copyright (c) TradeHero
@@ -32,9 +33,10 @@ public class GraphicModule
 {
     @Provides @Singleton Picasso providePicasso(Context context, LruMemFileCache lruFileCache)
     {
+        File cacheDir = lruFileCache.getCacheDirectory();
         Picasso mPicasso = new Picasso.Builder(context)
                 //.downloader(new UrlConnectionDownloader(getContext()))
-                .memoryCache(lruFileCache)
+                .memoryCache(lruFileCache,cacheDir.getAbsolutePath())
                 .build();
         mPicasso.setDebugging(Constants.PICASSO_DEBUG);
         return mPicasso;

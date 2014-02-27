@@ -7,3 +7,6 @@
 [submodule "StickyListHeaders"]
 	path = StickyListHeaders
 	url = git@github.com:nguyentruongtho/StickyListHeaders.git
+[submodule "picasso"]
+	path = picasso
+	url = https://github.com/xjwangliang/picasso.git

@@ -17,11 +17,10 @@
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
-      android:alpha="0.2"
       tools:background="@color/red"
       android:visibility="visible"
       />
-
+    <!--remove the alpha :android:alpha="0.2"-->
   <TextView
       android:id="@+id/stock_name"
       android:layout_width="wrap_content"
