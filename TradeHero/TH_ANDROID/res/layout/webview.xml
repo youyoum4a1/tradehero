@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <WebView
-        android:id="@+id/WebView_browser"
+        android:id="@+id/webview_browser"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true" />
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:id="@+id/webview_progressbar"
+        android:id="@android:id/progress"
         android:visibility="gone"
         />
 

@@ -1,7 +1,6 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -17,49 +16,48 @@ import com.tradehero.th.R;
  */
 public class WebViewActivity extends Activity
 {
+    public static final String SHOW_URL = WebViewActivity.class.getName() + ".showUrl";
+    public static final String HTML_DATA = WebViewActivity.class.getName() + ".htmlData";
 
-    private WebView mWebView;
-    private ProgressBar mProgress;
-    public static final String SHOW_URL = "showUrl";
+    private ProgressBar progress;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.webview);
         String url = getIntent().getStringExtra(SHOW_URL);
-        mWebView = (WebView) findViewById(R.id.WebView_browser);
+        String htmlData = getIntent().getStringExtra(HTML_DATA);
+
+        WebView webView = (WebView) findViewById(R.id.webview_browser);
+        progress = (ProgressBar) findViewById(android.R.id.progress);
 
         // Set the required Web View settings
-        WebSettings webSettings = mWebView.getSettings();
+        WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
+        webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadsImagesAutomatically(true);
-        mWebView.invokeZoomPicker();
-        mWebView.requestFocus();
-        mWebView.setWebViewClient(new MyWebViewClient(this));
-        mWebView.setInitialScale(1);
-        mWebView.setPadding(0, 0, 0, 0);
+
+        webView.invokeZoomPicker();
+        webView.requestFocus();
+        webView.setWebViewClient(new MyWebViewClient());
+        webView.setInitialScale(1);
+        webView.setPadding(0, 0, 0, 0);
 
         if (url != null)
         {
-            mWebView.loadUrl(url);
+            webView.loadUrl(url);
+        }
+        else if (htmlData != null)
+        {
+            webView.loadData(htmlData, "text/html", "");
         }
     }
 
     private class MyWebViewClient extends WebViewClient
     {
-
-        private Context m_context;
-
-        MyWebViewClient(Context context)
-        {
-            m_context = context;
-            mProgress = (ProgressBar) findViewById(R.id.webview_progressbar);
-        }
-
         @Override
-        public void onReceivedError(WebView view, int errorCode,
-                String description, String failingUrl)
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
         {
             super.onReceivedError(view, errorCode, description, failingUrl);
             THToast.show(R.string.network_error);
@@ -69,14 +67,14 @@ public class WebViewActivity extends Activity
         public void onPageStarted(WebView view, String url, Bitmap favicon)
         {
             super.onPageStarted(view, url, favicon);
-            mProgress.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onPageFinished(WebView view, String url)
         {
             super.onPageFinished(view, url);
-            mProgress.setVisibility(View.GONE);
+            progress.setVisibility(View.GONE);
         }
     }
 }
