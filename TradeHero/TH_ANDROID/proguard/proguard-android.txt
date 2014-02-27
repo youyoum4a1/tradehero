@@ -99,7 +99,12 @@
     java.lang.Object readResolve();
 }
 
--assumenosideeffects class timber.log.Timber { *; }
+-assumenosideeffects class timber.log.Timber {
+  public static *** v(...);
+  public static *** i(...);
+  public static *** w(...);
+  public static *** d(...);
+}
 
 -assumenosideeffects class android.util.Log { *; }
 
