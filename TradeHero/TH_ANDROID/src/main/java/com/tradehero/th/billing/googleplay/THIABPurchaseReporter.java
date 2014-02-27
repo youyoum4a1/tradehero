@@ -64,7 +64,12 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
         // TODO do something when info is not available
-        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
+        THIABProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
+        if (cachedSkuDetail == null || purchase == null)
+        {
+            return;
+        }
+        switch (cachedSkuDetail.domain)
         {
             case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
                 portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
