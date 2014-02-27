@@ -95,10 +95,11 @@ abstract public class THBaseBillingInteractor<
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject protected CurrentUserId currentUserId;
-    protected UserProfileDTO userProfileDTO;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    protected OwnedPortfolioId applicablePortfolioId;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+
+    protected UserProfileDTO userProfileDTO;
+    protected OwnedPortfolioId applicablePortfolioId;
 
     protected ProgressDialog progressDialog;
 
