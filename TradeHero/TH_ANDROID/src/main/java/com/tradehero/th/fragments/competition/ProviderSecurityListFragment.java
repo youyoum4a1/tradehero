@@ -26,7 +26,7 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
@@ -57,7 +57,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
-    private WebViewFragment webViewFragment;
+    private BaseWebViewFragment webViewFragment;
 
     ActionBar actionBar;
     private MenuItem wizardButton;
@@ -154,17 +154,17 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         super.onStop();
     }
 
+    @Override public void onDestroyView()
+    {
+        DeviceUtil.dismissKeyboard(getActivity());
+        super.onDestroyView();
+    }
+
     @Override public void onDestroy()
     {
         this.providerCacheListener = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
-    }
-
-    @Override public void onDestroyView()
-    {
-        DeviceUtil.dismissKeyboard(getActivity());
-        super.onDestroyView();
     }
 
     protected void detachProviderFetchTask()
@@ -215,10 +215,10 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) getNavigator().pushFragment(
-                WebViewFragment.class, args);
+        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
+                CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -281,7 +281,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             super();
         }
 
-        @Override protected WebViewFragment getApplicableWebViewFragment()
+        @Override protected BaseWebViewFragment getApplicableWebViewFragment()
         {
             return webViewFragment;
         }
