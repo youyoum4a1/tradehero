@@ -191,11 +191,11 @@ public class ProviderVideoListFragment extends CompetitionFragment
             return;
         }
 
-        openVideoInExternalPlayer(cachedHelpVideo);
+        // openVideoInExternalPlayer(cachedHelpVideo);
 
-        //Intent intent = new Intent(getActivity(), WebViewActivity.class);
-        //intent.putExtra(WebViewActivity.HTML_DATA, cachedHelpVideo.embedCode);
-        //startActivity(intent);
+        Intent intent = new Intent(getActivity(), WebViewActivity.class);
+        intent.putExtra(WebViewActivity.HTML_DATA, cachedHelpVideo.embedCode);
+        startActivity(intent);
     }
 
     private void openVideoInExternalPlayer(HelpVideoDTO cachedHelpVideo)
