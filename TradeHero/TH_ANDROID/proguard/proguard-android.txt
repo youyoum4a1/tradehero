@@ -3,6 +3,7 @@
 
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
+-dontpreverify
 -verbose
 
 # Optimization is turned off by default. Dex does not like code run
@@ -11,9 +12,8 @@
 -optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 -optimizationpasses 5
 -allowaccessmodification
--dontpreverify
-#-dontoptimize
-#-dontpreverify
+
+# -dontoptimize
 # Note that if you want to enable optimization, you cannot just
 # include optimization flags in your own project configuration file;
 # instead you will need to point to the
@@ -62,7 +62,7 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
-
+-keepattributes Exceptions,SourceFile,LineNumberTable,Deprecated
 -keepattributes Signature
 
 
@@ -99,21 +99,11 @@
     java.lang.Object readResolve();
 }
 
--assumenosideeffects class timber.log.Timber {
-    public static *** v(...);
-    public static *** i(...);
-    public static *** w(...);
-    public static *** d(...);
-    public static *** e(...);
-}
+-assumenosideeffects class timber.log.Timber { *; }
 
--assumenosideeffects class android.util.Log {
-    public static *** v(...);
-    public static *** i(...);
-    public static *** w(...);
-    public static *** d(...);
-    public static *** e(...);
-}
+-assumenosideeffects class android.util.Log { *; }
+
+-assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
 -dontwarn org.apache.**
@@ -134,6 +124,7 @@
   public void set*(***);
   public *** get*();
 }
+-keep public class com.tradehero.th.network.service.** { *; }
 
 # We actually use public field instead of getter and setter for it.
 -keep public class com.tradehero.th.api.** {
