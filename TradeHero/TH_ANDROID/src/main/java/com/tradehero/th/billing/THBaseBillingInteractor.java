@@ -263,7 +263,7 @@ abstract public class THBaseBillingInteractor<
     protected void handleShowProductDetailsMilestoneComplete()
     {
         // At this stage, we know the applicable portfolio is available in the cache
-        if (this.applicablePortfolioId.portfolioId == null)
+        if (this.applicablePortfolioId == null || this.applicablePortfolioId.portfolioId == null)
         {
             this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
         }
