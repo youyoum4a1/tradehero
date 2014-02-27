@@ -1,14 +1,9 @@
 package com.tradehero.common.cache;
 
-import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.os.Looper;
 import android.util.Base64;
-import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.PicassoUtils;
@@ -21,11 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import timber.log.Timber;
-
-import static android.content.Context.ACTIVITY_SERVICE;
-import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruMemFileCache extends LruCache
@@ -43,8 +34,6 @@ public class LruMemFileCache extends LruCache
     final private Object dirLock = new Object();
     final private Object setLock = new Object();
     final private Object getLock = new Object();
-
-    //String TAG = "LruMemFileCache" ;
 
     private static MessageDigest getMd5()
     {
@@ -68,56 +57,24 @@ public class LruMemFileCache extends LruCache
     private long maxFileSize;
 
     //<editor-fold desc="Constructors">
-    /**public*/ LruMemFileCache(Context context)
+    public LruMemFileCache(Context context)
     {
         this(context, DEFAULT_DIR_NAME);
-
     }
-    public static LruMemFileCache instance;
-    public static synchronized LruMemFileCache getInstance(Context context)
+
+    public LruMemFileCache(Context context, String dirName)
     {
-        if (instance == null)
-        {
-            instance = new LruMemFileCache(context);
-        }
-        return instance;
-    }
-
-    private static final int MAX_MEM_CACHE_SIZE = 30 * 1024 * 1024; // 30MB
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static class ActivityManagerHoneycomb {
-        static int getLargeMemoryClass(ActivityManager activityManager) {
-            return activityManager.getLargeMemoryClass();
-        }
-    }
-    static int calculateMemoryCacheSize(Context context) {
-        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-        boolean largeHeap = (context.getApplicationInfo().flags & FLAG_LARGE_HEAP) != 0;
-        int memoryClass = am.getMemoryClass();
-        if (largeHeap && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            memoryClass = ActivityManagerHoneycomb.getLargeMemoryClass(am);
-        }
-        // Target 16% of the available RAM.
-        int size = 1024 * 1024 * memoryClass / 6;
-        // Bound to max size for mem cache.
-        return Math.min(size, MAX_MEM_CACHE_SIZE);
-    }
-
-    /**public*/ LruMemFileCache(Context context, String dirName)
-    {
-        super(calculateMemoryCacheSize(context));
+        super(context);
         Timber.d("Constructing with memory " + PicassoUtils.calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
 
-
-    /**public*/ LruMemFileCache(int maxMemSize, long maxFileSize)
+    public LruMemFileCache(int maxMemSize, long maxFileSize)
     {
         this(maxMemSize, maxFileSize, DEFAULT_DIR_NAME);
     }
 
-    /**public*/ LruMemFileCache(int maxMemSize, long maxFileSize, String dirName)
+    public LruMemFileCache(int maxMemSize, long maxFileSize, String dirName)
     {
         super(maxMemSize);
         initDir(Application.context(), maxFileSize, dirName);
@@ -185,11 +142,6 @@ public class LruMemFileCache extends LruCache
         return primaryDir;
     }
 
-    public File getCacheDirectory()
-    {
-        return cacheDir;
-    }
-
     public long getDefaultFolderSizeToUse(File folder)
     {
         long total = folder.getTotalSpace();
@@ -202,7 +154,6 @@ public class LruMemFileCache extends LruCache
     @Override public void set(String key, Bitmap bitmap)
     {
         super.set(key, bitmap);
-        //Log.d(TAG, TAG + " set method main ?" + (Looper.getMainLooper().getThread() == Thread.currentThread()) + " key:" +key+" mem size "+super.size());
         if (diskLruCache != null)
         {
             try
@@ -212,9 +163,7 @@ public class LruMemFileCache extends LruCache
                 {
                     try
                     {
-                        //String hashKey = hashKey(key);
-                        entryEdit = diskLruCache.edit(key);
-                        //entryEdit = diskLruCache.edit(hashKey(key));
+                        entryEdit = diskLruCache.edit(hashKey(key));
                         OutputStream os = entryEdit.newOutputStream(DEFAULT_INDEX);
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
                         os.flush();
@@ -238,84 +187,11 @@ public class LruMemFileCache extends LruCache
         }
     }
 
-//    public Bitmap getAsync(String key){
-//
-//        Log.d(TAG,TAG+" getAsync method main? "+(Looper.getMainLooper().getThread() == Thread.currentThread())+" key "+key
-//                +" mem size "+super.size()+">>>");
-//
-//        Bitmap bitmap = super.get(key);
-//
-//
-//        if (bitmap == null && diskLruCache != null)
-//        {
-//            synchronized (setLock)
-//            {
-//                try
-//                {
-//                    DiskLruCache.Snapshot retrieved = null;
-//                    try
-//                    {
-//                        String hashKey = hashKey(key);
-//                        retrieved = diskLruCache.get(hashKey);
-//                        Log.d(TAG,TAG+" getAsync from discache hashKey:"+hashKey);
-//                        if (retrieved != null)
-//                        {
-//                            InputStream is = retrieved.getInputStream(DEFAULT_INDEX);
-//                            bitmap = BitmapFactory.decodeStream(is);
-//                            is.close();
-//                            if (bitmap != null)
-//                            {
-//                                super.set(key, bitmap);
-//                                //THLog.i(TAG, "Got bitmap from disk " + key);
-//                                Log.d(TAG,TAG+" getAsync from discache and set to memcache hashKey:"+hashKey);
-//                            }
-//                            else
-//                            {
-//                                //THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
-//                            }
-//                        }
-//                        else
-//                        {
-//                            //THLog.i(TAG, "Retrieved was null for " + key);
-//                        }
-//                    }
-//                    catch (IOException e)
-//                    {
-//                        Timber.e("Failed to get entry %s", key, e);
-//                    }
-//                    catch (OutOfMemoryError e)
-//                    {
-//                        Timber.e("Failed to decode %s", key, e);
-//                    }
-//
-//                    if (retrieved != null)
-//                    {
-//                        retrieved.close();
-//                    }
-//                }
-//                catch (Exception e)
-//                {
-//                    Timber.e("Failed to get entry %s", key, e);
-//                }
-//            }
-//        }
-//        else
-//        {
-//            //THLog.i(TAG, "Got bitmap from ram " + key);
-//        }
-//
-//        Log.d(TAG,TAG+" getAsync method main ?"+(Looper.myLooper()==Looper.getMainLooper())+" return:"+bitmap+" >>>");
-//
-//        return bitmap;
-//    }
-
     @Override public Bitmap get(String key)
     {
-        boolean isUIThread = Looper.myLooper()==Looper.getMainLooper();
-
-        //Log.d(TAG, TAG + " get method main? " + (Looper.getMainLooper().getThread() == Thread.currentThread()) + " key " + key+ " mem size " + super.size() + ">>>");
         Bitmap bitmap = super.get(key);
-        if (bitmap == null && diskLruCache != null && !isUIThread)
+
+        if (bitmap == null && diskLruCache != null)
         {
             synchronized (setLock)
             {
@@ -324,11 +200,7 @@ public class LruMemFileCache extends LruCache
                     DiskLruCache.Snapshot retrieved = null;
                     try
                     {
-                        //String hashKey = hashKey(key);
-                        retrieved = diskLruCache.get(key);
-                        //String hashKey = hashKey(key);
-                        //retrieved = diskLruCache.get(hashKey);
-                        Timber.d(TAG,TAG+" get from discache key:"+key);
+                        retrieved = diskLruCache.get(hashKey(key));
                         if (retrieved != null)
                         {
                             InputStream is = retrieved.getInputStream(DEFAULT_INDEX);
@@ -338,7 +210,6 @@ public class LruMemFileCache extends LruCache
                             {
                                 super.set(key, bitmap);
                                 //THLog.i(TAG, "Got bitmap from disk " + key);
-                                Log.d(TAG,TAG+" get from discache and set to memcache key:"+key);
                             }
                             else
                             {
@@ -374,8 +245,6 @@ public class LruMemFileCache extends LruCache
         {
             //THLog.i(TAG, "Got bitmap from ram " + key);
         }
-
-        Log.d(TAG,TAG+" get method main ?"+isUIThread+" return:"+bitmap+" >>>");
 
         return bitmap;
     }

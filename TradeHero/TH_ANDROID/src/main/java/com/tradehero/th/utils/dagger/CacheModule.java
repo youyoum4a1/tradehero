@@ -44,8 +44,7 @@ public class CacheModule
 
     @Provides @Singleton LruMemFileCache provideLruMemFileCache(Context context)
     {
-        return LruMemFileCache.getInstance(context.getApplicationContext());
-        //return new LruMemFileCache(context);
+        return new LruMemFileCache(context);
     }
 
     @Provides @Singleton SharedPreferences provideSharePreferences(Context context)

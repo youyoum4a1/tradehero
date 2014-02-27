@@ -6,12 +6,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.*;
+import com.tradehero.common.graphics.AbstractSequentialTransformation;
+import com.tradehero.common.graphics.FastBlurTransformation;
+import com.tradehero.common.graphics.GaussianTransformation;
+import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
 
 /**
  * Created by xavier on 1/30/14.
@@ -69,7 +74,7 @@ public class TransformationModule
         return transformation;
     }
 
-    @Provides @ForSecurityItemBackground @Singleton
+    @Provides @ForSecurityItemBackground
     public Transformation provideSecurityItemBackgroundTransformation(Context context, Picasso picasso)
     {
         AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
@@ -87,26 +92,7 @@ public class TransformationModule
         return transformation;
     }
 
-    @Provides @ForSecurityItemBackground2 @Singleton
-    public Transformation provideSecurityItemBackgroundTransformation2(Context context,Picasso picasso)
-    {
-        AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
-        {
-            @Override public String key()
-            {
-                return "toFastBlurGrayScale";
-            }
-        };
-        transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(10));
-        transformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
-        transformation.add(new AlphaTransformation(0.2f));
-        return transformation;
-    }
-
-    @Provides @ForSecurityItemForeground @Singleton
+    @Provides @ForSecurityItemForeground
     public Transformation provideSecurityItemForegroundTransformation()
     {
         return new WhiteToTransparentTransformation();
