@@ -62,23 +62,23 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         //signupButton.setOnTouchListener(this);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        Bundle args = getArguments();
-        showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (showButtonBack)
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-        }
-        actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    //@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    //{
+    //    Bundle args = getArguments();
+    //    showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
+    //
+    //    ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+    //    if (showButtonBack)
+    //    {
+    //        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+    //    }
+    //    else
+    //    {
+    //        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+    //    }
+    //    actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
+    //    super.onCreateOptionsMenu(menu, inflater);
+    //}
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {

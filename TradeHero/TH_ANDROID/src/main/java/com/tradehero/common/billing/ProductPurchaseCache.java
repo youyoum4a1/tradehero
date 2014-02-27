@@ -13,8 +13,6 @@ abstract public class ProductPurchaseCache<
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
         extends StraightDTOCache<ProductIdentifierType, ProductPurchaseType>
 {
-    public static final String TAG = ProductPurchaseCache.class.getSimpleName();
-
     protected final ArrayList<ProductIdentifierType> keys;
 
     public ProductPurchaseCache(int maxSize)

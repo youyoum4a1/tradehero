@@ -8,14 +8,13 @@ import android.widget.ProgressBar;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utils.THSignedNumber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
-public class PricingBidAskView extends LinearLayout implements DTOView<SecurityCompactDTO>
+public class PricingBidAskView extends LinearLayout
 {
     private static final String TAG = PricingBidAskView.class.getSimpleName();
     private TextView mLastPrice;
@@ -31,8 +30,8 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     private int inactiveColor;
 
     private SecurityCompactDTO securityCompactDTO;
-    private SecurityPositionDetailDTO securityPositionDetailDTO;
     private QuoteDTO quoteDTO;
+    private PortfolioCompactDTO portfolioCompactDTO;
     private boolean buy = true;
     private boolean refreshingQuote = false;
 
@@ -67,7 +66,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         this.buy = buy;
         updateVisibilities();
         displayLastPrice();
-        displayLastPriceUSD();
+        displayLastPriceRefCcy();
     }
 
     public boolean isRefreshingQuote()
@@ -116,32 +115,41 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         display();
     }
 
-    @Override public void display(SecurityCompactDTO securityCompactDTO)
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
-        display();
-    }
-
-    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        if (securityPositionDetailDTO != null)
+        if (andDisplay)
         {
-            this.securityCompactDTO = securityPositionDetailDTO.security;
+            displayLastPrice();
         }
-        display();
     }
 
-    public void display(QuoteDTO quoteDTO)
+    public void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         this.quoteDTO = quoteDTO;
-        display();
+        if (andDisplay)
+        {
+            displayAskPrice();
+            displayBidPrice();
+            displayLastPrice();
+            displayLastPriceRefCcy();
+            updateVisibilities();
+        }
+    }
+
+    public void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        this.portfolioCompactDTO = portfolioCompactDTO;
+        if (andDisplay)
+        {
+            displayLastPriceRefCcy();
+        }
     }
 
     public void display()
     {
         displayLastPrice();
-        displayLastPriceUSD();
+        displayLastPriceRefCcy();
         displayAskPrice();
         displayBidPrice();
 
@@ -157,6 +165,11 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         }
     }
 
+    public String getLastPriceText()
+    {
+        return String.format("%s %s", getCurrencyDisplay(),  buy ? getAskPriceText() : getBidPriceText());
+    }
+
     public void displayAskPrice()
     {
         TextView askPriceView = mAskPrice;
@@ -164,6 +177,20 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         {
             askPriceView.setText(getAskPriceText());
         }
+    }
+
+    public String getAskPriceText()
+    {
+        if (quoteDTO == null)
+        {
+            return "-";
+        }
+        else if (quoteDTO.ask == null)
+        {
+            return getResources().getString(R.string.buy_sell_ask_price_not_available);
+        }
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
+        return thSignedNumber.toString();
     }
 
     public void displayBidPrice()
@@ -175,20 +202,48 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         }
     }
 
-    public void displayLastPriceUSD()
+    public String getBidPriceText()
+    {
+        if (quoteDTO == null)
+        {
+            return "-";
+        }
+        else if (quoteDTO.bid == null)
+        {
+            return getResources().getString(R.string.buy_sell_bid_price_not_available);
+        }
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
+        return thSignedNumber.toString();
+    }
+
+    public void displayLastPriceRefCcy()
     {
         TextView lastPrice = mLastPriceUSD;
         if (lastPrice != null)
         {
-            if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.bid == null || quoteDTO.toUSDRate == null )
-            {
-                lastPrice.setText(R.string.buy_sell_usd_price_unit_left);
-            }
-            else
-            {
-                THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, (buy ? quoteDTO.ask : quoteDTO.bid) * quoteDTO.toUSDRate, false);
-                lastPrice.setText(String.format("= %s", thSignedNumber.toString()));
-            }
+            lastPrice.setText(getLastPriceRefCcyText());
+        }
+    }
+
+    public String getLastPriceRefCcyText()
+    {
+        if (portfolioCompactDTO == null)
+        {
+            return getResources().getString(R.string.na);
+        }
+        Double priceRefCcy = quoteDTO == null ? null : quoteDTO.getPriceRefCcy(portfolioCompactDTO, buy);
+        if (priceRefCcy == null)
+        {
+            return "= " + portfolioCompactDTO.getCurrencyDisplayOrUsd();
+        }
+        else
+        {
+            THSignedNumber thSignedNumber = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    priceRefCcy,
+                    false,
+                    portfolioCompactDTO.getCurrencyDisplayOrUsd());
+            return String.format("= %s", thSignedNumber.toString());
         }
     }
 
@@ -230,41 +285,8 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         }
     }
 
-    public String getLastPriceText()
-    {
-        return String.format("%s %s", securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay,  buy ? getAskPriceText() : getBidPriceText());
-    }
-
     public String getCurrencyDisplay()
     {
-        return securityCompactDTO == null ? "" : securityCompactDTO.currencyDisplay;
-    }
-
-    public String getAskPriceText()
-    {
-        if (quoteDTO == null)
-        {
-            return "-";
-        }
-        else if (quoteDTO.ask == null)
-        {
-            return getResources().getString(R.string.buy_sell_ask_price_not_available);
-        }
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
-        return thSignedNumber.toString();
-    }
-
-    public String getBidPriceText()
-    {
-        if (quoteDTO == null)
-        {
-            return "-";
-        }
-        else if (quoteDTO.bid == null)
-        {
-            return getResources().getString(R.string.buy_sell_bid_price_not_available);
-        }
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
-        return thSignedNumber.toString();
+        return securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
     }
 }

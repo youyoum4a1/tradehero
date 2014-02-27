@@ -11,8 +11,6 @@ import com.tradehero.th.fragments.billing.googleplay.SKUDetailView;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
 public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
 {
-    public static final String TAG = StoreSKUDetailView.class.getSimpleName();
-
     protected ImageView icDeliverable;
     protected TextView furtherDescription;
     protected ImageView icRibbon;

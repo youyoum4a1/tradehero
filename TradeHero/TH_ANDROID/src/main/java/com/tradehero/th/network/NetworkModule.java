@@ -24,6 +24,6 @@ public class NetworkModule
     @Provides @Singleton @ServerEndpoint
     StringPreference provideEndpointPreference(SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.getApiEndPoint());
+        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.TRADEHERO_PROD_ENDPOINT);
     }
 }

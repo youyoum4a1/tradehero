@@ -44,6 +44,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.NetworkConstants;
+import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -59,8 +60,10 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
+import dagger.Provides;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -82,6 +85,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
+    @Inject @ServerEndpoint StringPreference serverEndpoint;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -475,7 +479,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void initInfo()
     {
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
-        String serverPath = NetworkConstants.getApiEndPoint().replace("http://", "").replace("https://", "");
+        String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         version.setTitle(Constants.TH_CLIENT_VERSION_VALUE + " - " + serverPath);
     }
 

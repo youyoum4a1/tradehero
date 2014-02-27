@@ -7,16 +7,21 @@ import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
+import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOCompactListUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 public class TradeQuantityView extends TableLayout
@@ -27,23 +32,25 @@ public class TradeQuantityView extends TableLayout
     public static final int COLOR_ID_PL_GAIN = R.color.projected_pl_gain;
     public static final int COLOR_ID_PL_LOSS = R.color.projected_pl_loss;
 
-    private TextView mSecurityType;
-    private TextView mPriceAsOf;
-    private TextView mCashAvailable;
-    private TextView mShareAvailable;
-    private TextView mQuantity;
-    private TextView mTradeValue;
-    private TextView mProjectedPLValue;
+    @InjectView(R.id.sec_type) protected TextView mSecurityType;
+    @InjectView(R.id.vprice_as_of) protected TextView mPriceAsOf;
+    @InjectView(R.id.vcash_available) protected TextView mCashAvailable;
+    @InjectView(R.id.vshare_available) protected TextView mShareAvailable;
+    @InjectView(R.id.vquantity) protected TextView mQuantity;
+    @InjectView(R.id.vtrade_value) protected TextView mTradeValue;
+    @InjectView(R.id.p_and_l_value) protected TextView mProjectedPLValue;
 
-    private TableRow mCashAvailableRow;
-    private TableRow mShareAvailableRow;
-    private TableRow mQuantityRow;
-    private TableRow mTradeValueRow;
-    private TableRow mProjectedPLRow;
+    @InjectView(R.id.cash_available_row) protected TableRow mCashAvailableRow;
+    @InjectView(R.id.share_available_row) protected TableRow mShareAvailableRow;
+    @InjectView(R.id.quantity_row) protected TableRow mQuantityRow;
+    @InjectView(R.id.trade_value_row) protected TableRow mTradeValueRow;
+    @InjectView(R.id.p_and_l_value_row) protected TableRow mProjectedPLRow;
 
+    @Inject PositionDTOCompactListUtil positionDTOCompactListUtil;
+    private PortfolioCompactDTO portfolioCompactDTO;
     private PortfolioId portfolioId;
     private SecurityCompactDTO securityCompactDTO;
-    private SecurityPositionDetailDTO securityPositionDetailDTO;
+    private PositionDTOCompactList positionDTOCompactList;
     private UserProfileDTO userProfileDTO;
     private QuoteDTO quoteDTO;
     private boolean buy = true;
@@ -136,29 +143,37 @@ public class TradeQuantityView extends TableLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         initView();
     }
 
     private void initView()
     {
-        mSecurityType = (TextView) findViewById(R.id.sec_type);
-        mPriceAsOf = (TextView) findViewById(R.id.vprice_as_of);
-        mCashAvailable = (TextView) findViewById(R.id.vcash_available);
-        mShareAvailable = (TextView) findViewById(R.id.vshare_available);
-        mQuantity = (TextView) findViewById(R.id.vquantity);
-        mTradeValue = (TextView) findViewById(R.id.vtrade_value);
-        mProjectedPLValue = (TextView) findViewById(R.id.p_and_l_value);
-        mCashAvailableRow = (TableRow) findViewById(R.id.cash_available_row);
-        mShareAvailableRow = (TableRow) findViewById(R.id.share_available_row);
-        mQuantityRow = (TableRow) findViewById(R.id.quantity_row);
-        mTradeValueRow = (TableRow) findViewById(R.id.trade_value_row);
-        mProjectedPLRow = (TableRow) findViewById(R.id.p_and_l_value_row);
+        ButterKnife.inject(this);
         mNormalQuantityColor = getResources().getColor(android.R.color.transparent);
         mHighlightQuantityColor = getResources().getColor(R.color.trade_highlight_share_quantity);
         display();
     }
 
-    public void linkWith(PortfolioId portfolioId, boolean andDisplay)
+    public void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        this.portfolioCompactDTO = portfolioCompactDTO;
+        if (portfolioCompactDTO != null)
+        {
+            linkWith(portfolioCompactDTO.getPortfolioId(), andDisplay);
+        }
+        else
+        {
+            linkWith((PortfolioId) null, andDisplay);
+        }
+        if (andDisplay)
+        {
+            displayCashAvailable();
+            displayTradeValue();
+        }
+    }
+
+    protected void linkWith(PortfolioId portfolioId, boolean andDisplay)
     {
         this.portfolioId = portfolioId;
         if (andDisplay)
@@ -177,13 +192,9 @@ public class TradeQuantityView extends TableLayout
         }
     }
 
-    public void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
+    public void linkWith(PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
     {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        if (securityPositionDetailDTO != null)
-        {
-            linkWith(securityPositionDetailDTO.security, andDisplay);
-        }
+        this.positionDTOCompactList = positionDTOCompacts;
         if (andDisplay)
         {
             displayShareAvailable();
@@ -227,52 +238,73 @@ public class TradeQuantityView extends TableLayout
         displayProjectedPLRow();
     }
 
-    public void displaySecurityType()
+    private void displaySecurityType()
     {
         if (mSecurityType != null)
         {
-            if (securityCompactDTO != null)
-            {
-                mSecurityType.setText(getContext().getString(securityCompactDTO.getSecurityType().stringResId).toUpperCase()); // HACK upperCase
-            }
-            else
-            {
-                mSecurityType.setText("");
-            }
+            mSecurityType.setText(getSecurityTypeText());
         }
     }
 
-    public void displayPriceAsOf()
+    public String getSecurityTypeText()
+    {
+        if (securityCompactDTO != null)
+        {
+            return getContext().getString(securityCompactDTO.getSecurityType().stringResId).toUpperCase(); // HACK upperCase
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private void displayPriceAsOf()
     {
         if (mPriceAsOf != null)
         {
-            if (quoteDTO != null && quoteDTO.asOfUtc != null)
-            {
-                mPriceAsOf.setText(DateUtils.getFormattedDate(quoteDTO.asOfUtc));
-            }
-            else if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
-            {
-                mPriceAsOf.setText(DateUtils.getFormattedDate(securityCompactDTO.lastPriceDateAndTimeUtc));
-            }
-            else
-            {
-                mPriceAsOf.setText("");
-            }
+            mPriceAsOf.setText(getPriceAsOf());
         }
     }
 
-    public void displayCashAvailable()
+    public String getPriceAsOf()
     {
-        if (mCashAvailable != null && userProfileDTO != null && userProfileDTO.portfolio != null)
+        if (quoteDTO != null && quoteDTO.asOfUtc != null)
         {
-            // TODO Take the cash available from portfolioDTO, not userProfileDTO
-            double cashAvailable = userProfileDTO.portfolio.cashBalance;
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable, false);
-            mCashAvailable.setText(thSignedNumber.toString());
+            return DateUtils.getFormattedDate(quoteDTO.asOfUtc);
+        }
+        else if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
+        {
+            return DateUtils.getFormattedDate(securityCompactDTO.lastPriceDateAndTimeUtc);
+        }
+        else
+        {
+            return "";
         }
     }
 
-    public void displayCashAvailableRow()
+    private void displayCashAvailable()
+    {
+        if (mCashAvailable != null)
+        {
+            mCashAvailable.setText(getCashBalanceText());
+        }
+    }
+
+    public String getCashBalanceText()
+    {
+        if (portfolioCompactDTO != null)
+        {
+            double cashAvailable = portfolioCompactDTO.cashBalance;
+            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable, false, portfolioCompactDTO.currencyDisplay);
+            return thSignedNumber.toString();
+        }
+        else
+        {
+            return getResources().getString(R.string.na);
+        }
+    }
+
+    private void displayCashAvailableRow()
     {
         if (mCashAvailableRow != null)
         {
@@ -280,19 +312,27 @@ public class TradeQuantityView extends TableLayout
         }
     }
 
-    public void displayShareAvailable()
+    private void displayShareAvailable()
     {
         if (mShareAvailable != null)
         {
-            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || portfolioId == null)
-            {
-                mShareAvailable.setText("0");
-            }
-            else
-            {
-                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(this.quoteDTO, this.portfolioId,
-                        this.userProfileDTO)));
-            }
+            mShareAvailable.setText(getShareAvailableText());
+        }
+    }
+
+    public String getShareAvailableText()
+    {
+        if (positionDTOCompactList == null || portfolioId == null)
+        {
+            return "0";
+        }
+        else
+        {
+            return String.format(
+                    "%,d",
+                    positionDTOCompactList.getMaxSellableShares(
+                            this.quoteDTO,
+                            this.portfolioCompactDTO));
         }
     }
 
@@ -308,18 +348,23 @@ public class TradeQuantityView extends TableLayout
     {
         if (mQuantity != null)
         {
-            if (shareQuantity == null)
-            {
-                mQuantity.setText("");
-            }
-            else if (shareQuantity == (int) (double) shareQuantity)
-            {
-                mQuantity.setText(String.format("%,d", (int) (double) shareQuantity));
-            }
-            else
-            {
-                mQuantity.setText(String.format("%,.2f", shareQuantity));
-            }
+            mQuantity.setText(getShareQuantityText());
+        }
+    }
+
+    public String getShareQuantityText()
+    {
+        if (shareQuantity == null)
+        {
+            return "";
+        }
+        else if (shareQuantity == (int) (double) shareQuantity)
+        {
+            return String.format("%,d", (int) (double) shareQuantity);
+        }
+        else
+        {
+            return String.format("%,.2f", shareQuantity);
         }
     }
 
@@ -335,21 +380,23 @@ public class TradeQuantityView extends TableLayout
     {
         if (mTradeValue != null)
         {
-            if (shareQuantity != null && buy && quoteDTO != null && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
-            {
-                THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.ask * quoteDTO.toUSDRate, false);
-                mTradeValue.setText(thTradeValue.toString());
-            }
-            else if (shareQuantity != null && !buy && quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
-            {
-                THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate, false);
-                mTradeValue.setText(thTradeValue.toString());
-            }
-            else
-            {
-                mTradeValue.setText("-");
-            }
+            mTradeValue.setText(getTradeValueText());
         }
+    }
+
+    public String getTradeValueText()
+    {
+        if (shareQuantity == null || quoteDTO == null)
+        {
+            return "-";
+        }
+        Double priceRefCcy = quoteDTO.getPriceRefCcy(portfolioCompactDTO, buy);
+        if (priceRefCcy == null || portfolioCompactDTO == null)
+        {
+            return "-";
+        }
+        THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * priceRefCcy, false, portfolioCompactDTO.currencyDisplay);
+        return thTradeValue.toString();
     }
 
     private void displayTradeValueRow()
@@ -368,7 +415,7 @@ public class TradeQuantityView extends TableLayout
     {
         if (mProjectedPLValue != null)
         {
-            Double plValue = SecurityPositionDetailDTOUtil.projectedPLValue(securityPositionDetailDTO, quoteDTO, shareQuantity);
+            Double plValue = positionDTOCompactListUtil.projectedPLValue(positionDTOCompactList, quoteDTO, shareQuantity);
             if (plValue != null)
             {
                 mProjectedPLValue.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, plValue));

@@ -95,10 +95,11 @@ abstract public class THBaseBillingInteractor<
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject protected CurrentUserId currentUserId;
-    protected UserProfileDTO userProfileDTO;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    protected OwnedPortfolioId applicablePortfolioId;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+
+    protected UserProfileDTO userProfileDTO;
+    protected OwnedPortfolioId applicablePortfolioId;
 
     protected ProgressDialog progressDialog;
 
@@ -203,28 +204,7 @@ abstract public class THBaseBillingInteractor<
     public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
-        prepareOwnedPortfolioId();
         prepareProductDetailsPrerequisites();
-    }
-
-    protected void prepareOwnedPortfolioId()
-    {
-        if (this.applicablePortfolioId == null)
-        {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
-        }
-        if (this.applicablePortfolioId.userId == null)
-        {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), this.applicablePortfolioId.portfolioId);
-        }
-        if (this.applicablePortfolioId.portfolioId == null)
-        {
-            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
-            if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
-            {
-                this.applicablePortfolioId = ownedPortfolioId;
-            }
-        }
     }
     //</editor-fold>
 

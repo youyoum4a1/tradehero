@@ -263,7 +263,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             Integer maxPurchasableShares = getMaxPurchasableShares();
             if (maxPurchasableShares != null)
             {
-                mBuyQuantity = Math.min(maxPurchasableShares.intValue(), mBuyQuantity);
+                linkWithBuyQuantity(Math.min(maxPurchasableShares.intValue(), mBuyQuantity), andDisplay);
             }
         }
         super.linkWith(userProfileDTO, andDisplay);
@@ -281,7 +281,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             Integer maxPurchasableShares = getMaxPurchasableShares();
             if (maxPurchasableShares != null)
             {
-                mBuyQuantity = Math.min(maxPurchasableShares.intValue(), mBuyQuantity);
+                linkWithBuyQuantity(Math.min(maxPurchasableShares.intValue(), mBuyQuantity), andDisplay);
             }
         }
         else
@@ -289,7 +289,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             Integer maxSellableShares = getMaxSellableShares();
             if (maxSellableShares != null)
             {
-                mSellQuantity = Math.min(maxSellableShares.intValue(), mSellQuantity);
+                linkWithSellQuantity(Math.min(maxSellableShares.intValue(), mSellQuantity), andDisplay);
             }
         }
         super.linkWith(quoteDTO, andDisplay);
