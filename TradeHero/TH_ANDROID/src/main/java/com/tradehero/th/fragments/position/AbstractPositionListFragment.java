@@ -9,6 +9,7 @@ import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
@@ -44,6 +45,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.List;
@@ -79,7 +81,7 @@ abstract public class AbstractPositionListFragment<
     protected ExpandingListView positionsListView;
     private ProgressBar progressBar;
 
-    protected OwnedPortfolioId ownedPortfolioId;
+    protected OwnedPortfolioId shownOwnedPortfolioId;
     protected GetPositionsDTOType getPositionsDTO;
     protected PortfolioDTO portfolioDTO;
     protected UserProfileDTO userProfileDTO;
@@ -194,7 +196,7 @@ abstract public class AbstractPositionListFragment<
         if (view instanceof PositionNothingView)
         {
             // Need to handle the case when portfolio is for a competition
-            PortfolioDTO shownPortfolio = portfolioCache.get().get(ownedPortfolioId);
+            PortfolioDTO shownPortfolio = portfolioCache.get().get(shownOwnedPortfolioId);
             if (shownPortfolio == null || shownPortfolio.providerId == null)
             {
                 getDashboardNavigator().goToTab(DashboardTabType.TRENDING);
@@ -209,7 +211,7 @@ abstract public class AbstractPositionListFragment<
         }
         else if (view instanceof PositionLockedView)
         {
-            popFollowUser(ownedPortfolioId.getUserBaseKey());
+            popFollowUser(shownOwnedPortfolioId.getUserBaseKey());
         }
     }
 
@@ -306,24 +308,16 @@ abstract public class AbstractPositionListFragment<
         super.onDestroyView();
     }
 
-    public void linkWith(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    public void linkWith(OwnedPortfolioId shownOwnedPortfolioId, boolean andDisplay)
     {
-        this.ownedPortfolioId = purchaseApplicablePortfolioId;
+        this.shownOwnedPortfolioId = shownOwnedPortfolioId;
         this.portfolioDTO = null;
         this.userProfileDTO = null;
 
         detachPortfolioTask();
         detachUserProfileTask();
-        if (purchaseApplicablePortfolioId != null)
-        {
-            fetchPortfolioDTOTask = createPortfolioFetchTask(purchaseApplicablePortfolioId);
-            fetchPortfolioDTOTask.execute();
-            if (purchaseApplicablePortfolioId.userId != null)
-            {
-                fetchUserProfileTask = createUserProfileFetchTask(purchaseApplicablePortfolioId.getUserBaseKey());
-                fetchUserProfileTask.execute();
-            }
-        }
+        fetchPortfolio();
+        fetchUserProfile();
 
         fetchSimplePage();
         if (andDisplay)
@@ -331,6 +325,56 @@ abstract public class AbstractPositionListFragment<
             // TODO finer grained
             display();
         }
+    }
+
+    protected void fetchPortfolio()
+    {
+        detachPortfolioTask();
+        if (shownOwnedPortfolioId != null)
+        {
+            // TODO this part is a stopgap while the currency of leaderboard positions are not decided
+            Boolean isOtherPeople = isShownOwnedPortfolioIdForOtherPeople(shownOwnedPortfolioId);
+            if (isOtherPeople != null && !isOtherPeople)
+            {
+                fetchPortfolioDTOTask = createPortfolioFetchTask(shownOwnedPortfolioId);
+                fetchPortfolioDTOTask.execute();
+            }
+            else
+            {
+                // While waiting to get the first positions
+                linkWithUSDPortfolio(true);
+            }
+        }
+    }
+
+    // This is a hack to get the currency info
+    protected void reAttemptFetchPortfolio()
+    {
+        if (getPositionsDTO != null && getPositionsDTO.positions != null && getPositionsDTO.positions.size() > 0)
+        {
+            PositionDTOType firstPosition = getPositionsDTO.positions.get(0);
+            OwnedPortfolioId positionPortfolioId = firstPosition.getOwnedPortfolioId();
+            if (!isShownOwnedPortfolioIdForOtherPeople(positionPortfolioId))
+            {
+                this.shownOwnedPortfolioId = positionPortfolioId;
+                fetchPortfolio();
+            }
+        }
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileTask();
+        if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.userId != null)
+        {
+            fetchUserProfileTask = createUserProfileFetchTask(shownOwnedPortfolioId.getUserBaseKey());
+            fetchUserProfileTask.execute();
+        }
+    }
+
+    public Boolean isShownOwnedPortfolioIdForOtherPeople(OwnedPortfolioId ownedPortfolioId)
+    {
+        return ownedPortfolioId == null ? null : (ownedPortfolioId.portfolioId == null || ownedPortfolioId.portfolioId <= 0);
     }
 
     abstract protected void fetchSimplePage();
@@ -392,6 +436,7 @@ abstract public class AbstractPositionListFragment<
     public void linkWith(GetPositionsDTOType getPositionsDTO, boolean andDisplay)
     {
         this.getPositionsDTO = getPositionsDTO;
+        reAttemptFetchPortfolio();
         rePurposeAdapter();
 
         if (andDisplay)
@@ -440,6 +485,15 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
+    public void linkWithUSDPortfolio(boolean andDisplay)
+    {
+        PortfolioDTO portfolioDTO1 = new PortfolioDTO();
+        portfolioDTO1.refCcyToUsdRate = 1d;
+        portfolioDTO1.currencyDisplay = SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+        portfolioDTO1.currencyISO = SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_ISO;
+        linkWith(portfolioDTO1, andDisplay);
+    }
+
     public void display()
     {
         displayHeaderView();
@@ -457,16 +511,20 @@ abstract public class AbstractPositionListFragment<
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (getPositionsDTO != null && getPositionsDTO.positions != null)
+        SherlockFragmentActivity sherlockFragmentActivity = getSherlockActivity();
+        if (sherlockFragmentActivity != null)
         {
-            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                    getPositionsDTO.positions.size());
-            actionBar.setTitle(title);
-        }
-        else
-        {
-            actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
+            ActionBar actionBar = sherlockFragmentActivity.getSupportActionBar();
+            if (getPositionsDTO != null && getPositionsDTO.positions != null)
+            {
+                String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                        getPositionsDTO.positions.size());
+                actionBar.setTitle(title);
+            }
+            else
+            {
+                actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
+            }
         }
     }
 

@@ -37,7 +37,7 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
 
     protected void fetchSimplePage()
     {
-        if (ownedPortfolioId != null && ownedPortfolioId.isValid())
+        if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
             detachGetPositionsTask();
             fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask();
@@ -53,14 +53,14 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
 
     @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask()
     {
-        return getPositionsCache.get().getOrFetch(ownedPortfolioId, getPositionsCacheListener);
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, getPositionsCacheListener);
     }
 
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
     {
         @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
         {
-            if (key.equals(ownedPortfolioId))
+            if (key.equals(shownOwnedPortfolioId))
             {
                 displayProgress(false);
                 linkWith(value, true);
