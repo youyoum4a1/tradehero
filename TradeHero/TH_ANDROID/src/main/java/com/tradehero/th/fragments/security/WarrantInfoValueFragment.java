@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -23,7 +24,6 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
-import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -48,7 +48,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
-    @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected ProviderCache providerCache;
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -96,15 +96,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         }
     }
 
-    @Override public void onPause()
-    {
-        if (securityId != null)
-        {
-            securityCompactCache.unRegisterListener(this);
-        }
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
         if (mHelpVideoLink != null)
@@ -116,12 +107,17 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.onDestroyView();
     }
 
+    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    {
+        return securityCompactCache;
+    }
+
     public void linkWith(ProviderId providerId, boolean andDisplay)
     {
         this.providerId = providerId;
         if (this.providerId != null)
         {
-            linkWith(providerCache.get().get(providerId), andDisplay);
+            linkWith(providerCache.get(providerId), andDisplay);
         }
         else
         {
@@ -148,8 +144,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            securityCompactCache.registerListener(this);
-            linkWith((WarrantDTO) securityCompactCache.get(this.securityId), andDisplay);
+            linkWith(securityCompactCache.get(this.securityId), andDisplay);
         }
     }
 

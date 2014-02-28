@@ -439,9 +439,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         bottomViewPagerAdapter = null;
         mBottomViewPager = null;
-
         mBottomPagerIndicator = null;
-        mBottomViewPager = null;
+
         super.onDestroyView();
     }
 

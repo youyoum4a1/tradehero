@@ -2,13 +2,15 @@ package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 7:04 PM To change this template use File | Settings | File Templates. */
-abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFragment
+abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
+        extends SherlockFragment
         implements DTOCache.Listener<SecurityId, InfoType>
 {
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractSecurityInfoFragment.class.getName() + ".securityId";
@@ -25,6 +27,8 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
             linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
         }
     }
+
+    abstract DTOCache<SecurityId, InfoType> getInfoCache();
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -12,7 +13,6 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
@@ -35,7 +35,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
     private TextView mVolume;
     private TextView mAvgVolume;
 
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected SecurityCompactCache securityCompactCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -64,13 +64,9 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
     }
 
-    @Override public void onPause()
+    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
     {
-        if (securityId != null)
-        {
-            securityCompactCache.get().unRegisterListener(this);
-        }
-        super.onPause();
+        return securityCompactCache;
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -78,8 +74,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            securityCompactCache.get().registerListener(this);
-            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
+            linkWith(securityCompactCache.get(this.securityId), andDisplay);
         }
     }
 
