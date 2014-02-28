@@ -44,7 +44,6 @@ public class LruMemFileCache extends LruCache
     final private Object setLock = new Object();
     final private Object getLock = new Object();
 
-    //String TAG = "LruMemFileCache" ;
 
     private static MessageDigest getMd5()
     {
@@ -201,6 +200,7 @@ public class LruMemFileCache extends LruCache
 
     @Override public void set(String key, Bitmap bitmap)
     {
+        //test
         super.set(key, bitmap);
         //Log.d(TAG, TAG + " set method main ?" + (Looper.getMainLooper().getThread() == Thread.currentThread()) + " key:" +key+" mem size "+super.size());
         if (diskLruCache != null)
@@ -338,7 +338,7 @@ public class LruMemFileCache extends LruCache
                             {
                                 super.set(key, bitmap);
                                 //THLog.i(TAG, "Got bitmap from disk " + key);
-                                Log.d(TAG,TAG+" get from discache and set to memcache key:"+key);
+                                //Log.d(TAG,TAG+" get from discache and set to memcache key:"+key);
                             }
                             else
                             {
@@ -374,9 +374,7 @@ public class LruMemFileCache extends LruCache
         {
             //THLog.i(TAG, "Got bitmap from ram " + key);
         }
-
-        Log.d(TAG,TAG+" get method main ?"+isUIThread+" return:"+bitmap+" >>>");
-
+        //Log.d(TAG,TAG+" get method main ?"+isUIThread+" return:"+bitmap+" >>>");
         return bitmap;
     }
 

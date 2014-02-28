@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -396,6 +397,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             }
         }
         else
+
         {
             //if stockBgLogo is null,we don't have to load image.
         }
@@ -403,6 +405,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadExchangeImage()
     {
+        Log.d(TAG, "LruMemFileCache " +TAG+ "  loadBgImage");
         if (stockBgLogo != null)
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
