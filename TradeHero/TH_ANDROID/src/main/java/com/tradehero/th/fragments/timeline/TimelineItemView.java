@@ -205,25 +205,12 @@ public class TimelineItemView extends LinearLayout implements
     {
         if (user.picture != null)
         {
+            displayDefaultUserProfilePicture();
             picasso.get()
                     .load(user.picture)
                     .transform(peopleIconTransformation)
-                    .into(avatar, new com.squareup.picasso.Callback()
-                    {
-                        @Override public void onSuccess()
-                        {
-
-                        }
-
-                        @Override public void onError()
-                        {
-                            displayDefaultUserProfilePicture();
-                        }
-                    });
-        }
-        else
-        {
-             displayDefaultUserProfilePicture();
+                    .placeholder(avatar.getDrawable())
+                    .into(avatar);
         }
     }
 
