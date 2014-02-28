@@ -27,9 +27,8 @@ public class WarrantDTOUnderlyerTypeComparatorTest
 
     @Before public void setUp()
     {
-        WarrantDTOUnderlyerTypeComparator comparator = new WarrantDTOUnderlyerTypeComparator();
-        comparator.underlyerComparator = new WarrantDTOUnderlyerComparator();
-        comparator.typeComparator = new WarrantDTOTypeComparator();
+        WarrantDTOUnderlyerTypeComparator comparator = new WarrantDTOUnderlyerTypeComparator(
+                new WarrantDTOUnderlyerComparator(), new WarrantDTOTypeComparator());
         treeSet = new TreeSet<>(comparator);
     }
 

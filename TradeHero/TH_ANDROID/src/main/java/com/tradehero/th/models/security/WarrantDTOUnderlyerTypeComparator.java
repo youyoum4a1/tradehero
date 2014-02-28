@@ -22,13 +22,13 @@ import javax.inject.Singleton;
  */
 @Singleton public class WarrantDTOUnderlyerTypeComparator implements Comparator<WarrantDTO>
 {
-    public static final String TAG = WarrantDTOUnderlyerTypeComparator.class.getSimpleName();
+    private final WarrantDTOUnderlyerComparator underlyerComparator;
+    private final WarrantDTOTypeComparator typeComparator;
 
-    @Inject WarrantDTOUnderlyerComparator underlyerComparator;
-    @Inject WarrantDTOTypeComparator typeComparator;
-
-    @Inject public WarrantDTOUnderlyerTypeComparator()
+    @Inject public WarrantDTOUnderlyerTypeComparator(WarrantDTOUnderlyerComparator underlyerComparator, WarrantDTOTypeComparator typeComparator)
     {
+        this.underlyerComparator = underlyerComparator;
+        this.typeComparator = typeComparator;
     }
 
     @Override public int compare(WarrantDTO lhs, WarrantDTO rhs)

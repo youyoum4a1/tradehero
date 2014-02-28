@@ -16,8 +16,6 @@ import javax.inject.Inject;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {
-    private final static String TAG = MacquarieWarrantItemViewAdapter.class.getSimpleName();
-
     @Inject SecurityCompactCache securityCompactCache;
     @Inject WarrantDTOUnderlyerTypeComparator warrantDTOComparator;
     @Inject WarrantDTOUtil warrantDTOUtil;
