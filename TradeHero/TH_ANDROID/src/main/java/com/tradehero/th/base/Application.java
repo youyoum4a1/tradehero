@@ -24,9 +24,12 @@ public class Application extends PApplication
     {
         super.init();
 
-        if (Constants.RELEASE) {
+        if (Constants.RELEASE)
+        {
             Timber.plant(new CrashReportingTree());
-        } else {
+        }
+        else
+        {
             Timber.plant(new Timber.DebugTree());
         }
 
