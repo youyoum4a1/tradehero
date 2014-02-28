@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
@@ -12,7 +11,6 @@ import com.tradehero.th.api.security.SecurityId;
 abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFragment
         implements DTOCache.Listener<SecurityId, InfoType>
 {
-    public final static String TAG = AbstractSecurityInfoFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractSecurityInfoFragment.class.getName() + ".securityId";
 
     protected SecurityId securityId;
@@ -37,14 +35,13 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
     {
         if (key.equals(securityId))
         {
-            linkWith(value, true);
+            linkWith(value, !isDetached());
         }
     }
 
     @Override public void onErrorThrown(SecurityId key, Throwable error)
     {
         THToast.show(getString(R.string.error_fetch_security_info));
-        THLog.e(TAG, "Error fetching the security " + key, error);
     }
 
     public void linkWith(InfoType value, boolean andDisplay)
