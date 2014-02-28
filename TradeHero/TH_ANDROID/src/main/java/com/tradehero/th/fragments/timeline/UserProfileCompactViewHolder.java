@@ -62,9 +62,9 @@ public class UserProfileCompactViewHolder
 
     protected void loadUserPicture()
     {
-        loadDefaultPicture();
         if (avatar != null)
         {
+            loadDefaultPicture();
             if (userProfileDTO != null && userProfileDTO.picture != null)
             {
                 picasso
