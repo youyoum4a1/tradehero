@@ -1140,13 +1140,17 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void loadStockBgLogoDelayed()
     {
-        getView().postDelayed(new Runnable()
+        View rootView = getView();
+        if (rootView != null)
         {
-            @Override public void run()
+            rootView.postDelayed(new Runnable()
             {
-                loadStockBgLogo();
-            }
-        }, MS_DELAY_FOR_BG_IMAGE);
+                @Override public void run()
+                {
+                    loadStockBgLogo();
+                }
+            }, MS_DELAY_FOR_BG_IMAGE);
+        }
     }
 
     public void loadStockBgLogo()
