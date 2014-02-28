@@ -63,17 +63,17 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
     //<editor-fold desc="CharSequence">
     @Override public int length()
     {
-        return title.length();
+        return title == null ? 0 : title.length();
     }
 
     @Override public char charAt(int index)
     {
-        return title.charAt(index);
+        return title == null ? 'a' : title.charAt(index);
     }
 
     @Override public CharSequence subSequence(int start, int end)
     {
-        return title.subSequence(start, end);
+        return title == null ? null : title.subSequence(start, end);
     }
 
     @Override public String toString()
