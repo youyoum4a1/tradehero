@@ -61,6 +61,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     @Override public List<UserFriendsDTO> loadInBackground()
     {
+        // TODO wrap these in try / catch?
         Thread emailRetrieverThread = new Thread(new Runnable()
         {
             @Override public void run()
