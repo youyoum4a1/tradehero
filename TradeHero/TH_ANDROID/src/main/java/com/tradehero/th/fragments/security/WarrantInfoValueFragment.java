@@ -9,7 +9,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.LiveDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -92,7 +91,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             {
                 linkWith(new ProviderId(providerIdBundle), true);
             }
-            THLog.d(TAG, "onResume " + providerId);
         }
     }
 
