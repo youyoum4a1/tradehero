@@ -16,6 +16,7 @@ git checkout origin/develop --track
 - Setup all configuration ask prompted for JAVA & Android, after that, download Android 4.0 (API 14) from SDK Manager (Tool > Android > SDK Manager)
 - To make it easier working with Dagger (dependency injection module), install this plugin: https://github.com/square/dagger-intellij-plugin
 - To build for release, you need Crashlytics plugin. Download it from https://www.crashlytics.com/downloads/intellij and install from disk.
+- DO NOT publish app to Google Play before obfuscating it with ProGuard!!! To know how, read the proguard help page from Wiki.
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
