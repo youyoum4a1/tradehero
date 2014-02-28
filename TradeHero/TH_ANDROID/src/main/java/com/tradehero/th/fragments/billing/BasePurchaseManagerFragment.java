@@ -114,6 +114,10 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 {
                     applicablePortfolioId = ownedPortfolioId;
                 }
+                else
+                {
+                    // TODO At this stage, portfolioId is still null, we need to handle this case
+                }
             }
         }
 
