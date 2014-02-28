@@ -3,6 +3,7 @@ package com.tradehero.th.billing;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -108,12 +109,12 @@ abstract public class THBaseBillingInteractor<
     {
         super();
         DaggerUtils.inject(this);
-        prepareCallbacks(currentActivityHolder);
+        prepareCallbacks();
     }
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    protected void prepareCallbacks(final CurrentActivityHolder activityHolder)
+    protected void prepareCallbacks()
     {
         purchaseFinishedListener = createPurchaseFinishedListener();
         purchaseReportedListener = createPurchaseReportedListener();
@@ -188,10 +189,15 @@ abstract public class THBaseBillingInteractor<
 
     @Override public AlertDialog popBillingUnavailable()
     {
-        return getBillingAlertDialogUtil().popBillingUnavailable(
-                currentActivityHolder.getCurrentActivity(),
-                getBillingLogicHolder().getBillingHolderName(
-                        currentActivityHolder.getCurrentActivity().getResources()));
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
+        {
+            return getBillingAlertDialogUtil().popBillingUnavailable(
+                    currentActivityHolder.getCurrentContext(),
+                    getBillingLogicHolder().getBillingHolderName(
+                            currentContext.getResources()));
+        }
+        return null;
     }
     //</editor-fold>
 
@@ -336,13 +342,17 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void run()
         {
-            getBillingAlertDialogUtil().popBuyDialog(
-                    currentActivityHolder.getCurrentActivity(),
-                    getTHBillingLogicHolder(),
-                    THBaseBillingInteractor.this,
-                    skuDomain,
-                    titleResId,
-                    runOnPurchaseComplete);
+            Activity currentActivity = currentActivityHolder.getCurrentActivity();
+            if (currentActivity != null)
+            {
+                getBillingAlertDialogUtil().popBuyDialog(
+                        currentActivity,
+                        getTHBillingLogicHolder(),
+                        THBaseBillingInteractor.this,
+                        skuDomain,
+                        titleResId,
+                        runOnPurchaseComplete);
+            }
         }
     }
 
@@ -369,12 +379,9 @@ abstract public class THBaseBillingInteractor<
             ProductPurchaseType,
             BillingExceptionType>
     {
-        protected final CurrentActivityHolder activityHolder;
-
-        public THBaseBillingInteractorOnPurchaseFinishedListener(final CurrentActivityHolder activityHolder)
+        public THBaseBillingInteractorOnPurchaseFinishedListener()
         {
             super();
-            this.activityHolder = activityHolder;
         }
 
         @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
@@ -410,12 +417,9 @@ abstract public class THBaseBillingInteractor<
             ProductPurchaseType,
             BillingExceptionType>
     {
-        protected final CurrentActivityHolder activityHolder;
-
-        public THBaseBillingInteractorOnPurchaseReportedListener(final CurrentActivityHolder activityHolder)
+        public THBaseBillingInteractorOnPurchaseReportedListener()
         {
             super();
-            this.activityHolder = activityHolder;
         }
 
         @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
@@ -434,19 +438,19 @@ abstract public class THBaseBillingInteractor<
             {
                 progressDialog.hide();
             }
-            getBillingAlertDialogUtil().popFailedToReport(activityHolder.getCurrentActivity());
+            getBillingAlertDialogUtil().popFailedToReport(currentActivityHolder.getCurrentActivity());
         }
     }
 
     protected void launchReportPurchaseSequence(PurchaseReporterHolderType purchaseReporterHolder, ProductPurchaseType purchase)
     {
-        Activity activity = this.currentActivityHolder.getCurrentActivity();
-        if (activity != null)
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
-                    activity,
-                    activity.getString(R.string.store_billing_report_api_launching_window_title),
-                    activity.getString(R.string.store_billing_report_api_launching_window_message),
+                    currentContext,
+                    currentContext.getString(R.string.store_billing_report_api_launching_window_title),
+                    currentContext.getString(R.string.store_billing_report_api_launching_window_message),
                     true);
         }
         int requestCode = getBillingLogicHolder().getUnusedRequestCode();
@@ -496,11 +500,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void popDialogLoadingInfo()
     {
-        Activity activity = this.currentActivityHolder.getCurrentActivity();
-        if (activity != null)
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
         {
             progressDialog = ProgressDialogUtil.show(
-                    activity,
+                    currentContext,
                     R.string.store_billing_loading_info_window_title,
                     R.string.store_billing_loading_info_window_message
             );
