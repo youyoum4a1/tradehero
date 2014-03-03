@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.authentication;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -34,6 +36,12 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private View forgotDialogView;
 
     @Inject UserService userService;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override public int getDefaultViewId ()
     {
