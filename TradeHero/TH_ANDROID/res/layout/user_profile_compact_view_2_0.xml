@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <com.tradehero.th.fragments.timeline.UserProfileCompactView
+      android:id="@+id/user_profile_compact_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:background="@color/black"
+      >
+
+    <ImageView
+        android:id="@+id/user_profile_avatar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/user_profile_compact_avatar_margin"
+        android:background="@drawable/layout_oval"
+        android:padding="0.5dp"
+        tools:src="@drawable/avatar"
+        android:contentDescription="@null"/>
+
+    <include
+        layout="@layout/user_profile_detail_bottom_2_0"
+        />
+
+  </com.tradehero.th.fragments.timeline.UserProfileCompactView>
+
+</merge>
