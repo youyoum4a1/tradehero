@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTONameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -109,19 +109,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     {
         if (items != null)
         {
-            Collections.sort(items, new Comparator<UserFriendsDTO>()
-            {
-                @Override public int compare(UserFriendsDTO lhs, UserFriendsDTO rhs)
-                {
-                    if (lhs == rhs) return 0;
-                    else if (lhs == null) return -1;
-                    else if (rhs == null) return 1;
-                    else if (lhs.name == null || lhs.name.isEmpty()) return -1;
-                    else if (rhs.name == null || lhs.name.isEmpty()) return 1;
-                    else if (lhs.name.equals(rhs.name)) return 0;
-                    else return lhs.name.compareTo(rhs.name);
-                }
-            });
+            Collections.sort(items, new UserFriendsDTONameComparator());
         }
     }
 
@@ -131,7 +119,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         if (sectionIndices != null)
         {
             sections = new Character[sectionIndices.length];
-            for (int i = 0; i<sectionIndices.length; ++i)
+            for (int i = 0; i < sectionIndices.length; ++i)
             {
                 sections[i] = collectedNames[sectionIndices[i]].charAt(0);
             }
@@ -153,7 +141,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             List<Integer> firstCharacterAppearances = new ArrayList<>();
             char lastBeginningCharacter = collectedNames[0].charAt(0);
             firstCharacterAppearances.add(0);
-            for (int characterIndex=1; characterIndex < collectedNames.length; ++characterIndex)
+            for (int characterIndex = 1; characterIndex < collectedNames.length; ++characterIndex)
             {
                 String name = collectedNames[characterIndex];
                 if (name != null && name.length() > 0 && name.charAt(0) != lastBeginningCharacter)
