@@ -91,4 +91,8 @@
   <dimen name="trending_list_padding_left_and_right">8dp</dimen>
   <dimen name="trending_list_padding_bottom">95dp</dimen>
   <dimen name="trending_list_padding_top">85dp</dimen>
+
+    <dimen name="security_bg_padding_r_b">1dp</dimen>
+    <dimen name="security_bg_padding_t_l">1dp</dimen>
+    <dimen name="security_bg_radius">14dp</dimen>
 </resources>

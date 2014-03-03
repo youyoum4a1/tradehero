@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- /////////////////////////////////////////////////////// -->
+    <item>
+        <shape>
+            <padding
+                    android:bottom="@dimen/security_bg_padding_r_b"
+                    android:left="@dimen/security_bg_padding_t_l"
+                    android:right="@dimen/security_bg_padding_r_b"
+                    android:top="@dimen/security_bg_padding_t_l" />
+
+            <solid android:color="#00363636" />
+
+            <corners android:radius="@dimen/security_bg_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                    android:bottom="@dimen/security_bg_padding_r_b"
+                    android:left="@dimen/security_bg_padding_t_l"
+                    android:right="@dimen/security_bg_padding_r_b"
+                    android:top="@dimen/security_bg_padding_t_l" />
+
+            <solid android:color="#10363636" />
+
+            <corners android:radius="@dimen/security_bg_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                    android:bottom="@dimen/security_bg_padding_r_b"
+                    android:left="@dimen/security_bg_padding_t_l"
+                    android:right="@dimen/security_bg_padding_r_b"
+                    android:top="@dimen/security_bg_padding_t_l" />
+
+            <solid android:color="#20363636" />
+
+            <corners android:radius="@dimen/security_bg_radius" />
+        </shape>
+    </item>
+    <item >
+        <shape>
+            <padding
+                    android:bottom="@dimen/security_bg_padding_r_b"
+                    android:left="@dimen/security_bg_padding_t_l"
+                    android:right="@dimen/security_bg_padding_r_b"
+                    android:top="@dimen/security_bg_padding_t_l" />
+
+            <solid android:color="#30363636" />
+
+            <corners android:radius="@dimen/security_bg_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                    android:bottom="@dimen/security_bg_padding_r_b"
+                    android:left="@dimen/security_bg_padding_t_l"
+                    android:right="@dimen/security_bg_padding_r_b"
+                    android:top="@dimen/security_bg_padding_t_l" />
+            <solid android:color="#50363636" />
+            <corners android:radius="@dimen/security_bg_radius" />
+        </shape>
+    </item>
+
+    <!-- Background -->
+    <item>
+        <shape>
+            <corners android:radius="@dimen/security_bg_radius" />
+
+            <gradient
+                    android:angle="90"
+                    android:centerColor="#DBDBDB"
+                    android:centerY="0.4"
+                    android:endColor="#FDFDFD"
+                    android:startColor="#DBDBDB"
+                    android:type="linear" />
+
+            <!--<padding-->
+                    <!--android:bottom="5dip"-->
+                    <!--android:left="10dip"-->
+                    <!--android:right="10dip"-->
+                    <!--android:top="5dip" />-->
+
+            <stroke
+                    android:width="0.1dip"
+                    android:color="#50363636" />
+            <!-- 50363636 -->
+        </shape>
+    </item>
+
+</layer-list><!--
+- See more at: http://bnotions.com/efficient-use-of-drawables-to-develop-a-dynamic-ui-on-android/#sthash.s4RrE9Ai.dpuf
+http://bnotions.com/efficient-use-of-drawables-to-develop-a-dynamic-ui-on-android/
+-->

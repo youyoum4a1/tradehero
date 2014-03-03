@@ -72,6 +72,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     public SecurityItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        //setBackgroundResource(R.drawable.trending_grid_item_bg);
     }
 
     public SecurityItemView(Context context, AttributeSet attrs, int defStyle)
@@ -90,6 +91,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
+        //setBackgroundResource(R.drawable.trending_grid_item_bg);
         this.callback = new ImageCallback();
     }
 
@@ -365,12 +367,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadImage()
     {
+        //setBackgroundResource(R.drawable.trending_grid_item_bg);
         //Log.d(TAG, "LruMemFileCache " +TAG+ "  loadImage url:"+securityCompactDTO.imageBlobUrl);
         if (stockBgLogo != null)
         {
             if (stockBgLogo != null)
             {
                 stockBgLogo.setVisibility(View.INVISIBLE);
+
             }
             //just for test
             if(BuildConfig.DEBUG && securityCompactDTO.name.contains("Cannabis")){
@@ -386,6 +390,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 mPicasso.load(securityCompactDTO.imageBlobUrl)
                         //.transform(foregroundTransformation)
                         .withMerge()
+                        .placeholder(R.drawable.trending_grid_item_bg)
                         .into(stockBgLogo, callback);
             }
             else
@@ -427,6 +432,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     mPicasso.load(exchange.logoId)
                             //.transform(foregroundTransformation)
                             .withMerge()
+                            .placeholder(R.drawable.trending_grid_item_bg)
                             .into(stockBgLogo, exchangeImageCallback);
 
 
@@ -592,6 +598,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 Log.d(securityCompactDTO.name,"testKey ,load image success");
             }
             if(stockBgLogo != null){
+                //setBackgroundDrawable(null);
                 stockBgLogo.setVisibility(View.VISIBLE);
             }
         }
@@ -650,6 +657,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 Log.d(securityCompactDTO.name,"testKey ,load exchange success");
             }
             if(stockBgLogo != null){
+                //setBackgroundDrawable(null);
                 stockBgLogo.setVisibility(View.VISIBLE);
             }
         }
