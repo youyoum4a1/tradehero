@@ -287,13 +287,13 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onDestroyView()
     {
-        detachPortfolioTask();
-        detachGetPositionsTask();
-        detachUserProfileTask();
-
         getPositionsCacheListener = null;
         userProfileCacheListener = null;
         portfolioCacheListener = null;
+
+        detachPortfolioTask();
+        detachGetPositionsTask();
+        detachUserProfileTask();
 
         if (positionsListView != null)
         {
