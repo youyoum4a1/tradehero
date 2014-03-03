@@ -138,22 +138,25 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         if (collectedNames != null && collectedNames.length > 0)
         {
             // collect distinct list of first appearance character
-            List<Integer> firstCharacterAppearances = new ArrayList<>();
+            List<Integer> firstCharacterAppearanceIndices = new ArrayList<>();
             char lastBeginningCharacter = collectedNames[0].charAt(0);
-            firstCharacterAppearances.add(0);
-            for (int characterIndex = 1; characterIndex < collectedNames.length; ++characterIndex)
+            firstCharacterAppearanceIndices.add(0);
+            if (collectedNames.length > 1)
             {
-                String name = collectedNames[characterIndex];
-                if (name != null && name.length() > 0 && name.charAt(0) != lastBeginningCharacter)
+                for (int characterIndex = 1; characterIndex < collectedNames.length; ++characterIndex)
                 {
-                    lastBeginningCharacter = name.charAt(0);
-                    firstCharacterAppearances.add(characterIndex);
+                    String name = collectedNames[characterIndex];
+                    if (name != null && name.length() > 0 && name.charAt(0) != lastBeginningCharacter)
+                    {
+                        lastBeginningCharacter = name.charAt(0);
+                        firstCharacterAppearanceIndices.add(characterIndex);
+                    }
                 }
             }
 
             // populate sectionIndices array
-            sectionIndices = new Integer[firstCharacterAppearances.size()];
-            firstCharacterAppearances.toArray(sectionIndices);
+            sectionIndices = new Integer[firstCharacterAppearanceIndices.size()];
+            firstCharacterAppearanceIndices.toArray(sectionIndices);
         }
     }
 
