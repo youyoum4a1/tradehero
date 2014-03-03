@@ -2,19 +2,24 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.TimelineListLoader;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
         implements
             PullToRefreshListView.OnRefreshListener<ListView>,
             AbsListView.OnScrollListener,
-            PullToRefreshBase.OnLastItemVisibleListener
+            PullToRefreshBase.OnLastItemVisibleListener,
+        StickyListHeadersAdapter
 {
     private static final String TAG = TimelineAdapter.class.getName();
     private int currentScrollState;
@@ -71,6 +76,21 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
     @Override public Object getItem(int position)
     {
         return super.getItem(position);
+    }
+
+    @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
+        }
+
+        return convertView;
+    }
+
+    @Override public long getHeaderId(int position)
+    {
+        return 0;
     }
 
     /**
