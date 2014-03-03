@@ -173,7 +173,8 @@ abstract public class IABBillingInventoryFetcher<
     private Bundle getQuerySKUBundle()
     {
         ArrayList<String> identifiers = new ArrayList<>(this.iabSKUs.size());
-        for (IABSKU iabSKU : new ArrayList<>(this.iabSKUs))
+        List<IABSKUType> iabSKUClone = Collections.unmodifiableList(this.iabSKUs);
+        for (IABSKU iabSKU : iabSKUClone)
         {
             identifiers.add(iabSKU.identifier);
         }
