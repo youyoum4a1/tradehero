@@ -4,11 +4,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.AppEventsLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
@@ -29,6 +31,7 @@ public class SplashActivity extends SherlockActivity
     @Inject protected UserService userService;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected ExchangeListCache exchangeListCache;
+    @Inject @FacebookAppId String facebookAppId;
 
     @Inject @SessionToken StringPreference currentSessionToken;
 
@@ -48,6 +51,9 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onResume()
     {
         super.onResume();
+
+        AppEventsLogger.activateApp(this, facebookAppId);
+
         initialAsyncTask = new AsyncTask<Void, Void, Void>()
         {
             @Override protected Void doInBackground(Void... params)
