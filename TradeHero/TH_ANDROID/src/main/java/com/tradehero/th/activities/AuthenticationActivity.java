@@ -332,7 +332,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 THToast.show(ex);
             }
 
-            progressDialog.dismiss();
+            progressDialog.hide();
         }
 
         @Override public boolean onSocialAuthDone(JSONObject json)
