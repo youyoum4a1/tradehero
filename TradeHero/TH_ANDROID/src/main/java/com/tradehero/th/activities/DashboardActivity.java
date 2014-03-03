@@ -119,9 +119,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
         MenuInflater menuInflater = getSupportMenuInflater();
+
+        menuInflater.inflate(R.menu.hardware_menu, menu);
+
         if (currentUserProfile != null)
         {
-            menuInflater.inflate(R.menu.hardware_menu, menu);
             if (currentUserProfile.isAdmin)
             {
                 menuInflater.inflate(R.menu.admin_menu, menu);

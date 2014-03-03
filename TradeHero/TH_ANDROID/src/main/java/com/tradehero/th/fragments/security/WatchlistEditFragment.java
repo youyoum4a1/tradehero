@@ -36,6 +36,7 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
 public class WatchlistEditFragment extends DashboardFragment
@@ -57,12 +58,67 @@ public class WatchlistEditFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
+    private THCallback<WatchlistPositionDTO> watchlistUpdateCallback;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected CurrentUserId currentUserId;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        createWatchlistUpdateCallback();
+    }
+
+    private void createWatchlistUpdateCallback()
+    {
+        watchlistUpdateCallback = new THCallback<WatchlistPositionDTO>()
+        {
+            @Override protected void finish()
+            {
+                ProgressDialog progressBarCopy = progressBar;
+                if (progressBarCopy != null)
+                {
+                    progressBarCopy.dismiss();
+                }
+            }
+
+            @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+            {
+                SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
+                watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
+                if (isResumed())
+                {
+                    SecurityIdList currentUserWatchlistSecurities =
+
+                            userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+                    if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
+                    {
+                        currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
+                    }
+                    Bundle args = getArguments();
+                    if (args != null)
+                    {
+                        String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+                        if (returnFragment != null)
+                        {
+                            getNavigator().popFragment(returnFragment);
+                            return;
+                        }
+                    }
+                    getNavigator().popFragment();
+                }
+            }
+
+            @Override protected void failure(THException ex)
+            {
+                Timber.e(ex, "Failed to update watchlist position");
+                THToast.show(ex);
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -183,6 +239,18 @@ public class WatchlistEditFragment extends DashboardFragment
                 linkWith(securityId, true);
             }
         }
+    }
+
+    @Override public void onDestroyView()
+    {
+        progressBar = null;
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        watchlistUpdateCallback = null;
+        super.onDestroy();
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
@@ -307,46 +375,6 @@ public class WatchlistEditFragment extends DashboardFragment
             }
         }
     }
-
-    private THCallback<WatchlistPositionDTO> watchlistUpdateCallback = new THCallback<WatchlistPositionDTO>()
-    {
-        @Override protected void finish()
-        {
-            ProgressDialog progressBarCopy = progressBar;
-            if (progressBarCopy != null)
-            {
-                progressBarCopy.dismiss();
-            }
-        }
-
-        @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
-        {
-            SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-            watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-            SecurityIdList currentUserWatchlistSecurities =
-                    userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-            if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
-            {
-                currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
-            }
-            Bundle args = getArguments();
-            if (args != null)
-            {
-                String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-                if (returnFragment != null)
-                {
-                    getNavigator().popFragment(returnFragment);
-                    return;
-                }
-            }
-            getNavigator().popFragment();
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            THToast.show(ex);
-        }
-    };
 
     //<editor-fold desc="TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

@@ -249,27 +249,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFoF.setText(leaderboardItem.friendOf_markupString);
         }
 
+        loadDefaultUserImage();
         if (leaderboardItem.picture != null)
         {
             picasso.get()
                     .load(leaderboardItem.picture)
                     .transform(peopleIconTransformation)
-                    .into(lbmuProfilePicture,
-                            new Callback()
-                            {
-                                @Override public void onSuccess()
-                                {
-                                }
-
-                                @Override public void onError()
-                                {
-                                    loadDefaultUserImage();
-                                }
-                            });
-        }
-        else
-        {
-            loadDefaultUserImage();
+                    .placeholder(lbmuProfilePicture.getDrawable())
+                    .into(lbmuProfilePicture);
         }
     }
 

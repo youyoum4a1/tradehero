@@ -1,4 +1,4 @@
-package com.tradehero.learning;
+package com.tradehero.learning.java.util;
 
 import java.util.Iterator;
 import java.util.Set;

@@ -1,8 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingInventoryFetcher;
@@ -21,7 +21,6 @@ import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedEx
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -127,9 +126,9 @@ public class THIABUserInteractor
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    protected void prepareCallbacks(final CurrentActivityHolder activityHolder)
+    protected void prepareCallbacks()
     {
-        super.prepareCallbacks(activityHolder);
+        super.prepareCallbacks();
 
         if (consumptionFinishedListener == null)
         {
@@ -144,7 +143,11 @@ public class THIABUserInteractor
                     {
                         progressDialog.hide();
                     }
-                    THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(activityHolder.getCurrentContext(), exception);
+                    Context currentContext = currentActivityHolder.getCurrentContext();
+                    if (currentContext != null)
+                    {
+                        THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
+                    }
                 }
 
                 @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
@@ -168,13 +171,17 @@ public class THIABUserInteractor
                         progressDialog.hide();
                     }
 
-                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                            activityHolder.getCurrentContext(),
-                            consumed,
-                            reportFailed,
-                            consumeFailed,
-                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(activityHolder.getCurrentActivity(), new Exception()),
-                            true); // TODO have a better exception
+                    Context currentContext = currentActivityHolder.getCurrentContext();
+                    if (currentContext != null)
+                    {
+                        IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                                currentContext,
+                                consumed,
+                                reportFailed,
+                                consumeFailed,
+                                IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, new Exception()),
+                                true); // TODO have a better exception
+                    }
                 }
 
                 @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
@@ -184,10 +191,11 @@ public class THIABUserInteractor
 
                 @Override public void onPurchaseRestoreFailed(IABException iabException)
                 {
-                    Timber.e("onPurchaseRestoreFailed", iabException);
-                    if (iabException instanceof Exception)
+                    Timber.e(iabException, "onPurchaseRestoreFailed");
+                    Context currentContext = currentActivityHolder.getCurrentContext();
+                    if (currentContext != null)
                     {
-                        IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(activityHolder.getCurrentContext(), (Exception) iabException);
+                        IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(currentContext, iabException);
                     }
                 }
             };
@@ -201,12 +209,12 @@ public class THIABUserInteractor
 
     @Override protected BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> createPurchaseFinishedListener()
     {
-        return new THIABUserInteractorOnPurchaseFinishedListener(currentActivityHolder);
+        return new THIABUserInteractorOnPurchaseFinishedListener();
     }
 
     @Override protected PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseReportedListener()
     {
-        return new THIABUserInteractorOnPurchaseReportedListener(currentActivityHolder);
+        return new THIABUserInteractorOnPurchaseReportedListener();
     }
 
     public void onPause()
@@ -319,26 +327,31 @@ public class THIABUserInteractor
 
     public AlertDialog popErrorWhenLoading()
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
-        alertDialogBuilder
-                .setTitle(R.string.store_billing_error_loading_window_title)
-                .setMessage(R.string.store_billing_error_loading_window_description)
-                .setCancelable(true)
-                .setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
+        AlertDialog alertDialog = null;
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentContext);
+            alertDialogBuilder
+                    .setTitle(R.string.store_billing_error_loading_window_title)
+                    .setMessage(R.string.store_billing_error_loading_window_description)
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
                     {
-                        if (inventoryFetchedForgetListener == null)
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
                         {
-                            inventoryFetchedForgetListener = createForgetFetchedListener();
+                            if (inventoryFetchedForgetListener == null)
+                            {
+                                inventoryFetchedForgetListener = createForgetFetchedListener();
+                            }
+                            int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+                            getBillingLogicHolder().getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
+                            getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
                         }
-                        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-                        getBillingLogicHolder().getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
-                        getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+                    });
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
         return alertDialog;
     }
 
@@ -477,10 +490,10 @@ public class THIABUserInteractor
         if (dialog != null)
         {
             dialog.setTitle(R.string.store_billing_report_api_finishing_window_title);
-            Activity activity = this.currentActivityHolder.getCurrentActivity();
-            if (activity != null)
+            Context currentContext = currentActivityHolder.getCurrentContext();
+            if (currentContext != null)
             {
-                dialog.setMessage(activity.getString(R.string.store_billing_report_api_finishing_window_title));
+                dialog.setMessage(currentContext.getString(R.string.store_billing_report_api_finishing_window_title));
             }
         }
 
@@ -519,13 +532,13 @@ public class THIABUserInteractor
 
     public void launchRestoreSequence()
     {
-        Activity activity = this.currentActivityHolder.getCurrentActivity();
-        if (activity != null)
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
-                    activity,
-                    activity.getString(R.string.store_billing_restoring_purchase_window_title),
-                    activity.getString(R.string.store_billing_restoring_purchase_window_message),
+                    currentContext,
+                    currentContext.getString(R.string.store_billing_restoring_purchase_window_title),
+                    currentContext.getString(R.string.store_billing_restoring_purchase_window_message),
                     true,
                     true,
                     new DialogInterface.OnCancelListener()
@@ -582,13 +595,13 @@ public class THIABUserInteractor
         }
         else
         {
-            Activity activity = currentActivityHolder.getCurrentActivity();
-            if (activity != null)
+            Context currentContext = currentActivityHolder.getCurrentContext();
+            if (currentContext != null)
             {
                 progressDialog = ProgressDialog.show(
-                        activity,
-                        activity.getString(R.string.manage_heroes_follow_progress_title),
-                        activity.getResources().getString(R.string.manage_heroes_follow_progress_message),
+                        currentContext,
+                        currentContext.getString(R.string.manage_heroes_follow_progress_title),
+                        currentContext.getResources().getString(R.string.manage_heroes_follow_progress_message),
                         true,
                         true
                 );
@@ -600,13 +613,13 @@ public class THIABUserInteractor
 
     public void unfollowHero(UserBaseKey userBaseKey)
     {
-        Activity activity = currentActivityHolder.getCurrentActivity();
-        if (activity != null)
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
-                    activity,
-                    activity.getString(R.string.manage_heroes_unfollow_progress_title),
-                    activity.getString(R.string.manage_heroes_unfollow_progress_message),
+                    currentContext,
+                    currentContext.getString(R.string.manage_heroes_unfollow_progress_title),
+                    currentContext.getString(R.string.manage_heroes_unfollow_progress_message),
                     true,
                     true
             );
@@ -655,9 +668,9 @@ public class THIABUserInteractor
 
     protected class THIABUserInteractorOnPurchaseFinishedListener extends THBaseBillingInteractorOnPurchaseFinishedListener
     {
-        public THIABUserInteractorOnPurchaseFinishedListener(CurrentActivityHolder activityHolder)
+        public THIABUserInteractorOnPurchaseFinishedListener()
         {
-            super(activityHolder);
+            super();
         }
 
         @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
@@ -669,44 +682,48 @@ public class THIABUserInteractor
         @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
         {
             super.onPurchaseFailed(requestCode, purchaseOrder, exception);
-            if (exception instanceof IABVerificationFailedException)
+            Context currentContext = currentActivityHolder.getCurrentContext();
+            if (currentContext != null)
             {
-                THIABAlertDialogUtil.popVerificationFailed(activityHolder.getCurrentActivity());
-            }
-            else if (exception instanceof IABUserCancelledException)
-            {
-                THIABAlertDialogUtil.popUserCancelled(activityHolder.getCurrentActivity());
-            }
-            else if (exception instanceof IABBadResponseException)
-            {
-                THIABAlertDialogUtil.popBadResponse(activityHolder.getCurrentActivity());
-            }
-            else if (exception instanceof IABRemoteException)
-            {
-                THIABAlertDialogUtil.popRemoteError(activityHolder.getCurrentActivity());
-            }
-            else if (exception instanceof IABItemAlreadyOwnedException)
-            {
-                THIABAlertDialogUtil.popSKUAlreadyOwned(activityHolder.getCurrentActivity(),
-                        thiabProductDetailCache.get()
-                                .get(purchaseOrder.getProductIdentifier()));
-            }
-            else if (exception instanceof IABSendIntentException)
-            {
-                THIABAlertDialogUtil.popSendIntent(activityHolder.getCurrentActivity());
-            }
-            else
-            {
-                THIABAlertDialogUtil.popUnknownError(activityHolder.getCurrentActivity());
+                if (exception instanceof IABVerificationFailedException)
+                {
+                    THIABAlertDialogUtil.popVerificationFailed(currentContext);
+                }
+                else if (exception instanceof IABUserCancelledException)
+                {
+                    THIABAlertDialogUtil.popUserCancelled(currentContext);
+                }
+                else if (exception instanceof IABBadResponseException)
+                {
+                    THIABAlertDialogUtil.popBadResponse(currentContext);
+                }
+                else if (exception instanceof IABRemoteException)
+                {
+                    THIABAlertDialogUtil.popRemoteError(currentContext);
+                }
+                else if (exception instanceof IABItemAlreadyOwnedException)
+                {
+                    THIABAlertDialogUtil.popSKUAlreadyOwned(currentContext,
+                            thiabProductDetailCache.get()
+                                    .get(purchaseOrder.getProductIdentifier()));
+                }
+                else if (exception instanceof IABSendIntentException)
+                {
+                    THIABAlertDialogUtil.popSendIntent(currentContext);
+                }
+                else
+                {
+                    THIABAlertDialogUtil.popUnknownError(currentContext);
+                }
             }
         }
     }
 
     protected class THIABUserInteractorOnPurchaseReportedListener extends THBaseBillingInteractorOnPurchaseReportedListener
     {
-        public THIABUserInteractorOnPurchaseReportedListener(CurrentActivityHolder activityHolder)
+        public THIABUserInteractorOnPurchaseReportedListener()
         {
-            super(activityHolder);
+            super();
         }
     }
 }

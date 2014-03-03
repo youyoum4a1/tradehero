@@ -21,7 +21,6 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.SlowedAsyncTask;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -33,9 +32,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -43,7 +42,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
@@ -60,20 +58,17 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
-import dagger.Provides;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
-    public static final String TAG = SettingsFragment.class.getSimpleName();
-
     @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionService sessionService;
@@ -101,6 +96,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference pushNotificationSound;
     private CheckBoxPreference pushNotificationVibrate;
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
+    private SettingsUserProfileRetrievedCompleteListener currentUserProfileRetrievedMilestoneListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -119,7 +115,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         detachCurrentUserProfileMilestone();
         this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
-        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(new SettingsUserProfileRetrievedCompleteListener());
+        currentUserProfileRetrievedMilestoneListener = new SettingsUserProfileRetrievedCompleteListener();
+        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(currentUserProfileRetrievedMilestoneListener);
+
+        if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null)
+        {
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
+        }
         this.currentUserProfileRetrievedMilestone.launch();
 
         if (view != null)
@@ -173,6 +175,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
         }
+        this.currentUserProfileRetrievedMilestoneListener = null;
         this.currentUserProfileRetrievedMilestone = null;
     }
 
@@ -183,7 +186,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             @Override
             public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
-                THLog.d(TAG, "onPurchaseRestoreFinished3");
+                Timber.d("onPurchaseRestoreFinished3");
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         consumed,
@@ -194,12 +197,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
             {
-                THLog.d(TAG, "onPurchaseRestoreFinished2");
+                Timber.d("onPurchaseRestoreFinished2");
             }
 
             @Override public void onPurchaseRestoreFailed(IABException iabException)
             {
-                THLog.e(TAG, "onPurchaseRestoreFailed", iabException);
+                Timber.d("onPurchaseRestoreFailed", iabException);
                 // Inform
                 userInteractor.conditionalPopBillingNotAvailable();
             }
@@ -548,7 +551,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
     {
-        THLog.d(TAG, "Sharing is asked to change");
+        Timber.d("Sharing is asked to change");
         currentSocialNetworkConnect = socialNetwork;
         if (enable)
         {
@@ -629,7 +632,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             {
                 linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
             }
-            THLog.d(TAG, "Sharing is updated");
+            Timber.d("Sharing is updated");
         }
     }
 
@@ -788,7 +791,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
 
-        THLog.d(TAG, "Before signout current user base key " + currentUserId.toUserBaseKey());
+        Timber.d("Before signout current user base key %s", currentUserId.toUserBaseKey());
         sessionService.logout(createSignOutCallback());
     }
 
@@ -804,7 +807,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 ActivityHelper.launchAuthentication(getActivity());
                 getActivity().finish();
                 // TODO clear caches
-                THLog.d(TAG, "After successful signout current user base key " + currentUserId.toUserBaseKey());
+                Timber.d("After successful signout current user base key %s", currentUserId.toUserBaseKey());
             }
 
             @Override public void failure(RetrofitError error)
@@ -875,12 +878,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         @Override public void onComplete(Milestone milestone)
         {
+            onFinish();
             updateNotificationStatus();
             updateSocialConnectStatus();
         }
 
+        private void onFinish()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.dismiss();
+            }
+        }
+
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
+            onFinish();
             THToast.show(R.string.error_fetch_your_user_profile);
         }
     }

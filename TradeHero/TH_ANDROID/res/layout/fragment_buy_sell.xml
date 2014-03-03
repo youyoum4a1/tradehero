@@ -307,6 +307,7 @@
         android_auto:unselectedColor="#FFbbbbbb"
         android_auto:selectedColor="@color/btn_new_user_color_light"
 
+        android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:background="@android:color/transparent"
         android_auto:radius="4dp"

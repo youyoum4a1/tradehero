@@ -64,26 +64,14 @@ public class UserProfileCompactViewHolder
     {
         if (avatar != null)
         {
+            loadDefaultPicture();
             if (userProfileDTO != null && userProfileDTO.picture != null)
             {
                 picasso
                         .load(userProfileDTO.picture)
                         .transform(peopleIconTransformation)
-                        .into(avatar, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                            }
-
-                            @Override public void onError()
-                            {
-                                loadDefaultPicture();
-                            }
-                        });
-            }
-            else
-            {
-                loadDefaultPicture();
+                        .placeholder(avatar.getDrawable())
+                        .into(avatar);
             }
         }
     }

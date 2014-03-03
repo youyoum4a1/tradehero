@@ -3,7 +3,6 @@ package com.tradehero.th.base;
 import android.content.SharedPreferences;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.misc.DeviceType;
@@ -37,11 +36,11 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
-    private static final String TAG = THUser.class.getSimpleName();
     private static AuthenticationMode authenticationMode;
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
@@ -77,7 +76,7 @@ public class THUser
             }
             catch (JSONException e)
             {
-                THLog.e(TAG, String.format("Unable to parse [%s] to JSON", token), e);
+                Timber.e("Unable to parse [%s] to JSON", token, e);
             }
         }
     }
@@ -231,11 +230,11 @@ public class THUser
     {
         if (credentials == null)
         {
-            THLog.d(TAG, "saveCredentialsToUserDefaults: Credentials were null");
+            Timber.d("saveCredentialsToUserDefaults: Credentials were null");
             return;
         }
 
-        THLog.d(TAG, String.format("%d authentication tokens loaded", credentials.size()));
+        Timber.d("%d authentication tokens loaded", credentials.size());
 
         try
         {
@@ -244,7 +243,7 @@ public class THUser
         }
         catch (JSONException ex)
         {
-            THLog.e(TAG, String.format("JSON (%s) does not have type", json.toString()), ex);
+            Timber.e("JSON (%s) does not have type", json.toString(), ex);
             return;
         }
 
@@ -299,11 +298,11 @@ public class THUser
     {
         if (credentials == null)
         {
-            THLog.d(TAG, "saveCredentialsToUserDefaults: Credentials were null");
+            Timber.d("saveCredentialsToUserDefaults: Credentials were null");
             return;
         }
 
-        THLog.d(TAG, String.format("%d authentication tokens loaded", credentials.size()));
+        Timber.d("%d authentication tokens loaded", credentials.size());
 
         credentials.remove(authenticationHeader);
         savedCredentials.delete();
