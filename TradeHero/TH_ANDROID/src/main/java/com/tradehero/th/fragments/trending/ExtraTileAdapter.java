@@ -266,6 +266,13 @@ public class ExtraTileAdapter extends BaseAdapter
                 extraTilesMarker = tempMarker;
                 masterTilesMarker = tempMarker;
             }
+
+            // always show the first one as survey tile
+            if (isSurveyEnabled() && extraTilesMarker != null && extraTilesMarker.length > 0)
+            {
+                extraTilesMarker[0] = new Pair<>(TileType.Survey, 0);
+            }
+
         }
         else
         {
@@ -293,11 +300,6 @@ public class ExtraTileAdapter extends BaseAdapter
         }
         // and suffer the tile
         Collections.shuffle(showingTiles);
-        // always show the first one as survey tile
-        if (isSurveyEnabled())
-        {
-            showingTiles.set(0, TileType.Survey);
-        }
 
         TileType[] retArray = new TileType[showingTiles.size()];
         showingTiles.toArray(retArray);

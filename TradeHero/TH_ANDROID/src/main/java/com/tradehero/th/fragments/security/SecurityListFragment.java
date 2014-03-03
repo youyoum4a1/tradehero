@@ -17,23 +17,29 @@ import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
-    private final static String TAG = SecurityListFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_PAGE = SecurityListFragment.class.getName() + ".page";
 
     public final static int FIRST_PAGE = 1;
@@ -54,13 +60,20 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
-    @Inject protected SecurityCompactCache securityCompactCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+
     private ExtraTileAdapter wrapperAdapter;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.filterTextWatcher = new SecurityListOnFilterTextWatcher();
+
+        filterTextWatcher = new SecurityListOnFilterTextWatcher();
+        userProfileFetchListener = new UserProfileFetchListener();
     }
 
     @Override protected void initViews(View view)
@@ -115,8 +128,12 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onResume()
     {
-        //THLog.d(TAG, "onResume");
         super.onResume();
+
+        detachUserFetchTask();
+        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
+        userProfileFetchTask.execute();
+
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
@@ -124,6 +141,15 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             listViewScrollListener.activate();
         }
         //load();
+    }
+
+    private void detachUserFetchTask()
+    {
+        if (userProfileFetchTask != null)
+        {
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
     }
 
     @Override public void onPause()
@@ -170,7 +196,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        this.filterTextWatcher = null;
+        filterTextWatcher = null;
+
+        detachUserFetchTask();
+        userProfileFetchListener = null;
+
         super.onDestroy();
     }
 
@@ -336,7 +366,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             if (securityItemViewAdapter != null)
             {
                 // It may have been nullified if coming out
-                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
+                securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
 
                 // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
                 // when data is changed
@@ -356,7 +386,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoaderReset(Loader<SecurityIdList> securityIdListLoader)
         {
-            THLog.d(TAG, "SecurityListLoaderCallback.onLoaderReset");
             // TODO
         }
     }
@@ -371,13 +400,30 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
         {
-            THLog.d(TAG, "Text: " + charSequence);
             securityItemViewAdapter.getFilter().filter(charSequence);
         }
 
         @Override public void afterTextChanged(Editable editable)
         {
 
+        }
+    }
+
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
+            if (wrapperAdapter != null)
+            {
+                wrapperAdapter.regenerateExtraTiles();
+                wrapperAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_user_profile);
         }
     }
 }
