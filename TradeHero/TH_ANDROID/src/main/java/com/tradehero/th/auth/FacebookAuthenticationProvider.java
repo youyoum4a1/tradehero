@@ -133,7 +133,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         if (this.permissions != null)
         {
-            openRequest.setPermissions(new ArrayList(this.permissions));
+            openRequest.setPermissions(new ArrayList<>(this.permissions));
         }
         openRequest.setCallback(new Session.StatusCallback()
         {
