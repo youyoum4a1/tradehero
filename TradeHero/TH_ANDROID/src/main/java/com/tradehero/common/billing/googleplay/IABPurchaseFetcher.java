@@ -1,9 +1,11 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -146,6 +148,11 @@ abstract public class IABPurchaseFetcher<
         {
             Bundle ownedItems = getPurchases(itemType, continueToken);
 
+            if (ownedItems == null)
+            {
+                return purchasesMap;
+            }
+
             int response = IABConstants.getResponseCodeFromBundle(ownedItems);
             Timber.d("Owned items response: %s", String.valueOf(response));
             if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
@@ -198,7 +205,18 @@ abstract public class IABPurchaseFetcher<
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException
     {
         Timber.d("Calling getPurchases with continuation token: %s", continueToken);
-        return billingService.getPurchases(TARGET_BILLING_API_VERSION3, currentActivityHolder.getCurrentActivity().getPackageName(), itemType, continueToken);
+        IInAppBillingService billingServiceCopy = billingService;
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity == null || billingServiceCopy == null)
+        {
+            return null;
+        }
+
+        return billingServiceCopy.getPurchases(
+                TARGET_BILLING_API_VERSION3,
+                currentActivity.getPackageName(),
+                itemType,
+                continueToken);
     }
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String signature) throws JSONException;

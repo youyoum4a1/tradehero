@@ -201,6 +201,11 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     {
         DeviceUtil.dismissKeyboard(getActivity());
 
+        if (buySellTask != null)
+        {
+            buySellTask.cancel(false);
+        }
+
         ButterKnife.reset(this);
 
         if (buySellTask != null)

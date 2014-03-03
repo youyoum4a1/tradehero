@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -286,13 +287,13 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onDestroyView()
     {
-        detachPortfolioTask();
-        detachGetPositionsTask();
-        detachUserProfileTask();
-
         getPositionsCacheListener = null;
         userProfileCacheListener = null;
         portfolioCacheListener = null;
+
+        detachPortfolioTask();
+        detachGetPositionsTask();
+        detachUserProfileTask();
 
         if (positionsListView != null)
         {
@@ -458,8 +459,13 @@ abstract public class AbstractPositionListFragment<
                     {
                         @Override public void run()
                         {
-                            positionItemAdapter.notifyDataSetChanged();
-                            positionsListView.setSelection(firstPositionVisible);
+                            AbstractPositionItemAdapter<PositionDTOType> adapterCopy = positionItemAdapter;
+                            ExpandingListView listViewCopy = positionsListView;
+                            if (adapterCopy != null && listViewCopy != null)
+                            {
+                                adapterCopy.notifyDataSetChanged();
+                                listViewCopy.setSelection(firstPositionVisible);
+                            }
                         }
                     }
             );

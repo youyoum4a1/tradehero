@@ -11,7 +11,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
@@ -20,13 +19,19 @@ public class LeaderboardPositionListFragment
 {
     public static final String TAG = LeaderboardPositionListFragment.class.getSimpleName();
 
-    @Inject Lazy<GetLeaderboardPositionsCache> getLeaderboardPositionsCache;
+    @Inject GetLeaderboardPositionsCache getLeaderboardPositionsCache;
 
     private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
     private DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
 
     private LeaderboardMarkUserId leaderboardMarkUserId;
     private boolean timeRestricted;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        getLeaderboardPositionsCacheListener = createGetLeaderboardPositionsCacheListener();
+    }
 
     @Override protected void createPositionItemAdapter()
     {
@@ -54,7 +59,7 @@ public class LeaderboardPositionListFragment
 
     @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask()
     {
-        return getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
+        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
     }
 
     @Override public void onResume()
@@ -67,19 +72,33 @@ public class LeaderboardPositionListFragment
         super.onResume();
     }
 
+    @Override public void onDestroyView()
+    {
+        detachGetLeaderboardPositions();
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        getLeaderboardPositionsCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachGetLeaderboardPositions()
+    {
+        if (fetchGetPositionsDTOTask != null)
+        {
+            fetchGetPositionsDTOTask.setListener(null);
+        }
+        fetchGetPositionsDTOTask = null;
+    }
+
     @Override protected void fetchSimplePage()
     {
         if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
-            if (getLeaderboardPositionsCacheListener == null)
-            {
-                getLeaderboardPositionsCacheListener = createGetLeaderboardPositionsCacheListener();
-            }
-            if (fetchGetPositionsDTOTask != null)
-            {
-                fetchGetPositionsDTOTask.setListener(null);
-            }
-            fetchGetPositionsDTOTask = getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
+            detachGetLeaderboardPositions();
+            fetchGetPositionsDTOTask = getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
             fetchGetPositionsDTOTask.execute();
         }
     }

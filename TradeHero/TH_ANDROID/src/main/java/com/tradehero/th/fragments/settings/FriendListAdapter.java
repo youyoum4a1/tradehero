@@ -145,6 +145,8 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     private void initSectionIndices()
     {
         sectionIndices = null;
+
+        // supposedly, each collected name is not an empty string
         if (collectedNames != null && collectedNames.length > 0)
         {
             // collect distinct list of first appearance character
@@ -175,7 +177,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             ArrayList<String> nameList = new ArrayList<>();
             for (UserFriendsDTO userFriendsDTO: items)
             {
-                if (userFriendsDTO.name != null)
+                if (userFriendsDTO.name != null && !userFriendsDTO.name.isEmpty())
                 {
                     nameList.add(userFriendsDTO.name);
                 }

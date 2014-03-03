@@ -147,20 +147,11 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
             if (this.userImageView != null)
             {
+                displayDefaultUserImage();
                 picasso.load(this.userProfileDTO.picture)
                         .transform(peopleIconTransformation)
-                        .into(this.userImageView, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-
-                            }
-
-                            @Override public void onError()
-                            {
-                                displayDefaultUserImage();
-                            }
-                        });
+                        .placeholder(this.userImageView.getDrawable())
+                        .into(this.userImageView);
             }
         }
     }

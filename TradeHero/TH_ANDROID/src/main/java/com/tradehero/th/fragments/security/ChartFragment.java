@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -19,7 +20,6 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
@@ -38,7 +38,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private ChartDTO chartDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
 
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected SecurityCompactCache securityCompactCache;
     @Inject protected Picasso picasso;
     @Inject protected ChartDTOFactory chartDTOFactory;
     private Runnable chooseChartImageSizeTask;
@@ -108,15 +108,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         return view;
     }
 
-    @Override public void onPause()
-    {
-        if (securityId != null)
-        {
-            securityCompactCache.get().unRegisterListener(this);
-        }
-        super.onPause();
-    }
-
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
@@ -149,6 +140,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.onDestroyView();
     }
 
+    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    {
+        return securityCompactCache;
+    }
+
     public int getTimeSpanButtonSetVisibility()
     {
         return timeSpanButtonSetVisibility;
@@ -165,8 +161,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.linkWith(securityId, andDisplay);
         if (securityId != null)
         {
-            securityCompactCache.get().registerListener(this);
-            linkWith(securityCompactCache.get().get(securityId), andDisplay);
+            linkWith(securityCompactCache.get(securityId), andDisplay);
         }
     }
 
@@ -201,7 +196,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public void displayTimeSpanButtonSet()
     {
         TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
-        if (buttonSet != null)
+        if (!isDetached() && buttonSet != null)
         {
             buttonSet.setVisibility(timeSpanButtonSetVisibility);
         }
@@ -210,7 +205,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public void displayChartImage()
     {
         ImageView image = this.chartImage;
-        if (image != null)
+        if (!isDetached() && image != null)
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory

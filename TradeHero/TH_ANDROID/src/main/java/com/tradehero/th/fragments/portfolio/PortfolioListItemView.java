@@ -89,9 +89,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         DaggerUtils.inject(this);
         if (userIcon != null && picasso != null)
         {
-            picasso.load(R.drawable.superman_facebook)
-                    .transform(userImageTransformation)
-                    .into(userIcon);
+            displayDefaultUserIcon();
         }
     }
 
@@ -268,25 +266,13 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     {
         if (userIcon != null)
         {
+            displayDefaultUserIcon();
             if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
             {
                 picasso.load(displayablePortfolioDTO.userBaseDTO.picture)
-                             .transform(userImageTransformation)
-                             .into(userIcon, new Callback()
-                             {
-                                 @Override public void onSuccess()
-                                 {
-                                 }
-
-                                 @Override public void onError()
-                                 {
-                                     displayDefaultUserIcon();
-                                 }
-                             });
-            }
-            else
-            {
-                displayDefaultUserIcon();
+                        .transform(userImageTransformation)
+                        .placeholder(userIcon.getDrawable())
+                        .into(userIcon);
             }
         }
     }

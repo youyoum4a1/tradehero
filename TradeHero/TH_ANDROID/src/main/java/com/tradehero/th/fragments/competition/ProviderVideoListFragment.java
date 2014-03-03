@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.competition;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -196,7 +197,16 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
         // openVideoInExternalPlayer(cachedHelpVideo);
 
-        openVideoInChromeBrowser(cachedHelpVideo);
+        try
+        {
+            openVideoInChromeBrowser(cachedHelpVideo);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            Timber.e("Failed to start Chrome Browser", e);
+            // TODO In the vague hope it will work
+            openVideoWithInApp(cachedHelpVideo);
+        }
 
         // openVideoWithInApp(cachedHelpVideo);
     }
@@ -212,7 +222,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         startActivity(intent);
     }
 
-    private void openVideoInChromeBrowser(HelpVideoDTO cachedHelpVideo)
+    private void openVideoInChromeBrowser(HelpVideoDTO cachedHelpVideo) throws ActivityNotFoundException
     {
         Intent i = new Intent();
 

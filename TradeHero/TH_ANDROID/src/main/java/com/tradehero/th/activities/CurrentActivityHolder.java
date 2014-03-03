@@ -27,7 +27,7 @@ public class CurrentActivityHolder
 
     public Context getCurrentContext()
     {
-        return getCurrentActivity().getApplicationContext();
+        return getCurrentActivity();
     }
 
     public void setCurrentActivity(Activity currentActivity)

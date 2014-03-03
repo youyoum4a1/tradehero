@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {
-    private final static String TAG = MacquarieWarrantItemViewAdapter.class.getSimpleName();
-
     @Inject SecurityCompactCache securityCompactCache;
     @Inject WarrantDTOUnderlyerTypeComparator warrantDTOComparator;
     @Inject WarrantDTOUtil warrantDTOUtil;
@@ -34,14 +33,22 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
 
     @Override public void setItems(final List<WarrantDTO> items)
     {
-        TreeSet<WarrantDTO> ordered = new TreeSet<>(warrantDTOComparator);
-        ordered.addAll(items);
-        List<WarrantDTO> newItems = new ArrayList<>();
-        for (WarrantDTO warrantDTO: ordered)
+        if (items == null)
         {
-            newItems.add(warrantDTO);
+            Timber.e(new NullPointerException("List<WarrantDTO> was null"), "List<WarrantDTO> was null", items);
+            super.setItems(items);
         }
-        super.setItems(newItems);
+        else
+        {
+            TreeSet<WarrantDTO> ordered = new TreeSet<>(warrantDTOComparator);
+            ordered.addAll(items);
+            List<WarrantDTO> newItems = new ArrayList<>();
+            for (WarrantDTO warrantDTO: ordered)
+            {
+                newItems.add(warrantDTO);
+            }
+            super.setItems(newItems);
+        }
     }
 
     @Override public ListCharSequencePredicateFilter<WarrantDTO> getPredicateFilter()

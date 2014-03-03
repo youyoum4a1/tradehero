@@ -11,7 +11,6 @@ import android.util.Base64;
 import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
-import com.squareup.picasso.PicassoUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
@@ -106,7 +105,6 @@ public class LruMemFileCache extends LruCache
     /**public*/ LruMemFileCache(Context context, String dirName)
     {
         super(calculateMemoryCacheSize(context));
-        Timber.d("Constructing with memory " + PicassoUtils.calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
 

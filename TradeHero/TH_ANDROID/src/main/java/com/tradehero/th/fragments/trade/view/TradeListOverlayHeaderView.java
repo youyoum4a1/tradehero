@@ -157,20 +157,11 @@ public class TradeListOverlayHeaderView extends LinearLayout
 
             if (this.imageProfile != null)
             {
+                loadDefaultImage();
                 picasso.get().load(user.picture)
                         .transform(peopleIconTransformation)
-                        .into(this.imageProfile, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-
-                            }
-
-                            @Override public void onError()
-                            {
-                                loadDefaultImage();
-                            }
-                        });
+                        .placeholder(this.imageProfile.getDrawable())
+                        .into(this.imageProfile);
             }
         }
 

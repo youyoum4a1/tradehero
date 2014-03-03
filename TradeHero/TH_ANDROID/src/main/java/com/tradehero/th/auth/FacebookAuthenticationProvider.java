@@ -34,7 +34,6 @@ import timber.log.Timber;
 @Singleton
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
-    private static final String TAG = FacebookAuthenticationProvider.class.getName();
     private final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";

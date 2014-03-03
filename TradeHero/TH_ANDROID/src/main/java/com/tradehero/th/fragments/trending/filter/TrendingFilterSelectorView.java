@@ -63,13 +63,12 @@ public class TrendingFilterSelectorView extends RelativeLayout
     protected void init()
     {
         DaggerUtils.inject(this);
+        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
 
         mPrevious = (ImageButton) findViewById(R.id.previous_filter);
         mNext = (ImageButton) findViewById(R.id.next_filter);

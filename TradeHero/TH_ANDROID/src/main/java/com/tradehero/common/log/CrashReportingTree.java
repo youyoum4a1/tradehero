@@ -8,7 +8,8 @@ import timber.log.Timber;
  */
 public class CrashReportingTree extends Timber.HollowTree
 {
-    @Override public void e(Throwable t, String message, Object... args) {
+    @Override public void e(Throwable t, String message, Object... args)
+    {
         Crashlytics.logException(t);
     }
 }

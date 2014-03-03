@@ -13,6 +13,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/24/14 Time: 11:16 AM Copyright (c) TradeHero
@@ -60,6 +61,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     @Override public List<UserFriendsDTO> loadInBackground()
     {
+        // TODO wrap these in try / catch?
         Thread emailRetrieverThread = new Thread(new Runnable()
         {
             @Override public void run()
@@ -85,11 +87,11 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
             emailRetrieverThread.join();
             friendListRetrieverThread.join();
         }
-        catch (InterruptedException e)
+        catch (Exception e)
         {
+            Timber.e("Unable to get friend list", e);
             return friendsDTOs;
         }
-
 
         if (contactEntries != null && !contactEntries.isEmpty())
         {

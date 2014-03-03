@@ -2,12 +2,17 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -23,10 +28,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected THIABLogicHolder billingActor;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     abstract protected void initViews(View view);
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        portfolioCompactListRetrievedListener = new BasePurchaseManagementPortfolioCompactListRetrievedListener();
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -83,7 +96,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         userInteractor = null;
 
+        detachPortfolioRetrievedMilestone();
+
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        portfolioCompactListRetrievedListener = null;
+        super.onDestroy();
     }
 
     protected void prepareApplicableOwnedPortolioId()
@@ -98,27 +119,39 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             {
                 applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);
             }
+        }
 
-            if (applicablePortfolioId == null)
+        if (applicablePortfolioId == null)
+        {
+            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
+        }
+        if (applicablePortfolioId.userId == null)
+        {
+            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
+        }
+        if (applicablePortfolioId.portfolioId == null)
+        {
+            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(applicablePortfolioId.getUserBaseKey());
+            if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
             {
-                applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
+                applicablePortfolioId = ownedPortfolioId;
             }
-            if (applicablePortfolioId.userId == null)
+            else
             {
-                applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
-            }
-            if (applicablePortfolioId.portfolioId == null)
-            {
-                final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(applicablePortfolioId.getUserBaseKey());
-                if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
-                {
-                    applicablePortfolioId = ownedPortfolioId;
-                }
+                // This situation will be handled by the milestone
             }
         }
 
         Timber.d("purchase applicablePortfolio %s", applicablePortfolioId);
-        linkWithApplicable(applicablePortfolioId, true);
+        if (applicablePortfolioId.portfolioId == null)
+        {
+            // At this stage, portfolioId is still null, we need to wait for the fetch
+            waitForPortfolioCompactListFetched(applicablePortfolioId.getUserBaseKey());
+        }
+        else
+        {
+            linkWithApplicable(applicablePortfolioId, true);
+        }
     }
 
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
@@ -130,8 +163,40 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
+    private void detachPortfolioRetrievedMilestone()
+    {
+        if (portfolioCompactListRetrievedMilestone != null)
+        {
+            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
+        }
+        portfolioCompactListRetrievedListener = null;
+    }
+
+
+    private void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
+    {
+        detachPortfolioRetrievedMilestone();
+        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(userBaseKey);
+        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedListener);
+        portfolioCompactListRetrievedMilestone.launch();
+    }
+
     public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
+    }
+
+    protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            prepareApplicableOwnedPortolioId();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+            Timber.e(throwable, "Failed to download portfolio compacts");
+        }
     }
 }

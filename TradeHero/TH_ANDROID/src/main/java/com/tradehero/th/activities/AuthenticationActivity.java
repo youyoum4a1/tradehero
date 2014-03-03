@@ -69,7 +69,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, M_FRAGMENT);
         }
-        else
+
+        if (currentFragment == null)
         {
             currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
@@ -331,7 +332,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 THToast.show(ex);
             }
 
-            progressDialog.dismiss();
+            progressDialog.hide();
         }
 
         @Override public boolean onSocialAuthDone(JSONObject json)

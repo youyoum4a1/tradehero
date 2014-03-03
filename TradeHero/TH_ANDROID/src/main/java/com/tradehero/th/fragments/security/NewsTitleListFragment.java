@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsHeadlineList;
@@ -17,7 +18,6 @@ import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
@@ -31,7 +31,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
     private final static String TAG = NewsTitleListFragment.class.getSimpleName();
 
     private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> fetchTask;
-    @Inject protected Lazy<NewsHeadlineCache> newsTitleCache;
+    @Inject protected NewsHeadlineCache newsTitleCache;
     private ListView listView;
     private NewsHeadlineAdapter adapter;
 
@@ -66,23 +66,9 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
         }
     }
 
-    @Override public void onPause()
-    {
-        if (securityId != null)
-        {
-            newsTitleCache.get().unRegisterListener(this);
-        }
-
-        if (fetchTask != null)
-        {
-            fetchTask.cancel(false);
-        }
-        fetchTask = null;
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
+        detachFetchTask();
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
@@ -92,16 +78,30 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
         super.onDestroyView();
     }
 
+    @Override LiveDTOCache<SecurityId, NewsHeadlineList> getInfoCache()
+    {
+        return newsTitleCache;
+    }
+
+    protected void detachFetchTask()
+    {
+        if (fetchTask != null)
+        {
+            fetchTask.cancel(false);
+        }
+        fetchTask = null;
+    }
+
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            newsTitleCache.get().registerListener(this);
-            NewsHeadlineList news = newsTitleCache.get().get(this.securityId);
+            NewsHeadlineList news = newsTitleCache.get(this.securityId);
             if (news == null)
             {
-                this.fetchTask = newsTitleCache.get().getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
+                detachFetchTask();
+                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
                 this.fetchTask.execute();
             }
             else
@@ -118,7 +118,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
 
     public void displayNewsListView()
     {
-        if (adapter != null)
+        if (!isDetached() && adapter != null)
         {
             adapter.setItems(value);
             adapter.notifyDataSetChanged();
