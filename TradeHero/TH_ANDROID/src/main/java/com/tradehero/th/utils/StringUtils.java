@@ -5,8 +5,6 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 5:06 PM To change this template use File | Settings | File Templates. */
 public class StringUtils
 {
-    public static final String TAG = StringUtils.class.getSimpleName();
-
     public static String join(String glue, List<String> elements)
     {
         if (elements == null)
@@ -51,11 +49,11 @@ public class StringUtils
 
     public static boolean isNullOrEmpty(String str)
     {
-        return str == null || str.length() == 0;
+        return str == null || str.isEmpty();
     }
 
     public static boolean isNullOrEmptyOrSpaces(String str)
     {
-        return str == null || str.trim().length() == 0;
+        return str == null || str.trim().isEmpty();
     }
 }

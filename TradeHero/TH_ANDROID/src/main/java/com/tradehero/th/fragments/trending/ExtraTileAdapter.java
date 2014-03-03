@@ -11,10 +11,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.StringUtils;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
@@ -25,16 +32,19 @@ public class ExtraTileAdapter extends BaseAdapter
 {
     private static final int EXTRA_TILE_FREQUENCY = 16;
     private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+
     private int itemHeight = 0;
+
 
     private final ListAdapter wrappedAdapter;
     private final LayoutInflater inflater;
 
-    private Context mContext;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
     private SharedPreferences mPref;
 
     private Pair<TileType, Integer>[] extraTilesMarker;
-
     // selected marker which contain the most number of tiles and positions
     private Pair<TileType, Integer>[] masterTilesMarker;
 
@@ -43,8 +53,9 @@ public class ExtraTileAdapter extends BaseAdapter
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
         wrappedAdapter.registerDataSetObserver(wrappedAdapterDataSetObserver);
-        mContext = context;
-        mPref = mContext.getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
+        DaggerUtils.inject(this);
+
+        mPref = context.getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
     }
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
@@ -80,8 +91,6 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    //Timber.d("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
-                    //        position, position - i, extraTilesMarker[i].second);
                     return position - i;
                 }
             }
@@ -245,7 +254,6 @@ public class ExtraTileAdapter extends BaseAdapter
 
                 Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
 
-
                 // TODO make it litter bit better by only generate new tile positions
                 for (int i = 0; i < extraTileCount; ++i)
                 {
@@ -258,6 +266,13 @@ public class ExtraTileAdapter extends BaseAdapter
                 extraTilesMarker = tempMarker;
                 masterTilesMarker = tempMarker;
             }
+
+            // always show the first one as survey tile
+            if (isSurveyEnabled() && extraTilesMarker != null && extraTilesMarker.length > 0)
+            {
+                extraTilesMarker[0] = new Pair<>(TileType.Survey, 0);
+            }
+
         }
         else
         {
@@ -285,8 +300,6 @@ public class ExtraTileAdapter extends BaseAdapter
         }
         // and suffer the tile
         Collections.shuffle(showingTiles);
-        // always show the first one as survey tile
-        showingTiles.set(0, TileType.Survey);
 
         TileType[] retArray = new TileType[showingTiles.size()];
         showingTiles.toArray(retArray);
@@ -296,13 +309,17 @@ public class ExtraTileAdapter extends BaseAdapter
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
         int[] extraTileIndexes = new int[extraTileCount];
-        //Timber.d("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount);
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
 
         // first element is always at 0
-        extraTileIndexes[0] = 0;
-        for (int i = 1; i < extraTileCount; ++i)
+        int firstElementIndex = 0;
+        if (isSurveyEnabled())
+        {
+            extraTileIndexes[firstElementIndex++] = 0;
+        }
+
+        for (int i = firstElementIndex; i < extraTileCount; ++i)
         {
             int newTileIndex = i * EXTRA_TILE_FREQUENCY + (int) (Math.random() * EXTRA_TILE_FREQUENCY);
             if (previousIndex > 0 && (newTileIndex - previousIndex < EXTRA_TILE_MIN_DISTANCE))
@@ -317,6 +334,12 @@ public class ExtraTileAdapter extends BaseAdapter
         }
 
         return extraTileIndexes;
+    }
+
+    private boolean isSurveyEnabled()
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        return userProfileDTO != null && !StringUtils.isNullOrEmpty(userProfileDTO.activeSurveyImageURL);
     }
     //</editor-fold>
 
