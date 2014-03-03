@@ -144,6 +144,7 @@ public class ExtraTileAdapter extends BaseAdapter
             convertView = inflater.inflate(TileType.at(viewType).getLayoutResourceId(), parent, false);
         }
 
+        // TODO @Liang change this to IntPreference
         itemHeight = mPref.getInt("trending_item_height", 0);
         if (itemHeight != 0 && convertView.getHeight() != itemHeight)
         {
