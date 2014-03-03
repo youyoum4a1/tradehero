@@ -64,7 +64,7 @@
       >
 
     <TextView
-        android:id="@+id/user_profile_exchanges_count"
+        android:id="@+id/user_profile_roi"
         tools:text="65%"
         style="@style/UserProfile.Contained.Value"
         />
