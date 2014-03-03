@@ -232,7 +232,7 @@ abstract public class THBaseBillingInteractor<
 
     public void waitForSkuDetailsMilestoneComplete(Runnable runnable)
     {
-        if (showProductDetailsMilestone.isComplete())
+        if (showProductDetailsMilestone != null && showProductDetailsMilestone.isComplete())
         {
             if (runnable != null)
             {
@@ -246,13 +246,13 @@ abstract public class THBaseBillingInteractor<
                 popDialogLoadingInfo();
                 runOnShowProductDetailsMilestoneComplete = runnable;
             }
-            if (showProductDetailsMilestone.isFailed() || !showProductDetailsMilestone.isRunning())
+            if (showProductDetailsMilestone != null && (showProductDetailsMilestone.isFailed() || !showProductDetailsMilestone.isRunning()))
             {
                 showProductDetailsMilestone.launch();
             }
             else
             {
-                Timber.d("showProductDetailsMilestone is already running");
+                Timber.d("showProductDetailsMilestone is null or already running");
             }
         }
     }
