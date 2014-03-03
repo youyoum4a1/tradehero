@@ -196,7 +196,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public void displayTimeSpanButtonSet()
     {
         TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
-        if (buttonSet != null)
+        if (!isDetached() && buttonSet != null)
         {
             buttonSet.setVisibility(timeSpanButtonSetVisibility);
         }
@@ -205,7 +205,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public void displayChartImage()
     {
         ImageView image = this.chartImage;
-        if (image != null)
+        if (!isDetached() && image != null)
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory

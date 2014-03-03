@@ -167,7 +167,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayLinkHelpVideoLink()
     {
-        if (mHelpVideoLink != null)
+        if (!isDetached() && mHelpVideoLink != null)
         {
             mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
             if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkBackgroundResId > 0)
@@ -179,7 +179,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayLinkHelpVideoText()
     {
-        if (mHelpVideoText != null)
+        if (!isDetached() && mHelpVideoText != null)
         {
             if (providerDTO != null)
             {
@@ -204,7 +204,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayWarrantType()
     {
-        if (mWarrantType != null)
+        if (!isDetached() && mWarrantType != null)
         {
             if (warrantDTO == null || warrantDTO.warrantType == null)
             {
@@ -231,7 +231,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayWarrantCode()
     {
-        if (mWarrantCode != null)
+        if (!isDetached() && mWarrantCode != null)
         {
             if (value == null || value.symbol == null)
             {
@@ -246,7 +246,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayExpiry()
     {
-        if (mWarrantExpiry != null)
+        if (!isDetached() && mWarrantExpiry != null)
         {
             if (warrantDTO == null || warrantDTO.expiryDate == null)
             {
@@ -262,7 +262,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayStrikePrice()
     {
-        if (mStrikePrice != null)
+        if (!isDetached() && mStrikePrice != null)
         {
             if (warrantDTO == null || warrantDTO.strikePrice == null || warrantDTO.strikePriceCcy == null)
             {
@@ -280,7 +280,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayUnderlying()
     {
-        if (mUnderlying != null)
+        if (!isDetached() && mUnderlying != null)
         {
             if (warrantDTO == null || warrantDTO.underlyingName == null)
             {
@@ -295,7 +295,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayIssuer()
     {
-        if (mIssuer != null)
+        if (!isDetached() && mIssuer != null)
         {
             if (warrantDTO == null || warrantDTO.issuerName == null)
             {

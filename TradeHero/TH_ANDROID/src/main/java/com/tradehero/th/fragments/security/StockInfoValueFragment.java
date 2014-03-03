@@ -94,7 +94,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayPreviousClose()
     {
-        if (mPreviousClose != null)
+        if (!isDetached() && mPreviousClose != null)
         {
             if (value == null || value.previousClose == null)
             {
@@ -109,7 +109,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayOpen()
     {
-        if (mOpen != null)
+        if (!isDetached() && mOpen != null)
         {
             if (value == null || value.open == null)
             {
@@ -125,7 +125,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayDaysHigh()
     {
-        if (mDaysHigh != null)
+        if (!isDetached() && mDaysHigh != null)
         {
             if (value == null || value.high == null)
             {
@@ -141,7 +141,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayDaysLow()
     {
-        if (mDaysLow != null)
+        if (!isDetached() && mDaysLow != null)
         {
             if (value == null || value.low == null)
             {
@@ -157,7 +157,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayMarketCap()
     {
-        if (mMarketCap != null)
+        if (!isDetached() && mMarketCap != null)
         {
             if (value == null || value.marketCap == null)
             {
@@ -172,7 +172,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayPERatio()
     {
-        if (mPERatio != null)
+        if (!isDetached() && mPERatio != null)
         {
             if (value == null || value.pe == null)
             {
@@ -188,7 +188,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayEps()
     {
-        if (mEps != null)
+        if (!isDetached() && mEps != null)
         {
             if (value == null || value.eps == null)
             {
@@ -203,7 +203,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayVolume()
     {
-        if (mVolume != null)
+        if (!isDetached() && mVolume != null)
         {
             if (value == null || value.volume == null)
             {
@@ -219,7 +219,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     public void displayAvgVolume()
     {
-        if (mAvgVolume != null)
+        if (!isDetached() && mAvgVolume != null)
         {
             if (value == null || value.averageDailyVolume == null)
             {

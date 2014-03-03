@@ -118,7 +118,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
 
     public void displayNewsListView()
     {
-        if (adapter != null)
+        if (!isDetached() && adapter != null)
         {
             adapter.setItems(value);
             adapter.notifyDataSetChanged();
