@@ -36,10 +36,11 @@
     <item name="android:background">@color/white</item>
   </style>
 
-  <color name="user_profile_blue">#0000ff</color>
+  <color name="user_profile_blue">@color/button_blue</color>
   <dimen name="user_profile_button_margin">4dp</dimen>
   <dimen name="user_profile_button_padding">4dp</dimen>
-  <dimen name="user_profile_button_corner_radius">4dp</dimen>
+  <drawable name="user_profile_button_active">@drawable/action_button_active_2_0</drawable>
+  <drawable name="user_profile_button_default">@drawable/action_button_available_2_0</drawable>
 
   <style name="UserProfile.Button">
     <item name="android:layout_width">0dp</item>
@@ -52,12 +53,12 @@
 
   <style name="UserProfile.Button.Default">
     <item name="android:textColor">@color/user_profile_blue</item>
+    <item name="android:background">@drawable/user_profile_button_default</item>
   </style>
 
   <style name="UserProfile.Button.Selected">
     <item name="android:textColor">@color/white</item>
-    <item name="android:background">@color/user_profile_blue</item>
-    <item name="android:radius">@dimen/user_profile_button_corner_radius</item>
+    <item name="android:background">@drawable/user_profile_button_active</item>
   </style>
 
 </resources>
