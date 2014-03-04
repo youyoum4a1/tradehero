@@ -180,9 +180,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
         buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
         displayConfirmMenuItem();
-
-        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
-        displayMarketClose();
     }
 
     @Override public void onDestroyOptionsMenu()
