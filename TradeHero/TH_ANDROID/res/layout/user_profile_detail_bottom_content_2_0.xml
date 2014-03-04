@@ -4,75 +4,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <!--Followers-->
   <LinearLayout
-      style="@style/UserProfile.ValueContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_marginBottom="8dp"
       >
 
-    <TextView
-        android:id="@+id/user_profile_followers_count"
-        tools:text="0"
-        style="@style/UserProfile.Contained.Value"
-        />
+    <!--Followers-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
 
-    <TextView
-        android:text="@string/user_profile_count_followers"
-        style="@style/UserProfile.Contained.Header"
-        />
+      <TextView
+          android:id="@+id/user_profile_followers_count"
+          tools:text="0"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_count_followers"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
+
+    <!--Heroes-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_heroes_count"
+          tools:text="1"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_count_heroes"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
 
   </LinearLayout>
 
-  <!--Heroes-->
   <LinearLayout
-      style="@style/UserProfile.ValueContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
       >
 
-    <TextView
-        android:id="@+id/user_profile_heroes_count"
-        tools:text="1"
-        style="@style/UserProfile.Contained.Value"
-        />
+    <!--Trades-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
 
-    <TextView
-        android:text="@string/user_profile_count_heroes"
-        style="@style/UserProfile.Contained.Header"
-        />
+      <TextView
+          android:id="@+id/user_profile_trade_count"
+          tools:text="56"
+          style="@style/UserProfile.Contained.Value"
+          />
 
-  </LinearLayout>
+      <TextView
+          android:text="@string/user_profile_count_trades"
+          style="@style/UserProfile.Contained.Header"
+          />
 
-  <!--Trades-->
-  <LinearLayout
-      style="@style/UserProfile.ValueContainer"
-      >
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/user_profile_trade_count"
-        tools:text="56"
-        style="@style/UserProfile.Contained.Value"
-        />
+    <!--Exchanges-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
 
-    <TextView
-        android:text="@string/user_profile_count_trades"
-        style="@style/UserProfile.Contained.Header"
-        />
+      <TextView
+          android:id="@+id/user_profile_roi"
+          tools:text="65%"
+          style="@style/UserProfile.Contained.Value"
+          />
 
-  </LinearLayout>
+      <TextView
+          android:text="@string/user_profile_roi_below"
+          style="@style/UserProfile.Contained.Header"
+          />
 
-  <!--Exchanges-->
-  <LinearLayout
-      style="@style/UserProfile.ValueContainer"
-      >
-
-    <TextView
-        android:id="@+id/user_profile_roi"
-        tools:text="65%"
-        style="@style/UserProfile.Contained.Value"
-        />
-
-    <TextView
-        android:text="@string/user_profile_roi_below"
-        style="@style/UserProfile.Contained.Header"
-        />
+    </LinearLayout>
 
   </LinearLayout>
 

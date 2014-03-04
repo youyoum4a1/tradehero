@@ -7,7 +7,9 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/user_profile_avatar"
+      android:layout_centerVertical="true"
+      android:orientation="vertical"
+      android:layout_toRightOf="@id/user_profile_avatar"
       android:paddingTop="5dip"
       android:paddingBottom="5dip"
       tools:background="@color/black"
