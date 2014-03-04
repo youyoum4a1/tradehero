@@ -90,7 +90,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                         consumed,
                         reportFailed,
                         consumeFailed,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception())); // TODO have a better exception
+                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception("Tracing"))); // TODO have a better exception
             }
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)

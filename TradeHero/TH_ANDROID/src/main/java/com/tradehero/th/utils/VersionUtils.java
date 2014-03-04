@@ -86,7 +86,7 @@ public class VersionUtils
         try
         {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            appVersion = pInfo.versionName;
+            appVersion = pInfo.versionName + "(" + pInfo.versionCode + ")";
         }
         catch (PackageManager.NameNotFoundException e)
         {
