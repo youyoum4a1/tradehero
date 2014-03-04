@@ -86,8 +86,10 @@ public class ExtraTileAdapter extends BaseAdapter
     {
         if (extraTilesMarker != null)
         {
+            Timber.d("getWrappedPosition begin, length=%d", extraTilesMarker.length);
             for (int i = 0; i < extraTilesMarker.length; ++i)
             {
+                Timber.d("mark position: %d", extraTilesMarker[i].second);
                 if (position == extraTilesMarker[i].second)
                 {
                     return -1;
@@ -98,7 +100,7 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
             }
 
-            //Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
+            Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
             return position - extraTilesMarker.length;
         }
         else
@@ -130,6 +132,7 @@ public class ExtraTileAdapter extends BaseAdapter
             return wrappedAdapter.getItem(position);
         }
 
+        Timber.d("getItem return null, extraTilesMarker=%s, ", extraTilesMarker);
         return null;
     }
 
@@ -344,6 +347,16 @@ public class ExtraTileAdapter extends BaseAdapter
             ++specialTileIndex;
         }
 
+        //for (int i=specialTileIndex; i < originalMarker.length; ++i)
+        //{
+        //    int newIndex = originalMarker[i].second;
+        //    if (newIndex < specialTileIndex)
+        //    {
+        //        newIndex += specialTileIndex;
+        //    }
+        //    headingTiles[i] = Pair.create(originalMarker[i].first, newIndex);
+        //}
+
         System.arraycopy(originalMarker, 0, headingTiles, specialTileIndex, originalMarker.length);
         return headingTiles;
     }
@@ -408,6 +421,10 @@ public class ExtraTileAdapter extends BaseAdapter
             if (previousIndex > 0 && (newTileIndex - previousIndex < EXTRA_TILE_MIN_DISTANCE))
             {
                 newTileIndex = previousIndex + EXTRA_TILE_MIN_DISTANCE;
+            }
+            else if (previousIndex == -1 && newTileIndex <= 1)
+            {
+                ++newTileIndex;
             }
             // side effect of previous tiles insertion, also there should not be any overlapping between 2 tiles random space
             newTileIndex += i % EXTRA_TILE_MIN_DISTANCE;
