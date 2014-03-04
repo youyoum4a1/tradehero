@@ -190,24 +190,6 @@ public class TrendingFragment extends SecurityListFragment
         }, 500);
     }
 
-    private void detachProviderListTask()
-    {
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-            providerListFetchTask = null;
-        }
-    }
-
-    private void detachUserFetchTask()
-    {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
@@ -233,6 +215,8 @@ public class TrendingFragment extends SecurityListFragment
     @Override public void onDestroyView()
     {
         detachExchangeListFetchTask();
+        detachProviderListTask();
+        detachUserFetchTask();
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -244,6 +228,24 @@ public class TrendingFragment extends SecurityListFragment
         super.onDestroyView();
     }
 
+    private void detachProviderListTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+            providerListFetchTask = null;
+        }
+    }
+
+    private void detachUserFetchTask()
+    {
+        if (userProfileFetchTask != null)
+        {
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
+    }
+
     protected void detachExchangeListFetchTask()
     {
         if (exchangeListCacheFetchTask != null)
@@ -251,16 +253,13 @@ public class TrendingFragment extends SecurityListFragment
             exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
-        thIntentPassedListener = null;
-
-        super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
         exchangeListTypeCacheListener = null;
-
-        detachUserFetchTask();
+        thIntentPassedListener = null;
+        providerListCallback = null;
         userProfileFetchListener = null;
         super.onDestroy();
     }

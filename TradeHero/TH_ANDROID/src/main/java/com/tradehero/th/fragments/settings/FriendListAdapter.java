@@ -185,33 +185,34 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             return 0;
         }
 
-        if (section > sectionIndices.length)
+        Integer[] sectionIndicesCopy = sectionIndices;
+        if (section >= sectionIndicesCopy.length)
         {
-            return sectionIndices.length - 1;
+            return sectionIndicesCopy.length - 1;
         }
         if (section < 0)
         {
             return 0;
         }
-        return sectionIndices[section];
+        return sectionIndicesCopy[section];
     }
 
-    @Override
-    public int getSectionForPosition(int position)
+    @Override public int getSectionForPosition(int position)
     {
         if (sections == null)
         {
             return 0;
         }
 
-        for (int i = 0; i < sectionIndices.length; i++)
+        Integer[] sectionIndicesCopy = sectionIndices;
+        for (int i = 0; i < sectionIndicesCopy.length; i++)
         {
-            if (position < sectionIndices[i])
+            if (position < sectionIndicesCopy[i])
             {
                 return i - 1;
             }
         }
-        return sectionIndices.length - 1;
+        return sectionIndicesCopy.length - 1;
     }
 
     public void filter(String searchText)
