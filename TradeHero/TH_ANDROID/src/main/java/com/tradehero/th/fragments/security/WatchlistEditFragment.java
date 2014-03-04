@@ -87,28 +87,38 @@ public class WatchlistEditFragment extends DashboardFragment
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
             {
-                SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-                watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-                if (isResumed())
+                if (watchlistPositionDTO == null)
                 {
-                    SecurityIdList currentUserWatchlistSecurities =
-
-                            userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-                    if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null"), "watchlistPositionDTO cannot be null");
+                }
+                else if (watchlistPositionDTO.securityDTO == null)
+                {
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null"), "watchlistPositionDTO.securityDTO cannot be null");
+                }
+                else
+                {
+                    SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
+                    watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
+                    if (isResumed())
                     {
-                        currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
-                    }
-                    Bundle args = getArguments();
-                    if (args != null)
-                    {
-                        String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-                        if (returnFragment != null)
+                        SecurityIdList currentUserWatchlistSecurities =
+                                userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+                        if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
                         {
-                            getNavigator().popFragment(returnFragment);
-                            return;
+                            currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
                         }
+                        Bundle args = getArguments();
+                        if (args != null)
+                        {
+                            String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+                            if (returnFragment != null)
+                            {
+                                getNavigator().popFragment(returnFragment);
+                                return;
+                            }
+                        }
+                        getNavigator().popFragment();
                     }
-                    getNavigator().popFragment();
                 }
             }
 

@@ -17,23 +17,22 @@ import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
-    private final static String TAG = SecurityListFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_PAGE = SecurityListFragment.class.getName() + ".page";
 
     public final static int FIRST_PAGE = 1;
@@ -54,13 +53,15 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
-    @Inject protected SecurityCompactCache securityCompactCache;
-    private ExtraTileAdapter wrapperAdapter;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.filterTextWatcher = new SecurityListOnFilterTextWatcher();
+
+        filterTextWatcher = new SecurityListOnFilterTextWatcher();
     }
 
     @Override protected void initViews(View view)
@@ -78,9 +79,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         ListAdapter adapter = createSecurityItemViewAdapter();
 
         // TODO ListView should not have to care about whether its ListAdapter is wrapped or not
-        if (adapter instanceof ExtraTileAdapter)
+        if (adapter instanceof WrapperListAdapter)
         {
-            wrapperAdapter = (ExtraTileAdapter) adapter;
             securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) ((WrapperListAdapter) adapter).getWrappedAdapter();
         }
         else
@@ -115,8 +115,9 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onResume()
     {
-        //THLog.d(TAG, "onResume");
         super.onResume();
+
+
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
@@ -170,7 +171,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        this.filterTextWatcher = null;
+        filterTextWatcher = null;
+
         super.onDestroy();
     }
 
@@ -333,21 +335,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
         {
-            if (securityItemViewAdapter != null)
-            {
-                // It may have been nullified if coming out
-                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
+            handleSecurityItemReceived(securityIds);
 
-                // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
-                // when data is changed
-                // Note that this is just to minimize the chance of happening, need synchronize the data changes inside super class DTOAdapter
-                if (wrapperAdapter != null)
-                {
-                    wrapperAdapter.regenerateExtraTiles();
-                }
-
-                securityItemViewAdapter.notifyDataSetChanged();
-            }
             if (listViewScrollListener != null)
             {
                 listViewScrollListener.lowerFlag();
@@ -356,8 +345,17 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoaderReset(Loader<SecurityIdList> securityIdListLoader)
         {
-            THLog.d(TAG, "SecurityListLoaderCallback.onLoaderReset");
             // TODO
+        }
+    }
+
+    protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    {
+        if (securityItemViewAdapter != null)
+        {
+            // It may have been nullified if coming out
+            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            securityItemViewAdapter.notifyDataSetChanged();
         }
     }
     //</editor-fold>
@@ -371,7 +369,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
         {
-            THLog.d(TAG, "Text: " + charSequence);
             securityItemViewAdapter.getFilter().filter(charSequence);
         }
 

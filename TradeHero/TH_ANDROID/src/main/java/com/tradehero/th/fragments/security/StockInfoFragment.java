@@ -339,7 +339,10 @@ public class StockInfoFragment extends DashboardFragment
                         @Override public void run()
                         {
                             // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            topViewPagerAdapter.notifyDataSetChanged();
+                            if (topViewPagerAdapter != null)
+                            {
+                                topViewPagerAdapter.notifyDataSetChanged();
+                            }
                         }
                     });
                 }

@@ -425,17 +425,21 @@ public class InviteFriendFragment extends DashboardFragment
 
     private void conditionalSendInvitations()
     {
-        if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
+        // make sure that this fragment is added to an activity (getActivity() != null)
+        if (isAdded())
         {
-            currentSocialNetworkConnect = SocialNetworkEnum.LI;
+            if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
+            {
+                currentSocialNetworkConnect = SocialNetworkEnum.LI;
 
-            getProgressDialog().show();
-            linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
-        }
-        else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-        {
-            currentSocialNetworkConnect = SocialNetworkEnum.FB;
-            facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
+                getProgressDialog().show();
+                linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
+            }
+            else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
+            {
+                currentSocialNetworkConnect = SocialNetworkEnum.FB;
+                facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
+            }
         }
     }
 

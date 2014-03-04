@@ -11,10 +11,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
+import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.StringUtils;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
@@ -25,16 +35,19 @@ public class ExtraTileAdapter extends BaseAdapter
 {
     private static final int EXTRA_TILE_FREQUENCY = 16;
     private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+
     private int itemHeight = 0;
 
     private final ListAdapter wrappedAdapter;
     private final LayoutInflater inflater;
 
-    private Context mContext;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<ProviderListCache> providerListCache;
+
     private SharedPreferences mPref;
 
     private Pair<TileType, Integer>[] extraTilesMarker;
-
     // selected marker which contain the most number of tiles and positions
     private Pair<TileType, Integer>[] masterTilesMarker;
 
@@ -43,8 +56,9 @@ public class ExtraTileAdapter extends BaseAdapter
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
         wrappedAdapter.registerDataSetObserver(wrappedAdapterDataSetObserver);
-        mContext = context;
-        mPref = mContext.getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
+        DaggerUtils.inject(this);
+
+        mPref = context.getSharedPreferences("trade_hero", Context.MODE_PRIVATE);
     }
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
@@ -80,8 +94,6 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    //Timber.d("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
-                    //        position, position - i, extraTilesMarker[i].second);
                     return position - i;
                 }
             }
@@ -145,6 +157,7 @@ public class ExtraTileAdapter extends BaseAdapter
             convertView = inflater.inflate(TileType.at(viewType).getLayoutResourceId(), parent, false);
         }
 
+        // TODO @Liang change this to IntPreference
         itemHeight = mPref.getInt("trending_item_height", 0);
         if (itemHeight != 0 && convertView.getHeight() != itemHeight)
         {
@@ -229,35 +242,72 @@ public class ExtraTileAdapter extends BaseAdapter
 
     public void regenerateExtraTiles()
     {
+        regenerateExtraTiles(false, false);
+    }
+
+    public void regenerateExtraTiles(boolean refreshIndexes, boolean refreshTiles)
+    {
         int extraTileCount = Math.round(wrappedAdapter.getCount() / EXTRA_TILE_FREQUENCY);
 
         if (extraTileCount > 0)
         {
-            if (masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
+            Pair<TileType, Integer>[] tempMarker = null;
+            if (!refreshIndexes && !refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                //Timber.d("Reusing marker!");
-                extraTilesMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
+                Timber.d("Reusing marker!");
+                tempMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
             else
             {
-                int[] extraTileIndexes = generateExtraTileIndexes(extraTileCount);
-                TileType[] showingTiles = generateRandomTypeForTiles(extraTileIndexes);
+                // regenerate indexes for tiles, reuse as much as possible
+                int[] extraTileIndexes = null;
+                if (!refreshIndexes && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
+                {
+                    Timber.d("Reusing indexes");
+                    extraTileIndexes = new int[extraTileCount];
+                    for (int i=0; i<extraTileCount; ++i)
+                    {
+                        extraTileIndexes[i] = masterTilesMarker[i].second;
+                    }
+                }
+                else
+                {
+                    extraTileIndexes = generateExtraTileIndexes(extraTileCount);
+                }
 
-                Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
+                // regenerate tile types, reuse as much as possible
+                TileType[] showingTiles = null;
+                if (!refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
+                {
+                    Timber.d("Reusing tile types randomness");
+                    showingTiles = new TileType[extraTileCount];
+                    for (int i=0; i<extraTileCount; ++i)
+                    {
+                        showingTiles[i] = masterTilesMarker[i].first;
+                    }
+                }
+                else
+                {
+                    showingTiles = generateRandomTypeForTiles(extraTileIndexes);
+                }
 
+                tempMarker = new Pair[extraTileCount];
 
-                // TODO make it litter bit better by only generate new tile positions
+                // TODO make it better by only generate new tile positions
                 for (int i = 0; i < extraTileCount; ++i)
                 {
-                    tempMarker[i] = new Pair<>(showingTiles[i], extraTileIndexes[i]);
+                    tempMarker[i] = Pair.create(showingTiles[i], extraTileIndexes[i]);
                 }
-                if (masterTilesMarker != null)
+
+                if (!refreshTiles && masterTilesMarker != null)
                 {
                     System.arraycopy(masterTilesMarker, 0, tempMarker, 0, masterTilesMarker.length);
                 }
-                extraTilesMarker = tempMarker;
                 masterTilesMarker = tempMarker;
             }
+
+            // add some special tile at the beginning of the list
+            extraTilesMarker = createHeadingTiles(tempMarker);
         }
         else
         {
@@ -265,8 +315,68 @@ public class ExtraTileAdapter extends BaseAdapter
         }
     }
 
-    //<editor-fold desc="Completion functions for regenerateExtraTiles">
+    private Pair<TileType, Integer>[] createHeadingTiles(Pair<TileType, Integer>[] originalMarker)
+    {
+        if (originalMarker == null)
+        {
+            return null;
+        }
+        boolean surveyEnabled = isSurveyEnabled();
+        boolean providerDataAvailable = isProviderDataAvailable();
+
+        int newTilesCount = originalMarker.length;
+        newTilesCount += (surveyEnabled ? 1 : 0);
+        newTilesCount += (providerDataAvailable ? 1 : 0);
+
+        Pair<TileType, Integer>[] headingTiles = new Pair[newTilesCount];
+
+        int specialTileIndex = 0;
+        if (surveyEnabled)
+        {
+            Timber.d("Add survey at beginning of trending list");
+            headingTiles[specialTileIndex] = Pair.create(TileType.Survey, specialTileIndex);
+            ++specialTileIndex;
+        }
+
+        if (providerDataAvailable)
+        {
+            Timber.d("Add provider tile at beginning of trending list");
+            headingTiles[specialTileIndex] = Pair.create(TileType.FromProvider, specialTileIndex);
+            ++specialTileIndex;
+        }
+
+        System.arraycopy(originalMarker, 0, headingTiles, specialTileIndex, originalMarker.length);
+        return headingTiles;
+    }
+
+    private boolean isProviderDataAvailable()
+    {
+        ProviderIdList providerListKey = providerListCache.get().get(new ProviderListKey());
+        if (providerListKey != null)
+        {
+            Timber.d("Provider has %d items", providerListKey.size());
+        }
+        return providerListKey != null && !providerListKey.isEmpty();
+    }
+
     private TileType[] generateRandomTypeForTiles(int[] extraTileIndexes)
+    {
+        List<TileType> showingTileTypes = getShowingTileTypes();
+        List<TileType> showingTiles = new ArrayList<>();
+
+        for (int i = 0; i < extraTileIndexes.length; ++i)
+        {
+            showingTiles.add(showingTileTypes.get(i % showingTileTypes.size()));
+        }
+        // and shuffle the tiles
+        Collections.shuffle(showingTiles);
+
+        TileType[] retArray = new TileType[showingTiles.size()];
+        showingTiles.toArray(retArray);
+        return retArray;
+    }
+
+    private List<TileType> getShowingTileTypes()
     {
         List<TileType> showingTileTypes = new ArrayList<>();
         for (TileType tileType : TileType.values())
@@ -276,33 +386,24 @@ public class ExtraTileAdapter extends BaseAdapter
                 showingTileTypes.add(tileType);
             }
         }
-
-        List<TileType> showingTiles = new ArrayList<>();
-
-        for (int i = 0; i < extraTileIndexes.length; ++i)
+        if (!isSurveyEnabled())
         {
-            showingTiles.add(showingTileTypes.get(i % showingTileTypes.size()));
+            showingTileTypes.remove(TileType.Survey);
         }
-        // and suffer the tile
-        Collections.shuffle(showingTiles);
-        // always show the first one as survey tile
-        showingTiles.set(0, TileType.Survey);
-
-        TileType[] retArray = new TileType[showingTiles.size()];
-        showingTiles.toArray(retArray);
-        return retArray;
+        if (!isProviderDataAvailable())
+        {
+            showingTileTypes.remove(TileType.FromProvider);
+        }
+        return Collections.unmodifiableList(showingTileTypes);
     }
 
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
-        int[] extraTileIndexes = new int[extraTileCount];
-        //Timber.d("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount);
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
+        int[] extraTileIndexes = new int[extraTileCount];
 
-        // first element is always at 0
-        extraTileIndexes[0] = 0;
-        for (int i = 1; i < extraTileCount; ++i)
+        for (int i = 0; i < extraTileCount; ++i)
         {
             int newTileIndex = i * EXTRA_TILE_FREQUENCY + (int) (Math.random() * EXTRA_TILE_FREQUENCY);
             if (previousIndex > 0 && (newTileIndex - previousIndex < EXTRA_TILE_MIN_DISTANCE))
@@ -318,7 +419,12 @@ public class ExtraTileAdapter extends BaseAdapter
 
         return extraTileIndexes;
     }
-    //</editor-fold>
+
+    private boolean isSurveyEnabled()
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        return userProfileDTO != null && !StringUtils.isNullOrEmpty(userProfileDTO.activeSurveyImageURL);
+    }
 
     private final DataSetObserver wrappedAdapterDataSetObserver = new DataSetObserver()
     {

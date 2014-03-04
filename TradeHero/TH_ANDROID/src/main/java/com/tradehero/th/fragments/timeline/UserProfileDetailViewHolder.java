@@ -5,6 +5,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -21,15 +23,15 @@ import javax.inject.Inject;
  */
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    protected View profileTop;
-    protected TextView firstLastName;
-    protected TextView memberSince;
-    protected TextView profitFromTrades;
-    protected TextView totalWealth;
-    protected TextView additionalCash;
-    protected TextView cashOnHand;
-    protected TextView tradesCount;
-    protected TextView exchangesCount;
+    @InjectView(R.id.profile_screen_user_detail_top) protected View profileTop;
+    @InjectView(R.id.user_profile_first_last_name) protected TextView firstLastName;
+    @InjectView(R.id.txt_member_since) protected TextView memberSince;
+    @InjectView(R.id.txt_profile_tradeprofit) protected TextView profitFromTrades;
+    @InjectView(R.id.txt_total_wealth) protected TextView totalWealth;
+    @InjectView(R.id.txt_additional_cash) protected TextView additionalCash;
+    @InjectView(R.id.txt_cash_on_hand) protected TextView cashOnHand;
+    @InjectView(R.id.user_profile_trade_count) protected TextView tradesCount;
+    @InjectView(R.id.user_profile_exchanges_count) protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     private Target topBackgroundTarget;
@@ -43,15 +45,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void initViews(View view)
     {
         super.initViews(view);
-        profileTop = view.findViewById(R.id.profile_screen_user_detail_top);
-        firstLastName = (TextView) view.findViewById(R.id.user_profile_first_last_name);
-        memberSince = (TextView) view.findViewById(R.id.txt_member_since);
-        profitFromTrades = (TextView) view.findViewById(R.id.txt_profile_tradeprofit);
-        totalWealth = (TextView) view.findViewById(R.id.txt_total_wealth);
-        additionalCash = (TextView) view.findViewById(R.id.txt_additional_cash);
-        cashOnHand = (TextView) view.findViewById(R.id.txt_cash_on_hand);
-        tradesCount = (TextView) view.findViewById(R.id.user_profile_trade_count);
-        exchangesCount = (TextView) view.findViewById(R.id.user_profile_exchanges_count);
+        ButterKnife.inject(this, view);
     }
 
     public void onAttachedToWindow()

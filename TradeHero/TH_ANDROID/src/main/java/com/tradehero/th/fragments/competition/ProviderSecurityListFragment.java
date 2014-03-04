@@ -12,7 +12,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -40,7 +39,6 @@ import javax.inject.Inject;
  */
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
-    public static final String TAG = ProviderSecurityListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
@@ -127,7 +125,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public void onStart()
     {
-        THLog.d(TAG, "onStart");
         super.onStart();
         this.detachProviderFetchTask();
         this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
@@ -149,7 +146,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public void onStop()
     {
-        THLog.d(TAG, "onStop");
         this.detachProviderFetchTask();
         super.onStop();
     }
@@ -240,7 +236,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         @Override public void onErrorThrown(ProviderId key, Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
-            THLog.e(TAG, "Error fetching the provider info " + key, error);
         }
     }
 

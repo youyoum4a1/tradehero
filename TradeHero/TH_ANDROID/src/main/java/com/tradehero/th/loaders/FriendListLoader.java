@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserService;
@@ -61,7 +63,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     @Override public List<UserFriendsDTO> loadInBackground()
     {
-        // TODO wrap these in try / catch?
         Thread emailRetrieverThread = new Thread(new Runnable()
         {
             @Override public void run()
@@ -69,6 +70,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
                 readContacts();
             }
         });
+        emailRetrieverThread.setUncaughtExceptionHandler(createExceptionHandler(R.string.error_fetch_local_contacts));
 
         Thread friendListRetrieverThread = new Thread(new Runnable()
         {
@@ -77,19 +79,21 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
                 retrieveFriendList();
             }
         });
+        friendListRetrieverThread.setUncaughtExceptionHandler(createExceptionHandler(R.string.error_fetch_server_friends));
 
+        List<UserFriendsDTO> friendsDTOs = new ArrayList<>();
         emailRetrieverThread.start();
         friendListRetrieverThread.start();
 
-        List<UserFriendsDTO> friendsDTOs = new ArrayList<>();
         try
         {
             emailRetrieverThread.join();
             friendListRetrieverThread.join();
         }
-        catch (Exception e)
+        catch (InterruptedException e)
         {
-            Timber.e("Unable to get friend list", e);
+            THToast.show(R.string.error_fetch_friends);
+            Timber.e(e, "Unable to get friend list");
             return friendsDTOs;
         }
 
@@ -103,6 +107,18 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
         }
 
         return friendsDTOs;
+    }
+
+    private Thread.UncaughtExceptionHandler createExceptionHandler(final int toastResId)
+    {
+        return new Thread.UncaughtExceptionHandler()
+        {
+            @Override public void uncaughtException(Thread thread, Throwable ex)
+            {
+                THToast.show(toastResId);
+                Timber.e(ex, getContext().getString(toastResId));
+            }
+        };
     }
 
     private void readContacts()

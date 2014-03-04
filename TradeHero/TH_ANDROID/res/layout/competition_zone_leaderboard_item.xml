@@ -42,16 +42,44 @@
       android:layout_centerVertical="true"
       >
 
-    <TextView
-        android:id="@+id/competition_zone_title"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/title_and_prize_container"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:maxLines="1"
         android:layout_weight="3"
-        android:textStyle="bold"
-        tools:text="February 2014"
-        />
+        android:paddingRight="16dp"
+        >
+
+      <TextView
+          android:id="@+id/competition_zone_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_marginBottom="8dp"
+          android:maxLines="1"
+          android:textStyle="bold"
+          tools:text="February 2014"
+          />
+
+      <TextView
+          android:id="@+id/competition_prize_to_be_won"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:text="@string/competition_leaderboard_to_be_won"
+          />
+
+      <TextView
+          android:id="@+id/competition_prize"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_toLeftOf="@+id/competition_prize_to_be_won"
+          android:paddingRight="4dp"
+          android:textStyle="bold"
+          tools:text="S$ 3750"
+          />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/competition_zone_description"

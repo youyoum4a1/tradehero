@@ -13,17 +13,26 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdConstants;
+import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
@@ -33,8 +42,14 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
+import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -42,25 +57,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class TrendingFragment extends SecurityListFragment
     implements WithTutorial
 {
-    private final static String TAG = TrendingFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO = TrendingFragment.class.getName() + ".trendingFilterTypeDTO";
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
     @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
     @Inject Lazy<ExchangeListCache> exchangeListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<ProviderCache> providerCache;
+    @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
+    @Inject ProviderUtil providerUtil;
 
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+
+    private ExtraTileAdapter wrapperAdapter;
+    private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback;
+    private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
+    private BaseWebViewFragment webFragment;
+    private THIntentPassedListener thIntentPassedListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -81,6 +108,9 @@ public class TrendingFragment extends SecurityListFragment
         }
 
         createExchangeListTypeCacheListener();
+
+        userProfileFetchListener = new UserProfileFetchListener();
+        providerListCallback = new ProviderListFetchListener();
     }
 
     private void createExchangeListTypeCacheListener()
@@ -96,7 +126,7 @@ public class TrendingFragment extends SecurityListFragment
                     @Override public void onErrorThrown(ExchangeListType key, Throwable error)
                     {
                         THToast.show(getString(R.string.error_fetch_exchange_list_info));
-                        THLog.e(TAG, "Error fetching the list of exchanges " + key, error);
+                        Timber.e("Error fetching the list of exchanges %s", key, error);
                     }
                 };
     }
@@ -120,12 +150,25 @@ public class TrendingFragment extends SecurityListFragment
             this.filterSelectorView.setChangedListener(this.onFilterTypeChangedListener);
         }
 
+        thIntentPassedListener = new CompetitionTHIntentPassedListener();
         fetchExchangeList();
     }
 
     @Override public void onResume()
     {
         super.onResume();
+
+        // fetch user
+        detachUserFetchTask();
+        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
+        userProfileFetchTask.execute();
+
+        // fetch provider list for provider tile
+
+        detachProviderListTask();
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
+        providerListFetchTask.execute();
+
         //update gridView's top padding if filterSelectorView is higher
         filterSelectorView.postDelayed(new Runnable()
         {
@@ -145,6 +188,24 @@ public class TrendingFragment extends SecurityListFragment
                 }
             }
         }, 500);
+    }
+
+    private void detachProviderListTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+            providerListFetchTask = null;
+        }
+    }
+
+    private void detachUserFetchTask()
+    {
+        if (userProfileFetchTask != null)
+        {
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -171,7 +232,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroyView()
     {
-        //THLog.d(TAG, "onDestroyView");
+        detachExchangeListFetchTask();
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -180,11 +241,17 @@ public class TrendingFragment extends SecurityListFragment
         }
         filterSelectorView = null;
 
+        super.onDestroyView();
+    }
+
+    protected void detachExchangeListFetchTask()
+    {
         if (exchangeListCacheFetchTask != null)
         {
             exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
+        thIntentPassedListener = null;
 
         super.onDestroyView();
     }
@@ -192,6 +259,9 @@ public class TrendingFragment extends SecurityListFragment
     @Override public void onDestroy()
     {
         exchangeListTypeCacheListener = null;
+
+        detachUserFetchTask();
+        userProfileFetchListener = null;
         super.onDestroy();
     }
 
@@ -207,7 +277,8 @@ public class TrendingFragment extends SecurityListFragment
 
         //return simpleSecurityItemViewAdapter;
         // use above adapter to disable extra tile on the trending screen
-        return new ExtraTileAdapter(getActivity(), simpleSecurityItemViewAdapter);
+        wrapperAdapter = new ExtraTileAdapter(getActivity(), simpleSecurityItemViewAdapter);
+        return wrapperAdapter;
     }
 
     @Override public int getSecurityIdListLoaderId()
@@ -217,7 +288,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
-        THLog.d(TAG, "onSaveInstanceState");
+        Timber.d("onSaveInstanceState");
         super.onSaveInstanceState(outState);
         if (this.trendingFilterTypeDTO != null)
         {
@@ -227,11 +298,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void fetchExchangeList()
     {
-        if (exchangeListCacheFetchTask != null)
-        {
-            exchangeListCacheFetchTask.setListener(null);
-        }
-
+        detachExchangeListFetchTask();
         exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
         exchangeListCacheFetchTask.execute();
     }
@@ -288,18 +355,19 @@ public class TrendingFragment extends SecurityListFragment
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
             Object item = parent.getItemAtPosition(position);
+            View child = parent.getChildAt(position - parent.getFirstVisiblePosition());
             if (item instanceof SecurityCompactDTO)
             {
                 handleSecurityItemOnClick((SecurityCompactDTO) item);
             }
             else if (item instanceof TileType)
             {
-                handleExtraTileItemOnClick((TileType) item);
+                handleExtraTileItemOnClick((TileType) item, child);
             }
         }
     }
 
-    private void handleExtraTileItemOnClick(TileType item)
+    private void handleExtraTileItemOnClick(TileType item, View view)
     {
         switch (item)
         {
@@ -315,6 +383,49 @@ public class TrendingFragment extends SecurityListFragment
             case Survey:
                 handleSurveyItemOnClick();
                 break;
+            case FromProvider:
+                handleProviderTileOnClick(view);
+                break;
+        }
+    }
+
+    private void handleProviderTileOnClick(View view)
+    {
+        if (view instanceof ProviderTileView)
+        {
+            int providerId = ((ProviderTileView) view).getProviderId();
+            ProviderDTO providerDTO = providerCache.get().get(new ProviderId(providerId));
+            switch (providerId)
+            {
+                case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
+                    handleCompetitionItemClicked(providerDTO);
+                    break;
+                case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
+                    Timber.d("PROVIDER_ID_MACQUARIE_WARRANTS");
+                    break;
+            }
+        }
+    }
+
+    private void handleCompetitionItemClicked(ProviderDTO providerDTO)
+    {
+        if (providerDTO != null && providerDTO.isUserEnrolled)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()).getArgs());
+            getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+        }
+        else if (providerDTO != null)
+        {
+            Bundle args = new Bundle();
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+                    providerDTO.getProviderId(),
+                    currentUserId.toUserBaseKey()));
+            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
 
@@ -361,17 +472,96 @@ public class TrendingFragment extends SecurityListFragment
     {
         @Override public void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO)
         {
+            if (trendingFilterTypeDTO == null)
+            {
+                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
+            }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
             forceInitialLoad();
         }
     }
-
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     //</editor-fold>
+
+    @Override protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    {
+        if (securityItemViewAdapter != null)
+        {
+            // It may have been nullified if coming out
+            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            refreshAdapterWithTiles(false);
+        }
+    }
+
+    private void refreshAdapterWithTiles(boolean refreshTileTypes)
+    {
+        // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
+        // when data is changed
+        // Note that this is just to minimize the chance of happening, need synchronize the data changes inside super class DTOAdapter
+        if (wrapperAdapter != null)
+        {
+            wrapperAdapter.regenerateExtraTiles(false, refreshTileTypes);
+        }
+
+        if (securityItemViewAdapter != null)
+        {
+            securityItemViewAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
+            refreshAdapterWithTiles(value.activeSurveyImageURL != null);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_user_profile);
+        }
+    }
 
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_trending_screen;
+    }
+
+    private class ProviderListFetchListener implements DTOCache.Listener<ProviderListKey,ProviderIdList>
+    {
+        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+        {
+            refreshAdapterWithTiles(true);
+        }
+
+        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_provider_competition_list);
+        }
+    }
+
+    private class CompetitionTHIntentPassedListener implements THIntentPassedListener
+    {
+        @Override public void onIntentPassed(THIntent thIntent)
+        {
+            if (thIntent instanceof ProviderPageIntent)
+            {
+                Timber.d("Intent is ProviderPageIntent");
+                if (webFragment != null)
+                {
+                    Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                }
+                else
+                {
+                    Timber.d("WebFragment is null");
+                }
+            }
+            else
+            {
+                Timber.w("Unhandled intent %s", thIntent);
+            }
+        }
     }
 }
