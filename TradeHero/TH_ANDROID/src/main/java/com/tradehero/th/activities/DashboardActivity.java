@@ -47,10 +47,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
-    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
+    @Inject CurrentUserId currentUserId;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;

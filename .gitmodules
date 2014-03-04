@@ -7,3 +7,6 @@
 [submodule "StickyListHeaders"]
 	path = StickyListHeaders
 	url = git@github.com:nguyentruongtho/StickyListHeaders.git
+[submodule "AndroidResideMenu"]
+	path = AndroidResideMenu
+	url = git@github.com:nguyentruongtho/AndroidResideMenu.git
