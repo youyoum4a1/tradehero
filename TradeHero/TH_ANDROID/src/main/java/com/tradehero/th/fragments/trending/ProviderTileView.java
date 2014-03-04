@@ -72,18 +72,24 @@ public class ProviderTileView extends ImageView
         if (providerDTO != null)
         {
             String tileImage = providerDTO.isUserEnrolled ? providerDTO.tileJoinedImageUrl : providerDTO.tileImageUrl;
-            picasso.get().load(tileImage)
-                    .placeholder(R.drawable.white_rounded_background_xml)
-                    .transform(backgroundTransformation)
-                    .fit()
-                    .into(this);
+            //if (getHeight() > 0 && getWidth() > 0)
+            {
+                picasso.get().load(tileImage)
+                        .placeholder(R.drawable.white_rounded_background_xml)
+                        .transform(backgroundTransformation)
+                        .fit()
+                        .into(this);
+            }
         }
         else
         {
-            picasso.get().load(R.drawable.white_rounded_background_xml)
-                    .transform(backgroundTransformation)
-                    .fit()
-                    .into(this);
+            //if (getHeight() > 0 && getWidth() > 0)
+            {
+                picasso.get().load(R.drawable.white_rounded_background_xml)
+                        .transform(backgroundTransformation)
+                        .fit()
+                        .into(this);
+            }
         }
     }
 

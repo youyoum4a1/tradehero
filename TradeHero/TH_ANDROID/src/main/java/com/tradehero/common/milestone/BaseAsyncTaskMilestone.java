@@ -4,12 +4,13 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 5:26 PM To change this template use File | Settings | File Templates. */
-abstract public class BaseAsyncTaskMilestone<KeyType, ProgressType, ValueType> extends AsyncTask<KeyType, ProgressType, ValueType>
+abstract public class BaseAsyncTaskMilestone<KeyType, ProgressType, ValueType>
         implements Milestone
 {
     public static final String TAG = BaseAsyncTaskMilestone.class.getSimpleName();
 
     protected WeakReference<OnCompleteListener> parentCompleteListener = new WeakReference<>(null);
+    protected AsyncTask<KeyType, ProgressType, ValueType> task;
 
     public BaseAsyncTaskMilestone()
     {
@@ -66,6 +67,37 @@ abstract public class BaseAsyncTaskMilestone<KeyType, ProgressType, ValueType> e
         if (listener != null)
         {
             listener.onFailed(this, throwable);
+        }
+    }
+
+    abstract protected ValueType doInBackground(Void... params);
+    abstract protected void onPostExecute(ValueType dtoType);
+
+    protected AsyncTask<KeyType, ProgressType, ValueType> createAsyncTask()
+    {
+        return new BaseAsyncTask();
+    }
+
+    protected void detachTask()
+    {
+        if (task != null)
+        {
+            task.cancel(false);
+        }
+        task = null;
+    }
+
+    public class BaseAsyncTask extends AsyncTask<KeyType, ProgressType, ValueType>
+    {
+        @Override protected ValueType doInBackground(KeyType... keyTypes)
+        {
+            return BaseAsyncTaskMilestone.this.doInBackground();
+        }
+
+        @Override protected void onPostExecute(ValueType valueType)
+        {
+            super.onPostExecute(valueType);
+            BaseAsyncTaskMilestone.this.onPostExecute(valueType);
         }
     }
 }
