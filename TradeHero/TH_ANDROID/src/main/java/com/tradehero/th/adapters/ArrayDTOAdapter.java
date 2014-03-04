@@ -24,19 +24,22 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
 
     public void addItem(T item)
     {
-        if (this.items != null)
+        List<T> itemsCopy = items;
+        if (itemsCopy != null)
         {
-            this.items.add(item);
+            itemsCopy.add(item);
         }
     }
 
     @Override public int getCount()
     {
-        return items != null ? items.size() : 0;
+        List<T> itemsCopy = items;
+        return itemsCopy != null ? itemsCopy.size() : 0;
     }
 
     @Override public Object getItem(int i)
     {
-        return items != null ? items.get(i) : null;
+        List<T> itemsCopy = items;
+        return itemsCopy != null ? itemsCopy.get(i) : null;
     }
 }
