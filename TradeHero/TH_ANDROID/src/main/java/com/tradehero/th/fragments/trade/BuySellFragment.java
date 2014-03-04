@@ -815,7 +815,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displaySelectedPortfolio()
     {
-        if (mSelectedPortfolio != null)
+        TextView selectedPortfolio = mSelectedPortfolio;
+        if (selectedPortfolio != null)
         {
             if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
             {
@@ -836,7 +837,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     chosen = lastElement;
                 }
 
-                mSelectedPortfolio.setText(chosen);
+                selectedPortfolio.setText(chosen);
             }
         }
     }
