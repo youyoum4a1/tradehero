@@ -46,6 +46,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -81,6 +82,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
+    @Inject Lazy<DTOCacheUtil> dtoCacheUtil;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -803,10 +805,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
+                dtoCacheUtil.get().clearUserRelatedCaches();
                 progressDialog.dismiss();
                 ActivityHelper.launchAuthentication(getActivity());
                 getActivity().finish();
-                // TODO clear caches
                 Timber.d("After successful signout current user base key %s", currentUserId.toUserBaseKey());
             }
 
