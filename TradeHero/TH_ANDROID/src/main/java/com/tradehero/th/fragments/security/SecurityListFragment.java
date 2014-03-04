@@ -17,25 +17,19 @@ import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -49,7 +43,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.progress) ProgressBar mProgressSpinner;
     @InjectView(R.id.filter_text) @Optional EditText filterText;
-    @InjectView(R.id.trending_gridview) AbsListView securityListView;
+    //@InjectView(R.id.trending_gridview)
+    private AbsListView securityListView;
 
     protected TextWatcher filterTextWatcher;
     protected FlagNearEndScrollListener listViewScrollListener;
@@ -59,25 +54,22 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
-
-    private ExtraTileAdapter wrapperAdapter;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         filterTextWatcher = new SecurityListOnFilterTextWatcher();
-        userProfileFetchListener = new UserProfileFetchListener();
     }
 
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
+
+        securityListView = (AbsListView) view.findViewById(R.id.trending_gridview);
 
         showProgressSpinner(false);
 
@@ -90,9 +82,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         ListAdapter adapter = createSecurityItemViewAdapter();
 
         // TODO ListView should not have to care about whether its ListAdapter is wrapped or not
-        if (adapter instanceof ExtraTileAdapter)
+        if (adapter instanceof WrapperListAdapter)
         {
-            wrapperAdapter = (ExtraTileAdapter) adapter;
             securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) ((WrapperListAdapter) adapter).getWrappedAdapter();
         }
         else
@@ -129,9 +120,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        detachUserFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
-        userProfileFetchTask.execute();
 
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
@@ -140,15 +128,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             listViewScrollListener.activate();
         }
         //load();
-    }
-
-    private void detachUserFetchTask()
-    {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
     }
 
     @Override public void onPause()
@@ -196,9 +175,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         filterTextWatcher = null;
-
-        detachUserFetchTask();
-        userProfileFetchListener = null;
 
         super.onDestroy();
     }
@@ -362,21 +338,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
         {
-            if (securityItemViewAdapter != null)
-            {
-                // It may have been nullified if coming out
-                securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            handleSecurityItemReceived(securityIds);
 
-                // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
-                // when data is changed
-                // Note that this is just to minimize the chance of happening, need synchronize the data changes inside super class DTOAdapter
-                if (wrapperAdapter != null)
-                {
-                    wrapperAdapter.regenerateExtraTiles();
-                }
-
-                securityItemViewAdapter.notifyDataSetChanged();
-            }
             if (listViewScrollListener != null)
             {
                 listViewScrollListener.lowerFlag();
@@ -386,6 +349,16 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public void onLoaderReset(Loader<SecurityIdList> securityIdListLoader)
         {
             // TODO
+        }
+    }
+
+    protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    {
+        if (securityItemViewAdapter != null)
+        {
+            // It may have been nullified if coming out
+            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            securityItemViewAdapter.notifyDataSetChanged();
         }
     }
     //</editor-fold>
@@ -405,24 +378,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public void afterTextChanged(Editable editable)
         {
 
-        }
-    }
-
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
-    {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-        {
-            Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
-            if (wrapperAdapter != null)
-            {
-                wrapperAdapter.regenerateExtraTiles();
-                wrapperAdapter.notifyDataSetChanged();
-            }
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            THToast.show(R.string.error_fetch_user_profile);
         }
     }
 }

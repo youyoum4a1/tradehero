@@ -13,8 +13,6 @@ import javax.inject.Singleton;
  */
 @Singleton public class ProviderSpecificResourcesFactory
 {
-    public static final String TAG = ProviderSpecificResourcesFactory.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     @Inject public ProviderSpecificResourcesFactory()
     {
