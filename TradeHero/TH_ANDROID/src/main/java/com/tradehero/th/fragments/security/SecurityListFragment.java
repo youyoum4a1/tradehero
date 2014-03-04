@@ -43,8 +43,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.progress) ProgressBar mProgressSpinner;
     @InjectView(R.id.filter_text) @Optional EditText filterText;
-    //@InjectView(R.id.trending_gridview)
-    private AbsListView securityListView;
+    @InjectView(R.id.trending_gridview) AbsListView securityListView;
 
     protected TextWatcher filterTextWatcher;
     protected FlagNearEndScrollListener listViewScrollListener;
@@ -68,8 +67,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
-
-        securityListView = (AbsListView) view.findViewById(R.id.trending_gridview);
 
         showProgressSpinner(false);
 
