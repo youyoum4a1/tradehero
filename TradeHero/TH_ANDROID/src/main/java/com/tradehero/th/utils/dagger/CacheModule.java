@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
+import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
@@ -38,6 +39,7 @@ import javax.inject.Singleton;
 
                 // Extra Tile needs to know about userProfile data for survey tile element
                 ExtraTileAdapter.class,
+                ProviderTileView.class,
         },
         complete = false,
         library = true

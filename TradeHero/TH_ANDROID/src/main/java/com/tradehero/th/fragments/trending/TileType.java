@@ -11,7 +11,8 @@ public enum TileType
     EarnCredit(R.layout.tile_earn_credit),
     ExtraCash(R.layout.tile_extra_cash),
     ResetPortfolio(R.layout.tile_reset_portfolio),
-    Survey(R.layout.tile_survey);
+    Survey(R.layout.tile_survey),
+    FromProvider(R.layout.tile_from_provider);
 
     private final boolean extra;
     private final int layoutResourceId;
