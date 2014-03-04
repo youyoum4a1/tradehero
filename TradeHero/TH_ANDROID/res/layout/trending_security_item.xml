@@ -6,7 +6,7 @@
     android:layout_height="110dp"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity"
-
+    android:background="@drawable/trending_grid_item_bg2"
     >
 
   <ImageView
@@ -19,7 +19,7 @@
       android:scaleType="centerCrop"
       tools:background="@color/red"
       android:visibility="visible"
-      android:background="@drawable/trending_grid_item_bg2"
+
       />
     <!--remove the alpha :android:alpha="0.2"-->
   <TextView

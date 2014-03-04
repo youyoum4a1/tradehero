@@ -135,7 +135,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public static boolean isUrlOk(String url)
     {
-        Log.d(TAG, "LruMemFileCache url:" +url);
+        //Log.d(TAG, "LruMemFileCache url:" +url);
         return (url != null) && (!url.isEmpty());
     }
 
@@ -382,12 +382,15 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 callback.setTest(true);
                 callback.setTestKey(securityCompactDTO.name);
             }
+            //just for test
             if (isMyUrlOk())
             {
+                //just for test
                 if(callback.isTest()){
                     Log.d(securityCompactDTO.name,"testKey ,intent to load image");
                 }
                 mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        //don't have use transform
                         //.transform(foregroundTransformation)
                         .withMerge()
                         .placeholder(R.drawable.trending_grid_item_bg)
@@ -410,7 +413,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadExchangeImage()
     {
-        Log.d(TAG, "LruMemFileCache " +TAG+ "  loadBgImage");
+        //Log.d(TAG, "LruMemFileCache " +TAG+ "  loadBgImage");
         if (stockBgLogo != null)
         {
             if (securityCompactDTO != null && securityCompactDTO.exchange != null)
@@ -648,6 +651,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
 
     }
+
+    /**
+     * Callback for loading exchange image
+     */
     class ExchangeImageCallback extends CallbackExt.EmptyCallbackExt {
         boolean isTest = false;
         String testKey = null;
@@ -667,6 +674,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             if(isTest()){
                 Log.d(securityCompactDTO.name,"testKey ,load loadDefaultImage ");
             }
+            //load default image if failed to load exchange image
             loadDefaultImage();
         }
 
