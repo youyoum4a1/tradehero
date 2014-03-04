@@ -246,7 +246,9 @@ abstract public class THBaseBillingInteractor<
                 popDialogLoadingInfo();
                 runOnShowProductDetailsMilestoneComplete = runnable;
             }
-            if (showProductDetailsMilestone != null && (showProductDetailsMilestone.isFailed() || !showProductDetailsMilestone.isRunning()))
+            if (showProductDetailsMilestone != null && (
+                    showProductDetailsMilestone.isFailed() ||
+                    !showProductDetailsMilestone.isRunning()))
             {
                 showProductDetailsMilestone.launch();
             }

@@ -46,6 +46,10 @@ abstract public class DTORetrievedAsyncMilestone<
         {
             notifyCompleteListener();
         }
+        else if (isFailed())
+        {
+            notifyFailedListener(error);
+        }
         else if (isRunning())
         {
             Timber.d("Task is already running for key %s", key);
