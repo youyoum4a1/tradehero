@@ -645,9 +645,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void updateTargetPriceChangeValues(boolean handlerEnabled)
     {
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, getSeekingTargetPrice(), false);
-        targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
-        targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
+        Double seekingTargetPrice = getSeekingTargetPrice();
+        if (seekingTargetPrice != null)
+        {
+            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, false);
+            targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
+            targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
+        }
     }
 
     protected Double getSeekingTargetPrice()
