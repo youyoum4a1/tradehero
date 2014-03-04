@@ -40,7 +40,7 @@ import javax.inject.Singleton;
         }
 
         List<UserProfileDTO> userProfileDTOs = new ArrayList<>();
-        for(UserBaseKey baseKey: baseKeys)
+        for (UserBaseKey baseKey: baseKeys)
         {
             userProfileDTOs.add(getOrFetch(baseKey, false));
         }

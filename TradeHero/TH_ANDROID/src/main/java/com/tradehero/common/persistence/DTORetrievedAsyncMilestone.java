@@ -53,14 +53,16 @@ abstract public class DTORetrievedAsyncMilestone<
         else
         {
             running = true;
-            execute();
+            detachTask();
+            task = createAsyncTask();
+            task.execute();
         }
     }
 
     @Override protected void onPostExecute(DTOType dtoType)
     {
+        detachTask();
         running = false;
-        super.onPostExecute(dtoType);
         conditionalNotifyFailedListener(error);
         conditionalNotifyCompleteListener();
     }
