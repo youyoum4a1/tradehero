@@ -3,8 +3,6 @@ package com.tradehero.th.api.form;
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:04 PM Copyright (c) TradeHero */
 public class UserFormDTO
 {
-    private static final String TAG = UserFormDTO.class.getName();
-    // Signup with email
     public String email;
     public String username;
     public String password;
