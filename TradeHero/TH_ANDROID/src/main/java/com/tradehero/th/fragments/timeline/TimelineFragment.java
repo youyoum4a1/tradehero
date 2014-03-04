@@ -10,7 +10,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -51,7 +50,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
-    @InjectView(R.id.timeline_list_view) PullToRefreshListView timelineListView;
+    @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
 
     private UserProfileView userProfileView;

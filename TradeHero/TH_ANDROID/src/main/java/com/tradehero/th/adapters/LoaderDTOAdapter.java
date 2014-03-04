@@ -14,9 +14,10 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:40 PM Copyright (c) TradeHero
  */
 public abstract class LoaderDTOAdapter<
-        DTOType,
-        DTOViewType extends DTOView<DTOType>,
-        LoaderType extends ListLoader<DTOType>> extends DTOAdapter<DTOType, DTOViewType>
+            DTOType,
+            DTOViewType extends DTOView<DTOType>,
+            LoaderType extends ListLoader<DTOType>>
+        extends DTOAdapter<DTOType, DTOViewType>
 {
     private int loaderId;
     private ListLoaderCallback<DTOType> callback;

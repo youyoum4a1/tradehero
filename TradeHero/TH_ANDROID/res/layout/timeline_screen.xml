@@ -15,7 +15,7 @@
       android:layout_gravity="center"
     />
 
-  <com.handmark.pulltorefresh.library.PullToRefreshListView
+  <com.tradehero.th.fragments.timeline.TimelineListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/timeline_list_view"
       android:layout_width="fill_parent"

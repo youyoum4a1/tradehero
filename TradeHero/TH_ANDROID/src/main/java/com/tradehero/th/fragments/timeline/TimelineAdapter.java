@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
@@ -13,10 +12,11 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.TimelineListLoader;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
         implements
-            PullToRefreshListView.OnRefreshListener<ListView>,
+            PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>,
             AbsListView.OnScrollListener,
             PullToRefreshBase.OnLastItemVisibleListener,
         StickyListHeadersAdapter
@@ -33,7 +33,7 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
     {
     }
 
-    @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+    @Override public void onRefresh(PullToRefreshBase<StickyListHeadersListView> refreshView)
     {
         switch (refreshView.getCurrentMode())
         {
