@@ -186,6 +186,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
+                detachWatchlistCacheTask();
                 refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
                 refreshWatchlistCache.execute();
             }
@@ -251,6 +252,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachWatchlistRetrievedMilestone();
+        detachWatchlistCacheTask();
         if (watchlistPortfolioHeaderView != null)
         {
             watchlistPortfolioHeaderView.setOnStateChangeListener(null);
@@ -266,6 +268,15 @@ public class WatchlistPositionFragment extends DashboardFragment
         watchListAdapter = null;
 
         super.onDestroyView();
+    }
+
+    protected void detachWatchlistCacheTask()
+    {
+        if (refreshWatchlistCache != null)
+        {
+            refreshWatchlistCache.setListener(null);
+        }
+        refreshWatchlistCache = null;
     }
 
     @Override public void onDestroy()
