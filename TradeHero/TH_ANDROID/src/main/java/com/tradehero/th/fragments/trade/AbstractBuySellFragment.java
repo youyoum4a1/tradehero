@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -122,6 +123,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         securityCompactDTO = null;
         quoteDTO = null;
         freshQuoteListener = createFreshQuoteListener();
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
+        displayMarketClose();
     }
 
     @Override public void onResume()

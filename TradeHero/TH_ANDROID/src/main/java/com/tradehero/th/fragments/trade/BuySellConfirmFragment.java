@@ -101,6 +101,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     private boolean isBuying = false;
     private boolean isSelling = false;
     private BaseBuySellAsyncTask buySellTask;
+    private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
 
     //private String yahooQuoteStr;
     //private Quote mQuote;
@@ -151,6 +152,13 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         }
 
         displayPageElements();
+        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+        {
+            @Override public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+            {
+                BuySellConfirmFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+            }
+        };
     }
 
     //<editor-fold desc="ActionBar">
@@ -172,9 +180,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
         buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
         displayConfirmMenuItem();
-
-        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
-        displayMarketClose();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -230,6 +235,13 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         outState.putBoolean(BUNDLE_KEY_SHARE_LINKEDIN, publishToLi);
         outState.putBoolean(BUNDLE_KEY_SHARE_LOCATION, shareLocation);
         outState.putBoolean(BUNDLE_KEY_SHARE_PUBLIC, sharePublic);
+        pushPortfolioFragmentRunnable = null;
+    }
+
+    @Override public void onDestroy()
+    {
+        pushPortfolioFragmentRunnable = null;
+        super.onDestroy();
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -514,17 +526,22 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 setSelling(false);
             }
             //displayConfirmMenuItem(buySellConfirmItem);
-            if (errorCode == CODE_OK)
+            if (errorCode == CODE_OK && pushPortfolioFragmentRunnable != null)
             {
-                if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
-                {
-                    pushPortfolioFragment(new OwnedPortfolioId(currentUserId.toUserBaseKey(), securityPositionDetailDTO.portfolio.getPortfolioId()));
-                }
-                else
-                {
-                    pushPortfolioFragment();
-                }
+                pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
             }
+        }
+    }
+
+    private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
+        {
+            pushPortfolioFragment(new OwnedPortfolioId(currentUserId.toUserBaseKey(), securityPositionDetailDTO.portfolio.getPortfolioId()));
+        }
+        else
+        {
+            pushPortfolioFragment();
         }
     }
 
@@ -564,5 +581,10 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             }
         }
+    }
+
+    protected interface PushPortfolioFragmentRunnable
+    {
+        void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO);
     }
 }

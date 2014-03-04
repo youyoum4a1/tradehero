@@ -18,6 +18,7 @@ import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/15/14.
@@ -143,6 +144,14 @@ public class TrendingFilterSelectorView extends RelativeLayout
                     spinnerIcons);
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
             mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
+            if (this.exchangeSpinnerDTOs == null)
+            {
+                Timber.e(new IllegalArgumentException("exchangeSpinnerDTOs null"), "exchangeSpinnerDTOs null");
+            }
+            if (trendingFilterTypeDTO == null)
+            {
+                Timber.e(new IllegalArgumentException("trendingFilterTypeDTO null"), "trendingFilterTypeDTO null");
+            }
             mExchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
             mExchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
         }
@@ -150,6 +159,10 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     public void apply(TrendingFilterTypeDTO typeDTO)
     {
+        if (typeDTO == null)
+        {
+            Timber.e(new IllegalArgumentException("Cannot apply typeDTO null"), "Cannot apply typeDTO null");
+        }
         this.trendingFilterTypeDTO = typeDTO;
         if (typeDTO != null)
         {

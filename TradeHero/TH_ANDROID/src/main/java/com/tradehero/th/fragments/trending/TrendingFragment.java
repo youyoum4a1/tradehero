@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class TrendingFragment extends SecurityListFragment
     implements WithTutorial
@@ -60,6 +61,7 @@ public class TrendingFragment extends SecurityListFragment
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -171,7 +173,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroyView()
     {
-        //THLog.d(TAG, "onDestroyView");
+        detachExchangeListFetchTask();
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -180,13 +182,16 @@ public class TrendingFragment extends SecurityListFragment
         }
         filterSelectorView = null;
 
+        super.onDestroyView();
+    }
+
+    protected void detachExchangeListFetchTask()
+    {
         if (exchangeListCacheFetchTask != null)
         {
             exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
-
-        super.onDestroyView();
     }
 
     @Override public void onDestroy()
@@ -227,11 +232,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void fetchExchangeList()
     {
-        if (exchangeListCacheFetchTask != null)
-        {
-            exchangeListCacheFetchTask.setListener(null);
-        }
-
+        detachExchangeListFetchTask();
         exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
         exchangeListCacheFetchTask.execute();
     }
@@ -361,13 +362,15 @@ public class TrendingFragment extends SecurityListFragment
     {
         @Override public void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO)
         {
+            if (trendingFilterTypeDTO == null)
+            {
+                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
+            }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
             forceInitialLoad();
         }
     }
-
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     //</editor-fold>
 
     @Override public int getTutorialLayout()

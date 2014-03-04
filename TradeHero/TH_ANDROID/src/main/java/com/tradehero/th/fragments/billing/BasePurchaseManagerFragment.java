@@ -8,7 +8,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -26,7 +25,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected THIABUserInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected THIABLogicHolder billingActor;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
