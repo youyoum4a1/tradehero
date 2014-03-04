@@ -46,10 +46,6 @@ abstract public class DTORetrievedAsyncMilestone<
         {
             notifyCompleteListener();
         }
-        else if (isFailed())
-        {
-            notifyFailedListener(error);
-        }
         else if (isRunning())
         {
             Timber.d("Task is already running for key %s", key);
@@ -57,14 +53,16 @@ abstract public class DTORetrievedAsyncMilestone<
         else
         {
             running = true;
-            execute();
+            detachTask();
+            task = createAsyncTask();
+            task.execute();
         }
     }
 
     @Override protected void onPostExecute(DTOType dtoType)
     {
+        detachTask();
         running = false;
-        super.onPostExecute(dtoType);
         conditionalNotifyFailedListener(error);
         conditionalNotifyCompleteListener();
     }
