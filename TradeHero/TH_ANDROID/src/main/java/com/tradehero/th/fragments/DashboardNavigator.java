@@ -89,6 +89,12 @@ public class DashboardNavigator extends Navigator
             addNewTab(tabType);
         }
 
+        // Hack to fix the issue with typing inside the competition webview
+        for (int i=0; i<DashboardTabType.values().length; ++i)
+        {
+            mTabHost.getTabWidget().getChildAt(i).setFocusable(false);
+        }
+
         mTabHost.getTabWidget().setDividerDrawable(null);
         mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
 

@@ -25,4 +25,18 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
     }
     //</editor-fold>
 
+    //@Override public String toString()
+    //{
+    //    StringBuilder builder = new StringBuilder();
+    //    builder.append("[");
+    //    String separator = "";
+    //    for (OwnedPortfolioId ownedPortfolioId : this)
+    //    {
+    //        builder.append(separator);
+    //        builder.append(ownedPortfolioId);
+    //        separator = ", ";
+    //    }
+    //    builder.append("]");
+    //    return builder.toString();
+    //}
 }

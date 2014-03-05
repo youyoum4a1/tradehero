@@ -103,6 +103,7 @@ import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
+import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
@@ -180,6 +181,7 @@ import javax.inject.Singleton;
                         PushablePortfolioListFragment.class,
                         PortfolioListItemView.class,
                         PortfolioListItemAdapter.class,
+                        DisplayablePortfolioFetchAssistant.class,
 
                         PositionListFragment.class,
                         PositionListFragment.PositionListTHIABUserInteractor.class,

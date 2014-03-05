@@ -1,7 +1,6 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
-import java.lang.ref.WeakReference;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:48 PM To change this template use File | Settings | File Templates.
@@ -40,7 +39,7 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
      */
     abstract public static class GetOrFetchTask<DTOKeyType, DTOType> extends AsyncTask<Void, Void, DTOType>
     {
-        private WeakReference<Listener<DTOKeyType, DTOType>> listenerWeak = new WeakReference<>(null);
+        private Listener<DTOKeyType, DTOType> listener;
 
         public GetOrFetchTask()
         {
@@ -50,7 +49,7 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         public GetOrFetchTask(Listener<DTOKeyType, DTOType> listener)
         {
             super();
-            this.listenerWeak = new WeakReference<>(listener);
+            this.listener = listener;
         }
 
         /**
@@ -59,12 +58,12 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
          */
         public void setListener(Listener<DTOKeyType, DTOType> listener)
         {
-            this.listenerWeak = new WeakReference<>(listener);
+            this.listener = listener;
         }
 
         public Listener<DTOKeyType, DTOType> getListener()
         {
-            return this.listenerWeak.get();
+            return this.listener;
         }
     }
 }
