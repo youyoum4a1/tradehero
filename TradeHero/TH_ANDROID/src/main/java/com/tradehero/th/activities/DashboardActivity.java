@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -27,6 +28,8 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -56,17 +59,21 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject AppContainer appContainer;
+    @Inject ViewWrapper slideMenuContainer;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
         // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
         // request the progress-bar feature for the activity
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
+
         currentActivityHolder.setCurrentActivity(this);
 
         if (Constants.RELEASE)
@@ -74,11 +81,14 @@ public class DashboardActivity extends SherlockFragmentActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        setContentView(R.layout.dashboard_with_bottom_bar);
+        // wrap main view inside a container, this container can be generic, which adds in view components like sidebar, slide-in widget ...
+        ViewGroup dashboardWrapper = appContainer.get(this);
+        ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
+        getLayoutInflater().inflate(R.layout.dashboard_with_bottom_bar, slideMenuWrapper);
 
         launchIAB();
 
-        this.dtoCacheUtil.initialPrefetches();
+        dtoCacheUtil.initialPrefetches();
     }
 
     private void launchIAB()

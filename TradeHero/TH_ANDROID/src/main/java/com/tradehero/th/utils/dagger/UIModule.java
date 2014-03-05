@@ -2,8 +2,11 @@ package com.tradehero.th.utils.dagger;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.ViewWrapper;
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /**
@@ -14,12 +17,23 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TimelineItemView.class,
                 LeaderboardMarkUserListFragment.class,
         },
-        complete = false
+        complete = false,
+        library = true
 )
 public class UIModule
 {
     @Provides PrettyTime providePrettyTime()
     {
         return new PrettyTime();
+    }
+
+    @Provides @Singleton AppContainer provideAppContainer()
+    {
+        return AppContainer.DEFAULT;
+    }
+
+    @Provides @Singleton ViewWrapper provideViewWrapper()
+    {
+        return ViewWrapper.DEFAULT;
     }
 }
