@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
@@ -12,24 +13,7 @@ import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.AlertService;
-import com.tradehero.th.network.service.CompetitionService;
-import com.tradehero.th.network.service.FollowerService;
-import com.tradehero.th.network.service.LeaderboardService;
-import com.tradehero.th.network.service.MarketService;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PositionService;
-import com.tradehero.th.network.service.ProviderService;
-import com.tradehero.th.network.service.QuoteService;
-import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.SessionService;
-import com.tradehero.th.network.service.SocialService;
-import com.tradehero.th.network.service.TradeService;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.network.service.WatchlistService;
-import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.network.service.*;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Module;
 import dagger.Provides;
@@ -190,5 +174,20 @@ public class RetrofitModule
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+    }
+
+    @Provides @Singleton
+    TranslationTokenService provideTranslationTokenService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_REQ_TOKEN_ENDPOINT)
+                .build().create(TranslationTokenService.class);
+    }
+
+    @Provides @Singleton
+    TranslationService provideTranslationService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationService.class);
     }
 }
