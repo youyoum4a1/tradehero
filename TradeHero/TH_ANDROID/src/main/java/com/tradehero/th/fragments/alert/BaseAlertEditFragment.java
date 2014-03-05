@@ -333,6 +333,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(true);
             saveAlertProper(alertFormDTO);
         }
     }
@@ -673,14 +674,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserId.get()), alertCompactDTO);
-            updateCompactListCache(alertCompactDTO);
             getNavigator().popFragment();
-        }
-
-        protected void updateCompactListCache(AlertCompactDTO alertCompactDTO)
-        {
-            alertCompactListCache.get().invalidate(currentUserId.toUserBaseKey());
         }
 
         @Override protected void failure(THException ex)
