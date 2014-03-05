@@ -118,6 +118,8 @@ public class THUser
             // input error, unable to parse as json data
             return;
         }
+        Timber.d("APID: %s", PushManager.shared().getAPID());
+        userFormDTO.deviceToken = PushManager.shared().getAPID();
 
         if (authenticationMode == null)
         {
@@ -127,7 +129,6 @@ public class THUser
         switch (authenticationMode)
         {
             case SignUpWithEmail:
-                // TODO I love this smell of hacking :v
                 userServiceWrapper.get().signUpWithEmail(
                         authenticator.getAuthHeader(),
                         userFormDTO,

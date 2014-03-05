@@ -83,24 +83,148 @@ public class InviteFriendFragment extends DashboardFragment
     private ToggleButton liToggle;
     private ToggleButton contactToggle;
 
-    private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback = new LoaderManager.LoaderCallbacks<List<UserFriendsDTO>>()
+    private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
+    private THCallback<Response> inviteFriendCallback;
+    private LogInCallback socialNetworkCallback;
+    private TextWatcher searchTextWatcher;
+    private AdapterView.OnItemClickListener itemClickListener;
+    private CompoundButton.OnCheckedChangeListener onToggleFriendListListener;
+
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        @Override public Loader<List<UserFriendsDTO>> onCreateLoader(int id, Bundle args)
+        super.onCreate(savedInstanceState);
+        contactListLoaderCallback = new LoaderManager.LoaderCallbacks<List<UserFriendsDTO>>()
         {
-            return new FriendListLoader(getActivity());
-        }
+            @Override public Loader<List<UserFriendsDTO>> onCreateLoader(int id, Bundle args)
+            {
+                return new FriendListLoader(getActivity());
+            }
 
-        @Override public void onLoadFinished(Loader<List<UserFriendsDTO>> loader, List<UserFriendsDTO> userFriendsDTOs)
+            @Override public void onLoadFinished(Loader<List<UserFriendsDTO>> loader, List<UserFriendsDTO> userFriendsDTOs)
+            {
+                getProgressDialog().dismiss();
+                handleFriendListReceived(userFriendsDTOs);
+            }
+
+            @Override public void onLoaderReset(Loader<List<UserFriendsDTO>> loader)
+            {
+
+            }
+        };
+        inviteFriendCallback = new THCallback<Response>()
         {
-            getProgressDialog().dismiss();
-            handleFriendListReceived(userFriendsDTOs);
-        }
+            @Override protected void finish()
+            {
+                if (progressDialog != null)
+                {
+                    progressDialog.dismiss();
+                }
+                conditionalSendInvitations();
+            }
 
-        @Override public void onLoaderReset(Loader<List<UserFriendsDTO>> loader)
+            @Override protected void success(Response response, THResponse thResponse)
+            {
+                THToast.show(R.string.invite_friend_success);
+                // just hacked it :))
+            }
+
+            @Override protected void failure(THException ex)
+            {
+                // TODO failed
+            }
+        };
+        socialNetworkCallback = new LogInCallback()
         {
+            @Override public void done(UserBaseDTO user, THException ex)
+            {
+                getProgressDialog().dismiss();
+            }
 
-        }
-    };
+            @Override public boolean onSocialAuthDone(JSONObject json)
+            {
+                socialService.get().connect(
+                        currentUserId.get(),
+                        UserFormFactory.create(json),
+                        createSocialConnectCallback());
+                progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                return false;
+            }
+
+            @Override public void onStart()
+            {
+                getProgressDialog().show();
+            }
+        };
+        searchTextWatcher = new TextWatcher()
+        {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
+            }
+
+            @Override public void afterTextChanged(Editable s)
+            {
+                if (searchTextView != null)
+                {
+                    final String newText = searchTextView.getText().toString();
+                    if (newText.length() > MIN_LENGTH_TEXT_TO_SEARCH)
+                    {
+                        searchTextView.post(new Runnable()
+                        {
+                            @Override public void run()
+                            {
+                                activateSearch(newText);
+                            }
+                        });
+                    }
+                    else if (referFriendListAdapter != null)
+                    {
+                        referFriendListAdapter.resetItems();
+                    }
+                }
+            }
+        };
+        itemClickListener = new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (view instanceof UserFriendDTOView)
+                {
+                    UserFriendDTOView userFriendDTOView = ((UserFriendDTOView) view);
+                    userFriendDTOView.toggle();
+                    checkIfAbleToSendInvitation();
+                }
+            }
+        };
+        onToggleFriendListListener = new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (buttonView != null && referFriendListAdapter != null)
+                {
+                    switch (buttonView.getId())
+                    {
+                        case R.id.invite_friend_contact_toggle:
+                            referFriendListAdapter.toggleContactSelection(isChecked);
+                            break;
+                        case R.id.invite_friend_facebook_toggle:
+                            referFriendListAdapter.toggleFacebookSelection(isChecked);
+                            break;
+                        case R.id.invite_friend_linkedin_toggle:
+                            referFriendListAdapter.toggleLinkedInSelection(isChecked);
+                            break;
+                    }
+                    checkIfAbleToSendInvitation();
+                    referFriendListAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -144,6 +268,10 @@ public class InviteFriendFragment extends DashboardFragment
         stickyListHeadersListView.setOnItemClickListener(itemClickListener);
 
         searchTextView = (TextView) headerView.findViewById(R.id.invite_friend_search);
+        if (searchTextView != null)
+        {
+            searchTextView.addTextChangedListener(searchTextWatcher);
+        }
         fbToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_facebook_toggle);
         liToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_linkedin_toggle);
         contactToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_contact_toggle);
@@ -160,6 +288,80 @@ public class InviteFriendFragment extends DashboardFragment
         {
             contactToggle.setOnCheckedChangeListener(onToggleFriendListListener);
         }
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        getProgressDialog().show();
+
+        // load friend list from server side
+        // userService.get().getFriends(currentUserId.get(), getFriendsCallback);
+        // load contact (with email) list of the phone
+        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, contactListLoaderCallback);
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (searchTextView != null)
+        {
+            searchTextView.removeTextChangedListener(searchTextWatcher);
+        }
+        searchTextView = null;
+
+        if (stickyListHeadersListView != null)
+        {
+            stickyListHeadersListView.setOnItemClickListener(null);
+        }
+        stickyListHeadersListView = null;
+
+        if (fbToggle != null)
+        {
+            fbToggle.setOnCheckedChangeListener(null);
+        }
+        fbToggle = null;
+
+        if (liToggle != null)
+        {
+            liToggle.setOnCheckedChangeListener(null);
+        }
+        liToggle = null;
+
+        if (contactToggle != null)
+        {
+            contactToggle.setOnCheckedChangeListener(null);
+        }
+        contactToggle = null;
+
+        if (inviteFriendButton != null)
+        {
+            inviteFriendButton.setOnClickListener(null);
+        }
+        inviteFriendButton = null;
+
+        referFriendListAdapter = null;
+        headerView = null;
+
+        LoaderManager loaderManager = getLoaderManager();
+        if (loaderManager != null)
+        {
+            loaderManager.destroyLoader(CONTACT_LOADER_ID);
+        }
+
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        contactListLoaderCallback = null;
+        inviteFriendCallback = null;
+        socialNetworkCallback = null;
+        searchTextWatcher = null;
+        itemClickListener = null;
+        onToggleFriendListListener = null;
+
+        super.onDestroy();
     }
 
     private void inviteFriends()
@@ -194,58 +396,9 @@ public class InviteFriendFragment extends DashboardFragment
         }
     }
 
-    @Override public void onPause()
-    {
-        if (searchTextView != null)
-        {
-            searchTextView.removeTextChangedListener(searchTextWatcher);
-        }
-        super.onPause();
-    }
-
-    @Override public void onDestroy()
-    {
-        if (stickyListHeadersListView != null)
-        {
-            stickyListHeadersListView.setOnItemClickListener(null);
-        }
-
-        if (fbToggle != null)
-        {
-            fbToggle.setOnCheckedChangeListener(null);
-        }
-        if (liToggle != null)
-        {
-            liToggle.setOnCheckedChangeListener(null);
-        }
-        if (contactToggle != null)
-        {
-            contactToggle.setOnCheckedChangeListener(null);
-        }
-
-        if (inviteFriendButton != null)
-        {
-            inviteFriendButton.setOnClickListener(null);
-        }
-        super.onDestroy();
-    }
-
     private FriendListAdapter createFriendListAdapter()
     {
         return new FriendListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.refer_friend_list_item_view);
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        resetSearchText();
-        getProgressDialog().show();
-
-        // load friend list from server side
-        // userService.get().getFriends(currentUserId.get(), getFriendsCallback);
-        // load contact (with email) list of the phone
-        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, contactListLoaderCallback);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -277,47 +430,15 @@ public class InviteFriendFragment extends DashboardFragment
         {
             referFriendListAdapter.setItems(userFriendsDTOs);
             referFriendListAdapter.notifyDataSetChanged();
+
+            if (searchTextView != null)
+            {
+                searchTextView.setText("");
+            }
         }
     }
 
     //<editor-fold desc="Handle item selection">
-    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener()
-    {
-        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
-            if (view instanceof UserFriendDTOView)
-            {
-                UserFriendDTOView userFriendDTOView = ((UserFriendDTOView) view);
-                userFriendDTOView.toggle();
-                checkIfAbleToSendInvitation();
-            }
-        }
-    };
-
-    private CompoundButton.OnCheckedChangeListener onToggleFriendListListener = new CompoundButton.OnCheckedChangeListener()
-    {
-        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-        {
-            if (buttonView != null && referFriendListAdapter != null)
-            {
-                switch (buttonView.getId())
-                {
-                    case R.id.invite_friend_contact_toggle:
-                        referFriendListAdapter.toggleContactSelection(isChecked);
-                        break;
-                    case R.id.invite_friend_facebook_toggle:
-                        referFriendListAdapter.toggleFacebookSelection(isChecked);
-                        break;
-                    case R.id.invite_friend_linkedin_toggle:
-                        referFriendListAdapter.toggleLinkedInSelection(isChecked);
-                        break;
-                }
-                checkIfAbleToSendInvitation();
-                referFriendListAdapter.notifyDataSetChanged();
-            }
-        }
-    };
-
     private void checkIfAbleToSendInvitation()
     {
         if (referFriendListAdapter != null && referFriendListAdapter.getSelectedCount() != 0)
@@ -341,56 +462,14 @@ public class InviteFriendFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Search">
-
-    private void resetSearchText()
-    {
-        if (searchTextView != null)
-        {
-            searchTextView.setText("");
-            searchTextView.addTextChangedListener(searchTextWatcher);
-        }
-    }
-
-    private TextWatcher searchTextWatcher = new TextWatcher()
-    {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
-
-        }
-
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-
-        }
-
-        @Override public void afterTextChanged(Editable s)
-        {
-            if (searchTextView != null)
-            {
-                final String newText = searchTextView.getText().toString();
-                if (newText.length() > MIN_LENGTH_TEXT_TO_SEARCH)
-                {
-                    searchTextView.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            activateSearch(newText);
-                        }
-                    });
-                }
-                else
-                {
-                    referFriendListAdapter.resetItems();
-                }
-            }
-        }
-    };
-
     private void activateSearch(String searchText)
     {
         THLog.d(TAG, "Search term: " + searchText + ", Thread: " + Looper.myLooper());
-        referFriendListAdapter.filter(searchText);
-        referFriendListAdapter.notifyDataSetChanged();
+        if (referFriendListAdapter != null)
+        {
+            referFriendListAdapter.filter(searchText);
+            referFriendListAdapter.notifyDataSetChanged();
+        }
     }
     //</editor-fold>
 
@@ -402,27 +481,6 @@ public class InviteFriendFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Callback for authentication & rest service">
-
-    private THCallback<Response> inviteFriendCallback = new THCallback<Response>()
-    {
-        @Override protected void finish()
-        {
-            getProgressDialog().dismiss();
-            conditionalSendInvitations();
-        }
-
-        @Override protected void success(Response response, THResponse thResponse)
-        {
-            THToast.show(R.string.invite_friend_success);
-            // just hacked it :))
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            // TODO failed
-        }
-    };
-
     private void conditionalSendInvitations()
     {
         // make sure that this fragment is added to an activity (getActivity() != null)
@@ -442,29 +500,6 @@ public class InviteFriendFragment extends DashboardFragment
             }
         }
     }
-
-    private LogInCallback socialNetworkCallback = new LogInCallback()
-    {
-        @Override public void done(UserBaseDTO user, THException ex)
-        {
-            getProgressDialog().dismiss();
-        }
-
-        @Override public boolean onSocialAuthDone(JSONObject json)
-        {
-            socialService.get().connect(
-                    currentUserId.get(),
-                    UserFormFactory.create(json),
-                    createSocialConnectCallback());
-            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
-            return false;
-        }
-
-        @Override public void onStart()
-        {
-            getProgressDialog().show();
-        }
-    };
 
     private THCallback<UserProfileDTO> createSocialConnectCallback()
     {

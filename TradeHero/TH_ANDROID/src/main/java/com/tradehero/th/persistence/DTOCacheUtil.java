@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence;
 
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
@@ -8,6 +9,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
+import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -75,6 +77,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<THIABPurchaseCache> thiabSubscriptionCache;
 
     @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
+    @Inject @ServerEndpoint StringPreference serverEndpointPreference;
 
     @Inject public DTOCacheUtil()
     {
@@ -113,6 +116,7 @@ import javax.inject.Singleton;
         thiabSubscriptionCache.get().invalidateAll();
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
+        serverEndpointPreference.delete();
     }
 
     public void initialPrefetches()
