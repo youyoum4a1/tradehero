@@ -32,7 +32,7 @@ public class THException extends Exception
             {
                 this.code = ExceptionCode.NetworkError;
             }
-            else if (error.getResponse() != null && error.getResponse().getStatus() == 400) // Bad Request
+            else if (error.getResponse() != null && error.getResponse().getStatus() != 200) // Bad Request
             {
                 ErrorMessageDTO dto = null;
                 // surprisingly, server does return garbage sometime
@@ -45,7 +45,7 @@ public class THException extends Exception
                     Timber.d(ex.getMessage());
                 }
                 this.code = ExceptionCode.UnknownError;
-                String errorMessage = dto != null ? dto.Message : Application.getResourceString(R.string.error_unknown);
+                String errorMessage = dto != null ? Application.getResourceString(R.string.server_response) + dto.Message : Application.getResourceString(R.string.error_unknown);
                 return super.initCause(new Exception(errorMessage));
             }
         }

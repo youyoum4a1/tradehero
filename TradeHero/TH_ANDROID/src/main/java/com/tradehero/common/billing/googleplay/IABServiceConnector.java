@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -78,8 +79,14 @@ public class IABServiceConnector implements ServiceConnection
 
     protected boolean isServiceAvailable(Intent serviceIntent)
     {
-        List<ResolveInfo> intentService = currentActivityHolder.getCurrentActivity().getPackageManager().queryIntentServices(serviceIntent, 0);
-        return intentService!= null && !intentService.isEmpty();
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity == null)
+        {
+            Timber.e(new NullPointerException("Activity was null"), "When testing if Service is Available");
+            return false;
+        }
+        List<ResolveInfo> intentService = currentActivity.getPackageManager().queryIntentServices(serviceIntent, 0);
+        return intentService != null && !intentService.isEmpty();
     }
 
     /**

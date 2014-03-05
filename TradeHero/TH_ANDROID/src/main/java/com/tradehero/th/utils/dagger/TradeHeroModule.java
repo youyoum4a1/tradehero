@@ -99,11 +99,13 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -143,6 +145,7 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         SettingsFragment.class,
+                        MiddleCallbackLogout.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.UserAvailabilityRequester.class,
@@ -275,6 +278,7 @@ import javax.inject.Singleton;
                         AlertManagerFragment.class,
                         AlertEditFragment.class,
                         AlertCreateFragment.class,
+                        MiddleCallbackUpdateAlertCompactDTO.class,
 
                         InviteFriendFragment.class,
 

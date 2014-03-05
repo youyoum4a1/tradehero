@@ -12,33 +12,37 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/13/13 Time: 12:54 PM To change this template use File | Settings | File Templates. */
-public interface AlertService
+interface AlertServiceProtected
 {
     //<editor-fold desc="Get Alerts">
     @GET("/users/{userId}/alerts")
-    List<AlertCompactDTO> getAlerts(
-            @Path("userId") int userId);
+    void getAlerts(
+            @Path("userId") int userId,
+            Callback<List<AlertCompactDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Alert">
     @GET("/users/{userId}/alerts/{alertId}")
-    AlertDTO getAlert(
+    void getAlert(
             @Path("userId") int userId,
-            @Path("alertId") int alertId);
+            @Path("alertId") int alertId,
+            Callback<AlertDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
     @POST("/users/{userId}/alerts")
-    AlertCompactDTO createAlert(
+    void createAlert(
             @Path("userId") int userId,
-            @Body AlertFormDTO alertFormDTO);
+            @Body AlertFormDTO alertFormDTO,
+            Callback<AlertCompactDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
     @PUT("/users/{userId}/alerts/{alertId}")
-    AlertCompactDTO updateAlert(
+    void updateAlert(
             @Path("userId") int userId,
             @Path("alertId") int alertId,
-            @Body AlertFormDTO alertFormDTO);
+            @Body AlertFormDTO alertFormDTO,
+            Callback<AlertCompactDTO> callback);
     //</editor-fold>
 }

@@ -58,6 +58,9 @@ public interface SessionService
             throws RetrofitError;
 
     @POST("/logout")
+    UserProfileDTO logout();
+
+    @POST("/logout")
     void logout(
             Callback<UserProfileDTO> callback);
     //</editor-fold>

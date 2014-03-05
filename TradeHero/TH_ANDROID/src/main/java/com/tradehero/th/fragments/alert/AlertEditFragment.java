@@ -10,6 +10,7 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
 import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -25,16 +26,12 @@ public class AlertEditFragment extends BaseAlertEditFragment
     @Inject protected AlertCache alertCache;
     protected DTOCache.Listener<AlertId, AlertDTO> alertCacheListener;
     protected DTOCache.GetOrFetchTask<AlertId, AlertDTO> alertCacheFetchTask;
+    protected MiddleCallbackUpdateAlertCompactDTO middleCallbackUpdateAlertCompactDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         createAlertCacheListener();
-    }
-
-    @Override protected void createAlertUpdateCallback()
-    {
-        alertUpdateCallback = new AlertUpdateCallback();
     }
 
     protected void createAlertCacheListener()
@@ -64,6 +61,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     {
         alertCacheListener = null;
         detachAlertCacheFetchTask();
+        detachMiddleCallbackUpdate();
         super.onDestroy();
     }
 
@@ -76,12 +74,22 @@ public class AlertEditFragment extends BaseAlertEditFragment
         alertCacheFetchTask = null;
     }
 
+    protected void detachMiddleCallbackUpdate()
+    {
+        if (middleCallbackUpdateAlertCompactDTO != null)
+        {
+            middleCallbackUpdateAlertCompactDTO.setPrimaryCallback(null);
+        }
+        middleCallbackUpdateAlertCompactDTO = null;
+    }
+
     @Override protected void saveAlertProper(AlertFormDTO alertFormDTO)
     {
-        alertServiceWrapper.get().updateAlert(
+        detachMiddleCallbackUpdate();
+        middleCallbackUpdateAlertCompactDTO = alertServiceWrapper.get().updateAlert(
                 alertId,
                 alertFormDTO,
-                alertUpdateCallback);
+                new AlertCreateCallback());
     }
 
     protected void linkWith(AlertId alertId, boolean andDisplay)
@@ -102,16 +110,6 @@ public class AlertEditFragment extends BaseAlertEditFragment
         if (actionBar != null)
         {
             actionBar.setTitle(R.string.stock_alert_edit_alert);
-        }
-    }
-
-    protected class AlertUpdateCallback extends AlertCreateCallback
-    {
-        @Override protected void updateCompactListCache(AlertCompactDTO alertCompactDTO)
-        {
-            // Do nothing on compact list cache on purpose
-
-            alertCache.invalidate(alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
         }
     }
 }

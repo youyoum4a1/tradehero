@@ -22,6 +22,7 @@ import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.QuoteService;
+import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
@@ -43,6 +44,9 @@ import retrofit.converter.Converter;
  */
 
 @Module(
+        includes = {
+                RetrofitProtectedModule.class,
+        },
         injects = {
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
