@@ -24,9 +24,16 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
     private static final String TAG = TimelineAdapter.class.getName();
     private int currentScrollState;
 
+    private TimelineProfileClickListener profileClickListener;
+
     public TimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
     {
         super(context, inflater, timelineLoaderId, layoutResourceId);
+    }
+
+    public void setProfileClickListener(TimelineProfileClickListener profileClickListener)
+    {
+        this.profileClickListener = profileClickListener;
     }
 
     @Override protected void fineTune(int position, TimelineItem dto, TimelineItemView dtoView)
@@ -83,9 +90,59 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
+            mapHeaderButtons(convertView);
         }
 
         return convertView;
+    }
+
+    private void mapHeaderButtons(View view)
+    {
+        if (view != null)
+        {
+            View button = view.findViewById(R.id.btn_profile_timeline);
+            if (button != null)
+            {
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        if (profileClickListener != null)
+                        {
+                            profileClickListener.onTimelineRequested();
+                        }
+                    }
+                });
+            }
+            button = view.findViewById(R.id.btn_profile_portfolios);
+            if (button != null)
+            {
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        if (profileClickListener != null)
+                        {
+                            profileClickListener.onPortfolioListRequested();
+                        }
+                    }
+                });
+            }
+            button = view.findViewById(R.id.btn_profile_stats);
+            if (button != null)
+            {
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        if (profileClickListener != null)
+                        {
+                            profileClickListener.onStatsRequested();
+                        }
+                    }
+                });
+            }
+        }
     }
 
     @Override public long getHeaderId(int position)
