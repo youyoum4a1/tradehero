@@ -807,7 +807,14 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 for (MenuOwnedPortfolioId menuOwnedPortfolioId: usedMenuOwnedPortfolioIds)
                 {
-                    mPortfolioSelectorMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
+                    if (menuOwnedPortfolioId != null)
+                    {
+                        mPortfolioSelectorMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
+                    }
+                    else
+                    {
+                        Timber.e(new NullPointerException("menuOwnedPortfolioId should not be null"), "A portfolio id menu was not added to the list");
+                    }
                 }
             }
         }

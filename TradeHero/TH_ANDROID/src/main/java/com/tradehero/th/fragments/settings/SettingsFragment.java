@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -43,7 +44,8 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -72,7 +74,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject SessionService sessionService;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
+    private MiddleCallback<UserProfileDTO> logoutCallback;
     @Inject SocialService socialService;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -168,7 +171,17 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onDestroyView()
     {
         detachCurrentUserProfileMilestone();
+        detachLogoutCallback();
         super.onDestroyView();
+    }
+
+    protected void detachLogoutCallback()
+    {
+        if (logoutCallback != null)
+        {
+            logoutCallback.setPrimaryCallback(null);
+        }
+        logoutCallback = null;
     }
 
     protected void detachCurrentUserProfileMilestone()
@@ -792,12 +805,15 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         progressDialog = ProgressDialogUtil.show(getActivity(),
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(true);
 
         Timber.d("Before signout current user base key %s", currentUserId.toUserBaseKey());
-        sessionService.logout(createSignOutCallback());
+        detachLogoutCallback();
+        logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(getActivity()));
     }
 
-    private Callback<UserProfileDTO> createSignOutCallback()
+    private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
     {
         return new Callback<UserProfileDTO>()
         {
@@ -805,10 +821,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                dtoCacheUtil.get().clearUserRelatedCaches();
                 progressDialog.dismiss();
-                ActivityHelper.launchAuthentication(getActivity());
-                getActivity().finish();
+                // TODO move these lines into MiddleCallbackLogout?
+                ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s", currentUserId.toUserBaseKey());
             }
 
