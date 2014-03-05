@@ -356,18 +356,27 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void cancelSearchTasks()
     {
+        detachSecuritySearchTask();
+        detachPeopleSearchTask();
+        isQuerying = false;
+    }
+
+    protected void detachSecuritySearchTask()
+    {
         if (securitySearchTask != null)
         {
             securitySearchTask.setListener(null);
         }
         securitySearchTask = null;
+    }
 
+    protected void detachPeopleSearchTask()
+    {
         if (peopleSearchTask != null)
         {
             peopleSearchTask.setListener(null);
         }
         peopleSearchTask = null;
-        isQuerying = false;
     }
 
     protected void scheduleRequestData()

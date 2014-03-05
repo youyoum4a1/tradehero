@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -215,6 +216,18 @@ import retrofit.RetrofitError;
         {
             this.userService.searchUsers(key.searchString, key.page, key.perPage, callback);
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get User Transactions History">
+    public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
+    {
+        return userService.getUserTransactions(userBaseKey.key);
+    }
+
+    public void getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    {
+        userService.getUserTransactions(userBaseKey.key, callback);
     }
     //</editor-fold>
 

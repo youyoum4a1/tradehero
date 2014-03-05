@@ -134,7 +134,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
         Drawable[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
-        if (mExchangeSelection != null)
+        Spinner exchangeSelection = mExchangeSelection;
+        if (exchangeSelection != null)
         {
             //trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
             mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
@@ -143,7 +144,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
                     spinnerIcons,
                     spinnerIcons);
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
-            mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
+            exchangeSelection.setAdapter(mExchangeSelectionAdapter);
             if (this.exchangeSpinnerDTOs == null)
             {
                 Timber.e(new IllegalArgumentException("exchangeSpinnerDTOs null"), "exchangeSpinnerDTOs null");
@@ -152,8 +153,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
             {
                 Timber.e(new IllegalArgumentException("trendingFilterTypeDTO null"), "trendingFilterTypeDTO null");
             }
-            mExchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
-            mExchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
+            exchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
+            exchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
         }
     }
 

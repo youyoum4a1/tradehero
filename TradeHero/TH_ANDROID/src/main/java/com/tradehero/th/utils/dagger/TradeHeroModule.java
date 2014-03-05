@@ -104,6 +104,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -144,6 +145,7 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         SettingsFragment.class,
+                        MiddleCallbackLogout.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.UserAvailabilityRequester.class,
