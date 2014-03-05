@@ -1,8 +1,9 @@
-package com.tradehero.th.utils.dagger;
+package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.UIComponents;
 import com.tradehero.th.ui.ViewWrapper;
 import dagger.Module;
 import dagger.Provides;
