@@ -11,19 +11,24 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioListItemForProfileAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -36,7 +41,10 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -56,6 +64,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private UserProfileView userProfileView;
 
     private TimelineAdapter timelineAdapter;
+    private PortfolioListItemForProfileAdapter portfolioAdapter;
+    private PortfolioListItemForProfileAdapter.PortfolioListRefreshRequestListener refreshRequestListener;
 
     protected ActionBar actionBar;
 
@@ -63,11 +73,34 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
 
+    // We need to populate the PortfolioDTOs in order to sort them appropriately
+    private Map<OwnedPortfolioId, DisplayablePortfolioDTO> displayablePortfolios;
+    private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> ownPortfolioListListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, OwnedPortfolioIdList> fetchOwnPortfolioListFetchTask;
+
+    private Map<OwnedPortfolioId, UserProfileCache.Listener<UserBaseKey, UserProfileDTO>> userProfileDTOListeners = new HashMap<>();
+    private Map<OwnedPortfolioId, PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO>> portfolioDTOListeners = new HashMap<>();
+
+    private Map<Integer /* userId */, DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO>> fetchUserTaskMap = new HashMap<>();
+    private Map<Integer /* portfolioId */, DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO>> fetchPortfolioTaskMap = new HashMap<>();
+
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     private int displayingProfileHeaderLayoutId;
     private boolean cancelRefreshingOnResume;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        refreshRequestListener = new PortfolioListItemForProfileAdapter.PortfolioListRefreshRequestListener()
+        {
+            @Override public void onPortfolioRefreshRequested()
+            {
+                // TODO
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -134,6 +167,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+        displayablePortfolios = new HashMap<>();
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
         {
             userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
@@ -163,6 +197,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        detachPortfolioAdapter();
+        detachAllUserPortfolioFetchTask();
+        detachAllUserProfileFetchTask();
+        detachOwnPortfolioListFetchTask();
         if (userProfileRetrievedMilestone != null)
         {
             userProfileRetrievedMilestone.setOnCompleteListener(null);
@@ -178,6 +216,59 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         this.userProfileView = null;
         super.onDestroyView();
+    }
+
+    protected void detachPortfolioAdapter()
+    {
+        if (portfolioAdapter != null)
+        {
+            portfolioAdapter.setPortfolioListRefreshRequestListener(null);
+        }
+    }
+
+    protected void detachOwnPortfolioListFetchTask()
+    {
+        if (fetchOwnPortfolioListFetchTask != null)
+        {
+            fetchOwnPortfolioListFetchTask.setListener(null);
+        }
+        fetchOwnPortfolioListFetchTask = null;
+    }
+
+    protected void detachAllUserProfileFetchTask()
+    {
+        if (fetchUserTaskMap != null)
+        {
+            for (DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> task: fetchUserTaskMap.values())
+            {
+                if (task != null)
+                {
+                    task.setListener(null);
+                }
+            }
+            fetchUserTaskMap.clear();
+        }
+    }
+
+    protected void detachAllUserPortfolioFetchTask()
+    {
+        if (fetchPortfolioTaskMap != null)
+        {
+            for (DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> task: fetchPortfolioTaskMap.values())
+            {
+                if (task != null)
+                {
+                    task.setListener(null);
+                }
+            }
+            fetchPortfolioTaskMap.clear();
+        }
+    }
+
+    @Override public void onDestroy()
+    {
+        refreshRequestListener = null;
+        super.onDestroy();
     }
 
     //<editor-fold desc="Display methods">
@@ -383,6 +474,150 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             };
 
     //</editor-fold>
+
+    // Own portfolios
+    public void populatePortfolios(boolean andDisplay)
+    {
+        populatePortfolios(displayablePortfolios, false);
+    }
+
+    public void populatePortfolios(Map<OwnedPortfolioId, DisplayablePortfolioDTO> dtos, boolean andDisplay)
+    {
+        if (dtos == null)
+        {
+            return;
+        }
+        for (DisplayablePortfolioDTO dto: dtos.values())
+        {
+            if (dto != null)
+            {
+                populatePortfolio(dto, false);
+            }
+        }
+        if (andDisplay)
+        {
+            displayPortfolios();
+        }
+    }
+
+    public void populatePortfolio(DisplayablePortfolioDTO displayablePortfolioDTO, boolean andDisplay)
+    {
+        if (displayablePortfolioDTO == null)
+        {
+            return;
+        }
+        displayablePortfolioDTO.populate(userProfileCache.get());
+        displayablePortfolioDTO.populate(portfolioCache.get());
+
+        if (displayablePortfolioDTO.userBaseDTO == null)
+        {
+            launchFetchTaskForUser(displayablePortfolioDTO);
+        }
+        if (displayablePortfolioDTO.portfolioDTO == null)
+        {
+            launchFetchTaskForPortfolio(displayablePortfolioDTO);
+        }
+
+        if (andDisplay)
+        {
+            displayPortfolios();
+        }
+    }
+
+    private void launchFetchTaskForUser(final DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        if (fetchUserTaskMap.containsKey(displayablePortfolioDTO.ownedPortfolioId.userId))
+        {
+            DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchTask = fetchUserTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.userId);
+            if (fetchTask != null)
+            {
+                fetchTask.setListener(null);
+            }
+        }
+
+        DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchListener = userProfileDTOListeners.get(displayablePortfolioDTO.ownedPortfolioId);
+        if (fetchListener == null)
+        {
+            fetchListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+            {
+                @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+                {
+                    displayablePortfolioDTO.userBaseDTO = value;
+                    displayPortfolios();
+                }
+
+                @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                {
+                    THToast.show(getString(R.string.error_fetch_user_profile));
+                }
+            };
+            userProfileDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
+        }
+
+        DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchTask = userProfileCache.get().getOrFetch(
+                displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey(), fetchListener);
+        fetchUserTaskMap.put(displayablePortfolioDTO.ownedPortfolioId.userId, fetchTask);
+        fetchTask.execute();
+    }
+
+    private void launchFetchTaskForPortfolio(final DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        if (fetchPortfolioTaskMap.containsKey(displayablePortfolioDTO.ownedPortfolioId.portfolioId))
+        {
+            DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchTask = fetchPortfolioTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.portfolioId);
+            if (fetchTask != null)
+            {
+                fetchTask.setListener(null);
+            }
+        }
+
+        DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> fetchListener = portfolioDTOListeners.get(displayablePortfolioDTO.ownedPortfolioId);
+        if (fetchListener == null)
+        {
+            fetchListener = createPortfolioListener(displayablePortfolioDTO);
+            portfolioDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
+        }
+
+        DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchTask = portfolioCache.get().getOrFetch(
+                displayablePortfolioDTO.ownedPortfolioId, fetchListener);
+        fetchPortfolioTaskMap.put(displayablePortfolioDTO.ownedPortfolioId.portfolioId, fetchTask);
+        fetchTask.execute();
+    }
+
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioListener(final DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        return new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        {
+            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            {
+                displayablePortfolioDTO.portfolioDTO = value;
+                displayPortfolios();
+            }
+
+            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+            {
+                THToast.show(getString(R.string.error_fetch_portfolio_info));
+            }
+        };
+    }
+
+    public void displayPortfolios()
+    {
+        portfolioAdapter.setItems(getAllPortfolios());
+        portfolioAdapter.notifyDataSetChanged();
+    }
+
+    private List<DisplayablePortfolioDTO> getAllPortfolios()
+    {
+        List<DisplayablePortfolioDTO> allPortfolios = new ArrayList<>();
+        if (displayablePortfolios != null)
+        {
+            allPortfolios.addAll(displayablePortfolios.values());
+        }
+        return allPortfolios;
+    }
+
+
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
