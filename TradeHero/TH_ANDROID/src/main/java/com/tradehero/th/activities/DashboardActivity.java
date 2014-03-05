@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -11,6 +12,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
+import com.special.ResideMenu.ResideMenuItem;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -22,6 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -61,6 +65,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
+    private ResideMenu resideMenu;
 
         // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
@@ -86,9 +91,26 @@ public class DashboardActivity extends SherlockFragmentActivity
         ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
         getLayoutInflater().inflate(R.layout.dashboard_with_bottom_bar, slideMenuWrapper);
 
+        resideMenu = new ResideMenu(this);
+        resideMenu.setBackground(R.drawable.parallax_bg);
+        resideMenu.attachToActivity(this);
+        //resideMenu.setMenuListener();
+
+        for (DashboardTabType tabType: DashboardTabType.values())
+        {
+            ResideMenuItem menuItem = new ResideMenuItem(this, tabType.drawableResId, tabType.stringResId);
+            resideMenu.addMenuItem(menuItem);
+            //menuItem.setOnClickListener();
+        }
+
         launchIAB();
 
         dtoCacheUtil.initialPrefetches();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
     private void launchIAB()
