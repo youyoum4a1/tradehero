@@ -13,13 +13,19 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       tools:text="Google to be bought by private equity"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
       />
 
   <TextView
       android:id="@+id/news_title_date"
       android:layout_width="match_parent"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
       android:layout_height="wrap_content"
       tools:text="A big one"
       />
+    <include layout="@layout/timeline_item_action_buttons"/>
+
 
 </com.tradehero.th.fragments.news.NewsHeadlineView>

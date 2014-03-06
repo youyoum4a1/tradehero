@@ -393,7 +393,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         //don't have use transform
                         //.transform(foregroundTransformation)
                         .withMerge()
-                        .placeholder(R.drawable.trending_grid_item_bg)
+                        .placeholder(R.drawable.trending_grid_item_bg2)
                         .into(stockBgLogo, callback);
             }
             else
@@ -435,7 +435,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     mPicasso.load(exchange.logoId)
                             //.transform(foregroundTransformation)
                             .withMerge()
-                            .placeholder(R.drawable.trending_grid_item_bg)
+                            .placeholder(R.drawable.trending_grid_item_bg2)
                             .into(stockBgLogo, exchangeImageCallback);
 
 
@@ -480,8 +480,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             Bitmap in,boolean recycle){
 
         if(ph <=0 || ph <=0){
-            ph = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45, getContext().getResources().getDisplayMetrics());
-            pw = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getContext().getResources().getDisplayMetrics());
+            ph = getResources().getDimension(R.dimen.security_logo_height);
+            pw = getResources().getDimension(R.dimen.security_logo_width);
         }
 
         int inWidth = in.getWidth();
@@ -490,13 +490,13 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         float scaleX = pw / inWidth;
         float scale = Math.min(scaleX, scaleY);
         if(scale >= 1){
-            Log.d(TAG, "scaleLogo bitmap"+inWidth+","+inHeight+" parent "+getWidth()+" "+getHeight());
+            //Log.d(TAG, "scaleLogo bitmap"+inWidth+","+inHeight+" parent "+getWidth()+" "+getHeight());
             return in;
         }
 
         int dstWidth = (int) (inWidth * scale);
         int dstHeight = (int) (inHeight * scale);
-        Log.d(TAG, "scaleLogo scaleX "+scaleX+" scaleY "+scaleY+" scale "+scale+" dstWidth "+dstWidth+" dstHeight "+dstHeight+" parent "+getWidth()+" "+getHeight());
+        //Log.d(TAG, "scaleLogo scaleX "+scaleX+" scaleY "+scaleY+" scale "+scale+" dstWidth "+dstWidth+" dstHeight "+dstHeight+" parent "+getWidth()+" "+getHeight());
         Bitmap rt = Bitmap.createScaledBitmap(in, dstWidth, dstHeight, false);
         if(recycle){
             in.recycle();
@@ -522,12 +522,16 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         int bgW = background.getWidth();
         int bgH = background.getHeight();
 
+        int top = (int)getResources().getDimension(R.dimen.security_logo_offset);
         int offX = (bgW - logo.getWidth()) / 2;
-        int offY = (bgH - logo.getHeight()) / 2;
+        int offY = (bgH - logo.getHeight()) / 2 - top;
+
         Canvas canvas = new Canvas(background);
+
+        //draw icon
         canvas.drawBitmap(logo, offX, offY, paint);
 
-        Log.d(TAG, "bg:"+bgW+","+bgH+" target:"+w+","+h +" logo "+logo.getWidth()+","+logo.getHeight());
+        //Log.d(TAG, "bg:"+bgW+","+bgH+" target:"+w+","+h +" logo "+logo.getWidth()+","+logo.getHeight());
         //Bitmap retVal = Bitmap.createBitmap(background, offX, offY, w, h, null, false);
         if(recycle){
             logo.recycle();
@@ -546,7 +550,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
      */
     Bitmap reszieBackgroundBitmap(int targetWidth, int targetHeight,
                                   Bitmap result, int exifRotation,boolean recycle) {
-        Log.i(TAG, "targetWidth "+targetWidth+" targetHeight "+targetHeight+" original "+result.getWidth() +","+result.getHeight());
+        //Log.i(TAG, "targetWidth "+targetWidth+" targetHeight "+targetHeight+" original "+result.getWidth() +","+result.getHeight());
         boolean swapDimens = exifRotation == 90 || exifRotation == 270;
         int inWidth = swapDimens ? result.getHeight() : result.getWidth();
         int inHeight = swapDimens ? result.getWidth() : result.getHeight();
@@ -567,15 +571,15 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     .floor(inHeight * (heightRatio / widthRatio));
             drawY = (inHeight - newSize) / 2;
             drawHeight = newSize;
-            Log.d(TAG, String.format("transformResult 1:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
-                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
+//            Log.d(TAG, String.format("transformResult 1:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
+//                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
         } else {
             scale = heightRatio;
             int newSize = (int) Math.floor(inWidth * (widthRatio / heightRatio));
             drawX = (inWidth - newSize) / 2;
             drawWidth = newSize;
-            Log.d(TAG, String.format("transformResult 2:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
-                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
+//            Log.d(TAG, String.format("transformResult 2:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
+//                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
         }
         matrix.preScale(scale, scale);
 
@@ -731,8 +735,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
             Bitmap transformResult = reszieBackgroundBitmap(parent.getWidth(), parent.getHeight(), bmp, 0,false);
 
-            float ph = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45, getContext().getResources().getDisplayMetrics());
-            float pw = getWidth() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getContext().getResources().getDisplayMetrics());
+            float ph = getResources().getDimension(R.dimen.security_logo_height);
+            float pw = getWidth() - getResources().getDimension(R.dimen.security_logo_margin_vertical) * 2;
 
             Bitmap logo = foregroundTransformation.transform(resizeForegroundBitmap(pw,ph,bmp, false));
             Bitmap background = backgroundTransformation.transform(transformResult);

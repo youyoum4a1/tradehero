@@ -95,4 +95,10 @@
     <dimen name="security_bg_padding_r_b">2px</dimen>
     <dimen name="security_bg_padding_t_l">1px</dimen>
     <dimen name="security_bg_radius">9dp</dimen>
+
+    <dimen name="security_logo_width">180dp</dimen>
+    <dimen name="security_logo_height">45dp</dimen>
+    <dimen name="security_logo_margin_vertical">20dp</dimen>
+    <dimen name="security_logo_offset">12dp</dimen>
+    <dimen name="security_item_height">110dp</dimen>
 </resources>

@@ -92,6 +92,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
         fetchTask = null;
     }
 
+    @Override
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
@@ -105,7 +106,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
                 this.fetchTask.execute();
             }
             else
-            {
+            {   //already cached
                 linkWith(news, andDisplay);
             }
         }
