@@ -21,14 +21,13 @@ import retrofit.RetrofitError;
  */
 @Singleton public class UserServiceWrapper
 {
-    public static final String TAG = UserServiceWrapper.class.getSimpleName();
+    private final UserService userService;
+    private final UserServiceProtected userServiceProtected;
 
-    @Inject UserService userService;
-    @Inject UserServiceProtected userServiceProtected;
-
-    @Inject public UserServiceWrapper()
+    @Inject public UserServiceWrapper(UserService userService, UserServiceProtected userServiceProtected)
     {
-        super();
+        this.userService = userService;
+        this.userServiceProtected = userServiceProtected;
     }
 
     //<editor-fold desc="Sign-Up With Email">
