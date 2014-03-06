@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -66,6 +67,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     private ResideMenu resideMenu;
+    private View.OnClickListener menuItemClickListener;
 
         // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
@@ -91,6 +93,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
         getLayoutInflater().inflate(R.layout.dashboard_with_bottom_bar, slideMenuWrapper);
 
+
+        menuItemClickListener = new ResideMenuItemClickListener();
         resideMenu = new ResideMenu(this);
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachToActivity(this);
@@ -99,8 +103,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         for (DashboardTabType tabType: DashboardTabType.values())
         {
             ResideMenuItem menuItem = new ResideMenuItem(this, tabType.drawableResId, tabType.stringResId);
+            menuItem.setTag(tabType);
             resideMenu.addMenuItem(menuItem);
-            //menuItem.setOnClickListener();
+            menuItem.setOnClickListener(menuItemClickListener);
         }
 
         launchIAB();
@@ -279,5 +284,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class ResideMenuItemClickListener implements View.OnClickListener
+    {
+        @Override public void onClick(View v)
+        {
+            resideMenu.closeMenu();
+            getDashboardNavigator().goToTab((DashboardTabType) v.getTag());
+        }
     }
 }
