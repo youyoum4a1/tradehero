@@ -75,4 +75,14 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
             this.developerPayload = null;
         }
     }
+
+    @Override public String toString()
+    {
+        return new StringBuilder().append("THIABPurchaseOrder{sku:")
+                .append(sku).append(", ")
+                .append("quantity:").append(quantity).append(", ")
+                .append("developerPayload:").append(developerPayload).append(", ")
+                .append("}")
+                .toString();
+    }
 }
