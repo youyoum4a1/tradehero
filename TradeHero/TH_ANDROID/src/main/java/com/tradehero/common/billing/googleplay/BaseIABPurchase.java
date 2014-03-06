@@ -34,7 +34,7 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
     public static final String JSON_KEY_TOKEN = "token";
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
-    public final String itemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
+    public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
     protected final THIABOrderId orderId;
     public final String packageName;
     protected final IABSKU iabSKU;
