@@ -99,7 +99,8 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
@@ -282,7 +283,8 @@ import javax.inject.Singleton;
                         AlertManagerFragment.class,
                         AlertEditFragment.class,
                         AlertCreateFragment.class,
-                        MiddleCallbackUpdateAlertCompactDTO.class,
+                        MiddleCallbackUpdateAlertCompact.class,
+                        MiddleCallbackCreateAlertCompact.class,
 
                         InviteFriendFragment.class,
 

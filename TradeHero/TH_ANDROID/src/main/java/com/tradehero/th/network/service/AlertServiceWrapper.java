@@ -5,8 +5,8 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompactDTO;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -85,10 +85,10 @@ import retrofit.Callback;
         return this.alertService.createAlert(userBaseKey.key, alertFormDTO);
     }
 
-    public MiddleCallbackCreateAlertCompactDTO createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallbackCreateAlertCompact createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(userBaseKey);
-        MiddleCallbackCreateAlertCompactDTO middleCallback = new MiddleCallbackCreateAlertCompactDTO(userBaseKey, callback);
+        MiddleCallbackCreateAlertCompact middleCallback = new MiddleCallbackCreateAlertCompact(userBaseKey, callback);
         this.alertServiceProtected.createAlert(userBaseKey.key, alertFormDTO, callback);
         return middleCallback;
     }
@@ -101,10 +101,10 @@ import retrofit.Callback;
         return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
     }
 
-    public MiddleCallbackUpdateAlertCompactDTO updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallbackUpdateAlertCompact updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
-        MiddleCallbackUpdateAlertCompactDTO middleCallback = new MiddleCallbackUpdateAlertCompactDTO(alertId, callback);
+        MiddleCallbackUpdateAlertCompact middleCallback = new MiddleCallbackUpdateAlertCompact(alertId, callback);
         this.alertServiceProtected.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
         return middleCallback;
     }

@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompactDTO;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 
 /**
  * Created by xavier on 2/7/14.
@@ -15,7 +15,7 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     public static final String TAG = AlertCreateFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
-    private MiddleCallbackCreateAlertCompactDTO middleCallbackCreateAlertCompactDTO;
+    private MiddleCallbackCreateAlertCompact middleCallbackCreateAlertCompactDTO;
 
     @Override public void onResume()
     {

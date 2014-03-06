@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompactDTO;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -84,7 +84,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
     private THCallback<AlertCompactDTO> alertUpdateCallback;
-    private MiddleCallbackUpdateAlertCompactDTO alertUpdateMiddleCallback;
+    private MiddleCallbackUpdateAlertCompact alertUpdateMiddleCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
