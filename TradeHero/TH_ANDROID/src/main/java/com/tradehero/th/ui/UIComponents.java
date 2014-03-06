@@ -1,5 +1,7 @@
 package com.tradehero.th.ui;
 
+import android.content.Context;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.activities.DashboardActivity;
 import dagger.Module;
 import dagger.Provides;
@@ -22,5 +24,10 @@ public class UIComponents
     @Provides @Singleton AppContainer provideAppContainer(AppContainerImpl appContainer)
     {
         return appContainer;
+    }
+
+    @Provides @Singleton ResideMenu provideResideMenu(Context context)
+    {
+        return new ResideMenu(context);
     }
 }

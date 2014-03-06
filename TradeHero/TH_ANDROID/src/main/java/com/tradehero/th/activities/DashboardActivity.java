@@ -64,7 +64,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
-    private ResideMenu resideMenu;
+    @Inject ResideMenu resideMenu;
     private View.OnClickListener menuItemClickListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -85,26 +85,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         // wrap main view inside a container, this container can be generic, which adds in view components like sidebar, slide-in widget ...
         ViewGroup dashboardWrapper = appContainer.get(this);
         ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
-        getLayoutInflater().inflate(R.layout.dashboard_with_bottom_bar, slideMenuWrapper);
-
-
-        menuItemClickListener = new ResideMenuItemClickListener();
-        resideMenu = new ResideMenu(this);
-        resideMenu.setBackground(R.drawable.parallax_bg);
-        resideMenu.attachToActivity(this);
-        //resideMenu.setMenuListener();
-
-        for (DashboardTabType tabType: DashboardTabType.values())
-        {
-            ResideMenuItem menuItem = new ResideMenuItem(this, tabType.drawableResId, tabType.stringResId);
-            menuItem.setTag(tabType);
-            resideMenu.addMenuItem(menuItem);
-            menuItem.setOnClickListener(menuItemClickListener);
-        }
 
         launchIAB();
 
         dtoCacheUtil.initialPrefetches();
+
+        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
     }
 
     @Override
@@ -196,11 +182,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onResume()
     {
-        if (navigator == null)
-        {
-            navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        }
-
         launchActions();
 
         super.onResume();
@@ -225,6 +206,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         purchaseRestorer = null;
         purchaseRestorerFinishedListener = null;
+        menuItemClickListener = null;
 
         super.onDestroy();
     }
@@ -267,14 +249,5 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
-    }
-
-    private class ResideMenuItemClickListener implements View.OnClickListener
-    {
-        @Override public void onClick(View v)
-        {
-            resideMenu.closeMenu();
-            getDashboardNavigator().goToTab((DashboardTabType) v.getTag());
-        }
     }
 }
