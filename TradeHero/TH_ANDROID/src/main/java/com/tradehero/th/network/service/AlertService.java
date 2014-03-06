@@ -18,11 +18,6 @@ public interface AlertService
     @GET("/users/{userId}/alerts")
     List<AlertCompactDTO> getAlerts(
             @Path("userId") int userId);
-
-    @GET("/users/{userId}/alerts")
-    void getAlerts(
-            @Path("userId") int userId,
-            Callback<List<AlertCompactDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Alert">
@@ -30,12 +25,6 @@ public interface AlertService
     AlertDTO getAlert(
             @Path("userId") int userId,
             @Path("alertId") int alertId);
-
-    @GET("/users/{userId}/alerts/{alertId}")
-    void getAlert(
-            @Path("userId") int userId,
-            @Path("alertId") int alertId,
-            Callback<AlertDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
@@ -43,12 +32,6 @@ public interface AlertService
     AlertCompactDTO createAlert(
             @Path("userId") int userId,
             @Body AlertFormDTO alertFormDTO);
-
-    @POST("/users/{userId}/alerts")
-    void createAlert(
-            @Path("userId") int userId,
-            @Body AlertFormDTO alertFormDTO,
-            Callback<AlertCompactDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
@@ -57,12 +40,5 @@ public interface AlertService
             @Path("userId") int userId,
             @Path("alertId") int alertId,
             @Body AlertFormDTO alertFormDTO);
-
-    @PUT("/users/{userId}/alerts/{alertId}")
-    void updateAlert(
-            @Path("userId") int userId,
-            @Path("alertId") int alertId,
-            @Body AlertFormDTO alertFormDTO,
-            Callback<AlertCompactDTO> callback);
     //</editor-fold>
 }

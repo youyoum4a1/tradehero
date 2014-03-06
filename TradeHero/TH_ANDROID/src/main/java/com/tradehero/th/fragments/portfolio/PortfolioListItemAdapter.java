@@ -82,7 +82,12 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 }
                 else if (currentUserProfile != null && currentUserProfile.isFollowingUser(displayablePortfolioDTO.userBaseDTO))
                 {
-                    heroPortfolios.add(displayablePortfolioDTO);
+                    // We still do not want the watchlist
+                    if (displayablePortfolioDTO.portfolioDTO != null && !displayablePortfolioDTO.portfolioDTO.isWatchlist &&
+                        displayablePortfolioDTO.portfolioDTO.providerId == null)
+                    {
+                        heroPortfolios.add(displayablePortfolioDTO);
+                    }
                 }
                 else if (currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey()))
                 {
@@ -90,7 +95,12 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 }
                 else
                 {
-                    otherPortfolios.add(displayablePortfolioDTO);
+                    // We still do not want the watchlist
+                    if (displayablePortfolioDTO.portfolioDTO != null && !displayablePortfolioDTO.portfolioDTO.isWatchlist &&
+                            displayablePortfolioDTO.portfolioDTO.providerId == null)
+                    {
+                        otherPortfolios.add(displayablePortfolioDTO);
+                    }
                 }
             }
 

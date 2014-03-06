@@ -5,6 +5,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 
 /**
  * Created by xavier on 2/7/14.
@@ -14,11 +15,28 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     public static final String TAG = AlertCreateFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
+    private MiddleCallbackCreateAlertCompact middleCallbackCreateAlertCompactDTO;
+
     @Override public void onResume()
     {
         super.onResume();
         linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
         linkWith(getDummyInitialAlertDTO(), true);
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachMiddleCallbackCreate();
+        super.onDestroyView();
+    }
+
+    protected void detachMiddleCallbackCreate()
+    {
+        if (middleCallbackCreateAlertCompactDTO != null)
+        {
+            middleCallbackCreateAlertCompactDTO.setPrimaryCallback(null);
+        }
+        middleCallbackCreateAlertCompactDTO = null;
     }
 
     protected AlertDTO getDummyInitialAlertDTO()
@@ -41,7 +59,8 @@ public class AlertCreateFragment extends BaseAlertEditFragment
 
     protected void saveAlertProper(AlertFormDTO alertFormDTO)
     {
-        alertServiceWrapper.get().createAlert(
+        detachMiddleCallbackCreate();
+        middleCallbackCreateAlertCompactDTO = alertServiceWrapper.get().createAlert(
                 currentUserId.toUserBaseKey(),
                 alertFormDTO,
                 alertUpdateCallback);

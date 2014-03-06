@@ -48,7 +48,7 @@ public class THUser
     private static HashMap<String, JSONObject> credentials;
 
     @Inject @SessionToken static StringPreference currentSessionToken;
-    @Inject @AuthenticationType static StringPreference currentAuthenticationType;
+    @Inject @AuthenticationType public /* TODO, remove public */ static StringPreference currentAuthenticationType;
     @Inject @SavedCredentials static StringSetPreference savedCredentials;
     @Inject static CurrentUserId currentUserId;
 

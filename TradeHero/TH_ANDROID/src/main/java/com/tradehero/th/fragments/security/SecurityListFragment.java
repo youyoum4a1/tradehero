@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -295,9 +296,13 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             {
                 @Override public void run()
                 {
-                    SecurityListPagedLoader securityListPagedLoader =
-                            (SecurityListPagedLoader) (Loader) getActivity().getSupportLoaderManager().getLoader(getSecurityIdListLoaderId());
-                    showProgressSpinner(securityListPagedLoader.isQuerying());
+                    FragmentActivity activity = getActivity();
+                    if (activity != null)
+                    {
+                        SecurityListPagedLoader securityListPagedLoader =
+                                (SecurityListPagedLoader) (Loader) activity.getSupportLoaderManager().getLoader(getSecurityIdListLoaderId());
+                        showProgressSpinner(securityListPagedLoader.isQuerying());
+                    }
                 }
             });
         }

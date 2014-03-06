@@ -21,14 +21,14 @@ import retrofit.client.Response;
  */
 @Singleton public class ProviderServiceWrapper
 {
-    public static final String TAG = ProviderServiceWrapper.class.getSimpleName();
+    private final ProviderService providerService;
+    private final SecurityCompactDTOFactory securityCompactDTOFactory;
 
-    @Inject ProviderService providerService;
-    @Inject SecurityCompactDTOFactory securityCompactDTOFactory;
-
-    @Inject public ProviderServiceWrapper()
+    @Inject public ProviderServiceWrapper(ProviderService providerService, SecurityCompactDTOFactory securityCompactDTOFactory)
     {
         super();
+        this.providerService = providerService;
+        this.securityCompactDTOFactory = securityCompactDTOFactory;
     }
 
     //<editor-fold desc="Get Providers">

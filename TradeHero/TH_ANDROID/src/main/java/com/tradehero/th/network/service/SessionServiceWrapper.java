@@ -12,13 +12,12 @@ import retrofit.Callback;
  */
 @Singleton public class SessionServiceWrapper
 {
-    public static final String TAG = SessionServiceWrapper.class.getSimpleName();
+    private final SessionService sessionService;
 
-    @Inject SessionService sessionService;
-
-    @Inject public SessionServiceWrapper()
+    @Inject public SessionServiceWrapper(SessionService sessionService)
     {
         super();
+        this.sessionService = sessionService;
     }
 
     public MiddleCallback<UserProfileDTO> logout(Callback<UserProfileDTO> callback)

@@ -152,6 +152,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
             if (trendingFilterTypeDTO == null)
             {
                 Timber.e(new IllegalArgumentException("trendingFilterTypeDTO null"), "trendingFilterTypeDTO null");
+                trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
             }
             exchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
             exchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());

@@ -116,7 +116,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
             @Override public void uncaughtException(Thread thread, Throwable ex)
             {
                 THToast.show(toastResId);
-                Timber.e(ex, getContext().getString(toastResId));
+                //Timber.e(ex, getContext().getString(toastResId));
             }
         };
     }
