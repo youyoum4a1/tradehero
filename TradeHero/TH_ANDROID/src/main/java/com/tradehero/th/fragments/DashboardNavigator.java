@@ -22,6 +22,7 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
 {
+    private static final boolean ENABLE_TABBAR_ANIMATION = false;
     private final FragmentActivity activity;
 
     private static final String BUNDLE_KEY = "key";
@@ -93,6 +94,11 @@ public class DashboardNavigator extends Navigator
         mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
 
         tabBarView = mTabHost.findViewById(android.R.id.tabhost);
+
+        if (!ENABLE_TABBAR_ANIMATION)
+        {
+            mTabHost.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -240,24 +246,27 @@ public class DashboardNavigator extends Navigator
                 updateTabBarOnNavigate(null);
             }
         }
-        Timber.d("BackstackCount %d", manager.getBackStackEntryCount());
+        Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
     private void updateTabBarOnNavigate(Fragment currentFragment)
     {
-        boolean shouldHideTabBar = manager.getBackStackEntryCount() >= 1;
-        if (currentFragment instanceof BaseFragment.TabBarVisibilityInformer)
+        if (ENABLE_TABBAR_ANIMATION)
         {
-            shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
-        }
+            boolean shouldHideTabBar = manager.getBackStackEntryCount() >= 1;
+            if (currentFragment instanceof BaseFragment.TabBarVisibilityInformer)
+            {
+                shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
+            }
 
-        if (shouldHideTabBar)
-        {
-            hideTabBar();
-        }
-        else
-        {
-            showTabBar();
+            if (shouldHideTabBar)
+            {
+                hideTabBar();
+            }
+            else
+            {
+                showTabBar();
+            }
         }
     }
 
@@ -275,10 +284,13 @@ public class DashboardNavigator extends Navigator
 
     private void showTabBar()
     {
-        if (tabBarView != null && tabBarView.getVisibility() != View.VISIBLE)
+        if (ENABLE_TABBAR_ANIMATION)
         {
-            tabBarView.setVisibility(View.VISIBLE);
-            tabBarView.startAnimation(slideInAnimation);
+            if (tabBarView != null && tabBarView.getVisibility() != View.VISIBLE)
+            {
+                tabBarView.setVisibility(View.VISIBLE);
+                tabBarView.startAnimation(slideInAnimation);
+            }
         }
     }
 
