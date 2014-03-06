@@ -18,15 +18,43 @@ import static butterknife.ButterKnife.findById;
  */
 public class AppContainerImpl implements AppContainer
 {
-    private ResideMenu.OnMenuListener menuListener;
+    private final ResideMenu.OnMenuListener menuListener;
+    private final ResideMenu resideMenu;
 
-    @Inject public AppContainerImpl(ResideMenuListener menuListener)
+    @Inject public AppContainerImpl(
+            ResideMenu resideMenu,
+            ResideMenuListener menuListener)
     {
+        this.resideMenu = resideMenu;
         this.menuListener = menuListener;
     }
 
     @Override public ViewGroup get(Activity activity)
     {
+        activity.setContentView(R.layout.dashboard_with_bottom_bar);
+
+        resideMenu.setBackground(R.drawable.parallax_bg);
+        resideMenu.attachToActivity(activity);
+        //resideMenu.setMenuListener();
+        ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener();
+
+        for (DashboardTabType tabType: DashboardTabType.values())
+        {
+            ResideMenuItem menuItem = new ResideMenuItem(activity, tabType.drawableResId, tabType.stringResId);
+            menuItem.setTag(tabType);
+            resideMenu.addMenuItem(menuItem);
+            menuItem.setOnClickListener(menuItemClickListener);
+        }
+
         return findById(activity, android.R.id.content);
+    }
+
+    private class ResideMenuItemClickListener implements View.OnClickListener
+    {
+        @Override public void onClick(View v)
+        {
+            resideMenu.closeMenu();
+            //getDashboardNavigator().goToTab((DashboardTabType) v.getTag());
+        }
     }
 }
