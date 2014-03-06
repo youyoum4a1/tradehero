@@ -107,6 +107,7 @@ import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -145,6 +146,7 @@ import javax.inject.Singleton;
                 {
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
+                        MiddleCallbackUpdateUserProfile.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,
                         AboutFragment.class,
