@@ -10,6 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.sun.org.apache.regexp.internal.recompile;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -50,6 +51,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_SHOW_USER_ID =
             TimelineFragment.class.getName() + ".showUserId";
 
+    public static enum TabType
+    {
+        TIMELINE, PORTFOLIO_LIST, STATS
+    }
+
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -78,6 +84,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private int displayingProfileHeaderLayoutId;
     private boolean cancelRefreshingOnResume;
+    public TabType currentTab = TabType.TIMELINE;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -91,22 +98,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         };
         profileButtonClickListener = new TimelineProfileClickListener()
         {
-            @Override public void onTimelineRequested()
+            @Override public void onBtnClicked(TabType tabType)
             {
-                // TODO
-                THToast.show("Timeline Requested");
-            }
-
-            @Override public void onPortfolioListRequested()
-            {
-                // TODO
-                THToast.show("Portfolios Requested");
-            }
-
-            @Override public void onStatsRequested()
-            {
-                // TODO
-                THToast.show("Stats Requested");
+                linkWith(tabType, true);
             }
         };
     }
@@ -160,6 +154,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileView.setPortfolioRequestListener(this);
             timelineListView.getRefreshableView().addHeaderView(userProfileView);
         }
+
+        portfolioAdapter = createPortfolioAdapter();
+        portfolioAdapter.setProfileClickListener(profileButtonClickListener);
+
         displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
         displayablePortfolioFetchAssistant.setFetchedListener(new DisplayablePortfolioFetchAssistant.OnFetchedListener()
         {
@@ -195,6 +193,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             cancelRefreshingOnResume = false;
         }
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
+
+        displayTab();
     }
 
     @Override public void onPause()
@@ -215,6 +215,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         detachTimelineAdapter();
+        detachTimelineListView();
         detachPortfolioAdapter();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
@@ -225,9 +226,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileRetrievedMilestone.setOnCompleteListener(null);
         }
         userProfileRetrievedMilestone = null;
-
-        this.timelineListView = null;
-        this.timelineAdapter = null;
 
         if (userProfileView != null)
         {
@@ -243,6 +241,18 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             timelineAdapter.setProfileClickListener(null);
         }
+        timelineAdapter = null;
+    }
+
+    protected void detachTimelineListView()
+    {
+        if (timelineListView != null)
+        {
+            timelineListView.setOnRefreshListener((TimelineAdapter) null);
+            timelineListView.setOnScrollListener(null);
+            timelineListView.setOnLastItemVisibleListener(null);
+        }
+        timelineListView = null;
     }
 
     protected void detachPortfolioAdapter()
@@ -250,8 +260,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (portfolioAdapter != null)
         {
             portfolioAdapter.setProfileClickListener(null);
-            portfolioAdapter.setPortfolioListRefreshRequestListener(null);
         }
+        portfolioAdapter = null;
     }
 
     @Override public void onDestroy()
@@ -266,15 +276,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.shownUserBaseKey = userBaseKey;
 
-        if (timelineAdapter == null)
-        {
-            timelineAdapter = createTimelineAdapter();
-            timelineListView.setAdapter(timelineAdapter);
-            timelineListView.setOnRefreshListener(timelineAdapter);
-            timelineListView.setOnScrollListener(timelineAdapter);
-            timelineListView.setOnLastItemVisibleListener(timelineAdapter);
-            timelineListView.setRefreshing();
-        }
+        prepareTimelineAdapter();
 
         if (userBaseKey != null)
         {
@@ -285,6 +287,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             createPortfolioCompactListRetrievedMilestone();
             portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
             portfolioCompactListRetrievedMilestone.launch();
+        }
+
+        if (andDisplay)
+        {
+            displayTab();
         }
     }
 
@@ -308,6 +315,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
+    protected void linkWith(TabType tabType, boolean andDisplay)
+    {
+        currentTab = tabType;
+        if (andDisplay)
+        {
+            displayTab();
+        }
+    }
+
     protected void updateView()
     {
         if (timelineScreen != null)
@@ -324,6 +340,30 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
 
         displayActionBarTitle();
+    }
+
+    public void displayTab()
+    {
+        switch (currentTab)
+        {
+            case TIMELINE:
+                if (timelineListView.getAdapter() != timelineAdapter)
+                {
+                    timelineListView.setAdapter(timelineAdapter);
+                }
+                break;
+            case PORTFOLIO_LIST:
+                if (timelineListView.getAdapter() != portfolioAdapter)
+                {
+                    timelineListView.setAdapter(portfolioAdapter);
+                }
+                break;
+            case STATS:
+                // TODO
+                break;
+            default:
+                throw new IllegalArgumentException("No TabType." + currentTab);
+        }
     }
     //</editor-fold>
 
@@ -365,8 +405,18 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Initial methods">
     private TimelineAdapter createTimelineAdapter()
     {
-        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                shownUserBaseKey.key, R.layout.timeline_item_view);
+        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
+                        shownUserBaseKey.key, R.layout.timeline_item_view);
+    }
+
+    private void prepareTimelineAdapter()
+    {
+        timelineAdapter = createTimelineAdapter();
+        timelineListView.setAdapter(timelineAdapter);
+        timelineListView.setOnRefreshListener(timelineAdapter);
+        timelineListView.setOnScrollListener(timelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+        timelineListView.setRefreshing();
         timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
         {
 
@@ -385,7 +435,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         });
         timelineAdapter.setProfileClickListener(profileButtonClickListener);
-        return timelineAdapter;
     }
 
     private ListLoader<TimelineItem> createTimelineLoader()
@@ -393,6 +442,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
         return timelineLoader;
+    }
+
+    private PortfolioListItemForProfileAdapter createPortfolioAdapter()
+    {
+        return new PortfolioListItemForProfileAdapter(getActivity(), getActivity().getLayoutInflater(),
+                R.layout.portfolio_list_item, R.layout.portfolio_list_header);
     }
     //</editor-fold>
 
@@ -479,6 +534,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             portfolioAdapter.setItems(getAllPortfolios());
             portfolioAdapter.notifyDataSetChanged();
         }
+        displayTab();
     }
 
     private List<DisplayablePortfolioDTO> getAllPortfolios()

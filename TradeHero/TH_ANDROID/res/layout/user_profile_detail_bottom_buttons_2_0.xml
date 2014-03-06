@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<com.tradehero.th.fragments.timeline.TimelineHeaderButtonView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
@@ -27,4 +27,4 @@
       android:text="@string/user_profile_button_stats"
       />
 
-</LinearLayout>
+</com.tradehero.th.fragments.timeline.TimelineHeaderButtonView>

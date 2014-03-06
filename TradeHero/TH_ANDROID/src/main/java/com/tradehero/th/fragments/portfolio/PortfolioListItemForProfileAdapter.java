@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineHeaderButtonView;
 import com.tradehero.th.fragments.timeline.TimelineProfileClickListener;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -62,58 +64,23 @@ public class PortfolioListItemForProfileAdapter extends PortfolioListItemAdapter
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
-            mapHeaderButtons(convertView);
+            ((TimelineHeaderButtonView) convertView).setTimelineProfileClickListener(new TimelineProfileClickListener()
+            {
+                @Override public void onBtnClicked(TimelineFragment.TabType tabType)
+                {
+                    notifyProfileClickListener(tabType);
+                }
+            });
         }
 
         return convertView;
     }
 
-    private void mapHeaderButtons(View view)
+    protected void notifyProfileClickListener(TimelineFragment.TabType tabType)
     {
-        if (view != null)
+        if (profileClickListener != null)
         {
-            View button = view.findViewById(R.id.btn_profile_timeline);
-            if (button != null)
-            {
-                button.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View view)
-                    {
-                        if (profileClickListener != null)
-                        {
-                            profileClickListener.onTimelineRequested();
-                        }
-                    }
-                });
-            }
-            button = view.findViewById(R.id.btn_profile_portfolios);
-            if (button != null)
-            {
-                button.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View view)
-                    {
-                        if (profileClickListener != null)
-                        {
-                            profileClickListener.onPortfolioListRequested();
-                        }
-                    }
-                });
-            }
-            button = view.findViewById(R.id.btn_profile_stats);
-            if (button != null)
-            {
-                button.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View view)
-                    {
-                        if (profileClickListener != null)
-                        {
-                            profileClickListener.onStatsRequested();
-                        }
-                    }
-                });
-            }
+            profileClickListener.onBtnClicked(tabType);
         }
     }
 

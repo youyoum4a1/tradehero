@@ -5,7 +5,5 @@ package com.tradehero.th.fragments.timeline;
  */
 public interface TimelineProfileClickListener
 {
-    void onTimelineRequested();
-    void onPortfolioListRequested();
-    void onStatsRequested();
+    void onBtnClicked(TimelineFragment.TabType tabType);
 }
