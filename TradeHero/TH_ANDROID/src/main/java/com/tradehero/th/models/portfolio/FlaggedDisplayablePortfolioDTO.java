@@ -8,7 +8,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 /**
  * Created by xavier on 3/5/14.
  */
-public class FlaggedDisplayablePortfolioDTO extends DisplayablePortfolioDTO
+class FlaggedDisplayablePortfolioDTO extends DisplayablePortfolioDTO
 {
     public static final String TAG = FlaggedDisplayablePortfolioDTO.class.getSimpleName();
 

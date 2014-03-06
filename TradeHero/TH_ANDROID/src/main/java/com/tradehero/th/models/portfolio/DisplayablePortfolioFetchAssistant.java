@@ -2,6 +2,8 @@ package com.tradehero.th.models.portfolio;
 
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -110,7 +112,8 @@ public class DisplayablePortfolioFetchAssistant
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                // TODO
+                THToast.show(R.string.error_fetch_portfolio_list_info);
+                notifyListener();
             }
         };
     }
@@ -136,7 +139,7 @@ public class DisplayablePortfolioFetchAssistant
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                // TODO
+                THToast.show(R.string.error_fetch_user_profile);
             }
         };
     }
@@ -165,7 +168,7 @@ public class DisplayablePortfolioFetchAssistant
 
             @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
             {
-                // TODO
+                THToast.show(R.string.error_fetch_portfolio_info);
             }
         };
     }
