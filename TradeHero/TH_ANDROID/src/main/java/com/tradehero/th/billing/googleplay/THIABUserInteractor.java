@@ -454,7 +454,15 @@ public class THIABUserInteractor
 
     @Override protected void launchPurchaseSequence(THIABPurchaseOrder purchaseOrder)
     {
-        launchPurchaseSequence(getBillingLogicHolder().getPurchaserHolder(), purchaseOrder);
+        THIABLogicHolder logicHolder = getBillingLogicHolder();
+        if (logicHolder != null)
+        {
+            launchPurchaseSequence(logicHolder.getPurchaserHolder(), purchaseOrder);
+        }
+        else
+        {
+            Timber.e(new NullPointerException("logicHolder just became null for " + purchaseOrder), "logicHolder just became null for " + purchaseOrder);
+        }
     }
     //</editor-fold>
 

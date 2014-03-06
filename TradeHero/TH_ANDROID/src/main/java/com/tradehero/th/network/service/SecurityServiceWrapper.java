@@ -24,14 +24,14 @@ import retrofit.RetrofitError;
  */
 @Singleton public class SecurityServiceWrapper
 {
-    public static final String TAG = SecurityServiceWrapper.class.getSimpleName();
+    private final SecurityService securityService;
+    private final ProviderServiceWrapper providerServiceWrapper;
 
-    @Inject SecurityService securityService;
-    @Inject ProviderServiceWrapper providerServiceWrapper;
-
-    @Inject public SecurityServiceWrapper()
+    @Inject public SecurityServiceWrapper(SecurityService securityService, ProviderServiceWrapper providerServiceWrapper)
     {
         super();
+        this.securityService = securityService;
+        this.providerServiceWrapper = providerServiceWrapper;
     }
 
     //<editor-fold desc="Routing SecurityListType">

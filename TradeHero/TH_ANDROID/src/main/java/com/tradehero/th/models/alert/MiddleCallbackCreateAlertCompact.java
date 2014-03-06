@@ -10,13 +10,13 @@ import retrofit.client.Response;
 /**
  * Created by xavier on 3/5/14.
  */
-public class MiddleCallbackCreateAlertCompactDTO extends MiddleCallbackAlertCompactDTO
+public class MiddleCallbackCreateAlertCompact extends MiddleCallbackAlertCompact
 {
-    public static final String TAG = MiddleCallbackCreateAlertCompactDTO.class.getSimpleName();
+    public static final String TAG = MiddleCallbackCreateAlertCompact.class.getSimpleName();
 
     private final UserBaseKey userBaseKey;
 
-    public MiddleCallbackCreateAlertCompactDTO(UserBaseKey userBaseKey, Callback<AlertCompactDTO> primaryCallback)
+    public MiddleCallbackCreateAlertCompact(UserBaseKey userBaseKey, Callback<AlertCompactDTO> primaryCallback)
     {
         super(primaryCallback);
         this.userBaseKey = userBaseKey;

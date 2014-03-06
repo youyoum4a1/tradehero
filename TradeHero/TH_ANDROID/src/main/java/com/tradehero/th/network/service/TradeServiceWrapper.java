@@ -15,13 +15,12 @@ import retrofit.RetrofitError;
  */
 @Singleton public class TradeServiceWrapper
 {
-    public static final String TAG = TradeServiceWrapper.class.getSimpleName();
+    private final TradeService tradeService;
 
-    @Inject TradeService tradeService;
-
-    @Inject public TradeServiceWrapper()
+    @Inject public TradeServiceWrapper(TradeService tradeService)
     {
         super();
+        this.tradeService = tradeService;
     }
 
     private void basicCheck(OwnedPositionId ownedPositionId)

@@ -62,24 +62,17 @@ public class MatchingPasswordText extends ValidatedPasswordText
 
     @Override protected boolean validate()
     {
-        boolean superValidate = super.validate();
-        if (!superValidate)
-        {
-            return false;
-        }
-
-        return superValidate && matchesWithTarget ();
-    }
-
-    private boolean superValidate ()
-    {
-        return super.validate();
+        return super.validate() && matchesWithTarget ();
     }
 
     protected boolean matchesWithTarget ()
     {
         associateTargetIfNone();
 
+        if (target == null)
+        {
+            return false;
+        }
         String targetPassword = target.getText().toString();
 
         return target.validate() && getText().toString().equals(targetPassword);
@@ -100,7 +93,8 @@ public class MatchingPasswordText extends ValidatedPasswordText
         target = (ValidatedPasswordText) getRootView().findViewById(targetId);
         if (target == null)
         {
-            throw new IllegalArgumentException("TargetId was not found. MatchWith attribute needs to be set.");
+            return;
+            //throw new IllegalArgumentException("TargetId was not found. MatchWith attribute needs to be set.");
         }
 
         // We want to know when the original password no longer matches the confirmation one.
@@ -110,7 +104,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
     @Override public boolean needsToNotifyListeners()
     {
         associateTargetIfNone();
-        return super.needsToNotifyListeners() && target.validate() && !validate();
+        return target != null && super.needsToNotifyListeners() && target.validate() && !validate();
     }
 
     @Override public ValidationMessage getCurrentValidationMessage()
@@ -135,7 +129,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
             {
                 throw new IllegalArgumentException("Target view has to be a ValidatedPasswordText");
             }
-            setTarget((ValidatedPasswordText)view);
+            setTarget((ValidatedPasswordText) view);
         }
     }
 

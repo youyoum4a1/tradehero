@@ -3,6 +3,7 @@ package com.tradehero.common.billing.googleplay;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -173,7 +174,7 @@ abstract public class IABBillingInventoryFetcher<
     private Bundle getQuerySKUBundle()
     {
         ArrayList<String> identifiers = new ArrayList<>(this.iabSKUs.size());
-        List<IABSKUType> iabSKUClone = Collections.unmodifiableList(this.iabSKUs);
+        List<IABSKUType> iabSKUClone = new ArrayList<>(this.iabSKUs);
         for (IABSKU iabSKU : iabSKUClone)
         {
             identifiers.add(iabSKU.identifier);
@@ -185,46 +186,43 @@ abstract public class IABBillingInventoryFetcher<
 
     private HashMap<IABSKUType, IABProductDetailsType> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
     {
-        Bundle querySkus = getQuerySKUBundle();
-        // throws NullPointerException still makes app crash, use global application context to get package name instead
-
-        //if (context == null)
-        //{
-        //    throw new NullPointerException("Context cannot be null");
-        //}
-
-        // TODO still crashing with NullPointerException
-        if (this.billingService == null)
-        {
-            throw new NullPointerException("billingService cannot be null");
-        }
-        Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType, querySkus);
-
-        if (!skuDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
-        {
-            int statusCode = IABConstants.getResponseCodeFromBundle(skuDetails);
-            if (statusCode != IABConstants.BILLING_RESPONSE_RESULT_OK)
-            {
-                Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
-                        statusCode));
-                throw iabExceptionFactory.get().create(statusCode);
-            }
-            else
-            {
-                Timber.d("getSkuDetails() returned a bundle with neither an error nor a detail list.");
-                throw new IABBadResponseException(IABConstants.getStatusCodeDescription(statusCode));
-            }
-        }
-
-        ArrayList<String> responseList = skuDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
-
         HashMap<IABSKUType, IABProductDetailsType> map = new HashMap<>();
-        for (String json : responseList)
+        IInAppBillingService billingServiceCopy = this.billingService;
+        if (billingServiceCopy == null)
         {
-            IABProductDetailsType details = createSKUDetails(itemType, json);
-            Timber.d("Got iabSKU details: %s", details);
-            map.put(details.getProductIdentifier(), details);
+            Timber.e(new NullPointerException("billingService cannot be null"), "billingService cannot be null");
         }
+        else
+        {
+            Bundle querySkus = getQuerySKUBundle();
+            Bundle skuDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType,
+                    querySkus);
+            if (!skuDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
+            {
+                int statusCode = IABConstants.getResponseCodeFromBundle(skuDetails);
+                if (statusCode != IABConstants.BILLING_RESPONSE_RESULT_OK)
+                {
+                    Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
+                            statusCode));
+                    throw iabExceptionFactory.get().create(statusCode);
+                }
+                else
+                {
+                    Timber.d("getSkuDetails() returned a bundle with neither an error nor a detail list.");
+                    throw new IABBadResponseException(IABConstants.getStatusCodeDescription(statusCode));
+                }
+            }
+
+            ArrayList<String> responseList = skuDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
+
+            for (String json : responseList)
+            {
+                IABProductDetailsType details = createSKUDetails(itemType, json);
+                Timber.d("Got iabSKU details: %s", details);
+                map.put(details.getProductIdentifier(), details);
+            }
+        }
+
         return map;
     }
 

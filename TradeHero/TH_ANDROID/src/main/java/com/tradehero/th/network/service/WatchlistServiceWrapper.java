@@ -17,13 +17,12 @@ import retrofit.Callback;
  */
 @Singleton public class WatchlistServiceWrapper
 {
-    public static final String TAG = WatchlistServiceWrapper.class.getSimpleName();
+    private final WatchlistService watchlistService;
 
-    @Inject protected WatchlistService watchlistService;
-
-    @Inject public WatchlistServiceWrapper()
+    @Inject public WatchlistServiceWrapper(WatchlistService watchlistService)
     {
         super();
+        this.watchlistService = watchlistService;
     }
 
     //<editor-fold desc="Add/Edit a watch item">

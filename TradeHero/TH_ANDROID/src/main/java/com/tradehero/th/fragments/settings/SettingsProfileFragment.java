@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
@@ -56,10 +57,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected Button updateButton;
     private ProfileInfoView profileView;
 
-
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -126,6 +127,38 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onDestroyView()
+    {
+        detachMiddleCallbackUpdateUserProfile();
+        detachUserProfileFetchTask();
+        if (profileView != null)
+        {
+            profileView.setOnTouchListenerOnFields(null);
+            profileView.removeAllListenersOnFields();
+            profileView.setNullOnFields();
+        }
+        profileView = null;
+        super.onDestroyView();
+    }
+
+    private void detachMiddleCallbackUpdateUserProfile()
+    {
+        if (middleCallbackUpdateUserProfile != null)
+        {
+            middleCallbackUpdateUserProfile.setPrimaryCallback(null);
+        }
+        middleCallbackUpdateUserProfile = null;
+    }
+
+    private void detachUserProfileFetchTask()
+    {
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.setListener(null);
+        }
+        fetchUserProfileTask = null;
+    }
+
     @Override public void onClick(View view)
     {
         switch (view.getId())
@@ -162,19 +195,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     public JSONObject getUserFormJSON()
     {
         return new JSONObject(getUserFormMap());
-    }
-
-    @Override public void onDestroyView()
-    {
-        if (profileView != null)
-        {
-            profileView.setOnTouchListenerOnFields(null);
-            profileView.removeAllListenersOnFields();
-            profileView.setNullOnFields();
-        }
-        profileView = null;
-        userProfileCallback = null;
-        super.onDestroyView();
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -223,14 +243,26 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        if (fetchUserProfileTask != null)
-        {
-            fetchUserProfileTask.setListener(null);
-        }
-
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileCallback);
+        detachUserProfileFetchTask();
+        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileCacheListener());
         fetchUserProfileTask.execute();
         this.profileView.populateCredentials(THUser.currentCredentials());
+    }
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            {
+                profileView.populate(value);
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show(new THException(error));
+            }
+        };
     }
 
     private void updateProfile(View view)
@@ -260,24 +292,31 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 return;
             }
 
-            userServiceWrapper.get().updateProfile(
+            detachMiddleCallbackUpdateUserProfile();
+            middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
                     currentUserId.toUserBaseKey(),
-                    userFormDTO, new THCallback<UserProfileDTO>()
-            {
-                @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-                {
-                    profileView.progressDialog.hide(); // Before otherwise it is reset
-                    THToast.show(R.string.settings_update_profile_successful);
-                    Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-                    navigator.popFragment();
-                }
-
-                @Override protected void failure(THException ex)
-                {
-                    THToast.show(ex.getMessage());
-                }
-            });
+                    userFormDTO,
+                    createUpdateUserProfileCallback());
         }
+    }
+
+    private THCallback<UserProfileDTO> createUpdateUserProfileCallback()
+    {
+        return new THCallback<UserProfileDTO>()
+        {
+            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+            {
+                profileView.progressDialog.hide(); // Before otherwise it is reset
+                THToast.show(R.string.settings_update_profile_successful);
+                Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                navigator.popFragment();
+            }
+
+            @Override protected void failure(THException ex)
+            {
+                THToast.show(ex.getMessage());
+            }
+        };
     }
 
     public String getPath(Uri uri)
@@ -302,19 +341,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             THToast.show(message.getMessage());
         }
     }
-
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCallback = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-    {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-        {
-            profileView.populate(value);
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
-    };
 }
 
 

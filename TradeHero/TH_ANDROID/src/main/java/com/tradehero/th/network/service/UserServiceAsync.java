@@ -32,28 +32,12 @@ import retrofit.http.Query;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:01 PM Copyright (c) TradeHero */
 
-public interface UserService
+interface UserServiceAsync
 {
     //<editor-fold desc="Sign-Up With Email">
-    // TODO @retrofit does not accept to pass a Map as multiple fields
-    //{
-    //    "biography": null,
-    //        "deviceToken": null,
-    //        "displayName": "Hello moto23",
-    //        "email": "testttt1@ttt.com",
-    //        "emailNotificationsEnabled": null,
-    //        "firstName": "",
-    //        "lastName": "",
-    //        "location": null,
-    //        "password": "asd123",
-    //        "passwordConfirmation": "asd123",
-    //        "pushNotificationsEnabled": null,
-    //        "username": null,
-    //        "website": null
-    //}
     @FormUrlEncoded
     @POST("/SignupWithEmail")
-    UserProfileDTO signUpWithEmail(@Header("Authorization") String authorization,
+    void signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -66,14 +50,14 @@ public interface UserService
             @Field("passwordConfirmation") String passwordConfirmation,
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("username") String username,
-            @Field("website") String website)
-            throws RetrofitError;
+            @Field("website") String website,
+            Callback<UserProfileDTO> cb);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
     @FormUrlEncoded
     @PUT("/users/{userId}/updateUser")
-    UserProfileDTO updateProfile(
+    void updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -87,8 +71,8 @@ public interface UserService
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("biography") String biography,
             @Field("location") String location,
-            @Field("website") String website)
-            throws RetrofitError;
+            @Field("website") String website,
+            Callback<UserProfileDTO> cb);
     //</editor-fold>
 
     @Multipart
@@ -96,14 +80,6 @@ public interface UserService
     void signUpWithEmailWithProfilePicture();
 
     //<editor-fold desc="Signup">
-    @POST("/users")
-    UserProfileDTO signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
     @POST("/users")
     void signUp(
             @Header("Authorization") String authorization,
@@ -113,19 +89,12 @@ public interface UserService
 
     //<editor-fold desc="Signin">
     @POST("users/signin")
-    Response signIn(
-            @Body WebSignInFormDTO webSignInFormDTO)
-        throws RetrofitError;
+    void signIn(
+            @Body WebSignInFormDTO webSignInFormDTO,
+            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    @GET("/checkDisplayNameAvailable")
-    UserAvailabilityDTO checkDisplayNameAvailable(
-            @Query("displayName") String username)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
     @GET("/checkDisplayNameAvailable")
     void checkDisplayNameAvailable(
             @Query("displayName") String username,
@@ -134,13 +103,6 @@ public interface UserService
 
     //<editor-fold desc="Forgot Password">
     @POST("/forgotPassword")
-    ForgotPasswordDTO forgotPassword(
-            @Body ForgotPasswordFormDTO forgotPasswordFormDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/forgotPassword")
     void forgotPassword(
             @Body ForgotPasswordFormDTO forgotPasswordFormDTO,
             Callback<ForgotPasswordDTO> callback);
@@ -148,47 +110,39 @@ public interface UserService
 
     //<editor-fold desc="Search Users">
     @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
-            @Query("q") String searchString)
-        throws RetrofitError;
-
-    @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
+    void searchUsers(
             @Query("q") String searchString,
-            @Query("page") int page)
-        throws RetrofitError;
+            Callback<List<UserSearchResultDTO>> callback);
 
     @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
+    void searchUsers(
             @Query("q") String searchString,
             @Query("page") int page,
-            @Query("perPage") int perPage)
-        throws RetrofitError;
+            Callback<List<UserSearchResultDTO>> callback);
+
+    @GET("/users/search")
+    void searchUsers(
+            @Query("q") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<UserSearchResultDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User">
     @GET("/users/{userId}")
-    UserProfileDTO getUser(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    void getUser(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
     @GET("/users/{userId}/transactionHistory")
-    List<UserTransactionHistoryDTO> getUserTransactions(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    void getUserTransactions(
+            @Path("userId") int userId,
+            Callback<List<UserTransactionHistoryDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @POST("/users/{userId}/updatePayPalEmail")
-    UpdatePayPalEmailDTO updatePayPalEmail(
-            @Path("userId") int userId,
-            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
     @POST("/users/{userId}/updatePayPalEmail")
     void updatePayPalEmail(
             @Path("userId") int userId,
@@ -198,27 +152,19 @@ public interface UserService
 
     //<editor-fold desc="Delete User">
     @DELETE("/users/{userId}")
-    Response deleteUser(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    void deleteUser(
+            @Path("userId") int userId,
+            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
     @GET("/users/{userId}/getFriends")
-    List<UserFriendsDTO> getFriends(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    void getFriends(
+            @Path("userId") int userId,
+            Callback<List<UserFriendsDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    @POST("/users/{userId}/inviteFriends")
-    Response inviteFriends(
-            @Path("userId") int userId,
-            @Body InviteFormDTO inviteFormDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
     @POST("/users/{userId}/inviteFriends")
     void inviteFriends(
             @Path("userId") int userId,
@@ -228,14 +174,6 @@ public interface UserService
 
     //<editor-fold desc="Add Follow Credit">
     @POST("/users/{userId}/addCredit")
-    UserProfileDTO addCredit(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/addCredit")
     void addCredit(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
@@ -244,25 +182,10 @@ public interface UserService
 
     //<editor-fold desc="Follow Hero">
     @POST("/users/{userId}/follow")
-    UserProfileDTO follow(
-            @Path("userId") int userId)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);
 
-    @POST("/users/{userId}/follow")
-    UserProfileDTO follow(
-            @Path("userId") int userId,
-            GooglePlayPurchaseDTO purchaseDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
     @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,
@@ -272,13 +195,6 @@ public interface UserService
 
     //<editor-fold desc="Unfollow Hero">
     @POST("/users/{userId}/unfollow")
-    UserProfileDTO unfollow(
-            @Path("userId") int userId)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/unfollow")
     void unfollow(
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);
@@ -286,8 +202,8 @@ public interface UserService
 
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes")
-    List<HeroDTO> getHeroes(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    void getHeroes(
+            @Path("userId") int userId,
+            Callback<List<HeroDTO>> callback);
     //</editor-fold>
 }

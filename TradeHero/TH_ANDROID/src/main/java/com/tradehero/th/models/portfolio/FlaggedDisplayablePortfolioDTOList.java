@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by xavier on 3/5/14.
  */
-public class FlaggedDisplayablePortfolioDTOList extends ArrayList<FlaggedDisplayablePortfolioDTO>
+class FlaggedDisplayablePortfolioDTOList extends ArrayList<FlaggedDisplayablePortfolioDTO>
 {
     public static final String TAG = FlaggedDisplayablePortfolioDTOList.class.getSimpleName();
 

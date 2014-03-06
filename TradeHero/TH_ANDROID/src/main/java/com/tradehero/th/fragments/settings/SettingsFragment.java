@@ -43,6 +43,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -74,6 +75,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
+    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     private MiddleCallback<UserProfileDTO> logoutCallback;
     @Inject SocialService socialService;
@@ -170,9 +172,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
+        detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
         super.onDestroyView();
+    }
+
+    private void detachMiddleCallbackUpdateUserProfile()
+    {
+        if (middleCallbackUpdateUserProfile != null)
+        {
+            middleCallbackUpdateUserProfile.setPrimaryCallback(null);
+        }
+        middleCallbackUpdateUserProfile = null;
     }
 
     protected void detachLogoutCallback()
@@ -548,7 +560,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 R.string.settings_notifications_email_alert_title,
                 R.string.settings_notifications_email_alert_message);
 
-        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserId.toUserBaseKey(), enable,
+        detachCurrentUserProfileMilestone();
+        middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
     }
@@ -559,7 +572,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 R.string.settings_notifications_push_alert_title,
                 R.string.settings_notifications_push_alert_message);
 
-        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserId.toUserBaseKey(), enable,
+        detachCurrentUserProfileMilestone();
+        middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyPushNotifications(currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
     }
