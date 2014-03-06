@@ -34,7 +34,7 @@ public class AppContainerImpl implements AppContainer
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
-        resideMenu.attachToActivity(activity);
+        resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
         //resideMenu.setMenuListener();
         ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener();
 
@@ -54,7 +54,6 @@ public class AppContainerImpl implements AppContainer
         @Override public void onClick(View v)
         {
             resideMenu.closeMenu();
-            //getDashboardNavigator().goToTab((DashboardTabType) v.getTag());
         }
     }
 }
