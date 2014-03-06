@@ -25,7 +25,8 @@
       android:layout_height="wrap_content"
       tools:text="A big one"
       />
-    <include layout="@layout/timeline_item_action_buttons"/>
+
+    <!--<include layout="@layout/timeline_item_action_buttons"/>-->
 
 
 </com.tradehero.th.fragments.news.NewsHeadlineView>
