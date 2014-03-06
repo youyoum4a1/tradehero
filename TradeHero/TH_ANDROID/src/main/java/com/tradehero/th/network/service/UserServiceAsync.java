@@ -32,7 +32,7 @@ import retrofit.http.Query;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:01 PM Copyright (c) TradeHero */
 
-interface UserServiceProtected
+interface UserServiceAsync
 {
     //<editor-fold desc="Sign-Up With Email">
     @FormUrlEncoded

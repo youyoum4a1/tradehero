@@ -22,12 +22,12 @@ import retrofit.RetrofitError;
 @Singleton public class UserServiceWrapper
 {
     private final UserService userService;
-    private final UserServiceProtected userServiceProtected;
+    private final UserServiceAsync userServiceAsync;
 
-    @Inject public UserServiceWrapper(UserService userService, UserServiceProtected userServiceProtected)
+    @Inject public UserServiceWrapper(UserService userService, UserServiceAsync userServiceAsync)
     {
         this.userService = userService;
-        this.userServiceProtected = userServiceProtected;
+        this.userServiceAsync = userServiceAsync;
     }
 
     //<editor-fold desc="Sign-Up With Email">
@@ -60,7 +60,7 @@ import retrofit.RetrofitError;
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        userServiceProtected.signUpWithEmail(
+        userServiceAsync.signUpWithEmail(
                 authorization,
                 userFormDTO.biography,
                 userFormDTO.deviceToken,
@@ -104,7 +104,7 @@ import retrofit.RetrofitError;
     public MiddleCallbackUpdateUserProfile updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
-        userServiceProtected.updateProfile(
+        userServiceAsync.updateProfile(
                 userBaseKey.key,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,

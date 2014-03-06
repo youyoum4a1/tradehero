@@ -19,13 +19,12 @@ import retrofit.RetrofitError;
  */
 @Singleton public class LeaderboardServiceWrapper
 {
-    public static final String TAG = LeaderboardServiceWrapper.class.getSimpleName();
+    private final LeaderboardService leaderboardService;
 
-    @Inject protected LeaderboardService leaderboardService;
-
-    @Inject public LeaderboardServiceWrapper()
+    @Inject public LeaderboardServiceWrapper(LeaderboardService leaderboardService)
     {
         super();
+        this.leaderboardService = leaderboardService;
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">

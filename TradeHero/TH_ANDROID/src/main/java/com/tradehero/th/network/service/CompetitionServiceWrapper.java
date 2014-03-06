@@ -17,12 +17,12 @@ import retrofit.RetrofitError;
  */
 @Singleton public class CompetitionServiceWrapper
 {
-    public static final String TAG = CompetitionServiceWrapper.class.getSimpleName();
+    private final CompetitionService competitionService;
 
-    @Inject protected CompetitionService competitionService;
-
-    @Inject public CompetitionServiceWrapper()
+    @Inject public CompetitionServiceWrapper(CompetitionService competitionService)
     {
+        super();
+        this.competitionService = competitionService;
     }
 
     //<editor-fold desc="Get Competitions">

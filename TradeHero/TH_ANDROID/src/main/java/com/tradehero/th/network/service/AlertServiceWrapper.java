@@ -18,14 +18,14 @@ import retrofit.Callback;
  */
 @Singleton public class AlertServiceWrapper
 {
-    public static final String TAG = AlertServiceWrapper.class.getSimpleName();
+    private final AlertService alertService;
+    private final AlertServiceAsync alertServiceAsync;
 
-    @Inject AlertService alertService;
-    @Inject AlertServiceProtected alertServiceProtected;
-
-    @Inject public AlertServiceWrapper()
+    @Inject public AlertServiceWrapper(AlertService alertService, AlertServiceAsync alertServiceAsync)
     {
         super();
+        this.alertService = alertService;
+        this.alertServiceAsync = alertServiceAsync;
     }
 
     private void basicCheck(UserBaseKey userBaseKey)
@@ -50,7 +50,7 @@ import retrofit.Callback;
     public void getAlerts(UserBaseKey userBaseKey, Callback<List<AlertCompactDTO>> callback)
     {
         basicCheck(userBaseKey);
-        alertServiceProtected.getAlerts(userBaseKey.key, callback);
+        alertServiceAsync.getAlerts(userBaseKey.key, callback);
     }
     //</editor-fold>
 
@@ -89,7 +89,7 @@ import retrofit.Callback;
     {
         basicCheck(userBaseKey);
         MiddleCallbackCreateAlertCompact middleCallback = new MiddleCallbackCreateAlertCompact(userBaseKey, callback);
-        this.alertServiceProtected.createAlert(userBaseKey.key, alertFormDTO, callback);
+        this.alertServiceAsync.createAlert(userBaseKey.key, alertFormDTO, callback);
         return middleCallback;
     }
     //</editor-fold>
@@ -105,7 +105,7 @@ import retrofit.Callback;
     {
         basicCheck(alertId);
         MiddleCallbackUpdateAlertCompact middleCallback = new MiddleCallbackUpdateAlertCompact(alertId, callback);
-        this.alertServiceProtected.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
+        this.alertServiceAsync.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

@@ -102,7 +102,7 @@ public interface UserService
             @Body UserFormDTO user)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users")
     void signUp(
@@ -124,7 +124,7 @@ public interface UserService
             @Query("displayName") String username)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @GET("/checkDisplayNameAvailable")
     void checkDisplayNameAvailable(
@@ -138,7 +138,7 @@ public interface UserService
             @Body ForgotPasswordFormDTO forgotPasswordFormDTO)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/forgotPassword")
     void forgotPassword(
@@ -187,7 +187,7 @@ public interface UserService
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/updatePayPalEmail")
     void updatePayPalEmail(
@@ -217,7 +217,7 @@ public interface UserService
             @Body InviteFormDTO inviteFormDTO)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/inviteFriends")
     void inviteFriends(
@@ -233,7 +233,7 @@ public interface UserService
             @Body GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/addCredit")
     void addCredit(
@@ -248,7 +248,7 @@ public interface UserService
             @Path("userId") int userId)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/follow")
     void follow(
@@ -261,7 +261,7 @@ public interface UserService
             GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/follow")
     void follow(
@@ -276,7 +276,7 @@ public interface UserService
             @Path("userId") int userId)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceProtected
+    // TODO use UserServiceWrapper and UserServiceAsync
     @Deprecated
     @POST("/users/{userId}/unfollow")
     void unfollow(
