@@ -118,7 +118,7 @@ public class THUser
             // input error, unable to parse as json data
             return;
         }
-        Timber.d("APID: %s", PushManager.shared().getAPID());
+        Timber.d("APID: %s,authenticationMode :%s", PushManager.shared().getAPID(),authenticationMode);
         userFormDTO.deviceToken = PushManager.shared().getAPID();
 
         if (authenticationMode == null)
@@ -129,12 +129,14 @@ public class THUser
         switch (authenticationMode)
         {
             case SignUpWithEmail:
+                Timber.d("SignUpWithEmail Auth Header "+authenticator.getAuthHeader());
                 userServiceWrapper.get().signUpWithEmail(
                         authenticator.getAuthHeader(),
                         userFormDTO,
                         createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignUp:
+                Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
                 userService.get().signUp(
                         authenticator.getAuthHeader(),
                         userFormDTO,
@@ -142,6 +144,7 @@ public class THUser
                 break;
             case SignIn:
                 LoginFormDTO loginFormDTO = new LoginFormDTO(PushManager.shared().getAPID(), DeviceType.Android, Constants.TH_CLIENT_VERSION_VALUE);
+                Timber.d("login Auth Header "+authenticator.getAuthHeader());
                 sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }

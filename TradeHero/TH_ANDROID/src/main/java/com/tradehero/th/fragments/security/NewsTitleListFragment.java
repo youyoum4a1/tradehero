@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
@@ -33,6 +34,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
     private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> fetchTask;
     @Inject protected NewsHeadlineCache newsTitleCache;
     private ListView listView;
+    private ProgressBar progressBar;
     private NewsHeadlineAdapter adapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -53,6 +55,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
         adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
 
         listView = (ListView) view.findViewById(R.id.list_news_headline);
+        progressBar = (ProgressBar) view.findViewById(R.id.list_news_headline_progressbar);
+        showLoadingNews();
         if (listView != null)
         {
             listView.setAdapter(adapter);
@@ -64,6 +68,16 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
                 }
             });
         }
+    }
+
+    private void showNewsList(){
+        listView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showLoadingNews(){
+        listView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override public void onDestroyView()
@@ -108,6 +122,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
             else
             {   //already cached
                 linkWith(news, andDisplay);
+                showNewsList();
             }
         }
     }
@@ -115,6 +130,13 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<NewsHead
     @Override public void display()
     {
         displayNewsListView();
+        showNewsList();
+    }
+
+    @Override
+    public void onErrorThrown(SecurityId key, Throwable error) {
+        super.onErrorThrown(key, error);
+        showNewsList();
     }
 
     public void displayNewsListView()
