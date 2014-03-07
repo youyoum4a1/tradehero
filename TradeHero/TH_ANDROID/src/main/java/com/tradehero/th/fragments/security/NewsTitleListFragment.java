@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsHeadlineList;
@@ -38,11 +39,11 @@ import javax.inject.Inject;
  * from an abstract provider as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
  * The task is cancelled when the fragment is paused.
  */
-public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginationDTO<NewsItemDTO>>
+public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
 {
     private final static String TAG = NewsTitleListFragment.class.getSimpleName();
 
-    private DTOCache.GetOrFetchTask<SecurityId, PaginationDTO<NewsItemDTO>> fetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
     @Inject @ForCertainSecurityNews
     protected CommonNewsHeadlineCache newsTitleCache;
     private ListView listView;
@@ -174,7 +175,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginati
         Timber.d("NewsTitleListFragment onDestroy");
     }
 
-    @Override LiveDTOCache<SecurityId, PaginationDTO<NewsItemDTO>> getInfoCache()
+    @Override LiveDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>> getInfoCache()
     {
         return newsTitleCache;
     }
@@ -195,7 +196,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginati
         if (this.securityId != null)
         {
             //NewsHeadlineList news = newsTitleCache.get(this.securityId);
-            PaginationDTO<NewsItemDTO> news = newsTitleCache.get(this.securityId);
+            PaginatedDTO<NewsItemDTO> news = newsTitleCache.get(this.securityId);
             if (news == null)
             {
                 detachFetchTask();

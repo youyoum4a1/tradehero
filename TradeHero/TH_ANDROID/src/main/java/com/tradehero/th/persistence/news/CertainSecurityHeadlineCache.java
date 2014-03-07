@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.BuildConfig;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
 public class CertainSecurityHeadlineCache extends CommonNewsHeadlineCache {
     /**
      */
-    @Override protected PaginationDTO<NewsItemDTO> fetch(SecurityId key) throws Throwable
+    @Override protected PaginatedDTO<NewsItemDTO> fetch(SecurityId key) throws Throwable
     {
         if(BuildConfig.DEBUG){
             Timber.d("NewsHeadlineList fetch news, key:%s", key);
@@ -30,7 +31,7 @@ public class CertainSecurityHeadlineCache extends CommonNewsHeadlineCache {
 
 
 
-    private PaginationDTO<NewsItemDTO> fetchSecurityNews(int securityId) throws Throwable
+    private PaginatedDTO<NewsItemDTO> fetchSecurityNews(int securityId) throws Throwable
     {
         return newsServiceWrapper.getSecurityNews(securityId);
     }

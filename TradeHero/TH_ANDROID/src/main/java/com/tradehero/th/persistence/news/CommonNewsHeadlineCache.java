@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -11,7 +12,7 @@ import javax.inject.Inject;
 /**
  * Created by tradehero on 14-3-7.
  */
-public abstract class CommonNewsHeadlineCache extends StraightDTOCache<SecurityId,PaginationDTO<NewsItemDTO>> {
+public abstract class CommonNewsHeadlineCache extends StraightDTOCache<SecurityId,PaginatedDTO<NewsItemDTO>> {
     public static final int DEFAULT_MAX_SIZE = 15;
 
     @Inject

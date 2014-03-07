@@ -15,6 +15,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsHeadlineList;
@@ -53,10 +54,10 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
-    protected PaginationDTO<NewsItemDTO> newsHeadlineList;
+    protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
     @Inject @ForCertainSecurityNews Lazy<CommonNewsHeadlineCache> newsCache;
-    private DTOCache.Listener<SecurityId, PaginationDTO<NewsItemDTO>> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, PaginationDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
+    private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
     private MenuItem marketCloseIcon;
@@ -244,16 +245,16 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
     {
-        PaginationDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
+        PaginatedDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
         if (newsHeadlineList != null)
         {
             linkWith(newsHeadlineList, andDisplay);
         }
         else
         {
-            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginationDTO<NewsItemDTO>>()
+            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>>()
             {
-                @Override public void onDTOReceived(SecurityId key, PaginationDTO<NewsItemDTO> value, boolean fromCache)
+                @Override public void onDTOReceived(SecurityId key, PaginatedDTO<NewsItemDTO> value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }
@@ -285,7 +286,7 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(PaginationDTO<NewsItemDTO> newsHeadlineList, boolean andDisplay)
+    private void linkWith(PaginatedDTO<NewsItemDTO> newsHeadlineList, boolean andDisplay)
     {
         this.newsHeadlineList = newsHeadlineList;
 

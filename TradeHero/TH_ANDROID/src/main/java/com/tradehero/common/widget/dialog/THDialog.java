@@ -20,6 +20,14 @@ public class THDialog {
         void onClick(int whichButton);
     }
 
+    public interface DialogCallback {
+        void setOnDismissCallback(DialogInterface listener);
+    }
+
+    public interface DialogInterface {
+        void onDialogDismiss();
+    }
+
     public static Dialog showUpDialog(final Context context,final int layoutRes) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
         setDialogAttribute(dlg,null);
@@ -27,8 +35,45 @@ public class THDialog {
         return dlg;
     }
 
+    public static Dialog showUpDialog(final Context context,final View contentView) {
+        final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,contentView);
+        setDialogAttribute(dlg,null);
+        dlg.show();
+        return dlg;
+    }
 
-    public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, DialogInterface.OnCancelListener cancelListener) {
+
+    public static Dialog showUpDialog(final Context context,final int layoutRes,final DialogCallback callback) {
+        final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
+        setDialogAttribute(dlg,null);
+        if (callback != null) {
+            callback.setOnDismissCallback(new DialogInterface() {
+                @Override
+                public void onDialogDismiss() {
+                    dlg.dismiss();
+                }
+            });
+        }
+        dlg.show();
+        return dlg;
+    }
+    public static Dialog showUpDialog(final Context context,final View contentView,final DialogCallback callback) {
+        final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,contentView);
+        setDialogAttribute(dlg,null);
+        if (callback != null) {
+            callback.setOnDismissCallback(new DialogInterface() {
+                @Override
+                public void onDialogDismiss() {
+                    dlg.dismiss();
+                }
+            });
+        }
+        dlg.show();
+        return dlg;
+    }
+
+
+    public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, android.content.DialogInterface.OnCancelListener cancelListener) {
         String cancel = null;//context.getString(android.R.string.cancel);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -64,7 +109,7 @@ public class THDialog {
     private static Dialog createDialog(final Context context,int style,int layoutRes) {
         final Dialog dlg = new Dialog(context, style);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.common_dialog_layout, null);
+        View layout = inflater.inflate(layoutRes, null);
         final int cFullFillWidth = 10000;
         layout.setMinimumWidth(cFullFillWidth);
         dlg.setContentView(layout);
@@ -79,7 +124,7 @@ public class THDialog {
         return dlg;
     }
 
-    private static void setDialogAttribute(Dialog dlg,DialogInterface.OnCancelListener cancelListener){
+    private static void setDialogAttribute(Dialog dlg, android.content.DialogInterface.OnCancelListener cancelListener){
         // set a large value put it in bottom
         Window w = dlg.getWindow();
         WindowManager.LayoutParams lp = w.getAttributes();

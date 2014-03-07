@@ -30,7 +30,7 @@ public class NewsServiceWrapper
         return middleCallbackPaginationNewsItem;
     }
 
-    public MiddleCallbackPaginationNewsItem getSecurityNews(int securityId,int page, int perPage, Callback<PaginationDTO<NewsItemDTO>> callback)
+    public MiddleCallbackPaginationNewsItem getSecurityNews(int securityId,int page, int perPage, Callback<PaginatedDTO<NewsItemDTO>> callback)
     {
         MiddleCallbackPaginationNewsItem middleCallbackPaginationNewsItem = new MiddleCallbackPaginationNewsItem(callback);
         newsServiceAsync.getSecuritiesNewsList(securityId,page, perPage, middleCallbackPaginationNewsItem);
@@ -38,14 +38,14 @@ public class NewsServiceWrapper
     }
 
 
-    public PaginationDTO<NewsItemDTO> getSecurityNews(int securityId,int page,int perPage)
+    public PaginatedDTO<NewsItemDTO> getSecurityNews(int securityId,int page,int perPage)
     {
 
-        PaginationDTO<NewsItemDTO> newsList = newsServiceSync.getSecuritiesNewsList(securityId,page,perPage);
+        PaginatedDTO<NewsItemDTO> newsList = newsServiceSync.getSecuritiesNewsList(securityId,page,perPage);
         return newsList;
     }
 
-    public PaginationDTO<NewsItemDTO> getSecurityNews(int securityId)
+    public PaginatedDTO<NewsItemDTO> getSecurityNews(int securityId)
     {
         return getSecurityNews(securityId, 0, 42);
     }

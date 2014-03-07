@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -114,7 +115,10 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
      * show dialog including sharing and translation.
      */
     private void showShareDialog() {
-        THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
+        //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout,null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback)contentView;
+        THDialog.showUpDialog(getContext(),contentView,callback);
     }
 
     @Override
