@@ -7,17 +7,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 2/12/14.
  */
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
-    public static final String TAG = LeaderboardFilterSliderContainer.class.getSimpleName();
-
     protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @Inject LocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFilterSliderContainer(Context context)
@@ -45,6 +48,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        DaggerUtils.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -58,6 +62,8 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                 {
                     int leaderboardKey = perPagedFilteredLeaderboardKey != null ? perPagedFilteredLeaderboardKey.key : 0;
                     setFilteredLeaderboardKey(getStartingFilter(getResources(), leaderboardKey));
+
+                    localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
                 }
             });
         }

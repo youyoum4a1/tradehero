@@ -137,6 +137,7 @@ import javax.inject.Singleton;
                 NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
+                UxModule.class,
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
@@ -303,8 +304,6 @@ import javax.inject.Singleton;
 )
 public class TradeHeroModule
 {
-    public static final String TAG = TradeHeroModule.class.getSimpleName();
-
     private final Application application;
 
     public TradeHeroModule(Application application)

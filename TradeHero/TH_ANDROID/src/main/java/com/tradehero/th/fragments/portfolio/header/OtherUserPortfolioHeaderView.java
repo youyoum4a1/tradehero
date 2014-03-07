@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
@@ -40,10 +42,12 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @InjectView(R.id.header_portfolio_following_image) ImageView followingImageView;
     @InjectView(R.id.follow_button) TextView followButton;
 
-    @Inject protected CurrentUserId currentUserId;
+    @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Picasso picasso;
+    @Inject LocalyticsSession localyticsSession;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
@@ -82,6 +86,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             {
                 @Override public void onClick(View view)
                 {
+                    localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
                     if (userProfileDTO != null)
                     {
                         notifyFollowRequested(userProfileDTO.getBaseKey());

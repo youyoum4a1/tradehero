@@ -11,12 +11,15 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.LocalyticsConstants;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: nia Date: 18/10/13 Time: 5:21 PM To change this template use File | Settings | File Templates. */
 public class AboutFragment extends DashboardFragment
@@ -27,6 +30,8 @@ public class AboutFragment extends DashboardFragment
     @InjectView(R.id.settings_privacy) protected Button privacyButton;
     @InjectView(R.id.settings_terms) protected Button termsButton;
 
+    @Inject LocalyticsSession localyticsSession;
+
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -35,6 +40,13 @@ public class AboutFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.Settings_About);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

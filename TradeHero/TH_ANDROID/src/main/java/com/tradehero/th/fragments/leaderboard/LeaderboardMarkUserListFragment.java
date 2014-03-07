@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
@@ -23,6 +24,7 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.LocalyticsConstants;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,8 +38,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     public static final String TAG = LeaderboardMarkUserListFragment.class.getSimpleName();
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
+    @Inject protected LocalyticsSession localyticsSession;
+
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SharedPreferences preferences;
+
     @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
 
@@ -147,6 +152,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         switch (item.getItemId())
         {
+            case android.R.id.home:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
                 break;

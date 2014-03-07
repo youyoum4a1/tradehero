@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -40,6 +41,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -59,6 +61,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Picasso picasso;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+    @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -94,12 +97,15 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                         switch (dto.id)
                         {
                             case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefSector();
                                 break;
                             case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefExchange();
                                 break;
                             default:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
                                 pushLeaderboardListViewFragment(dto);
                                 break;
                         }
@@ -165,6 +171,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onResume();
 
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
+
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
@@ -175,10 +183,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         prepareAdapters();
 
         // get the data
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
+        detachProviderListFetchTask();
         providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
         providerListFetchTask.execute();
 
@@ -201,19 +206,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onSaveInstanceState(outState);
     }
 
-    private void detachLeaderboardDefListCacheFetchMostSkilledTask()
-    {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
-    }
-
     private void prepareAdapters()
     {
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
-
+        detachLeaderboardDefListCacheFetchTask();
         leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
                 LeaderboardDefListKey.getCommunity(), leaderboardDefFetchListener);
         leaderboardDefListFetchTask.execute();
@@ -230,21 +225,35 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
-    }
-
     @Override public void onDestroyView()
     {
-       if (leaderboardDefListView != null)
+        detachLeaderboardDefListCacheFetchTask();
+        detachProviderListFetchTask();
+        if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
             leaderboardDefListView = null;
         }
 
         super.onDestroyView();
+    }
+
+    private void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListFetchTask != null)
+        {
+            leaderboardDefListFetchTask.setListener(null);
+        }
+        leaderboardDefListFetchTask = null;
+    }
+
+    protected void detachProviderListFetchTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+        }
+        providerListFetchTask = null;
     }
 
     @Override public void onDestroy()

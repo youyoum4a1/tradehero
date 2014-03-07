@@ -17,6 +17,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
@@ -41,6 +42,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
+    @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_view) TextView searchEmptyView;
     @InjectView(R.id.listview) ListView listView;
@@ -689,6 +692,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             }
             setQuerying(false);
             securityItemViewAdapter.notifyDataSetChanged();
+
+            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
         }
 
         @Override public void onErrorThrown(SecurityListType key, Throwable error)
@@ -726,6 +731,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             }
             setQuerying(false);
             peopleItemViewAdapter.notifyDataSetChanged();
+
+            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_User);
         }
 
         @Override public void onErrorThrown(UserListType key, Throwable error)

@@ -6,13 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.utils.DaggerUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 1:01 PM To change this template use File | Settings | File Templates. */
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId();
-
     abstract protected int getEmailSignUpViewId();
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        DaggerUtils.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

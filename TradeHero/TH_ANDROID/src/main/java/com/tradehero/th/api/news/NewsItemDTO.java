@@ -1,6 +1,7 @@
 package com.tradehero.th.api.news;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;

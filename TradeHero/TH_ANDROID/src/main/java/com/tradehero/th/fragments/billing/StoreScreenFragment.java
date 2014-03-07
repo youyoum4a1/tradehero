@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -23,6 +24,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
@@ -34,6 +36,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
+    @Inject LocalyticsSession localyticsSession;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
@@ -80,6 +83,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
+
         storeItemAdapter.notifyDataSetChanged();
     }
 
