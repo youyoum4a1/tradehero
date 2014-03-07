@@ -1,6 +1,7 @@
 package com.tradehero.th.api.alert;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 
@@ -86,6 +87,7 @@ public class AlertId implements Comparable, DTOKey
         return alertId.compareTo(other.alertId);
     }
 
+    @JsonIgnore
     public boolean isValid()
     {
         return userId != null && alertId != null;
@@ -104,6 +106,13 @@ public class AlertId implements Comparable, DTOKey
         args.putInt(BUNDLE_KEY_ALERT_ID, alertId);
     }
 
+    @JsonIgnore
+    public UserBaseKey getUserBaseKey()
+    {
+        return new UserBaseKey(userId);
+    }
+
+    @JsonIgnore
     public Bundle getArgs()
     {
         Bundle args = new Bundle();

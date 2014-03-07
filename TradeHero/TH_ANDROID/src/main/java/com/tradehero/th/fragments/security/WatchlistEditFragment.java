@@ -89,11 +89,11 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 if (watchlistPositionDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null"), "watchlistPositionDTO cannot be null");
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO was null for key " + securityKeyId);
                 }
                 else if (watchlistPositionDTO.securityDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null"), "watchlistPositionDTO.securityDTO cannot be null");
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO.securityDTO was null for key " + securityKeyId);
                 }
                 else
                 {
@@ -240,15 +240,7 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onResume();
 
         Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            if (securityIdBundle != null)
-            {
-                SecurityId securityId = new SecurityId(securityIdBundle);
-                linkWith(securityId, true);
-            }
-        }
+        linkWith(new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
     }
 
     @Override public void onDestroyView()

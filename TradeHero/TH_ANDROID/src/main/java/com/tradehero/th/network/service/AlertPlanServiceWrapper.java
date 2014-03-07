@@ -12,13 +12,12 @@ import retrofit.Callback;
  */
 @Singleton public class AlertPlanServiceWrapper
 {
-    public static final String TAG = AlertPlanServiceWrapper.class.getSimpleName();
+    private final AlertPlanService alertPlanService;
 
-    @Inject protected AlertPlanService alertPlanService;
-
-    @Inject public AlertPlanServiceWrapper()
+    @Inject public AlertPlanServiceWrapper( AlertPlanService alertPlanService)
     {
         super();
+        this.alertPlanService = alertPlanService;
     }
 
     //<editor-fold desc="Check Alert Plan Attribution">

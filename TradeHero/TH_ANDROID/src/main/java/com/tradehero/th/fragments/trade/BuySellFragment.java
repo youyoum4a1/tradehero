@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -260,6 +261,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (bottomViewPagerAdapter == null)
         {
+            //should use getChildFragmentManager()
             bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getFragmentManager());
         }
         if (mBottomViewPager != null)
@@ -825,26 +827,40 @@ public class BuySellFragment extends AbstractBuySellFragment
         TextView selectedPortfolio = mSelectedPortfolio;
         if (selectedPortfolio != null)
         {
-            if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
+            Set<MenuOwnedPortfolioId> usedMenuLink = usedMenuOwnedPortfolioIds;
+            if (usedMenuLink != null)
             {
-                MenuOwnedPortfolioId chosen = null;
-
-                final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
-                MenuOwnedPortfolioId lastElement = null;
-                while (iterator.hasNext())
+                // Being paranoid about stuff become null
+                Set<MenuOwnedPortfolioId> userMenuCopy = new TreeSet<>(usedMenuLink);
+                if (userMenuCopy.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
                 {
-                    lastElement = iterator.next();
-                    if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
+                    MenuOwnedPortfolioId chosen = null;
+
+                    final Iterator<MenuOwnedPortfolioId> iterator = userMenuCopy.iterator();
+                    MenuOwnedPortfolioId lastElement = null;
+                    while (iterator.hasNext())
+                    {
+                        lastElement = iterator.next();
+                        if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
+                        {
+                            chosen = lastElement;
+                        }
+                    }
+                    if (chosen == null)
                     {
                         chosen = lastElement;
                     }
-                }
-                if (chosen == null)
-                {
-                    chosen = lastElement;
-                }
 
-                selectedPortfolio.setText(chosen);
+                    if (chosen == null)
+                    {
+                        Timber.e(new NullPointerException("chosen is null userMenuCopy size " + userMenuCopy.size()), "chosen is null userMenuCopy size " + userMenuCopy.size());
+                    }
+                    if (selectedPortfolio == null)
+                    {
+                        Timber.e(new NullPointerException("selectedPortfolio is null"), "selectedPortfolio is null");
+                    }
+                    selectedPortfolio.setText(chosen);
+                }
             }
         }
     }

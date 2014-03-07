@@ -15,8 +15,10 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsHeadlineList;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -25,9 +27,11 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.persistence.news.CommonNewsHeadlineCache;
 import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.dagger.ForCertainSecurityNews;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -49,10 +53,10 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
-    protected NewsHeadlineList newsHeadlineList;
-    @Inject Lazy<NewsHeadlineCache> newsCache;
-    private DTOCache.Listener<SecurityId, NewsHeadlineList> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> yahooNewsCacheFetchTask;
+    protected PaginationDTO<NewsItemDTO> newsHeadlineList;
+    @Inject @ForCertainSecurityNews Lazy<CommonNewsHeadlineCache> newsCache;
+    private DTOCache.Listener<SecurityId, PaginationDTO<NewsItemDTO>> yahooNewsCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, PaginationDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
     private MenuItem marketCloseIcon;
@@ -240,16 +244,16 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
     {
-        NewsHeadlineList newsHeadlineList = newsCache.get().get(securityId);
+        PaginationDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
         if (newsHeadlineList != null)
         {
             linkWith(newsHeadlineList, andDisplay);
         }
         else
         {
-            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsHeadlineList>()
+            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginationDTO<NewsItemDTO>>()
             {
-                @Override public void onDTOReceived(SecurityId key, NewsHeadlineList value, boolean fromCache)
+                @Override public void onDTOReceived(SecurityId key, PaginationDTO<NewsItemDTO> value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }
@@ -281,7 +285,7 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(NewsHeadlineList newsHeadlineList, boolean andDisplay)
+    private void linkWith(PaginationDTO<NewsItemDTO> newsHeadlineList, boolean andDisplay)
     {
         this.newsHeadlineList = newsHeadlineList;
 
@@ -352,9 +356,9 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayYahooNewsList()
     {
-        if (newsHeadlineAdapter != null)
+        if (newsHeadlineAdapter != null && newsHeadlineList !=null)
         {
-            newsHeadlineAdapter.setItems(newsHeadlineList);
+            newsHeadlineAdapter.setItems(newsHeadlineList.getData());
         }
     }
 

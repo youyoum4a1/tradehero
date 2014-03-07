@@ -20,13 +20,21 @@ public class THDialog {
         void onClick(int whichButton);
     }
 
+    public static Dialog showUpDialog(final Context context,final int layoutRes) {
+        final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
+        setDialogAttribute(dlg,null);
+        dlg.show();
+        return dlg;
+    }
+
+
     public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, DialogInterface.OnCancelListener cancelListener) {
         String cancel = null;//context.getString(android.R.string.cancel);
-        final Dialog dlg = new Dialog(context, R.style.TH_common_up_dialog);
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.common_dialog_layout, null);
-        final int cFullFillWidth = 10000;
-        layout.setMinimumWidth(cFullFillWidth);
+        View layout = inflater.inflate(R.layout.common_dialog_layout, null);
+        final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layout);
+
         final ListView list = (ListView) layout.findViewById(R.id.content_list);
         AlertAdapter adapter = new AlertAdapter(context, title, items, exit, cancel);
         list.setAdapter(adapter);
@@ -48,6 +56,30 @@ public class THDialog {
 
             }
         });
+        setDialogAttribute(dlg,cancelListener);
+        dlg.show();
+        return dlg;
+    }
+
+    private static Dialog createDialog(final Context context,int style,int layoutRes) {
+        final Dialog dlg = new Dialog(context, style);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.common_dialog_layout, null);
+        final int cFullFillWidth = 10000;
+        layout.setMinimumWidth(cFullFillWidth);
+        dlg.setContentView(layout);
+        return dlg;
+    }
+
+    private static Dialog createDialog(final Context context,int style,View contentView) {
+        final Dialog dlg = new Dialog(context, style);
+        final int cFullFillWidth = 10000;
+        contentView.setMinimumWidth(cFullFillWidth);
+        dlg.setContentView(contentView);
+        return dlg;
+    }
+
+    private static void setDialogAttribute(Dialog dlg,DialogInterface.OnCancelListener cancelListener){
         // set a large value put it in bottom
         Window w = dlg.getWindow();
         WindowManager.LayoutParams lp = w.getAttributes();
@@ -60,9 +92,6 @@ public class THDialog {
         if (cancelListener != null) {
             dlg.setOnCancelListener(cancelListener);
         }
-        dlg.setContentView(layout);
-        dlg.show();
-        return dlg;
     }
 
 

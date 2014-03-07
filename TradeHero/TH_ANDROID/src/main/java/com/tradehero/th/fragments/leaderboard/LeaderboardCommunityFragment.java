@@ -34,6 +34,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
@@ -76,7 +77,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardCommunityListOnClickListener = createOnItemClickListener();
         leaderboardDefFetchListener = createDefKeyListListener();
         providerListCallback = createProviderIdListListener();
-    }
+        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener(); }
 
     private AdapterView.OnItemClickListener createOnItemClickListener()
     {
@@ -227,8 +228,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
-
-        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
     }
 
     @Override public void onStop()
@@ -239,9 +238,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroyView()
     {
-        this.thIntentPassedListener = null;
-
-        if (leaderboardDefListView != null)
+       if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
             leaderboardDefListView = null;
@@ -252,6 +249,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
+        this.thIntentPassedListener = null;
+
         leaderboardCommunityListOnClickListener = null;
         leaderboardDefFetchListener = null;
         providerListCallback = null;
@@ -297,6 +296,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
         else if (providerDTO != null)
         {
+            // HACK Just in case the user eventually enrolls
+            portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
             args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
@@ -316,6 +317,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onIntentPassed(THIntent thIntent)
         {
+            Timber.d("LeaderboardCommunityTHIntentPassedListener " + thIntent);
+            if (thIntent instanceof ProviderIntent)
+            {
+                // Just in case the user has enrolled
+                portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+            }
+
             if (thIntent instanceof ProviderPageIntent)
             {
                 Timber.d("Intent is ProviderPageIntent");

@@ -9,12 +9,15 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.news.NewsHeadline;
+import com.tradehero.th.api.news.NewsItemDTO;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by julien on 11/10/13
+ *
+ * modified by Wang Liang.
  */
-public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadline>,View.OnClickListener,THDialog.OnDialogItemClickListener
+public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDTO>,View.OnClickListener,THDialog.OnDialogItemClickListener
 {
     private static final String TAG = NewsHeadlineView.class.getSimpleName();
 
@@ -24,7 +27,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
     private View actionCommentView;
     private View moreView;
 
-    private NewsHeadline newsHeadline;
+    private NewsItemDTO newsHeadline;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -107,7 +110,9 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
         }
     }
 
-
+    /**
+     * show dialog including sharing and translation.
+     */
     private void showShareDialog() {
         THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
     }
@@ -129,7 +134,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
         unregisterListener();
     }
 
-    @Override public void display(NewsHeadline dto)
+    @Override public void display(NewsItemDTO dto)
     {
         this.newsHeadline = dto;
         displayNews();
@@ -144,13 +149,13 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
 
         if (titleTextView != null)
         {
-            titleTextView.setText(newsHeadline.getTitle());
+            titleTextView.setText(newsHeadline.title);
         }
 
-        if (dateTextView != null && newsHeadline.getDate() != null)
+        if (dateTextView != null && newsHeadline.createdAtUtc != null)
         {
             PrettyTime prettyTime = new PrettyTime();
-            dateTextView.setText(prettyTime.format(newsHeadline.getDate()));
+            dateTextView.setText(prettyTime.format(newsHeadline.createdAtUtc));
         }
     }
 }

@@ -27,6 +27,9 @@ import retrofit.converter.Converter;
  */
 
 @Module(
+        includes = {
+                RetrofitProtectedModule.class,
+        },
         injects = {
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
@@ -38,89 +41,100 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton UserService provideUserService(RestAdapter engine)
+    @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
-        return engine.create(UserService.class);
+        return adapter.create(NewsServiceSync.class);
     }
 
-    @Provides @Singleton SessionService provideSessionService(RestAdapter engine)
+    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
     {
-        return engine.create(SessionService.class);
+        return adapter.create(NewsServiceAsync.class);
     }
 
-    @Provides @Singleton SecurityService provideSecurityService(RestAdapter engine)
+
+    @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
-        return engine.create(SecurityService.class);
+        return adapter.create(UserService.class);
     }
 
-    @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter engine)
+    @Provides @Singleton SessionService provideSessionService(RestAdapter adapter)
     {
-        return engine.create(UserTimelineService.class);
+        return adapter.create(SessionService.class);
     }
 
-    @Provides @Singleton QuoteService provideQuoteService(RestAdapter engine)
+    @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
     {
-        return engine.create(QuoteService.class);
+        return adapter.create(SecurityService.class);
     }
 
-    @Provides @Singleton PortfolioService providePortfolioService(RestAdapter engine)
+    @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
-        return engine.create(PortfolioService.class);
+        return adapter.create(UserTimelineService.class);
     }
 
-    @Provides @Singleton PositionService providePositionService(RestAdapter engine)
+    @Provides @Singleton QuoteService provideQuoteService(RestAdapter adapter)
     {
-        return engine.create(PositionService.class);
+        return adapter.create(QuoteService.class);
     }
 
-    @Provides @Singleton TradeService provideTradeService(RestAdapter engine)
+    @Provides @Singleton PortfolioService providePortfolioService(RestAdapter adapter)
     {
-        return engine.create(TradeService.class);
+        return adapter.create(PortfolioService.class);
     }
 
-    @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter engine)
+    @Provides @Singleton PositionService providePositionService(RestAdapter adapter)
     {
-        return engine.create(LeaderboardService.class);
+        return adapter.create(PositionService.class);
     }
 
-    @Provides @Singleton ProviderService provideProviderService(RestAdapter engine)
+    @Provides @Singleton TradeService provideTradeService(RestAdapter adapter)
     {
-        return engine.create(ProviderService.class);
+        return adapter.create(TradeService.class);
     }
 
-    @Provides @Singleton MarketService provideMarketService(RestAdapter engine)
+    @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter adapter)
     {
-        return engine.create(MarketService.class);
+        return adapter.create(LeaderboardService.class);
     }
 
-    @Provides @Singleton FollowerService provideFollowerService(RestAdapter engine)
+    @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)
     {
-        return engine.create(FollowerService.class);
+        return adapter.create(ProviderService.class);
     }
 
-    @Provides @Singleton AlertService provideAlertService(RestAdapter engine)
+    @Provides @Singleton MarketService provideMarketService(RestAdapter adapter)
     {
-        return engine.create(AlertService.class);
+        return adapter.create(MarketService.class);
     }
 
-    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter engine)
+    @Provides @Singleton FollowerService provideFollowerService(RestAdapter adapter)
     {
-        return engine.create(AlertPlanService.class);
+        return adapter.create(FollowerService.class);
     }
 
-    @Provides @Singleton SocialService provideSocialService(RestAdapter engine)
+    @Provides @Singleton AlertService provideAlertService(RestAdapter adapter)
     {
-        return engine.create(SocialService.class);
+        return adapter.create(AlertService.class);
     }
 
-    @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter engine)
+    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
     {
-        return engine.create(WatchlistService.class);
+        return adapter.create(AlertPlanService.class);
     }
 
-    @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter engine)
+    @Provides @Singleton SocialService provideSocialService(RestAdapter adapter)
     {
-        return engine.create(CompetitionService.class);
+        return adapter.create(SocialService.class);
+    }
+
+    @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
+    {
+        return adapter.create(WatchlistService.class);
+    }
+
+    @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionService.class);
     }
     //</editor-fold>
 

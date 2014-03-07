@@ -66,7 +66,11 @@ public class SelfValidatedText extends ValidatedText
         invalidPatternMessage = invalidPatternMessage != null ? invalidPatternMessage : context.getString(R.string.validation_incorrect_pattern);
 
         a.recycle();
+    }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
         validateRunnable = new Runnable()
         {
             @Override public void run()
@@ -74,6 +78,13 @@ public class SelfValidatedText extends ValidatedText
                 conditionalValidation();
             }
         };
+        launchDelayedValidation();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        validateRunnable = null;
+        super.onDetachedFromWindow();
     }
 
     public long getValidateDelay()
@@ -105,7 +116,7 @@ public class SelfValidatedText extends ValidatedText
         launchDelayedValidation();
     }
 
-    protected void launchDelayedValidation ()
+    protected void launchDelayedValidation()
     {
         if (validateRunnable != null)
         {
