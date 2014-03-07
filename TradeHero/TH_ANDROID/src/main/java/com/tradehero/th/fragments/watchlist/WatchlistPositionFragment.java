@@ -57,7 +57,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistCache;
     private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistCache;
+    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistFetchTask;
     @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject protected CurrentUserId currentUserId;
 
@@ -187,8 +187,8 @@ public class WatchlistPositionFragment extends DashboardFragment
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 detachWatchlistCacheTask();
-                refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
-                refreshWatchlistCache.execute();
+                refreshWatchlistFetchTask = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
+                refreshWatchlistFetchTask.execute();
             }
         });
     }
@@ -272,11 +272,11 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected void detachWatchlistCacheTask()
     {
-        if (refreshWatchlistCache != null)
+        if (refreshWatchlistFetchTask != null)
         {
-            refreshWatchlistCache.setListener(null);
+            refreshWatchlistFetchTask.setListener(null);
         }
-        refreshWatchlistCache = null;
+        refreshWatchlistFetchTask = null;
     }
 
     @Override public void onDestroy()
