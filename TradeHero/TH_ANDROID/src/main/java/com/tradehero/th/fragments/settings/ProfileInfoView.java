@@ -199,7 +199,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null"), "current auth type " + THUser.currentAuthenticationType.get());
+            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.currentAuthenticationType.get()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else

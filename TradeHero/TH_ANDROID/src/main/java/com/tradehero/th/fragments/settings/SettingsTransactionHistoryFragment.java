@@ -9,6 +9,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -18,6 +19,7 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryCache;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 
@@ -34,11 +36,13 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
 
-    @Inject protected UserTransactionHistoryListCache userTransactionHistoryListCache;
-    @Inject protected UserTransactionHistoryCache userTransactionHistoryCache;
+    @Inject UserTransactionHistoryListCache userTransactionHistoryListCache;
+    @Inject UserTransactionHistoryCache userTransactionHistoryCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
+
     protected DTOCache.GetOrFetchTask<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionHistoryListFetchTask;
     protected DTOCache.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionListCacheListener;
-    @Inject protected CurrentUserId currentUserId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -87,6 +91,9 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.Settings_TransactionHistory);
+
         detachTransactionFetchTask();
         transactionHistoryListFetchTask = userTransactionHistoryListCache.getOrFetch(
                 new UserTransactionHistoryListType(currentUserId.toUserBaseKey()),

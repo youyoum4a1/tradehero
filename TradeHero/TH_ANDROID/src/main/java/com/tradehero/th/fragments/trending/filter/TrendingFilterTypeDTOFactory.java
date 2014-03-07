@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/16/14.
@@ -30,7 +31,8 @@ import javax.inject.Singleton;
         }
         catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | ClassCastException e)
         {
-            e.printStackTrace();
+            Timber.e(new IllegalArgumentException("Failed to create TrendingFilterTypeDTO for classType " + classType, e), "");
+            trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
         }
 
         return trendingFilterTypeDTO;

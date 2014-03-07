@@ -7,6 +7,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -14,6 +15,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
 import retrofit.client.Response;
 
@@ -25,6 +27,7 @@ import retrofit.client.Response;
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject LocalyticsSession localyticsSession;
 
     private MenuItem menuFollow;
     private MenuItem followingStamp;
@@ -49,6 +52,7 @@ public class PushableTimelineFragment extends TimelineFragment
             {
                 @Override public void onClick(View v)
                 {
+                    localyticsSession.tagEvent(LocalyticsConstants.Proﬁle_Follow);
                     handleInfoButtonPressed();
                 }
             });
