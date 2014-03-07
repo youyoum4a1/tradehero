@@ -1,4 +1,4 @@
-package com.tradehero.th.api.news;
+package com.tradehero.th.api.discussion;
 
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;

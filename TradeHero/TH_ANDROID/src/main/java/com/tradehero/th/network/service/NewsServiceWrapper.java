@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.PaginationDTO;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.models.news.MiddleCallbackPaginationNewsItem;
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class NewsServiceWrapper
         this.newsServiceSync = newsServiceSync;
     }
 
-    public MiddleCallbackPaginationNewsItem getGlobal(int page, int perPage, Callback<PaginationDTO<NewsItemDTO>> callback)
+    public MiddleCallbackPaginationNewsItem getGlobal(int page, int perPage, Callback<PaginatedDTO<NewsItemDTO>> callback)
     {
         MiddleCallbackPaginationNewsItem middleCallbackPaginationNewsItem = new MiddleCallbackPaginationNewsItem(callback);
         newsServiceAsync.getGlobal(page, perPage, middleCallbackPaginationNewsItem);
