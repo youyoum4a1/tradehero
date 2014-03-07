@@ -18,19 +18,14 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton UserServiceAsync provideUserServiceAsync(RestAdapter engine)
+    @Provides @Singleton UserServiceAsync provideUserService(RestAdapter engine)
     {
         return engine.create(UserServiceAsync.class);
     }
 
-    @Provides @Singleton AlertServiceAsync provideAlertServiceAsync(RestAdapter engine)
+    @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter engine)
     {
         return engine.create(AlertServiceAsync.class);
-    }
-
-    @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(SocialServiceAsync.class);
     }
     //</editor-fold>
 }
