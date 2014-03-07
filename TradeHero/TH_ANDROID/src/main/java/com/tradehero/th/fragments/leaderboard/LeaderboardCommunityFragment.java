@@ -175,10 +175,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         prepareAdapters();
 
         // get the data
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
+        detachProviderListFetchTask();
         providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
         providerListFetchTask.execute();
 
@@ -201,19 +198,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onSaveInstanceState(outState);
     }
 
-    private void detachLeaderboardDefListCacheFetchMostSkilledTask()
-    {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
-    }
-
     private void prepareAdapters()
     {
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
-
+        detachLeaderboardDefListCacheFetchTask();
         leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
                 LeaderboardDefListKey.getCommunity(), leaderboardDefFetchListener);
         leaderboardDefListFetchTask.execute();
@@ -230,21 +217,35 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
-    }
-
     @Override public void onDestroyView()
     {
-       if (leaderboardDefListView != null)
+        detachLeaderboardDefListCacheFetchTask();
+        detachProviderListFetchTask();
+        if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
             leaderboardDefListView = null;
         }
 
         super.onDestroyView();
+    }
+
+    private void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListFetchTask != null)
+        {
+            leaderboardDefListFetchTask.setListener(null);
+        }
+        leaderboardDefListFetchTask = null;
+    }
+
+    protected void detachProviderListFetchTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+        }
+        providerListFetchTask = null;
     }
 
     @Override public void onDestroy()
