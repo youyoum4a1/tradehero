@@ -82,9 +82,9 @@ abstract public class IABPurchaseConsumer<
             throw new IllegalArgumentException("Product Identifier's identifier cannot be null");
         }
 
-        if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
+        if (purchase.getType().equals(IABConstants.ITEM_TYPE_SUBS))
         {
-            handleConsumeFailedInternal(new IABInvalidConsumptionException("Can only consume inApp purchase types"));
+            handleConsumeSkippedInternal(purchase);
         }
         else if (purchase.getToken() == null)
         {
@@ -140,6 +140,18 @@ abstract public class IABPurchaseConsumer<
     }
 
     private void handleConsumeFinished(IABPurchaseType purchase)
+    {
+        // Just for children classes
+    }
+
+    private void handleConsumeSkippedInternal(IABPurchaseType purchase)
+    {
+        consuming = false;
+        handleConsumeSkipped(purchase);
+        notifyListenerConsumeFinished(purchase);
+    }
+
+    private void handleConsumeSkipped(IABPurchaseType purchase)
     {
         // Just for children classes
     }

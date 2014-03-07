@@ -99,12 +99,16 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
+import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -133,6 +137,7 @@ import javax.inject.Singleton;
                 NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
+                UxModule.class,
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
@@ -144,6 +149,7 @@ import javax.inject.Singleton;
                 {
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
+                        MiddleCallbackUpdateUserProfile.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,
                         AboutFragment.class,
@@ -180,6 +186,7 @@ import javax.inject.Singleton;
                         PushablePortfolioListFragment.class,
                         PortfolioListItemView.class,
                         PortfolioListItemAdapter.class,
+                        DisplayablePortfolioFetchAssistant.class,
 
                         PositionListFragment.class,
                         PositionListFragment.PositionListTHIABUserInteractor.class,
@@ -278,6 +285,8 @@ import javax.inject.Singleton;
                         AlertManagerFragment.class,
                         AlertEditFragment.class,
                         AlertCreateFragment.class,
+                        MiddleCallbackUpdateAlertCompact.class,
+                        MiddleCallbackCreateAlertCompact.class,
 
                         InviteFriendFragment.class,
 
@@ -294,8 +303,6 @@ import javax.inject.Singleton;
 )
 public class TradeHeroModule
 {
-    public static final String TAG = TradeHeroModule.class.getSimpleName();
-
     private final Application application;
 
     public TradeHeroModule(Application application)

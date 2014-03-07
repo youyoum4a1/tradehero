@@ -5,6 +5,8 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
+import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,13 +18,14 @@ import retrofit.Callback;
  */
 @Singleton public class AlertServiceWrapper
 {
-    public static final String TAG = AlertServiceWrapper.class.getSimpleName();
+    private final AlertService alertService;
+    private final AlertServiceAsync alertServiceAsync;
 
-    @Inject AlertService alertService;
-
-    @Inject public AlertServiceWrapper()
+    @Inject public AlertServiceWrapper(AlertService alertService, AlertServiceAsync alertServiceAsync)
     {
         super();
+        this.alertService = alertService;
+        this.alertServiceAsync = alertServiceAsync;
     }
 
     private void basicCheck(UserBaseKey userBaseKey)
@@ -47,7 +50,7 @@ import retrofit.Callback;
     public void getAlerts(UserBaseKey userBaseKey, Callback<List<AlertCompactDTO>> callback)
     {
         basicCheck(userBaseKey);
-        alertService.getAlerts(userBaseKey.key, callback);
+        alertServiceAsync.getAlerts(userBaseKey.key, callback);
     }
     //</editor-fold>
 
@@ -73,12 +76,6 @@ import retrofit.Callback;
         basicCheck(alertId);
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
     }
-
-    public void getAlert(AlertId alertId, Callback<AlertDTO> callback)
-    {
-        basicCheck(alertId);
-        this.alertService.getAlert(alertId.userId, alertId.alertId, callback);
-    }
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
@@ -88,10 +85,12 @@ import retrofit.Callback;
         return this.alertService.createAlert(userBaseKey.key, alertFormDTO);
     }
 
-    public void createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallbackCreateAlertCompact createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(userBaseKey);
-        this.alertService.createAlert(userBaseKey.key, alertFormDTO, callback);
+        MiddleCallbackCreateAlertCompact middleCallback = new MiddleCallbackCreateAlertCompact(userBaseKey, callback);
+        this.alertServiceAsync.createAlert(userBaseKey.key, alertFormDTO, callback);
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -102,10 +101,12 @@ import retrofit.Callback;
         return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
     }
 
-    public void updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallbackUpdateAlertCompact updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
-        this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, callback);
+        MiddleCallbackUpdateAlertCompact middleCallback = new MiddleCallbackUpdateAlertCompact(alertId, callback);
+        this.alertServiceAsync.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 }

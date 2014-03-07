@@ -16,27 +16,13 @@ public interface SocialService
     @POST("/users/{userId}/connect")
     UserProfileDTO connect(
             @Path("userId") int userId,
-            @Body UserFormDTO userFormDTO)
-        throws RetrofitError;
-
-    @POST("/users/{userId}/connect")
-    void connect(
-            @Path("userId") int userId,
-            @Body UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback);
+            @Body UserFormDTO userFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Disconnect User">
     @POST("/users/{userId}/disconnect")
     UserProfileDTO disconnect(
             @Path("userId") int userId,
-            @Body SocialNetworkFormDTO socialNetworkFormDTO)
-        throws RetrofitError;
-
-    @POST("/users/{userId}/disconnect")
-    void disconnect(
-            @Path("userId") int userId,
-            @Body SocialNetworkFormDTO socialNetworkFormDTO,
-            Callback<UserProfileDTO> callback);
+            @Body SocialNetworkFormDTO socialNetworkFormDTO);
     //</editor-fold>
 }

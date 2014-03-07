@@ -15,13 +15,12 @@ import retrofit.RetrofitError;
  */
 @Singleton public class PositionServiceWrapper
 {
-    public static final String TAG = PositionServiceWrapper.class.getSimpleName();
+    private final PositionService positionService;
 
-    @Inject PositionService positionService;
-
-    @Inject public PositionServiceWrapper()
+    @Inject public PositionServiceWrapper(PositionService positionService)
     {
         super();
+        this.positionService = positionService;
     }
 
     private void basicCheck(OwnedPortfolioId ownedPortfolioId)

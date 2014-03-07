@@ -2,7 +2,7 @@
 <resources>
 
   <string name="app_name">TradeHero</string>
-  <string name="version_text">v1.6.1(6)</string>
+  <string name="version_text">v1.6.1(9)</string>
 
   <string name="na">N/A</string>
   <string name="empty"/>

@@ -825,26 +825,40 @@ public class BuySellFragment extends AbstractBuySellFragment
         TextView selectedPortfolio = mSelectedPortfolio;
         if (selectedPortfolio != null)
         {
-            if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
+            Set<MenuOwnedPortfolioId> usedMenuLink = usedMenuOwnedPortfolioIds;
+            if (usedMenuLink != null)
             {
-                MenuOwnedPortfolioId chosen = null;
-
-                final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
-                MenuOwnedPortfolioId lastElement = null;
-                while (iterator.hasNext())
+                // Being paranoid about stuff become null
+                Set<MenuOwnedPortfolioId> userMenuCopy = new TreeSet<>(usedMenuLink);
+                if (userMenuCopy.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
                 {
-                    lastElement = iterator.next();
-                    if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
+                    MenuOwnedPortfolioId chosen = null;
+
+                    final Iterator<MenuOwnedPortfolioId> iterator = userMenuCopy.iterator();
+                    MenuOwnedPortfolioId lastElement = null;
+                    while (iterator.hasNext())
+                    {
+                        lastElement = iterator.next();
+                        if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
+                        {
+                            chosen = lastElement;
+                        }
+                    }
+                    if (chosen == null)
                     {
                         chosen = lastElement;
                     }
-                }
-                if (chosen == null)
-                {
-                    chosen = lastElement;
-                }
 
-                selectedPortfolio.setText(chosen);
+                    if (chosen == null)
+                    {
+                        Timber.e(new NullPointerException("chosen is null userMenuCopy size " + userMenuCopy.size()), "chosen is null userMenuCopy size " + userMenuCopy.size());
+                    }
+                    if (selectedPortfolio == null)
+                    {
+                        Timber.e(new NullPointerException("selectedPortfolio is null"), "selectedPortfolio is null");
+                    }
+                    selectedPortfolio.setText(chosen);
+                }
             }
         }
     }
@@ -1342,11 +1356,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         args.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         if (isTransactionTypeBuy)
         {
+            if (mBuyQuantity == null)
+            {
+                Timber.e(new NullPointerException("mBuyQuantity cannot be null"), "");
+                return;
+            }
             args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
         }
         else
         {
+            if (mSellQuantity == null)
+            {
+                Timber.e(new NullPointerException("mSellQuantity cannot be null"), "");
+                return;
+            }
             args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        }
+        if (securityId == null)
+        {
+            Timber.e(new NullPointerException("securityId cannot be null"), "");
+            return;
         }
         args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
 

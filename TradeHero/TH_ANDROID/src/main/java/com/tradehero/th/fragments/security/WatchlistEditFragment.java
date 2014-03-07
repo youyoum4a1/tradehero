@@ -12,10 +12,10 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -33,6 +33,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -41,7 +42,6 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
 public class WatchlistEditFragment extends DashboardFragment
 {
-    private static final String TAG = WatchlistEditFragment.class.getName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
     public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = WatchlistEditFragment.class.getName() + ".returnFragment";
@@ -59,12 +59,14 @@ public class WatchlistEditFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
     private THCallback<WatchlistPositionDTO> watchlistUpdateCallback;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject protected Lazy<WatchlistService> watchlistService;
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject protected CurrentUserId currentUserId;
+
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @Inject Lazy<WatchlistService> watchlistService;
+    @Inject Lazy<Picasso> picasso;
+    @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -89,11 +91,11 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 if (watchlistPositionDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null"), "watchlistPositionDTO cannot be null");
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO was null for key " + securityKeyId);
                 }
                 else if (watchlistPositionDTO.securityDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null"), "watchlistPositionDTO.securityDTO cannot be null");
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO.securityDTO was null for key " + securityKeyId);
                 }
                 else
                 {
@@ -203,7 +205,7 @@ public class WatchlistEditFragment extends DashboardFragment
         catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
-            THLog.e(TAG, "Parsing error", ex);
+            Timber.e("Parsing error", ex);
             progressBar.dismiss();
         }
         catch (Exception ex)
@@ -240,15 +242,7 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onResume();
 
         Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            if (securityIdBundle != null)
-            {
-                SecurityId securityId = new SecurityId(securityIdBundle);
-                linkWith(securityId, true);
-            }
-        }
+        linkWith(new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
     }
 
     @Override public void onDestroyView()
@@ -272,10 +266,12 @@ public class WatchlistEditFragment extends DashboardFragment
             if (watchlistPositionCache.get().get(securityId) != null)
             {
                 setActionBarTitle(getString(R.string.watchlist_edit_title));
+                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
             }
             else
             {
                 setActionBarTitle(getString(R.string.watchlist_add_title));
+                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
             }
 
             querySecurity(securityId, andDisplay);
@@ -324,7 +320,7 @@ public class WatchlistEditFragment extends DashboardFragment
                     progressBar.dismiss();
                 }
                 THToast.show(R.string.error_fetch_security_info);
-                THLog.e(TAG, "Failed to fetch SecurityCompact for " + key, error);
+                Timber.e("Failed to fetch SecurityCompact for %s", key, error);
             }
         };
 

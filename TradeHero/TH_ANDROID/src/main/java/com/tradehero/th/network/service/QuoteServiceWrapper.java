@@ -14,13 +14,12 @@ import retrofit.client.Response;
  */
 @Singleton public class QuoteServiceWrapper
 {
-    public static final String TAG = QuoteServiceWrapper.class.getSimpleName();
+    private final QuoteService quoteService;
 
-    @Inject QuoteService quoteService;
-
-    @Inject public QuoteServiceWrapper()
+    @Inject public QuoteServiceWrapper(QuoteService quoteService)
     {
         super();
+        this.quoteService = quoteService;
     }
 
     private void basicCheck(SecurityId securityId)

@@ -9,10 +9,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -21,14 +22,13 @@ import com.tradehero.th.widget.ValidationListener;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 1/7/14.
  */
 public class ProfileInfoView extends LinearLayout
 {
-    public static final String TAG = ProfileInfoView.class.getSimpleName();
-
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
     @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
@@ -197,18 +197,26 @@ public class ProfileInfoView extends LinearLayout
 
     public void populateCredentials(JSONObject credentials)
     {
-        String emailValue = null, passwordValue = null;
-        try
+        if (credentials == null)
         {
-            emailValue = credentials.getString("email");
-            passwordValue = credentials.getString("password");
+            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.currentAuthenticationType.get()), "");
+            THToast.show(R.string.error_fetch_your_user_profile);
         }
-        catch (JSONException e)
+        else
         {
-            THLog.e(TAG, "populateCurrentUser", e);
+            String emailValue = null, passwordValue = null;
+            try
+            {
+                emailValue = credentials.getString("email");
+                passwordValue = credentials.getString("password");
+            }
+            catch (JSONException e)
+            {
+                Timber.e(e, "populateCredentials");
+            }
+            this.email.setText(emailValue);
+            this.password.setText(passwordValue);
+            this.confirmPassword.setText(passwordValue);
         }
-        this.email.setText(emailValue);
-        this.password.setText(passwordValue);
-        this.confirmPassword.setText(passwordValue);
     }
 }

@@ -8,6 +8,10 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,13 +24,13 @@ import retrofit.RetrofitError;
  */
 @Singleton public class UserServiceWrapper
 {
-    public static final String TAG = UserServiceWrapper.class.getSimpleName();
+    private final UserService userService;
+    private final UserServiceAsync userServiceAsync;
 
-    @Inject UserService userService;
-
-    @Inject public UserServiceWrapper()
+    @Inject public UserServiceWrapper(UserService userService, UserServiceAsync userServiceAsync)
     {
-        super();
+        this.userService = userService;
+        this.userServiceAsync = userServiceAsync;
     }
 
     //<editor-fold desc="Sign-Up With Email">
@@ -52,12 +56,14 @@ import retrofit.RetrofitError;
                 userFormDTO.website);
     }
 
+    // TODO use MiddleCallback
+    @Deprecated
     public void signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        userService.signUpWithEmail(
+        userServiceAsync.signUpWithEmail(
                 authorization,
                 userFormDTO.biography,
                 userFormDTO.deviceToken,
@@ -98,9 +104,10 @@ import retrofit.RetrofitError;
         );
     }
 
-    public void updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallbackUpdateUserProfile updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
-        userService.updateProfile(
+        MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
+        userServiceAsync.updateProfile(
                 userBaseKey.key,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,
@@ -115,8 +122,9 @@ import retrofit.RetrofitError;
                 userFormDTO.biography,
                 userFormDTO.location,
                 userFormDTO.website,
-                callback
+                middleCallback
         );
+        return middleCallback;
     }
 
     public UserProfileDTO updateProfilePropertyEmailNotifications(
@@ -129,14 +137,14 @@ import retrofit.RetrofitError;
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
-    public void updateProfilePropertyEmailNotifications(
+    public MiddleCallbackUpdateUserProfile updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled,
             Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
-        this.updateProfile(userBaseKey, userFormDTO, callback);
+        return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
 
     public UserProfileDTO updateProfilePropertyPushNotifications(
@@ -149,14 +157,14 @@ import retrofit.RetrofitError;
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
-    public void updateProfilePropertyPushNotifications(
+    public MiddleCallbackUpdateUserProfile updateProfilePropertyPushNotifications(
             UserBaseKey userBaseKey,
             Boolean pushNotificationsEnabled,
             Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
-        this.updateProfile(userBaseKey, userFormDTO, callback);
+        return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
     //</editor-fold>
 
@@ -167,15 +175,6 @@ import retrofit.RetrofitError;
         if (key instanceof SearchUserListType)
         {
             return searchUsers((SearchUserListType) key);
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-
-    public void searchUsers(UserListType key, Callback<List<UserSearchResultDTO>> callback)
-    {
-        if (key instanceof SearchUserListType)
-        {
-            searchUsers((SearchUserListType) key, callback);
         }
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
@@ -197,26 +196,6 @@ import retrofit.RetrofitError;
         }
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
-
-    public void searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
-    {
-        if (key.searchString == null)
-        {
-            throw new IllegalArgumentException("SearchUserListType.searchString cannot be null");
-        }
-        else if (key.page == null)
-        {
-            this.userService.searchUsers(key.searchString, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.userService.searchUsers(key.searchString, key.page, callback);
-        }
-        else
-        {
-            this.userService.searchUsers(key.searchString, key.page, key.perPage, callback);
-        }
-    }
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
@@ -224,10 +203,19 @@ import retrofit.RetrofitError;
     {
         return userService.getUserTransactions(userBaseKey.key);
     }
+    //</editor-fold>
 
-    public void getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    //<editor-fold desc="Update PayPal Email">
+    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
-        userService.getUserTransactions(userBaseKey.key, callback);
+        return userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
+    }
+
+    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO, Callback<UpdatePayPalEmailDTO> callback)
+    {
+        MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail = new MiddleCallbackUpdatePayPalEmail(callback);
+        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO, middleCallbackUpdatePayPalEmail);
+        return middleCallbackUpdatePayPalEmail;
     }
     //</editor-fold>
 

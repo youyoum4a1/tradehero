@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OnBillingAvailableListener;
@@ -37,6 +38,7 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,13 +84,14 @@ public class THIABUserInteractor
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
-    @Inject protected THIABLogicHolder billingActor;
+    @Inject THIABLogicHolder billingActor;
+    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
+    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject UserProfileDTOUtil userProfileDTOUtil;
+    @Inject LocalyticsSession localyticsSession;
+
     protected THIABPurchaseRestorer purchaseRestorer;
     protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
-
-    @Inject protected THIABAlertDialogUtil THIABAlertDialogUtil;
-    @Inject protected THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
-    @Inject protected UserProfileDTOUtil userProfileDTOUtil;
 
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
         IABSKU,
@@ -387,6 +390,7 @@ public class THIABUserInteractor
 
     public void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
     {
+        localyticsSession.tagEvent(LocalyticsConstants.BuyExtraCashDialog_Show);
         popBuyDialog(THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
     }
 
@@ -405,6 +409,7 @@ public class THIABUserInteractor
 
     public void popBuyFollowCredits(Runnable runOnPurchaseComplete)
     {
+        localyticsSession.tagEvent(LocalyticsConstants.BuyCreditsDialog_Show);
         popBuyDialog(THBillingInteractor.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
     }
 
@@ -441,6 +446,7 @@ public class THIABUserInteractor
 
     public void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
     {
+        localyticsSession.tagEvent(LocalyticsConstants.ResetPortfolioDialog_Show);
         popBuyDialog(THBillingInteractor.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
     }
 
@@ -454,7 +460,15 @@ public class THIABUserInteractor
 
     @Override protected void launchPurchaseSequence(THIABPurchaseOrder purchaseOrder)
     {
-        launchPurchaseSequence(getBillingLogicHolder().getPurchaserHolder(), purchaseOrder);
+        THIABLogicHolder logicHolder = getBillingLogicHolder();
+        if (logicHolder != null)
+        {
+            launchPurchaseSequence(logicHolder.getPurchaserHolder(), purchaseOrder);
+        }
+        else
+        {
+            Timber.e(new NullPointerException("logicHolder just became null for " + purchaseOrder), "logicHolder just became null for " + purchaseOrder);
+        }
     }
     //</editor-fold>
 

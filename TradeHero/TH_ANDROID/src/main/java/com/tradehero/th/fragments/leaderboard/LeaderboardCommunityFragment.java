@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -34,11 +35,13 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -58,6 +61,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Picasso picasso;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+    @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -76,7 +80,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardCommunityListOnClickListener = createOnItemClickListener();
         leaderboardDefFetchListener = createDefKeyListListener();
         providerListCallback = createProviderIdListListener();
-    }
+        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener(); }
 
     private AdapterView.OnItemClickListener createOnItemClickListener()
     {
@@ -93,12 +97,15 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                         switch (dto.id)
                         {
                             case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefSector();
                                 break;
                             case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefExchange();
                                 break;
                             default:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
                                 pushLeaderboardListViewFragment(dto);
                                 break;
                         }
@@ -164,6 +171,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onResume();
 
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
+
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
@@ -174,10 +183,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         prepareAdapters();
 
         // get the data
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
+        detachProviderListFetchTask();
         providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
         providerListFetchTask.execute();
 
@@ -200,19 +206,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onSaveInstanceState(outState);
     }
 
-    private void detachLeaderboardDefListCacheFetchMostSkilledTask()
-    {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
-    }
-
     private void prepareAdapters()
     {
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
-
+        detachLeaderboardDefListCacheFetchTask();
         leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
                 LeaderboardDefListKey.getCommunity(), leaderboardDefFetchListener);
         leaderboardDefListFetchTask.execute();
@@ -227,20 +223,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
-
-        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-        detachLeaderboardDefListCacheFetchMostSkilledTask();
     }
 
     @Override public void onDestroyView()
     {
-        this.thIntentPassedListener = null;
-
+        detachLeaderboardDefListCacheFetchTask();
+        detachProviderListFetchTask();
         if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
@@ -250,8 +238,28 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onDestroyView();
     }
 
+    private void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListFetchTask != null)
+        {
+            leaderboardDefListFetchTask.setListener(null);
+        }
+        leaderboardDefListFetchTask = null;
+    }
+
+    protected void detachProviderListFetchTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+        }
+        providerListFetchTask = null;
+    }
+
     @Override public void onDestroy()
     {
+        this.thIntentPassedListener = null;
+
         leaderboardCommunityListOnClickListener = null;
         leaderboardDefFetchListener = null;
         providerListCallback = null;
@@ -297,6 +305,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
         else if (providerDTO != null)
         {
+            // HACK Just in case the user eventually enrolls
+            portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
             args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
@@ -316,6 +326,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onIntentPassed(THIntent thIntent)
         {
+            Timber.d("LeaderboardCommunityTHIntentPassedListener " + thIntent);
+            if (thIntent instanceof ProviderIntent)
+            {
+                // Just in case the user has enrolled
+                portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+            }
+
             if (thIntent instanceof ProviderPageIntent)
             {
                 Timber.d("Intent is ProviderPageIntent");

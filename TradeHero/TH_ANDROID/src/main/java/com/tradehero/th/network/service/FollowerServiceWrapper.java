@@ -13,13 +13,12 @@ import retrofit.RetrofitError;
  */
 @Singleton public class FollowerServiceWrapper
 {
-    public static final String TAG = FollowerServiceWrapper.class.getSimpleName();
+    private final FollowerService followerService;
 
-    @Inject FollowerService followerService;
-
-    @Inject public FollowerServiceWrapper()
+    @Inject public FollowerServiceWrapper(FollowerService followerService)
     {
         super();
+        this.followerService = followerService;
     }
 
     private void basicCheck(FollowerId followerId)

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -12,20 +11,19 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
+import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.special.ResideMenu.ResideMenuItem;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -65,7 +63,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
-    private View.OnClickListener menuItemClickListener;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -182,9 +180,24 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onResume()
     {
+        super.onResume();
+
+        if (navigator == null)
+        {
+            navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        }
+
         launchActions();
 
-        super.onResume();
+        localyticsSession.get().open();
+    }
+
+    @Override protected void onPause()
+    {
+        localyticsSession.get().close();
+        localyticsSession.get().upload();
+
+        super.onPause();
     }
 
     @Override protected void onDestroy()
@@ -206,7 +219,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         purchaseRestorer = null;
         purchaseRestorerFinishedListener = null;
-        menuItemClickListener = null;
 
         super.onDestroy();
     }

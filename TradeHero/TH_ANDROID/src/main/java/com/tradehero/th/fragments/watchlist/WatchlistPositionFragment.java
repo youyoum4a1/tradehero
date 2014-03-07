@@ -21,6 +21,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -39,6 +40,7 @@ import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -48,23 +50,25 @@ import javax.inject.Inject;
 public class WatchlistPositionFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-    private static final String TAG = WatchlistPositionFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
     private static final int NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND = 2;
 
     @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
 
-    @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistCache;
+    @Inject Lazy<WatchlistPositionCache> watchlistCache;
+    @Inject Lazy<UserWatchlistPositionCache> userWatchlistCache;
+    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
+    @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
+
     private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistCache;
-    @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject protected CurrentUserId currentUserId;
+    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistFetchTask;
 
     @InjectView(android.R.id.list) protected SwipeListView watchlistListView;
     @InjectView(R.id.watchlist_position_list_header) protected WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
-    private WatchlistAdapter watchListAdapter;
     @InjectView(R.id.pull_to_refresh_watchlist_listview) protected WatchlistPositionListView watchlistPositionListView;
+
+    private WatchlistAdapter watchListAdapter;
 
     private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
     private Milestone.OnCompleteListener watchlistRetrievedMilestoneListener;
@@ -122,6 +126,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     int deletedItemId = intent.getIntExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, -1);
                     if (deletedItemId != -1)
                     {
+                        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
                         watchlistListView.dismiss(deletedItemId);
                         watchlistListView.closeOpenedItems();
                     }
@@ -187,8 +192,8 @@ public class WatchlistPositionFragment extends DashboardFragment
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 detachWatchlistCacheTask();
-                refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
-                refreshWatchlistCache.execute();
+                refreshWatchlistFetchTask = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
+                refreshWatchlistFetchTask.execute();
             }
         });
     }
@@ -222,6 +227,8 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_List);
 
         LocalBroadcastManager.getInstance(this.getActivity())
                 .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
@@ -272,11 +279,11 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected void detachWatchlistCacheTask()
     {
-        if (refreshWatchlistCache != null)
+        if (refreshWatchlistFetchTask != null)
         {
-            refreshWatchlistCache.setListener(null);
+            refreshWatchlistFetchTask.setListener(null);
         }
-        refreshWatchlistCache = null;
+        refreshWatchlistFetchTask = null;
     }
 
     @Override public void onDestroy()
@@ -328,6 +335,12 @@ public class WatchlistPositionFragment extends DashboardFragment
                 super.onClickFrontView(position);
 
                 openWatchlistItemEditor(position);
+            }
+
+            @Override public void onStartOpen(int position, int action, boolean right)
+            {
+                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_CellSwipe);
+                super.onStartOpen(position, action, right);
             }
 
             @Override public void onDismiss(int[] reverseSortedPositions)
