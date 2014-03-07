@@ -9,6 +9,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -54,6 +55,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -161,6 +163,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onResume()
     {
+        super.onResume();
+
         if (navigator == null)
         {
             //initialize tabs
@@ -169,7 +173,15 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchActions();
 
-        super.onResume();
+        localyticsSession.get().open();
+    }
+
+    @Override protected void onPause()
+    {
+        localyticsSession.get().close();
+        localyticsSession.get().upload();
+
+        super.onPause();
     }
 
     @Override protected void onDestroy()

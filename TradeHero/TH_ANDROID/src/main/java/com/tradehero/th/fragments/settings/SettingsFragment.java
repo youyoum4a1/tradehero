@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -48,6 +49,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.SocialService;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
@@ -58,6 +60,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -75,9 +78,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
-    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    private MiddleCallback<UserProfileDTO> logoutCallback;
+    @Inject SocialServiceWrapper socialServiceWrapper;
+    private MiddleCallbackUpdateUserProfile middleCallbackConnect;
+    private MiddleCallbackUpdateUserProfile middleCallbackDisconnect;
     @Inject SocialService socialService;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -92,6 +96,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject LocalyticsSession localyticsSession;
+
+    private MiddleCallback<UserProfileDTO> logoutCallback;
+    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -104,6 +112,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference pushNotificationVibrate;
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private SettingsUserProfileRetrievedCompleteListener currentUserProfileRetrievedMilestoneListener;
+    private LogInCallback socialConnectLogInCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -113,6 +122,41 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         addPreferencesFromResource(R.xml.settings);
 
         DaggerUtils.inject(this);
+
+        createSocialConnectLogInCallback();
+    }
+
+    private void createSocialConnectLogInCallback()
+    {
+        socialConnectLogInCallback = new LogInCallback()
+        {
+            @Override public void done(UserBaseDTO user, THException ex)
+            {
+                // when user cancel the process
+                if (!isDetached())
+                {
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override public void onStart()
+            {
+            }
+
+            @Override public boolean onSocialAuthDone(JSONObject json)
+            {
+                detachMiddleCallbackConnect();
+                middleCallbackConnect = socialServiceWrapper.connect(
+                        currentUserId.toUserBaseKey(),
+                        UserFormFactory.create(json),
+                        createSocialConnectCallback());
+                if (!isDetached())
+                {
+                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                }
+                return false;
+            }
+        };
     }
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
@@ -175,7 +219,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
+        detachMiddleCallbackConnect();
+        detachMiddleCallbackDisconnect();
         super.onDestroyView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -202,8 +255,32 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
         }
-        this.currentUserProfileRetrievedMilestoneListener = null;
         this.currentUserProfileRetrievedMilestone = null;
+    }
+
+    protected void detachMiddleCallbackConnect()
+    {
+        if (middleCallbackConnect != null)
+        {
+            middleCallbackConnect.setPrimaryCallback(null);
+        }
+        middleCallbackConnect = null;
+    }
+
+    protected void detachMiddleCallbackDisconnect()
+    {
+        if (middleCallbackDisconnect != null)
+        {
+            middleCallbackDisconnect.setPrimaryCallback(null);
+        }
+        middleCallbackDisconnect = null;
+    }
+
+    @Override public void onDestroy()
+    {
+        socialConnectLogInCallback = null;
+        this.currentUserProfileRetrievedMilestoneListener = null;
+        super.onDestroy();
     }
 
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
@@ -591,13 +668,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             R.string.facebook,
                             R.string.authentication_connecting_to_facebook);
 
-                    facebookUtils.get().logIn(getActivity(), socialConnectCallback);
+                    facebookUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
                 case TW:
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.twitter,
                             R.string.authentication_twitter_connecting);
-                    twitterUtils.get().logIn(getActivity(), socialConnectCallback);
+                    twitterUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
                 case TH:
                     break;
@@ -605,7 +682,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.linkedin,
                             R.string.authentication_connecting_to_linkedin);
-                    linkedInUtils.get().logIn(getActivity(), socialConnectCallback);
+                    linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
             }
         }
@@ -614,8 +691,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             progressDialog = ProgressDialogUtil.show(getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
-            socialService.disconnect(
-                    currentUserId.get(),
+            detachMiddleCallbackDisconnect();
+            middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                    currentUserId.toUserBaseKey(),
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
@@ -691,6 +769,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleFaqClicked()
     {
+        localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
+
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.BUNDLE_KEY_URL, faqUrl);
@@ -860,29 +940,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         getNavigator().pushFragment(AboutFragment.class);
     }
-
-    private LogInCallback socialConnectCallback = new LogInCallback()
-    {
-        @Override public void done(UserBaseDTO user, THException ex)
-        {
-            // when user cancel the process
-            progressDialog.dismiss();
-        }
-
-        @Override public void onStart()
-        {
-        }
-
-        @Override public boolean onSocialAuthDone(JSONObject json)
-        {
-            socialService.connect(
-                    currentUserId.get(),
-                    UserFormFactory.create(json),
-                    createSocialConnectCallback());
-            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
-            return false;
-        }
-    };
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {

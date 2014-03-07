@@ -186,14 +186,6 @@ public interface UserService
             @Path("userId") int userId,
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
         throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/updatePayPalEmail")
-    void updatePayPalEmail(
-            @Path("userId") int userId,
-            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
-            Callback<UpdatePayPalEmailDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Delete User">

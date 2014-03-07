@@ -17,9 +17,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -41,41 +41,43 @@ import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
 import retrofit.Callback;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/10/14 Time: 4:40 PM Copyright (c) TradeHero
  */
 public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
 {
-    private static final String TAG = WatchlistItemView.class.getName();
     public static final String WATCHLIST_ITEM_DELETED = "watchlistItemDeleted";
     public static final String BUNDLE_KEY_WATCHLIST_ITEM_INDEX = "watchlistItemId";
 
-    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject protected Lazy<WatchlistService> watchlistService;
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject protected CurrentUserId currentUserId;
+    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @Inject Lazy<WatchlistService> watchlistService;
+    @Inject Lazy<Picasso> picasso;
+    @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
     @InjectView(R.id.company_name) protected TextView companyName;
     @InjectView(R.id.number_of_shares) protected TextView numberOfShares;
-    private WatchlistPositionDTO watchlistPositionDTO;
     @InjectView(R.id.position_percentage) protected TextView gainLossLabel;
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
-    private SecurityId securityId;
-
     @InjectView(R.id.position_watchlist_delete) protected Button deleteButton;
-    private OnClickListener watchlistItemDeleteClickHandler;
-    private Callback<WatchlistPositionDTO> watchlistDeletionCallback;
-
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
+
+    private WatchlistPositionDTO watchlistPositionDTO;
+    private SecurityId securityId;
+    private OnClickListener watchlistItemDeleteClickHandler;
+
+    private Callback<WatchlistPositionDTO> watchlistDeletionCallback;
     private OnClickListener watchlistItemMoreButtonClickHandler;
 
     private PopupMenu morePopupMenu;
@@ -147,6 +149,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                     morePopupMenu = createMoreOptionsPopupMenu();
                 }
                 morePopupMenu.show();
+
+                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_More_Tap);
             }
         };
     }
@@ -200,7 +204,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             {
                 if (watchlistPositionDTO != null)
                 {
-                    THLog.d(TAG, String.format(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id));
+                    Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
 
                     // remove current security from the watchlist
                     SecurityIdList securityIds = userWatchlistPositionCacheCopy.get(currentUserIdCopy.toUserBaseKey());
@@ -217,7 +221,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             {
                 if (watchlistPositionDTOCopy != null)
                 {
-                    THLog.e(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id), ex);
+                    Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, ex);
                 }
             }
         };

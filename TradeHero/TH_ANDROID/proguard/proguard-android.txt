@@ -129,7 +129,7 @@
   public void set*(***);
   public *** get*();
 }
--keep public interface com.tradehero.th.network.service.** { *; }
+-keep interface com.tradehero.th.network.service.** { *; }
 -keep public class com.tradehero.th.billing.** { *; }
 -keep public class com.tradehero.common.billing.** { *; }
 

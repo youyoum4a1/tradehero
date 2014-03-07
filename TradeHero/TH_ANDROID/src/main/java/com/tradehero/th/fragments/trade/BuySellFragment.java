@@ -1358,11 +1358,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         args.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         if (isTransactionTypeBuy)
         {
+            if (mBuyQuantity == null)
+            {
+                Timber.e(new NullPointerException("mBuyQuantity cannot be null"), "");
+                return;
+            }
             args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
         }
         else
         {
+            if (mSellQuantity == null)
+            {
+                Timber.e(new NullPointerException("mSellQuantity cannot be null"), "");
+                return;
+            }
             args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        }
+        if (securityId == null)
+        {
+            Timber.e(new NullPointerException("securityId cannot be null"), "");
+            return;
         }
         args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
 

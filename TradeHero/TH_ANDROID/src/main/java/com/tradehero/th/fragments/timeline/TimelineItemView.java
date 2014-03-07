@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
@@ -43,6 +44,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -73,6 +75,7 @@ public class TimelineItemView extends LinearLayout implements
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<UserTimelineService> userTimelineService;
+    @Inject LocalyticsSession localyticsSession;
 
     private TimelineItem currentTimelineItem;
     private PopupMenu sharePopupMenu;
@@ -293,13 +296,7 @@ public class TimelineItemView extends LinearLayout implements
 
                 case R.id.timeline_popup_menu_monitor_view_graph:
                 {
-                    Bundle args = new Bundle();
-                    SecurityId securityId = getSecurityId();
-                    if (securityId != null)
-                    {
-                        args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                    }
-                    getNavigator().pushFragment(StockInfoFragment.class, args);
+                    openStockInfo();
                     return true;
                 }
             }
@@ -307,8 +304,23 @@ public class TimelineItemView extends LinearLayout implements
         }
     };
 
+    private void openStockInfo()
+    {
+        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Chart);
+
+        Bundle args = new Bundle();
+        SecurityId securityId = getSecurityId();
+        if (securityId != null)
+        {
+            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        }
+        getNavigator().pushFragment(StockInfoFragment.class, args);
+    }
+
     private void openStockAlertEditor()
     {
+        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Alert);
+
         Bundle args = new Bundle();
         args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
         getNavigator().pushFragment(AlertCreateFragment.class, args);
@@ -323,10 +335,12 @@ public class TimelineItemView extends LinearLayout implements
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             if (watchlistPositionCache.get().get(securityId) != null)
             {
+                localyticsSession.tagEvent(LocalyticsConstants.Monitor_EditWatchlist);
                 args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
+                localyticsSession.tagEvent(LocalyticsConstants.Monitor_CreateWatchlist);
                 args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_add_title));
             }
         }
@@ -402,6 +416,8 @@ public class TimelineItemView extends LinearLayout implements
 
     private void openSecurityProfile()
     {
+        localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
+
         SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItem.getFlavorSecurityForDisplay();
         if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
         {

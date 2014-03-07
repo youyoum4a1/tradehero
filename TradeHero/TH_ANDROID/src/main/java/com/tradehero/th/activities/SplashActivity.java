@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -16,7 +17,9 @@ import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.VersionUtils;
+import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -34,6 +37,7 @@ public class SplashActivity extends SherlockActivity
     @Inject @FacebookAppId String facebookAppId;
 
     @Inject @SessionToken StringPreference currentSessionToken;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,6 +55,7 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onResume()
     {
         super.onResume();
+        localyticsSession.get().open();
 
         AppEventsLogger.activateApp(this, facebookAppId);
 
@@ -68,10 +73,20 @@ public class SplashActivity extends SherlockActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
+
+    }
+
+    @Override protected void onPause()
+    {
+        localyticsSession.get().close();
+        localyticsSession.get().upload();
+
+        super.onPause();
     }
 
     protected void initialisation()
     {
+        localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         if (canLoadApp())
         {
             ActivityHelper.launchDashboard(SplashActivity.this);

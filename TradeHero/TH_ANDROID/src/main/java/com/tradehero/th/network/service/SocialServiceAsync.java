@@ -4,25 +4,28 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 10:13 PM To change this template use File | Settings | File Templates. */
-public interface SocialService
+/**
+ * Created by xavier on 3/7/14.
+ */
+interface SocialServiceAsync
 {
     //<editor-fold desc="Connect User">
     @POST("/users/{userId}/connect")
-    UserProfileDTO connect(
+    void connect(
             @Path("userId") int userId,
-            @Body UserFormDTO userFormDTO);
+            @Body UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Disconnect User">
     @POST("/users/{userId}/disconnect")
-    UserProfileDTO disconnect(
+    void disconnect(
             @Path("userId") int userId,
-            @Body SocialNetworkFormDTO socialNetworkFormDTO);
+            @Body SocialNetworkFormDTO socialNetworkFormDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 }

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,10 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -23,24 +20,29 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import java.util.Map;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
-    public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = EmailSignUpFragment.class.getName() + ".showButtonBack";
+    private static final int REQUEST_GALLERY = 111;
 
     private ProfileInfoView profileView;
 
-    private boolean showButtonBack;
-
-    private int mWhichEdittext = 0;
-    private CharSequence mText;
     private String selectedPath = null;
     private Bitmap imageBmp;
-    private int mImagesize = 0;
-    private Context mContext;
-    private static final int REQUEST_GALLERY = 111;
+
+    @Inject LocalyticsSession localyticsSession;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        DaggerUtils.inject(this);
+    }
 
     @Override public int getDefaultViewId()
     {
@@ -58,27 +60,14 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
-
-        //signupButton.setOnTouchListener(this);
     }
 
-    //@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    //{
-    //    Bundle args = getArguments();
-    //    showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
-    //
-    //    ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-    //    if (showButtonBack)
-    //    {
-    //        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-    //    }
-    //    else
-    //    {
-    //        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-    //    }
-    //    actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
-    //    super.onCreateOptionsMenu(menu, inflater);
-    //}
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.SignUp_Email);
+    }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {

@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.PaginationDTO;
+import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -14,40 +14,32 @@ import retrofit.http.Query;
  */
 public interface NewsServiceSync
 {
-    @GET("/news/countries")
-    PaginationDTO<CountryLanguagePairDTO> getCountryLanguagePairs();
+    @GET("/news/countries") PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs();
 
-    @GET("/news/categories")
-    PaginationDTO<NewsItemCategoryDTO> getCategories();
+    @GET("/news/categories") PaginatedDTO<NewsItemCategoryDTO> getCategories();
 
-    @GET("/news/sources")
-    PaginationDTO<NewsItemSourceDTO> getSources();
+    @GET("/news/sources") PaginatedDTO<NewsItemSourceDTO> getSources();
 
-    @GET("/news/regional")
-    PaginationDTO<NewsItemDTO> getRegional(
+    @GET("/news/regional") PaginatedDTO<NewsItemDTO> getRegional(
             @Query("countryCode") String countryCode,
             @Query("languageCode") String languageCode,
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/);
 
-    @GET("/news/global")
-    PaginationDTO<NewsItemDTO> getGlobal(
+    @GET("/news/global") PaginatedDTO<NewsItemDTO> getGlobal(
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/);
 
-    @GET("/news/social")
-    PaginationDTO<NewsItemDTO> getSocial(
+    @GET("/news/social") PaginatedDTO<NewsItemDTO> getSocial(
             @Query("categoryId") int categoryId,
             @Query("page") int page/*        = 1*/,
             @Query("perPage") int perPage/*     = 42*/);
 
-    @GET("/news/ofinterest")
-    PaginationDTO<NewsItemDTO> getOfInterest(
+    @GET("/news/ofinterest") PaginatedDTO<NewsItemDTO> getOfInterest(
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/);
 
-    @GET("/news/securities")
-    PaginationDTO<NewsItemDTO> getSecuritiesNewsList(
+    @GET("/news/securities") PaginatedDTO<NewsItemDTO> getSecuritiesNewsList(
             @Query("securityId") int securityId,
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/);

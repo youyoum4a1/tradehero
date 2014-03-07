@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -35,6 +36,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
@@ -49,10 +51,12 @@ import retrofit.client.Response;
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject protected CurrentUserId currentUserId;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject Lazy<Picasso> picasso;
+    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
+
     protected UserProfileDTO currentUserProfileDTO;
 
     // data
@@ -368,14 +372,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Profile);
                 handleOpenProfileButtonClicked();
                 break;
 
             case R.id.leaderboard_user_item_open_positions_list:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Positions);
                 handleOpenPositionListClicked();
                 break;
 
             case R.id.leaderboard_user_item_follow:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
                 openFollowUserDialog();
                 break;
         }
