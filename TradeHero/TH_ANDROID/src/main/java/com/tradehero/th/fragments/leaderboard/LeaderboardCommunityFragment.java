@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -40,6 +41,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -59,6 +61,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Picasso picasso;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+    @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -94,12 +97,15 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                         switch (dto.id)
                         {
                             case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefSector();
                                 break;
                             case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
                                 pushLeaderboardDefExchange();
                                 break;
                             default:
+                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
                                 pushLeaderboardListViewFragment(dto);
                                 break;
                         }
@@ -164,6 +170,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
 
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)

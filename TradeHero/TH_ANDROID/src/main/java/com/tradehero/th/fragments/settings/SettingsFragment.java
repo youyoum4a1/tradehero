@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -59,6 +60,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -76,12 +78,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
-    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    private MiddleCallback<UserProfileDTO> logoutCallback;
     @Inject SocialServiceWrapper socialServiceWrapper;
     private MiddleCallbackUpdateUserProfile middleCallbackConnect;
     private MiddleCallbackUpdateUserProfile middleCallbackDisconnect;
+    @Inject SocialService socialService;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
@@ -95,6 +96,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject LocalyticsSession localyticsSession;
+
+    private MiddleCallback<UserProfileDTO> logoutCallback;
+    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -217,6 +222,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         detachMiddleCallbackConnect();
         detachMiddleCallbackDisconnect();
         super.onDestroyView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -757,6 +769,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleFaqClicked()
     {
+        localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
+
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.BUNDLE_KEY_URL, faqUrl);

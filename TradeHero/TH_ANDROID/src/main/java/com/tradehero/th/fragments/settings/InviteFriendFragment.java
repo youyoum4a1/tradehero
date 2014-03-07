@@ -21,6 +21,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -45,6 +46,7 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -63,14 +65,15 @@ public class InviteFriendFragment extends DashboardFragment
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
     private static final int CONTACT_LOADER_ID = 0;
 
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<UserService> userService;
     @Inject SocialServiceWrapper socialServiceWrapper;
-    @Inject protected Lazy<SocialService> socialService;
-    @Inject protected Lazy<LinkedInUtils> linkedInUtils;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserService> userService;
+    @Inject Lazy<SocialService> socialService;
+    @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject LocalyticsSession localyticsSession;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
     private View headerView;
@@ -306,6 +309,8 @@ public class InviteFriendFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.Referrals_Settings);
 
         getProgressDialog().show();
 

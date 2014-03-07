@@ -10,20 +10,22 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.LocalyticsConstants;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 2/12/14.
  */
 public class LeaderboardFilterFragment extends DashboardFragment
 {
-    public static final String TAG = LeaderboardFilterFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
-    @InjectView(R.id.leaderboard_filter_slider_container) protected LeaderboardFilterSliderContainer filterSliderContainer;
+    @Inject LocalyticsSession localyticsSession;
+    @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
     protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
 
@@ -68,11 +70,23 @@ public class LeaderboardFilterFragment extends DashboardFragment
     {
         switch (item.getItemId())
         {
+            case android.R.id.home:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
+                break;
+
             case R.id.btn_leaderboard_filter_confirm:
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterDone);
                 returnToLeaderboard();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterShow);
     }
 
     @Override public void onPause()

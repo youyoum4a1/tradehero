@@ -17,6 +17,7 @@ import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
@@ -54,6 +55,7 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onResume()
     {
         super.onResume();
+        localyticsSession.get().open();
 
         AppEventsLogger.activateApp(this, facebookAppId);
 
@@ -72,7 +74,6 @@ public class SplashActivity extends SherlockActivity
             VersionUtils.logScreenMeasurements(this);
         }
 
-        localyticsSession.get().open();
     }
 
     @Override protected void onPause()
@@ -85,6 +86,7 @@ public class SplashActivity extends SherlockActivity
 
     protected void initialisation()
     {
+        localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         if (canLoadApp())
         {
             ActivityHelper.launchDashboard(SplashActivity.this);
