@@ -38,7 +38,9 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.service.SocialService;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
@@ -63,6 +65,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserService> userService;
+    @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject protected Lazy<SocialService> socialService;
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -82,6 +85,8 @@ public class InviteFriendFragment extends DashboardFragment
     private ToggleButton fbToggle;
     private ToggleButton liToggle;
     private ToggleButton contactToggle;
+
+    private MiddleCallbackUpdateUserProfile middleCallbackConnect;
 
     private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
     private THCallback<Response> inviteFriendCallback;
@@ -137,34 +142,42 @@ public class InviteFriendFragment extends DashboardFragment
         {
             @Override public void done(UserBaseDTO user, THException ex)
             {
-                getProgressDialog().dismiss();
+                if (!isDetached())
+                {
+                    getProgressDialog().dismiss();
+                }
             }
 
             @Override public boolean onSocialAuthDone(JSONObject json)
             {
-                socialService.get().connect(
-                        currentUserId.get(),
+                detachMiddleCallbackConnect();
+                middleCallbackConnect = socialServiceWrapper.connect(
+                        currentUserId.toUserBaseKey(),
                         UserFormFactory.create(json),
                         createSocialConnectCallback());
-                progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                if (!isDetached())
+                {
+                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                }
                 return false;
             }
 
             @Override public void onStart()
             {
-                getProgressDialog().show();
+                if (!isDetached())
+                {
+                    getProgressDialog().show();
+                }
             }
         };
         searchTextWatcher = new TextWatcher()
         {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
-
             }
 
             @Override public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-
             }
 
             @Override public void afterTextChanged(Editable s)
@@ -304,6 +317,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        detachMiddleCallbackConnect();
         if (searchTextView != null)
         {
             searchTextView.removeTextChangedListener(searchTextWatcher);
@@ -350,6 +364,15 @@ public class InviteFriendFragment extends DashboardFragment
         }
 
         super.onDestroyView();
+    }
+
+    protected void detachMiddleCallbackConnect()
+    {
+        if (middleCallbackConnect != null)
+        {
+            middleCallbackConnect.setPrimaryCallback(null);
+        }
+        middleCallbackConnect = null;
     }
 
     @Override public void onDestroy()
@@ -508,7 +531,6 @@ public class InviteFriendFragment extends DashboardFragment
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
-
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
             userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);

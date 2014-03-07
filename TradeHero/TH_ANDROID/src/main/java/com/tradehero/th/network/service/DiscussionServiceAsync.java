@@ -8,7 +8,7 @@ import retrofit.http.POST;
 /**
  * Created by xavier on 3/7/14.
  */
-public interface DiscussionServiceAsync
+interface DiscussionServiceAsync
 {
     @POST("/discussions")
     void createDiscussion(
