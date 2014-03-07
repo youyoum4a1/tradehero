@@ -10,7 +10,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.sun.org.apache.regexp.internal.recompile;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -65,7 +64,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private UserProfileView userProfileView;
 
-    private TimelineAdapter timelineAdapter;
+    private MainTimelineAdapter timelineAdapter;
 
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private PortfolioListItemForProfileAdapter portfolioAdapter;
@@ -176,7 +175,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         linkWith(newUserBaseKey, true);
 
         getActivity().getSupportLoaderManager()
-                .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderCallback());
+                .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderTimelineCallback());
     }
 
     @Override public void onResume()
@@ -403,10 +402,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //</editor-fold>
 
     //<editor-fold desc="Initial methods">
-    private TimelineAdapter createTimelineAdapter()
+    private MainTimelineAdapter createTimelineAdapter()
     {
-        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                        shownUserBaseKey.key, R.layout.timeline_item_view);
+        return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater());//,
+                        //shownUserBaseKey.key, R.layout.timeline_item_view);
+        // TODO set the layouts
     }
 
     private void prepareTimelineAdapter()
@@ -417,7 +417,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setOnScrollListener(timelineAdapter);
         timelineListView.setOnLastItemVisibleListener(timelineAdapter);
         timelineListView.setRefreshing();
-        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        timelineAdapter.setTimelineLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
         {
 
             @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
