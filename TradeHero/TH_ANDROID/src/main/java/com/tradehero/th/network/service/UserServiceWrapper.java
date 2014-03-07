@@ -8,7 +8,10 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -199,6 +202,20 @@ import retrofit.RetrofitError;
     public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
     {
         return userService.getUserTransactions(userBaseKey.key);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update PayPal Email">
+    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+    {
+        return userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
+    }
+
+    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO, Callback<UpdatePayPalEmailDTO> callback)
+    {
+        MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail = new MiddleCallbackUpdatePayPalEmail(callback);
+        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO, middleCallbackUpdatePayPalEmail);
+        return middleCallbackUpdatePayPalEmail;
     }
     //</editor-fold>
 

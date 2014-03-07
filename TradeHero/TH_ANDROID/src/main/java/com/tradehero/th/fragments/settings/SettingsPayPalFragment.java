@@ -24,7 +24,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -47,8 +48,10 @@ public class SettingsPayPalFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    @Inject protected UserService userService;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject UserServiceWrapper userServiceWrapper;
+    private MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail;
+    @Inject protected UserProfileCache userProfileCache;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
     @Inject protected CurrentUserId currentUserId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,67 +73,10 @@ public class SettingsPayPalFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    private void setupSubmitButton()
+    @Override public void onDestroyView()
     {
-        submitButton = (Button)view.findViewById(R.id.settings_paypal_update_button);
-        submitButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                progressDialog = ProgressDialogUtil.show(
-                        getActivity(),
-                        R.string.alert_dialog_please_wait,
-                        R.string.authentication_connecting_tradehero_only);
-                UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
-                emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                userService.updatePayPalEmail(currentUserId.get(), emailDTO, new THCallback<UpdatePayPalEmailDTO>()
-                {
-                    @Override
-                    protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
-                    {
-                        THToast.show(getString(R.string.settings_paypal_successful_update));
-                        progressDialog.hide();
-                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-                        navigator.popFragment();
-                    }
-
-                    @Override
-                    protected void failure(THException ex)
-                    {
-                        THToast.show(ex.getMessage());
-                        progressDialog.hide();
-                    }
-                });
-            }
-        });
-    }
-
-    private void setupPaypalEmailText()
-    {
-        paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
-        // HACK: force this email to focus instead of the TabHost stealing focus..
-        paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
-        userProfileCache.get()
-                .getOrFetch(currentUserId.toUserBaseKey(), false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-                {
-                    @Override
-                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-                    {
-                        paypalEmailText.setText(value.paypalEmailAddress);
-                    }
-
-                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                    {
-                        THToast.show(getString(R.string.error_fetch_your_user_profile));
-                        THLog.e(TAG, "Error fetching the user profile " + key, error);
-                    }
-                }).execute();
-    }
-
-    @Override
-    public void onDestroyView()
-    {
+        detachMiddleCallbackUpdatePayPalEmail();
+        detachUserProfileFetchTask();
         if (paypalEmailText != null)
         {
             paypalEmailText.setOnTouchListener(null);
@@ -142,6 +88,105 @@ public class SettingsPayPalFragment extends DashboardFragment
             submitButton = null;
         }
         super.onDestroyView();
+    }
+
+    private void detachMiddleCallbackUpdatePayPalEmail()
+    {
+        if (middleCallbackUpdatePayPalEmail != null)
+        {
+            middleCallbackUpdatePayPalEmail.setPrimaryCallback(null);
+        }
+        middleCallbackUpdatePayPalEmail = null;
+    }
+
+    private void detachUserProfileFetchTask()
+    {
+        if (userProfileFetchTask != null)
+        {
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
+    }
+
+    private void setupSubmitButton()
+    {
+        submitButton = (Button) view.findViewById(R.id.settings_paypal_update_button);
+        submitButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                progressDialog = ProgressDialogUtil.show(
+                        getActivity(),
+                        R.string.alert_dialog_please_wait,
+                        R.string.authentication_connecting_tradehero_only);
+                UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
+                emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
+                detachMiddleCallbackUpdatePayPalEmail();
+                middleCallbackUpdatePayPalEmail = userServiceWrapper.updatePayPalEmail(currentUserId.toUserBaseKey(), emailDTO, createUpdatePayPalCallback());
+            }
+        });
+    }
+
+    private THCallback<UpdatePayPalEmailDTO> createUpdatePayPalCallback()
+    {
+        return new THCallback<UpdatePayPalEmailDTO>()
+        {
+            @Override
+            protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
+            {
+                if (!isDetached())
+                {
+                    THToast.show(getString(R.string.settings_paypal_successful_update));
+                    progressDialog.hide();
+                    Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                    navigator.popFragment();
+                }
+            }
+
+            @Override
+            protected void failure(THException ex)
+            {
+                if (!isDetached())
+                {
+                    THToast.show(ex.getMessage());
+                    progressDialog.hide();
+                }
+            }
+        };
+    }
+
+    private void setupPaypalEmailText()
+    {
+        paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
+        // HACK: force this email to focus instead of the TabHost stealing focus..
+        paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
+        detachUserProfileFetchTask();
+        userProfileFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createUserProfileCacheListener());
+        userProfileFetchTask.execute();
+    }
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            {
+                if (!isDetached())
+                {
+                    paypalEmailText.setText(value.paypalEmailAddress);
+                }
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                if (!isDetached())
+                {
+                    THToast.show(getString(R.string.error_fetch_your_user_profile));
+                    THLog.e(TAG, "Error fetching the user profile " + key, error);
+                }
+            }
+        };
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
