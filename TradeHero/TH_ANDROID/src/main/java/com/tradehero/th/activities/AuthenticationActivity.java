@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -57,6 +58,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -81,6 +83,21 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_content, currentFragment)
                 .commit();
+    }
+
+    @Override protected void onResume()
+    {
+        super.onResume();
+
+        localyticsSession.get().open();
+    }
+
+    @Override protected void onPause()
+    {
+        localyticsSession.get().close();
+        localyticsSession.get().upload();
+
+        super.onPause();
     }
 
     /** map view and the next fragment, which is appears when click on that view */
