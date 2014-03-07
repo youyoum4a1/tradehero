@@ -206,11 +206,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     {
         DeviceUtil.dismissKeyboard(getActivity());
 
-        if (buySellTask != null)
-        {
-            buySellTask.cancel(false);
-        }
-
         ButterKnife.reset(this);
 
         if (buySellTask != null)
@@ -526,7 +521,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 setSelling(false);
             }
             //displayConfirmMenuItem(buySellConfirmItem);
-            if (errorCode == CODE_OK && pushPortfolioFragmentRunnable != null)
+            if (!isDetached() && errorCode == CODE_OK && pushPortfolioFragmentRunnable != null)
             {
                 pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
             }
