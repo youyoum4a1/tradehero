@@ -22,4 +22,14 @@ public interface TranslationTokenService {
 
     );
 
+    @FormUrlEncoded
+    @POST("/v2/OAuth2-13")
+    TokenData requestToken(
+            @Field("scope") String scope,
+            @Field("grant_type") String grantYype,
+            @Field("client_id") String clientId,
+            @Field("client_secret") String clientSecret
+
+    );
+
 }

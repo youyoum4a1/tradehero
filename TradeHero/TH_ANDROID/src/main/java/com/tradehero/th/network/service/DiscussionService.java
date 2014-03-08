@@ -16,7 +16,7 @@ public interface DiscussionService
 {
     @GET("/discussions/")
     PaginatedDTO<DiscussionDTO> getDiscussions(
-            @Query("inReplytoType") String inReplytoType,
+            @Query("inReplyToType") String inReplytoType,
             @Query("inReplyToId") int inReplyToId,
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage); // = 42
@@ -27,13 +27,13 @@ public interface DiscussionService
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     DiscussionDTO vote(
-            @Path("inReplytoType") String inReplytoType,
+            @Path("inReplyToType") String inReplytoType,
             @Path("inReplyToId") int inReplyToId,
             @Path("direction") String direction);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
     DiscussionDTO share(
-            @Path("inReplytoType") String inReplytoType,
+            @Path("inReplyToType") String inReplytoType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
 }

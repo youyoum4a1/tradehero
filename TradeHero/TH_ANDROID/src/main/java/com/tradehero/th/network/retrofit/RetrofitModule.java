@@ -41,6 +41,16 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionService.class);
+    }
+
+    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionServiceAsync.class);
+    }
+
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceSync.class);

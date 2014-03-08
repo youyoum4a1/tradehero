@@ -27,6 +27,16 @@ public interface TranslationService {
             Callback<TranslationResult> callback
 
     );
+
+    @GET("/v2/Http.svc/Translate")
+    TranslationResult requestForTranslation(
+            @Header("Authorization") String authorization,
+            @Query("from") String from,
+            @Query("to") String to,
+            @Query("contentType") String contentType,
+            @Query("text") String text
+
+    );
 }
 
 

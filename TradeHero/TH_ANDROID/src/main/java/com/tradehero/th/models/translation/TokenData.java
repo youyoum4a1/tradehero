@@ -1,12 +1,17 @@
 package com.tradehero.th.models.translation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by tradehero on 14-3-5.
  * First step to request for translation.
  */
 public class TokenData {
+    @JsonProperty("token_type")
     String tokenType;
+    @JsonProperty("access_token")
     String accessToken;
+    @JsonProperty("expires_in")
     String expiresIn;
     String scope;
 

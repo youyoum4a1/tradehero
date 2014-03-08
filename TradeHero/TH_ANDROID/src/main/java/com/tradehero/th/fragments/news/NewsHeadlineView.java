@@ -6,12 +6,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import org.ocpsoft.prettytime.PrettyTime;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.swing.text.html.ImageView;
+import java.awt.*;
 
 /**
  * Created by julien on 11/10/13
@@ -29,6 +44,11 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     private View moreView;
 
     private NewsItemDTO newsHeadline;
+
+    private boolean isVotedUp = false;
+
+    @Inject
+    Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -51,6 +71,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     {
         super.onFinishInflate();
         fetchViews();
+        DaggerUtils.inject(this);
     }
 
     private void fetchViews()
@@ -92,6 +113,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.news_action_button_like_wrapper:
+                voteUpOrDown(!isVotedUp);
                 break;
             case R.id.news_action_button_comment_wrapper:
                 break;
@@ -111,6 +133,39 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         }
     }
 
+
+    private void voteUpOrDown(boolean up) {
+        int id = newsHeadline.id;
+        VoteDirection direction = up ? VoteDirection.UpVote:VoteDirection.DownVote;
+        DiscussionVoteKey key = new DiscussionVoteKey(DiscussionType.NEWS,id,direction);
+        discussionServiceWrapperLazy.get().vote(key,createVoteCallback(up));
+    }
+
+    private void changeLikeViewDisplay(boolean isVotedUp) {
+        android.widget.ImageView likeImageView = (android.widget.ImageView)actionLikeView.findViewById(R.id.new_action_iv_like);
+        TextView likeTextView = (TextView)actionLikeView.findViewById(R.id.new_action_tv_like);
+
+        likeTextView.setText(isVotedUp?"Unlike":"Like");
+
+    }
+
+    private Callback<DiscussionDTO> createVoteCallback(final boolean up){
+
+       return new Callback<DiscussionDTO>() {
+            @Override
+            public void success(DiscussionDTO discussionDTO, Response response) {
+                THToast.show("vote "+((up?"up":"down"))+" success");
+                changeLikeViewDisplay(up);
+                isVotedUp = !up;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                THToast.show("vote "+((up?"up":"down"))+" error");
+            }
+        };
+    }
+
     /**
      * show dialog including sharing and translation.
      */
@@ -118,6 +173,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout,null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback)contentView;
+        ((NewsDialogLayout)contentView).setNewsData(newsHeadline);
         THDialog.showUpDialog(getContext(),contentView,callback);
     }
 

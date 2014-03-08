@@ -1,5 +1,6 @@
 package com.tradehero.common.widget.dialog;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,6 +29,29 @@ public class THDialog {
         void onDialogDismiss();
     }
 
+
+    public static Dialog showCenterDialog(final Context context,
+                                          String title,
+                                          String message,
+                                          String negativeButton,
+                                          String positiveButton,
+                                          android.content.DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder builder =  new AlertDialog.Builder(context).
+                setMessage(message).
+                setTitle(title).
+                setPositiveButton(android.R.string.ok, onClickListener
+                );
+        if (negativeButton != null) {
+            builder.setNegativeButton(negativeButton,onClickListener);
+        }
+        if(positiveButton != null) {
+            builder.setPositiveButton(positiveButton,onClickListener);
+        }
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    } 
+    
     public static Dialog showUpDialog(final Context context,final int layoutRes) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
         setDialogAttribute(dlg,null);
