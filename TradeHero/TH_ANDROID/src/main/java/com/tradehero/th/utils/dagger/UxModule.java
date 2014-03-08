@@ -5,6 +5,7 @@ import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
+import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -17,6 +18,7 @@ import javax.inject.Singleton;
                 SignInFragment.class,
                 SignUpFragment.class,
                 EmailSignUpFragment.class,
+                LeaderboardFilterSliderContainer.class
         },
         complete = false,
         library = true
