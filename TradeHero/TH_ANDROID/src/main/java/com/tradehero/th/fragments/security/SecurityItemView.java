@@ -79,6 +79,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
+        stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override protected void onAttachedToWindow()
@@ -101,6 +102,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             loadDefaultImage();
             loadBgDefault();
             clearHandler();
+        }
+        if (stockLogo != null)
+        {
+            stockLogo.setImageDrawable(null);
+        }
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setImageDrawable(null);
         }
         super.onDetachedFromWindow();
     }
@@ -440,7 +449,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         //    {
         //        RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
         //                .transform(backgroundTransformation);
-        //        resizeBackground(requestCreator, stockBgLogo,new Callback()
+        //        resizeBackground(requestCreator, stockBgLogo, new Callback()
         //                    {
         //                        @Override public void onSuccess()
         //                        {
