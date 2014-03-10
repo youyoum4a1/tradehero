@@ -2,126 +2,18 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.TimelineListLoader;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
-        implements
-            PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>,
-            AbsListView.OnScrollListener,
-            PullToRefreshBase.OnLastItemVisibleListener,
-        StickyListHeadersAdapter
 {
-    private static final String TAG = TimelineAdapter.class.getName();
-    private int currentScrollState;
-
-    private TimelineProfileClickListener profileClickListener;
-
     public TimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
     {
         super(context, inflater, timelineLoaderId, layoutResourceId);
     }
 
-    public void setProfileClickListener(TimelineProfileClickListener profileClickListener)
-    {
-        this.profileClickListener = profileClickListener;
-    }
-
     @Override protected void fineTune(int position, TimelineItem dto, TimelineItemView dtoView)
     {
-    }
-
-    @Override public void onRefresh(PullToRefreshBase<StickyListHeadersListView> refreshView)
-    {
-        switch (refreshView.getCurrentMode())
-        {
-            case PULL_FROM_START:
-                getLoader().loadNext();
-                break;
-            case PULL_FROM_END:
-                getLoader().loadPrevious();
-                break;
-        }
-    }
-
-    @Override public void onScrollStateChanged(final AbsListView absListView, int scrollState)
-    {
-        currentScrollState = scrollState;
-    }
-
-    @Override public void onScroll(final AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
-        if (getCount() == 0)
-        {
-            return;
-        }
-        // update loader last & first visible item
-        if (getLoader() != null)
-        {
-            int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
-            //strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
-            int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
-            //getLoader().setFirstVisibleItem((TimelineItem) getItem(firstItemId));
-            //getLoader().setLastVisibleItem((TimelineItem) getItem(lastItemId));
-        }
-    }
-
-    @Override public void onLastItemVisible()
-    {
-        getLoader().loadPrevious();
-    }
-
-    @Override public Object getItem(int position)
-    {
-        return super.getItem(position);
-    }
-
-    @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
-    {
-        if (convertView == null)
-        {
-            convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
-            ((TimelineHeaderButtonView) convertView).setTimelineProfileClickListener(new TimelineProfileClickListener()
-            {
-                @Override public void onBtnClicked(TimelineFragment.TabType tabType)
-                {
-                    notifyProfileClickListener(tabType);
-                }
-            });
-        }
-
-        return convertView;
-    }
-
-    protected void notifyProfileClickListener(TimelineFragment.TabType tabType)
-    {
-        if (profileClickListener != null)
-        {
-            profileClickListener.onBtnClicked(tabType);
-        }
-    }
-
-    @Override public long getHeaderId(int position)
-    {
-        return 0;
-    }
-
-    /**
-     * force to render header of the listview
-     * somewhat hacKy :v
-     * @return
-     */
-    @Override public boolean isEmpty()
-    {
-        return false;
     }
 }

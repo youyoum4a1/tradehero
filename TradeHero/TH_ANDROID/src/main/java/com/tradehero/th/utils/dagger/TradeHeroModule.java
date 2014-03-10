@@ -44,9 +44,9 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
-import com.tradehero.th.fragments.portfolio.PortfolioListItemForProfileAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -175,7 +175,7 @@ import javax.inject.Singleton;
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
                         PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
-                        PortfolioListItemForProfileAdapter.class,
+                        SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
                         NewsTitleListFragment.class,

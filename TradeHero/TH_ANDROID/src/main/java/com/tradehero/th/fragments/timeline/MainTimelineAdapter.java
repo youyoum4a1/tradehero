@@ -10,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.sun.org.apache.regexp.internal.recompile;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.fragments.portfolio.PortfolioListItemForProfileAdapter;
+import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import java.util.List;
@@ -37,17 +35,23 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     protected final LayoutInflater inflater;
     private TimelineProfileClickListener profileClickListener;
-    private int timelineItemViewResId;
-    private int portfolioItemViewResId;
+    private final int timelineItemViewResId;
+    private final int portfolioItemViewResId;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
     private TimelineAdapter timelineAdapter;
-    private PortfolioListItemForProfileAdapter portfolioListAdapter;
+    private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
 
-    public MainTimelineAdapter(Context context, LayoutInflater inflater)
+    public MainTimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int timelineItemViewResId, int portfolioItemViewResId)
     {
         super(context, 0);
         this.inflater = inflater;
+        this.timelineLoaderId = timelineLoaderId;
+        this.timelineItemViewResId = timelineItemViewResId;
+        this.portfolioItemViewResId = portfolioItemViewResId;
+
+        timelineAdapter = new TimelineAdapter(context, inflater, timelineLoaderId, timelineItemViewResId);
+        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
     }
 
     public TimelineFragment.TabType getCurrentTabType()
@@ -74,16 +78,6 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
     }
 
-    public void setTimelineItemViewResId(int timelineItemViewResId)
-    {
-        this.timelineItemViewResId = timelineItemViewResId;
-    }
-
-    public void setPortfolioItemViewResId(int portfolioItemViewResId)
-    {
-        this.portfolioItemViewResId = portfolioItemViewResId;
-    }
-
     //<editor-fold desc="AbsListView.OnScrollListener">
     private int currentScrollState;
 
@@ -94,18 +88,25 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     @Override public void onScroll(final AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
-        if (getCount() == 0)
+        switch (currentTabType)
         {
-            return;
-        }
-        // update loader last & first visible item
-        if (getTimelineLoader() != null)
-        {
-            int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
-            //strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
-            int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
-            //getTimelineLoader().setFirstVisibleItem((TimelineItem) getItem(firstItemId));
-            //getTimelineLoader().setLastVisibleItem((TimelineItem) getItem(lastItemId));
+            case TIMELINE:
+                if (getCount() == 0)
+                {
+                    return;
+                }
+                // update loader last & first visible item
+                if (getTimelineLoader() != null)
+                {
+                    int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
+                    //strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
+                    int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
+                    //getTimelineLoader().setFirstVisibleItem((TimelineItem) getItem(firstItemId));
+                    //getTimelineLoader().setLastVisibleItem((TimelineItem) getItem(lastItemId));
+                }
+                break;
+
+
         }
     }
     //</editor-fold>
@@ -144,13 +145,24 @@ public class MainTimelineAdapter extends ArrayAdapter
     //<editor-fold desc="PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>">
     @Override public void onRefresh(PullToRefreshBase<StickyListHeadersListView> refreshView)
     {
-        switch (refreshView.getCurrentMode())
+        switch(currentTabType)
         {
-            case PULL_FROM_START:
-                getTimelineLoader().loadNext();
+            case TIMELINE:
+                switch (refreshView.getCurrentMode())
+                {
+                    case PULL_FROM_START:
+                        getTimelineLoader().loadNext();
+                        break;
+                    case PULL_FROM_END:
+                        getTimelineLoader().loadPrevious();
+                        break;
+                }
                 break;
-            case PULL_FROM_END:
-                getTimelineLoader().loadPrevious();
+
+            case PORTFOLIO_LIST:
+                break;
+
+            case STATS:
                 break;
         }
     }
@@ -161,12 +173,12 @@ public class MainTimelineAdapter extends ArrayAdapter
     //////////////////////
 
     //<editor-fold desc="Timeline Adapter">
-    private int loaderId;
+    private final int timelineLoaderId;
     private LoaderDTOAdapter.ListLoaderCallback<TimelineItem> callback;
 
-    public int getLoaderId()
+    public int getTimelineLoaderId()
     {
-        return loaderId;
+        return timelineLoaderId;
     }
 
     public LoaderManager.LoaderCallbacks<List<TimelineItem>> getLoaderTimelineCallback()
@@ -175,7 +187,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         {
             @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle args)
             {
-                //loaderId = id;
+                //timelineLoaderId = id;
                 return callback != null ? callback.onCreateLoader(id, args) : null;
             }
 
@@ -193,7 +205,7 @@ public class MainTimelineAdapter extends ArrayAdapter
             {
                 if (loader instanceof ListLoader && callback != null)
                 {
-                    callback.onLoaderReset((ListLoader<TimelineItem>)loader);
+                    callback.onLoaderReset((ListLoader<TimelineItem>) loader);
                 }
             }
         };
@@ -203,7 +215,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (getContext() instanceof FragmentActivity)
         {
-            Loader loader = (Loader) ((FragmentActivity) getContext()).getSupportLoaderManager().getLoader(getLoaderId());
+            Loader loader = (Loader) ((FragmentActivity) getContext()).getSupportLoaderManager().getLoader(getTimelineLoaderId());
             return (TimelineListLoader) loader;
         }
         throw new IllegalArgumentException("Context has to be FragmentActivity");
