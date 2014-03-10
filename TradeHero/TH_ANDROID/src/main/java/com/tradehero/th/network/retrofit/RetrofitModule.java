@@ -45,22 +45,21 @@ public class RetrofitModule
     {
         return adapter.create(DiscussionService.class);
     }
-
-    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionServiceAsync.class);
-    }
+//
+//    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
+//    {
+//        return adapter.create(DiscussionServiceAsync.class);
+//    }
 
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceSync.class);
     }
-
-    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(NewsServiceAsync.class);
-    }
-
+//
+//    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
+//    {
+//        return adapter.create(NewsServiceAsync.class);
+//    }
 
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
