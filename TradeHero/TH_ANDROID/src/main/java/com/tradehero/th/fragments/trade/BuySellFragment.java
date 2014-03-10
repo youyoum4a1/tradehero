@@ -257,6 +257,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             mBuyBtn.setOnClickListener(createBuyButtonListener());
         }
+        displayBuyButton(); // Just to have it disabled while we are collecting data
 
         if (bottomViewPagerAdapter == null)
         {
@@ -1507,8 +1508,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         return new OnClickListener()
         {
-            @Override
-            public void onClick(View v)
+            @Override public void onClick(View v)
             {
                 pushBuySellConfirmFragmentIn();
             }
