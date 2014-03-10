@@ -416,6 +416,18 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             // HACK, instead we should test for Default title on PortfolioDTO
             THToast.show("Not enough data, try again");
         }
+        else if (shownUserBaseKey == null)
+        {
+            Timber.e(new NullPointerException("shownUserBaseKey is null"), "");
+        }
+        else if (portfolioCompactListCache == null)
+        {
+            Timber.e(new NullPointerException("portfolioCompactListCache is null"), "");
+        }
+        else if (portfolioCompactListCache.get() == null)
+        {
+            Timber.e(new NullPointerException("portfolioCompactListCache.get() is null"), "");
+        }
         else
         {
             pushPositionListFragment(portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
