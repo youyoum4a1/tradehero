@@ -207,8 +207,15 @@ public class ProfileInfoView extends LinearLayout
             String emailValue = null, passwordValue = null;
             try
             {
-                emailValue = credentials.getString("email");
-                passwordValue = credentials.getString("password");
+                // We test here just to reduce the number of errors sent to Crashlytics
+                if (credentials.has("email"))
+                {
+                    emailValue = credentials.getString("email");
+                }
+                if (credentials.has("password"))
+                {
+                    passwordValue = credentials.getString("password");
+                }
             }
             catch (JSONException e)
             {
