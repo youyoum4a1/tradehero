@@ -33,7 +33,9 @@ public interface DiscussionService
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
     DiscussionDTO share(
-            @Path("inReplytoType") String inReplytoType,
+            @Path("inReplytoType") String inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
+
+
 }

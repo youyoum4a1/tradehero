@@ -16,7 +16,6 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
             AbsListView.OnScrollListener,
             PullToRefreshBase.OnLastItemVisibleListener
 {
-    private static final String TAG = TimelineAdapter.class.getName();
     private int currentScrollState;
 
     public TimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)

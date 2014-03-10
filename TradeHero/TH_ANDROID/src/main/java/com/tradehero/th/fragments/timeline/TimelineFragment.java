@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -194,6 +195,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnScrollListener(timelineAdapter);
             timelineListView.setOnLastItemVisibleListener(timelineAdapter);
             timelineListView.setRefreshing();
+            timelineListView.setOnItemClickListener(createTimelineOnClickListener());
         }
 
         if (userBaseKey != null)
@@ -206,6 +208,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
             portfolioCompactListRetrievedMilestone.launch();
         }
+    }
+
+    private AdapterView.OnItemClickListener createTimelineOnClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Object item = parent.getItemAtPosition(position);
+
+                if (item instanceof TimelineItem)
+                {
+                    pushDiscussion(((TimelineItem) item).getTimelineItemId());
+                }
+            }
+        };
+    }
+
+    private void pushDiscussion(TimelineItem)
+    {
+        getNavigator().pushFragment(Discussion)
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
