@@ -4,14 +4,17 @@
   <!-- Security Info -->
   <string name="security_previous_close">Prev. Close</string>
   <string name="security_open">Open</string>
-  <string name="security_days_high">Day\'s High</string>
-  <string name="security_days_low">Day\'s Low</string>
+  <string name="security_days_high">High</string>
+  <string name="security_days_low">Low</string>
   <string name="security_market_cap">Market Cap</string>
   <string name="security_pe_ratio">P/E Ratio</string>
   <string name="security_eps">EPS</string>
   <string name="security_volume">Volume</string>
   <string name="security_avg_volume">Avg. Volume</string>
   <string name="security_market_status">Market status</string>
+  <string name="security_info">Info</string>
+  <string name="security_discussions">Discussions</string>
+  <string name="security_news">News</string>
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>

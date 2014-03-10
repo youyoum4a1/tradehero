@@ -52,7 +52,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         }
         else if (securityCompactDTO instanceof WarrantDTO)
         {
-            return 4;
+            return 3;//4 hide warrant info temp
         }
         else
         {
@@ -74,14 +74,14 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         Bundle args = new Bundle();
         args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 
-        if (securityCompactDTO instanceof WarrantDTO && position == 0)
+        if (false && securityCompactDTO instanceof WarrantDTO && position == 0)//hide Warrant Info temp
         {
             fragment = new WarrantInfoValueFragment();
             populateForWarrantInfoFragment(args);
         }
         else
         {
-            if (securityCompactDTO instanceof WarrantDTO)
+            if (false && securityCompactDTO instanceof WarrantDTO)//hide warrant info temp
             {
                 position--;
             }
@@ -120,7 +120,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForChartFragment(Bundle args)
     {
-        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
+        //args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
+        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
         args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, ChartTimeSpan.MONTH_3);
     }
 
