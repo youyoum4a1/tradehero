@@ -508,7 +508,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             return candidate;
         }
-        return Math.max(candidate, maxSellable);
+        return Math.min(candidate, maxSellable);
     }
 
     protected void clampSellQuantity(boolean andDisplay)
