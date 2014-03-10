@@ -138,8 +138,14 @@
   public <fields>;
 }
 
+# Keep fields that are called by reflection
 -keep public class * extends com.tradehero.common.persistence.DTO {
   public <fields>;
+}
+
+# Keep constructors that are called by reflection
+-keepclassmembers public class * extends com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO{
+  public <init>(...);
 }
 
 -keep @org.junit.runner.RunWith public class *
