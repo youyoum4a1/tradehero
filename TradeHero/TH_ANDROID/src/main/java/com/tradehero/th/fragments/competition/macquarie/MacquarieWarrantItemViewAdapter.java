@@ -35,7 +35,8 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
     {
         if (items == null)
         {
-            Timber.e(new NullPointerException("List<WarrantDTO> was null"), "List<WarrantDTO> was null", items);
+            // Having null is a natural occurence if there is a network failure
+            //Timber.e(new NullPointerException("List<WarrantDTO> was null"), "List<WarrantDTO> was null", items);
             super.setItems(items);
         }
         else
