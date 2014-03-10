@@ -125,7 +125,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
             {
-                handleLeaderboardDefKeyListReceived();
+                if (!isDetached())
+                {
+                    handleLeaderboardDefKeyListReceived();
+                }
             }
 
             @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
