@@ -11,4 +11,20 @@
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
     <item>http://truongtho.noip.me/api/</item>
   </string-array>
+
+   <array name="news_item_background_list">
+       <item>@drawable/img_placeholder_news_1</item>
+       <item>@drawable/img_placeholder_news_2</item>
+       <item>@drawable/img_placeholder_news_3</item>
+       <item>@drawable/img_placeholder_news_4</item>
+       <item>@drawable/img_placeholder_news_5</item>
+   </array>
+
+    <integer-array name="news_item_background_list2">
+        <item>@drawable/img_placeholder_news_1</item>
+        <item>@drawable/img_placeholder_news_2</item>
+        <item>@drawable/img_placeholder_news_3</item>
+        <item>@drawable/img_placeholder_news_4</item>
+        <item>@drawable/img_placeholder_news_5</item>
+    </integer-array>
 </resources>

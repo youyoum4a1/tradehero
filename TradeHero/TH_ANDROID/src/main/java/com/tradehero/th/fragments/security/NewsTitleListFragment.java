@@ -76,17 +76,6 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         Timber.d("NewsTitleListFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
         initViews(view);
-//        newsServiceWrapper.getGlobal(1,42,new Callback<PaginationDTO<NewsItemDTO>>() {
-//            @Override
-//            public void success(PaginationDTO<NewsItemDTO> newsItemDTOPaginationDTO, Response response) {
-//                Timber.d("newsServiceWrapper newsItemDTOPaginationDTO %s",newsItemDTOPaginationDTO);
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Timber.d("newsServiceWrapper failur %s",error.getMessage());
-//            }
-//        });
         return view;
     }
 
@@ -239,7 +228,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
             Bundle bundle = new Bundle();
             bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.url);
-            navigator.pushFragment(WebViewFragment.class, bundle);
+            //navigator.pushFragment(WebViewFragment.class, bundle);
+            navigator.pushFragment(NewsDetailFragment.class, news.toBundle(news.voteDirection==1));
         }
     }
 }

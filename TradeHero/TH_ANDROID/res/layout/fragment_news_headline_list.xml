@@ -12,7 +12,9 @@
       android:id="@+id/list_news_headline"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:listSelector="@android:color/transparent"
       android:visibility="gone"
+      android:divider="@null"
     />
     <TextView
             android:id="@+id/empty"

@@ -6,6 +6,7 @@ import com.tradehero.th.models.news.MiddleCallbackPaginationNewsItem;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import retrofit.Callback;
 
 /**
@@ -49,6 +50,16 @@ public class NewsServiceWrapper
     {
         return getSecurityNews(securityId, 0, 42);
     }
+
+    public NewsItemDTO getSecurityNewsDetail(long newsId) {
+        return newsServiceSync.getNewsDetails(newsId);
+    }
+
+    public void getSecurityNewsDetail(long newsId,Callback<NewsItemDTO> callback) {
+        MiddleCallback<NewsItemDTO> middleCallback = new MiddleCallback<NewsItemDTO>(callback);
+        newsServiceAsync.getNewsDetails(newsId,middleCallback);
+    }
+
 
 
     // please write your own for all async method inside NewsServiceAsync

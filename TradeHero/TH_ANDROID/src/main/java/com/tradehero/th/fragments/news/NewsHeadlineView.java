@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
 
     private TextView dateTextView;
     private TextView titleTextView;
+    private TextView descView;
     private View actionLikeView;
     private View actionCommentView;
     private View moreView;
@@ -78,6 +80,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     {
         titleTextView = (TextView) findViewById(R.id.news_title_title);
         dateTextView = (TextView) findViewById(R.id.news_title_date);
+        descView = (TextView) findViewById(R.id.news_title_description);
         actionLikeView = findViewById(R.id.news_action_button_like_wrapper);
         actionCommentView = findViewById(R.id.news_action_button_comment_wrapper);
         moreView = findViewById(R.id.news_action_button_share_wrapper);
@@ -157,6 +160,8 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
                 THToast.show("vote "+((up?"up":"down"))+" success");
                 changeLikeViewDisplay(up);
                 isVotedUp = !up;
+                newsHeadline.voteDirection = isVotedUp ? 1:0;
+
             }
 
             @Override
@@ -197,6 +202,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     @Override public void display(NewsItemDTO dto)
     {
         this.newsHeadline = dto;
+        this.isVotedUp = !(newsHeadline.voteDirection == 0);
         displayNews();
     }
 
@@ -216,6 +222,16 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         {
             PrettyTime prettyTime = new PrettyTime();
             dateTextView.setText(prettyTime.format(newsHeadline.createdAtUtc));
+        }
+
+        if (descView != null)
+        {
+            descView.setText(newsHeadline.description);
+            if (TextUtils.isEmpty(newsHeadline.description)) {
+                descView.setVisibility(View.GONE);
+            }else {
+                descView.setVisibility(View.VISIBLE);
+            }
         }
     }
 }
