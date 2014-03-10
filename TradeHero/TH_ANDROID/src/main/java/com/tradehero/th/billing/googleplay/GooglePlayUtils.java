@@ -31,9 +31,9 @@ public class GooglePlayUtils
         {
             GooglePlayPurchaseDTO googlePlayPurchaseDTO = purchase.getGooglePlayPurchaseDTO();
             reported.add("data:");
-            reported.add(googlePlayPurchaseDTO.google_play_data);
+            reported.add(googlePlayPurchaseDTO.googlePlayData);
             reported.add("signature:");
-            reported.add(googlePlayPurchaseDTO.google_play_signature);
+            reported.add(googlePlayPurchaseDTO.googlePlaySignature);
             reported.add("-----");
         }
         reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));

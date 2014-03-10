@@ -8,6 +8,7 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.*;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tapstream.sdk.*;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;

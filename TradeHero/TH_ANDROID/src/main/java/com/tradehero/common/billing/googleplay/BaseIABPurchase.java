@@ -107,6 +107,14 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
 
     @Override public GooglePlayPurchaseDTO getGooglePlayPurchaseDTO()
     {
+        if (this.signature != null)
+        {
+            // Test its length is a multiple of 4
+            if (this.signature.length() % 4 != 0)
+            {
+                Timber.e(new IllegalArgumentException("Google purchase signature was not of the right length " + this.signature.length() + " " + this.originalJson + " " + this.signature), "");
+            }
+        }
         return new GooglePlayPurchaseDTO(this.originalJson, this.signature);
     }
 

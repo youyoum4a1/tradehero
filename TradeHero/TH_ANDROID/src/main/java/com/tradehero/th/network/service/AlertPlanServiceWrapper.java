@@ -27,8 +27,8 @@ import retrofit.Callback;
     {
         return alertPlanService.checkAlertPlanAttribution(
                 userBaseKey.key,
-                googlePlayPurchaseDTO.google_play_data,
-                googlePlayPurchaseDTO.google_play_signature);
+                googlePlayPurchaseDTO.googlePlayData,
+                googlePlayPurchaseDTO.googlePlaySignature);
     }
 
     public void checkAlertPlanAttribution(
@@ -38,8 +38,8 @@ import retrofit.Callback;
     {
         alertPlanService.checkAlertPlanAttribution(
                 userBaseKey.key,
-                googlePlayPurchaseDTO.google_play_data,
-                googlePlayPurchaseDTO.google_play_signature,
+                googlePlayPurchaseDTO.googlePlayData,
+                googlePlayPurchaseDTO.googlePlaySignature,
                 callback);
     }
     //</editor-fold>

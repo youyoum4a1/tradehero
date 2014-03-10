@@ -82,7 +82,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private MiddleCallbackUpdateUserProfile middleCallbackConnect;
     private MiddleCallbackUpdateUserProfile middleCallbackDisconnect;
-    @Inject SocialService socialService;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
