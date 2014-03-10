@@ -34,7 +34,7 @@ public class GraphicModule
     {
         Picasso mPicasso = new Picasso.Builder(context)
                 //.downloader(new UrlConnectionDownloader(getContext()))
-                .memoryCache(lruFileCache)
+                //.memoryCache(lruFileCache)
                 .build();
         mPicasso.setDebugging(Constants.PICASSO_DEBUG);
         return mPicasso;

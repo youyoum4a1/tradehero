@@ -86,6 +86,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (chartImage != null)
         {
             chartImage.setOnClickListener(chartImageClickListener);
+            chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
         this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
@@ -121,6 +122,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (chartImage != null)
         {
             chartImage.setOnClickListener(null);
+            chartImage.setImageDrawable(null);
         }
         this.chartImage = null;
 

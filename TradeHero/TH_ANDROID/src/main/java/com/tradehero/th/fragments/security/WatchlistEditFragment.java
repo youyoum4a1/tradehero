@@ -126,7 +126,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
             @Override protected void failure(THException ex)
             {
-                Timber.e(ex, "Failed to update watchlist position");
+                Timber.e("Failed to update watchlist position", ex);
                 THToast.show(ex);
             }
         };

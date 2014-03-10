@@ -75,7 +75,15 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         date = (TextView) findViewById(R.id.date);
         //userImage = (CircularImageView) findViewById(R.id.user_image);
         userPhoto = (ImageView) findViewById(R.id.user_photo);
+        if (userPhoto != null)
+        {
+            userPhoto.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
         peopleBgImage = (ImageView) findViewById(R.id.people_bg_image);
+        if (peopleBgImage != null)
+        {
+            peopleBgImage.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     @Override protected void onAttachedToWindow()

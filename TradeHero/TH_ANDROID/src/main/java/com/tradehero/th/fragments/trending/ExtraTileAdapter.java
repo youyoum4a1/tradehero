@@ -86,10 +86,10 @@ public class ExtraTileAdapter extends BaseAdapter
     {
         if (extraTilesMarker != null)
         {
-            Timber.d("getWrappedPosition begin, length=%d", extraTilesMarker.length);
+            //Timber.d("getWrappedPosition begin, length=%d", extraTilesMarker.length);
             for (int i = 0; i < extraTilesMarker.length; ++i)
             {
-                Timber.d("mark position: %d", extraTilesMarker[i].second);
+                //Timber.d("mark position: %d", extraTilesMarker[i].second);
                 if (position == extraTilesMarker[i].second)
                 {
                     return -1;
@@ -100,7 +100,7 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
             }
 
-            Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
+            //Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
             return position - extraTilesMarker.length;
         }
         else
@@ -256,7 +256,7 @@ public class ExtraTileAdapter extends BaseAdapter
             Pair<TileType, Integer>[] tempMarker = null;
             if (!refreshIndexes && !refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                Timber.d("Reusing marker!");
+                //Timber.d("Reusing marker!");
                 tempMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
             else
@@ -265,7 +265,7 @@ public class ExtraTileAdapter extends BaseAdapter
                 int[] extraTileIndexes = null;
                 if (!refreshIndexes && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
                 {
-                    Timber.d("Reusing indexes");
+                    //Timber.d("Reusing indexes");
                     extraTileIndexes = new int[extraTileCount];
                     for (int i=0; i<extraTileCount; ++i)
                     {
@@ -281,7 +281,7 @@ public class ExtraTileAdapter extends BaseAdapter
                 TileType[] showingTiles = null;
                 if (!refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
                 {
-                    Timber.d("Reusing tile types randomness");
+                    //Timber.d("Reusing tile types randomness");
                     showingTiles = new TileType[extraTileCount];
                     for (int i=0; i<extraTileCount; ++i)
                     {
@@ -335,14 +335,14 @@ public class ExtraTileAdapter extends BaseAdapter
         int specialTileIndex = 0;
         if (surveyEnabled)
         {
-            Timber.d("Add survey at beginning of trending list");
+            //Timber.d("Add survey at beginning of trending list");
             headingTiles[specialTileIndex] = Pair.create(TileType.Survey, specialTileIndex);
             ++specialTileIndex;
         }
 
         if (providerDataAvailable)
         {
-            Timber.d("Add provider tile at beginning of trending list");
+            //Timber.d("Add provider tile at beginning of trending list");
             headingTiles[specialTileIndex] = Pair.create(TileType.FromProvider, specialTileIndex);
             ++specialTileIndex;
         }
@@ -366,7 +366,7 @@ public class ExtraTileAdapter extends BaseAdapter
         ProviderIdList providerListKey = providerListCache.get().get(new ProviderListKey());
         if (providerListKey != null)
         {
-            Timber.d("Provider has %d items", providerListKey.size());
+            //Timber.d("Provider has %d items", providerListKey.size());
         }
         return providerListKey != null && !providerListKey.isEmpty();
     }
@@ -442,11 +442,12 @@ public class ExtraTileAdapter extends BaseAdapter
         return userProfileDTO != null && !StringUtils.isNullOrEmpty(userProfileDTO.activeSurveyImageURL);
     }
 
+    // TODO memory leak
     private final DataSetObserver wrappedAdapterDataSetObserver = new DataSetObserver()
     {
         @Override public void onChanged()
         {
-            Timber.d("onChanged");
+            //Timber.d("onChanged");
             notifyDataSetChanged();
         }
 
