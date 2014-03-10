@@ -388,8 +388,22 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
-            Timber.d("onItemClient");
-            handleItemClicked((CompetitionZoneDTO) adapterView.getItemAtPosition(i));
+            if (adapterView == null)
+            {
+                Timber.e(new NullPointerException("adapterView was null"), "onItemClient");
+            }
+            else
+            {
+                Object itemClicked = adapterView.getItemAtPosition(i);
+                if (itemClicked == null)
+                {
+                    Timber.e(new NullPointerException("itemClicked was null"), "onItemClient");
+                }
+                else
+                {
+                    handleItemClicked((CompetitionZoneDTO) itemClicked);
+                }
+            }
         }
     }
 
