@@ -19,6 +19,7 @@ import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.TabStreamEvents;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
@@ -39,6 +40,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject @SessionToken StringPreference currentSessionToken;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<Tapstream> tabStream;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,12 +53,6 @@ public class SplashActivity extends SherlockActivity
         setContentView(R.layout.splash_screen);
 
         DaggerUtils.inject(this);
-
-        Config config = new Config();
-        config.setFireAutomaticOpenEvent(false);//this will send twice
-        Tapstream.create(getApplication(), "tradehero", "Om-yveoZQ7CMU7nUGKlahw", config);
-        Event e = new Event("android-tradehero-open", false);
-        Tapstream.getInstance().fireEvent(e);
     }
 
     @Override protected void onResume()
@@ -81,6 +77,7 @@ public class SplashActivity extends SherlockActivity
             VersionUtils.logScreenMeasurements(this);
         }
 
+        tabStream.get().fireEvent(new Event(TabStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
