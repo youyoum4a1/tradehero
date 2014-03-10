@@ -148,7 +148,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
             @Override protected void failure(THException ex)
             {
-                THToast.show("Share error "+socialNetworkEnum.getName()));
+                THToast.show("Share error "+socialNetworkEnum.getName());
                 Timber.e(ex,"Share error");
                 //THToast.show(ex);
             }
