@@ -6,6 +6,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
+import com.tapstream.sdk.*;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -50,6 +51,9 @@ public class SplashActivity extends SherlockActivity
         setContentView(R.layout.splash_screen);
 
         DaggerUtils.inject(this);
+
+        Config config = new Config();
+        Tapstream.create(getApplication(), "tradehero", "Om-yveoZQ7CMU7nUGKlahw", config);
     }
 
     @Override protected void onResume()
