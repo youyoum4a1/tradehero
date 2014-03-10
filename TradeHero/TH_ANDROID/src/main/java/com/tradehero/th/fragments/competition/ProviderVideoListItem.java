@@ -53,8 +53,21 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
         DaggerUtils.inject(this);
 
         this.thumbnail = (ImageView) findViewById(R.id.help_video_thumbnail);
+        if (thumbnail != null)
+        {
+            thumbnail.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
         this.title = (TextView) findViewById(R.id.help_video_title);
         this.description = (TextView) findViewById(R.id.help_video_description);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (thumbnail != null)
+        {
+            thumbnail.setImageDrawable(null);
+        }
+        super.onDetachedFromWindow();
     }
 
     @Override public void display(HelpVideoId videoId1)

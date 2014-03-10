@@ -258,6 +258,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             mBuyBtn.setOnClickListener(createBuyButtonListener());
         }
+        displayBuyButton(); // Just to have it disabled while we are collecting data
 
         if (bottomViewPagerAdapter == null)
         {
@@ -734,6 +735,10 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 OwnedPortfolioId ownedPortfolioId = iterator.next();
                 PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+                if (portfolioCompactDTO == null)
+                {
+                    Timber.e(new NullPointerException("Missing portfolioCompact for " + ownedPortfolioId), "");
+                }
                 if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
                         providerId.key.equals(portfolioCompactDTO.providerId) &&
                         providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
@@ -1509,8 +1514,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         return new OnClickListener()
         {
-            @Override
-            public void onClick(View v)
+            @Override public void onClick(View v)
             {
                 pushBuySellConfirmFragmentIn();
             }

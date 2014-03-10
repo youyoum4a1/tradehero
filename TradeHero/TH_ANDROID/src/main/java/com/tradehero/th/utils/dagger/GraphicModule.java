@@ -40,6 +40,7 @@ public class GraphicModule
                 //.downloader(new UrlConnectionDownloader(getContext()))
                 .memoryCache(lruFileCache,cacheDir.getAbsolutePath())
                 //.downloader(new MyImageDownloader(context.getApplicationContext()))
+                //.memoryCache(lruFileCache)
                 .build();
         mPicasso.setDebugging(Constants.PICASSO_DEBUG);
         return mPicasso;

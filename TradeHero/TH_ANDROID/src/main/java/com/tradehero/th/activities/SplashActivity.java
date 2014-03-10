@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tapstream.sdk.*;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -18,6 +19,7 @@ import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.TabStreamEvents;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
@@ -38,6 +40,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject @SessionToken StringPreference currentSessionToken;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<Tapstream> tabStream;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -74,6 +77,7 @@ public class SplashActivity extends SherlockActivity
             VersionUtils.logScreenMeasurements(this);
         }
 
+        tabStream.get().fireEvent(new Event(TabStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()

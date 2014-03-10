@@ -83,6 +83,10 @@ public class PositionPartialTopView extends LinearLayout
     protected void initViews()
     {
         stockLogo = (ImageView) findViewById(R.id.stock_logo);
+        if (stockLogo != null)
+        {
+            stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
         stockSymbol = (TextView) findViewById(R.id.stock_symbol);
         companyName = (TextView) findViewById(R.id.company_name);
         stockMovementIndicator = (TextView) findViewById(R.id.stock_movement_indicator);
@@ -108,6 +112,10 @@ public class PositionPartialTopView extends LinearLayout
         }
         securityCompactCacheFetchTask = null;
         securityCompactCacheListener = null;
+        if (stockLogo != null)
+        {
+            stockLogo.setImageDrawable(null);
+        }
         super.onDetachedFromWindow();
     }
 

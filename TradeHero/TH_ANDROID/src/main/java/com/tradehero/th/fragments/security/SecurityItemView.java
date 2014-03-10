@@ -93,6 +93,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         ButterKnife.inject(this);
         //setBackgroundResource(R.drawable.trending_grid_item_bg);
         this.callback = new ImageCallback();
+        stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override protected void onAttachedToWindow()
@@ -115,6 +116,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             //loadDefaultImage();
             //loadBgDefault();
             clearHandler();
+        }
+        if (stockLogo != null)
+        {
+            stockLogo.setImageDrawable(null);
+        }
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setImageDrawable(null);
         }
         super.onDetachedFromWindow();
     }

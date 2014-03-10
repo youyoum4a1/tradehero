@@ -50,6 +50,13 @@ public class LeaderboardCompetitionView extends ImageView
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        setImageDrawable(null);
+        super.onDetachedFromWindow();
     }
 
     @Override public void display(ProviderId dto)
