@@ -53,7 +53,10 @@ public class SplashActivity extends SherlockActivity
         DaggerUtils.inject(this);
 
         Config config = new Config();
+        config.setFireAutomaticOpenEvent(false);//this will send twice
         Tapstream.create(getApplication(), "tradehero", "Om-yveoZQ7CMU7nUGKlahw", config);
+        Event e = new Event("android-tradehero-open", false);
+        Tapstream.getInstance().fireEvent(e);
     }
 
     @Override protected void onResume()
