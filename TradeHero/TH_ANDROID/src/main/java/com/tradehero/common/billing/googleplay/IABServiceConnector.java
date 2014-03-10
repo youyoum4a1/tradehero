@@ -101,7 +101,11 @@ public class IABServiceConnector implements ServiceConnection
         {
             try
             {
-                currentActivityHolder.getCurrentActivity().unbindService(this);
+                Activity currentActivity = currentActivityHolder.getCurrentActivity();
+                if (currentActivity != null)
+                {
+                    currentActivity.unbindService(this);
+                }
             }
             catch (IllegalArgumentException e)
             {
