@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;

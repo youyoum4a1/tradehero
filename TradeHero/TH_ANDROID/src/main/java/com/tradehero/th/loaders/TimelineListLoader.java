@@ -2,7 +2,6 @@ package com.tradehero.th.loaders;
 
 import android.content.Context;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
