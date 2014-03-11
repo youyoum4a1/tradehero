@@ -97,11 +97,12 @@ public class IABServiceConnector implements ServiceConnection
     {
         Timber.d("Disposing this %s", getClass().getSimpleName());
         setupDone = false;
-        if (currentActivityHolder != null)
+        CurrentActivityHolder holderCopy = currentActivityHolder;
+        if (holderCopy != null)
         {
             try
             {
-                Activity currentActivity = currentActivityHolder.getCurrentActivity();
+                Activity currentActivity = holderCopy.getCurrentActivity();
                 if (currentActivity != null)
                 {
                     currentActivity.unbindService(this);
