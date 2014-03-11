@@ -50,6 +50,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
     private SubTimelineAdapter subTimelineAdapter;
+
     private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
     private final int statResId;
     private UserProfileDTO userProfileDTO;
@@ -66,7 +67,9 @@ public class MainTimelineAdapter extends ArrayAdapter
 
         subTimelineAdapter = new SubTimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
         subTimelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
+
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
+
         this.statResId = statResId;
     }
 
@@ -383,25 +386,37 @@ public class MainTimelineAdapter extends ArrayAdapter
         return item;
     }
 
+    @Override public boolean hasStableIds()
+    {
+        return false;
+    }
+
     @Override public long getItemId(int i)
     {
         long itemId;
-        switch (currentTabType)
+        if (getRealCount() == 0)
         {
-            case TIMELINE:
-                itemId = subTimelineAdapter.getItemId(i);
-                break;
+            itemId = 0;
+        }
+        else
+        {
+            switch (currentTabType)
+            {
+                case TIMELINE:
+                    itemId = subTimelineAdapter.getItemId(i);
+                    break;
 
-            case PORTFOLIO_LIST:
-                itemId = portfolioListAdapter.getItemId(i);
-                break;
+                case PORTFOLIO_LIST:
+                    itemId = portfolioListAdapter.getItemId(i);
+                    break;
 
-            case STATS:
-                itemId = 432;
-                break;
+                case STATS:
+                    itemId = 432;
+                    break;
 
-            default:
-                throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
+            }
         }
         return itemId;
     }
@@ -434,6 +449,41 @@ public class MainTimelineAdapter extends ArrayAdapter
             }
         }
         return view;
+    }
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        boolean enabled;
+        if (getRealCount() == 0)
+        {
+            enabled = false;
+        }
+        else
+        {
+            switch (currentTabType)
+            {
+                case TIMELINE:
+                    enabled = subTimelineAdapter.isEnabled(position);
+                    break;
+
+                case PORTFOLIO_LIST:
+                    enabled = portfolioListAdapter.isEnabled(position);
+                    break;
+
+                case STATS:
+                    enabled = false;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
+            }
+        }
+        return enabled;
     }
     //</editor-fold>
 

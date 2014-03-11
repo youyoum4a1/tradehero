@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -14,8 +15,6 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -28,15 +27,12 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.loaders.ListLoader;
-import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -373,10 +369,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void prepareTimelineAdapter()
     {
         mainTimelineAdapter = createTimelineAdapter();
-        timelineListView.setOnRefreshListener(mainTimelineAdapter);
-        timelineListView.setOnScrollListener(mainTimelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(mainTimelineAdapter);
-        timelineListView.setRefreshing();
+        mainTimelineAdapter.setProfileClickListener(profileButtonClickListener);
         mainTimelineAdapter.setOnLoadFinishedListener(new MainTimelineAdapter.OnLoadFinishedListener()
         {
             @Override public void onLoadFinished()
@@ -384,17 +377,35 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 TimelineFragment.this.onLoadFinished();
             }
         });
+        timelineListView.setOnRefreshListener(mainTimelineAdapter);
+        timelineListView.setOnScrollListener(mainTimelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(mainTimelineAdapter);
+        timelineListView.setRefreshing();
         timelineListView.setAdapter(mainTimelineAdapter);
-        mainTimelineAdapter.setProfileClickListener(profileButtonClickListener);
+        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                onMainItemClick(adapterView, view, i, l);
+            }
+        });
     }
     //</editor-fold>
 
-    //<editor-fold desc="PortfolioRequestListener">
-    @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
+    private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
-        pushPositionListFragment(ownedPortfolioId);
+        Object item = adapterView.getItemAtPosition(i);
+        if (item instanceof DisplayablePortfolioDTO)
+        {
+            onPortfolioRequested(((DisplayablePortfolioDTO) item).ownedPortfolioId);
+        }
+        else
+        {
+            Timber.d("TimelineFragment, unhandled view %s", view);
+        }
     }
 
+    //<editor-fold desc="PortfolioRequestListener">
     @Override public void onDefaultPortfolioRequested()
     {
         if (portfolioIdList == null || portfolioIdList.size() < 1 || portfolioIdList.get(0) == null)
@@ -418,6 +429,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             pushPositionListFragment(portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
         }
+    }
+
+    @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
+    {
+        pushPositionListFragment(ownedPortfolioId);
     }
     //</editor-fold>
 
