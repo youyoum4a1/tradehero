@@ -18,7 +18,7 @@
 
   <item>
     <shape android:shape="rectangle">
-      <gradient android:angle="270" android:endColor="@color/btn_linkedin_color_light" android:startColor="@color/btn_linkedin_color_dark"/>
+      <gradient android:angle="270" android:endColor="@color/btn_linkedin_color_light" android:startColor="@color/btn_linkedin_color_light"/>
 
       <corners android:radius="4dp"/>
     </shape>
