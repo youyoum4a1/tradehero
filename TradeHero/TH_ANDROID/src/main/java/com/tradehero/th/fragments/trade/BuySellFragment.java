@@ -520,7 +520,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
 
         if (andDisplay)
         {
@@ -552,7 +551,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(userProfileDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (mTradeQuantityView != null)
         {
             mTradeQuantityView.linkWith(userProfileDTO, andDisplay);
@@ -569,7 +567,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (mTradeQuantityView != null)
         {
             mTradeQuantityView.linkWith(quoteDTO, andDisplay);
@@ -673,17 +670,34 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (maxSellableShares != null)
             {
                 linkWithSellQuantity(maxSellableShares, true);
+                if (maxSellableShares == 0)
+                {
+                    setTransactionTypeBuy(true);
+                    if (mBuySellSwitch != null)
+                    {
+                        mBuySellSwitch.setVisibility(View.GONE);
+                    }
+                }
+                else
+                {
+                    if (mBuySellSwitch != null)
+                    {
+                        mBuySellSwitch.setVisibility(View.VISIBLE);
+                    }
+                }
             }
-        }
-    }
+            else
+            {
+                if (mBuySellSwitch != null)
+                {
+                    mBuySellSwitch.setVisibility(View.GONE);
+                }
+            }
 
-    protected void flipToBuyIfCannotSell()
-    {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null && maxSellableShares == 0)
-        {
-            // Nothing to sell
-            setTransactionTypeBuy(true);
+            if (mBuySellSwitch != null)
+            {
+                mBuySellSwitch.setChecked(isTransactionTypeBuy);
+            }
         }
     }
 
@@ -1008,6 +1022,13 @@ public class BuySellFragment extends AbstractBuySellFragment
                 Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares != null)
                 {
+                    if (maxSellableShares != 0)
+                    {
+                        if (mBuySellSwitch != null)
+                        {
+                            mBuySellSwitch.setVisibility(View.VISIBLE);
+                        }
+                    }
                     mSlider.setMax(maxSellableShares);
                     mSlider.setEnabled(maxSellableShares > 0);
                     if (mSellQuantity != null)
@@ -1035,9 +1056,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             else
             {
-                Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        portfolioCompactDTO);
+                Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares == null || maxSellableShares == 0)
                 {
                     mBuySellSwitch.setVisibility(View.GONE);
