@@ -14,6 +14,9 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -77,9 +80,9 @@ public class InviteFriendFragment extends DashboardFragment
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
     private View headerView;
-    private TextView inviteFriendButton;
+    @InjectView(R.id.refer_friend_invite_button) TextView inviteFriendButton;
     private TextView searchTextView;
-    private StickyListHeadersListView stickyListHeadersListView;
+    @InjectView(R.id.sticky_list) StickyListHeadersListView stickyListHeadersListView;
     private SocialNetworkEnum currentSocialNetworkConnect;
 
     private List<UserFriendsDTO> selectedLinkedInFriends;
@@ -252,7 +255,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     private void initView(View view)
     {
-        inviteFriendButton = (TextView) view.findViewById(R.id.refer_friend_invite_button);
+        ButterKnife.inject(this, view);
         if (inviteFriendButton != null)
         {
             inviteFriendButton.setOnClickListener(new View.OnClickListener()
@@ -265,7 +268,6 @@ public class InviteFriendFragment extends DashboardFragment
         }
 
         referFriendListAdapter = createFriendListAdapter();
-        stickyListHeadersListView = (StickyListHeadersListView) view.findViewById(R.id.sticky_list);
 
         View emptyView = view.findViewById(R.id.friend_list_empty_view);
         if (emptyView != null)
@@ -304,6 +306,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             contactToggle.setOnCheckedChangeListener(onToggleFriendListListener);
         }
+        setToggleButtonsEnabled(false);
     }
 
     @Override public void onResume()
@@ -463,6 +466,24 @@ public class InviteFriendFragment extends DashboardFragment
             {
                 searchTextView.setText("");
             }
+
+            setToggleButtonsEnabled(userFriendsDTOs != null);
+        }
+    }
+
+    private void setToggleButtonsEnabled(boolean enabled)
+    {
+        if (fbToggle != null)
+        {
+            fbToggle.setEnabled(enabled);
+        }
+        if (liToggle != null)
+        {
+            liToggle.setEnabled(enabled);
+        }
+        if (contactToggle != null)
+        {
+            contactToggle.setEnabled(enabled);
         }
     }
 
