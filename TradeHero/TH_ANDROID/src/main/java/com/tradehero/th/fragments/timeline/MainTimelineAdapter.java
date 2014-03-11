@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,14 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
+import com.tradehero.th.utils.Constants;
 import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -35,22 +40,23 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     protected final LayoutInflater inflater;
     private TimelineProfileClickListener profileClickListener;
-    private final int timelineItemViewResId;
-    private final int portfolioItemViewResId;
+    private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
     private TimelineAdapter timelineAdapter;
     private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
 
-    public MainTimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int timelineItemViewResId, int portfolioItemViewResId)
+    public MainTimelineAdapter(Activity context,
+            LayoutInflater inflater,
+            UserBaseKey shownUserBaseKey,
+            int timelineItemViewResId,
+            int portfolioItemViewResId)
     {
         super(context, 0);
         this.inflater = inflater;
-        this.timelineLoaderId = timelineLoaderId;
-        this.timelineItemViewResId = timelineItemViewResId;
-        this.portfolioItemViewResId = portfolioItemViewResId;
 
-        timelineAdapter = new TimelineAdapter(context, inflater, timelineLoaderId, timelineItemViewResId);
+        timelineAdapter = new TimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
+        timelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
     }
 
@@ -75,6 +81,19 @@ public class MainTimelineAdapter extends ArrayAdapter
         if (profileClickListener != null)
         {
             profileClickListener.onBtnClicked(tabType);
+        }
+    }
+
+    public void setOnLoadFinishedListener(OnLoadFinishedListener onLoadFinishedListener)
+    {
+        this.onLoadFinishedListener = onLoadFinishedListener;
+    }
+
+    protected void notifyLoadFinished()
+    {
+        if (this.onLoadFinishedListener != null)
+        {
+            this.onLoadFinishedListener.onLoadFinished();
         }
     }
 
@@ -173,42 +192,14 @@ public class MainTimelineAdapter extends ArrayAdapter
     //////////////////////
 
     //<editor-fold desc="Timeline Adapter">
-    private final int timelineLoaderId;
-    private LoaderDTOAdapter.ListLoaderCallback<TimelineItem> callback;
-
     public int getTimelineLoaderId()
     {
-        return timelineLoaderId;
+        return timelineAdapter.getLoaderId();
     }
 
     public LoaderManager.LoaderCallbacks<List<TimelineItem>> getLoaderTimelineCallback()
     {
-        return new LoaderManager.LoaderCallbacks<List<TimelineItem>>()
-        {
-            @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle args)
-            {
-                //timelineLoaderId = id;
-                return callback != null ? callback.onCreateLoader(id, args) : null;
-            }
-
-            @Override public void onLoadFinished(Loader<List<TimelineItem>> loader, List<TimelineItem> data)
-            {
-                notifyDataSetChanged();
-
-                if (loader instanceof ListLoader && callback != null)
-                {
-                    callback.onLoadFinished((ListLoader<TimelineItem>) loader, data);
-                }
-            }
-
-            @Override public void onLoaderReset(Loader<List<TimelineItem>> loader)
-            {
-                if (loader instanceof ListLoader && callback != null)
-                {
-                    callback.onLoaderReset((ListLoader<TimelineItem>) loader);
-                }
-            }
-        };
+        return timelineAdapter.getLoaderCallback();
     }
 
     public TimelineListLoader getTimelineLoader()
@@ -221,9 +212,28 @@ public class MainTimelineAdapter extends ArrayAdapter
         throw new IllegalArgumentException("Context has to be FragmentActivity");
     }
 
-    public void setTimelineLoaderCallback(LoaderDTOAdapter.ListLoaderCallback<TimelineItem> callback)
+    public LoaderDTOAdapter.ListLoaderCallback<TimelineItem> createTimelineLoaderCallback(final Context context, final UserBaseKey shownUserBaseKey)
     {
-        this.callback = callback;
+        return new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        {
+            @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
+            {
+                notifyDataSetChanged();
+                notifyLoadFinished();
+            }
+
+            @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
+            {
+                return createTimelineLoader(context, shownUserBaseKey);
+            }
+        };
+    }
+
+    private ListLoader<TimelineItem> createTimelineLoader(Context context, UserBaseKey shownUserBaseKey)
+    {
+        TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey);
+        timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
+        return timelineLoader;
     }
     //</editor-fold>
 
@@ -231,31 +241,47 @@ public class MainTimelineAdapter extends ArrayAdapter
     // Portfolio elements
     //////////////////////
 
+    public void setDisplayablePortfolioItems(List<DisplayablePortfolioDTO> items)
+    {
+        this.portfolioListAdapter.setItems(items);
+        this.portfolioListAdapter.notifyDataSetChanged();
+        if (currentTabType == TimelineFragment.TabType.PORTFOLIO_LIST)
+        {
+            notifyDataSetChanged();
+        }
+    }
+
     //<editor-fold desc="BaseAdapter">
     @Override public int getCount()
     {
+        int count;
         switch (currentTabType)
         {
             case TIMELINE:
-                return timelineAdapter.getCount();
+                count = timelineAdapter.getCount();
+                break;
 
             case PORTFOLIO_LIST:
             default:
-                return portfolioListAdapter.getCount();
+                count = portfolioListAdapter.getCount();
         }
+        return count;
     }
 
     @Override public Object getItem(int i)
     {
+        Object item;
         switch (currentTabType)
         {
             case TIMELINE:
-                return timelineAdapter.getItem(i);
+                item = timelineAdapter.getItem(i);
+                break;
 
             case PORTFOLIO_LIST:
             default:
-                return portfolioListAdapter.getItem(i);
+                item = portfolioListAdapter.getItem(i);
         }
+        return item;
     }
 
     @Override public long getItemId(int i)
@@ -284,4 +310,9 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
     }
     //</editor-fold>
+
+    public static interface OnLoadFinishedListener
+    {
+        void onLoadFinished();
+    }
 }

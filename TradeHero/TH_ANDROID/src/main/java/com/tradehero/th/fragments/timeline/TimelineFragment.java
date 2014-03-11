@@ -46,8 +46,7 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements PortfolioRequestListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID =
-            TimelineFragment.class.getName() + ".showUserId";
+    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
 
     public static enum TabType
     {
@@ -161,8 +160,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
 
-        getActivity().getSupportLoaderManager()
-                .initLoader(mainTimelineAdapter.getTimelineLoaderId(), null, mainTimelineAdapter.getLoaderTimelineCallback());
+        getActivity().getSupportLoaderManager().initLoader(
+                mainTimelineAdapter.getTimelineLoaderId(),                null,
+                mainTimelineAdapter.getLoaderTimelineCallback());
     }
 
     @Override public void onResume()
@@ -225,6 +225,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (mainTimelineAdapter != null)
         {
             mainTimelineAdapter.setProfileClickListener(null);
+            mainTimelineAdapter.setOnLoadFinishedListener(null);
         }
         mainTimelineAdapter = null;
     }
@@ -362,7 +363,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private MainTimelineAdapter createTimelineAdapter()
     {
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                shownUserBaseKey.key, R.layout.timeline_item_view, R.layout.portfolio_list_item);
+                shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item);
                         //shownUserBaseKey.key, R.layout.timeline_item_view);
         // TODO set the layouts
     }
@@ -374,32 +375,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setOnScrollListener(mainTimelineAdapter);
         timelineListView.setOnLastItemVisibleListener(mainTimelineAdapter);
         timelineListView.setRefreshing();
-        mainTimelineAdapter.setTimelineLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        mainTimelineAdapter.setOnLoadFinishedListener(new MainTimelineAdapter.OnLoadFinishedListener()
         {
-
-            @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
+            @Override public void onLoadFinished()
             {
-                if (timelineListView != null)
-                {
-                    timelineListView.onRefreshComplete();
-                    cancelRefreshingOnResume = true;
-                }
-            }
-
-            @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
-            {
-                return createTimelineLoader();
+                TimelineFragment.this.onLoadFinished();
             }
         });
         timelineListView.setAdapter(mainTimelineAdapter);
         mainTimelineAdapter.setProfileClickListener(profileButtonClickListener);
-    }
-
-    private ListLoader<TimelineItem> createTimelineLoader()
-    {
-        TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
-        timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
-        return timelineLoader;
     }
     //</editor-fold>
 
@@ -442,6 +426,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 ownedPortfolioId.getArgs());
         DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
+    }
+
+    private void onLoadFinished()
+    {
+        if (timelineListView != null)
+        {
+            timelineListView.onRefreshComplete();
+            cancelRefreshingOnResume = true;
+        }
     }
 
     //<editor-fold desc="Milestone retrieved listeners">
