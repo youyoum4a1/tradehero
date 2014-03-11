@@ -23,7 +23,7 @@ public class TimelineItem
         this.timelineItemId = dto.id;
         this.date = dto.createdAtUtc;
         this.text = dto.text;
-        this.medias = dto.medias;
+        this.medias = dto.getMedias();
         this.read = dto.userViewedAtUtc != null;
         this.selected = false;
     }

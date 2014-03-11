@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,12 +21,14 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.discussion.TimelineDiscussion;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -48,9 +51,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_SHOW_USER_ID =
             TimelineFragment.class.getName() + ".showUserId";
 
-    @Inject protected Lazy<PortfolioCache> portfolioCache;
-    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<PortfolioCache> portfolioCache;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     @InjectView(R.id.timeline_list_view) PullToRefreshListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -195,6 +198,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnScrollListener(timelineAdapter);
             timelineListView.setOnLastItemVisibleListener(timelineAdapter);
             timelineListView.setRefreshing();
+
+            timelineListView.getRefreshableView().setSelector(android.R.color.transparent);
             timelineListView.setOnItemClickListener(createTimelineOnClickListener());
         }
 
@@ -216,6 +221,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                THToast.show("Item Clicked");
                 Object item = parent.getItemAtPosition(position);
 
                 if (item instanceof TimelineItem)
@@ -226,9 +232,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         };
     }
 
-    private void pushDiscussion(TimelineItem)
+    private void pushDiscussion(int timelineId)
     {
-        getNavigator().pushFragment(Discussion)
+        Bundle bundle = new Bundle();
+
+        TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(timelineId);
+        timelineItemDTOKey.putParameters(bundle);
+
+        getNavigator().pushFragment(TimelineDiscussion.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -361,8 +372,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
     }

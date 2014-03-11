@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineService;
 import java.util.List;
@@ -21,7 +22,9 @@ public class TimelineStore implements PersistableResource<TimelineItem>
 {
     public static final String PER_PAGE = "perpage";
     private Query query;
+
     @Inject UserTimelineService timelineService;
+    @Inject TimelineCache timelineCache;
 
     @Override public List<TimelineItem> request()
     {
@@ -42,6 +45,12 @@ public class TimelineStore implements PersistableResource<TimelineItem>
 
             if (timelineDTO != null)
             {
+
+                for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
+                {
+                    timelineCache.put(itemDTO.getTimelineKey(), itemDTO);
+                }
+
                 TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
                 return timelineBuilder.getItems();
             }

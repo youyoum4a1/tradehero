@@ -32,7 +32,7 @@ public class TimelineItemBuilder
     {
         if (source != null)
         {
-            for (TimelineItemDTOEnhanced itemDTO: source.enhancedItems)
+            for (TimelineItemDTOEnhanced itemDTO: source.getEnhancedItems())
             {
                 TimelineItem item = new TimelineItem(itemDTO);
                 item.setUser(userForUserId(itemDTO.userId));
@@ -46,7 +46,7 @@ public class TimelineItemBuilder
         // TODO create a hashmap mapping userId & user object
         if (source != null)
         {
-            for (UserProfileCompactDTO user: source.users)
+            for (UserProfileCompactDTO user: source.getUsers())
             {
                 if (user.id == userId) {
                     return user;
