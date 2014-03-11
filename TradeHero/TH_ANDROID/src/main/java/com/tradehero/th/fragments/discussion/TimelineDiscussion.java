@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -16,7 +16,6 @@ import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.persistence.timeline.TimelineCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -25,10 +24,11 @@ import timber.log.Timber;
  */
 public class TimelineDiscussion extends DashboardFragment
 {
-    @InjectView(android.R.id.list) AbsListView commentList;
+    @InjectView(android.R.id.list) ListView commentList;
 
     @Inject TimelineCache timelineCache;
     private TimelineItemView timelineView;
+    private ListAdapter commentListAdapter;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,6 +43,7 @@ public class TimelineDiscussion extends DashboardFragment
 
     private void initView(View view)
     {
+
     }
 
     @Override public void onResume()
@@ -50,9 +51,21 @@ public class TimelineDiscussion extends DashboardFragment
         super.onResume();
 
         TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(getArguments());
-        //timelineView
+        timelineView.display(timelineCache.get(timelineItemDTOKey));
 
+        commentList.addHeaderView(timelineView);
+        if (commentListAdapter == null)
+        {
+            commentListAdapter = createCommentListAdapter();
+            commentList.setAdapter(commentListAdapter);
+        }
         Timber.d("Timeline item id: %d", timelineItemDTOKey.key);
+    }
+
+    private ListAdapter createCommentListAdapter()
+    {
+        ListAdapter adapter = new CommentListAdapter();
+        return adapter;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
