@@ -3,6 +3,7 @@ package com.tradehero.th.loaders;
 import android.content.Context;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
@@ -13,7 +14,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
-public class TimelineListLoader extends PaginationListLoader<TimelineItem>
+public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOEnhanced>
 {
     private final UserBaseKey userBaseKey;
 
@@ -29,7 +30,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         DaggerUtils.inject(this);
     }
 
-    @Override public List<TimelineItem> loadInBackground()
+    @Override public List<TimelineItemDTOEnhanced> loadInBackground()
     {
         if (lowerItemId != null)
         {
@@ -58,7 +59,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         }
     }
 
-    @Override protected void onLoadNext(TimelineItem firstVisible)
+    @Override protected void onLoadNext(TimelineItemDTOEnhanced firstVisible)
     {
         if (firstVisible == null)
         {
@@ -66,16 +67,16 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         }
 
         upperItemId = null;
-        lowerItemId = firstVisible.getTimelineItemId();
+        lowerItemId = firstVisible.id;
         forceLoad();
     }
 
-    @Override protected void onLoadPrevious(TimelineItem startItem)
+    @Override protected void onLoadPrevious(TimelineItemDTOEnhanced startItem)
     {
         resetQuery();
         if (startItem != null)
         {
-            upperItemId = startItem.getTimelineItemId();
+            upperItemId = startItem.id;
         }
         forceLoad();
     }

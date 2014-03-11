@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:47 PM Copyright (c) TradeHero */
-public class UserBaseDTO  extends ExtendedDTO
+public class UserBaseDTO extends ExtendedDTO
 {
     public int id;
     public String picture;

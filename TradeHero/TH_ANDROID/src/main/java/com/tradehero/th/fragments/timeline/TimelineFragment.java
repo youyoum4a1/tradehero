@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,6 +20,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -221,22 +221,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                THToast.show("Item Clicked");
                 Object item = parent.getItemAtPosition(position);
 
-                if (item instanceof TimelineItem)
+                if (item instanceof TimelineItemDTOEnhanced)
                 {
-                    pushDiscussion(((TimelineItem) item).getTimelineItemId());
+                    pushDiscussion(((TimelineItemDTOEnhanced) item).getTimelineKey());
                 }
             }
         };
     }
 
-    private void pushDiscussion(int timelineId)
+    private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
         Bundle bundle = new Bundle();
 
-        TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(timelineId);
         timelineItemDTOKey.putParameters(bundle);
 
         getNavigator().pushFragment(TimelineDiscussion.class, bundle);
@@ -321,10 +319,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey.key, R.layout.timeline_item_view);
-        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOEnhanced>()
         {
 
-            @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
+            @Override public void onLoadFinished(ListLoader<TimelineItemDTOEnhanced> loader, List<TimelineItemDTOEnhanced> data)
             {
                 if (timelineListView != null)
                 {
@@ -333,7 +331,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 }
             }
 
-            @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
+            @Override public ListLoader<TimelineItemDTOEnhanced> onCreateLoader(Bundle args)
             {
                 return createTimelineLoader();
             }
@@ -341,7 +339,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return timelineAdapter;
     }
 
-    private ListLoader<TimelineItem> createTimelineLoader()
+    private ListLoader<TimelineItemDTOEnhanced> createTimelineLoader()
     {
         TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);

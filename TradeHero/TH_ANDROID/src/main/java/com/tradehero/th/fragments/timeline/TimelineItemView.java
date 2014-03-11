@@ -22,10 +22,10 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -55,7 +55,7 @@ import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItem>, View.OnClickListener
+        DTOView<TimelineItemDTOEnhanced>, View.OnClickListener
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_item_content) TextView content;
@@ -77,7 +77,7 @@ public class TimelineItemView extends LinearLayout implements
     @Inject Lazy<UserTimelineService> userTimelineService;
     @Inject LocalyticsSession localyticsSession;
 
-    private TimelineItem currentTimelineItem;
+    private TimelineItemDTOEnhanced currentTimelineItemDTOEnhanced;
     private PopupMenu sharePopupMenu;
     private PopupMenu monitorPopupMenu;
 
@@ -155,21 +155,21 @@ public class TimelineItemView extends LinearLayout implements
     private void updateActionButtonsVisibility()
     {
         // hide/show optional action buttons
-        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
+        List<SecurityMediaDTO> medias = currentTimelineItemDTOEnhanced.getMedias();
         int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
         tradeActionButton.setVisibility(visibility);
         monitorActionButton.setVisibility(visibility);
     }
     //</editor-fold>
 
-    @Override public void display(TimelineItem item)
+    @Override public void display(TimelineItemDTOEnhanced item)
     {
         UserProfileCompactDTO user = item.getUser();
         if (user == null)
         {
             return;
         }
-        currentTimelineItem = item;
+        currentTimelineItemDTOEnhanced = item;
 
         if (user.id != currentUserId.get())
         {
@@ -225,17 +225,17 @@ public class TimelineItemView extends LinearLayout implements
                 .into(avatar);
     }
 
-    private void displayMarkupText(TimelineItem item)
+    private void displayMarkupText(TimelineItemDTOEnhanced item)
     {
-        content.setText(item.getText());
+        content.setText(item.text);
     }
 
-    private void displayTimelineTime(TimelineItem item)
+    private void displayTimelineTime(TimelineItemDTOEnhanced item)
     {
-        time.setText(prettyTime.get().formatUnrounded(item.getDate()));
+        time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
     }
 
-    private void displayVendorLogo(TimelineItem item)
+    private void displayVendorLogo(TimelineItemDTOEnhanced item)
     {
         SecurityMediaDTO firstMediaWithLogo = item.getFlavorSecurityForDisplay();
         if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
@@ -371,7 +371,7 @@ public class TimelineItemView extends LinearLayout implements
 
             userTimelineService.get().shareTimelineItem(
                     currentUserId.get(),
-                    currentTimelineItem.getTimelineItemId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
+                    currentTimelineItemDTOEnhanced.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
                     createShareRequestCallback(socialNetworkEnum));
             return true;
         }
@@ -383,9 +383,9 @@ public class TimelineItemView extends LinearLayout implements
         {
             case R.id.timeline_user_profile_picture:
             case R.id.timeline_user_profile_name:
-                if (currentTimelineItem != null)
+                if (currentTimelineItemDTOEnhanced != null)
                 {
-                    UserProfileCompactDTO user = currentTimelineItem.getUser();
+                    UserProfileCompactDTO user = currentTimelineItemDTOEnhanced.getUser();
                     if (user != null)
                     {
                         if (currentUserId.get() != user.id)
@@ -399,7 +399,7 @@ public class TimelineItemView extends LinearLayout implements
                 break;
             case R.id.timeline_vendor_picture:
             case R.id.timeline_action_button_trade_wrapper:
-                if (currentTimelineItem != null)
+                if (currentTimelineItemDTOEnhanced != null)
                 {
                     openSecurityProfile();
                 }
@@ -418,7 +418,7 @@ public class TimelineItemView extends LinearLayout implements
     {
         localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
 
-        SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItem.getFlavorSecurityForDisplay();
+        SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay();
         if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
         {
             SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
@@ -521,12 +521,12 @@ public class TimelineItemView extends LinearLayout implements
 
     private SecurityId getSecurityId()
     {
-        if (currentTimelineItem == null || currentTimelineItem.getFlavorSecurityForDisplay() == null)
+        if (currentTimelineItemDTOEnhanced == null || currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay() == null)
         {
             return null;
         }
 
-        return new SecurityId(currentTimelineItem.getFlavorSecurityForDisplay().exchange, currentTimelineItem.getFlavorSecurityForDisplay().symbol);
+        return new SecurityId(currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay().exchange, currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay().symbol);
     }
     //</editor-fold>
 

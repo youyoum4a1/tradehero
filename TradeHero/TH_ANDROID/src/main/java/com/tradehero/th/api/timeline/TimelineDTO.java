@@ -10,11 +10,19 @@ public class TimelineDTO
 {
     private List<UserProfileCompactDTO> users;
     private List<SecurityCompactDTO> securities;
-    private List<TimelineItemDTO> items;
+    //private List<TimelineItemDTO> items;
     private List<TimelineItemDTOEnhanced> enhancedItems;
 
     public UserProfileCompactDTO getUserById(int userId)
     {
+        for (UserProfileCompactDTO userProfileCompactDTO: users)
+        {
+            if (userProfileCompactDTO != null && userProfileCompactDTO.id == userId)
+            {
+                return userProfileCompactDTO;
+            }
+        }
+
         return null;
     }
 
@@ -26,16 +34,6 @@ public class TimelineDTO
     public void setEnhancedItems(List<TimelineItemDTOEnhanced> enhancedItems)
     {
         this.enhancedItems = enhancedItems;
-    }
-
-    public List<TimelineItemDTO> getItems()
-    {
-        return Collections.unmodifiableList(items);
-    }
-
-    public void setItems(List<TimelineItemDTO> items)
-    {
-        this.items = items;
     }
 
     public List<SecurityCompactDTO> getSecurities()

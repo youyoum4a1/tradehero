@@ -7,10 +7,10 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.loaders.TimelineListLoader;
 
-public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
+public class TimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOEnhanced, TimelineItemView, TimelineListLoader>
         implements
             PullToRefreshListView.OnRefreshListener<ListView>,
             AbsListView.OnScrollListener,
@@ -23,7 +23,7 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
         super(context, inflater, timelineLoaderId, layoutResourceId);
     }
 
-    @Override protected void fineTune(int position, TimelineItem dto, TimelineItemView dtoView)
+    @Override protected void fineTune(int position, TimelineItemDTOEnhanced dto, TimelineItemView dtoView)
     {
     }
 
