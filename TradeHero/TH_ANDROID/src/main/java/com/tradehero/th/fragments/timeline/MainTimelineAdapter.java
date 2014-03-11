@@ -19,6 +19,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
@@ -50,12 +51,15 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     private SubTimelineAdapter subTimelineAdapter;
     private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
+    private final int statResId;
+    private UserProfileDTO userProfileDTO;
 
     public MainTimelineAdapter(Activity context,
             LayoutInflater inflater,
             UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
-            int portfolioItemViewResId)
+            int portfolioItemViewResId,
+            int statResId)
     {
         super(context, 0);
         this.inflater = inflater;
@@ -63,6 +67,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         subTimelineAdapter = new SubTimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
         subTimelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
+        this.statResId = statResId;
     }
 
     public TimelineFragment.TabType getCurrentTabType()
@@ -186,10 +191,15 @@ public class MainTimelineAdapter extends ArrayAdapter
                 break;
 
             case PORTFOLIO_LIST:
+                // TODO
                 break;
 
             case STATS:
+                // TODO
                 break;
+
+            default:
+                throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
         }
     }
     //</editor-fold>
@@ -256,6 +266,28 @@ public class MainTimelineAdapter extends ArrayAdapter
         {
             notifyDataSetChanged();
         }
+    }
+
+    //////////////////////
+    // Stat elements
+    //////////////////////
+
+    public void setUserProfileDTO(UserProfileDTO userProfileDTO)
+    {
+        this.userProfileDTO = userProfileDTO;
+        if (currentTabType == TimelineFragment.TabType.STATS)
+        {
+            notifyDataSetChanged();
+        }
+    }
+
+    protected View getStatView(View convertView, ViewGroup viewGroup)
+    {
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(statResId, viewGroup, false);
+        }
+        return convertView;
     }
 
     //<editor-fold desc="BaseAdapter">
@@ -341,7 +373,7 @@ public class MainTimelineAdapter extends ArrayAdapter
                     break;
 
                 case STATS:
-                    item = null;
+                    item = userProfileDTO;
                     break;
 
                 default:
@@ -393,7 +425,8 @@ public class MainTimelineAdapter extends ArrayAdapter
                     break;
 
                 case STATS:
-                    view = new TextView(getContext());
+                    view = getStatView(view, viewGroup);
+                    ((UserProfileDetailView) view).display(userProfileDTO);
                     break;
 
                 default:

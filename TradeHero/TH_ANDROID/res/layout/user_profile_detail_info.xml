@@ -11,7 +11,7 @@
       android:layout_height="wrap_content"
       >
 
-    <TableRow>
+    <!--TableRow>
 
       <TextView
           style="@style/TH.SmallTitle"
@@ -36,7 +36,7 @@
           tools:text="0/17%"
           />
 
-    </TableRow>
+    </TableRow-->
 
     <TableRow>
 

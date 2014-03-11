@@ -274,6 +274,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         this.shownProfile = userProfileDTO;
+        mainTimelineAdapter.setUserProfileDTO(userProfileDTO);
         if (andDisplay)
         {
             updateView();
@@ -363,7 +364,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private MainTimelineAdapter createTimelineAdapter()
     {
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item);
+                shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item,
+                R.layout.user_profile_stat_view);
                         //shownUserBaseKey.key, R.layout.timeline_item_view);
         // TODO set the layouts
     }
