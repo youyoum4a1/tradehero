@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 @Singleton public class PortfolioCompactListCache extends StraightDTOCache<UserBaseKey, OwnedPortfolioIdList>
 {
     public static final String TAG = PortfolioCompactListCache.class.getSimpleName();
-    public static final int DEFAULT_MAX_SIZE = 100;
+    public static final int DEFAULT_MAX_SIZE = 50;
 
     @Inject protected Lazy<PortfolioService> portfolioService;
     @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCache;
