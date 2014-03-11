@@ -10,4 +10,5 @@
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
+  <string name="discussion">Discussion</string>
 </resources>
