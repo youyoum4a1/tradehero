@@ -95,7 +95,11 @@ public class TimelineHeaderButtonView extends LinearLayout
 
     protected void changeButtonLook(TimelineFragment.TabType activeType, TextView view, TimelineFragment.TabType viewType)
     {
-        view.setTextAppearance(getContext(),
-                activeType == viewType ? R.style.UserProfile_Button_Selected : R.style.UserProfile_Button_Default);
+        //this not work
+        //view.setTextAppearance(getContext(),
+        //        activeType == viewType ? R.style.UserProfile_Button_Selected : R.style.UserProfile_Button_Default);
+        view.setTextColor(activeType == viewType ? getResources().getColor(R.color.white) : getResources().getColor(R.color.user_profile_blue));
+        view.setBackgroundResource(activeType == viewType ? R.drawable.user_profile_button_active
+                : R.drawable.user_profile_button_default);
     }
 }
