@@ -11,6 +11,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.BaseListHeaderView;
@@ -27,8 +28,6 @@ import javax.inject.Inject;
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
     public static final String TAG = SimpleOwnPortfolioListItemAdapter.class.getSimpleName();
-
-    public static final int ITEM_TYPE_OWN = 0;
 
     private List<Object> orderedItems;
 
@@ -90,7 +89,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     @Override public int getItemViewType(int position)
     {
-        return ITEM_TYPE_OWN;
+        return MainTimelineAdapter.PORTFOLIO_ITEM_TYPE;
     }
 
     @Override public long getItemId(int position)
@@ -110,7 +109,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         int itemType = getItemViewType(position);
         switch (itemType)
         {
-            case ITEM_TYPE_OWN:
+            case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
                 view = inflater.inflate(layoutResourceId, parent, false);
                 if (item instanceof DisplayablePortfolioDTO)
                 {

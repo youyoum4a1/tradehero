@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
@@ -38,12 +38,17 @@ public class MainTimelineAdapter extends ArrayAdapter
 {
     public static final String TAG = MainTimelineAdapter.class.getSimpleName();
 
+    public static final int TIMELINE_ITEM_TYPE = 0;
+    public static final int PORTFOLIO_ITEM_TYPE = 1;
+    public static final int STATS_ITEM_TYPE = 2;
+    public static final int EMPTY_ITEM_TYPE = 3;
+
     protected final LayoutInflater inflater;
     private TimelineProfileClickListener profileClickListener;
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
-    private TimelineAdapter timelineAdapter;
+    private SubTimelineAdapter subTimelineAdapter;
     private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
 
     public MainTimelineAdapter(Activity context,
@@ -55,8 +60,8 @@ public class MainTimelineAdapter extends ArrayAdapter
         super(context, 0);
         this.inflater = inflater;
 
-        timelineAdapter = new TimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
-        timelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
+        subTimelineAdapter = new SubTimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
+        subTimelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
     }
 
@@ -148,14 +153,16 @@ public class MainTimelineAdapter extends ArrayAdapter
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
-            ((TimelineHeaderButtonView) convertView).setTimelineProfileClickListener(new TimelineProfileClickListener()
-            {
-                @Override public void onBtnClicked(TimelineFragment.TabType tabType)
-                {
-                    notifyProfileClickListener(tabType);
-                }
-            });
         }
+        TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
+        castedView.changeButtonLook(currentTabType);
+        castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
+        {
+            @Override public void onBtnClicked(TimelineFragment.TabType tabType)
+            {
+                notifyProfileClickListener(tabType);
+            }
+        });
 
         return convertView;
     }
@@ -194,12 +201,12 @@ public class MainTimelineAdapter extends ArrayAdapter
     //<editor-fold desc="Timeline Adapter">
     public int getTimelineLoaderId()
     {
-        return timelineAdapter.getLoaderId();
+        return subTimelineAdapter.getLoaderId();
     }
 
     public LoaderManager.LoaderCallbacks<List<TimelineItem>> getLoaderTimelineCallback()
     {
-        return timelineAdapter.getLoaderCallback();
+        return subTimelineAdapter.getLoaderCallback();
     }
 
     public TimelineListLoader getTimelineLoader()
@@ -252,62 +259,148 @@ public class MainTimelineAdapter extends ArrayAdapter
     }
 
     //<editor-fold desc="BaseAdapter">
-    @Override public int getCount()
+    @Override public int getViewTypeCount()
+    {
+        return 4;
+    }
+
+    @Override public int getItemViewType(int position)
+    {
+        int viewType;
+        if (getRealCount() == 0)
+        {
+            viewType = EMPTY_ITEM_TYPE;
+        }
+        else
+        {
+            switch (currentTabType)
+            {
+                case TIMELINE:
+                    viewType = subTimelineAdapter.getItemViewType(position);
+                    break;
+
+                case PORTFOLIO_LIST:
+                    viewType = portfolioListAdapter.getItemViewType(position);
+                    break;
+
+                case STATS:
+                    viewType = STATS_ITEM_TYPE;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
+            }
+        }
+        return viewType;
+    }
+
+    public int getRealCount()
     {
         int count;
         switch (currentTabType)
         {
             case TIMELINE:
-                count = timelineAdapter.getCount();
+                count = subTimelineAdapter.getCount();
                 break;
 
             case PORTFOLIO_LIST:
             default:
                 count = portfolioListAdapter.getCount();
+                break;
+
+            case STATS:
+                count = 1;
+                break;
         }
         return count;
+    }
+
+    @Override public int getCount()
+    {
+        // We want at least 1, so that the sticky header is visible
+        return Math.max(1, getRealCount());
     }
 
     @Override public Object getItem(int i)
     {
         Object item;
-        switch (currentTabType)
+        if (getRealCount() == 0)
         {
-            case TIMELINE:
-                item = timelineAdapter.getItem(i);
-                break;
+            item = null;
+        }
+        else
+        {
+            switch (currentTabType)
+            {
+                case TIMELINE:
+                    item = subTimelineAdapter.getItem(i);
+                    break;
 
-            case PORTFOLIO_LIST:
-            default:
-                item = portfolioListAdapter.getItem(i);
+                case PORTFOLIO_LIST:
+                    item = portfolioListAdapter.getItem(i);
+                    break;
+
+                case STATS:
+                    item = null;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
+            }
         }
         return item;
     }
 
     @Override public long getItemId(int i)
     {
+        long itemId;
         switch (currentTabType)
         {
             case TIMELINE:
-                return timelineAdapter.getItemId(i);
+                itemId = subTimelineAdapter.getItemId(i);
+                break;
 
             case PORTFOLIO_LIST:
+                itemId = portfolioListAdapter.getItemId(i);
+                break;
+
+            case STATS:
+                itemId = 432;
+                break;
+
             default:
-                return portfolioListAdapter.getItemId(i);
+                throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
         }
+        return itemId;
     }
 
     @Override public View getView(int i, View view, ViewGroup viewGroup)
     {
-        switch (currentTabType)
+        if (getRealCount() == 0)
         {
-            case TIMELINE:
-                return timelineAdapter.getView(i, view, viewGroup);
-
-            case PORTFOLIO_LIST:
-            default:
-                return portfolioListAdapter.getView(i, view, viewGroup);
+            view = new TextView(getContext());
         }
+        else
+        {
+            switch (currentTabType)
+            {
+                case TIMELINE:
+                    view = subTimelineAdapter.getView(i, view, viewGroup);
+                    break;
+
+                case PORTFOLIO_LIST:
+                    view = portfolioListAdapter.getView(i, view, viewGroup);
+                    break;
+
+                case STATS:
+                    view = new TextView(getContext());
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType: " + currentTabType);
+            }
+        }
+        return view;
     }
     //</editor-fold>
 

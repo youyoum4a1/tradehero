@@ -737,11 +737,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     Timber.e(new NullPointerException("Missing portfolioCompact for " + ownedPortfolioId), "");
                 }
-<<<<<<< HEAD
-                if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
-=======
                 else if (portfolioCompactDTO.providerId != null && providerId != null &&
->>>>>>> develop
                         providerId.key.equals(portfolioCompactDTO.providerId) &&
                         providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
                 {

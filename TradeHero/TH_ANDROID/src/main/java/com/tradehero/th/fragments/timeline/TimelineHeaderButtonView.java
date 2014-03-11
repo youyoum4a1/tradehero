@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -16,9 +18,9 @@ public class TimelineHeaderButtonView extends LinearLayout
 {
     public static final String TAG = TimelineHeaderButtonView.class.getSimpleName();
 
-    @InjectView(R.id.btn_profile_timeline) TextView btnTimeline;
-    @InjectView(R.id.btn_profile_portfolios) TextView btnPortfolioList;
-    @InjectView(R.id.btn_profile_stats) TextView btnStats;
+    @InjectView(R.id.btn_profile_timeline) Button btnTimeline;
+    @InjectView(R.id.btn_profile_portfolios) Button btnPortfolioList;
+    @InjectView(R.id.btn_profile_stats) Button btnStats;
 
     private TimelineProfileClickListener clickListener;
 
@@ -66,14 +68,34 @@ public class TimelineHeaderButtonView extends LinearLayout
         this.clickListener = clickListener;
     }
 
+    protected OnTouchListener createBtnTouchListener(final TimelineFragment.TabType tabType)
+    {
+        return new OnTouchListener()
+        {
+            @Override public boolean onTouch(View view, MotionEvent motionEvent)
+            {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
+                    changeButtonLook(tabType);
+                    notifyClicked(tabType);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        };
+    }
+
     protected OnClickListener createBtnClickListener(final TimelineFragment.TabType tabType)
     {
         return new OnClickListener()
         {
             @Override public void onClick(View view)
             {
+                //changeButtonLook(tabType);
                 notifyClicked(tabType);
-                changeButtonLook(tabType);
             }
         };
     }
@@ -95,11 +117,6 @@ public class TimelineHeaderButtonView extends LinearLayout
 
     protected void changeButtonLook(TimelineFragment.TabType activeType, TextView view, TimelineFragment.TabType viewType)
     {
-        //this not work
-        //view.setTextAppearance(getContext(),
-        //        activeType == viewType ? R.style.UserProfile_Button_Selected : R.style.UserProfile_Button_Default);
-        view.setTextColor(activeType == viewType ? getResources().getColor(R.color.white) : getResources().getColor(R.color.user_profile_blue));
-        view.setBackgroundResource(activeType == viewType ? R.drawable.user_profile_button_active
-                : R.drawable.user_profile_button_default);
+        view.setSelected(activeType == viewType);
     }
 }

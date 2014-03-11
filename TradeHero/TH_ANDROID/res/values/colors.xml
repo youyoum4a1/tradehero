@@ -28,6 +28,8 @@
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
   <color name="follow_button_background">#1376FB</color>
+  <color name="follow_button_background_pressed">#ff0d6cfb</color>
+  <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
   <color name="actionbar_menu_text_color">@color/white</color>

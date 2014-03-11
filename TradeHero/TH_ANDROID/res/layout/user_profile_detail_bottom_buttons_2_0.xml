@@ -5,25 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="48dp"
     style="@style/UserProfile.ButtonContainer"
     >
 
-  <TextView
+  <Button
       android:id="@+id/btn_profile_timeline"
-      style="@style/UserProfile.Button.Selected"
+      style="@style/UserProfile.Button"
       android:text="@string/user_profile_button_timeline"
       />
 
-  <TextView
+  <Button
       android:id="@+id/btn_profile_portfolios"
-      style="@style/UserProfile.Button.Default"
+      style="@style/UserProfile.Button"
       android:text="@string/user_profile_button_portfolios"
       />
 
-  <TextView
+  <Button
       android:id="@+id/btn_profile_stats"
-      style="@style/UserProfile.Button.Default"
+      style="@style/UserProfile.Button"
       android:text="@string/user_profile_button_stats"
       />
 
