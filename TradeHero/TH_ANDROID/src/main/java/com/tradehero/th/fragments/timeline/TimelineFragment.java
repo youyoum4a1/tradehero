@@ -55,7 +55,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected UserProfileCache userProfileCache;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -443,7 +443,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onComplete(Milestone milestone)
                 {
-                    UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
+                    UserProfileDTO cachedUserProfile = userProfileCache.get(shownUserBaseKey);
                     if (cachedUserProfile != null)
                     {
                         linkWith(cachedUserProfile, true);
@@ -480,13 +480,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected List<UserBaseKey> getUserBaseKeys()
     {
         List<UserBaseKey> list = new ArrayList<>();
-        list.add(currentUserId.toUserBaseKey());
+        list.add(shownUserBaseKey);
         return list;
     }
 
     public void displayPortfolios()
     {
-        displayTab();
+        this.mainTimelineAdapter.setDisplayablePortfolioItems(getAllPortfolios());
     }
 
     private List<DisplayablePortfolioDTO> getAllPortfolios()
