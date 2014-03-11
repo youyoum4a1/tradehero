@@ -585,7 +585,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
 
         if (andDisplay)
         {
@@ -612,7 +611,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(userProfileDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayQuickPriceButtonSet();
@@ -624,7 +622,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayBuySellPrice();
@@ -701,17 +698,15 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (maxSellableShares != null)
             {
                 linkWithSellQuantity(maxSellableShares, true);
+                if (maxSellableShares == 0)
+                {
+                    setTransactionTypeBuy(true);
+                }
+                else
+                {
+                    displayBuySellSwitch();
+                }
             }
-        }
-    }
-
-    protected void flipToBuyIfCannotSell()
-    {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null && maxSellableShares == 0)
-        {
-            // Nothing to sell
-            setTransactionTypeBuy(true);
         }
     }
 
@@ -1036,8 +1031,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         else
         {
-            Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO, portfolioCompactDTO);
+            Integer maxSellableShares = getMaxSellableShares();
             if (maxSellableShares == null || maxSellableShares == 0)
             {
                 supportSell = false;
@@ -1634,8 +1628,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             if (!isTransactionTypeBuy && positionDTOCompactList != null && portfolioCompactDTO != null)
             {
-                Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO, portfolioCompactDTO);
+                Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares != null && maxSellableShares != 0)
                 {
                     cashLeftText = String.valueOf(maxSellableShares - mQuantity);//share left
