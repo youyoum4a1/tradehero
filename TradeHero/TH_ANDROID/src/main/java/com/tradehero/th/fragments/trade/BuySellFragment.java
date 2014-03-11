@@ -709,21 +709,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     setTransactionTypeBuy(true);
                 }
-                else
-                {
-                    displayBuySellSwitch();
-                }
             }
-        }
-    }
-
-    protected void flipToBuyIfCannotSell()
-    {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null && maxSellableShares == 0)
-        {
-            // Nothing to sell
-            setTransactionTypeBuy(true);
         }
     }
 
@@ -1051,14 +1037,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         else
         {
             Integer maxSellableShares = getMaxSellableShares();
-            if (maxSellableShares == null || maxSellableShares == 0)
-            {
-                supportSell = false;
-            }
-            else
-            {
-                supportSell = true;
-            }
+            supportSell = maxSellableShares == null || maxSellableShares == 0;
         }
         mSellBtn.setVisibility(supportSell ? View.VISIBLE : View.GONE);
     }
