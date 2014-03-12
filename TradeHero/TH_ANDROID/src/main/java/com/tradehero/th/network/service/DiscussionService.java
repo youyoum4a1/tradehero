@@ -14,10 +14,10 @@ import retrofit.http.Query;
  */
 public interface DiscussionService
 {
-    @GET("/discussions/")
+    @GET("/discussions/{inReplyToType}/{inReplyToId}")
     PaginatedDTO<DiscussionDTO> getDiscussions(
-            @Query("inReplytoType") String inReplytoType,
-            @Query("inReplyToId") int inReplyToId,
+            @Path("inReplyToType") String inReplyToType,
+            @Path("inReplyToId") int inReplyToId,
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage); // = 42
 
@@ -27,15 +27,13 @@ public interface DiscussionService
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     DiscussionDTO vote(
-            @Path("inReplytoType") String inReplytoType,
+            @Path("inReplyToType") String inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Path("direction") String direction);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
     DiscussionDTO share(
-            @Path("inReplytoType") String inReplyToType,
+            @Path("inReplyToType") String inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
-
-
 }

@@ -1,36 +1,22 @@
 package com.tradehero.th.fragments.discussion;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.content.Context;
+import android.view.LayoutInflater;
+import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 6:38 PM Copyright (c) TradeHero
  */
-public class CommentListAdapter extends BaseAdapter
+public class CommentListAdapter extends LoaderDTOAdapter<DiscussionDTO, CommentView, CommentListLoader>
 {
-    @Override public int getCount()
+    public CommentListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
-        return 0;
+        super(context, inflater, loaderId, layoutResourceId);
     }
 
-    @Override public Object getItem(int position)
+    @Override protected void fineTune(int position, DiscussionDTO dto, CommentView dtoView)
     {
-        return null;
-    }
 
-    @Override public long getItemId(int position)
-    {
-        return 0;
-    }
-
-    @Override public View getView(int position, View convertView, ViewGroup parent)
-    {
-        return null;
-    }
-
-    @Override public boolean isEmpty()
-    {
-        return false;
     }
 }
