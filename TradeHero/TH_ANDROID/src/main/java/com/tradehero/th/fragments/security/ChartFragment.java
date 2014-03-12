@@ -1,19 +1,20 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
@@ -32,12 +33,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
     public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
     public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
+    public final static String BUNDLE_KEY_ARGUMENTS = ChartFragment.class.getName() + ".arguments";
 
     private ImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
+    private Button mCloseButton;
 
     private TextView mPreviousClose;
     private TextView mOpen;
@@ -95,7 +98,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
         if (chartImage != null)
         {
-            //chartImage.setOnClickListener(chartImageClickListener);//temp
+            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            {
+                chartImage.setOnClickListener(chartImageClickListener);
+            }
         }
 
         this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
@@ -123,6 +129,18 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         mEps = (TextView) view.findViewById(R.id.veps);
         mVolume = (TextView) view.findViewById(R.id.vvolume);
         mAvgVolume = (TextView) view.findViewById(R.id.vavg_volume);
+
+        mCloseButton = (Button) view.findViewById(R.id.close);
+        if (mCloseButton != null)
+        {
+            mCloseButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    getActivity().finish();
+                }
+            });
+        }
 
         return view;
     }
@@ -155,6 +173,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             rootView.removeCallbacks(chooseChartImageSizeTask);
             chooseChartImageSizeTask = null;
+        }
+        if (mCloseButton != null)
+        {
+            mCloseButton.setOnClickListener(null);
+            mCloseButton = null;
         }
         super.onDestroyView();
     }
@@ -240,7 +263,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
             this.picasso.load(imageURL).skipMemoryCache().into(image);
-            //postChooseOtherSize();//temp
+            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            {
+                postChooseOtherSize();
+            }
         }
     }
 
@@ -288,8 +314,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     {
         @Override public void onClick(View v)
         {
-            Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
+            //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
+            Bundle args = new Bundle();
+            args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
+            intent.putExtras(args);
+            getActivity().startActivity(intent);
         }
     };
 
