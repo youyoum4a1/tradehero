@@ -14,5 +14,7 @@ public class AbstractDiscussionDTO extends ExtendedDTO
     public String text;
     public int voteCount;
     public int voteDirection; //-1: down, 0: cancel, 1: up
+    public int upvoteCount;
+    public int downvoteCount;
     public int commentCount;
 }

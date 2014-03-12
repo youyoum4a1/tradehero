@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -33,6 +34,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.discussion.TimelineDiscussion;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -46,7 +48,6 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -54,8 +55,8 @@ import retrofit.Callback;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
-public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItemDTOEnhanced>, View.OnClickListener
+public class TimelineItemView extends LinearLayout
+        implements DTOView<TimelineItemDTOEnhanced>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_item_content) TextView content;
@@ -63,9 +64,73 @@ public class TimelineItemView extends LinearLayout implements
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.timeline_time) TextView time;
 
-    @InjectView(R.id.timeline_action_button_trade_wrapper) View tradeActionButton;
-    @InjectView(R.id.timeline_action_button_share_wrapper) View shareActionButton;
-    @InjectView(R.id.timeline_action_button_monitor_wrapper) View monitorActionButton;
+    @InjectView(R.id.timeline_action_button_vote_up) TextView voteUp;
+    @InjectView(R.id.timeline_action_button_vote_down) TextView voteDown;
+    @InjectView(R.id.timeline_action_button_comment) TextView comment;
+    @InjectView(R.id.timeline_action_button_more) TextView more;
+
+    @OnClick({
+            R.id.timeline_user_profile_name,
+            R.id.timeline_user_profile_picture,
+            R.id.timeline_vendor_picture,
+            R.id.timeline_action_button_vote_up_wrapper,
+            R.id.timeline_action_button_vote_down_wrapper,
+            R.id.timeline_action_button_comment_wrapper,
+            R.id.timeline_action_button_more,
+    })
+    public void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_user_profile_picture:
+            case R.id.timeline_user_profile_name:
+                openOtherTimeline();
+                break;
+            case R.id.timeline_action_button_comment_wrapper:
+                openTimelineDiscussion();
+                break;
+            case R.id.timeline_vendor_picture:
+            case R.id.timeline_action_button_trade_wrapper:
+                openSecurityProfile();
+                break;
+            case R.id.timeline_action_button_share_wrapper:
+                createAndShowSharePopupMenu();
+                break;
+            case R.id.timeline_action_button_monitor_wrapper:
+                createAndShowMonitorPopupMenu();
+                break;
+            case R.id.timeline_action_button_more:
+                PopupMenu popUpMenu = createActionPopupMenu();
+                popUpMenu.show();
+                break;
+        }
+    }
+
+    private void openTimelineDiscussion()
+    {
+        getNavigator().pushFragment(TimelineDiscussion.class, timelineItemDTO.getTimelineKey().getArgs());
+    }
+
+    private void openOtherTimeline()
+    {
+        if (timelineItemDTO != null)
+        {
+            UserProfileCompactDTO user = timelineItemDTO.getUser();
+            if (user != null)
+            {
+                if (currentUserId.get() != user.id)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                }
+            }
+        }
+    }
+    //@InjectView(R.id.timeline_action_button_trade_wrapper) View tradeActionButton;
+    //@InjectView(R.id.timeline_action_button_share_wrapper) View shareActionButton;
+    //@InjectView(R.id.timeline_action_button_monitor_wrapper) View monitorActionButton;
+
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @Inject Provider<PrettyTime> prettyTime;
@@ -77,7 +142,7 @@ public class TimelineItemView extends LinearLayout implements
     @Inject Lazy<UserTimelineService> userTimelineService;
     @Inject LocalyticsSession localyticsSession;
 
-    private TimelineItemDTOEnhanced currentTimelineItemDTOEnhanced;
+    private TimelineItemDTOEnhanced timelineItemDTO;
     private PopupMenu sharePopupMenu;
     private PopupMenu monitorPopupMenu;
 
@@ -118,29 +183,10 @@ public class TimelineItemView extends LinearLayout implements
         {
             content.setMovementMethod(LinkMovementMethod.getInstance());
         }
-        View[] actionButtons = new View[]
-                {username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton};
-        for (View actionButton : actionButtons)
-        {
-            if (actionButton != null)
-            {
-                actionButton.setOnClickListener(this);
-            }
-        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        View[] actionButtons = new View[]
-                {username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton};
-        for (View actionButton : actionButtons)
-        {
-            if (actionButton != null)
-            {
-                actionButton.setOnClickListener(null);
-            }
-        }
-
         if (monitorPopupMenu != null)
         {
             monitorPopupMenu.setOnMenuItemClickListener(null);
@@ -148,17 +194,14 @@ public class TimelineItemView extends LinearLayout implements
 
         displayDefaultUserProfilePicture();
 
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
     //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
     {
-        // hide/show optional action buttons
-        List<SecurityMediaDTO> medias = currentTimelineItemDTOEnhanced.getMedias();
-        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
-        tradeActionButton.setVisibility(visibility);
-        monitorActionButton.setVisibility(visibility);
+        // nothing for now
     }
     //</editor-fold>
 
@@ -169,16 +212,8 @@ public class TimelineItemView extends LinearLayout implements
         {
             return;
         }
-        currentTimelineItemDTOEnhanced = item;
+        timelineItemDTO = item;
 
-        if (user.id != currentUserId.get())
-        {
-            shareActionButton.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            shareActionButton.setVisibility(View.VISIBLE);
-        }
         // username
         displayUsername(user);
 
@@ -195,6 +230,15 @@ public class TimelineItemView extends LinearLayout implements
         displayVendorLogo(item);
 
         displayWatchlistIndicator();
+
+        updateActionButtons();
+    }
+
+    private void updateActionButtons()
+    {
+        voteUp.setText("" + timelineItemDTO.upvoteCount);
+        voteDown.setText("" + timelineItemDTO.downvoteCount);
+        comment.setText("" + timelineItemDTO.commentCount);
 
         updateActionButtonsVisibility();
     }
@@ -371,63 +415,29 @@ public class TimelineItemView extends LinearLayout implements
 
             userTimelineService.get().shareTimelineItem(
                     currentUserId.get(),
-                    currentTimelineItemDTOEnhanced.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
+                    timelineItemDTO.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
                     createShareRequestCallback(socialNetworkEnum));
             return true;
         }
     };
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                if (currentTimelineItemDTOEnhanced != null)
-                {
-                    UserProfileCompactDTO user = currentTimelineItemDTOEnhanced.getUser();
-                    if (user != null)
-                    {
-                        if (currentUserId.get() != user.id)
-                        {
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
-                            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                        }
-                    }
-                }
-                break;
-            case R.id.timeline_vendor_picture:
-            case R.id.timeline_action_button_trade_wrapper:
-                if (currentTimelineItemDTOEnhanced != null)
-                {
-                    openSecurityProfile();
-                }
-                break;
-            case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupMenu();
-                break;
-
-            case R.id.timeline_action_button_monitor_wrapper:
-                createAndShowMonitorPopupMenu();
-                break;
-        }
-    }
-
     private void openSecurityProfile()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
-
-        SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay();
-        if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
+        if (timelineItemDTO != null)
         {
-            SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
-            Bundle args = new Bundle();
-            args.putBundle(
-                    BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                    securityId.getArgs());
+            localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
 
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            SecurityMediaDTO flavorSecurityForDisplay = timelineItemDTO.getFlavorSecurityForDisplay();
+            if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
+            {
+                SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
+                Bundle args = new Bundle();
+                args.putBundle(
+                        BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
+                        securityId.getArgs());
+
+                getNavigator().pushFragment(BuySellFragment.class, args);
+            }
         }
     }
 
@@ -444,9 +454,19 @@ public class TimelineItemView extends LinearLayout implements
 
     private PopupMenu createMonitorPopupMenu()
     {
-        PopupMenu popupMenu = new PopupMenu(getContext(), monitorActionButton);
+        //PopupMenu popupMenu = new PopupMenu(getContext(), monitorActionButton);
+        //MenuInflater menuInflater = popupMenu.getMenuInflater();
+        //menuInflater.inflate(R.menu.timeline_monitor_popup_menu, popupMenu.getMenu());
+        //popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
+        //return popupMenu;
+        return null;
+    }
+
+    private PopupMenu createActionPopupMenu()
+    {
+        PopupMenu popupMenu = new PopupMenu(getContext(), more);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.timeline_monitor_popup_menu, popupMenu.getMenu());
+        menuInflater.inflate(R.menu.timeline_action_popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
         return popupMenu;
     }
@@ -462,11 +482,12 @@ public class TimelineItemView extends LinearLayout implements
 
     private PopupMenu createSharePopupMenu()
     {
-        PopupMenu popupMenu = new PopupMenu(getContext(), shareActionButton);
-        MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(sharePopupMenuClickListener);
-        return popupMenu;
+        //PopupMenu popupMenu = new PopupMenu(getContext(), shareActionButton);
+        //MenuInflater menuInflater = popupMenu.getMenuInflater();
+        //menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
+        //popupMenu.setOnMenuItemClickListener(sharePopupMenuClickListener);
+        //return popupMenu;
+        return null;
     }
 
     private void updateMonitorMenuView(Menu menu)
@@ -521,12 +542,12 @@ public class TimelineItemView extends LinearLayout implements
 
     private SecurityId getSecurityId()
     {
-        if (currentTimelineItemDTOEnhanced == null || currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay() == null)
+        if (timelineItemDTO == null || timelineItemDTO.getFlavorSecurityForDisplay() == null)
         {
             return null;
         }
 
-        return new SecurityId(currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay().exchange, currentTimelineItemDTOEnhanced.getFlavorSecurityForDisplay().symbol);
+        return new SecurityId(timelineItemDTO.getFlavorSecurityForDisplay().exchange, timelineItemDTO.getFlavorSecurityForDisplay().symbol);
     }
     //</editor-fold>
 

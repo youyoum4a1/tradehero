@@ -11,4 +11,9 @@
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
   <string name="discussion">Discussion</string>
+  <string name="more_character">…</string>
+  <string name="buy_sell">Buy/Sell</string>
+  <string name="translate">Translate</string>
+  <string name="share_to">Share to…</string>
+  <string name="comment">Comment</string>
 </resources>
