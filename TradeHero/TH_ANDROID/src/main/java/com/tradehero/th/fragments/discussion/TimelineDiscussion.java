@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,13 +27,14 @@ public class TimelineDiscussion extends DashboardFragment
     @InjectView(android.R.id.list) ListView commentList;
 
     @Inject TimelineCache timelineCache;
-    private TimelineItemView timelineView;
-    private ListAdapter commentListAdapter;
+    private TimelineItemView timelineItemView;
+    private BaseAdapter commentListAdapter;
+    private TimelineItemDTOKey timelineItemDTOKey;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_discussion, container, false);
-        timelineView = (TimelineItemView) inflater.inflate(R.layout.timeline_item_view, null);
+        timelineItemView = (TimelineItemView) inflater.inflate(R.layout.timeline_item_view, null);
 
         ButterKnife.inject(this, view);
 
@@ -43,28 +44,37 @@ public class TimelineDiscussion extends DashboardFragment
 
     private void initView(View view)
     {
-
+        if (timelineItemView != null)
+        {
+            commentList.addHeaderView(timelineItemView);
+        }
     }
 
     @Override public void onResume()
     {
         super.onResume();
 
-        TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(getArguments());
-        timelineView.display(timelineCache.get(timelineItemDTOKey));
-
-        commentList.addHeaderView(timelineView);
-        if (commentListAdapter == null)
+        if (timelineItemDTOKey == null)
         {
-            commentListAdapter = createCommentListAdapter();
-            commentList.setAdapter(commentListAdapter);
+            timelineItemDTOKey = new TimelineItemDTOKey(getArguments());
         }
+
+        if (timelineItemView != null)
+        {
+            timelineItemView.display(timelineCache.get(timelineItemDTOKey));
+        }
+
+        commentListAdapter = createCommentListAdapter();
+        commentList.setAdapter(commentListAdapter);
+
         Timber.d("Timeline item id: %d", timelineItemDTOKey.key);
     }
 
-    private ListAdapter createCommentListAdapter()
+
+
+    private BaseAdapter createCommentListAdapter()
     {
-        ListAdapter adapter = new CommentListAdapter();
+        BaseAdapter adapter = new CommentListAdapter();
         return adapter;
     }
 
