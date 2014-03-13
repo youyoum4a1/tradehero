@@ -31,7 +31,7 @@ public class TimelineDiscussion extends DashboardFragment
 
     @Inject TimelineCache timelineCache;
     private TimelineItemView timelineItemView;
-    private CommentListAdapter commentListAdapter;
+    private DiscussionListAdapter discussionListAdapter;
     private TimelineItemDTOKey timelineItemDTOKey;
     private View commentListStatusView;
 
@@ -67,7 +67,7 @@ public class TimelineDiscussion extends DashboardFragment
         linkWith(timelineItemDTOKey, true);
 
         getActivity().getSupportLoaderManager()
-                .initLoader(commentListAdapter.getLoaderId(), null, commentListAdapter.getLoaderCallback());
+                .initLoader(discussionListAdapter.getLoaderId(), null, discussionListAdapter.getLoaderCallback());
     }
 
     private void linkWith(TimelineItemDTOKey timelineItemDTOKey, boolean andDisplay)
@@ -77,8 +77,8 @@ public class TimelineDiscussion extends DashboardFragment
             timelineItemView.display(timelineCache.get(timelineItemDTOKey));
         }
 
-        commentListAdapter = createCommentListAdapter();
-        commentList.setAdapter(commentListAdapter);
+        discussionListAdapter = createCommentListAdapter();
+        commentList.setAdapter(discussionListAdapter);
     }
 
     @Override public void onResume()
@@ -88,9 +88,9 @@ public class TimelineDiscussion extends DashboardFragment
         Timber.d("Timeline item id: %d", timelineItemDTOKey.key);
     }
 
-    private CommentListAdapter createCommentListAdapter()
+    private DiscussionListAdapter createCommentListAdapter()
     {
-        CommentListAdapter adapter = new CommentListAdapter(getActivity(), getActivity().getLayoutInflater(),
+        DiscussionListAdapter adapter = new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(),
                 timelineItemDTOKey.key, R.layout.timeline_discussion_comment_item);
         adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
         {
@@ -101,10 +101,15 @@ public class TimelineDiscussion extends DashboardFragment
 
             @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)
             {
-                return null;
+                return createTimelineDiscussionLoader();
             }
         });
         return adapter;
+    }
+
+    private ListLoader<DiscussionDTO> createTimelineDiscussionLoader()
+    {
+        return new DiscussionListLoader(getActivity(), timelineItemDTOKey);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

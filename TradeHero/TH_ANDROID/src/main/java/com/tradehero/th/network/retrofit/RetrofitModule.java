@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.fragments.discussion.DiscussionListLoader;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -15,6 +16,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
+import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
@@ -52,6 +54,7 @@ import retrofit.converter.Converter;
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 ProviderPageIntent.class,
+                DiscussionListLoader.class,
         },
         complete = false,
         library = true
@@ -147,6 +150,11 @@ public class RetrofitModule
     @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter adapter)
     {
         return adapter.create(CompetitionService.class);
+    }
+
+    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionService.class);
     }
     //</editor-fold>
 
