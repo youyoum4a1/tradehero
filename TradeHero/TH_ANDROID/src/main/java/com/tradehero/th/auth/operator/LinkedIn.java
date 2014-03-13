@@ -51,7 +51,16 @@ public class LinkedIn extends SocialOperator
         }
 
         final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
-        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>()
+        AsyncTask<Void, Void, String> task = createAuthTask(context, callback, consumer);
+        task.execute();
+    }
+
+    private AsyncTask<Void, Void, String> createAuthTask(
+            final Context context,
+            final THAuthenticationProvider.THAuthenticationCallback callback,
+            final OAuthConsumer consumer)
+    {
+        return  new AsyncTask<Void, Void, String>()
         {
             private Throwable error;
 
@@ -66,89 +75,8 @@ public class LinkedIn extends SocialOperator
                         return;
                     }
                     CookieSyncManager.createInstance(context);
-                    OAuthDialog dialog = new OAuthDialog(context, result, CALLBACK_URL,
-                            "www.linkedin", new OAuthDialog.FlowResultHandler()
-                    {
-                        @Override public void onError(int errorCode, String description,
-                                String failingUrl)
-                        {
-                            callback.onError(new Exception(
-                                    String.format("Error %s, description: %s, url: %s",
-                                            errorCode, description, failingUrl)));
-                        }
+                    OAuthDialog dialog = createOAuthDialog(context, callback, consumer, result);
 
-                        @Override public void onComplete(String callbackUrl)
-                        {
-                            CookieSyncManager.getInstance().sync();
-                            Uri uri = Uri.parse(callbackUrl);
-                            final String verifier = uri.getQueryParameter("oauth_verifier");
-                            if (verifier == null)
-                            {
-                                callback.onCancel();
-                                return;
-                            }
-                            AsyncTask<Void, Void, HttpParameters> getTokenTask =
-                                    new AsyncTask<Void, Void, HttpParameters>()
-                                    {
-                                        private Throwable error;
-
-                                        @Override protected HttpParameters doInBackground(Void... params)
-                                        {
-                                            try
-                                            {
-                                                LinkedIn.PROVIDER
-                                                        .retrieveAccessToken(consumer,
-                                                                verifier);
-                                            }
-                                            catch (Throwable e)
-                                            {
-                                                this.error = e;
-                                            }
-                                            return LinkedIn.PROVIDER.getResponseParameters();
-                                        }
-
-                                        @Override protected void onPreExecute()
-                                        {
-                                            super.onPreExecute();
-                                            showProgress();
-                                        }
-
-                                        @Override protected void onPostExecute(HttpParameters result)
-                                        {
-                                            super.onPostExecute(result);
-                                            try
-                                            {
-                                                if (this.error != null)
-                                                {
-                                                    callback.onError(this.error);
-                                                    return;
-                                                }
-                                                try
-                                                {
-                                                    LinkedIn.this.setAuthToken(consumer.getToken());
-                                                    LinkedIn.this.setAuthTokenSecret(consumer.getTokenSecret());
-                                                }
-                                                catch (Throwable e)
-                                                {
-                                                    callback.onError(e);
-                                                    return;
-                                                }
-                                                callback.onSuccess(null);
-                                            }
-                                            finally
-                                            {
-                                                hideProgress();
-                                            }
-                                        }
-                                    };
-                            getTokenTask.execute();
-                        }
-
-                        @Override public void onCancel()
-                        {
-                            callback.onCancel();
-                        }
-                    });
                     dialog.show();
                 }
                 finally
@@ -177,6 +105,104 @@ public class LinkedIn extends SocialOperator
                 return null;
             }
         };
-        task.execute();
+    }
+
+    private OAuthDialog createOAuthDialog(
+            final Context context,
+            final THAuthenticationProvider.THAuthenticationCallback callback,
+            final OAuthConsumer consumer,
+            String result)
+    {
+        return new OAuthDialog(context, result, CALLBACK_URL,
+                "www.linkedin", new OAuthDialog.FlowResultHandler()
+        {
+            @Override public void onError(int errorCode, String description,
+                    String failingUrl)
+            {
+                callback.onError(new Exception(
+                        String.format("Error %s, description: %s, url: %s",
+                                errorCode, description, failingUrl)));
+            }
+
+            @Override public void onComplete(String callbackUrl)
+            {
+                CookieSyncManager.getInstance().sync();
+                Uri uri = Uri.parse(callbackUrl);
+                final String verifier = uri.getQueryParameter("oauth_verifier");
+                if (verifier == null)
+                {
+                    callback.onCancel();
+                    return;
+                }
+                AsyncTask<Void, Void, HttpParameters> getTokenTask = createGetTokenTask(callback, consumer, verifier);
+
+                getTokenTask.execute();
+            }
+
+            @Override public void onCancel()
+            {
+                callback.onCancel();
+            }
+        });
+    }
+
+    private AsyncTask<Void, Void, HttpParameters> createGetTokenTask(
+            final THAuthenticationProvider.THAuthenticationCallback callback,
+            final OAuthConsumer consumer,
+            final String verifier)
+    {
+        return new AsyncTask<Void, Void, HttpParameters>()
+        {
+            private Throwable error;
+
+            @Override protected HttpParameters doInBackground(Void... params)
+            {
+                try
+                {
+                    LinkedIn.PROVIDER
+                            .retrieveAccessToken(consumer,
+                                    verifier);
+                }
+                catch (Throwable e)
+                {
+                    this.error = e;
+                }
+                return LinkedIn.PROVIDER.getResponseParameters();
+            }
+
+            @Override protected void onPreExecute()
+            {
+                super.onPreExecute();
+                showProgress();
+            }
+
+            @Override protected void onPostExecute(HttpParameters result)
+            {
+                super.onPostExecute(result);
+                try
+                {
+                    if (this.error != null)
+                    {
+                        callback.onError(this.error);
+                        return;
+                    }
+                    try
+                    {
+                        LinkedIn.this.setAuthToken(consumer.getToken());
+                        LinkedIn.this.setAuthTokenSecret(consumer.getTokenSecret());
+                    }
+                    catch (Throwable e)
+                    {
+                        callback.onError(e);
+                        return;
+                    }
+                    callback.onSuccess(null);
+                }
+                finally
+                {
+                    hideProgress();
+                }
+            }
+        };
     }
 }
