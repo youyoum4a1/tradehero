@@ -16,4 +16,6 @@
   <string name="translate">Translate</string>
   <string name="share_to">Share to…</string>
   <string name="comment">Comment</string>
+  <string name="timeline_discussion_post">Post</string>
+  <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
 </resources>

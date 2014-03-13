@@ -11,5 +11,5 @@
       android:divider="@color/transparent"
       />
 
-  <!--<include layout="@android:layout/discussion_comment_widget"/>-->
+  <include layout="@layout/timeline_discussion_comment_widget"/>
 </FrameLayout>
