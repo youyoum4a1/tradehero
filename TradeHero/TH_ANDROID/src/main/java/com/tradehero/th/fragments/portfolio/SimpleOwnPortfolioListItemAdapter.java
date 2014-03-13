@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
@@ -14,12 +14,9 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.inject.Inject;
@@ -79,7 +76,8 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     @Override public int getCount()
     {
-        return this.orderedItems.size();
+        int count = this.orderedItems.size(); // HACK because first item is not clickable
+        return count == 0 ? 0 : count + 1;
     }
 
     @Override public int getViewTypeCount()
@@ -99,30 +97,38 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     @Override public Object getItem(int position)
     {
+        position = position == 0 ? position : position - 1; // HACK because first item is not clickable
         return this.orderedItems.get(position);
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         View view = null;
-        Object item = getItem(position);
-        int itemType = getItemViewType(position);
-        switch (itemType)
+        if (position == 0) // HACK because first item is not clickable
         {
-            case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
-                view = inflater.inflate(layoutResourceId, parent, false);
-                if (item instanceof DisplayablePortfolioDTO)
-                {
-                    ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
-                }
-                else
-                {
-                    THLog.w(TAG, "type " + itemType + ", item not DisplayablePortfolioDTO " + item);
-                }
-                break;
+            view = new TextView(getContext());
+        }
+        else
+        {
+            Object item = getItem(position);
+            int itemType = getItemViewType(position);
+            switch (itemType)
+            {
+                case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
+                    view = inflater.inflate(layoutResourceId, parent, false);
+                    if (item instanceof DisplayablePortfolioDTO)
+                    {
+                        ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
+                    }
+                    else
+                    {
+                        THLog.w(TAG, "type " + itemType + ", item not DisplayablePortfolioDTO " + item);
+                    }
+                    break;
 
-            default:
-                throw new UnsupportedOperationException("Not implemented"); // You should not use this method
+                default:
+                    throw new UnsupportedOperationException("Not implemented"); // You should not use this method
+            }
         }
         return view;
     }
