@@ -11,12 +11,16 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
+import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingRequest;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -25,7 +29,10 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.LocalyticsConstants;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
@@ -35,6 +42,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserId currentUserId;
+    @Inject THBillingInteractor billingInteractor;
+    @Inject Provider<THBillingRequest.THBuilder> billingRequestBuilderProvider;
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
@@ -194,6 +203,30 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_store_screen;
+    }
+
+    public THBillingRequest getShowSkuRequest()
+    {
+        THBillingRequest.THBuilder builder = billingRequestBuilderProvider.get();
+        builder.setInventoryFetchedListener(new BillingInventoryFetcher.OnInventoryFetchedListener()
+        {
+            @Override public void onInventoryFetchSuccess(int requestCode, List productIdentifiers, Map inventory)
+            {
+
+            }
+
+            @Override public void onInventoryFetchFail(int requestCode, List productIdentifiers, BillingException exception)
+            {
+                // TODO warn if there are things unset
+                if (exception instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
+                {
+                    alreadyNotifiedNeedCreateAccount = true;
+                    billingInteractor.popBillingUnavailable();
+                }
+                // Nothing to do presumably
+            }
+        });
+        return builder.build();
     }
 
     public class StoreScreenTHIABUserInteractor extends THIABUserInteractor

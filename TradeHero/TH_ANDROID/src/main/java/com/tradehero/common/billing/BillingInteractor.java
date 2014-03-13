@@ -20,6 +20,13 @@ public interface BillingInteractor<
                         OrderIdType,
                         ProductPurchaseType,
                         BillingExceptionType>,
+        BillingRequestType extends BillingRequest<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
     BillingLogicHolderType getBillingLogicHolder();
@@ -27,4 +34,5 @@ public interface BillingInteractor<
     Boolean isBillingAvailable();
     AlertDialog conditionalPopBillingNotAvailable();
     AlertDialog popBillingUnavailable();
+    int run(BillingRequestType request);
 }

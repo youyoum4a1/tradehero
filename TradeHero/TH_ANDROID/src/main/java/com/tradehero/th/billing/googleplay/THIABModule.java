@@ -55,8 +55,8 @@ public class THIABModule
         return new THIABUserInteractor();
     }
 
-    @Provides THBillingRequest.THBuilder provideTHBillingRequestBuilder()
+    @Provides THBillingRequest.THBuilder provideTHBillingRequestBuilder(THIABBillingRequest.THIABBuilder builder)
     {
-        return new THIABBillingRequest.THIABBuilder();
+        return builder;
     }
 }

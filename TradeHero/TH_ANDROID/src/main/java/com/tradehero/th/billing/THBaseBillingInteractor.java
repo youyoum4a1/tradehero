@@ -82,6 +82,13 @@ abstract public class THBaseBillingInteractor<
                 ProductPurchaseType,
                 PurchaseReportedListenerType,
                 BillingExceptionType>,
+        THBillingRequestType extends THBillingRequest<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
         implements THBillingInteractor<
                 ProductIdentifierType,
@@ -90,6 +97,7 @@ abstract public class THBaseBillingInteractor<
                 OrderIdType,
                 ProductPurchaseType,
                 THBillingLogicHolderType,
+                THBillingRequestType,
                 BillingExceptionType>,
             BillingAlertDialogUtil.OnDialogProductDetailClickListener<ProductDetailType>
 
@@ -499,6 +507,13 @@ abstract public class THBaseBillingInteractor<
         }
     }
     //</editor-fold>
+
+    @Override public int run(THBillingRequestType request)
+    {
+        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+        //getBillingLogicHolder().registerBillingAvailableListener();
+        return requestCode;
+    }
 
     protected void popDialogLoadingInfo()
     {
