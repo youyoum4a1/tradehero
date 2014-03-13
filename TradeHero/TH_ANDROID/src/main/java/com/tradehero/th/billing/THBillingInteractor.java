@@ -1,6 +1,7 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractor;
+import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -27,6 +28,13 @@ public interface THBillingInteractor<
                     OrderIdType,
                     ProductPurchaseType,
                     BillingExceptionType>,
+            THBillingRequestType extends THBillingRequest<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
             BillingExceptionType extends BillingException>
         extends BillingInteractor<
             ProductIdentifierType,
@@ -35,6 +43,7 @@ public interface THBillingInteractor<
             OrderIdType,
             ProductPurchaseType,
             THBillingLogicHolderType,
+            THBillingRequestType,
             BillingExceptionType>
 {
     static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";

@@ -2,6 +2,8 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingRequest;
 import com.tradehero.th.persistence.billing.ProductDetailCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Module;
@@ -43,8 +45,18 @@ public class THIABModule
         return thiabLogicHolderFull;
     }
 
+    @Provides THBillingInteractor provideTHBillingInteractor(THIABUserInteractor thiabUserInteractor)
+    {
+        return thiabUserInteractor;
+    }
+
     @Provides THIABUserInteractor provideTHIABUserInteractor()
     {
         return new THIABUserInteractor();
+    }
+
+    @Provides THBillingRequest.THBuilder provideTHBillingRequestBuilder(THIABBillingRequest.THIABBuilder builder)
+    {
+        return builder;
     }
 }

@@ -77,6 +77,7 @@ public class THIABUserInteractor
                 THIABPurchase,
                 IABException>,
         THIABPurchaseReporterHolder,
+        THIABBillingRequest,
         IABException>
     implements THIABInteractor
 {
