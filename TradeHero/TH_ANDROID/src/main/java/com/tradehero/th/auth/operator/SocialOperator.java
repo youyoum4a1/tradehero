@@ -24,17 +24,19 @@ public abstract class SocialOperator
 
     protected void showProgress()
     {
-        if (progressDialog != null)
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
         {
-            progressDialog.show();
+            progressDialogCopy.show();
         }
     }
 
     protected void hideProgress()
     {
-        if (progressDialog != null)
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
         {
-            progressDialog.hide();
+            progressDialogCopy.hide();
         }
     }
 
