@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -874,16 +875,24 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleCacheCleared()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
-                R.string.settings_misc_cache_cleared_alert_title,
-                R.string.empty);
-        getView().postDelayed(new Runnable()
+        FragmentActivity activity = getActivity();
+        if (activity != null)
         {
-            @Override public void run()
+            progressDialog = ProgressDialogUtil.show(getActivity(),
+                    R.string.settings_misc_cache_cleared_alert_title,
+                    R.string.empty);
+            getView().postDelayed(new Runnable()
             {
-                progressDialog.hide();
-            }
-        }, 500);
+                @Override public void run()
+                {
+                    ProgressDialog progressDialogCopy = progressDialog;
+                    if (progressDialogCopy != null)
+                    {
+                        progressDialogCopy.hide();
+                    }
+                }
+            }, 500);
+        }
     }
 
     private void handleSignOutClicked()
