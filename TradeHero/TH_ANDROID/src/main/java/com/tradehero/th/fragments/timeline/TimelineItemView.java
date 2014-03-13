@@ -361,7 +361,7 @@ public class TimelineItemView extends LinearLayout implements
                     socialNetworkEnum = SocialNetworkEnum.TW;
                     break;
                 case R.id.timeline_popup_menu_share_linked_in:
-                    socialNetworkEnum = SocialNetworkEnum.LI;
+                    socialNetworkEnum = SocialNetworkEnum.LN;
                     break;
             }
             if (socialNetworkEnum == null)

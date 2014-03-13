@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Optional;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -537,7 +536,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
             {
-                currentSocialNetworkConnect = SocialNetworkEnum.LI;
+                currentSocialNetworkConnect = SocialNetworkEnum.LN;
 
                 getProgressDialog().show();
                 linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
@@ -583,7 +582,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             switch (currentSocialNetworkConnect)
             {
-                case LI:
+                case LN:
                     if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
                     {
                         InviteFormDTO inviteFriendForm = new InviteFormDTO();
