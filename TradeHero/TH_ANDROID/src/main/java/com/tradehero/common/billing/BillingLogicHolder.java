@@ -11,6 +11,13 @@ public interface BillingLogicHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        BillingRequestType extends BillingRequest<
+            ProductIdentifierType,
+            ProductDetailType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
     String getBillingHolderName(Resources resources);
@@ -19,6 +26,7 @@ public interface BillingLogicHolder<
     int getUnusedRequestCode();
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
+    void registerListeners(int requestCode, BillingRequestType billingRequest);
     void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
     void onDestroy();
 }

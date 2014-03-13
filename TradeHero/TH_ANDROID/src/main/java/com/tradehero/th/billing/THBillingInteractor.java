@@ -27,6 +27,7 @@ public interface THBillingInteractor<
                     PurchaseOrderType,
                     OrderIdType,
                     ProductPurchaseType,
+                    THBillingRequestType,
                     BillingExceptionType>,
             THBillingRequestType extends THBillingRequest<
                 ProductIdentifierType,

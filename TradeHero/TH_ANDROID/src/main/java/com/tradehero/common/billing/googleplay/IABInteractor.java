@@ -20,6 +20,7 @@ public interface IABInteractor<
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
+                BillingRequestType,
                 IABExceptionType>,
         BillingRequestType extends BillingRequest<
                 IABSKUType,

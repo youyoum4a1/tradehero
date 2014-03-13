@@ -54,7 +54,8 @@ public class THIABLogicHolderFull
                     IABSKU,
                     THIABOrderId,
                     THIABPurchase,
-                    IABException>>
+                    IABException>,
+            THIABBillingRequest>
     implements THIABLogicHolder
 {
     public static final String TAG = THIABLogicHolderFull.class.getSimpleName();

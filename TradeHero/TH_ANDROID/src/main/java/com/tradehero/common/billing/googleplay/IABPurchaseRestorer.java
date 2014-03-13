@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABRestorePurchaseMilestoneFailedException;
 import com.tradehero.common.milestone.Milestone;
@@ -22,6 +23,7 @@ abstract public class IABPurchaseRestorer<
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
+                BillingRequestType,
                 IABException>,
         IABPurchaseConsumerHolderType extends IABPurchaseConsumerHolder<
                         IABSKUType,
@@ -31,6 +33,13 @@ abstract public class IABPurchaseRestorer<
                         IABException>,
         IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException>,
+        BillingRequestType extends BillingRequest<
+                IABSKUType,
+                IABProductDetailType,
+                IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>

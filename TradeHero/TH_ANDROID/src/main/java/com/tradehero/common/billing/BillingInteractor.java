@@ -19,6 +19,7 @@ public interface BillingInteractor<
                         PurchaseOrderType,
                         OrderIdType,
                         ProductPurchaseType,
+                        BillingRequestType,
                         BillingExceptionType>,
         BillingRequestType extends BillingRequest<
                 ProductIdentifierType,

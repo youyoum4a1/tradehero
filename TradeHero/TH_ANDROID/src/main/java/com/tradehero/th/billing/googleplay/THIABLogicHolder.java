@@ -14,6 +14,7 @@ public interface THIABLogicHolder extends
                         THIABPurchaseOrder,
                         THIABOrderId,
                         THIABPurchase,
+                        THIABBillingRequest,
                         IABException>,
         THBillingLogicHolder<
                 IABSKU,
@@ -21,6 +22,7 @@ public interface THIABLogicHolder extends
                 THIABPurchaseOrder,
                 THIABOrderId,
                 THIABPurchase,
+                THIABBillingRequest,
                 IABException>
 {
     @Deprecated

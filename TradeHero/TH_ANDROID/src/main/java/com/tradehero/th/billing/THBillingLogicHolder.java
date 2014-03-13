@@ -1,6 +1,7 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -17,6 +18,13 @@ public interface THBillingLogicHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        BillingRequestType extends BillingRequest<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends BillingLogicHolder<
             ProductIdentifierType,
@@ -24,6 +32,7 @@ public interface THBillingLogicHolder<
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
+            BillingRequestType,
             BillingExceptionType>,
         ProductDetailDomainInformer<
             ProductIdentifierType,

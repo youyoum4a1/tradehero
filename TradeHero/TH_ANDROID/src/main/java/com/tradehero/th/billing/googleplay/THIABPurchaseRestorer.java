@@ -28,7 +28,8 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
                 IABSKU,
                 THIABOrderId,
                 THIABPurchase,
-                IABException>>
+                IABException>,
+        THIABBillingRequest>
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject THIABLogicHolder logicHolder;

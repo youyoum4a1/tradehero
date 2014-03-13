@@ -15,6 +15,13 @@ abstract public class BaseBillingLogicHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        BillingRequestType extends BillingRequest<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingLogicHolder<
         ProductIdentifierType,
@@ -22,6 +29,7 @@ abstract public class BaseBillingLogicHolder<
         PurchaseOrderType,
         OrderIdType,
         ProductPurchaseType,
+        BillingRequestType,
         BillingExceptionType>
 {
     public static final int MAX_RANDOM_RETRIES = 50;
@@ -70,6 +78,11 @@ abstract public class BaseBillingLogicHolder<
         billingAvailableListeners.remove(requestCode);
     }
     //</editor-fold>
+
+    @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
+    {
+        registerBillingAvailableListener(requestCode, billingRequest.getBillingAvailableListener());
+    }
 
     //<editor-fold desc="Billing Available">
     @Override public Boolean isBillingAvailable()

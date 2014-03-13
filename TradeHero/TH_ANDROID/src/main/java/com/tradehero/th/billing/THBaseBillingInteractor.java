@@ -50,6 +50,7 @@ abstract public class THBaseBillingInteractor<
                 PurchaseOrderType,
                 OrderIdType,
                 ProductPurchaseType,
+                THBillingRequestType,
                 BillingExceptionType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,

@@ -5,6 +5,7 @@ import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -68,6 +69,13 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
+                IABException>,
+        BillingRequestType extends BillingRequest<
+                IABSKUType,
+                IABProductDetailType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
                 IABException>>
     extends BaseBillingLogicHolder<
         IABSKUType,
@@ -75,6 +83,7 @@ abstract public class BaseIABLogicHolder<
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
+        BillingRequestType,
         IABException>
     implements IABLogicHolder<
             IABSKUType,
@@ -82,6 +91,7 @@ abstract public class BaseIABLogicHolder<
             IABPurchaseOrderType,
             IABOrderIdType,
             IABPurchaseType,
+            BillingRequestType,
             IABException>
 {
     protected IABServiceConnector availabilityTester;
