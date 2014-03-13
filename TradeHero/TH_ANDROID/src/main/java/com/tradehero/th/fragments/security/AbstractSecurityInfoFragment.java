@@ -45,7 +45,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
 
     @Override public void onErrorThrown(SecurityId key, Throwable error)
     {
-        THToast.show(getString(R.string.error_fetch_security_info));
+        THToast.show(R.string.error_fetch_security_info);
     }
 
     public void linkWith(InfoType value, boolean andDisplay)
