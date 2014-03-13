@@ -22,7 +22,7 @@ public class WhiteToTransparentTransformation implements com.squareup.picasso.Tr
 
     @Override public Bitmap transform(Bitmap source)
     {
-        Bitmap processedBitmap = source.copy(source.getConfig(), true);
+        Bitmap processedBitmap = source.copy(Bitmap.Config.ARGB_8888, true);
         //Remove background white color
         int iWidth = processedBitmap.getWidth();
         int iHeight = processedBitmap.getHeight();
@@ -53,7 +53,7 @@ public class WhiteToTransparentTransformation implements com.squareup.picasso.Tr
         {
             source.recycle();
         }
-        return processedBitmap;
+        return source;
     }
 
     @Override public String key()
