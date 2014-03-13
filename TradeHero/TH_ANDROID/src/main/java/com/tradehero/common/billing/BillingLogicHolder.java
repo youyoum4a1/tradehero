@@ -19,6 +19,6 @@ public interface BillingLogicHolder<
     int getUnusedRequestCode();
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
-    void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingException> billingAvailableListener);
+    void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
     void onDestroy();
 }

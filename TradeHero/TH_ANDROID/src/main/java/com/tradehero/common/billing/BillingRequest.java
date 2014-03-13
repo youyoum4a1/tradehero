@@ -64,6 +64,12 @@ public class BillingRequest<
     }
 
     //<editor-fold desc="Accessors">
+
+    public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
+    {
+        return billingAvailableListener;
+    }
+
     public void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
         this.billingAvailableListener = billingAvailableListener;

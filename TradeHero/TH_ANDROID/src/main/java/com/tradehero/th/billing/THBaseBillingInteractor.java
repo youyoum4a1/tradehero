@@ -511,7 +511,7 @@ abstract public class THBaseBillingInteractor<
     @Override public int run(THBillingRequestType request)
     {
         int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-        //getBillingLogicHolder().registerBillingAvailableListener();
+        getBillingLogicHolder().registerBillingAvailableListener(requestCode, request.getBillingAvailableListener());
         return requestCode;
     }
 

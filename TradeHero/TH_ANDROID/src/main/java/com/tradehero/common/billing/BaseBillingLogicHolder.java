@@ -27,7 +27,7 @@ abstract public class BaseBillingLogicHolder<
     public static final int MAX_RANDOM_RETRIES = 50;
 
     protected Boolean billingAvailable = null;
-    protected Map<Integer, OnBillingAvailableListener<BillingException>> billingAvailableListeners;
+    protected Map<Integer, OnBillingAvailableListener<BillingExceptionType>> billingAvailableListeners;
 
     public BaseBillingLogicHolder()
     {
@@ -80,7 +80,7 @@ abstract public class BaseBillingLogicHolder<
     abstract protected void testBillingAvailable();
 
     @Override public void registerBillingAvailableListener(int requestCode,
-            OnBillingAvailableListener<BillingException> billingAvailableListener)
+            OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
         billingAvailableListeners.put(requestCode, billingAvailableListener);
     }
@@ -88,7 +88,7 @@ abstract public class BaseBillingLogicHolder<
     protected void notifyBillingAvailable()
     {
         billingAvailable = true;
-        OnBillingAvailableListener<BillingException> availableListener;
+        OnBillingAvailableListener<BillingExceptionType> availableListener;
         // Protect from unsync when unregistering the listeners
         for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
         {
@@ -101,10 +101,10 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void notifyBillingNotAvailable(IABException exception)
+    protected void notifyBillingNotAvailable(BillingExceptionType exception)
     {
         billingAvailable = false;
-        OnBillingAvailableListener<BillingException> availableListener;
+        OnBillingAvailableListener<BillingExceptionType> availableListener;
         // Protect from unsync when unregistering the listeners
         for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
         {
