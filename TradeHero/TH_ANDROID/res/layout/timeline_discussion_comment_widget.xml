@@ -5,7 +5,7 @@
     >
   <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/discussion_comment_box_height"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
       android:background="@drawable/timeline_discussion_edit_widget_background"

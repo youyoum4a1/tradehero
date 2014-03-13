@@ -14,7 +14,7 @@
       android:layout_height="match_parent"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:background="@color/white"
+      android:background="@drawable/discussion_status_background"
       >
     <ImageView
         android:id="@+id/timeline_user_profile_picture"
@@ -80,5 +80,4 @@
         android:textStyle="normal"
         />
   </RelativeLayout>
-
 </com.tradehero.th.fragments.discussion.DiscussionView>

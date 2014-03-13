@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -43,11 +44,14 @@ public class TimelineDiscussion extends DashboardFragment
     @Inject TimelineCache timelineCache;
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
 
+    private TimelineItemDTOKey timelineItemDTOKey;
+    private MiddleCallback<DiscussionDTO> discussionMiddleCallback;
+
     private TimelineItemView timelineItemView;
     private DiscussionListAdapter discussionListAdapter;
-    private TimelineItemDTOKey timelineItemDTOKey;
+
     private View commentListStatusView;
-    private MiddleCallback<DiscussionDTO> discussionMiddleCallback;
+    private TextView discussionStatus;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -66,8 +70,14 @@ public class TimelineDiscussion extends DashboardFragment
         if (timelineItemView != null)
         {
             commentList.addHeaderView(timelineItemView);
+        }
+
+        if (commentListStatusView != null)
+        {
+            discussionStatus = (TextView) commentListStatusView.findViewById(R.id.discussion_load_status);
             commentList.addHeaderView(commentListStatusView);
         }
+
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -110,7 +120,10 @@ public class TimelineDiscussion extends DashboardFragment
         {
             @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
             {
-
+                if (discussionStatus != null)
+                {
+                    discussionStatus.setText(getString(R.string.discussion_loaded));
+                }
             }
 
             @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)

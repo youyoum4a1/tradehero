@@ -18,4 +18,5 @@
   <string name="comment">Comment</string>
   <string name="timeline_discussion_post">Post</string>
   <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
+  <string name="discussion_loaded">All discussions loaded</string>
 </resources>

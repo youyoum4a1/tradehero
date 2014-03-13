@@ -94,4 +94,5 @@
   <dimen name="trending_list_padding_left_and_right">8dp</dimen>
   <dimen name="trending_list_padding_bottom">95dp</dimen>
   <dimen name="trending_list_padding_top">85dp</dimen>
+  <dimen name="discussion_comment_box_height">40dp</dimen>
 </resources>
