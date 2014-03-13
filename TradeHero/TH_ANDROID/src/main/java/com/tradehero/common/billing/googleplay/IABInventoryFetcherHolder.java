@@ -8,12 +8,10 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 public interface IABInventoryFetcherHolder<
         IABSKUType extends IABSKU,
         IABProductDetailsType extends IABProductDetail<IABSKUType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABExceptionType>,
         IABExceptionType extends IABException>
     extends BillingInventoryFetcherHolder<
                 IABSKUType,
                 IABProductDetailsType,
-                InventoryFetchedListenerType,
                 IABExceptionType>
 {
 }

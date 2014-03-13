@@ -15,15 +15,10 @@ abstract public class BaseIABInventoryFetcherHolder<
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherType extends IABBillingInventoryFetcher<
                 IABSKUType,
-                IABProductDetailType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
-                IABSKUType,
-                IABProductDetailType,
-                IABException>>
+                IABProductDetailType>>
     extends BaseBillingInventoryFetcherHolder<
         IABSKUType,
         IABProductDetailType,
-        InventoryFetchedListenerType,
         IABException>
 {
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;

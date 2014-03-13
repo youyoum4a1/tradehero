@@ -24,11 +24,6 @@ abstract public class BaseIABLogicHolder<
         IABInventoryFetcherHolderType extends IABInventoryFetcherHolder<
                 IABSKUType,
                 IABProductDetailType,
-                IABInventoryFetchedListenerType,
-                IABException>,
-        IABInventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
-                IABSKUType,
-                IABProductDetailType,
                 IABException>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
@@ -177,6 +172,12 @@ abstract public class BaseIABLogicHolder<
     abstract protected IABPurchaseFetcherHolderType createPurchaseFetcherHolder();
     abstract protected IABPurchaserHolderType createPurchaserHolder();
     abstract protected IABPurchaseConsumerHolderType createPurchaseConsumeHolder();
+
+    @Override public void registerInventoryFetchedListener(int requestCode,
+            BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException> inventoryFetchedListener)
+    {
+        inventoryFetcherHolder.registerInventoryFetchedListener(requestCode, inventoryFetchedListener);
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {

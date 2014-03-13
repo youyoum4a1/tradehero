@@ -28,5 +28,9 @@ public interface BillingLogicHolder<
     void forgetRequestCode(int requestCode);
     void registerListeners(int requestCode, BillingRequestType billingRequest);
     void registerBillingAvailableListener(int requestCode, OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
+    void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<
+            ProductIdentifierType,
+            ProductDetailType,
+            BillingExceptionType> inventoryFetchedListener);
     void onDestroy();
 }

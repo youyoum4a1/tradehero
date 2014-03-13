@@ -29,10 +29,6 @@ public class THIABLogicHolderFull
                     IABException>,
             THIABProductDetail,
             THIABInventoryFetcherHolder,
-            BillingInventoryFetcher.OnInventoryFetchedListener<
-                    IABSKU,
-                    THIABProductDetail,
-                    IABException>,
             THIABPurchaseOrder,
             THIABOrderId,
             THIABPurchase,

@@ -1,5 +1,6 @@
 package com.tradehero.th.billing;
 
+import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.OrderId;

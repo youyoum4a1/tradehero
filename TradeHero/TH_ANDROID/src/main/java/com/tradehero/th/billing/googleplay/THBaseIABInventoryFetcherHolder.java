@@ -12,8 +12,7 @@ public class THBaseIABInventoryFetcherHolder
     extends BaseIABInventoryFetcherHolder<
         IABSKU,
         THIABProductDetail,
-        THIABBillingInventoryFetcher,
-        BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>>
+        THIABBillingInventoryFetcher>
     implements THIABInventoryFetcherHolder
 {
     public THBaseIABInventoryFetcherHolder()

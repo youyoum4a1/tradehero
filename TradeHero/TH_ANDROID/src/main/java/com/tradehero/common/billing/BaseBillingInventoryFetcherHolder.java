@@ -12,17 +12,15 @@ import java.util.Map;
 abstract public class BaseBillingInventoryFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        InventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingInventoryFetcherHolder<
         ProductIdentifierType,
         ProductDetailType,
-        InventoryFetchedListenerType,
         BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>>
             inventoryFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<InventoryFetchedListenerType>>parentInventoryFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>>>parentInventoryFetchedListeners;
 
     public BaseBillingInventoryFetcherHolder()
     {
@@ -44,9 +42,9 @@ abstract public class BaseBillingInventoryFetcherHolder<
         parentInventoryFetchedListeners.remove(requestCode);
     }
 
-    @Override public InventoryFetchedListenerType getInventoryFetchedListener(int requestCode)
+    @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
     {
-        WeakReference<InventoryFetchedListenerType> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
+        WeakReference<BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
         if (weakFetchedListener == null)
         {
             return null;
@@ -59,14 +57,14 @@ abstract public class BaseBillingInventoryFetcherHolder<
      * @param requestCode
      * @param inventoryFetchedListener
      */
-    @Override public void registerInventoryFetchedListener(int requestCode, InventoryFetchedListenerType inventoryFetchedListener)
+    @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
     {
         parentInventoryFetchedListeners.put(requestCode, new WeakReference<>(inventoryFetchedListener));
     }
 
     protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
-        InventoryFetchedListenerType parentFetchedListener = getInventoryFetchedListener(requestCode);
+        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> parentFetchedListener = getInventoryFetchedListener(requestCode);
         if (parentFetchedListener != null)
         {
             parentFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
@@ -75,7 +73,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
 
     protected void notifyInventoryFetchFailed(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
     {
-        InventoryFetchedListenerType parentFetchedListener = getInventoryFetchedListener(requestCode);
+        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> parentFetchedListener = getInventoryFetchedListener(requestCode);
         if (parentFetchedListener != null)
         {
             parentFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
