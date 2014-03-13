@@ -1,18 +1,28 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -31,13 +41,36 @@ public class DiscussionView extends RelativeLayout
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
     @InjectView(R.id.timeline_time) TextView time;
 
+    @InjectView(R.id.timeline_action_button_vote_up) TextView voteUp;
+    @InjectView(R.id.timeline_action_button_vote_down) TextView voteDown;
+    @InjectView(R.id.timeline_action_button_more) TextView more;
+
+    @OnClick({
+            R.id.timeline_user_profile_name,
+            R.id.timeline_user_profile_picture,
+            R.id.timeline_action_button_vote_up_wrapper,
+            R.id.timeline_action_button_vote_down_wrapper,
+            R.id.timeline_action_button_more,
+    })
+    public void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_user_profile_picture:
+            case R.id.timeline_user_profile_name:
+                openOtherTimeline();
+                break;
+            case R.id.timeline_action_button_more:
+                //PopupMenu popUpMenu = createActionPopupMenu();
+                //popUpMenu.show();
+                break;
+        }
+    }
+
+    @Inject CurrentUserId currentUserId;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-
-    //@InjectView(R.id.timeline_action_button_vote_up) TextView voteUp;
-    //@InjectView(R.id.timeline_action_button_vote_down) TextView voteDown;
-    //@InjectView(R.id.timeline_action_button_more) TextView more;
 
     private DiscussionDTO discussionDTO;
 
@@ -121,5 +154,27 @@ public class DiscussionView extends RelativeLayout
     private void displayCommentTime(DiscussionDTO item)
     {
         time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+    }
+
+    private void openOtherTimeline()
+    {
+        if (discussionDTO != null)
+        {
+            UserBaseDTO user = discussionDTO.user;
+            if (user != null)
+            {
+                if (currentUserId.get() != user.id)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                }
+            }
+        }
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 }

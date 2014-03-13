@@ -122,7 +122,8 @@ public class TimelineDiscussion extends DashboardFragment
             {
                 if (discussionStatus != null)
                 {
-                    discussionStatus.setText(getString(R.string.discussion_loaded));
+                    int statusResource = discussionListAdapter.getCount() != 0 ? R.string.discussion_loaded : R.string.discussion_empty;
+                    discussionStatus.setText(getString(statusResource));
                 }
             }
 
@@ -151,6 +152,7 @@ public class TimelineDiscussion extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachCommentSubmitMiddleCallback();
+        discussionListAdapter.setDTOLoaderCallback(null);
 
         ButterKnife.reset(this);
         super.onDestroyView();

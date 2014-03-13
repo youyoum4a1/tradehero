@@ -19,4 +19,6 @@
   <string name="timeline_discussion_post">Post</string>
   <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
   <string name="discussion_loaded">All discussions loaded</string>
+  <string name="discussion_loading">Loading discussions…</string>
+  <string name="discussion_empty">Be the first to discuss this.</string>
 </resources>
