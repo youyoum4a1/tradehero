@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -29,20 +30,24 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
@@ -69,6 +74,8 @@ public class TimelineItemView extends LinearLayout implements
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @Inject Provider<PrettyTime> prettyTime;
+    @Inject UserProfileCache userProfileCache;
+    @Inject AlertDialogUtil alertDialogUtil;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
@@ -352,16 +359,23 @@ public class TimelineItemView extends LinearLayout implements
         @Override public boolean onMenuItemClick(MenuItem item)
         {
             SocialNetworkEnum socialNetworkEnum = null;
+            boolean ableToShare = true;
+
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+
             switch (item.getItemId())
             {
                 case R.id.timeline_popup_menu_share_facebook:
                     socialNetworkEnum = SocialNetworkEnum.FB;
+                    ableToShare = userProfileDTO != null && userProfileDTO.fbLinked;
                     break;
                 case R.id.timeline_popup_menu_share_twitter:
                     socialNetworkEnum = SocialNetworkEnum.TW;
+                    ableToShare = userProfileDTO != null && userProfileDTO.twLinked;
                     break;
                 case R.id.timeline_popup_menu_share_linked_in:
                     socialNetworkEnum = SocialNetworkEnum.LN;
+                    ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
                     break;
             }
             if (socialNetworkEnum == null)
@@ -369,13 +383,39 @@ public class TimelineItemView extends LinearLayout implements
                 return false;
             }
 
-            userTimelineService.get().shareTimelineItem(
-                    currentUserId.get(),
-                    currentTimelineItem.getTimelineItemId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
-                    createShareRequestCallback(socialNetworkEnum));
+            if (ableToShare)
+            {
+                userTimelineService.get().shareTimelineItem(
+                        currentUserId.get(),
+                        currentTimelineItem.getTimelineItemId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
+                        createShareRequestCallback(socialNetworkEnum));
+            }
+            else
+            {
+                alertDialogUtil.popWithOkCancelButton(
+                        getContext(),
+                        getContext().getString(R.string.link) + socialNetworkEnum.getName(),
+                        String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),
+                        R.string.link_now,
+                        R.string.later,
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override public void onClick(DialogInterface dialog, int which)
+                            {
+                                openSettingScreen();
+                            }
+                        },
+                        null
+                );
+            }
             return true;
         }
     };
+
+    private void openSettingScreen()
+    {
+        getNavigator().pushFragment(SettingsFragment.class);
+    }
 
     @Override public void onClick(View view)
     {
@@ -514,7 +554,6 @@ public class TimelineItemView extends LinearLayout implements
             @Override protected void failure(THException ex)
             {
                 THToast.show(String.format(getContext().getString(R.string.timeline_link_account), socialNetworkEnum.getName()));
-                //THToast.show(ex);
             }
         };
     }

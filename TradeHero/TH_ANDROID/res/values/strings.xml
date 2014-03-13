@@ -10,4 +10,8 @@
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
+  <string name="link">Link</string>
+  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link_now">Link now!</string>
+  <string name="later">Later</string>
 </resources>
