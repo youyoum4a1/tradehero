@@ -2,6 +2,8 @@ package com.tradehero.th.activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
@@ -51,6 +53,12 @@ public class SplashActivity extends SherlockActivity
             Crashlytics.start(this);
         }
         setContentView(R.layout.splash_screen);
+
+        TextView appVersion = (TextView) findViewById(R.id.app_version);
+        if (appVersion != null)
+        {
+            appVersion.setText(VersionUtils.getAppVersion(this));
+        }
 
         DaggerUtils.inject(this);
     }

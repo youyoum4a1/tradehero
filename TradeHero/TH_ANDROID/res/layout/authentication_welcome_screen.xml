@@ -57,9 +57,9 @@
 
 
   <TextView
+      android:id="@+id/app_version"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/version_text"
       android:gravity="top|center_horizontal"
       android:textColor="@color/signinfnt_color"
       android:layout_alignParentBottom="true"

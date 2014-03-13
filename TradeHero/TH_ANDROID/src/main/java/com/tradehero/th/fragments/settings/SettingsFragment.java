@@ -586,7 +586,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
-        version.setTitle(Constants.TH_CLIENT_VERSION_VALUE + " - " + serverPath);
+        version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
     }
 
     private void handleTopBannerClicked()

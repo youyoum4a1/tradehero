@@ -30,7 +30,6 @@ public class Constants
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
-    public static final String TH_CLIENT_VERSION_VALUE = "1.6.1.3501";
     public static final String AUTHORIZATION = "Authorization";
 
     // Google PlayStore

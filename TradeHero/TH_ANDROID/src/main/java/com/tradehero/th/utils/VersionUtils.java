@@ -11,12 +11,11 @@ import android.view.Display;
 import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 4:55 PM To change this template use File | Settings | File Templates. */
 public class VersionUtils
 {
-    public static final String TAG = VersionUtils.class.getSimpleName();
-
     public static Intent getSupportEmailIntent(Context context)
     {
         return getSupportEmailIntent(context, false);
@@ -82,17 +81,34 @@ public class VersionUtils
 
     public static String getAppVersion(Context context)
     {
-        String appVersion = "";
+        return getVersionName(context) + "(" + getVersionCode(context) + ")";
+    }
+
+    public static String getVersionName(Context context)
+    {
+        String v = "";
         try
         {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            appVersion = pInfo.versionName + "(" + pInfo.versionCode + ")";
+            v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         }
         catch (PackageManager.NameNotFoundException e)
         {
-            appVersion = Constants.TH_CLIENT_VERSION_VALUE;
         }
-        return appVersion;
+        return v;
+    }
+
+    public static int getVersionCode(Context context)
+    {
+        int v = 0;
+        try
+        {
+            v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            // Huh? Really?
+        }
+        return v;
     }
 
     public static String getDeviceName()
@@ -111,7 +127,6 @@ public class VersionUtils
 
     public static void logScreenMeasurements(Activity activity)
     {
-
         Display display = activity.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics ();
         display.getMetrics(outMetrics);
@@ -119,8 +134,6 @@ public class VersionUtils
         float density  = activity.getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         float dpWidth  = outMetrics.widthPixels / density;
-
-        THLog.d(TAG, "view " + dpHeight + dpHeight + ", dpWidth " + dpWidth);
     }
 
     private static String capitalize(String s)
@@ -138,5 +151,10 @@ public class VersionUtils
         {
             return Character.toUpperCase(first) + s.substring(1);
         }
+    }
+
+    public static String getVersionId(Context context)
+    {
+        return getVersionName(context) + "." + getVersionCode(context);
     }
 }

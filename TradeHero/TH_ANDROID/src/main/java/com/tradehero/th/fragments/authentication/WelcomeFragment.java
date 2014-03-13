@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.utils.VersionUtils;
 
 public class WelcomeFragment extends AuthenticationFragment
 {
@@ -22,6 +24,12 @@ public class WelcomeFragment extends AuthenticationFragment
                 AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
 
         getSherlockActivity().getSupportActionBar().hide();
+
+        TextView appVersion = (TextView) view.findViewById(R.id.app_version);
+        if (appVersion != null)
+        {
+            appVersion.setText(VersionUtils.getAppVersion(getActivity()));
+        }
         return view;
     }
 

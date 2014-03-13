@@ -2,7 +2,6 @@
 <resources>
 
   <string name="app_name">TradeHero</string>
-  <string name="version_text">v1.6.1(10)</string>
 
   <string name="na">N/A</string>
   <string name="empty"/>
@@ -22,7 +21,6 @@
   <string name="test_password">asd123</string>
 
   <!-- Splash screen -->
-  <string name="splash_version">@string/version_text</string>
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>
 
