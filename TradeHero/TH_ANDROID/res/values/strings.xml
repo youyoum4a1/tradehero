@@ -14,4 +14,5 @@
   <string name="link_description">You need to link your %s account before sharing…</string>
   <string name="link_now">Link now!</string>
   <string name="later">Later</string>
+  <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
 </resources>
