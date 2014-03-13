@@ -288,7 +288,7 @@ public class DashboardNavigator extends Navigator
         }
     }
 
-    private void hideTabBar()
+    public void hideTabBar()//let fragment can control it
     {
         if (tabBarView != null && tabBarView.getVisibility() != View.GONE)
         {
