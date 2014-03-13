@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by xavier on 3/13/14.
  */
-public class IABBillingequest<
+public class IABBillingRequest<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
@@ -33,7 +33,7 @@ public class IABBillingequest<
         IABPurchaseType,
         IABExceptionType>
 {
-    public static final String TAG = IABBillingequest.class.getSimpleName();
+    public static final String TAG = IABBillingRequest.class.getSimpleName();
 
     //<editor-fold desc="Listeners">
     private IABPurchaseConsumer.OnIABConsumptionFinishedListener<
@@ -45,7 +45,7 @@ public class IABBillingequest<
 
     private IABPurchaseType purchaseToConsume;
 
-    protected IABBillingequest(
+    protected IABBillingRequest(
             OnBillingAvailableListener<IABExceptionType> billingAvailableListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFetchedListener,
@@ -97,10 +97,10 @@ public class IABBillingequest<
         }
 
         @Override
-        public IABBillingequest<IABSKUType, IABProductDetailType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType,
-                        IABExceptionType> build()
+        public IABBillingRequest<IABSKUType, IABProductDetailType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType,
+                                IABExceptionType> build()
         {
-            return new IABBillingequest<>(
+            return new IABBillingRequest<>(
                     getBillingAvailableListener(),
                     getInventoryFetchedListener(),
                     getPurchaseFetchedListener(),

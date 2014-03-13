@@ -14,7 +14,7 @@ import javax.inject.Inject;
 /**
  * Created by xavier on 3/13/14.
  */
-public class THIABBillingRequest extends IABBillingequest<
+public class THIABBillingRequest extends IABBillingRequest<
         IABSKU, THIABProductDetail,
         THIABPurchaseOrder, THIABOrderId,
         THIABPurchase, IABException>
@@ -51,7 +51,7 @@ public class THIABBillingRequest extends IABBillingequest<
             super();
         }
 
-        @Override public IABBillingequest<IABSKU, THIABProductDetail, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> build()
+        @Override public IABBillingRequest<IABSKU, THIABProductDetail, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> build()
         {
             return new THIABBillingRequest(
                     getBillingAvailableListener(),
