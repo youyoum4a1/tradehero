@@ -23,7 +23,6 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/layout_oval_gray"
         android:padding="1dp"
-        android:layout_marginRight="10dp"
         android:src="@drawable/avatar"
         android:contentDescription="@null"/>
 
