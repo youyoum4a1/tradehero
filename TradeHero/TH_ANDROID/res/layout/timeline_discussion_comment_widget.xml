@@ -11,7 +11,7 @@
       android:background="@drawable/timeline_discussion_edit_widget_background"
       >
     <TextView
-        android:id="@+id/dummy_post_button"
+        android:id="@+id/timeline_discussion_comment_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -22,12 +22,12 @@
         />
 
     <EditText
+        android:id="@+id/timeline_discussion_comment"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/dummy_post_button"
+        android:layout_toLeftOf="@id/timeline_discussion_comment_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/timeline_discussion_comment"
         android:inputType="text"
         android:hint="@string/timeline_discussion_comment_box_hint"
         />

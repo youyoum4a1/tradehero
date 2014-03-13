@@ -4,22 +4,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.loaders.ListLoader;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.timeline.TimelineCache;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -28,12 +38,16 @@ import timber.log.Timber;
 public class TimelineDiscussion extends DashboardFragment
 {
     @InjectView(android.R.id.list) ListView commentList;
+    @InjectView(R.id.timeline_discussion_comment) EditText comment;
 
     @Inject TimelineCache timelineCache;
+    @Inject DiscussionServiceWrapper discussionServiceWrapper;
+
     private TimelineItemView timelineItemView;
     private DiscussionListAdapter discussionListAdapter;
     private TimelineItemDTOKey timelineItemDTOKey;
     private View commentListStatusView;
+    private MiddleCallback<DiscussionDTO> discussionMiddleCallback;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -121,8 +135,60 @@ public class TimelineDiscussion extends DashboardFragment
         actionBar.setTitle(R.string.discussion);
     }
 
+    @Override public void onDestroyView()
+    {
+        detachCommentSubmitMiddleCallback();
+
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @OnClick(R.id.timeline_discussion_comment_post) void postComment()
+    {
+        detachCommentSubmitMiddleCallback();
+        DiscussionDTO discussionDTO = new DiscussionDTO();
+        discussionDTO.text = getEditingComment();
+        discussionDTO.inReplyToType = DiscussionType.TIMELINE_ITEM;
+        discussionDTO.inReplyToId = timelineItemDTOKey.key;
+
+        comment.setText(null);
+        discussionMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, createCommentSubmitCallback());
+    }
+
+    private void detachCommentSubmitMiddleCallback()
+    {
+        if (discussionMiddleCallback != null)
+        {
+            discussionMiddleCallback.setPrimaryCallback(null);
+        }
+        discussionMiddleCallback = null;
+    }
+
+    private Callback<DiscussionDTO> createCommentSubmitCallback()
+    {
+        return new CommentSubmitCallback();
+    }
+
+    private String getEditingComment()
+    {
+        return comment.getText().toString();
+    }
+
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    private class CommentSubmitCallback implements Callback<DiscussionDTO>
+    {
+        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        {
+            Timber.d("Comment submitted successfully: %s", discussionDTO.text);
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            THToast.show(new THException(error));
+        }
     }
 }

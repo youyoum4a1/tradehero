@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.loaders.PaginatedLoader;
 import com.tradehero.th.network.service.DiscussionService;
@@ -17,7 +18,7 @@ import javax.inject.Inject;
  */
 public class DiscussionListLoader extends PaginatedLoader<DiscussionDTO>
 {
-    private static final String TYPE = "timelineitem";
+    private static final String TYPE = DiscussionType.TIMELINE_ITEM.description;
     private final TimelineItemDTOKey timelineItemKey;
 
     @Inject DiscussionService discussionService;
