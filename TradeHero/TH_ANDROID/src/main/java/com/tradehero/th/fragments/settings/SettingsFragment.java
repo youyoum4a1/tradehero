@@ -48,7 +48,6 @@ import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -518,7 +517,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             {
                 @Override public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    return changeSharing(SocialNetworkEnum.LI, (boolean) newValue);
+                    return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
                 }
             });
         }
@@ -677,7 +676,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     break;
                 case TH:
                     break;
-                case LI:
+                case LN:
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.linkedin,
                             R.string.authentication_connecting_to_linkedin);
