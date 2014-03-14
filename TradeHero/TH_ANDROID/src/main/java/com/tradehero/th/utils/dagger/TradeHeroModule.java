@@ -1,7 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
@@ -260,7 +259,7 @@ import javax.inject.Singleton;
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseRestorer.class,
                         THIABPurchaseFetchMilestone.class,
-                        BaseIABLogicHolder.AvailabilityTester.class,
+                        THIABLogicHolderFull.AvailabilityTester.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,

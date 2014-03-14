@@ -84,6 +84,11 @@ public class THBillingRequest<
     {
         this.purchaseReportedListener = purchaseReportedListener;
     }
+
+    public ProductPurchaseType getPurchaseToReport()
+    {
+        return purchaseToReport;
+    }
     //</editor-fold>
 
     public static class THBuilder<

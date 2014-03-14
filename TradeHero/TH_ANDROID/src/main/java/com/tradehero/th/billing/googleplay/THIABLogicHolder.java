@@ -31,4 +31,5 @@ public interface THIABLogicHolder extends
         THIABPurchaseReporterHolder,
         THIABPurchaseConsumerHolder
 {
+    void unregisterPurchaseConsumptionListener(int requestCode);
 }

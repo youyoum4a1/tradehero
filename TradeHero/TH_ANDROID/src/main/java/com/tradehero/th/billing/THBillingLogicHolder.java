@@ -8,7 +8,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
  * Created by xavier on 2/26/14.
@@ -27,14 +26,15 @@ public interface THBillingLogicHolder<
                 ProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
-    extends BillingLogicHolder<
-            ProductIdentifierType,
-            ProductDetailType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingRequestType,
-            BillingExceptionType>,
+    extends
+        BillingLogicHolder<
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingRequestType,
+                BillingExceptionType>,
         PurchaseReporterHolder<
                 ProductIdentifierType,
                 OrderIdType,
@@ -44,9 +44,5 @@ public interface THBillingLogicHolder<
             ProductIdentifierType,
             ProductDetailType>
 {
-    PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseReportedListener(int requestCode);
-    void registerPurchaseReportedListener(int requestCode,
-            PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener);
-    void launchReportSequence(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType;
+    void unregisterPurchaseReportedListener(int requestCode);
 }

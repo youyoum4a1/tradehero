@@ -26,13 +26,14 @@ public class THIABBillingRequest<
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABExceptionType extends IABException>
-        extends THBillingRequest<
-        IABSKUType,
-        IABProductDetailType,
-        IABPurchaseOrderType,
-        IABOrderIdType,
-        IABPurchaseType,
-        IABExceptionType>
+        extends
+        THBillingRequest<
+                IABSKUType,
+                IABProductDetailType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABExceptionType>
 {
     public static final String TAG = THIABBillingRequest.class.getSimpleName();
 
@@ -68,6 +69,24 @@ public class THIABBillingRequest<
         this.consumptionFinishedListener = consumptionFinishedListener;
         this.purchaseToConsume = purchaseToConsume;
     }
+
+    //<editor-fold desc="Accessors">
+    public IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener()
+    {
+        return consumptionFinishedListener;
+    }
+
+    public void setConsumptionFinishedListener(
+            IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionFinishedListener)
+    {
+        this.consumptionFinishedListener = consumptionFinishedListener;
+    }
+
+    public IABPurchaseType getPurchaseToConsume()
+    {
+        return purchaseToConsume;
+    }
+    //</editor-fold>
 
     public static class IABBuilder<
             IABSKUType extends IABSKU,
