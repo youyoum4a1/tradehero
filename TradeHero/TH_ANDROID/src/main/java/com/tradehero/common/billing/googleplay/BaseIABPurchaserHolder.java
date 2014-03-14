@@ -24,26 +24,18 @@ abstract public class BaseIABPurchaserHolder<
                 IABPurchaseOrderType,
                 IABPurchaseType,
                 IABExceptionType>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseBillingPurchaserHolder<
         IABSKUType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFinishedListenerType,
         IABExceptionType>
     implements IABPurchaserHolder<
         IABSKUType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFinishedListenerType,
         IABExceptionType>
 {
     protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;

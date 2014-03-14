@@ -12,17 +12,11 @@ public interface IABPurchaseReporterHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends PurchaseReporterHolder<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
-            OnPurchaseReportedListenerType,
             IABExceptionType>
 {
 }

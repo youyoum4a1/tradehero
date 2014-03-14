@@ -1,7 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import javax.inject.Inject;
 

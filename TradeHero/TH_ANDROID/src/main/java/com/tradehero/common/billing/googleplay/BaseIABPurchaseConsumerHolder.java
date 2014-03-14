@@ -16,23 +16,21 @@ abstract public class BaseIABPurchaseConsumerHolder<
         IABPurchaseConsumerType extends IABPurchaseConsumer<
                 IABSKUType,
                 IABOrderIdType,
-                IABPurchaseType>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABException>>
+                IABPurchaseType>>
     implements IABPurchaseConsumerHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,
-        IABConsumeFinishedListenerType,
         IABException>
 {
     protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
     protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
             consumptionFinishedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABConsumeFinishedListenerType>> parentConsumeFinishedHandlers;
+    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABException>>> parentConsumeFinishedHandlers;
 
     public BaseIABPurchaseConsumerHolder()
     {
@@ -62,9 +60,17 @@ abstract public class BaseIABPurchaseConsumerHolder<
         iabPurchaseConsumers.remove(requestCode);
     }
 
-    @Override public IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode)
+    @Override public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABException> getConsumeFinishedListener(int requestCode)
     {
-        WeakReference<IABConsumeFinishedListenerType> weakHandler = parentConsumeFinishedHandlers.get(requestCode);
+        WeakReference<IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException>> weakHandler = parentConsumeFinishedHandlers.get(requestCode);
         if (weakHandler != null)
         {
             return weakHandler.get();
@@ -72,7 +78,11 @@ abstract public class BaseIABPurchaseConsumerHolder<
         return null;
     }
 
-    @Override public void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler)
+    @Override public void registerConsumeFinishedListener(int requestCode, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABException> purchaseConsumeHandler)
     {
         parentConsumeFinishedHandlers.put(requestCode, new WeakReference<>(purchaseConsumeHandler));
     }
@@ -100,7 +110,11 @@ abstract public class BaseIABPurchaseConsumerHolder<
     protected void notifyPurchaseConsumeSuccess(int requestCode, IABPurchaseType purchase)
     {
         Timber.d("notifyPurchaseConsumeSuccess Purchase info " + purchase);
-        IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException> handler = getConsumeFinishedListener(requestCode);
         if (handler != null)
         {
             Timber.d("notifyPurchaseConsumeSuccess passing on the purchase for requestCode " + requestCode);
@@ -115,7 +129,11 @@ abstract public class BaseIABPurchaseConsumerHolder<
     protected void notifyPurchaseConsumeFail(int requestCode, IABPurchaseType purchase, IABException exception)
     {
         Timber.e("notifyPurchaseConsumeFail There was an exception during the consumption", exception);
-        IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException> handler = getConsumeFinishedListener(requestCode);
         if (handler != null)
         {
             Timber.d("notifyPurchaseConsumeFail passing on the exception for requestCode " + requestCode);

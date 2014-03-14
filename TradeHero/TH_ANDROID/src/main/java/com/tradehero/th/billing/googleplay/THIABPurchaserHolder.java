@@ -12,12 +12,6 @@ public interface THIABPurchaserHolder
             THIABPurchaseOrder,
             THIABOrderId,
             THIABPurchase,
-            BillingPurchaser.OnPurchaseFinishedListener<
-                    IABSKU,
-                    THIABPurchaseOrder,
-                    THIABOrderId,
-                    THIABPurchase,
-                    IABException>,
             IABException>
 {
 }

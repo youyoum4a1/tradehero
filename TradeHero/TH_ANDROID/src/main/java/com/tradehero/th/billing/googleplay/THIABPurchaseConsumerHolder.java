@@ -10,11 +10,6 @@ public interface THIABPurchaseConsumerHolder extends IABPurchaseConsumerHolder<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
         IABException>
 {
 }

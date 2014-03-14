@@ -29,13 +29,7 @@ abstract public class IABPurchaseRestorer<
                         IABSKUType,
                         IABOrderIdType,
                         IABPurchaseType,
-                        IABConsumeFinishedListenerType,
                         IABException>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABException>,
         BillingRequestType extends BillingRequest<
                 IABSKUType,
                 IABProductDetailType,
@@ -54,7 +48,11 @@ abstract public class IABPurchaseRestorer<
     protected Milestone milestone;
     protected Milestone.OnCompleteListener milestoneListener;
     protected int requestCodeConsumer;
-    protected IABConsumeFinishedListenerType purchaseConsumerListener;
+    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABException> purchaseConsumerListener;
     protected List<IABPurchaseType> remainingPurchasesToWorkOn;
     protected final List<IABPurchaseType> okPurchases;
     protected final List<IABPurchaseType> failedConsumes;
@@ -89,7 +87,11 @@ abstract public class IABPurchaseRestorer<
     }
 
     abstract protected Milestone createMilestone();
-    abstract protected IABConsumeFinishedListenerType createPurchaseConsumerListener();
+    abstract protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABException> createPurchaseConsumerListener();
 
     public void onDestroy()
     {

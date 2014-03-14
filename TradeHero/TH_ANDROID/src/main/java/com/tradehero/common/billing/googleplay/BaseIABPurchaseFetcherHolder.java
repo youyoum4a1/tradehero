@@ -16,17 +16,11 @@ abstract public class BaseIABPurchaseFetcherHolder<
         IABPurchaseFetcherType extends IABPurchaseFetcher<
                 IABSKUType,
                 IABOrderIdType,
-                IABPurchaseType>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABException>>
+                IABPurchaseType>>
     extends BaseBillingPurchaseFetcherHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFetchedListenerType,
         IABException>
 {
     protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;

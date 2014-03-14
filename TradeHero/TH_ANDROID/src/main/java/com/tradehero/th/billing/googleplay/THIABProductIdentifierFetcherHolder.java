@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
@@ -8,7 +7,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 public interface THIABProductIdentifierFetcherHolder
     extends IABProductIdentifierFetcherHolder<
             IABSKU,
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKU, IABException>,
             IABException>
 {
 }

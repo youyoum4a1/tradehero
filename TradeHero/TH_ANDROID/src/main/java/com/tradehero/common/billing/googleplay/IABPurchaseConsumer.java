@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionException;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import timber.log.Timber;

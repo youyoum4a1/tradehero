@@ -13,12 +13,7 @@ public class THBaseIABPurchaseConsumerHolder
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        THIABPurchaseConsumer,
-        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-            IABSKU,
-            THIABOrderId,
-            THIABPurchase,
-            IABException>>
+        THIABPurchaseConsumer>
     implements THIABPurchaseConsumerHolder
 {
     public THBaseIABPurchaseConsumerHolder()

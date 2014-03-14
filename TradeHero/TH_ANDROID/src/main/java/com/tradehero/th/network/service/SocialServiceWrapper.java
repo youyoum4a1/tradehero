@@ -8,8 +8,6 @@ import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.Path;
 
 /**
  * Created by xavier on 3/7/14.

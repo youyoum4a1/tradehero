@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
@@ -9,17 +8,11 @@ public interface IABPurchaseFetcherHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends BillingPurchaseFetcherHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFetchedListenerType,
         IABExceptionType>
 {
 }

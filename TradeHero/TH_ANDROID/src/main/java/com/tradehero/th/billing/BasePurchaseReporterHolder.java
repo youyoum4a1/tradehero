@@ -26,24 +26,22 @@ abstract public class BasePurchaseReporterHolder<
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType>,
-        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements PurchaseReporterHolder<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
-        OnPurchaseReportedListenerType,
         BillingExceptionType>
 {
     public static final String TAG = BasePurchaseReporterHolder.class.getSimpleName();
 
     protected Map<Integer /*requestCode*/, PurchaseReporterType> purchaseReporters;
     protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseReportedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<OnPurchaseReportedListenerType>> parentPurchaseReportedHandlers;
+    protected Map<Integer /*requestCode*/, WeakReference<PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>>> parentPurchaseReportedHandlers;
 
     public BasePurchaseReporterHolder()
     {
@@ -73,9 +71,17 @@ abstract public class BasePurchaseReporterHolder<
         purchaseReporters.remove(requestCode);
     }
 
-    @Override public OnPurchaseReportedListenerType getPurchaseReportListener(int requestCode)
+    @Override public PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseReportListener(int requestCode)
     {
-        WeakReference<OnPurchaseReportedListenerType> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
+        WeakReference<PurchaseReporter.OnPurchaseReportedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
         if (weakHandler != null)
         {
             return weakHandler.get();
@@ -83,7 +89,11 @@ abstract public class BasePurchaseReporterHolder<
         return null;
     }
 
-    @Override public void registerPurchaseReportedListener(int requestCode, OnPurchaseReportedListenerType purchaseReportedHandler)
+    @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseReportedHandler)
     {
         parentPurchaseReportedHandlers.put(requestCode, new WeakReference<>(purchaseReportedHandler));
     }
@@ -130,7 +140,11 @@ abstract public class BasePurchaseReporterHolder<
             getPortfolioCache().invalidate(applicablePortfolioId);
         }
 
-        OnPurchaseReportedListenerType handler = getPurchaseReportListener(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseReportListener(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReported passing on the purchase for requestCode " + requestCode);
@@ -149,7 +163,11 @@ abstract public class BasePurchaseReporterHolder<
     protected void handlePurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
-        OnPurchaseReportedListenerType handler = getPurchaseReportListener(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseReportListener(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReportFailed passing on the exception for requestCode " + requestCode);

@@ -11,17 +11,20 @@ public interface PurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
-    OnPurchaseReportedListenerType getPurchaseReportListener(int requestCode);
-    void registerPurchaseReportedListener(int requestCode, OnPurchaseReportedListenerType purchaseReportedListener);
+    PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseReportListener(int requestCode);
+    void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseReportedListener);
     void launchReportSequence(int requestCode, ProductPurchaseType purchase);
     UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType;
     void onDestroy();

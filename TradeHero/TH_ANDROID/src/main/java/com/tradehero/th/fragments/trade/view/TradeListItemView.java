@@ -24,7 +24,6 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;

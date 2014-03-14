@@ -1,10 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.res.Resources;
-import com.tradehero.common.billing.BillingInventoryFetcher;
-import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -24,33 +21,14 @@ public class THIABLogicHolderFull
     extends BaseIABLogicHolder<
             IABSKU,
             THIABProductIdentifierFetcherHolder,
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                    IABSKU,
-                    IABException>,
             THIABProductDetail,
             THIABInventoryFetcherHolder,
             THIABPurchaseOrder,
             THIABOrderId,
             THIABPurchase,
             THIABPurchaseFetcherHolder,
-            BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                    IABSKU,
-                    THIABOrderId,
-                    THIABPurchase,
-                    IABException>,
             THIABPurchaserHolder,
-            BillingPurchaser.OnPurchaseFinishedListener<
-                    IABSKU,
-                    THIABPurchaseOrder,
-                    THIABOrderId,
-                    THIABPurchase,
-                    IABException>,
             THIABPurchaseConsumerHolder,
-            THIABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                    IABSKU,
-                    THIABOrderId,
-                    THIABPurchase,
-                    IABException>,
             THIABBillingRequest>
     implements THIABLogicHolder
 {

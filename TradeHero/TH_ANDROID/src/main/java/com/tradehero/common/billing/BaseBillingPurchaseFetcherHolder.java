@@ -12,22 +12,20 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        PurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingPurchaseFetcherHolder<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
-        PurchaseFetchedListenerType,
         BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>>
             purchaseFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<PurchaseFetchedListenerType>> parentPurchaseFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>>> parentPurchaseFetchedListeners;
 
     public BaseBillingPurchaseFetcherHolder()
     {
@@ -48,9 +46,17 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         parentPurchaseFetchedListeners.remove(requestCode);
     }
 
-    @Override public PurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
+    @Override public BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseFetchedListener(int requestCode)
     {
-        WeakReference<PurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
+        WeakReference<BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>> weakListener = parentPurchaseFetchedListeners.get(requestCode);
         if (weakListener == null)
         {
             return null;
@@ -63,14 +69,22 @@ abstract public class BaseBillingPurchaseFetcherHolder<
      * @param requestCode
      * @param purchaseFetchedListener
      */
-    @Override public void registerPurchaseFetchedListener(int requestCode, PurchaseFetchedListenerType purchaseFetchedListener)
+    @Override public void registerPurchaseFetchedListener(int requestCode, BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFetchedListener)
     {
         parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
     }
 
     protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
     {
-        PurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> parentListener = getPurchaseFetchedListener(requestCode);
         if (parentListener != null)
         {
             parentListener.onFetchedPurchases(requestCode, purchases);
@@ -79,7 +93,11 @@ abstract public class BaseBillingPurchaseFetcherHolder<
 
     protected void notifyPurchaseFetchedFailed(int requestCode, BillingExceptionType exception)
     {
-        PurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> parentListener = getPurchaseFetchedListener(requestCode);
         if (parentListener != null)
         {
             parentListener.onFetchPurchasesFailed(requestCode, exception);

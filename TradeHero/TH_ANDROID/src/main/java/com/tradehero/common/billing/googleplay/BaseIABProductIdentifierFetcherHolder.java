@@ -15,13 +15,9 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         ProductIdentifierFetcherType extends ProductIdentifierFetcher<
                 IABSKUType,
                 IABExceptionType>,
-        ProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                IABSKUType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseProductIdentifierFetcherHolder<
         IABSKUType,
-        ProductIdentifierFetchedListenerType,
         IABExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcherType> skuFetchers;

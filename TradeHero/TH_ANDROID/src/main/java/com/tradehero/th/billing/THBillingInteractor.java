@@ -1,14 +1,12 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.users.UserBaseKey;
 
 /**
  * Created by xavier on 2/24/14.

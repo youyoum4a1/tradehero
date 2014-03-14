@@ -13,12 +13,7 @@ public class THIABPurchaseFetchMilestone
         extends IABPurchaseFetchMilestone<
             IABSKU,
             THIABOrderId,
-            THIABPurchase,
-            BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                    IABSKU,
-                    THIABOrderId,
-                    THIABPurchase,
-                    IABException>>
+            THIABPurchase>
 {
     public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 

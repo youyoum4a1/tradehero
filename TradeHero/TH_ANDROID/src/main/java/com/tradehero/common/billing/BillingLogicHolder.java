@@ -32,5 +32,11 @@ public interface BillingLogicHolder<
             ProductIdentifierType,
             ProductDetailType,
             BillingExceptionType> inventoryFetchedListener);
+    void registerPurchaseFetchedListener(int requestCode,
+            BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseFetchedListener);
     void onDestroy();
 }

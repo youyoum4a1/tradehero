@@ -24,11 +24,6 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         THIABPurchase,
         THIABLogicHolder,
         THIABPurchaseConsumerHolder,
-        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
         THIABBillingRequest>
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;

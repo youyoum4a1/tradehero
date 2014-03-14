@@ -59,21 +59,9 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierType,
                 ProductDetailType,
                 ProductDetailViewType>,
-        BillingPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingPurchaserHolderType extends BillingPurchaserHolder<
                 ProductIdentifierType,
                 PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingPurchaseFinishedListenerType,
-                BillingExceptionType>,
-        PurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType>,
@@ -81,7 +69,6 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType,
-                PurchaseReportedListenerType,
                 BillingExceptionType>,
         THBillingRequestType extends THBillingRequest<
                 ProductIdentifierType,
@@ -378,8 +365,18 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchasing Sequence">
-    protected BillingPurchaseFinishedListenerType purchaseFinishedListener;
-    abstract protected BillingPurchaseFinishedListenerType createPurchaseFinishedListener();
+    protected BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFinishedListener;
+    abstract protected BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> createPurchaseFinishedListener();
     abstract protected void launchPurchaseSequence(ProductIdentifierType productIdentifier);
     abstract protected void launchPurchaseSequence(PurchaseOrderType purchaseOrder);
 
@@ -418,8 +415,16 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Reporting Sequence">
-    protected PurchaseReportedListenerType purchaseReportedListener;
-    abstract protected PurchaseReportedListenerType createPurchaseReportedListener();
+    protected PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseReportedListener;
+    abstract protected PurchaseReporter.OnPurchaseReportedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> createPurchaseReportedListener();
     abstract protected void launchReportPurchaseSequence(ProductPurchaseType purchase);
 
     protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<

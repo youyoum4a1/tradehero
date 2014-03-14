@@ -11,19 +11,12 @@ public interface IABPurchaserHolder<
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends BillingPurchaserHolder<
                 IABSKUType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
-                IABPurchaseFinishedListenerType,
                 IABExceptionType>
 {
     void onActivityResult(int requestCode, int resultCode, Intent data);

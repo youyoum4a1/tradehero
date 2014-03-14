@@ -6,7 +6,6 @@ import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.BillingRequest;
-import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
@@ -14,10 +13,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 abstract public class BaseIABLogicHolder<
         IABSKUType extends IABSKU,
         IABProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
-                IABSKUType,
-                IABProductIdentifierFetchedListenerType,
-                IABException>,
-        IABProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
                 IABSKUType,
                 IABException>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
@@ -34,33 +29,14 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
-                IABPurchaseFetchedListenerType,
-                IABException>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
                 IABException>,
         IABPurchaserHolderType extends IABPurchaserHolder<
                 IABSKUType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
-                IABPurchaseFinishedListenerType,
-                IABException>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
                 IABException>,
         IABPurchaseConsumerHolderType extends IABPurchaseConsumerHolder<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABConsumeFinishedListenerType,
-                IABException>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
@@ -174,9 +150,22 @@ abstract public class BaseIABLogicHolder<
     abstract protected IABPurchaseConsumerHolderType createPurchaseConsumeHolder();
 
     @Override public void registerInventoryFetchedListener(int requestCode,
-            BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException> inventoryFetchedListener)
+            BillingInventoryFetcher.OnInventoryFetchedListener<
+                    IABSKUType,
+                    IABProductDetailType,
+                    IABException> inventoryFetchedListener)
     {
         inventoryFetcherHolder.registerInventoryFetchedListener(requestCode, inventoryFetchedListener);
+    }
+
+    @Override public void registerPurchaseFetchedListener(int requestCode,
+            BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    IABSKUType,
+                    IABOrderIdType,
+                    IABPurchaseType,
+                    IABException> purchaseFetchedListener)
+    {
+        purchaseFetcherHolder.registerPurchaseFetchedListener(requestCode, purchaseFetchedListener);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)

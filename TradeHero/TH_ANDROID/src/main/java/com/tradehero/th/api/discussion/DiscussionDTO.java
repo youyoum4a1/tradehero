@@ -1,6 +1,5 @@
 package com.tradehero.th.api.discussion;
 
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 
 /**

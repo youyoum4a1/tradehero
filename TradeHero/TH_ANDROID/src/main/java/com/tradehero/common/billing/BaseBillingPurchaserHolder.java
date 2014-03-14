@@ -14,23 +14,21 @@ abstract public class BaseBillingPurchaserHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        BillingPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingPurchaserHolder<
         ProductIdentifierType,
         PurchaseOrderType,
         OrderIdType,
         ProductPurchaseType,
-        BillingPurchaseFinishedListenerType,
         BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseFinishedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaseFinishedListenerType>> parentPurchaseFinishedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>>> parentPurchaseFinishedListeners;
 
     public BaseBillingPurchaserHolder()
     {
@@ -56,14 +54,29 @@ abstract public class BaseBillingPurchaserHolder<
      * @param purchaseFinishedListener
      * @return
      */
-    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaseFinishedListenerType purchaseFinishedListener)
+    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFinishedListener)
     {
         parentPurchaseFinishedListeners.put(requestCode, new WeakReference<>(purchaseFinishedListener));
     }
 
-    @Override public BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode)
+    @Override public BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseFinishedListener(int requestCode)
     {
-        WeakReference<BillingPurchaseFinishedListenerType> weakHandler = parentPurchaseFinishedListeners.get(requestCode);
+        WeakReference<BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>> weakHandler = parentPurchaseFinishedListeners.get(requestCode);
         if (weakHandler != null)
         {
             return weakHandler.get();
@@ -74,7 +87,12 @@ abstract public class BaseBillingPurchaserHolder<
     protected void notifyIABPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
     {
         Timber.d("notifyIABPurchaseFinished Purchase " + purchase);
-        BillingPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
             Timber.d("notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
@@ -89,7 +107,12 @@ abstract public class BaseBillingPurchaserHolder<
     protected void notifyIABPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
     {
         Timber.e("notifyIABPurchaseFailed There was an exception during the purchase", exception);
-        BillingPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
             Timber.d("notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);

@@ -7,17 +7,20 @@ public interface IABPurchaseConsumerHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
 {
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
-    IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode);
-    void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler);
+    IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABExceptionType> getConsumeFinishedListener(int requestCode);
+    void registerConsumeFinishedListener(int requestCode, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABSKUType,
+            IABOrderIdType,
+            IABPurchaseType,
+            IABExceptionType> purchaseConsumeHandler);
     void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
     void onDestroy();
 }

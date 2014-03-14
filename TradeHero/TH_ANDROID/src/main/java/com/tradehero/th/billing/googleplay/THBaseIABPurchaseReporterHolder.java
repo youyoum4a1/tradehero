@@ -20,11 +20,6 @@ public class THBaseIABPurchaseReporterHolder
             THIABOrderId,
             THIABPurchase,
             THIABPurchaseReporter,
-            PurchaseReporter.OnPurchaseReportedListener<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
             IABException>
     implements THIABPurchaseReporterHolder
 {

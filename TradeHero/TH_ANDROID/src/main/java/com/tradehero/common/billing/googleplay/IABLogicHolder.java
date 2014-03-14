@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.googleplay.exception.IABException;

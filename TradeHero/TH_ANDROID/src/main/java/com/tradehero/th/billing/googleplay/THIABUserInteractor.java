@@ -64,18 +64,7 @@ public class THIABUserInteractor
         THIABLogicHolder,
         StoreSKUDetailView,
         THSKUDetailsAdapter,
-        BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKU,
-                THIABPurchaseOrder,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
         THIABPurchaserHolder,
-        PurchaseReporter.OnPurchaseReportedListener<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
         THIABPurchaseReporterHolder,
         THIABBillingRequest,
         IABException>
@@ -349,7 +338,7 @@ public class THIABUserInteractor
                                 inventoryFetchedForgetListener = createForgetFetchedListener();
                             }
                             int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-                            getBillingLogicHolder().getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
+                            getBillingLogicHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
                             getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
                         }
                     });

@@ -10,11 +10,6 @@ public interface THIABPurchaseReporterHolder extends
                 IABSKU,
                 THIABOrderId,
                 THIABPurchase,
-                PurchaseReporter.OnPurchaseReportedListener<
-                        IABSKU,
-                        THIABOrderId,
-                        THIABPurchase,
-                        IABException>,
                 IABException>
 {
 }

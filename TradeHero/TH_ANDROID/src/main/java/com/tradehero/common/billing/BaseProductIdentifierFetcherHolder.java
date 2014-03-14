@@ -11,14 +11,13 @@ import java.util.Map;
  */
 abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
-        ProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                ProductIdentifierType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
-    implements ProductIdentifierFetcherHolder<ProductIdentifierType, ProductIdentifierFetchedListenerType, BillingExceptionType>
+    implements ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>> productIdentifierFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<ProductIdentifierFetchedListenerType>> parentProductIdentifierFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType>>> parentProductIdentifierFetchedListeners;
 
     public BaseProductIdentifierFetcherHolder()
     {
@@ -40,9 +39,13 @@ abstract public class BaseProductIdentifierFetcherHolder<
         parentProductIdentifierFetchedListeners.remove(requestCode);
     }
 
-    @Override public ProductIdentifierFetchedListenerType getProductIdentifierFetchedListener(int requestCode)
+    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
     {
-        WeakReference<ProductIdentifierFetchedListenerType> weakListener = parentProductIdentifierFetchedListeners
+        WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierType,
+                BillingExceptionType>> weakListener = parentProductIdentifierFetchedListeners
                 .get(requestCode);
         if (weakListener == null)
         {
@@ -51,14 +54,18 @@ abstract public class BaseProductIdentifierFetcherHolder<
         return weakListener.get();
     }
 
-    @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetchedListenerType productIdentifierFetchedListener)
+    @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType> productIdentifierFetchedListener)
     {
         parentProductIdentifierFetchedListeners.put(requestCode, new WeakReference<>(productIdentifierFetchedListener));
     }
 
     protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
     {
-        ProductIdentifierFetchedListenerType fetchedListener = getProductIdentifierFetchedListener(requestCode);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierType,
+                BillingExceptionType> fetchedListener = getProductIdentifierFetchedListener(requestCode);
         if (fetchedListener != null)
         {
             fetchedListener.onFetchedProductIdentifiers(requestCode, availableSkus);
@@ -67,7 +74,9 @@ abstract public class BaseProductIdentifierFetcherHolder<
 
     protected void notifyProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
     {
-        ProductIdentifierFetchedListenerType fetchedListener = getProductIdentifierFetchedListener(
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierType,
+                BillingExceptionType> fetchedListener = getProductIdentifierFetchedListener(
                 requestCode);
         if (fetchedListener != null)
         {
