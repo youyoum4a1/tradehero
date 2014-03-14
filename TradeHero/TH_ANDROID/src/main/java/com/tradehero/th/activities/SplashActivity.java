@@ -12,11 +12,13 @@ import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
@@ -39,6 +41,7 @@ public class SplashActivity extends SherlockActivity
     @Inject protected UserService userService;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected ExchangeListCache exchangeListCache;
+    @Inject protected ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
     @Inject @SessionToken StringPreference currentSessionToken;
@@ -67,10 +70,9 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onResume()
     {
         super.onResume();
-        localyticsSession.get().open();
 
-        AppEventsLogger.activateApp(this, facebookAppId);
-
+        // TODO HAcK to load provider early
+        providerListCache.autoFetch(new ProviderListKey());
         initialAsyncTask = new AsyncTask<Void, Void, Void>()
         {
             @Override protected Void doInBackground(Void... params)
@@ -81,12 +83,15 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
+        localyticsSession.get().open();
+        AppEventsLogger.activateApp(this, facebookAppId);
+        tabStream.get().fireEvent(new Event(TabStreamEvents.APP_OPENED, false));
+
+
         if (!Constants.RELEASE)
         {
             VersionUtils.logScreenMeasurements(this);
         }
-
-        tabStream.get().fireEvent(new Event(TabStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
@@ -122,11 +127,12 @@ public class SplashActivity extends SherlockActivity
 
     public boolean canLoadApp()
     {
+        // TODO HAcK to ensure DashboardActivity has exchange list
         boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
         try
         {
-            UserProfileDTO profileDTO = userService.getUser(currentUserId.toUserBaseKey().key);
-            canLoad &= profileDTO != null && profileDTO.id == currentUserId.toUserBaseKey().key;
+            UserProfileDTO profileDTO = userService.getUser(currentUserId.get());
+            canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
                 exchangeListCache.getOrFetch(new ExchangeListType());

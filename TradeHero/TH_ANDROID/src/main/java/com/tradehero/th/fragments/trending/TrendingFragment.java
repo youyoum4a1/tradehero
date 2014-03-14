@@ -57,7 +57,9 @@ import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -91,6 +93,7 @@ public class TrendingFragment extends SecurityListFragment
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
+    private Set<Integer> enrollmentScreenOpened = new HashSet<>();
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -537,11 +540,35 @@ public class TrendingFragment extends SecurityListFragment
         @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
         {
             refreshAdapterWithTiles(true);
+            openEnrollmentPageIfNecessary(value);
         }
 
         @Override public void onErrorThrown(ProviderListKey key, Throwable error)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
+        }
+    }
+
+    private void openEnrollmentPageIfNecessary(ProviderIdList providerIds)
+    {
+        for (ProviderId providerId: providerIds)
+        {
+            final ProviderDTO providerDTO = providerCache.get().get(providerId);
+            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerId.key))
+            {
+                enrollmentScreenOpened.add(providerId.key);
+                postIfCan(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        if (!isDetached())
+                        {
+                            handleCompetitionItemClicked(providerDTO);
+                        }
+                    }
+                });
+                return;
+            }
         }
     }
 
