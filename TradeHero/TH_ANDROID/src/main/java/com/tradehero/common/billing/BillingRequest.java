@@ -19,6 +19,9 @@ public class BillingRequest<
 
     //<editor-fold desc="Listeners">
     private OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+    private ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType> productIdentifierFetchedListener;
     private BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
             ProductDetailType,
@@ -37,33 +40,37 @@ public class BillingRequest<
     //</editor-fold>
 
     private Boolean billingAvailable;
+    private Boolean fetchProductIdentifiers;
     private List<ProductIdentifierType> productIdentifiersForInventory;
     private Boolean fetchPurchase;
     private PurchaseOrderType purchaseOrder;
 
     protected BillingRequest(
             OnBillingAvailableListener<BillingExceptionType> billingAvailableListener,
+            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener,
             Boolean billingAvailable,
+            Boolean fetchProductIdentifiers,
             List<ProductIdentifierType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             PurchaseOrderType purchaseOrder)
     {
         this.billingAvailableListener = billingAvailableListener;
+        this.productIdentifierFetchedListener = productIdentifierFetchedListener;
         this.inventoryFetchedListener = inventoryFetchedListener;
         this.purchaseFetchedListener = purchaseFetchedListener;
         this.purchaseFinishedListener = purchaseFinishedListener;
 
         this.billingAvailable = billingAvailable;
+        this.fetchProductIdentifiers = fetchProductIdentifiers;
         this.productIdentifiersForInventory = productIdentifiersForInventory;
         this.fetchPurchase = fetchPurchase;
         this.purchaseOrder = purchaseOrder;
     }
 
     //<editor-fold desc="Accessors">
-
     public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
     {
         return billingAvailableListener;
@@ -72,6 +79,17 @@ public class BillingRequest<
     public void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
         this.billingAvailableListener = billingAvailableListener;
+    }
+
+    public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> getProductIdentifierFetchedListener()
+    {
+        return productIdentifierFetchedListener;
+    }
+
+    public void setProductIdentifierFetchedListener(
+            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener)
+    {
+        this.productIdentifierFetchedListener = productIdentifierFetchedListener;
     }
 
     public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener()
@@ -107,14 +125,29 @@ public class BillingRequest<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    public PurchaseOrderType getPurchaseOrder()
+    public Boolean getBillingAvailable()
     {
-        return purchaseOrder;
+        return billingAvailable;
+    }
+
+    public Boolean getFetchProductIdentifiers()
+    {
+        return fetchProductIdentifiers;
+    }
+
+    public List<ProductIdentifierType> getProductIdentifiersForInventory()
+    {
+        return productIdentifiersForInventory;
     }
 
     public Boolean getFetchPurchase()
     {
         return fetchPurchase;
+    }
+
+    public PurchaseOrderType getPurchaseOrder()
+    {
+        return purchaseOrder;
     }
     //</editor-fold>
 
@@ -128,6 +161,9 @@ public class BillingRequest<
     {
         //<editor-fold desc="Listeners">
         private OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+        private ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierType,
+                BillingExceptionType> productIdentifierFetchedListener;
         private BillingInventoryFetcher.OnInventoryFetchedListener<
                 ProductIdentifierType,
                 ProductDetailType,
@@ -146,6 +182,7 @@ public class BillingRequest<
         //</editor-fold>
 
         private Boolean billingAvailable;
+        private Boolean fetchProductIdentifiers;
         private List<ProductIdentifierType> productIdentifiersForInventory;
         private Boolean fetchPurchase;
         private PurchaseOrderType purchaseOrder;
@@ -162,10 +199,12 @@ public class BillingRequest<
             }
             return new BillingRequest<>(
                     billingAvailableListener,
+                    productIdentifierFetchedListener,
                     inventoryFetchedListener,
                     purchaseFetchedListener,
                     purchaseFinishedListener,
                     billingAvailable,
+                    fetchProductIdentifiers,
                     productIdentifiersForInventory,
                     fetchPurchase,
                     purchaseOrder);
@@ -192,7 +231,7 @@ public class BillingRequest<
 
         protected List<Object> getTests()
         {
-            return Arrays.asList(billingAvailable, productIdentifiersForInventory, fetchPurchase, purchaseOrder);
+            return Arrays.asList(billingAvailable, fetchProductIdentifiers, productIdentifiersForInventory, fetchPurchase, purchaseOrder);
         }
 
         //<editor-fold desc="Accessors">
@@ -204,6 +243,17 @@ public class BillingRequest<
         public void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
         {
             this.billingAvailableListener = billingAvailableListener;
+        }
+
+        public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> getProductIdentifierFetchedListener()
+        {
+            return productIdentifierFetchedListener;
+        }
+
+        public void setProductIdentifierFetchedListener(
+                ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener)
+        {
+            this.productIdentifierFetchedListener = productIdentifierFetchedListener;
         }
 
         public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener()
@@ -247,6 +297,16 @@ public class BillingRequest<
         public void setBillingAvailable(Boolean billingAvailable)
         {
             this.billingAvailable = billingAvailable;
+        }
+
+        public Boolean getFetchProductIdentifiers()
+        {
+            return fetchProductIdentifiers;
+        }
+
+        public void setFetchProductIdentifiers(Boolean fetchProductIdentifiers)
+        {
+            this.fetchProductIdentifiers = fetchProductIdentifiers;
         }
 
         public List<ProductIdentifierType> getProductIdentifiersForInventory()

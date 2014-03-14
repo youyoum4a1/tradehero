@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;

@@ -12,7 +12,7 @@ public interface THIABInteractor extends IABInteractor<
         THIABOrderId,
         THIABPurchase,
         THIABLogicHolder,
-        THIABBillingRequest,
+        THIABBillingRequestFull,
         IABException>
 {
 }

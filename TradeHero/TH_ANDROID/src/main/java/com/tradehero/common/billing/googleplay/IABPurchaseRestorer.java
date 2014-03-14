@@ -5,7 +5,6 @@ import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABRestorePurchaseMilestoneFailedException;
 import com.tradehero.common.milestone.Milestone;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
@@ -25,11 +24,6 @@ abstract public class IABPurchaseRestorer<
                 IABPurchaseType,
                 BillingRequestType,
                 IABException>,
-        IABPurchaseConsumerHolderType extends IABPurchaseConsumerHolder<
-                        IABSKUType,
-                        IABOrderIdType,
-                        IABPurchaseType,
-                        IABException>,
         BillingRequestType extends BillingRequest<
                 IABSKUType,
                 IABProductDetailType,
@@ -43,8 +37,7 @@ abstract public class IABPurchaseRestorer<
         IABPurchaseType>
 {
     protected IABLogicHolderType logicHolder;
-    protected WeakReference<IABPurchaseConsumerHolderType> consumerHolder = new WeakReference<>(null);
-    protected WeakReference<OnIABPurchaseRestorerFinishedListener<IABPurchaseType>> purchaseRestoreFinishedListener = new WeakReference<>(null);
+    protected OnIABPurchaseRestorerFinishedListener<IABPurchaseType> purchaseRestoreFinishedListener;
     protected Milestone milestone;
     protected Milestone.OnCompleteListener milestoneListener;
     protected int requestCodeConsumer;
@@ -57,9 +50,8 @@ abstract public class IABPurchaseRestorer<
     protected final List<IABPurchaseType> okPurchases;
     protected final List<IABPurchaseType> failedConsumes;
 
-    public IABPurchaseRestorer(IABLogicHolderType logicHolder, IABPurchaseConsumerHolderType consumeHolder)
+    public IABPurchaseRestorer(IABLogicHolderType logicHolder)
     {
-        setConsumerHolder(consumeHolder);
         this.logicHolder = logicHolder;
         okPurchases = new ArrayList<>();
         failedConsumes = new ArrayList<>();
@@ -102,19 +94,9 @@ abstract public class IABPurchaseRestorer<
         failedConsumes.clear();
     }
 
-    protected IABPurchaseConsumerHolderType getConsumerHolder()
-    {
-        return consumerHolder.get();
-    }
-
-    protected void setConsumerHolder(IABPurchaseConsumerHolderType consumerHolder)
-    {
-        this.consumerHolder = new WeakReference<>(consumerHolder);
-    }
-
     protected void haveBillingActorForget(int requestCode)
     {
-        IABPurchaseConsumerHolderType consumerHolderCopy = getConsumerHolder();
+        IABLogicHolderType consumerHolderCopy = logicHolder;
         if (consumerHolderCopy != null)
         {
             consumerHolderCopy.forgetRequestCode(requestCode);
@@ -123,13 +105,13 @@ abstract public class IABPurchaseRestorer<
 
     public OnIABPurchaseRestorerFinishedListener<IABPurchaseType> getPurchaseRestoreFinishedListener()
     {
-        return purchaseRestoreFinishedListener.get();
+        return purchaseRestoreFinishedListener;
     }
 
     public void setPurchaseRestoreFinishedListener(
             OnIABPurchaseRestorerFinishedListener<IABPurchaseType> finishedListener)
     {
-        this.purchaseRestoreFinishedListener = new WeakReference<>(finishedListener);
+        this.purchaseRestoreFinishedListener = finishedListener;
     }
 
     public void launchRestorePurchaseSequence()
@@ -160,7 +142,7 @@ abstract public class IABPurchaseRestorer<
 
     protected void launchOneConsumeSequence(IABPurchaseType purchase)
     {
-        IABPurchaseConsumerHolderType purchaseConsumerHolder = getConsumerHolder();
+        IABLogicHolderType purchaseConsumerHolder = logicHolder;
         if (!purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             Timber.d("No point in consuming this purchase");
@@ -170,7 +152,7 @@ abstract public class IABPurchaseRestorer<
         else if (purchaseConsumerHolder != null)
         {
             requestCodeConsumer = logicHolder.getUnusedRequestCode();
-            purchaseConsumerHolder.registerConsumeFinishedListener(requestCodeConsumer, purchaseConsumerListener);
+            purchaseConsumerHolder.registerConsumptionFinishedListener(requestCodeConsumer, purchaseConsumerListener);
             purchaseConsumerHolder.launchConsumeSequence(requestCodeConsumer, purchase);
         }
         else

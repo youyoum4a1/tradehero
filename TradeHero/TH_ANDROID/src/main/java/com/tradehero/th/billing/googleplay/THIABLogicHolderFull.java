@@ -1,7 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.res.Resources;
-import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -9,6 +8,8 @@ import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -29,7 +30,7 @@ public class THIABLogicHolderFull
             THIABPurchaseFetcherHolder,
             THIABPurchaserHolder,
             THIABPurchaseConsumerHolder,
-            THIABBillingRequest>
+        THIABBillingRequestFull>
     implements THIABLogicHolder
 {
     public static final String TAG = THIABLogicHolderFull.class.getSimpleName();
@@ -58,31 +59,6 @@ public class THIABLogicHolderFull
     @Override public String getBillingHolderName(Resources resources)
     {
         return resources.getString(R.string.th_iab_logic_holder_name);
-    }
-
-    @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
-    {
-        return inventoryFetcherHolder;
-    }
-
-    @Override public THIABPurchaseFetcherHolder getPurchaseFetcherHolder()
-    {
-        return purchaseFetcherHolder;
-    }
-
-    @Override public THIABPurchaserHolder getPurchaserHolder()
-    {
-        return purchaserHolder;
-    }
-
-    @Override public THIABPurchaseConsumerHolder getPurchaseConsumerHolder()
-    {
-        return purchaseConsumerHolder;
-    }
-
-    @Override public THIABPurchaseReporterHolder getPurchaseReporterHolder()
-    {
-        return purchaseReporterHolder;
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
@@ -142,5 +118,27 @@ public class THIABLogicHolderFull
     protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
     {
         return new THBaseIABPurchaseReporterHolder();
+    }
+
+    @Override
+    public PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> getPurchaseReportedListener(int requestCode)
+    {
+        return purchaseReporterHolder.getPurchaseReportedListener(requestCode);
+    }
+
+    @Override public void registerPurchaseReportedListener(int requestCode,
+            PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener)
+    {
+        purchaseReporterHolder.registerPurchaseReportedListener(requestCode, purchaseReportedListener);
+    }
+
+    @Override public void launchReportSequence(int requestCode, THIABPurchase purchase)
+    {
+        purchaseReporterHolder.launchReportSequence(requestCode, purchase);
+    }
+
+    @Override public UserProfileDTO launchReportSequenceSync(THIABPurchase purchase) throws IABException
+    {
+        return purchaseReporterHolder.launchReportSequenceSync(purchase);
     }
 }

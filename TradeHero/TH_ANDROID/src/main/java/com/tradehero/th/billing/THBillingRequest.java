@@ -8,6 +8,7 @@ import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
@@ -45,21 +46,26 @@ public class THBillingRequest<
 
     protected THBillingRequest(
             OnBillingAvailableListener<BillingExceptionType> billingAvailableListener,
+            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener,
             PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener,
             Boolean billingAvailable,
+            Boolean fetchProductIdentifiers,
             List<ProductIdentifierType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             PurchaseOrderType purchaseOrder,
             ProductPurchaseType purchaseToReport)
     {
-        super(billingAvailableListener,
+        super(
+                billingAvailableListener,
+                productIdentifierFetchedListener,
                 inventoryFetchedListener,
                 purchaseFetchedListener,
                 purchaseFinishedListener,
                 billingAvailable,
+                fetchProductIdentifiers,
                 productIdentifiersForInventory,
                 fetchPurchase,
                 purchaseOrder);
@@ -115,11 +121,13 @@ public class THBillingRequest<
         {
             return new THBillingRequest<>(
                     getBillingAvailableListener(),
+                    getProductIdentifierFetchedListener(),
                     getInventoryFetchedListener(),
                     getPurchaseFetchedListener(),
                     getPurchaseFinishedListener(),
                     purchaseReportedListener,
                     getBillingAvailable(),
+                    getFetchProductIdentifiers(),
                     getProductIdentifiersForInventory(),
                     getFetchPurchase(),
                     getPurchaseOrder(),

@@ -16,8 +16,8 @@ public interface ProductIdentifierFetcher<
     Map<String, List<ProductIdentifierType>> fetchProductIdentifiersSync();
 
     public static interface OnProductIdentifierFetchedListener<
-            ProductIdentifierType,
-            BillingExceptionType>
+            ProductIdentifierType extends ProductIdentifier,
+            BillingExceptionType extends BillingException>
     {
         void onFetchedProductIdentifiers(int requestCode,
                 Map<String, List<ProductIdentifierType>> availableProductIdentifiers);

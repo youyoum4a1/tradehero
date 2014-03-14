@@ -87,7 +87,7 @@ public class THIABInventoryFetchMilestone
             // TODO refactor with proper calls
             int requestCode = logicHolder.getUnusedRequestCode();
             logicHolder.registerInventoryFetchedListener(requestCode, fetchListener);
-            logicHolder.getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, allSkus);
+            logicHolder.launchInventoryFetchSequence(requestCode, allSkus);
         }
     }
 }
