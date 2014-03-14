@@ -51,19 +51,7 @@ abstract public class BaseIABPurchaseFetcherHolder<
 
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
-        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetchedListener = new BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
-        {
-            @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
-            {
-                notifyPurchaseFetchedFailed(requestCode, exception);
-            }
-
-            @Override public void onFetchedPurchases(int requestCode, Map<IABSKUType, IABPurchaseType> purchases)
-            {
-                notifyPurchaseFetchedSuccess(requestCode, purchases);
-            }
-        };
-        purchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetchedListener = createPurchaseFetchedListener();
         IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);

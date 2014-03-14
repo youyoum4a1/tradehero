@@ -17,27 +17,21 @@ abstract public class BaseBillingInventoryFetcherHolder<
         ProductDetailType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>>
-            inventoryFetchedListeners;
     protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
 
     public BaseBillingInventoryFetcherHolder()
     {
         super();
-        inventoryFetchedListeners = new HashMap<>();
         parentInventoryFetchedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {
-        return
-                !inventoryFetchedListeners.containsKey(randomNumber) &&
-                        !parentInventoryFetchedListeners.containsKey(randomNumber);
+        return !parentInventoryFetchedListeners.containsKey(randomNumber);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        inventoryFetchedListeners.remove(requestCode);
         parentInventoryFetchedListeners.remove(requestCode);
     }
 
@@ -54,6 +48,22 @@ abstract public class BaseBillingInventoryFetcherHolder<
     @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
     {
         parentInventoryFetchedListeners.put(requestCode, inventoryFetchedListener);
+    }
+
+    protected BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetchedListener()
+    {
+        return new BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>()
+        {
+            @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+            {
+                notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+            }
+
+            @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+            {
+                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
+            }
+        };
     }
 
     protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
@@ -76,7 +86,6 @@ abstract public class BaseBillingInventoryFetcherHolder<
 
     @Override public void onDestroy()
     {
-        inventoryFetchedListeners.clear();
         parentInventoryFetchedListeners.clear();
     }
 }

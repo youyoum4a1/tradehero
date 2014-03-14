@@ -21,7 +21,6 @@ abstract public class BaseBillingPurchaserHolder<
         ProductPurchaseType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseFinishedListeners;
     protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
@@ -32,19 +31,16 @@ abstract public class BaseBillingPurchaserHolder<
     public BaseBillingPurchaserHolder()
     {
         super();
-        purchaseFinishedListeners = new HashMap<>();
         parentPurchaseFinishedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return !purchaseFinishedListeners.containsKey(requestCode) &&
-                !parentPurchaseFinishedListeners.containsKey(requestCode);
+        return !parentPurchaseFinishedListeners.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        purchaseFinishedListeners.remove(requestCode);
         parentPurchaseFinishedListeners.remove(requestCode);
     }
 
@@ -71,6 +67,23 @@ abstract public class BaseBillingPurchaserHolder<
             BillingExceptionType> getPurchaseFinishedListener(int requestCode)
     {
         return parentPurchaseFinishedListeners.get(requestCode);
+    }
+
+    protected BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>
+    createPurchaseFinishedListener()
+    {
+        return new BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
+        {
+            @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+            {
+                notifyIABPurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+
+            @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
+            {
+                notifyIABPurchaseFailed(requestCode, purchaseOrder, exception);
+            }
+        };
     }
 
     protected void notifyIABPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
@@ -115,7 +128,6 @@ abstract public class BaseBillingPurchaserHolder<
 
     @Override public void onDestroy()
     {
-        purchaseFinishedListeners.clear();
         parentPurchaseFinishedListeners.clear();
     }
 }
