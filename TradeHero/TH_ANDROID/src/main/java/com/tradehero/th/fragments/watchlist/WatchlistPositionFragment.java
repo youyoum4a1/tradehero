@@ -173,8 +173,12 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 @Override public void run()
                 {
-                    watchlistListView.setOffsetLeft(watchlistListView.getWidth() -
-                            getResources().getDimension(R.dimen.watchlist_item_button_width) * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+                    SwipeListView watchlistListViewCopy = watchlistListView;
+                    if (watchlistListViewCopy != null)
+                    {
+                        watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
+                                getResources().getDimension(R.dimen.watchlist_item_button_width) * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+                    }
                 }
             });
             watchlistListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
