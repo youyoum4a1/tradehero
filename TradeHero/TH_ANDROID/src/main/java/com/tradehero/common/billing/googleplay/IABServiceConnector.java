@@ -114,7 +114,6 @@ public class IABServiceConnector implements ServiceConnection
             }
         }
         disposed = true;
-        currentActivityHolder = null;
         billingService = null;
         listener = null;
     }
