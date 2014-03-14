@@ -14,95 +14,59 @@
       android:paddingBottom="@dimen/timeline_action_buttons_vertical_padding"
       android:background="@drawable/timeline_action_buttons_background"
       >
-    <LinearLayout
-        android:id="@+id/timeline_action_button_vote_up_wrapper"
+
+    <com.tradehero.th.fragments.discussion.VoteView
+        android:id="@+id/timeline_action_button_vote_up"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
         android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/icn_upvote"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/timeline_action_button_vote_up"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:text="0"
-          tools:text="10"
-          />
-    </LinearLayout>
+        android:layout_gravity="center_vertical"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:shadowColor="@color/timeline_action_button_text_color_shadow"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="0"
+        android:drawableLeft="@drawable/icn_upvote"
+        tools:text="10"
+        />
 
-
-    <LinearLayout
-        android:id="@+id/timeline_action_button_vote_down_wrapper"
-        android:layout_toRightOf="@id/timeline_action_button_vote_up_wrapper"
+    <com.tradehero.th.fragments.discussion.VoteView
+        android:id="@+id/timeline_action_button_vote_down"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/timeline_action_button_vote_up"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
         android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/icn_downvote"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/timeline_action_button_vote_down"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:text="0"
-          tools:text="2"
-          />
-    </LinearLayout>
+        android:layout_gravity="center_vertical"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:shadowColor="@color/timeline_action_button_text_color_shadow"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="0"
+        android:drawableLeft="@drawable/icn_downvote"
+        tools:text="2"
+        />
 
-    <LinearLayout
-        android:id="@+id/timeline_action_button_comment_wrapper"
-        android:layout_toRightOf="@id/timeline_action_button_vote_down_wrapper"
+    <TextView
+        android:id="@+id/timeline_action_button_comment"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/timeline_action_button_vote_down"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
         android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/icn_comment"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/timeline_action_button_comment"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:text="0"
-          tools:text="200"
-          />
-    </LinearLayout>
+        android:drawableLeft="@drawable/icn_comment"
+        android:layout_gravity="center_vertical"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:shadowColor="@color/timeline_action_button_text_color_shadow"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="0"
+        tools:text="200"
+        />
 
     <TextView
         android:id="@+id/timeline_action_button_more"

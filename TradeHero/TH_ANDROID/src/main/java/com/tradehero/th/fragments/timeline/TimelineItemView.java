@@ -73,9 +73,9 @@ public class TimelineItemView extends LinearLayout
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
             R.id.timeline_vendor_picture,
-            R.id.timeline_action_button_vote_up_wrapper,
-            R.id.timeline_action_button_vote_down_wrapper,
-            R.id.timeline_action_button_comment_wrapper,
+            R.id.timeline_action_button_vote_up,
+            R.id.timeline_action_button_vote_down,
+            R.id.timeline_action_button_comment,
             R.id.timeline_action_button_more,
     })
     public void onItemClicked(View view)
@@ -86,7 +86,7 @@ public class TimelineItemView extends LinearLayout
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
-            case R.id.timeline_action_button_comment_wrapper:
+            case R.id.timeline_action_button_comment:
                 openTimelineDiscussion();
                 break;
             case R.id.timeline_vendor_picture:
@@ -127,9 +127,6 @@ public class TimelineItemView extends LinearLayout
             }
         }
     }
-    //@InjectView(R.id.timeline_action_button_trade_wrapper) View tradeActionButton;
-    //@InjectView(R.id.timeline_action_button_share_wrapper) View shareActionButton;
-    //@InjectView(R.id.timeline_action_button_monitor_wrapper) View monitorActionButton;
 
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
