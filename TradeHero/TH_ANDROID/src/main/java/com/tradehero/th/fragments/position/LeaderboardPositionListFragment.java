@@ -57,9 +57,9 @@ public class LeaderboardPositionListFragment
         return new GetLeaderboardPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask()
+    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
+        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, force, getLeaderboardPositionsCacheListener);
     }
 
     @Override public void onResume()
@@ -95,10 +95,15 @@ public class LeaderboardPositionListFragment
 
     @Override protected void fetchSimplePage()
     {
+        fetchSimplePage(false);
+    }
+
+    @Override protected void fetchSimplePage(boolean force)
+    {
         if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
             detachGetLeaderboardPositions();
-            fetchGetPositionsDTOTask = getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
+            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
             fetchGetPositionsDTOTask.execute();
         }
     }

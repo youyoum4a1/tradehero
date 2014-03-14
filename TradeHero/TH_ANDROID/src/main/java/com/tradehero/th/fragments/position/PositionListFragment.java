@@ -35,12 +35,17 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         positionItemAdapter.setCellListener(this);
     }
 
-    protected void fetchSimplePage()
+    @Override protected void fetchSimplePage()
+    {
+        fetchSimplePage(false);
+    }
+
+    @Override protected void fetchSimplePage(boolean force)
     {
         if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
             detachGetPositionsTask();
-            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask();
+            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
             displayProgress(true);
             fetchGetPositionsDTOTask.execute();
         }
@@ -51,9 +56,9 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         return new GetPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask()
+    @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, getPositionsCacheListener);
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, getPositionsCacheListener);
     }
 
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>

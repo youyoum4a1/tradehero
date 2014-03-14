@@ -378,8 +378,9 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void fetchSimplePage();
+    abstract protected void fetchSimplePage(boolean force);
     abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheListener();
-    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheFetchTask();
+    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheFetchTask(boolean force);
 
     protected void detachGetPositionsTask()
     {
@@ -681,6 +682,7 @@ abstract public class AbstractPositionListFragment<
                 {
                     super.success(userProfileDTO, response);
                     displayHeaderView();
+                    fetchSimplePage(true);
                 }
             };
         }
