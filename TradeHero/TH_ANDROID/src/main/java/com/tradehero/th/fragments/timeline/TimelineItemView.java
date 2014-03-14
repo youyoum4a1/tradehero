@@ -47,6 +47,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.widget.VoteView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -64,8 +65,9 @@ public class TimelineItemView extends LinearLayout
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.timeline_time) TextView time;
 
-    @InjectView(R.id.timeline_action_button_vote_up) TextView voteUp;
-    @InjectView(R.id.timeline_action_button_vote_down) TextView voteDown;
+    @InjectView(R.id.timeline_action_button_vote_up) VoteView voteUp;
+    @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
+
     @InjectView(R.id.timeline_action_button_comment) TextView comment;
     @InjectView(R.id.timeline_action_button_more) TextView more;
 
@@ -102,6 +104,19 @@ public class TimelineItemView extends LinearLayout
             case R.id.timeline_action_button_more:
                 PopupMenu popUpMenu = createActionPopupMenu();
                 popUpMenu.show();
+                break;
+
+            case R.id.timeline_action_button_vote_up:
+                if (voteUp.isChecked())
+                {
+                    voteDown.setChecked(false);
+                }
+                break;
+            case R.id.timeline_action_button_vote_down:
+                if (voteDown.isChecked())
+                {
+                    voteUp.setChecked(false);
+                }
                 break;
         }
     }

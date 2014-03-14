@@ -150,7 +150,6 @@
     <item name="android:minHeight">48dp</item>
   </style>
 
-
   <style name="TutorialTextContent">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
@@ -168,4 +167,12 @@
     <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
   </style>
 
+  <style name="TH_VoteView">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginLeft">@dimen/timeline_action_buttons_horizontal_padding</item>
+    <item name="android:layout_marginRight">@dimen/timeline_action_buttons_horizontal_padding</item>
+    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
+    <item name="android:textStyle">bold</item>
+  </style>
 </resources>
