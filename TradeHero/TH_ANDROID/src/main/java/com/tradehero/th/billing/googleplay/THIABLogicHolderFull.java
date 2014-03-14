@@ -21,13 +21,10 @@ import javax.inject.Inject;
 public class THIABLogicHolderFull
     extends BaseIABLogicHolder<
             IABSKU,
-            THIABProductIdentifierFetcherHolder,
             THIABProductDetail,
-            THIABInventoryFetcherHolder,
             THIABPurchaseOrder,
             THIABOrderId,
             THIABPurchase,
-            THIABPurchaseFetcherHolder,
             THIABPurchaserHolder,
             THIABPurchaseConsumerHolder,
         THIABBillingRequestFull>
