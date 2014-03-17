@@ -32,6 +32,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
             IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> consumptionFinishedListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
+            Boolean fetchInventory,
             List<IABSKU> productIdentifiersForInventory,
             Boolean fetchPurchase,
             THIABPurchaseOrder purchaseOrder,
@@ -40,7 +41,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
     {
         super(billingAvailableListener, productIdentifierFetchedListener, inventoryFetchedListener, purchaseFetchedListener, purchaseFinishedListener,
                 purchaseReportedListener, consumptionFinishedListener,
-                billingAvailable, fetchProductIdentifiers, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport, purchaseToConsume);
+                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport, purchaseToConsume);
     }
 
     public static class THIABBuilder
@@ -66,6 +67,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
                     getConsumptionFinishedListener(),
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
+                    getFetchInventory(),
                     getProductIdentifiersForInventory(),
                     getFetchPurchase(),
                     getPurchaseOrder(),

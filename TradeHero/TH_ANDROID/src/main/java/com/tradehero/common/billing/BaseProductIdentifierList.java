@@ -1,26 +1,25 @@
-package com.tradehero.common.billing.googleplay;
+package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:32 PM To change this template use File | Settings | File Templates. */
-public class BaseIABSKUList<IABSKUType extends IABSKU>
-        extends BaseProductIdentifierList<IABSKUType>
+public class BaseProductIdentifierList<ProductIdentifierType extends ProductIdentifier>
+        extends ArrayList<ProductIdentifierType> implements DTO
 {
     //<editor-fold desc="Constructors">
-    public BaseIABSKUList()
+    public BaseProductIdentifierList()
     {
         super();
     }
 
-    public BaseIABSKUList(int capacity)
+    public BaseProductIdentifierList(int capacity)
     {
         super(capacity);
     }
 
-    public BaseIABSKUList(Collection<? extends IABSKUType> collection)
+    public BaseProductIdentifierList(Collection<? extends ProductIdentifierType> collection)
     {
         super(collection);
     }

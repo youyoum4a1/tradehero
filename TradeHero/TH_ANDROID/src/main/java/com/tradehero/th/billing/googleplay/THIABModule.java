@@ -1,10 +1,12 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingRequest;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.common.billing.ProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Module;
 import dagger.Provides;
@@ -28,6 +30,11 @@ public class THIABModule
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;
+    }
+
+    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(IABSKUListCache iabskuListCache)
+    {
+        return iabskuListCache;
     }
 
     @Provides @Singleton ProductDetailCache provideProductDetailCache(THIABProductDetailCache productDetailCache)

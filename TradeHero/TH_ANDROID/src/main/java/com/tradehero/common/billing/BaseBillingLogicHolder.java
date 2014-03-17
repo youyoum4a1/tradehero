@@ -1,6 +1,9 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,6 +134,55 @@ abstract public class BaseBillingLogicHolder<
         return billingAvailableListeners.get(requestCode);
     }
 
+    //<editor-fold desc="Launch Sequence Methods">
+    @Override public void launchProductIdentifierFetchSequence(int requestCode)
+    {
+        productIdentifierFetcherHolder.launchProductIdentifierFetchSequence(requestCode);
+    }
+
+    @Override public void launchInventoryFetchSequence(int requestCode, List<ProductIdentifierType> allIds)
+    {
+        inventoryFetcherHolder.launchInventoryFetchSequence(requestCode, allIds);
+    }
+
+    @Override public void launchFetchPurchaseSequence(int requestCode)
+    {
+        purchaseFetcherHolder.launchFetchPurchaseSequence(requestCode);
+    }
+
+    @Override public void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder)
+    {
+        purchaserHolder.launchPurchaseSequence(requestCode, purchaseOrder);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sequence Logic">
+    protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    {
+        notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
+        // TODO child class to continue with other sequence?
+    }
+
+    protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+    {
+        notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+        // TODO continue another sequence?
+    }
+
+    protected void handlePurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    {
+        notifyPurchaseFetchedSuccess(requestCode, purchases);
+        // TODO continue another sequence?
+    }
+
+    protected void handlePurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    {
+        notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
+        // TODO continue with other sequence?
+    }
+    //</editor-fold>
+
+
     //<editor-fold desc="Billing Available">
     @Override public Boolean isBillingAvailable()
     {
@@ -239,12 +291,6 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
-    {
-        notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
-        // TODO continue with other sequence?
-    }
-
     protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
@@ -311,12 +357,6 @@ abstract public class BaseBillingLogicHolder<
         {
             billingRequest.setInventoryFetchedListener(null);
         }
-    }
-
-    protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
-    {
-        notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-        // TODO continue another sequence?
     }
 
     protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
@@ -387,12 +427,6 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void handlePurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
-    {
-        notifyPurchaseFetchedSuccess(requestCode, purchases);
-        // TODO continue another sequence?
-    }
-
     protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
@@ -459,12 +493,6 @@ abstract public class BaseBillingLogicHolder<
         {
             billingRequest.setPurchaseFinishedListener(null);
         }
-    }
-
-    protected void handlePurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
-    {
-        notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
-        // TODO continue with other sequence?
     }
 
     protected void notifyPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
