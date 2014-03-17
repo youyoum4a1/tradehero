@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 3/5/14.
  */
 public class DisplayablePortfolioFetchAssistant
 {
-    public static final String TAG = DisplayablePortfolioFetchAssistant.class.getSimpleName();
-
     @Inject PortfolioCompactListCache portfolioListCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
@@ -97,7 +96,7 @@ public class DisplayablePortfolioFetchAssistant
         {
             @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value, boolean fromCache)
             {
-                THLog.d(TAG, "received id list for " + key + ": " + value);
+                Timber.d("Received id list for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
                 if (valueList != null)
                 {
@@ -124,7 +123,7 @@ public class DisplayablePortfolioFetchAssistant
         {
             @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
             {
-                THLog.d(TAG, "received UserProfileDTO " + key);
+                Timber.d("Received UserProfileDTO %d", key);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
                 if (valueList != null)
                 {
@@ -150,7 +149,7 @@ public class DisplayablePortfolioFetchAssistant
         {
             @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
             {
-                THLog.d(TAG, "received PortfolioDTO for " + key + ": " + value);
+                Timber.d("Received PortfolioDTO for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key.getUserBaseKey());
                 if (valueList != null)
                 {
