@@ -103,7 +103,7 @@ public class Navigator
 
         FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
         ft.addToBackStack(backStackName);
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
         return fragment;
     }
