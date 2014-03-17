@@ -2,7 +2,7 @@ package com.tradehero.th.loaders;
 
 import android.content.Context;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
-public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOEnhanced>
+public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 {
     private final UserBaseKey userBaseKey;
 
@@ -29,7 +29,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOEnha
         DaggerUtils.inject(this);
     }
 
-    @Override public List<TimelineItemDTOEnhanced> loadInBackground()
+    @Override public List<TimelineItemDTOKey> loadInBackground()
     {
         if (lowerItemId != null)
         {
@@ -58,7 +58,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOEnha
         }
     }
 
-    @Override protected void onLoadNext(TimelineItemDTOEnhanced firstVisible)
+    @Override protected void onLoadNext(TimelineItemDTOKey firstVisible)
     {
         if (firstVisible == null)
         {
@@ -66,16 +66,16 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOEnha
         }
 
         upperItemId = null;
-        lowerItemId = firstVisible.id;
+        lowerItemId = firstVisible.key;
         forceLoad();
     }
 
-    @Override protected void onLoadPrevious(TimelineItemDTOEnhanced startItem)
+    @Override protected void onLoadPrevious(TimelineItemDTOKey startItem)
     {
         resetQuery();
         if (startItem != null)
         {
-            upperItemId = startItem.id;
+            upperItemId = startItem.key;
         }
         forceLoad();
     }

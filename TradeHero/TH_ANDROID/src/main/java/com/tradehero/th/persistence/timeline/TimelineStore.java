@@ -6,8 +6,10 @@ import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -16,7 +18,7 @@ import javax.inject.Provider;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
-public class TimelineStore implements PersistableResource<TimelineItemDTOEnhanced>
+public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";
     private Query query;
@@ -24,7 +26,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOEnhance
     @Inject UserTimelineService timelineService;
     @Inject TimelineCache timelineCache;
 
-    @Override public List<TimelineItemDTOEnhanced> request()
+    @Override public List<TimelineItemDTOKey> request()
     {
         if (query != null)
         {
@@ -44,20 +46,24 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOEnhance
             if (timelineDTO != null)
             {
 
+                List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
                 for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
                 {
                     itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
-                    timelineCache.put(itemDTO.getTimelineKey(), itemDTO);
+                    TimelineItemDTOKey timelineKey = itemDTO.getTimelineKey();
+                    timelineCache.put(timelineKey, itemDTO);
+                    timelineItemDTOKeys.add(timelineKey);
+
                 }
 
-                return timelineDTO.getEnhancedItems();
+                return timelineItemDTOKeys;
             }
         }
 
         return null;
     }
 
-    @Override public void store(SQLiteDatabase db, List<TimelineItemDTOEnhanced> items)
+    @Override public void store(SQLiteDatabase db, List<TimelineItemDTOKey> items)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -67,7 +73,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOEnhance
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public TimelineItemDTOEnhanced loadFrom(Cursor cursor)
+    @Override public TimelineItemDTOKey loadFrom(Cursor cursor)
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

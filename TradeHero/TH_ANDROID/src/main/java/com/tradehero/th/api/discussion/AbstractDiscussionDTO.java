@@ -17,4 +17,12 @@ public class AbstractDiscussionDTO extends ExtendedDTO
     public int upvoteCount;
     public int downvoteCount;
     public int commentCount;
+
+    public void populateVote(AbstractDiscussionDTO target)
+    {
+        target.voteCount = voteCount;
+        target.upvoteCount = upvoteCount;
+        target.downvoteCount = downvoteCount;
+        target.voteDirection = voteDirection;
+    }
 }

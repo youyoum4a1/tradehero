@@ -318,10 +318,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey.key, R.layout.timeline_item_view);
-        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOEnhanced>()
+        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOKey>()
         {
 
-            @Override public void onLoadFinished(ListLoader<TimelineItemDTOEnhanced> loader, List<TimelineItemDTOEnhanced> data)
+            @Override public void onLoadFinished(ListLoader<TimelineItemDTOKey> loader, List<TimelineItemDTOKey> data)
             {
                 if (timelineListView != null)
                 {
@@ -330,7 +330,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 }
             }
 
-            @Override public ListLoader<TimelineItemDTOEnhanced> onCreateLoader(Bundle args)
+            @Override public ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
             {
                 return createTimelineLoader();
             }
@@ -338,7 +338,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return timelineAdapter;
     }
 
-    private ListLoader<TimelineItemDTOEnhanced> createTimelineLoader()
+    private ListLoader<TimelineItemDTOKey> createTimelineLoader()
     {
         TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);

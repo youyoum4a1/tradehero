@@ -98,7 +98,7 @@ public class TimelineDiscussion extends DashboardFragment
     {
         if (timelineItemView != null)
         {
-            timelineItemView.display(timelineCache.get(timelineItemDTOKey));
+            timelineItemView.display(timelineItemDTOKey);
         }
 
         discussionListAdapter = createCommentListAdapter();

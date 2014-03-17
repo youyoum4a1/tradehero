@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.timeline;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +15,7 @@ public class TimelineManager
     @Inject DatabaseCache dbCache;
     @Inject Lazy<TimelineStore.Factory> allTimelineStores;
 
-    public List<TimelineItemDTOEnhanced> getTimeline(Query query, boolean forceReload) throws IOException
+    public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
     {
         // TODO scope locking for current timeline of user
         TimelineStore timelineStore = allTimelineStores.get().under((Integer) query.getId());

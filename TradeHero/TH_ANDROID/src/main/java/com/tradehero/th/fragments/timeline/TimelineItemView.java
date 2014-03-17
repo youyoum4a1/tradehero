@@ -31,6 +31,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -49,6 +50,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.timeline.TimelineCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -65,7 +67,7 @@ import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout
-        implements DTOView<TimelineItemDTOEnhanced>
+        implements DTOView<TimelineItemDTOKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_item_content) TextView content;
@@ -143,6 +145,7 @@ public class TimelineItemView extends LinearLayout
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<UserTimelineService> userTimelineService;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+    @Inject Lazy<TimelineCache> timelineCache;
     @Inject LocalyticsSession localyticsSession;
 
     private TimelineItemDTOEnhanced timelineItemDTO;
@@ -189,6 +192,7 @@ public class TimelineItemView extends LinearLayout
         {
             @Override public void success(DiscussionDTO discussionDTO, Response response)
             {
+                discussionDTO.populateVote(timelineItemDTO);
                 // TODO update cached timeline item
                 Timber.d("Success");
             }
@@ -255,14 +259,19 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    @Override public void display(TimelineItemDTOEnhanced item)
+    @Override public void display(TimelineItemDTOKey itemKey)
     {
-        UserProfileCompactDTO user = item.getUser();
+        this.timelineItemDTO = timelineCache.get().get(itemKey);
+        if (timelineItemDTO == null)
+        {
+            return;
+        }
+
+        UserProfileCompactDTO user = timelineItemDTO.getUser();
         if (user == null)
         {
             return;
         }
-        timelineItemDTO = item;
 
         // username
         displayUsername(user);
@@ -271,13 +280,13 @@ public class TimelineItemView extends LinearLayout
         displayUserProfilePicture(user);
 
         // markup text
-        displayMarkupText(item);
+        displayMarkupText(timelineItemDTO);
 
         // timeline time
-        displayTimelineTime(item);
+        displayTimelineTime(timelineItemDTO);
 
         // vendor logo
-        displayVendorLogo(item);
+        displayVendorLogo(timelineItemDTO);
 
         displayWatchlistIndicator();
 
