@@ -143,11 +143,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        if (shouldDisableSearchTypeOption)
-        {
-            inflater.inflate(R.menu.search_stock_menu, menu);
-        }
-        else
+        if (!shouldDisableSearchTypeOption)
         {
             inflater.inflate(R.menu.search_stock_people_menu, menu);
         }
@@ -161,6 +157,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.search_stock_menu, menu);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
