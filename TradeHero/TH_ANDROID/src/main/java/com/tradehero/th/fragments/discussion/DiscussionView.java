@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -18,13 +17,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -41,16 +40,12 @@ public class DiscussionView extends RelativeLayout
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
     @InjectView(R.id.timeline_time) TextView time;
 
-    //@InjectView(R.id.timeline_action_button_vote_up) VoteView voteUpWidget;
-    @InjectView(R.id.timeline_action_button_vote_up) TextView voteUp;
-    @InjectView(R.id.timeline_action_button_vote_down) TextView voteDown;
+    @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.timeline_action_button_more) TextView more;
 
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_vote_up,
-            R.id.timeline_action_button_vote_down,
             R.id.timeline_action_button_more,
     })
     public void onItemClicked(View view)
@@ -117,6 +112,8 @@ public class DiscussionView extends RelativeLayout
 
             // timeline time
             displayCommentTime(discussionDTO);
+
+            votePair.display(discussionDTO);
         }
     }
 

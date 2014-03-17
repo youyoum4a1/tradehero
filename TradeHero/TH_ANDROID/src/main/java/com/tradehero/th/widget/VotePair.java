@@ -13,6 +13,8 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -106,9 +108,10 @@ public class VotePair extends LinearLayout
         {
             return;
         }
+        DiscussionType discussionType = getDiscussionType();
 
         DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
-                DiscussionType.TIMELINE_ITEM,
+                discussionType,
                 discussionDTO.id,
                 voteDirection);
         voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>()
@@ -125,6 +128,30 @@ public class VotePair extends LinearLayout
                 Timber.d("Failure");
             }
         });
+    }
+
+    private DiscussionType getDiscussionType()
+    {
+        // TODO Server should return type of discussionDTO, while it does not do so at the moment,
+        // this hAcK will be used to get type of the dto
+        DiscussionType discussionType = null;
+        if (discussionDTO instanceof NewsItemDTO)
+        {
+            discussionType = DiscussionType.NEWS;
+        }
+        else if (discussionDTO instanceof TimelineItemDTOEnhanced)
+        {
+            discussionType = DiscussionType.TIMELINE_ITEM;
+        }
+        else if (discussionDTO instanceof DiscussionDTO)
+        {
+            discussionType = DiscussionType.COMMENT;
+        }
+        else
+        {
+            throw new IllegalStateException("Unknown discussion type");
+        }
+        return discussionType;
     }
 
     private void resetVoting()

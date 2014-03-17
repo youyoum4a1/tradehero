@@ -11,60 +11,7 @@
       android:layout_alignParentTop="true"
       android:layout_gravity="right"
       >
-    <LinearLayout
-        android:id="@+id/timeline_action_button_vote_up_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/comment_action_buttons_horizontal_padding"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/icn_upvote"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/timeline_action_button_vote_up"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:text="0"
-          tools:text="10"
-          />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/timeline_action_button_vote_down_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/comment_action_buttons_horizontal_padding"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/icn_downvote"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/timeline_action_button_vote_down"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:text="0"
-          tools:text="2"
-          />
-    </LinearLayout>
+    <include layout="@layout/vote_pair"/>
 
     <TextView
         android:id="@+id/timeline_action_button_more"
