@@ -24,9 +24,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -55,15 +52,13 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
-import com.tradehero.th.widget.VoteView;
+import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout
@@ -74,20 +69,16 @@ public class TimelineItemView extends LinearLayout
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.timeline_time) TextView time;
-
-    @InjectView(R.id.timeline_action_button_vote_up) VoteView voteUp;
-    @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
+    @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @InjectView(R.id.timeline_action_button_comment) TextView comment;
     @InjectView(R.id.timeline_action_button_more) TextView more;
-    private MiddleCallback<DiscussionDTO> voteCallback;
+    @InjectView(R.id.vote_pair) VotePair votePair;
 
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
             R.id.timeline_vendor_picture,
-            R.id.timeline_action_button_vote_up,
-            R.id.timeline_action_button_vote_down,
             R.id.timeline_action_button_comment,
             R.id.timeline_action_button_more,
     })
@@ -116,26 +107,8 @@ public class TimelineItemView extends LinearLayout
                 PopupMenu popUpMenu = createActionPopupMenu();
                 popUpMenu.show();
                 break;
-
-            case R.id.timeline_action_button_vote_up:
-                Timber.d("voteUp: %b", voteUp.isChecked());
-                if (voteUp.isChecked())
-                {
-                    voteDown.setChecked(false);
-                }
-                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.Unvote);
-                break;
-            case R.id.timeline_action_button_vote_down:
-                if (voteDown.isChecked())
-                {
-                    voteUp.setChecked(false);
-                }
-                updateVoting(voteUp.isChecked() ? VoteDirection.DownVote : VoteDirection.Unvote);
-                break;
         }
     }
-
-    @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @Inject Provider<PrettyTime> prettyTime;
     @Inject CurrentUserId currentUserId;
@@ -182,28 +155,6 @@ public class TimelineItemView extends LinearLayout
         DaggerUtils.inject(this);
     }
 
-    private void updateVoting(VoteDirection voteDirection)
-    {
-        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
-                DiscussionType.TIMELINE_ITEM,
-                timelineItemDTO.id,
-                voteDirection);
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>()
-        {
-            @Override public void success(DiscussionDTO discussionDTO, Response response)
-            {
-                discussionDTO.populateVote(timelineItemDTO);
-                // TODO update cached timeline item
-                Timber.d("Success");
-            }
-
-            @Override public void failure(RetrofitError error)
-            {
-                Timber.d("Failure");
-            }
-        });
-    }
-
     private void openTimelineDiscussion()
     {
         getNavigator().pushFragment(TimelineDiscussion.class, timelineItemDTO.getTimelineKey().getArgs());
@@ -240,10 +191,6 @@ public class TimelineItemView extends LinearLayout
         if (monitorPopupMenu != null)
         {
             monitorPopupMenu.setOnMenuItemClickListener(null);
-        }
-        if (voteCallback != null)
-        {
-            voteCallback.setPrimaryCallback(null);
         }
 
         displayDefaultUserProfilePicture();
@@ -290,37 +237,19 @@ public class TimelineItemView extends LinearLayout
 
         displayWatchlistIndicator();
 
+        if (votePair != null)
+        {
+            votePair.display(timelineItemDTO);
+        }
+
         updateActionButtons();
     }
 
     private void updateActionButtons()
     {
-        voteUp.setValue(timelineItemDTO.upvoteCount);
-        voteDown.setValue(timelineItemDTO.downvoteCount);
-
-        resetMyVoting();
-        VoteDirection voteDirection = VoteDirection.fromValue(timelineItemDTO.voteDirection);
-        switch (voteDirection)
-        {
-            case DownVote:
-                voteDown.setChecked(true);
-                break;
-            case UpVote:
-                voteUp.setChecked(true);
-                break;
-            case Unvote:
-                // do nothing
-                break;
-        }
         comment.setText("" + timelineItemDTO.commentCount);
 
         updateActionButtonsVisibility();
-    }
-
-    private void resetMyVoting()
-    {
-        voteUp.setChecked(false);
-        voteDown.setChecked(false);
     }
 
     private void displayUsername(UserProfileCompactDTO user)
@@ -631,7 +560,7 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    //<editor-fold desc="Navigations">
+    //<editor-fold desc="Navigation">
     private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();

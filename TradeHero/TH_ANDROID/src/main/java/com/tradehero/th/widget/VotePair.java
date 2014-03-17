@@ -2,13 +2,41 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/14/14 Time: 4:21 PM Copyright (c) TradeHero
  */
 public class VotePair extends LinearLayout
 {
+
+    @InjectView(R.id.timeline_action_button_vote_up) VoteView voteUp;
+    @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
+
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+
+    private MiddleCallback<DiscussionDTO> voteCallback;
+    private AbstractDiscussionDTO discussionDTO;
+
     //<editor-fold desc="Constructors">
     public VotePair(Context context)
     {
@@ -25,4 +53,106 @@ public class VotePair extends LinearLayout
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+
+        ButterKnife.inject(this);
+        DaggerUtils.inject(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
+        }
+
+        ButterKnife.reset(this);
+
+        super.onDetachedFromWindow();
+    }
+
+    @OnClick({
+            R.id.timeline_action_button_vote_up,
+            R.id.timeline_action_button_vote_down
+    })
+    public void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_action_button_vote_up:
+                Timber.d("voteUp: %b", voteUp.isChecked());
+                if (voteUp.isChecked())
+                {
+                    voteDown.setChecked(false);
+                }
+                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.Unvote);
+                break;
+            case R.id.timeline_action_button_vote_down:
+                if (voteDown.isChecked())
+                {
+                    voteUp.setChecked(false);
+                }
+                updateVoting(voteUp.isChecked() ? VoteDirection.DownVote : VoteDirection.Unvote);
+                break;
+        }
+    }
+
+    private void updateVoting(VoteDirection voteDirection)
+    {
+        if (discussionDTO == null)
+        {
+            return;
+        }
+
+        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                DiscussionType.TIMELINE_ITEM,
+                discussionDTO.id,
+                voteDirection);
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>()
+        {
+            @Override public void success(DiscussionDTO discussionDTO, Response response)
+            {
+                discussionDTO.populateVote(VotePair.this.discussionDTO);
+                // TODO update cached timeline item
+                Timber.d("Success");
+            }
+
+            @Override public void failure(RetrofitError error)
+            {
+                Timber.d("Failure");
+            }
+        });
+    }
+
+    private void resetVoting()
+    {
+        voteUp.setChecked(false);
+        voteDown.setChecked(false);
+    }
+
+    public void display(AbstractDiscussionDTO discussionDTO)
+    {
+        this.discussionDTO = discussionDTO;
+        voteUp.setValue(discussionDTO.upvoteCount);
+        voteDown.setValue(discussionDTO.downvoteCount);
+
+        resetVoting();
+        VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
+        Timber.d("voteDirection: %s", voteDirection.description);
+        switch (voteDirection)
+        {
+            case DownVote:
+                voteDown.setChecked(true);
+                break;
+            case UpVote:
+                voteUp.setChecked(true);
+                break;
+            case Unvote:
+                // do nothing
+                break;
+        }
+    }
 }

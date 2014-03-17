@@ -35,6 +35,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
+import com.tradehero.th.widget.VotePair;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -55,6 +56,8 @@ import retrofit.converter.Converter;
                 SettingsPayPalFragment.class,
                 ProviderPageIntent.class,
                 DiscussionListLoader.class,
+
+                VotePair.class
         },
         complete = false,
         library = true
