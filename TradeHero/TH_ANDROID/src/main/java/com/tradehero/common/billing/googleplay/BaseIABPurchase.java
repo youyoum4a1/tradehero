@@ -115,7 +115,7 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
             if (remainderFour != 0)
             {
                 Timber.e(new IllegalArgumentException("Patching Google purchase signature that was not of the right length " + signature.length() + " " + this.originalJson + " " + signature), "");
-                for (int i = 0; i < remainderFour; i++)
+                for (int i = 0; i < 4 - remainderFour; i++)
                 {
                     signature += "=";
                 }
