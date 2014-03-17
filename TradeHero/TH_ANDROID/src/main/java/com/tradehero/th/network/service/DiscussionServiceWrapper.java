@@ -37,6 +37,17 @@ import retrofit.Callback;
         return middleCallback;
     }
 
+    public MiddleCallback<DiscussionDTO> vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
+        discussionServiceAsync.vote(
+                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToId,
+                discussionVoteKey.voteDirection.description,
+                middleCallback);
+        return middleCallback;
+    }
+
     public PaginatedDTO<DiscussionDTO> getDiscussions(GetDiscussionsKey discussionsKey)
     {
         return discussionService.getDiscussions(

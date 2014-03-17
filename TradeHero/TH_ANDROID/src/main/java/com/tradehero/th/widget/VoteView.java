@@ -43,7 +43,7 @@ public class VoteView extends CompoundButton
         setValue(originalValue);
     }
 
-    private void setValue(int value)
+    public void setValue(int value)
     {
         String toDisplay = "" + (value + (isChecked() ? 1 : 0));
         super.setText(toDisplay, BufferType.NORMAL);

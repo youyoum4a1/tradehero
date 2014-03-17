@@ -23,6 +23,10 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -42,6 +46,8 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -53,7 +59,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout
@@ -70,6 +78,7 @@ public class TimelineItemView extends LinearLayout
 
     @InjectView(R.id.timeline_action_button_comment) TextView comment;
     @InjectView(R.id.timeline_action_button_more) TextView more;
+    private MiddleCallback<DiscussionDTO> voteCallback;
 
     @OnClick({
             R.id.timeline_user_profile_name,
@@ -107,39 +116,20 @@ public class TimelineItemView extends LinearLayout
                 break;
 
             case R.id.timeline_action_button_vote_up:
+                Timber.d("voteUp: %b", voteUp.isChecked());
                 if (voteUp.isChecked())
                 {
                     voteDown.setChecked(false);
                 }
+                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.Unvote);
                 break;
             case R.id.timeline_action_button_vote_down:
                 if (voteDown.isChecked())
                 {
                     voteUp.setChecked(false);
                 }
+                updateVoting(voteUp.isChecked() ? VoteDirection.DownVote : VoteDirection.Unvote);
                 break;
-        }
-    }
-
-    private void openTimelineDiscussion()
-    {
-        getNavigator().pushFragment(TimelineDiscussion.class, timelineItemDTO.getTimelineKey().getArgs());
-    }
-
-    private void openOtherTimeline()
-    {
-        if (timelineItemDTO != null)
-        {
-            UserProfileCompactDTO user = timelineItemDTO.getUser();
-            if (user != null)
-            {
-                if (currentUserId.get() != user.id)
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
-                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                }
-            }
         }
     }
 
@@ -152,6 +142,7 @@ public class TimelineItemView extends LinearLayout
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<UserTimelineService> userTimelineService;
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
 
     private TimelineItemDTOEnhanced timelineItemDTO;
@@ -188,6 +179,49 @@ public class TimelineItemView extends LinearLayout
         DaggerUtils.inject(this);
     }
 
+    private void updateVoting(VoteDirection voteDirection)
+    {
+        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                DiscussionType.TIMELINE_ITEM,
+                timelineItemDTO.id,
+                voteDirection);
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>()
+        {
+            @Override public void success(DiscussionDTO discussionDTO, Response response)
+            {
+                // TODO update cached timeline item
+                Timber.d("Success");
+            }
+
+            @Override public void failure(RetrofitError error)
+            {
+                Timber.d("Failure");
+            }
+        });
+    }
+
+    private void openTimelineDiscussion()
+    {
+        getNavigator().pushFragment(TimelineDiscussion.class, timelineItemDTO.getTimelineKey().getArgs());
+    }
+
+    private void openOtherTimeline()
+    {
+        if (timelineItemDTO != null)
+        {
+            UserProfileCompactDTO user = timelineItemDTO.getUser();
+            if (user != null)
+            {
+                if (currentUserId.get() != user.id)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                }
+            }
+        }
+    }
+
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
@@ -202,6 +236,10 @@ public class TimelineItemView extends LinearLayout
         if (monitorPopupMenu != null)
         {
             monitorPopupMenu.setOnMenuItemClickListener(null);
+        }
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
         }
 
         displayDefaultUserProfilePicture();
@@ -248,11 +286,32 @@ public class TimelineItemView extends LinearLayout
 
     private void updateActionButtons()
     {
-        voteUp.setText("" + timelineItemDTO.upvoteCount);
-        voteDown.setText("" + timelineItemDTO.downvoteCount);
+        voteUp.setValue(timelineItemDTO.upvoteCount);
+        voteDown.setValue(timelineItemDTO.downvoteCount);
+
+        resetMyVoting();
+        VoteDirection voteDirection = VoteDirection.fromValue(timelineItemDTO.voteDirection);
+        switch (voteDirection)
+        {
+            case DownVote:
+                voteDown.setChecked(true);
+                break;
+            case UpVote:
+                voteUp.setChecked(true);
+                break;
+            case Unvote:
+                // do nothing
+                break;
+        }
         comment.setText("" + timelineItemDTO.commentCount);
 
         updateActionButtonsVisibility();
+    }
+
+    private void resetMyVoting()
+    {
+        voteUp.setChecked(false);
+        voteDown.setChecked(false);
     }
 
     private void displayUsername(UserProfileCompactDTO user)
