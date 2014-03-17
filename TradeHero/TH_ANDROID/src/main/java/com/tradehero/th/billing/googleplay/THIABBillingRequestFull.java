@@ -8,6 +8,8 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.OnFollowResultListener;
 import com.tradehero.th.billing.PurchaseReporter;
 import java.util.List;
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
             BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> purchaseFinishedListener,
             PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener,
             IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> consumptionFinishedListener,
+            OnFollowResultListener followResultListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
             Boolean fetchInventory,
@@ -37,11 +40,13 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
             Boolean fetchPurchase,
             THIABPurchaseOrder purchaseOrder,
             THIABPurchase purchaseToReport,
-            THIABPurchase purchaseToConsume)
+            THIABPurchase purchaseToConsume,
+            UserBaseKey userToFollow)
     {
         super(billingAvailableListener, productIdentifierFetchedListener, inventoryFetchedListener, purchaseFetchedListener, purchaseFinishedListener,
-                purchaseReportedListener, consumptionFinishedListener,
-                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport, purchaseToConsume);
+                purchaseReportedListener, consumptionFinishedListener, followResultListener,
+                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport, purchaseToConsume,
+                userToFollow);
     }
 
     public static class THIABBuilder
@@ -65,6 +70,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
                     getPurchaseFinishedListener(),
                     getPurchaseReportedListener(),
                     getConsumptionFinishedListener(),
+                    getFollowResultListener(),
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
                     getFetchInventory(),
@@ -72,7 +78,8 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
                     getFetchPurchase(),
                     getPurchaseOrder(),
                     getPurchaseToReport(),
-                    getPurchaseToConsume());
+                    getPurchaseToConsume(),
+                    getUserToFollow());
         }
     }
 }
