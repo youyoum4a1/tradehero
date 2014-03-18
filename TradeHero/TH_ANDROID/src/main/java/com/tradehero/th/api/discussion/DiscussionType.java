@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Created by xavier on 3/7/14.
@@ -43,5 +44,11 @@ public enum DiscussionType
             }
         }
         throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
+    }
+
+    @JsonValue
+    final String value()
+    {
+        return description;
     }
 }

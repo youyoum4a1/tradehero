@@ -4,11 +4,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -17,13 +18,15 @@ import javax.inject.Provider;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
-public class TimelineStore implements PersistableResource<TimelineItem>
+public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";
     private Query query;
-    @Inject UserTimelineService timelineService;
 
-    @Override public List<TimelineItem> request()
+    @Inject UserTimelineService timelineService;
+    @Inject TimelineCache timelineCache;
+
+    @Override public List<TimelineItemDTOKey> request()
     {
         if (query != null)
         {
@@ -42,15 +45,25 @@ public class TimelineStore implements PersistableResource<TimelineItem>
 
             if (timelineDTO != null)
             {
-                TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
-                return timelineBuilder.getItems();
+
+                List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
+                for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
+                {
+                    itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
+                    TimelineItemDTOKey timelineKey = itemDTO.getTimelineKey();
+                    timelineCache.put(timelineKey, itemDTO);
+                    timelineItemDTOKeys.add(timelineKey);
+
+                }
+
+                return timelineItemDTOKeys;
             }
         }
 
         return null;
     }
 
-    @Override public void store(SQLiteDatabase db, List<TimelineItem> items)
+    @Override public void store(SQLiteDatabase db, List<TimelineItemDTOKey> items)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -60,7 +73,7 @@ public class TimelineStore implements PersistableResource<TimelineItem>
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public TimelineItem loadFrom(Cursor cursor)
+    @Override public TimelineItemDTOKey loadFrom(Cursor cursor)
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

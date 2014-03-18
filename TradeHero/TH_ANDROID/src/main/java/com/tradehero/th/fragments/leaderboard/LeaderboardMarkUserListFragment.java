@@ -200,7 +200,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             PerPagedFilteredLeaderboardKey newLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
-            Timber.d("" + newLeaderboardKey.equals(currentLeaderboardKey));
 
             if (!newLeaderboardKey.equals(currentLeaderboardKey))
             {

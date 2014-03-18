@@ -34,6 +34,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
 public class PortfolioListItemView extends RelativeLayout implements DTOView<DisplayablePortfolioDTO>
@@ -222,14 +223,14 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
                 displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserId.toUserBaseKey()))
         {
-            THLog.d(TAG, "fetchWatchedSecurities launching");
+            Timber.d("fetchWatchedSecurities launching");
             DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> task = this.userWatchlistPositionCache.getOrFetch(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey(), userWatchlistListener);
             this.userWatchlistFetchTask = task;
             task.execute();
         }
         else
         {
-            THLog.d(TAG, "fetchWatchedSecurities nothing to launch");
+            Timber.d("fetchWatchedSecurities nothing to launch");
 
         }
     }

@@ -16,8 +16,6 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: tho Date: 11/15/13 Time: 11:47 AM Copyright (c) TradeHero */
 public class ExtendedDTO implements DTO
 {
-    private static final String TAG = ExtendedDTO.class.getName();
-
     public static final boolean VERBOSE = false;
 
     @JsonIgnore private transient Map<String, Object> extra;

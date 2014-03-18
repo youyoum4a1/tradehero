@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
     >
   <RelativeLayout android:id="@+id/main_content_wrapper"
       android:layout_width="match_parent"
@@ -23,7 +24,6 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/layout_oval_gray"
         android:padding="1dp"
-        android:layout_marginRight="10dp"
         android:src="@drawable/avatar"
         android:contentDescription="@null"/>
 
@@ -104,6 +104,7 @@
         />
   </RelativeLayout>
 
-  <include layout="@layout/timeline_item_action_buttons"/>
+  <!--<include layout="@layout/timeline_item_action_buttons"/>-->
+  <include layout="@layout/timeline_item_action_buttons_2_0"/>
 
 </com.tradehero.th.fragments.timeline.TimelineItemView>

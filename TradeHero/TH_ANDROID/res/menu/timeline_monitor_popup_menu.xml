@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/timeline_popup_menu_monitor_add_to_watch_list"
       android:title="@null"
-    />
+      />
 
   <item
       android:id="@+id/timeline_popup_menu_monitor_enable_stock_alert"
       android:title="@string/timeline_enable_stock_alert"
-    />
+      />
 
   <item
       android:id="@+id/timeline_popup_menu_monitor_view_graph"
       android:title="@string/timeline_view_graph"
-    />
-
+      />
 </menu>

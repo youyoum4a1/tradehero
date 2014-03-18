@@ -20,19 +20,16 @@ public class TwoStateView extends RelativeLayout
     public TwoStateView(Context context)
     {
         super(context);
-        init();
     }
 
     public TwoStateView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public TwoStateView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
 

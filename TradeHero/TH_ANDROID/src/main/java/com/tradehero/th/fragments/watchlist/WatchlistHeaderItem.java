@@ -22,19 +22,16 @@ public class WatchlistHeaderItem extends TwoStateView
     public WatchlistHeaderItem(Context context)
     {
         super(context);
-        init();
     }
 
     public WatchlistHeaderItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public WatchlistHeaderItem(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+  <LinearLayout
+      android:id="@+id/comment_share_buttons"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:layout_gravity="right"
+      >
+    <include layout="@layout/vote_pair"/>
+
+    <TextView
+        android:id="@+id/timeline_action_button_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/comment_action_buttons_horizontal_padding"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:text="@string/more_character"
+        tools:text="@string/more_character"
+        />
+  </LinearLayout>
+</merge>

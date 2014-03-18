@@ -4,6 +4,7 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
+import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
 import com.tradehero.th.fragments.trending.ResetPortfolioTileView;
@@ -23,7 +24,9 @@ import javax.inject.Singleton;
                 SurveyTileView.class,
                 ResetPortfolioTileView.class,
                 EarnCreditTileView.class,
-                ExtraCashTileView.class
+                ExtraCashTileView.class,
+
+                DiscussionView.class
         },
         complete = false,
         library = true // TODO remove

@@ -18,12 +18,15 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.discussion.TimelineDiscussion;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -49,9 +52,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
-    @Inject protected Lazy<PortfolioCache> portfolioCache;
-    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject protected UserProfileCache userProfileCache;
+    @Inject Lazy<PortfolioCache> portfolioCache;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -267,6 +270,31 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
+    private AdapterView.OnItemClickListener createTimelineOnClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Object item = parent.getItemAtPosition(position);
+
+                if (item instanceof TimelineItemDTOEnhanced)
+                {
+                    pushDiscussion(((TimelineItemDTOEnhanced) item).getTimelineKey());
+                }
+            }
+        };
+    }
+
+    private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
+    {
+        Bundle bundle = new Bundle();
+
+        timelineItemDTOKey.putParameters(bundle);
+
+        getNavigator().pushFragment(TimelineDiscussion.class, bundle);
+    }
+
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         this.shownProfile = userProfileDTO;
@@ -440,8 +468,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
     }
@@ -461,7 +488,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onComplete(Milestone milestone)
                 {
-                    UserProfileDTO cachedUserProfile = userProfileCache.get(shownUserBaseKey);
+                    UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
                     if (cachedUserProfile != null)
                     {
                         linkWith(cachedUserProfile, true);

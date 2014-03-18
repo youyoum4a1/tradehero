@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-  <corners android:bottomLeftRadius="@dimen/timeline_item_corner_radius" android:bottomRightRadius="@dimen/timeline_item_corner_radius"/>
-  <solid android:color="@color/timeline_list_item_action_buttons_background"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+  <shape android:shape="rectangle">
+    <solid android:color="@color/gray_normal"/>
+  </shape>
+</item>
+<item android:top="1dp">
+  <shape>
+    <corners android:bottomLeftRadius="@dimen/timeline_item_corner_radius" android:bottomRightRadius="@dimen/timeline_item_corner_radius"/>
+    <solid android:color="@color/timeline_list_item_action_buttons_background"/>
+  </shape>
+</item>
+</layer-list>
