@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.news.yahoo;
 
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -49,6 +50,9 @@ import timber.log.Timber;
      */
     @Override protected NewsHeadlineList fetch(SecurityId key) throws Throwable
     {
+        if(BuildConfig.DEBUG){
+            Timber.d("NewsHeadlineList fetch news, key:%s",key);
+        }
         String yahooSymbol = getYahooSymbol(key);
         Response rawResponse = null;
         if (yahooSymbol != null)

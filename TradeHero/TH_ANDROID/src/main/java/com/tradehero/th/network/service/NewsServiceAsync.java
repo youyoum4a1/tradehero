@@ -5,15 +5,15 @@ import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemSourceDTO;
+import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.client.Response;
+import retrofit.http.*;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 3:55 PM Copyright (c) TradeHero
  */
-interface NewsServiceAsync
+public interface NewsServiceAsync
 {
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);
 
@@ -52,4 +52,11 @@ interface NewsServiceAsync
 
     @GET("/news/{newsId}")
     void getNewsDetails(@Path("newsId") long newsId, Callback<NewsItemDTO> callback);
+
+
+    @POST("/discussions/news/{headlineItemId}/share")
+    void shareHeadlineItem(
+            @Path("headlineItemId") int headlineItemId,
+            @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
+            Callback<Response> callback);
 }

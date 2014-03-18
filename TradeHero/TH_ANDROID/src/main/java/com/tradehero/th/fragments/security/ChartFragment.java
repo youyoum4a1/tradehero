@@ -98,6 +98,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
         if (chartImage != null)
         {
+            chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            //chartImage.setOnClickListener(chartImageClickListener);//temp
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             {
                 chartImage.setOnClickListener(chartImageClickListener);

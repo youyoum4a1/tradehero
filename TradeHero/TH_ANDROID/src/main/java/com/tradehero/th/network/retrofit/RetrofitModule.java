@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.discussion.DiscussionListLoader;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
@@ -34,6 +35,7 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.network.service.*;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
 import dagger.Module;
@@ -65,11 +67,26 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionService.class);
+    }
+//
+//    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
+//    {
+//        return adapter.create(DiscussionServiceAsync.class);
+//    }
+
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceSync.class);
     }
-    
+//
+//    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
+//    {
+//        return adapter.create(NewsServiceAsync.class);
+//    }
+
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserService.class);
@@ -155,10 +172,10 @@ public class RetrofitModule
         return adapter.create(CompetitionService.class);
     }
 
-    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionService.class);
-    }
+//    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
+//    {
+//        return adapter.create(DiscussionService.class);
+//    }
     //</editor-fold>
 
     @Provides @Singleton ObjectMapper provideObjectMapper()
@@ -211,5 +228,20 @@ public class RetrofitModule
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+    }
+
+    @Provides @Singleton
+    TranslationTokenService provideTranslationTokenService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_REQ_TOKEN_ENDPOINT)
+                .build().create(TranslationTokenService.class);
+    }
+
+    @Provides @Singleton
+    TranslationService provideTranslationService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationService.class);
     }
 }

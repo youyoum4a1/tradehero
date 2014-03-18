@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    >
+
+  <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp">
+
+      <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
+                 android:id="@+id/news_detail_title_placeholder"
+              android:scaleType="centerCrop"
+              android:alpha="0.1"/>
+
+      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:id="@+id/news_detail_title_layout_wrapper"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+          <TextView
+                  android:id="@+id/news_detail_title"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  tools:text="Google to be bought by private equity"
+                  android:textStyle="bold"
+                  android:textSize="17sp"
+
+                  />
+
+          <TextView
+                  android:id="@+id/news_detail_date"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  tools:text="A big one"
+                  android:textSize="11sp"
+                  android:textColor="#777"
+                  android:layout_marginTop="5dp"
+                  android:layout_marginBottom="8dp"
+
+                  />
+
+      </LinearLayout>
+  </FrameLayout>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
+                >
+            <include layout="@layout/news_item_action_buttons"/>
+
+            <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/news_detail_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    tools:text="A big one"
+                    />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="View on the Web"
+                    android:gravity="center"
+                    android:background="#ddd"
+                    android:paddingTop="5dp"
+                    android:layout_marginTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

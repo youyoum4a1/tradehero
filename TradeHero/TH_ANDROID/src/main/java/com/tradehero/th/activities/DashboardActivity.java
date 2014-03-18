@@ -167,6 +167,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (navigator == null)
         {
+            //initialize tabs
             navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         }
 

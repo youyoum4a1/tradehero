@@ -87,7 +87,6 @@
   <dimen name="alert_company_name">@dimen/text_small</dimen>
   <dimen name="alert_item_view_logo_width">80dp</dimen>
   <dimen name="leaderboard_bottom_padding">50dp</dimen>
-  <dimen name="todo_trending_security_item_height">105dp</dimen>
   <dimen name="search_stock_people_padding">8dp</dimen>
   <dimen name="leaderboard_separator_height">10dp</dimen>
   <dimen name="leaderboard_separator_height_negated">-10dp</dimen>
@@ -95,4 +94,14 @@
   <dimen name="trending_list_padding_bottom">95dp</dimen>
   <dimen name="trending_list_padding_top">85dp</dimen>
   <dimen name="discussion_comment_box_height">40dp</dimen>
+
+    <dimen name="security_bg_padding_r_b">2px</dimen>
+    <dimen name="security_bg_padding_t_l">1px</dimen>
+    <dimen name="security_bg_radius">9dp</dimen>
+
+    <dimen name="security_logo_width">180dp</dimen>
+    <dimen name="security_logo_height">45dp</dimen>
+    <dimen name="security_logo_margin_vertical">20dp</dimen>
+    <dimen name="security_logo_offset">12dp</dimen>
+    <dimen name="security_item_height">110dp</dimen>
 </resources>

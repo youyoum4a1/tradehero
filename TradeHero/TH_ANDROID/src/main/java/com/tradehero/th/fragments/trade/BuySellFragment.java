@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Fragment;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -704,6 +705,16 @@ public class BuySellFragment extends AbstractBuySellFragment
                     displayBuySellSwitch();
                 }
             }
+        }
+    }
+
+    protected void flipToBuyIfCannotSell()
+    {
+        Integer maxSellableShares = getMaxSellableShares();
+        if (maxSellableShares != null && maxSellableShares == 0)
+        {
+            // Nothing to sell
+            setTransactionTypeBuy(true);
         }
     }
 

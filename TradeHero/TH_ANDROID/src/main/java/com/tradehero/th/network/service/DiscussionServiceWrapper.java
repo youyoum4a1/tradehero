@@ -7,6 +7,7 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.GetDiscussionsKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import retrofit.Callback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -65,11 +66,22 @@ import retrofit.Callback;
                 discussionVoteKey.voteDirection.description);
     }
 
+
+
     public DiscussionDTO share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return discussionService.share(
                 discussionKey.inReplyToType.description,
                 discussionKey.inReplyToId,
                 timelineItemShareRequestDTO);
+    }
+
+    public void share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<DiscussionDTO>(callback);
+        discussionServiceAsync.share(
+                discussionKey.inReplyToType.description,
+                discussionKey.inReplyToId,
+                timelineItemShareRequestDTO,middleCallback);
     }
 }

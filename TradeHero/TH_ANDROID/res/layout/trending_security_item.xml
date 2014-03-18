@@ -3,25 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/trending_grid_item_bg"
-    android:padding="@dimen/trending_grid_item_padding"
+    android:layout_height="@dimen/security_item_height"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity"
+    android:background="@drawable/trending_grid_item_bg2"
     >
+    <!--android:background="@drawable/trending_grid_item_bg2"-->
+    <!--android:layout_height="@dimen/security_item_height"-->
 
   <ImageView
+      android:padding="@dimen/trending_grid_item_padding"
       android:id="@+id/stock_bg_logo"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
-      android:alpha="0.2"
       tools:background="@color/red"
       android:visibility="visible"
-      />
 
+      />
+    <!--remove the alpha :android:alpha="0.2"-->
   <TextView
       android:id="@+id/stock_name"
       android:layout_width="wrap_content"
@@ -29,17 +31,19 @@
       android:layout_marginLeft="5dp"
       android:layout_marginRight="5dp"
       android:layout_centerHorizontal="true"
-      android:ellipsize="end"
+      android:ellipsize="marquee"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
       android:textStyle="bold"
+      android:singleLine="true"
+
       tools:text="Google"
       />
 
   <ImageView
       android:id="@+id/stock_logo"
       android:layout_width="match_parent"
-      android:layout_height="45dp"
+      android:layout_height="@dimen/security_logo_height"
       android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
       android:layout_marginBottom="2dp"

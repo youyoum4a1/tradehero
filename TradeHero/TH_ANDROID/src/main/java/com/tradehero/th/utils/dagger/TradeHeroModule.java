@@ -42,6 +42,8 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
@@ -51,15 +53,7 @@ import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.fragments.security.NewsTitleListFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
-import com.tradehero.th.fragments.security.StockInfoFragment;
-import com.tradehero.th.fragments.security.StockInfoValueFragment;
-import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
-import com.tradehero.th.fragments.security.WarrantSecurityItemView;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.security.*;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -294,6 +288,10 @@ import javax.inject.Singleton;
 
                         UserFriendDTOView.class,
                         FriendListLoader.class,
+
+                        NewsDialogLayout.class,
+                        NewsHeadlineView.class,
+                        NewsDetailFragment.class,
                 },
         staticInjections =
                 {

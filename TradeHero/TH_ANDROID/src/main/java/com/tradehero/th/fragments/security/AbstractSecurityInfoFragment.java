@@ -30,6 +30,11 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
 
     abstract DTOCache<SecurityId, InfoType> getInfoCache();
 
+    /**
+     * Called in onResume.
+     * @param securityId
+     * @param andDisplay
+     */
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;

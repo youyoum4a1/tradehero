@@ -9,21 +9,33 @@ public class SecurityId implements Comparable, DTOKey, DTO
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
+    private final static String BUNDLE_KEY_ID = SecurityId.class.getName() + ".id";
 
     public final String exchange;
     public final String securitySymbol;
+    //add a new field
+    public final Integer id;
 
     //<editor-fold desc="Constructors">
     public SecurityId(final String exchange, final String securitySymbol)
     {
         this.exchange = exchange;
         this.securitySymbol = securitySymbol;
+        this.id = null;
+    }
+
+    public SecurityId(final String exchange, final String securitySymbol,Integer id)
+    {
+        this.exchange = exchange;
+        this.securitySymbol = securitySymbol;
+        this.id = id;
     }
 
     public SecurityId(Bundle args)
     {
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
+        this.id = args.getInt(BUNDLE_KEY_ID);
     }
     //</editor-fold>
 
@@ -99,6 +111,7 @@ public class SecurityId implements Comparable, DTOKey, DTO
     {
         args.putString(BUNDLE_KEY_EXCHANGE, exchange);
         args.putString(BUNDLE_KEY_SYMBOL, securitySymbol);
+        args.putInt(BUNDLE_KEY_ID, id);
     }
 
     public Bundle getArgs()
