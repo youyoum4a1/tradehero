@@ -13,7 +13,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
@@ -32,11 +31,6 @@ public class PushableTimelineFragment extends TimelineFragment
     private MenuItem menuFollow;
     private MenuItem followingStamp;
     private TextView followButton;
-
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new PushableTimelineTHIABUserInteractor();
-    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -119,7 +113,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         if (userInteractor != null)
         {
-            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
@@ -147,7 +141,8 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                userInteractor.followHero(shownUserBaseKey);
+                // TODO use request
+                //userInteractor.followHero(shownUserBaseKey);
             }
         });
     }
@@ -159,37 +154,18 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    protected void handleShowProductDetailsMilestoneComplete()
     {
-        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
+        displayFollowButton();
+    }
 
-        public PushableTimelineTHIABUserInteractor()
-        {
-            super();
-        }
+    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    {
+        displayFollowButton();
+    }
 
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-            displayFollowButton();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            displayFollowButton();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    displayFollowButton();
-                }
-            };
-        }
+    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
+    {
+        displayFollowButton();
     }
 }

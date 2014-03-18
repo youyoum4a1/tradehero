@@ -5,7 +5,6 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ public class THIABBillingInventoryFetcher
 {
     public static final String TAG = THIABBillingInventoryFetcher.class.getSimpleName();
 
-    @Inject protected Lazy<THIABProductDetailCache> skuDetailCache;
+    @Inject protected THIABProductDetailCache skuDetailCache;
 
     public THIABBillingInventoryFetcher()
     {
@@ -34,7 +33,7 @@ public class THIABBillingInventoryFetcher
     @Override protected HashMap<IABSKU, THIABProductDetail> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
     {
         HashMap<IABSKU, THIABProductDetail> inventory = super.internalFetchCompleteInventory();
-        skuDetailCache.get().put(new ArrayList<>(inventory.values()));
+        skuDetailCache.put(new ArrayList<>(inventory.values()));
         return inventory;
     }
 }

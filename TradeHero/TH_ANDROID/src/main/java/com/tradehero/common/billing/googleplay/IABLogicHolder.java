@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABLogicHolder<
@@ -27,7 +27,12 @@ public interface IABLogicHolder<
                         IABOrderIdType,
                         IABPurchaseType,
                         BillingRequestType,
-                        IABExceptionType>
+                        IABExceptionType>,
+        IABPurchaseConsumerHolder<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABExceptionType>
 {
     IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener(int requestCode);
     void registerConsumptionFinishedListener(int requestCode,

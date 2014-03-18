@@ -5,32 +5,34 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Handler;
+import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.BillingPurchaserHolder;
 import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.request.THBillingRequest;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import dagger.Lazy;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by xavier on 2/24/14.
@@ -59,18 +61,14 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierType,
                 ProductDetailType,
                 ProductDetailViewType>,
-        BillingPurchaserHolderType extends BillingPurchaserHolder<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
-        PurchaseReporterHolderType extends PurchaseReporterHolder<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         THBillingRequestType extends THBillingRequest<
+                        ProductIdentifierType,
+                        ProductDetailType,
+                        PurchaseOrderType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType>,
+        THUIBillingRequestType extends THUIBillingRequest<
                 ProductIdentifierType,
                 ProductDetailType,
                 PurchaseOrderType,
@@ -86,17 +84,17 @@ abstract public class THBaseBillingInteractor<
                 ProductPurchaseType,
                 THBillingLogicHolderType,
                 THBillingRequestType,
-                BillingExceptionType>,
-            BillingAlertDialogUtil.OnDialogProductDetailClickListener<ProductDetailType>
-
+                THUIBillingRequestType,
+                BillingExceptionType>
 {
+    public static final int MAX_RANDOM_RETRIES = 50;
+
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
 
-    protected UserProfileDTO userProfileDTO;
-    protected OwnedPortfolioId applicablePortfolioId;
+    protected Map<Integer, THUIBillingRequestType> uiBillingRequests;
 
     protected ProgressDialog progressDialog;
 
@@ -105,17 +103,11 @@ abstract public class THBaseBillingInteractor<
     {
         super();
         DaggerUtils.inject(this);
-        prepareCallbacks();
+        uiBillingRequests = new HashMap<>();
     }
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    protected void prepareCallbacks()
-    {
-        purchaseFinishedListener = createPurchaseFinishedListener();
-        purchaseReportedListener = createPurchaseReportedListener();
-    }
-
     public void onPause()
     {
     }
@@ -126,25 +118,22 @@ abstract public class THBaseBillingInteractor<
 
     public void onDestroy()
     {
-        purchaseFinishedListener = null;
-        runOnShowProductDetailsMilestoneComplete = null;
         if (progressDialog != null)
         {
             progressDialog.hide();
             progressDialog = null;
         }
-        showProductDetailsMilestoneListener = null;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Logic Holder handling">
-    protected void haveLogicHolderForget(int requestCode)
-    {
-        THBillingLogicHolderType actor = this.getBillingLogicHolder();
-        if (actor != null)
+        THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+        for (Map.Entry<Integer, THUIBillingRequestType> entry : uiBillingRequests.entrySet())
         {
-            actor.forgetRequestCode(requestCode);
+            if (logicHolder != null)
+            {
+                logicHolder.forgetRequestCode(entry.getKey());
+            }
+            entry.getValue().followResultListener = null;
+            entry.getValue().purchaseFinishedListener = null;
         }
+        uiBillingRequests.clear();
     }
     //</editor-fold>
 
@@ -155,35 +144,172 @@ abstract public class THBaseBillingInteractor<
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
 
-    //<editor-fold desc="Billing Available">
-    @Override public Boolean isBillingAvailable()
+    //<editor-fold desc="Request Code Management">
+    @Override public int getUnusedRequestCode()
     {
-        THBillingLogicHolderType billingActorCopy = this.getBillingLogicHolder();
-        return billingActorCopy == null ? null : billingActorCopy.isBillingAvailable();
+        int retries = MAX_RANDOM_RETRIES;
+        int randomNumber;
+        while (retries-- > 0)
+        {
+            randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
+            if (isUnusedRequestCode(randomNumber))
+            {
+                return randomNumber;
+            }
+        }
+        throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
     }
 
-    @Override public AlertDialog conditionalPopBillingNotAvailable()
+    public boolean isUnusedRequestCode(int requestCode)
     {
-        Boolean billingAvailable = isBillingAvailable();
-        if (billingAvailable == null || !billingAvailable) // TODO wait when is null
+        return getBillingLogicHolder().isUnusedRequestCode(requestCode)
+                && !uiBillingRequests.containsKey(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Request Handling">
+    @Override public int run(THUIBillingRequestType uiBillingRequest)
+    {
+        int requestCode = getUnusedRequestCode();
+        uiBillingRequests.put(requestCode, uiBillingRequest);
+        // TODO show a dialog
+        getBillingLogicHolder().run(requestCode, create(uiBillingRequest));
+        return requestCode;
+    }
+
+    protected THBillingRequestType create(THUIBillingRequestType uiBillingRequest)
+    {
+        THBillingRequestType billingRequest = createEmptyBillingRequest(uiBillingRequest);
+        populateBillingRequest(billingRequest, uiBillingRequest);
+        return billingRequest;
+    }
+
+    abstract protected THBillingRequestType createEmptyBillingRequest(THUIBillingRequestType uiBillingRequest);
+
+    protected void populateBillingRequest(THBillingRequestType request, THUIBillingRequestType uiBillingRequest)
+    {
+        request.billingAvailable = uiBillingRequest.billingAvailable;
+        request.billingAvailableListener = createBillingAvailableListener();
+        request.fetchProductIdentifiers = uiBillingRequest.fetchProductIdentifiers;
+        request.productIdentifierFetchedListener = createProductIdentifierFetchedListener();
+        request.fetchInventory = uiBillingRequest.fetchInventory;
+        request.inventoryFetchedListener = createInventoryFetchedListener();
+        request.fetchPurchase = uiBillingRequest.fetchPurchase;
+        request.purchaseFetchedListener = createPurchaseFetchedListener();
+        request.purchaseFinishedListener = createPurchaseFinishedListener();
+        request.purchaseReportedListener = createPurchaseReportedListener();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Inventory Preparation">
+    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
+    {
+        if (progressDialog != null)
         {
-            return popBillingUnavailable();
+            progressDialog.hide();
+        }
+        // TODO add a wait to inform the user
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Product Detail Presentation">
+    protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain skuDomain, int titleResId)
+    {
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
+        {
+            return getBillingAlertDialogUtil().popBuyDialog(
+                    requestCode,
+                    currentActivity,
+                    getBillingLogicHolder(),
+                    THBaseBillingInteractor.this,
+                    skuDomain,
+                    titleResId);
         }
         return null;
     }
 
-    protected void postPopBillingUnavailable()
+    @Override public void onDialogProductDetailClicked(int requestCode, DialogInterface dialogInterface,
+            int position, ProductDetailType productDetail)
     {
-        currentActivityHolder.getCurrentHandler().post(new Runnable()
-        {
-            @Override public void run()
-            {
-                popBillingUnavailable();
-            }
-        });
+        launchPurchaseSequence(requestCode, productDetail.getProductIdentifier());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchasing Sequence">
+    abstract protected THBillingRequestType createPurchaseBillingRequest(int requestCode, ProductIdentifierType productIdentifier);
+    abstract protected void launchPurchaseSequence(int requestCode, ProductIdentifierType productIdentifier);
+    //</editor-fold>
+
+    //<editor-fold desc="Billing Available">
+    protected OnBillingAvailableListener<BillingExceptionType> createBillingAvailableListener()
+    {
+        return new THBaseBillingInteractorBillingAvailableListener();
     }
 
-    @Override public AlertDialog popBillingUnavailable()
+    protected class THBaseBillingInteractorBillingAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
+    {
+        private void forgetListener(int requestCode)
+        {
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
+            {
+                logicHolder.unregisterBillingAvailableListener(requestCode);
+            }
+        }
+
+        @Override public void onBillingAvailable(int requestCode)
+        {
+            forgetListener(requestCode);
+            handleBillingAvailable(requestCode);
+            notifyBillingAvailable(requestCode);
+        }
+
+        @Override public void onBillingNotAvailable(int requestCode, BillingExceptionType billingException)
+        {
+            forgetListener(requestCode);
+            handleBillingNotAvailable(requestCode, billingException);
+            notifyBillingNotAvailable(requestCode, billingException);
+        }
+    }
+
+    protected void handleBillingAvailable(int requestCode)
+    {
+    }
+
+    protected void notifyBillingAvailable(int requestCode)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.billingAvailableListener != null)
+            {
+                billingRequest.billingAvailableListener.onBillingAvailable(requestCode);
+            }
+        }
+    }
+
+    protected void handleBillingNotAvailable(int requestCode, BillingExceptionType billingException)
+    {
+    }
+
+    protected void notifyBillingNotAvailable(int requestCode, BillingExceptionType billingException)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.billingAvailableListener != null)
+            {
+                billingRequest.billingAvailableListener.onBillingNotAvailable(requestCode, billingException);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfBillingNotAvailable)
+        {
+            popBillingUnavailable(billingException);
+        }
+    }
+
+    @Override public AlertDialog popBillingUnavailable(BillingExceptionType billingException)
     {
         Context currentContext = currentActivityHolder.getCurrentContext();
         if (currentContext != null)
@@ -197,188 +323,264 @@ abstract public class THBaseBillingInteractor<
     }
     //</editor-fold>
 
-    //<editor-fold desc="Portfolio Application">
-    public OwnedPortfolioId getApplicablePortfolioId()
+    //<editor-fold desc="Product Identifier Fetch">
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType> createProductIdentifierFetchedListener()
     {
-        return applicablePortfolioId;
+        return new THBaseBillingInteractorOnProductIdentifierFetchedListener();
     }
 
-    public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
+    protected class THBaseBillingInteractorOnProductIdentifierFetchedListener implements ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierType,
+            BillingExceptionType>
     {
-        this.applicablePortfolioId = applicablePortfolioId;
-        prepareProductDetailsPrerequisites();
+        private void forgetListener(int requestCode)
+        {
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
+            {
+                logicHolder.unregisterProductIdentifierFetchedListener(requestCode);
+            }
+        }
+
+        @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+        {
+            forgetListener(requestCode);
+            handleFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
+            notifyFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
+        }
+
+        @Override public void onFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+        {
+            forgetListener(requestCode);
+            handleFetchProductIdentifiersFailed(requestCode, exception);
+            notifyFetchProductIdentifiersFailed(requestCode, exception);
+        }
+    }
+
+    protected void handleFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    {
+    }
+
+    protected void notifyFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.productIdentifierFetchedListener != null)
+            {
+                billingRequest.productIdentifierFetchedListener.onFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
+            }
+        }
+    }
+
+    protected void handleFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+    {
+    }
+
+    protected void notifyFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.productIdentifierFetchedListener != null)
+            {
+                billingRequest.productIdentifierFetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfProductIdentifierFetchFailed)
+        {
+            popFetchProductIdentifiersFailed(requestCode, exception);
+        }
+    }
+
+    protected AlertDialog popFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+    {
+        return null;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Inventory Preparation">
-    protected ShowProductDetailsMilestone showProductDetailsMilestone;
-    protected Milestone.OnCompleteListener showProductDetailsMilestoneListener;
-    protected Runnable runOnShowProductDetailsMilestoneComplete;
-
-    abstract protected void prepareProductDetailsPrerequisites();
-
-    protected void prepareProductDetailsPrerequisites(ProductIdentifierListKey listKey)
+    //<editor-fold desc="Inventory Fetch">
+    protected BillingInventoryFetcher.OnInventoryFetchedListener<
+            ProductIdentifierType,
+            ProductDetailType,
+            BillingExceptionType> createInventoryFetchedListener()
     {
-        showProductDetailsMilestone = createShowProductDetailsMilestone(listKey);
-        showProductDetailsMilestone.setOnCompleteListener(showProductDetailsMilestoneListener);
-        showProductDetailsMilestone.launch();
+        return new THBaseBillingInteractorOnInventoryFetchedListener();
     }
 
-    abstract protected ShowProductDetailsMilestone createShowProductDetailsMilestone(ProductIdentifierListKey listKey);
-
-    public void waitForSkuDetailsMilestoneComplete(Runnable runnable)
+    protected class THBaseBillingInteractorOnInventoryFetchedListener implements BillingInventoryFetcher.OnInventoryFetchedListener<
+            ProductIdentifierType,
+            ProductDetailType,
+            BillingExceptionType>
     {
-        if (showProductDetailsMilestone != null && showProductDetailsMilestone.isComplete())
+        private void forgetListener(int requestCode)
         {
-            if (runnable != null)
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
             {
-                runnable.run();
+                logicHolder.unregisterInventoryFetchedListener(requestCode);
             }
         }
-        else
+
+        @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
         {
-            if (runnable != null)
-            {
-                popDialogLoadingInfo();
-                runOnShowProductDetailsMilestoneComplete = runnable;
-            }
-            if (showProductDetailsMilestone != null && (
-                    showProductDetailsMilestone.isFailed() ||
-                    !showProductDetailsMilestone.isRunning()))
-            {
-                showProductDetailsMilestone.launch();
-            }
-            else
-            {
-                Timber.d("showProductDetailsMilestone is null or already running");
-            }
+            forgetListener(requestCode);
+            handleInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+            notifyInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+        }
+
+        @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+        {
+            forgetListener(requestCode);
+            handleInventoryFetchFail(requestCode, productIdentifiers, exception);
+            notifyInventoryFetchFail(requestCode, productIdentifiers, exception);
         }
     }
 
-    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
+    protected void handleInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
-        if (progressDialog != null)
+        THUIBillingRequestType thuiBillingRequest = uiBillingRequests.get(requestCode);
+        if (thuiBillingRequest != null)
         {
-            progressDialog.hide();
-        }
-        // TODO add a wait to inform the user
-    }
-
-    protected void handleShowProductDetailsMilestoneComplete()
-    {
-        // At this stage, we know the applicable portfolio is available in the cache
-        if (this.applicablePortfolioId != null)
-        {
-            if (this.applicablePortfolioId.portfolioId == null)
+            if (thuiBillingRequest.domainToPresent != null)
             {
-                this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
+                // TODO present domain products
             }
-
-            // We also know that the userProfile is in the cache
-            this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
-
-            runWhatWaitingForProductDetailsMilestone();
         }
     }
 
-    protected void runWhatWaitingForProductDetailsMilestone()
+    protected void notifyInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
-        Runnable runnable = runOnShowProductDetailsMilestoneComplete;
-        if (runnable != null)
+        THUIBillingRequestType thuiBillingRequest = uiBillingRequests.get(requestCode);
+        if (thuiBillingRequest != null)
         {
-            if (progressDialog != null)
+            if (thuiBillingRequest.inventoryFetchedListener != null)
             {
-                progressDialog.hide();
+                thuiBillingRequest.inventoryFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
             }
-            runOnShowProductDetailsMilestoneComplete = null;
-            runnable.run();
         }
+    }
+
+    protected void handleInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+    }
+
+    protected void notifyInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.inventoryFetchedListener != null)
+            {
+                billingRequest.inventoryFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfInventoryFetchFailed)
+        {
+            popInventoryFetchFail(requestCode, productIdentifiers, exception);
+        }
+    }
+
+    protected AlertDialog popInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+        return null;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Product Detail Presentation">
-    public void popBuyDialog(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
+    //<editor-fold desc="Fetch Purchases">
+    protected  BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> createPurchaseFetchedListener()
     {
-        waitForSkuDetailsMilestoneComplete(new Runnable()
+        return new THBaseBillingInteractorOnPurchaseFetchedListener();
+    }
+
+    protected class THBaseBillingInteractorOnPurchaseFetchedListener implements BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>
+    {
+        private void forgetListener(int requestCode)
         {
-            @Override public void run()
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
             {
-                Handler handler = currentActivityHolder.getCurrentHandler();
-                Timber.d("handler %s", handler);
-                if (handler != null)
-                {
-                    handler.post(createShowProductDetailRunnable(skuDomain, titleResId,
-                            runOnPurchaseComplete));
-                }
+                logicHolder.unregisterPurchaseFetchedListener(requestCode);
             }
-        });
-    }
-
-    protected Runnable createShowProductDetailRunnable(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
-    {
-        return new THBaseBillingInteractShowProductDetailRunnable(skuDomain, titleResId, runOnPurchaseComplete);
-    }
-
-    protected class THBaseBillingInteractShowProductDetailRunnable implements Runnable
-    {
-        final public String skuDomain;
-        final public int titleResId;
-        protected Runnable runOnPurchaseComplete;
-
-        public THBaseBillingInteractShowProductDetailRunnable(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
-        {
-            super();
-            this.skuDomain = skuDomain;
-            this.titleResId = titleResId;
-            this.runOnPurchaseComplete = runOnPurchaseComplete;
         }
 
-        public void setRunOnPurchaseComplete(Runnable runOnPurchaseComplete)
+        @Override public void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
         {
-            this.runOnPurchaseComplete = runOnPurchaseComplete;
+            forgetListener(requestCode);
+            handleFetchedPurchases(requestCode, purchases);
+            notifyFetchedPurchases(requestCode, purchases);
         }
 
-        @Override public void run()
+        @Override public void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
         {
-            Activity currentActivity = currentActivityHolder.getCurrentActivity();
-            if (currentActivity != null)
+            forgetListener(requestCode);
+            handleFetchPurchasesFailed(requestCode, exception);
+            notifyFetchPurchasesFailed(requestCode, exception);
+        }
+    }
+
+    protected void handleFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    {
+    }
+
+    protected void notifyFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.purchaseFetchedListener != null)
             {
-                getBillingAlertDialogUtil().popBuyDialog(
-                        currentActivity,
-                        getTHBillingLogicHolder(),
-                        THBaseBillingInteractor.this,
-                        skuDomain,
-                        titleResId,
-                        runOnPurchaseComplete);
+                billingRequest.purchaseFetchedListener.onFetchedPurchases(requestCode, purchases);
             }
         }
     }
 
-    protected Runnable runOnPurchaseComplete;
-
-    @Override public void onDialogProductDetailClicked(DialogInterface dialogInterface,
-            int position, ProductDetailType productDetail, Runnable runOnPurchaseComplete)
+    protected void handleFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
     {
-        this.runOnPurchaseComplete = runOnPurchaseComplete;
-        launchPurchaseSequence(productDetail.getProductIdentifier());
+    }
+
+    protected void notifyFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.purchaseFetchedListener != null)
+            {
+                billingRequest.purchaseFetchedListener.onFetchPurchasesFailed(requestCode, exception);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfPurchaseFetchFailed)
+        {
+            popFetchPurchasesFailed(requestCode, exception);
+        }
+    }
+
+    protected AlertDialog popFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
+    {
+        return null;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Purchasing Sequence">
+    //<editor-fold desc="Purchase">
     protected BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> purchaseFinishedListener;
-    abstract protected BillingPurchaser.OnPurchaseFinishedListener<
-            ProductIdentifierType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType> createPurchaseFinishedListener();
-    abstract protected void launchPurchaseSequence(ProductIdentifierType productIdentifier);
-    abstract protected void launchPurchaseSequence(PurchaseOrderType purchaseOrder);
+            BillingExceptionType> createPurchaseFinishedListener()
+    {
+        return new THBaseBillingInteractorOnPurchaseFinishedListener();
+    }
 
     protected class THBaseBillingInteractorOnPurchaseFinishedListener implements BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
@@ -392,25 +594,69 @@ abstract public class THBaseBillingInteractor<
             super();
         }
 
+        private void forgetListener(int requestCode)
+        {
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
+            {
+                logicHolder.unregisterPurchaseFinishedListener(requestCode);
+            }
+        }
+
         @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
         {
-            haveLogicHolderForget(requestCode);
-            // Children should call report or whatever is relevant
+            forgetListener(requestCode);
+            handlePurchaseFinished(requestCode, purchaseOrder, purchase);
+            notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
         }
 
         @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
         {
-            haveLogicHolderForget(requestCode);
-            runOnPurchaseComplete = null;
-            Timber.e("onPurchaseFailed requestCode %d", requestCode, billingException);
+            forgetListener(requestCode);
+            handlePurchaseFailed(requestCode, purchaseOrder, billingException);
+            notifyPurchaseFailed(requestCode, purchaseOrder, billingException);
         }
     }
 
-    protected void launchPurchaseSequence(BillingPurchaserHolderType purchaserHolder, PurchaseOrderType purchaseOrder)
+    protected void handlePurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
     {
-        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-        purchaserHolder.registerPurchaseFinishedListener(requestCode, purchaseFinishedListener);
-        purchaserHolder.launchPurchaseSequence(requestCode, purchaseOrder);
+    }
+
+    protected void notifyPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.purchaseFinishedListener != null)
+            {
+                billingRequest.purchaseFinishedListener.onPurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+        }
+    }
+
+    protected void handlePurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    {
+    }
+
+    protected void notifyPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.purchaseFinishedListener != null)
+            {
+                billingRequest.purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfPurchaseFailed)
+        {
+            popPurchaseFailed(requestCode, purchaseOrder, billingException);
+        }
+    }
+
+    protected AlertDialog popPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    {
+        return null;
     }
     //</editor-fold>
 
@@ -419,13 +665,10 @@ abstract public class THBaseBillingInteractor<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> purchaseReportedListener;
-    abstract protected PurchaseReporter.OnPurchaseReportedListener<
-            ProductIdentifierType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType> createPurchaseReportedListener();
-    abstract protected void launchReportPurchaseSequence(ProductPurchaseType purchase);
+            BillingExceptionType> createPurchaseReportedListener()
+    {
+        return new THBaseBillingInteractorOnPurchaseReportedListener();
+    }
 
     protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
@@ -438,88 +681,81 @@ abstract public class THBaseBillingInteractor<
             super();
         }
 
+        private void forgetListener(int requestCode)
+        {
+            THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+            if (logicHolder != null)
+            {
+                logicHolder.unregisterPurchaseReportedListener(requestCode);
+            }
+        }
+
         @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
         {
-            haveLogicHolderForget(requestCode);
+            forgetListener(requestCode);
             handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
+            notifyPurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
             // Children should continue with the sequence
         }
 
         @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
         {
-            haveLogicHolderForget(requestCode);
-            runOnPurchaseComplete = null;
-            Timber.e("Failed to report to server", error);
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-            getBillingAlertDialogUtil().popFailedToReport(currentActivityHolder.getCurrentActivity());
+            forgetListener(requestCode);
+            handlePurchaseReportFailed(requestCode, reportedPurchase, error);
+            notifyPurchaseReportFailed(requestCode, reportedPurchase, error);
         }
-    }
-
-    protected void launchReportPurchaseSequence(PurchaseReporterHolderType purchaseReporterHolder, ProductPurchaseType purchase)
-    {
-        Context currentContext = currentActivityHolder.getCurrentContext();
-        if (currentContext != null)
-        {
-            progressDialog = ProgressDialog.show(
-                    currentContext,
-                    currentContext.getString(R.string.store_billing_report_api_launching_window_title),
-                    currentContext.getString(R.string.store_billing_report_api_launching_window_message),
-                    true);
-        }
-        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-        purchaseReporterHolder.registerPurchaseReportedListener(requestCode, purchaseReportedListener);
-        purchaseReporterHolder.launchReportSequence(requestCode, purchase);
     }
 
     protected void handlePurchaseReportSuccess(ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserProfile)
     {
-        userProfileDTO = updatedUserProfile;
-        userProfileCache.get().put(updatedUserProfile.getBaseKey(), updatedUserProfile);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Purchase Virtual Dollars">
-    protected OnPurchaseVirtualDollarListener purchaseVirtualDollarListener;
-
-    abstract public void purchaseVirtualDollar(OwnedPortfolioId ownedPortfolioId);
-
-    public void setPurchaseVirtualDollarListener(OnPurchaseVirtualDollarListener purchaseVirtualDollarListener)
-    {
-        this.purchaseVirtualDollarListener = purchaseVirtualDollarListener;
     }
 
-    abstract protected OnBillingAvailableListener<BillingExceptionType> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId);
-
-    abstract protected class THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
+    protected void notifyPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
-        protected OwnedPortfolioId applicablePortfolioId;
-
-        public THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId portfolioId)
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
         {
-            super();
-            this.applicablePortfolioId = portfolioId;
-        }
-
-        @Override public void onBillingNotAvailable(BillingExceptionType billingException)
-        {
-            OnPurchaseVirtualDollarListener listenerCopy = purchaseVirtualDollarListener;
-            if (listenerCopy != null)
+            if (billingRequest.purchaseReportedListener != null)
             {
-                listenerCopy.onPurchasedVirtualDollarFailed(applicablePortfolioId, billingException);
+                billingRequest.purchaseReportedListener.onPurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
             }
         }
     }
-    //</editor-fold>
 
-    @Override public int run(THBillingRequestType request)
+    protected void handlePurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
-        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-        getBillingLogicHolder().registerBillingAvailableListener(requestCode, request.getBillingAvailableListener());
-        return requestCode;
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
+
+    protected void notifyPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.purchaseReportedListener != null)
+            {
+                billingRequest.purchaseReportedListener.onPurchaseReportFailed(requestCode, reportedPurchase, error);
+            }
+        }
+        if (billingRequest == null || billingRequest.popIfReportFailed)
+        {
+            popPurchaseReportFailed(requestCode, reportedPurchase, error);
+        }
+    }
+
+    protected AlertDialog popPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    {
+        Context currentContext = currentActivityHolder.getCurrentActivity();
+        if (currentContext != null)
+        {
+            return getBillingAlertDialogUtil().popFailedToReport(currentContext);
+        }
+        return null;
+    }
+    //</editor-fold>
 
     protected void popDialogLoadingInfo()
     {
@@ -531,16 +767,10 @@ abstract public class THBaseBillingInteractor<
                     R.string.store_billing_loading_info_window_title,
                     R.string.store_billing_loading_info_window_message
             );
-            progressDialog.setOnCancelListener(
-                    new DialogInterface.OnCancelListener()
-                    {
-                        @Override public void onCancel(DialogInterface dialog)
-                        {
-                            runOnShowProductDetailsMilestoneComplete = null;
-                        }
-                    });
             progressDialog.setCanceledOnTouchOutside(true);
             progressDialog.setCancelable(true);
         }
     }
+
+
 }

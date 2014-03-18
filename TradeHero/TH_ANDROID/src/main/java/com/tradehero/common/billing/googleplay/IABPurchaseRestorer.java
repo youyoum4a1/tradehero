@@ -1,9 +1,9 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.billing.BillingRequest;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABRestorePurchaseMilestoneFailedException;
+import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.milestone.Milestone;
 import java.util.ArrayList;
 import java.util.List;

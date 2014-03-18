@@ -15,7 +15,9 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -88,7 +90,7 @@ public class THIABLogicHolderFull
     }
     //</editor-fold>
 
-    @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)
+    @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
         return ArrayUtils.filter(thskuDetailCache.get(getAllSkus()),
                 THIABProductDetail.getPredicateIsOfCertainDomain(domain));
@@ -138,6 +140,20 @@ public class THIABLogicHolderFull
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
+    @Override public boolean run(int requestCode, THIABBillingRequestFull billingRequest)
+    {
+        boolean launched = super.run(requestCode, billingRequest);
+        if (!launched && billingRequest != null)
+        {
+            if (billingRequest.purchaseToConsume != null)
+            {
+                launchConsumeSequence(requestCode, billingRequest.purchaseToConsume);
+                launched = true;
+            }
+        }
+        return launched;
+    }
+
     @Override protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableProductIdentifiers)
     {
         List<IABSKU> all = new ArrayList<>();
@@ -148,12 +164,12 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.setProductIdentifiersForInventory(all);
+            billingRequest.productIdentifiersForInventory = all;
         }
         super.handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         if (billingRequest != null)
         {
-            launchInventoryFetchSequence(requestCode, billingRequest.getProductIdentifiersForInventory());
+            launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
         }
     }
 
@@ -172,7 +188,7 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.setPurchaseToReport(purchase);
+            billingRequest.purchaseToReport = purchase;
         }
         super.handlePurchaseFinished(requestCode, purchaseOrder, purchase);
         launchReportSequence(requestCode, purchase);
@@ -183,7 +199,7 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.setPurchaseToConsume(reportedPurchase);
+            billingRequest.purchaseToConsume = reportedPurchase;
         }
         super.handlePurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
 
@@ -215,7 +231,7 @@ public class THIABLogicHolderFull
         {
             return null;
         }
-        return billingRequest.getConsumptionFinishedListener();
+        return billingRequest.consumptionFinishedListener;
     }
 
     @Override public void registerConsumptionFinishedListener(int requestCode,
@@ -224,7 +240,7 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.setConsumptionFinishedListener(consumptionFinishedListener);
+            billingRequest.consumptionFinishedListener = consumptionFinishedListener;
             purchaseConsumerHolder.registerConsumptionFinishedListener(requestCode, createPurchaseConsumptionListener());
         }
     }
@@ -251,7 +267,7 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.setConsumptionFinishedListener(null);
+            billingRequest.consumptionFinishedListener = null;
         }
     }
 

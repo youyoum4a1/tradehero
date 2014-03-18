@@ -7,12 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.view.LayoutInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.StoreSKUDetailView;
 import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.utils.ActivityUtil;
@@ -32,12 +34,14 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 {
     public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
 
-    @Inject public ActivityUtil activityUtil;
-    @Inject THIABPurchaseCache thiabPurchaseCache;
+    public ActivityUtil activityUtil;
+    protected THIABPurchaseCache thiabPurchaseCache;
 
-    @Inject public THIABAlertDialogUtil()
+    @Inject public THIABAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)
     {
-        super();
+        super(localyticsSession);
+        this.activityUtil = activityUtil;
+        this.thiabPurchaseCache = thiabPurchaseCache;
     }
 
     @Override public void goToCreateAccount(final Context context)
@@ -207,7 +211,7 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 
     //<editor-fold desc="SKU related">
     @Override protected THSKUDetailsAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, String skuDomain)
+            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
     {
         return new THSKUDetailsAdapter(activity, layoutInflater, skuDomain);
     }
