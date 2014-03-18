@@ -6,6 +6,12 @@
   <string name="user_profile_count_trades">Trades</string>
   <string name="user_profile_count_exchanges">Exchanges</string>
 
+  <string name="user_profile_roi_below">ROI</string>
+
+  <string name="user_profile_button_timeline">Timeline</string>
+  <string name="user_profile_button_portfolios">Portfolios</string>
+  <string name="user_profile_button_stats">Stats</string>
+
   <string name="user_profile_info_required">required</string>
   <string name="user_profile_email">Email</string>
   <string name="user_profile_password">Password</string>

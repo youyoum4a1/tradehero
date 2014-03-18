@@ -80,7 +80,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
             @Override public void onClick(View v)
             {
                 Listener l = listener.get();
-                if (l != null)
+                if (l != null && position != null)
                 {
                     l.onUserClicked(TradeListOverlayHeaderView.this, position.getUserBaseKey());
                 }
@@ -104,7 +104,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
                 @Override public void onClick(View v)
                 {
                     Listener l = listener.get();
-                    if (l != null)
+                    if (l != null && position != null)
                     {
                         l.onSecurityClicked(TradeListOverlayHeaderView.this, position.getOwnedPositionId());
                     }

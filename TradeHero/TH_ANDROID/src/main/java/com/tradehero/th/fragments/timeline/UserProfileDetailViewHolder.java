@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -23,15 +24,15 @@ import javax.inject.Inject;
  */
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    @InjectView(R.id.profile_screen_user_detail_top) protected View profileTop;
-    @InjectView(R.id.user_profile_first_last_name) protected TextView firstLastName;
-    @InjectView(R.id.txt_member_since) protected TextView memberSince;
-    @InjectView(R.id.txt_profile_tradeprofit) protected TextView profitFromTrades;
-    @InjectView(R.id.txt_total_wealth) protected TextView totalWealth;
-    @InjectView(R.id.txt_additional_cash) protected TextView additionalCash;
-    @InjectView(R.id.txt_cash_on_hand) protected TextView cashOnHand;
-    @InjectView(R.id.user_profile_trade_count) protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count) protected TextView exchangesCount;
+    @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
+    @InjectView(R.id.user_profile_first_last_name) @Optional protected TextView firstLastName;
+    @InjectView(R.id.txt_member_since) @Optional protected TextView memberSince;
+    @InjectView(R.id.txt_profile_tradeprofit) @Optional protected TextView profitFromTrades;
+    @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
+    @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
+    @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
+    @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
+    @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     private Target topBackgroundTarget;
@@ -272,12 +273,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
         @Override public void onBitmapFailed(Drawable errorDrawable)
         {
-
         }
 
         @Override public void onPrepareLoad(Drawable placeHolderDrawable)
         {
-
         }
     }
 }

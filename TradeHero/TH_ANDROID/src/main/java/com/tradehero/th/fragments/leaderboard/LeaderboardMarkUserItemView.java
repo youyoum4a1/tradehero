@@ -136,6 +136,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
 
         lbmuFollowUser.setEnabled(false);
+
+        if (lbmuProfilePicture != null)
+        {
+            lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     @Override protected void onAttachedToWindow()
@@ -171,6 +176,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         loadDefaultUserImage();
         ownUserInteractor = null;
+
+        if (lbmuProfilePicture != null)
+        {
+            lbmuProfilePicture.setImageDrawable(null);
+        }
 
         super.onDetachedFromWindow();
     }

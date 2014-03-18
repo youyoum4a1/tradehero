@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_marginBottom="8dp"
+      >
+
+    <!--Followers-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_followers_count"
+          tools:text="0"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_count_followers"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
+
+    <!--Heroes-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_heroes_count"
+          tools:text="1"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_count_heroes"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      >
+
+    <!--Trades-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_trade_count"
+          tools:text="56"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_count_trades"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
+
+    <!--Exchanges-->
+    <LinearLayout
+        style="@style/UserProfile.ValueContainer"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_roi"
+          tools:text="65%"
+          style="@style/UserProfile.Contained.Value"
+          />
+
+      <TextView
+          android:text="@string/user_profile_roi_below"
+          style="@style/UserProfile.Contained.Header"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</merge>

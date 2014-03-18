@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.timeline.TimelineHeaderButtonView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    style="@style/UserProfile.ButtonContainer"
+    >
+
+  <Button
+      android:id="@+id/btn_profile_timeline"
+      style="@style/UserProfile.Button"
+      android:text="@string/user_profile_button_timeline"
+      />
+
+  <Button
+      android:id="@+id/btn_profile_portfolios"
+      style="@style/UserProfile.Button"
+      android:text="@string/user_profile_button_portfolios"
+      />
+
+  <Button
+      android:id="@+id/btn_profile_stats"
+      style="@style/UserProfile.Button"
+      android:text="@string/user_profile_button_stats"
+      />
+
+</com.tradehero.th.fragments.timeline.TimelineHeaderButtonView>

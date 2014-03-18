@@ -219,8 +219,8 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroyView()
     {
-        detachExchangeListFetchTask();
         detachProviderListTask();
+        detachExchangeListFetchTask();
         detachUserFetchTask();
         this.onFilterTypeChangedListener = null;
 
@@ -263,9 +263,9 @@ public class TrendingFragment extends SecurityListFragment
     @Override public void onDestroy()
     {
         exchangeListTypeCacheListener = null;
+        userProfileFetchListener = null;
         thIntentPassedListener = null;
         providerListCallback = null;
-        userProfileFetchListener = null;
         super.onDestroy();
     }
 
