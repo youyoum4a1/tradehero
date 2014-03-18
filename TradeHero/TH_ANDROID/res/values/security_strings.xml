@@ -38,5 +38,6 @@
   <string name="error_fetch_security_info">There was an error when fetching the security information</string>
   <string name="error_fetch_detailed_security_info">There was an error when fetching the detailed security information</string>
   <string name="error_fetch_quote">There was an error fetching quote information</string>
+  <string name="security_close">Close</string>
 
 </resources>

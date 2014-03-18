@@ -19,7 +19,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -40,7 +39,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -51,10 +49,10 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -67,8 +65,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -81,10 +77,6 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import com.viewpagerindicator.PageIndicator;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -322,7 +314,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
             });
         }
-
         if (mNewsTextView != null)
         {
             mNewsTextView.setOnClickListener(new OnClickListener()
@@ -406,6 +397,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserId);
         portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListMilestoneListener);
         portfolioCompactListRetrievedMilestone.launch();
+        DashboardNavigator dn = getDashboardNavigator();
+        if (dn != null)
+        {
+            dn.hideTabBar();
+        }
     }
 
     @Override public void onPause()
@@ -587,7 +583,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
 
         if (andDisplay)
         {
@@ -614,7 +609,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(userProfileDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayQuickPriceButtonSet();
@@ -626,7 +620,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayBuySellPrice();
@@ -703,6 +696,14 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (maxSellableShares != null)
             {
                 linkWithSellQuantity(maxSellableShares, true);
+                if (maxSellableShares == 0)
+                {
+                    setTransactionTypeBuy(true);
+                }
+                else
+                {
+                    displayBuySellSwitch();
+                }
             }
         }
     }
@@ -1038,8 +1039,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         else
         {
-            Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO, portfolioCompactDTO);
+            Integer maxSellableShares = getMaxSellableShares();
             if (maxSellableShares == null || maxSellableShares == 0)
             {
                 supportSell = false;
@@ -1636,8 +1636,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             if (!isTransactionTypeBuy && positionDTOCompactList != null && portfolioCompactDTO != null)
             {
-                Integer maxSellableShares = positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO, portfolioCompactDTO);
+                Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares != null && maxSellableShares != 0)
                 {
                     cashLeftText = String.valueOf(maxSellableShares - mQuantity);//share left

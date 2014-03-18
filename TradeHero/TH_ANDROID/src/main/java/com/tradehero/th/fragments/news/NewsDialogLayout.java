@@ -127,7 +127,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 socialNetworkEnum = SocialNetworkEnum.TW;
                 break;
             case 2:
-                socialNetworkEnum = SocialNetworkEnum.LI;
+                socialNetworkEnum = SocialNetworkEnum.LN;
                 break;
             default:
                 break;

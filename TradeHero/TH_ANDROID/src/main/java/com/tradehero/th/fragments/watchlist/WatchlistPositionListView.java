@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.watchlist;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
@@ -40,6 +41,8 @@ public class WatchlistPositionListView extends PullToRefreshListView
 
     public void setRefreshableView(ListView watchlistListView)
     {
-        getRefreshableViewWrapper().addView(watchlistListView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        FrameLayout wrapper = getRefreshableViewWrapper();
+        wrapper.removeAllViews();
+        wrapper.addView(watchlistListView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 }

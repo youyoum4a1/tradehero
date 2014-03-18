@@ -504,7 +504,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected Integer clampedSellQuantity(Integer candidate)
     {
         Integer maxSellable = getMaxSellableShares();
-        if (candidate == null || maxSellable == null)
+        if (candidate == null || maxSellable == null || maxSellable == 0)
         {
             return candidate;
         }
