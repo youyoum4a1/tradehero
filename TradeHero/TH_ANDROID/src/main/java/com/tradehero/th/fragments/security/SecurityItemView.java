@@ -729,6 +729,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     }
 
     private Bitmap processTransformation(ImageView target, Bitmap bmp) {
+//        if(true){
+//            return bmp;
+//        }
+
         if(bmp == null || bmp.isRecycled()){
             return null;
         }
@@ -751,7 +755,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             Bitmap background = backgroundTransformation.transform(transformResult);
 
             Bitmap retVal =  mergeBitmaps(background, logo, false,parent.getWidth(),parent.getHeight());
-            if(callback.isTest()){
+            if(true || callback.isTest()){
                 Log.i("onOriginalBitmapLoaded", String.format("original:%s,%s;scale:%s;scaled:%s,%s;transformed:%s,%s;parent:%s,%s",
                         originalWidth, originalHeight,
                         scale,

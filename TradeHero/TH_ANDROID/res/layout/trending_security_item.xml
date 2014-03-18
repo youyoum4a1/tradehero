@@ -8,6 +8,8 @@
     tools:context=".activities.DashboardActivity"
     android:background="@drawable/trending_grid_item_bg2"
     >
+    <!--android:background="@drawable/trending_grid_item_bg2"-->
+    <!--android:layout_height="@dimen/security_item_height"-->
 
   <ImageView
       android:padding="@dimen/trending_grid_item_padding"
@@ -41,7 +43,7 @@
   <ImageView
       android:id="@+id/stock_logo"
       android:layout_width="match_parent"
-      android:layout_height="45dp"
+      android:layout_height="@dimen/security_logo_height"
       android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
       android:layout_marginBottom="2dp"
