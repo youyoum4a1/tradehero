@@ -15,8 +15,6 @@ import com.tradehero.th.R;
 
 public class WebViewFragment extends BaseWebViewFragment
 {
-    public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
-
     @Override protected int getLayoutResId()
     {
         return R.layout.fragment_webview;
