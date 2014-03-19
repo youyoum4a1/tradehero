@@ -15,4 +15,7 @@
   <string name="link_now">Link now!</string>
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
+  <string name="upgrade_needed">Upgrade needed</string>
+  <string name="update_now">Update now</string>
+  <string name="update_guide">Please reinstall TradeHero</string>
 </resources>

@@ -1,8 +1,16 @@
 package com.tradehero.th.base;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.misc.DeviceType;
@@ -26,6 +34,7 @@ import com.tradehero.th.persistence.prefs.SavedCredentials;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.urbanairship.push.PushManager;
@@ -59,6 +68,8 @@ public class THUser
     @Inject static Lazy<SessionService> sessionService;
     @Inject static Lazy<UserProfileCache> userProfileCache;
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
+    @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
+    @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
 
     public static void initialize()
     {
@@ -221,6 +232,33 @@ public class THUser
 
             @Override public void failure(THException error)
             {
+                if (error.getCode() == ExceptionCode.DoNotRunBellow)
+                {
+                    final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+                    alertDialogUtil.get().popWithOkCancelButton(
+                            currentActivity, R.string.upgrade_needed, R.string.please_update, R.string.update_now, R.string.later,
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override public void onClick(DialogInterface dialog, int which)
+                                {
+                                    try
+                                    {
+                                        THToast.show(R.string.update_guide);
+                                        currentActivity.startActivity(
+                                                new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                        currentActivity.finish();
+                                    }
+                                    catch (ActivityNotFoundException ex)
+                                    {
+
+                                        currentActivity.startActivity(
+                                                new Intent(Intent.ACTION_VIEW,
+                                                        Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                        currentActivity.finish();
+                                    }
+                                }
+                            });
+                }
                 callback.done(null, error);
             }
         };

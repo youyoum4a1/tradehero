@@ -59,12 +59,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
+
+        currentActivityHolder.setCurrentActivity(this);
 
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
