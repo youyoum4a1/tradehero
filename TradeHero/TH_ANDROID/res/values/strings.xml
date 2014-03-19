@@ -18,4 +18,5 @@
   <string name="upgrade_needed">Upgrade needed</string>
   <string name="update_now">Update now</string>
   <string name="update_guide">Please reinstall TradeHero</string>
+  <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
 </resources>

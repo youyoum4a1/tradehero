@@ -203,11 +203,14 @@ public class THUser
     {
         return new THCallback<UserProfileDTO>()
         {
-            @Override public void success(UserProfileDTO userDTO, THResponse response)
+            @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
             {
-                currentUserId.set(userDTO.id);
+                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(json);
-                callback.done(userDTO, null);
+
+                UserLoginDTO userLoginDTO = new UserLoginDTO();
+                userLoginDTO.profileDTO = userProfileDTO;
+                callback.done(userLoginDTO, null);
             }
 
             @Override public void failure(THException error)
@@ -228,7 +231,8 @@ public class THUser
                 userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
                 currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(json);
-                callback.done(userProfileDTO, null);
+
+                callback.done(userLoginDTO, null);
             }
 
             @Override public void failure(THException error)

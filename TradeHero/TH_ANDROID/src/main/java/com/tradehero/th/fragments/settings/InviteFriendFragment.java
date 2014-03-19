@@ -32,6 +32,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -143,7 +144,7 @@ public class InviteFriendFragment extends DashboardFragment
         };
         socialNetworkCallback = new LogInCallback()
         {
-            @Override public void done(UserBaseDTO user, THException ex)
+            @Override public void done(UserLoginDTO user, THException ex)
             {
                 if (!isDetached())
                 {
