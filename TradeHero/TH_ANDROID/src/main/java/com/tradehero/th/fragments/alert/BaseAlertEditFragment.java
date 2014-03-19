@@ -308,13 +308,14 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
-            userInteractor.conditionalPopBuyStockAlerts(new Runnable()
-            {
-                @Override public void run()
-                {
-                    saveAlert();
-                }
-            });
+            // TODO pop buy alert
+            //userInteractor.conditionalPopBuyStockAlerts(new Runnable()
+            //{
+            //    @Override public void run()
+            //    {
+            //        saveAlert();
+            //    }
+            //});
         }
         else
         {

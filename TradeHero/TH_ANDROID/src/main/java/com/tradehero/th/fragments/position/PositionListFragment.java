@@ -72,17 +72,4 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
             }
         }
     }
-
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new PositionListTHIABUserInteractor();
-    }
-
-    public class PositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
-    {
-        public PositionListTHIABUserInteractor()
-        {
-            super();
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.request;
 
+import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -42,7 +43,7 @@ public class UIBillingRequest<
      * Indicates whether we want the Interactor to pop a dialog when billing is not available
      */
     public boolean popIfBillingNotAvailable;
-    public OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+    public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
 
     /**
      * Indicates whether we want to fetch the product identifiers

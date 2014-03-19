@@ -116,12 +116,6 @@ abstract public class BaseIABLogicHolder<
         }
     }
 
-    @Override protected void testBillingAvailable()
-    {
-        availabilityTester = new AvailabilityTester();
-        availabilityTester.startConnectionSetup();
-    }
-
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return
@@ -171,25 +165,5 @@ abstract public class BaseIABLogicHolder<
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         purchaserHolder.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public class AvailabilityTester extends IABServiceConnector
-    {
-        protected AvailabilityTester()
-        {
-            super();
-        }
-
-        @Override protected void handleSetupFinished(IABResponse response)
-        {
-            super.handleSetupFinished(response);
-            notifyBillingAvailable();
-        }
-
-        @Override protected void handleSetupFailed(IABException exception)
-        {
-            super.handleSetupFailed(exception);
-            notifyBillingNotAvailable(exception);
-        }
     }
 }

@@ -127,11 +127,6 @@ public class LeaderboardPositionListFragment
         };
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new LeaderboardPositionListTHIABUserInteractor();
-    }
-
     @Override public void onTradeHistoryClicked(PositionInPeriodDTO clickedPositionDTO)
     {
         // We should not call the super method.
@@ -149,14 +144,6 @@ public class LeaderboardPositionListFragment
                 displayProgress(false);
                 linkWith(value, true);
             }
-        }
-    }
-
-    public class LeaderboardPositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
-    {
-        public LeaderboardPositionListTHIABUserInteractor()
-        {
-            super();
         }
     }
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -246,12 +247,12 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Billing Available">
-    protected OnBillingAvailableListener<BillingExceptionType> createBillingAvailableListener()
+    protected BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> createBillingAvailableListener()
     {
         return new THBaseBillingInteractorBillingAvailableListener();
     }
 
-    protected class THBaseBillingInteractorBillingAvailableListener implements OnBillingAvailableListener<BillingExceptionType>
+    protected class THBaseBillingInteractorBillingAvailableListener implements BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>
     {
         private void forgetListener(int requestCode)
         {
