@@ -2,29 +2,43 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.res.Resources;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 =======
 import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingAvailableTester;
+=======
+>>>>>>> Cleanup.
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
+<<<<<<< HEAD
 import com.tradehero.common.billing.googleplay.IABResponse;
 >>>>>>> Introduced a billing available tester holder to mimic other holders.
+=======
+>>>>>>> Cleanup.
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
+<<<<<<< HEAD
+=======
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBaseBillingLogicHolder;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import com.tradehero.th.network.service.UserServiceWrapper;
+>>>>>>> Cleanup.
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
@@ -57,11 +71,20 @@ public class THIABLogicHolderFull
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 >>>>>>> Introduced a billing available tester holder to mimic other holders.
 
+<<<<<<< HEAD
     public THIABLogicHolderFull()
     {
         super();
         purchaseReporterHolder = createPurchaseReporterHolder();
         DaggerUtils.inject(this);
+=======
+    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
+    {
+        super(userProfileCache, userServiceWrapper);
+        this.iabskuListCache = iabskuListCache;
+        this.thskuDetailCache = thskuDetailCache;
+        purchaseConsumerHolder = createPurchaseConsumeHolder();
+>>>>>>> Cleanup.
     }
 
     @Override public void onDestroy()
