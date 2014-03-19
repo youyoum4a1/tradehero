@@ -15,8 +15,8 @@ public interface IABPurchaseConsumerHolder<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
-            IABExceptionType> getConsumeFinishedListener(int requestCode);
-    void registerConsumeFinishedListener(int requestCode, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+            IABExceptionType> getConsumptionFinishedListener(int requestCode);
+    void registerConsumptionFinishedListener(int requestCode, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,

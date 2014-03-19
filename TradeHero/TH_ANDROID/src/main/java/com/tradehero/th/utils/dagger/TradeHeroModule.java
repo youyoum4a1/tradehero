@@ -1,7 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
@@ -179,7 +178,6 @@ import javax.inject.Singleton;
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         MarkdownTextView.class,
 
                         NewsTitleListFragment.class,
@@ -249,7 +247,6 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
-                        LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
@@ -272,16 +269,12 @@ import javax.inject.Singleton;
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseRestorer.class,
                         THIABPurchaseFetchMilestone.class,
-                        BaseIABLogicHolder.AvailabilityTester.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         PurchaseRestorerRequiredMilestone.class,
                         THIABUserInteractor.class,
-                        StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
-                        HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
                         HeroManagerInfoFetcher.class,
-                        BuySellFragment.BuySellTHIABUserInteractor.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

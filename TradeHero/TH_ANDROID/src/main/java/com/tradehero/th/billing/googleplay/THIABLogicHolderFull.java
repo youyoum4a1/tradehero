@@ -1,16 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.content.Intent;
 import android.content.res.Resources;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
-import com.tradehero.common.billing.googleplay.BaseIABSKUList;
-=======
-import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
-import com.tradehero.common.billing.BillingAvailableTester;
-=======
->>>>>>> Cleanup.
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
@@ -18,85 +9,55 @@ import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
-<<<<<<< HEAD
-import com.tradehero.common.billing.googleplay.IABResponse;
->>>>>>> Introduced a billing available tester holder to mimic other holders.
-=======
->>>>>>> Cleanup.
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
-<<<<<<< HEAD
-=======
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.network.service.UserServiceWrapper;
->>>>>>> Cleanup.
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderFull
-    extends BaseIABLogicHolder<
-            IABSKU,
-            THIABProductIdentifierFetcherHolder,
-            THIABProductDetail,
-            THIABInventoryFetcherHolder,
-            THIABPurchaseOrder,
-            THIABOrderId,
-            THIABPurchase,
-            THIABPurchaseFetcherHolder,
-            THIABPurchaserHolder,
-            THIABPurchaseConsumerHolder,
-            THIABBillingRequest>
+    extends THBaseBillingLogicHolder<
+                IABSKU,
+                THIABProductDetail,
+                THIABPurchaseOrder,
+                THIABOrderId,
+                THIABPurchase,
+                THIABBillingRequestFull,
+                IABException>
     implements THIABLogicHolder
 {
     public static final String TAG = THIABLogicHolderFull.class.getSimpleName();
 
-    protected THIABPurchaseReporterHolder purchaseReporterHolder;
+    private IABSKUListCache iabskuListCache;
+    private THIABProductDetailCache thskuDetailCache;
 
-<<<<<<< HEAD
-    @Inject protected Lazy<IABSKUListCache> iabskuListCache;
-    @Inject protected Lazy<THIABProductDetailCache> thskuDetailCache;
-=======
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
->>>>>>> Introduced a billing available tester holder to mimic other holders.
 
-<<<<<<< HEAD
-    public THIABLogicHolderFull()
-    {
-        super();
-        purchaseReporterHolder = createPurchaseReporterHolder();
-        DaggerUtils.inject(this);
-=======
     @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
     {
         super(userProfileCache, userServiceWrapper);
         this.iabskuListCache = iabskuListCache;
         this.thskuDetailCache = thskuDetailCache;
         purchaseConsumerHolder = createPurchaseConsumeHolder();
->>>>>>> Cleanup.
     }
 
     @Override public void onDestroy()
     {
-<<<<<<< HEAD
-        if (purchaseReporterHolder != null)
-        {
-            purchaseReporterHolder.onDestroy();
-        }
-=======
         purchaseConsumerHolder.onDestroy();
->>>>>>> Introduced a billing available tester holder to mimic other holders.
         super.onDestroy();
     }
 
@@ -105,57 +66,30 @@ public class THIABLogicHolderFull
         return resources.getString(R.string.th_iab_logic_holder_name);
     }
 
-<<<<<<< HEAD
-    @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
-    {
-        return inventoryFetcherHolder;
-    }
-
-    @Override public THIABPurchaseFetcherHolder getPurchaseFetcherHolder()
-    {
-        return purchaseFetcherHolder;
-    }
-
-    @Override public THIABPurchaserHolder getPurchaserHolder()
-    {
-        return purchaserHolder;
-    }
-
-    @Override public THIABPurchaseConsumerHolder getPurchaseConsumerHolder()
-    {
-        return purchaseConsumerHolder;
-    }
-
-    @Override public THIABPurchaseReporterHolder getPurchaseReporterHolder()
-    {
-        return purchaseReporterHolder;
-    }
-
-=======
     //<editor-fold desc="Request Code Management">
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return super.isUnusedRequestCode(requestCode) &&
-                purchaseReporterHolder.isUnusedRequestCode(requestCode);
+        return super.isUnusedRequestCode(requestCode)
+                && purchaseConsumerHolder.isUnusedRequestCode(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
         super.forgetRequestCode(requestCode);
-        purchaseReporterHolder.forgetRequestCode(requestCode);
+        purchaseConsumerHolder.forgetRequestCode(requestCode);
     }
+    //</editor-fold>
 
-    @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)
+    @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()),
+        return ArrayUtils.filter(thskuDetailCache.get(getAllSkus()),
                 THIABProductDetail.getPredicateIsOfCertainDomain(domain));
     }
 
-    @Override protected BaseIABSKUList<IABSKU> getAllSkus()
+    protected BaseIABSKUList<IABSKU> getAllSkus()
     {
-        BaseIABSKUList<IABSKU> mixed = iabskuListCache.get().get(IABSKUListType.getInApp());
-        BaseIABSKUList<IABSKU> subs = iabskuListCache.get().get(IABSKUListType.getSubs());
+        BaseIABSKUList<IABSKU> mixed = iabskuListCache.get(IABSKUListType.getInApp());
+        BaseIABSKUList<IABSKU> subs = iabskuListCache.get(IABSKUListType.getSubs());
         if (subs != null)
         {
             mixed.addAll(subs);
@@ -163,6 +97,7 @@ public class THIABLogicHolderFull
         return mixed;
     }
 
+    //<editor-fold desc="Holder Creation">
     @Override protected THIABProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
     {
         return new THBaseIABProductIdentifierFetcherHolder();
@@ -183,26 +118,20 @@ public class THIABLogicHolderFull
         return new THBaseIABPurchaserHolder();
     }
 
-<<<<<<< HEAD
-    @Override protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
-=======
     @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
     {
         return new BaseIABBillingAvailableTesterHolder();
     }
 
     protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     {
         return new THBaseIABPurchaseConsumerHolder();
     }
 
-    protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
+    @Override protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
     {
         return new THBaseIABPurchaseReporterHolder();
     }
-<<<<<<< HEAD
-=======
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
@@ -397,5 +326,4 @@ public class THIABLogicHolderFull
     {
         return inventoryFetcherHolder.hadErrorLoadingInventory();
     }
->>>>>>> Introduced a billing available tester holder to mimic other holders.
 }

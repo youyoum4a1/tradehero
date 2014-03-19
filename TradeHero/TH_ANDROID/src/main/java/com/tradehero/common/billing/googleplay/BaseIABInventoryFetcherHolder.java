@@ -54,19 +54,7 @@ abstract public class BaseIABInventoryFetcherHolder<
     {
         latestInventoryFetcherException = null;
         BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
-                fetchedListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>()
-        {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
-            {
-                notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-            }
-
-            @Override public void onInventoryFetchFail(int requestCode, List<IABSKUType> productIdentifiers, IABException exception)
-            {
-                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
-            }
-        };
-        inventoryFetchedListeners.put(requestCode, fetchedListener);
+                fetchedListener = createInventoryFetchedListener();
 
         IABInventoryFetcherType inventoryFetcher = createInventoryFetcher();
         iabInventoryFetchers.put(requestCode, inventoryFetcher);

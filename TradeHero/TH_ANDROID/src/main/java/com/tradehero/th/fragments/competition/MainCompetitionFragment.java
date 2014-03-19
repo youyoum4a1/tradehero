@@ -311,14 +311,14 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
+        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
     private void pushPortfolioElement(CompetitionZonePortfolioDTO competitionZoneDTO)
     {
         // TODO We need to be able to launch async when the portfolio Id is finally not null
-        OwnedPortfolioId ownedPortfolioId = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();

@@ -23,7 +23,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    protected THIABUserInteractor userInteractor;
+    @Inject protected THIABUserInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
@@ -37,20 +37,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListRetrievedListener = new BasePurchaseManagementPortfolioCompactListRetrievedListener();
-    }
-
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        createUserInteractor();
-    }
-
-    /**
-     * You are encouraged to override this method to specify your own UserInteractor.
-     */
-    protected void createUserInteractor()
-    {
-        userInteractor = new THIABUserInteractor();
     }
 
     @Override public void onResume()
@@ -155,7 +141,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        userInteractor.setApplicablePortfolioId(purchaseApplicablePortfolioId);
         if (andDisplay)
         {
         }

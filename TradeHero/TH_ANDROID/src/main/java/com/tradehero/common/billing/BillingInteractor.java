@@ -2,6 +2,8 @@ package com.tradehero.common.billing;
 
 import android.app.AlertDialog;
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.common.billing.request.UIBillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingInteractor<
@@ -21,6 +23,13 @@ public interface BillingInteractor<
                         BillingRequestType,
                         BillingExceptionType>,
         BillingRequestType extends BillingRequest<
+                        ProductIdentifierType,
+                        ProductDetailType,
+                        PurchaseOrderType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType>,
+        UIBillingRequestType extends UIBillingRequest<
                 ProductIdentifierType,
                 ProductDetailType,
                 PurchaseOrderType,
@@ -29,10 +38,9 @@ public interface BillingInteractor<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
+    int getUnusedRequestCode();
     BillingLogicHolderType getBillingLogicHolder();
 
-    Boolean isBillingAvailable();
-    AlertDialog conditionalPopBillingNotAvailable();
-    AlertDialog popBillingUnavailable();
-    int run(BillingRequestType request);
+    AlertDialog popBillingUnavailable(BillingExceptionType billingException);
+    int run(UIBillingRequestType uiBillingRequest);
 }

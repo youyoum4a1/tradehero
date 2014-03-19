@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.billing.googleplay;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.fragments.billing.StoreSKUDetailView;
 
@@ -12,12 +13,12 @@ public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, S
     public static final String TAG = THSKUDetailsAdapter.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    public THSKUDetailsAdapter(Context context, LayoutInflater inflater, String skuDomain)
+    public THSKUDetailsAdapter(Context context, LayoutInflater inflater, ProductIdentifierDomain skuDomain)
     {
         super(context, inflater, R.layout.store_sku_detail, skuDomain);
     }
 
-    public THSKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
+    public THSKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId, ProductIdentifierDomain skuDomain)
     {
         super(context, inflater, layoutResourceId, skuDomain);
     }

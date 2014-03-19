@@ -50,7 +50,6 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -281,11 +280,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setOnPopulatedListener(this);
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new BuySellTHIABUserInteractor();
-    }
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -358,14 +352,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
-
-        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
-        {
-            @Override public void run()
-            {
-                display();
-            }
-        });
 
         detachPortfolioCompactMilestone();
         portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserId);
@@ -1329,7 +1315,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void handleBtnAddCashPressed()
     {
-        userInteractor.conditionalPopBuyVirtualDollars();
+        // TODO
+        //userInteractor.conditionalPopBuyVirtualDollars();
     }
 
     private void handleBtnAddTriggerClicked()
@@ -1607,27 +1594,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_buy_sell;
-    }
-
-    public class BuySellTHIABUserInteractor extends THIABUserInteractor
-    {
-        public BuySellTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-            // Like this we retest for the possibility to buy and sell
-            display(); // TODO
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-        {
-            super.handleShowProductDetailsMilestoneFailed(throwable);
-            Timber.e("Failed to load the sku details", throwable);
-        }
     }
 
     protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener

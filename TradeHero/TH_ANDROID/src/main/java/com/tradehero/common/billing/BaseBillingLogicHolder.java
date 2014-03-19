@@ -1,12 +1,9 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-<<<<<<< HEAD
-import java.util.ArrayList;
-=======
 import com.tradehero.common.billing.request.BillingRequest;
->>>>>>> Introduced a billing available tester holder to mimic other holders.
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,12 +16,12 @@ abstract public class BaseBillingLogicHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends BillingRequest<
-                ProductIdentifierType,
-                ProductDetailType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
+                        ProductIdentifierType,
+                        ProductDetailType,
+                        PurchaseOrderType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingLogicHolder<
         ProductIdentifierType,
@@ -37,10 +34,6 @@ abstract public class BaseBillingLogicHolder<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-<<<<<<< HEAD
-    protected Boolean billingAvailable = null;
-    protected Map<Integer, OnBillingAvailableListener<BillingExceptionType>> billingAvailableListeners;
-=======
     protected Map<Integer, BillingRequestType> billingRequests;
 
     protected BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
@@ -48,17 +41,10 @@ abstract public class BaseBillingLogicHolder<
     protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
     protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
     protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
->>>>>>> Introduced a billing available tester holder to mimic other holders.
 
     public BaseBillingLogicHolder()
     {
         super();
-<<<<<<< HEAD
-        billingAvailableListeners = new HashMap<>();
-        testBillingAvailable();
-    }
-
-=======
         billingRequests = new HashMap<>();
 
         billingAvailableTesterHolder= createBillingAvailableTesterHolder();
@@ -74,15 +60,15 @@ abstract public class BaseBillingLogicHolder<
     abstract protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFetcherHolder();
     abstract protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaserHolder();
 
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     @Override public void onDestroy()
     {
-        if (billingAvailableListeners != null)
+        for (BillingRequestType billingRequest : billingRequests.values())
         {
-            billingAvailableListeners.clear();
+            if (billingRequest != null)
+            {
+                billingRequest.onDestroy();
+            }
         }
-<<<<<<< HEAD
-=======
         billingRequests.clear();
 
         billingAvailableTesterHolder.onDestroy();
@@ -90,7 +76,6 @@ abstract public class BaseBillingLogicHolder<
         inventoryFetcherHolder.onDestroy();
         purchaseFetcherHolder.onDestroy();
         purchaserHolder.onDestroy();
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     }
 
     //<editor-fold desc="Request Code Management">
@@ -109,37 +94,24 @@ abstract public class BaseBillingLogicHolder<
         throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
     }
 
-    @Override public boolean isUnusedRequestCode(int randomNumber)
+    @Override public boolean isUnusedRequestCode(int requestCode)
     {
-<<<<<<< HEAD
-        return !billingAvailableListeners.containsKey(randomNumber);
-=======
         return !billingRequests.containsKey(requestCode);
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-<<<<<<< HEAD
-        billingAvailableListeners.remove(requestCode);
-=======
         billingRequests.remove(requestCode);
 
         unregisterProductIdentifierFetchedListener(requestCode);
         unregisterInventoryFetchedListener(requestCode);
         unregisterPurchaseFetchedListener(requestCode);
         unregisterPurchaseFinishedListener(requestCode);
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     }
     //</editor-fold>
 
     @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
     {
-<<<<<<< HEAD
-        registerBillingAvailableListener(requestCode, billingRequest.getBillingAvailableListener());
-    }
-
-=======
         registerBillingAvailableListener(requestCode, billingRequest.billingAvailableListener);
         registerProductIdentifierFetchedListener(requestCode, billingRequest.productIdentifierFetchedListener);
         registerInventoryFetchedListener(requestCode, billingRequest.inventoryFetchedListener);
@@ -223,7 +195,6 @@ abstract public class BaseBillingLogicHolder<
     }
     //</editor-fold>
 
->>>>>>> Introduced a billing available tester holder to mimic other holders.
     //<editor-fold desc="Billing Available">
     @Override public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
     {
@@ -245,21 +216,6 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-<<<<<<< HEAD
-    protected void notifyBillingAvailable()
-    {
-        billingAvailable = true;
-        OnBillingAvailableListener<BillingExceptionType> availableListener;
-        // Protect from unsync when unregistering the listeners
-        for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
-        {
-            availableListener = billingAvailableListeners.get(requestCode);
-            if (availableListener != null)
-            {
-                availableListener.onBillingAvailable();
-            }
-            billingAvailableListeners.remove(requestCode);
-=======
     @Override public void unregisterBillingAvailableListener(int requestCode)
     {
         // TODO unregister holder
@@ -276,21 +232,10 @@ abstract public class BaseBillingLogicHolder<
         if (availableListener != null)
         {
             availableListener.onBillingAvailable(requestCode);
->>>>>>> Introduced a billing available tester holder to mimic other holders.
         }
+        unregisterBillingAvailableListener(requestCode);
     }
 
-<<<<<<< HEAD
-    protected void notifyBillingNotAvailable(BillingExceptionType exception)
-    {
-        billingAvailable = false;
-        OnBillingAvailableListener<BillingExceptionType> availableListener;
-        // Protect from unsync when unregistering the listeners
-        for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
-        {
-            availableListener = billingAvailableListeners.get(requestCode);
-            if (availableListener != null)
-=======
     protected void notifyBillingNotAvailable(int requestCode, BillingExceptionType exception)
     {
         BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> availableListener = getBillingAvailableListener(requestCode);
@@ -329,12 +274,249 @@ abstract public class BaseBillingLogicHolder<
         return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>()
         {
             @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
->>>>>>> Introduced a billing available tester holder to mimic other holders.
             {
-                availableListener.onBillingNotAvailable(exception);
+                handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
             }
-            billingAvailableListeners.remove(requestCode);
+
+            @Override public void onFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+            {
+                notifyProductIdentifierFetchedFailed(requestCode, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterProductIdentifierFetchedListener(int requestCode)
+    {
+        productIdentifierFetcherHolder.forgetRequestCode(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.productIdentifierFetchedListener = null;
         }
+    }
+
+    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    {
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
+        if (productIdentifierFetchedListener != null)
+        {
+            productIdentifierFetchedListener.onFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
+        }
+        unregisterProductIdentifierFetchedListener(requestCode);
+    }
+
+    protected void notifyProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
+    {
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
+        if (productIdentifierFetchedListener != null)
+        {
+            productIdentifierFetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
+        }
+        unregisterProductIdentifierFetchedListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Fetch Inventory">
+    @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.inventoryFetchedListener;
+    }
+
+    @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.inventoryFetchedListener = inventoryFetchedListener;
+            inventoryFetcherHolder.registerInventoryFetchedListener(requestCode, createInventoryFetchedListener());
+        }
+    }
+
+    protected BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetchedListener()
+    {
+        return new BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>()
+        {
+            @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+            {
+                handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+            }
+
+            @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+            {
+                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterInventoryFetchedListener(int requestCode)
+    {
+        inventoryFetcherHolder.forgetRequestCode(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.inventoryFetchedListener = null;
+        }
+    }
+
+    protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+    {
+        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener = getInventoryFetchedListener(requestCode);
+        if (inventoryFetchedListener != null)
+        {
+            inventoryFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+        }
+        unregisterInventoryFetchedListener(requestCode);
+    }
+
+    protected void notifyInventoryFetchFailed(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener = getInventoryFetchedListener(requestCode);
+        if (inventoryFetchedListener != null)
+        {
+            inventoryFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
+        }
+        unregisterInventoryFetchedListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Fetch Purchase">
+    @Override public BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFetchedListener(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.purchaseFetchedListener;
+    }
+
+    @Override public void registerPurchaseFetchedListener(int requestCode, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseFetchedListener = purchaseFetchedListener;
+            purchaseFetcherHolder.registerPurchaseFetchedListener(requestCode, createPurchaseFetchedListener());
+        }
+    }
+
+    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFetchedListener()
+    {
+        return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
+        {
+            @Override public void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+            {
+                handlePurchaseFetchedSuccess(requestCode, purchases);
+            }
+
+            @Override public void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
+            {
+                notifyPurchaseFetchedFailed(requestCode, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterPurchaseFetchedListener(int requestCode)
+    {
+        purchaseFetcherHolder.forgetRequestCode(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseFetchedListener = null;
+        }
+    }
+
+    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    {
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
+        if (purchaseFetchedListener != null)
+        {
+            purchaseFetchedListener.onFetchedPurchases(requestCode, purchases);
+        }
+        unregisterPurchaseFetchedListener(requestCode);
+    }
+
+    protected void notifyPurchaseFetchedFailed(int requestCode, BillingExceptionType exception)
+    {
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
+        if (purchaseFetchedListener != null)
+        {
+            purchaseFetchedListener.onFetchPurchasesFailed(requestCode, exception);
+        }
+        unregisterPurchaseFetchedListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchasing">
+    @Override public BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFinishedListener(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.purchaseFinishedListener;
+    }
+
+    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseFinishedListener = purchaseFinishedListener;
+            purchaserHolder.registerPurchaseFinishedListener(requestCode, createPurchaseFinishedListener());
+        }
+    }
+
+    protected BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFinishedListener()
+    {
+        return new BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
+        {
+            @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+            {
+                handlePurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+
+            @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
+            {
+                notifyPurchaseFailed(requestCode, purchaseOrder, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterPurchaseFinishedListener(int requestCode)
+    {
+        purchaserHolder.forgetRequestCode(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseFinishedListener = null;
+        }
+    }
+
+    protected void notifyPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    {
+        BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener = getPurchaseFinishedListener(requestCode);
+        if (purchaseFinishedListener != null)
+        {
+            purchaseFinishedListener.onPurchaseFinished(requestCode, purchaseOrder, purchase);
+        }
+        unregisterPurchaseFinishedListener(requestCode);
+    }
+
+    protected void notifyPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    {
+        BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener = getPurchaseFinishedListener(requestCode);
+        if (purchaseFinishedListener != null)
+        {
+            purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
+        }
+        unregisterPurchaseFinishedListener(requestCode);
     }
     //</editor-fold>
 }

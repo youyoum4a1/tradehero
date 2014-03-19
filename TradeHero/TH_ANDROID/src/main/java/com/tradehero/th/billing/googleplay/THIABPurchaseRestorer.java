@@ -8,6 +8,7 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.utils.DaggerUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -23,12 +24,10 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         THIABOrderId,
         THIABPurchase,
         THIABLogicHolder,
-        THIABPurchaseConsumerHolder,
-        THIABBillingRequest>
+        THIABBillingRequestFull>
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject THIABLogicHolder logicHolder;
-    private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
     private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener;
@@ -36,8 +35,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     public THIABPurchaseRestorer(THIABLogicHolder logicHolder)
     {
-        super(logicHolder, logicHolder.getPurchaseConsumerHolder());
-        this.actorPurchaseReporter = new WeakReference<>(logicHolder.getPurchaseReporterHolder());
+        super(logicHolder);
         failedReports = new ArrayList<>();
         DaggerUtils.inject(this);
     }
@@ -137,7 +135,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     {
         THIABPurchase purchase = remainingPurchasesToWorkOn.get(0);
         remainingPurchasesToWorkOn.remove(purchase);
-        THIABPurchaseReporterHolder actorReporter = actorPurchaseReporter.get();
+        THIABPurchaseReporterHolder actorReporter = logicHolder;
         if (actorReporter != null)
         {
             requestCodeReporter = logicHolder.getUnusedRequestCode();

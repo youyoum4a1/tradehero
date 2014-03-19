@@ -149,7 +149,8 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                userInteractor.conditionalPopBuyStockAlerts();
+                // TODO
+                //userInteractor.conditionalPopBuyStockAlerts();
             }
         });
 

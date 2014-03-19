@@ -4,17 +4,17 @@ import com.tradehero.common.billing.googleplay.IABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THBillingLogicHolder;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface THIABLogicHolder extends
-        THIABProductDetailDomainInformer,
         IABLogicHolder<
                         IABSKU,
                         THIABProductDetail,
                         THIABPurchaseOrder,
                         THIABOrderId,
                         THIABPurchase,
-                        THIABBillingRequest,
+                THIABBillingRequestFull,
                         IABException>,
         THBillingLogicHolder<
                 IABSKU,
@@ -22,17 +22,15 @@ public interface THIABLogicHolder extends
                 THIABPurchaseOrder,
                 THIABOrderId,
                 THIABPurchase,
-                THIABBillingRequest,
-                IABException>
+                THIABBillingRequestFull,
+                IABException>,
+        THIABProductDetailDomainInformer,
+        THIABProductIdentifierFetcherHolder,
+        THIABInventoryFetcherHolder,
+        THIABPurchaseFetcherHolder,
+        THIABPurchaserHolder,
+        THIABPurchaseReporterHolder,
+        THIABPurchaseConsumerHolder
 {
-    @Deprecated
-    THIABInventoryFetcherHolder getInventoryFetcherHolder();
-    @Deprecated
-    THIABPurchaseFetcherHolder getPurchaseFetcherHolder();
-    @Deprecated
-    THIABPurchaserHolder getPurchaserHolder();
-    @Deprecated
-    THIABPurchaseConsumerHolder getPurchaseConsumerHolder();
-    @Deprecated
-    THIABPurchaseReporterHolder getPurchaseReporterHolder();
+    void unregisterPurchaseConsumptionListener(int requestCode);
 }

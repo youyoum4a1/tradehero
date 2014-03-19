@@ -1,7 +1,6 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,28 +13,23 @@ abstract public class BaseProductIdentifierFetcherHolder<
         BillingExceptionType extends BillingException>
     implements ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>> productIdentifierFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierType,
-            BillingExceptionType>>> parentProductIdentifierFetchedListeners;
+            BillingExceptionType>> parentProductIdentifierFetchedListeners;
 
     public BaseProductIdentifierFetcherHolder()
     {
         super();
-        productIdentifierFetchedListeners = new HashMap<>();
         parentProductIdentifierFetchedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {
-        return
-                !productIdentifierFetchedListeners.containsKey(randomNumber) &&
-                !parentProductIdentifierFetchedListeners.containsKey(randomNumber);
+        return !parentProductIdentifierFetchedListeners.containsKey(randomNumber);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        productIdentifierFetchedListeners.remove(requestCode);
         parentProductIdentifierFetchedListeners.remove(requestCode);
     }
 
@@ -43,22 +37,30 @@ abstract public class BaseProductIdentifierFetcherHolder<
             ProductIdentifierType,
             BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
     {
-        WeakReference<ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                ProductIdentifierType,
-                BillingExceptionType>> weakListener = parentProductIdentifierFetchedListeners
-                .get(requestCode);
-        if (weakListener == null)
-        {
-            return null;
-        }
-        return weakListener.get();
+        return parentProductIdentifierFetchedListeners.get(requestCode);
     }
 
     @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierType,
             BillingExceptionType> productIdentifierFetchedListener)
     {
-        parentProductIdentifierFetchedListeners.put(requestCode, new WeakReference<>(productIdentifierFetchedListener));
+        parentProductIdentifierFetchedListeners.put(requestCode, productIdentifierFetchedListener);
+    }
+
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetchedListener()
+    {
+        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>()
+        {
+            @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
+            {
+                notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
+            }
+
+            @Override public void onFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
+            {
+                notifyProductIdentifierFetchedFailed(requestCode, exception);
+            }
+        };
     }
 
     protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
@@ -86,7 +88,6 @@ abstract public class BaseProductIdentifierFetcherHolder<
 
     @Override public void onDestroy()
     {
-        productIdentifierFetchedListeners.clear();
         parentProductIdentifierFetchedListeners.clear();
     }
 }

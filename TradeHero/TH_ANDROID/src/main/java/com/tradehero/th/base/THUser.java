@@ -26,7 +26,6 @@ import com.tradehero.th.persistence.prefs.SavedCredentials;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.urbanairship.push.PushManager;
 import dagger.Lazy;

@@ -451,7 +451,8 @@ public class TrendingFragment extends SecurityListFragment
     {
         if (userInteractor != null)
         {
-            userInteractor.conditionalPopBuyResetPortfolio();
+            // TODO
+            //userInteractor.conditionalPopBuyResetPortfolio();
         }
     }
 
@@ -459,7 +460,8 @@ public class TrendingFragment extends SecurityListFragment
     {
         if (userInteractor != null)
         {
-            userInteractor.conditionalPopBuyVirtualDollars();
+            // TODO
+            //userInteractor.conditionalPopBuyVirtualDollars();
         }
     }
 

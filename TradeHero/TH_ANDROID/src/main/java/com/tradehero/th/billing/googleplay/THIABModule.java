@@ -1,10 +1,15 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.common.billing.ProductDetailCache;
+import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.THBillingRequest;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
+import com.tradehero.th.billing.request.THBillingRequest;
+import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Module;
 import dagger.Provides;
@@ -28,6 +33,11 @@ public class THIABModule
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;
+    }
+
+    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(IABSKUListCache iabskuListCache)
+    {
+        return iabskuListCache;
     }
 
     @Provides @Singleton ProductDetailCache provideProductDetailCache(THIABProductDetailCache productDetailCache)
@@ -55,8 +65,13 @@ public class THIABModule
         return new THIABUserInteractor();
     }
 
-    @Provides THBillingRequest.THBuilder provideTHBillingRequestBuilder(THIABBillingRequest.THIABBuilder builder)
+    @Provides THBillingRequest provideBillingRequest(THIABBillingRequestFull request)
     {
-        return builder;
+        return request;
+    }
+
+    @Provides THUIBillingRequest provideUIBillingRequest(THUIIABBillingRequest request)
+    {
+        return request;
     }
 }

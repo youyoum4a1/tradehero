@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
@@ -34,9 +35,12 @@ abstract public class BillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    public BillingAlertDialogUtil()
+    protected LocalyticsSession localyticsSession;
+
+    public BillingAlertDialogUtil(LocalyticsSession localyticsSession)
     {
         super();
+        this.localyticsSession = localyticsSession;
     }
 
     //<editor-fold desc="Billing Available">
@@ -67,23 +71,23 @@ abstract public class BillingAlertDialogUtil<
     abstract public HashMap<ProductIdentifier, Boolean> getEnabledItems();
 
     public AlertDialog popBuyDialog(
+            int requestCode,
             Activity activity,
             ProductDetailDomainInformerType domainInformer,
             OnDialogProductDetailClickListener<ProductDetailType> clickListener,
-            String skuDomain,
-            int titleResId,
-            Runnable runOnPurchaseComplete)
+            ProductIdentifierDomain skuDomain,
+            int titleResId)
     {
-        return popBuyDialog(activity, domainInformer, clickListener, skuDomain, titleResId, runOnPurchaseComplete, getEnabledItems());
+        return popBuyDialog(requestCode, activity, domainInformer, clickListener, skuDomain, titleResId, getEnabledItems());
     }
 
     public AlertDialog popBuyDialog(
+            int requestCode,
             Activity activity,
             ProductDetailDomainInformerType domainInformer,
             OnDialogProductDetailClickListener<ProductDetailType> clickListener,
-            String skuDomain,
+            ProductIdentifierDomain skuDomain,
             int titleResId,
-            Runnable runOnPurchaseComplete,
             Map<ProductIdentifier, Boolean> enabledItems)
     {
         final ProductDetailAdapterType detailAdapter = createProductDetailAdapter(activity, activity.getLayoutInflater(), skuDomain);
@@ -92,21 +96,23 @@ abstract public class BillingAlertDialogUtil<
         List<ProductDetailType> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailAdapter.setItems(desiredSkuDetails);
 
-        return popBuyDialog(activity, detailAdapter, titleResId, clickListener, runOnPurchaseComplete);
+        localyticsSession.tagEvent(skuDomain.localyticsShowTag);
+
+        return popBuyDialog(requestCode, activity, detailAdapter, titleResId, clickListener);
     }
 
     abstract protected ProductDetailAdapterType createProductDetailAdapter(
             Activity activity,
             LayoutInflater layoutInflater,
-            String skuDomain);
+            ProductIdentifierDomain skuDomain);
     abstract protected Comparator<ProductDetailType> createProductDetailComparator();
 
     public AlertDialog popBuyDialog(
+            final int requestCode,
             final Context context,
             final ProductDetailAdapterType detailsAdapter,
             int titleResId,
-            final OnDialogProductDetailClickListener<ProductDetailType> clickListener,
-            final Runnable runOnPurchaseComplete)
+            final OnDialogProductDetailClickListener<ProductDetailType> clickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -119,10 +125,11 @@ abstract public class BillingAlertDialogUtil<
                         if (clickListener != null)
                         {
                             clickListener.onDialogProductDetailClicked(
+                                    requestCode,
                                     dialogInterface,
                                     i,
-                                    (ProductDetailType) detailsAdapter.getItem(i),
-                                    runOnPurchaseComplete);
+                                    (ProductDetailType) detailsAdapter.getItem(i)
+                            );
                         }
                         dialogInterface.cancel();
                     }
@@ -141,11 +148,13 @@ abstract public class BillingAlertDialogUtil<
         return alertDialog;
     }
 
-    public static interface OnDialogProductDetailClickListener<
-            ProductDetailType extends ProductDetail>
+    public static interface OnDialogProductDetailClickListener<ProductDetailType extends ProductDetail>
     {
-        void onDialogProductDetailClicked(DialogInterface dialogInterface, int position,
-                ProductDetailType productDetail, Runnable runOnPurchaseComplete);
+        void onDialogProductDetailClicked(
+                int requestCode,
+                DialogInterface dialogInterface,
+                int position,
+                ProductDetailType productDetail);
     }
     //</editor-fold>
 
