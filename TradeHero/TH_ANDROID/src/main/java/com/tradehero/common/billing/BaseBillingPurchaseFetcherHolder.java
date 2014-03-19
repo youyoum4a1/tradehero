@@ -50,6 +50,7 @@ abstract public class BaseBillingPurchaseFetcherHolder<
     }
 
     /**
+     * The listener needs to be strongly referenced elsewhere.
      * @param requestCode
      * @param purchaseFetchedListener
      */
@@ -63,7 +64,7 @@ abstract public class BaseBillingPurchaseFetcherHolder<
     }
 
     protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
-        createPurchaseFetchedListener()
+    createPurchaseFetchedListener()
     {
         return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
         {

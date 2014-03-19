@@ -41,6 +41,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
     }
 
     /**
+     * The listener needs to be strong referenced elsewhere
      * @param requestCode
      * @param inventoryFetchedListener
      */

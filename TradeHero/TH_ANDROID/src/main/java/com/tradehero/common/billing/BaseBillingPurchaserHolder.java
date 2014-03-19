@@ -45,6 +45,7 @@ abstract public class BaseBillingPurchaserHolder<
     }
 
     /**
+     * The listener should be strongly referenced elsewhere.
      * @param purchaseFinishedListener
      * @return
      */
@@ -75,19 +76,19 @@ abstract public class BaseBillingPurchaserHolder<
         {
             @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
             {
-                notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
+                notifyIABPurchaseFinished(requestCode, purchaseOrder, purchase);
             }
 
             @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
             {
-                notifyPurchaseFailed(requestCode, purchaseOrder, exception);
+                notifyIABPurchaseFailed(requestCode, purchaseOrder, exception);
             }
         };
     }
 
-    protected void notifyPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    protected void notifyIABPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
     {
-        Timber.d("notifyPurchaseFinished Purchase " + purchase);
+        Timber.d("notifyIABPurchaseFinished Purchase " + purchase);
         BillingPurchaser.OnPurchaseFinishedListener<
                 ProductIdentifierType,
                 PurchaseOrderType,
@@ -96,18 +97,18 @@ abstract public class BaseBillingPurchaserHolder<
                 BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            Timber.d("notifyPurchaseFinished passing on the purchase for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
             handler.onPurchaseFinished(requestCode, purchaseOrder, purchase);
         }
         else
         {
-            Timber.d("notifyPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
         }
     }
 
-    protected void notifyPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
+    protected void notifyIABPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
     {
-        Timber.e("notifyPurchaseFailed There was an exception during the purchase", exception);
+        Timber.e("notifyIABPurchaseFailed There was an exception during the purchase", exception);
         BillingPurchaser.OnPurchaseFinishedListener<
                 ProductIdentifierType,
                 PurchaseOrderType,
@@ -116,7 +117,7 @@ abstract public class BaseBillingPurchaserHolder<
                 BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            Timber.d("notifyPurchaseFailed passing on the exception for requestCode " + requestCode);
+            Timber.d("notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);
             handler.onPurchaseFailed(requestCode, purchaseOrder, exception);
         }
         else
