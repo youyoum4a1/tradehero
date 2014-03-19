@@ -1,9 +1,23 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.res.Resources;
+<<<<<<< HEAD
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
+=======
+import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
+import com.tradehero.common.billing.BillingAvailableTester;
+import com.tradehero.common.billing.BillingAvailableTesterHolder;
+import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
+import com.tradehero.common.billing.googleplay.BaseIABSKUList;
+import com.tradehero.common.billing.googleplay.IABBillingAvailableTesterHolder;
+import com.tradehero.common.billing.googleplay.IABConstants;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
+import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
+import com.tradehero.common.billing.googleplay.IABResponse;
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -36,8 +50,12 @@ public class THIABLogicHolderFull
 
     protected THIABPurchaseReporterHolder purchaseReporterHolder;
 
+<<<<<<< HEAD
     @Inject protected Lazy<IABSKUListCache> iabskuListCache;
     @Inject protected Lazy<THIABProductDetailCache> thskuDetailCache;
+=======
+    protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
 
     public THIABLogicHolderFull()
     {
@@ -48,10 +66,14 @@ public class THIABLogicHolderFull
 
     @Override public void onDestroy()
     {
+<<<<<<< HEAD
         if (purchaseReporterHolder != null)
         {
             purchaseReporterHolder.onDestroy();
         }
+=======
+        purchaseConsumerHolder.onDestroy();
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
         super.onDestroy();
     }
 
@@ -60,6 +82,7 @@ public class THIABLogicHolderFull
         return resources.getString(R.string.th_iab_logic_holder_name);
     }
 
+<<<<<<< HEAD
     @Override public THIABInventoryFetcherHolder getInventoryFetcherHolder()
     {
         return inventoryFetcherHolder;
@@ -85,6 +108,9 @@ public class THIABLogicHolderFull
         return purchaseReporterHolder;
     }
 
+=======
+    //<editor-fold desc="Request Code Management">
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return super.isUnusedRequestCode(requestCode) &&
@@ -134,7 +160,16 @@ public class THIABLogicHolderFull
         return new THBaseIABPurchaserHolder();
     }
 
+<<<<<<< HEAD
     @Override protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
+=======
+    @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
+    {
+        return new BaseIABBillingAvailableTesterHolder();
+    }
+
+    protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
     {
         return new THBaseIABPurchaseConsumerHolder();
     }
@@ -143,4 +178,201 @@ public class THIABLogicHolderFull
     {
         return new THBaseIABPurchaseReporterHolder();
     }
+<<<<<<< HEAD
+=======
+    //</editor-fold>
+
+    //<editor-fold desc="Sequence Logic">
+    @Override public boolean run(int requestCode, THIABBillingRequestFull billingRequest)
+    {
+        boolean launched = super.run(requestCode, billingRequest);
+        if (!launched && billingRequest != null)
+        {
+            if (billingRequest.purchaseToConsume != null)
+            {
+                launchConsumeSequence(requestCode, billingRequest.purchaseToConsume);
+                launched = true;
+            }
+        }
+        return launched;
+    }
+
+    @Override protected void handleBillingAvailable(int requestCode)
+    {
+        super.handleBillingAvailable(requestCode);
+    }
+
+    @Override protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableProductIdentifiers)
+    {
+        List<IABSKU> all = new ArrayList<>();
+        for (Map.Entry<String, List<IABSKU>> entry : availableProductIdentifiers.entrySet())
+        {
+            all.addAll(entry.getValue());
+        }
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.fetchInventory)
+            {
+                // Tell that the fetch is done
+                billingRequest.fetchProductIdentifiers = false;
+            }
+            billingRequest.productIdentifiersForInventory = all;
+        }
+
+        super.handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
+        if (billingRequest != null)
+        {
+            launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
+        }
+    }
+
+    @Override protected void handleInventoryFetchedSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
+    {
+        super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+    }
+
+    @Override protected void handlePurchaseFetchedSuccess(int requestCode, Map<IABSKU, THIABPurchase> purchases)
+    {
+        super.handlePurchaseFetchedSuccess(requestCode, purchases);
+    }
+
+    @Override protected void handlePurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
+    {
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            // Tell that purchase is done
+            billingRequest.purchaseOrder = null;
+            billingRequest.purchaseToReport = purchase;
+        }
+        super.handlePurchaseFinished(requestCode, purchaseOrder, purchase);
+        launchReportSequence(requestCode, purchase);
+    }
+
+    @Override protected void handlePurchaseReportedSuccess(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            // Tell that report is done
+            billingRequest.purchaseToReport = null;
+            billingRequest.purchaseToConsume = reportedPurchase;
+        }
+        super.handlePurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
+
+        // Consume if possible
+        if (reportedPurchase != null
+                && reportedPurchase.getType() != null
+                && !reportedPurchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
+        {
+            launchConsumeSequence(requestCode, reportedPurchase);
+        }
+        else
+        {
+            handlePurchaseConsumed(requestCode, reportedPurchase);
+        }
+    }
+
+    protected void handlePurchaseConsumed(int requestCode, THIABPurchase purchase)
+    {
+        notifyPurchaseConsumed(requestCode, purchase);
+        // TODO more? like follow?
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Consume Purchase">
+    @Override public IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> getConsumptionFinishedListener(int requestCode)
+    {
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.consumptionFinishedListener;
+    }
+
+    @Override public void registerConsumptionFinishedListener(int requestCode,
+            IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> consumptionFinishedListener)
+    {
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumptionFinishedListener = consumptionFinishedListener;
+            purchaseConsumerHolder.registerConsumptionFinishedListener(requestCode, createPurchaseConsumptionListener());
+        }
+    }
+
+    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseConsumptionListener()
+    {
+        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
+        {
+            @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
+            {
+                handlePurchaseConsumed(requestCode, purchase);
+            }
+
+            @Override public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
+            {
+                notifyPurchaseConsumedFailed(requestCode, purchase, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterPurchaseConsumptionListener(int requestCode)
+    {
+        purchaseConsumerHolder.forgetRequestCode(requestCode);
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumptionFinishedListener = null;
+        }
+    }
+
+    protected void notifyPurchaseConsumed(int requestCode, THIABPurchase purchase)
+    {
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> consumptionFinishedListener = getConsumptionFinishedListener(requestCode);
+        if (consumptionFinishedListener != null)
+        {
+            consumptionFinishedListener.onPurchaseConsumed(requestCode, purchase);
+        }
+        unregisterPurchaseConsumptionListener(requestCode);
+    }
+
+    protected void notifyPurchaseConsumedFailed(int requestCode, THIABPurchase purchase, IABException exception)
+    {
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> consumptionFinishedListener = getConsumptionFinishedListener(requestCode);
+        if (consumptionFinishedListener != null)
+        {
+            consumptionFinishedListener.onPurchaseConsumeFailed(requestCode, purchase, exception);
+        }
+        unregisterPurchaseConsumptionListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Launch Sequence Methods">
+    @Override public void launchConsumeSequence(int requestCode, THIABPurchase purchase)
+    {
+        purchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
+    }
+    //</editor-fold>
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        ((IABPurchaserHolder<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>) purchaserHolder).onActivityResult(
+                requestCode, resultCode, data);
+    }
+
+    @Deprecated
+    @Override public boolean isInventoryReady()
+    {
+        return inventoryFetcherHolder.isInventoryReady();
+    }
+
+    @Deprecated
+    @Override public boolean hadErrorLoadingInventory()
+    {
+        return inventoryFetcherHolder.hadErrorLoadingInventory();
+    }
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
 }

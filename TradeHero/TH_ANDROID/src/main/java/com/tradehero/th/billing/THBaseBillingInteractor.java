@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingPurchaser;
+<<<<<<< HEAD
 import com.tradehero.common.billing.BillingPurchaserHolder;
 import com.tradehero.common.billing.OnBillingAvailableListener;
+=======
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -155,6 +158,111 @@ abstract public class THBaseBillingInteractor<
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
 
+<<<<<<< HEAD
+=======
+    //<editor-fold desc="Request Code Management">
+    @Override public int getUnusedRequestCode()
+    {
+        int retries = MAX_RANDOM_RETRIES;
+        int randomNumber;
+        while (retries-- > 0)
+        {
+            randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
+            if (isUnusedRequestCode(randomNumber))
+            {
+                return randomNumber;
+            }
+        }
+        throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
+    }
+
+    public boolean isUnusedRequestCode(int requestCode)
+    {
+        return getBillingLogicHolder().isUnusedRequestCode(requestCode)
+                && !uiBillingRequests.containsKey(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Request Handling">
+    @Override public int run(THUIBillingRequestType uiBillingRequest)
+    {
+        int requestCode = getUnusedRequestCode();
+        uiBillingRequests.put(requestCode, uiBillingRequest);
+        // TODO show a dialog
+        getBillingLogicHolder().run(requestCode, create(uiBillingRequest));
+        return requestCode;
+    }
+
+    protected THBillingRequestType create(THUIBillingRequestType uiBillingRequest)
+    {
+        THBillingRequestType billingRequest = createEmptyBillingRequest(uiBillingRequest);
+        populateBillingRequest(billingRequest, uiBillingRequest);
+        return billingRequest;
+    }
+
+    abstract protected THBillingRequestType createEmptyBillingRequest(THUIBillingRequestType uiBillingRequest);
+
+    protected void populateBillingRequest(THBillingRequestType request, THUIBillingRequestType uiBillingRequest)
+    {
+        request.billingAvailable = uiBillingRequest.billingAvailable;
+        request.billingAvailableListener = createBillingAvailableListener();
+        request.fetchProductIdentifiers = uiBillingRequest.fetchProductIdentifiers;
+        request.productIdentifierFetchedListener = createProductIdentifierFetchedListener();
+        request.fetchInventory = uiBillingRequest.fetchInventory;
+        request.inventoryFetchedListener = createInventoryFetchedListener();
+        request.fetchPurchase = uiBillingRequest.fetchPurchase;
+        request.purchaseFetchedListener = createPurchaseFetchedListener();
+        request.purchaseFinishedListener = createPurchaseFinishedListener();
+        request.purchaseReportedListener = createPurchaseReportedListener();
+
+        if (uiBillingRequest.domainToPresent != null)
+        {
+            request.fetchInventory = true;
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Inventory Preparation">
+    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
+    {
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+        }
+        // TODO add a wait to inform the user
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Product Detail Presentation">
+    protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain skuDomain, int titleResId)
+    {
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
+        {
+            return getBillingAlertDialogUtil().popBuyDialog(
+                    requestCode,
+                    currentActivity,
+                    getBillingLogicHolder(),
+                    THBaseBillingInteractor.this,
+                    skuDomain,
+                    titleResId);
+        }
+        return null;
+    }
+
+    @Override public void onDialogProductDetailClicked(int requestCode, DialogInterface dialogInterface,
+            int position, ProductDetailType productDetail)
+    {
+        launchPurchaseSequence(requestCode, productDetail.getProductIdentifier());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchasing Sequence">
+    abstract protected THBillingRequestType createPurchaseBillingRequest(int requestCode, ProductIdentifierType productIdentifier);
+    abstract protected void launchPurchaseSequence(int requestCode, ProductIdentifierType productIdentifier);
+    //</editor-fold>
+
+>>>>>>> Introduced a billing available tester holder to mimic other holders.
     //<editor-fold desc="Billing Available">
     @Override public Boolean isBillingAvailable()
     {
