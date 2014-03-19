@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;

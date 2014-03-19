@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.BillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.PurchaseFetchMilestone;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
@@ -17,7 +16,7 @@ abstract public class IABPurchaseFetchMilestone<
 {
     public static final String TAG = IABPurchaseFetchMilestone.class.getSimpleName();
 
-    public IABPurchaseFetchMilestone(BillingPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetcherHolder)
+    public IABPurchaseFetchMilestone(IABPurchaseFetcherHolder<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetcherHolder)
     {
         super(purchaseFetcherHolder);
     }

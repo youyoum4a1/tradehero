@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +21,11 @@ abstract public class BaseBillingPurchaseFetcherHolder<
 {
     protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>>
             purchaseFetchedListeners;
-    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType>> parentPurchaseFetchedListeners;
+            BillingExceptionType>>> parentPurchaseFetchedListeners;
 
     public BaseBillingPurchaseFetcherHolder()
     {
@@ -51,7 +52,16 @@ abstract public class BaseBillingPurchaseFetcherHolder<
             ProductPurchaseType,
             BillingExceptionType> getPurchaseFetchedListener(int requestCode)
     {
-        return parentPurchaseFetchedListeners.get(requestCode);
+        WeakReference<BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>> weakListener = parentPurchaseFetchedListeners.get(requestCode);
+        if (weakListener == null)
+        {
+            return null;
+        }
+        return weakListener.get();
     }
 
     /**
@@ -65,7 +75,7 @@ abstract public class BaseBillingPurchaseFetcherHolder<
             ProductPurchaseType,
             BillingExceptionType> purchaseFetchedListener)
     {
-        parentPurchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
+        parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
     }
 
     protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)

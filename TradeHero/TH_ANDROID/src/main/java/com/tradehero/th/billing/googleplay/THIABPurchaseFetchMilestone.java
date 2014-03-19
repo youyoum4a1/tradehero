@@ -25,7 +25,7 @@ public class THIABPurchaseFetchMilestone
      */
     public THIABPurchaseFetchMilestone(THIABLogicHolder logicHolder)
     {
-        super(logicHolder);
+        super(logicHolder.getPurchaseFetcherHolder());
         DaggerUtils.inject(this);
     }
 

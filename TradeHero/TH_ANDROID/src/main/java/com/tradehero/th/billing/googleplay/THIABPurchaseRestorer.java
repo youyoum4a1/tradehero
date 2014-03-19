@@ -23,10 +23,12 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         THIABOrderId,
         THIABPurchase,
         THIABLogicHolder,
-        THIABBillingRequestFull>
+        THIABPurchaseConsumerHolder,
+        THIABBillingRequest>
 {
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject THIABLogicHolder logicHolder;
+    private WeakReference<THIABPurchaseReporterHolder> actorPurchaseReporter = new WeakReference<>(null);
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
     private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseReportedListener;
@@ -34,7 +36,8 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     public THIABPurchaseRestorer(THIABLogicHolder logicHolder)
     {
-        super(logicHolder);
+        super(logicHolder, logicHolder.getPurchaseConsumerHolder());
+        this.actorPurchaseReporter = new WeakReference<>(logicHolder.getPurchaseReporterHolder());
         failedReports = new ArrayList<>();
         DaggerUtils.inject(this);
     }
@@ -134,7 +137,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     {
         THIABPurchase purchase = remainingPurchasesToWorkOn.get(0);
         remainingPurchasesToWorkOn.remove(purchase);
-        THIABPurchaseReporterHolder actorReporter = logicHolder;
+        THIABPurchaseReporterHolder actorReporter = actorPurchaseReporter.get();
         if (actorReporter != null)
         {
             requestCodeReporter = logicHolder.getUnusedRequestCode();

@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
 {
     protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>>
             inventoryFetchedListeners;
-    protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>>>parentInventoryFetchedListeners;
 
     public BaseBillingInventoryFetcherHolder()
     {
@@ -43,7 +44,12 @@ abstract public class BaseBillingInventoryFetcherHolder<
 
     @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
     {
-        return parentInventoryFetchedListeners.get(requestCode);
+        WeakReference<BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
+        if (weakFetchedListener == null)
+        {
+            return null;
+        }
+        return weakFetchedListener.get();
     }
 
     /**
@@ -53,7 +59,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
      */
     @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
     {
-        parentInventoryFetchedListeners.put(requestCode, inventoryFetchedListener);
+        parentInventoryFetchedListeners.put(requestCode, new WeakReference<>(inventoryFetchedListener));
     }
 
     protected void notifyInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)

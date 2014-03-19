@@ -19,7 +19,7 @@ public interface PurchaseReporterHolder<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> getPurchaseReportedListener(int requestCode);
+            BillingExceptionType> getPurchaseReportListener(int requestCode);
     void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,

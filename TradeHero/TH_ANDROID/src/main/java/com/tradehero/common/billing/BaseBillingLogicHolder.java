@@ -3,9 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import timber.log.Timber;
 
 /**
  * Created by xavier on 2/24/14.
@@ -83,21 +81,6 @@ abstract public class BaseBillingLogicHolder<
     @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
     {
         registerBillingAvailableListener(requestCode, billingRequest.getBillingAvailableListener());
-        registerProductIdentifierFetchedListener(requestCode, billingRequest.getProductIdentifierFetchedListener());
-        registerInventoryFetchedListener(requestCode, billingRequest.getInventoryFetchedListener());
-        registerPurchaseFetchedListener(requestCode, billingRequest.getPurchaseFetchedListener());
-        registerPurchaseFinishedListener(requestCode, billingRequest.getPurchaseFinishedListener());
-    }
-
-    @Override public void run(int requestCode, BillingRequestType billingRequest)
-    {
-        registerListeners(requestCode, billingRequest);
-        // TODO more
-    }
-
-    @Override public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
-    {
-        return billingAvailableListeners.get(requestCode);
     }
 
     //<editor-fold desc="Billing Available">
@@ -114,143 +97,36 @@ abstract public class BaseBillingLogicHolder<
         billingAvailableListeners.put(requestCode, billingAvailableListener);
     }
 
-    @Override public void unregisterBillingAvailableListener(int requestCode)
-    {
-        billingAvailableListeners.remove(requestCode);
-    }
-
     protected void notifyBillingAvailable()
     {
         billingAvailable = true;
+        OnBillingAvailableListener<BillingExceptionType> availableListener;
         // Protect from unsync when unregistering the listeners
         for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
         {
-            notifyBillingAvailable(requestCode);
+            availableListener = billingAvailableListeners.get(requestCode);
+            if (availableListener != null)
+            {
+                availableListener.onBillingAvailable();
+            }
+            billingAvailableListeners.remove(requestCode);
         }
-    }
-
-    protected void notifyBillingAvailable(int requestCode)
-    {
-        OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
-        if (availableListener != null)
-        {
-            availableListener.onBillingAvailable();
-        }
-        unregisterBillingAvailableListener(requestCode);
     }
 
     protected void notifyBillingNotAvailable(BillingExceptionType exception)
     {
         billingAvailable = false;
+        OnBillingAvailableListener<BillingExceptionType> availableListener;
         // Protect from unsync when unregistering the listeners
         for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
         {
-            notifyBillingNotAvailable(requestCode, exception);
+            availableListener = billingAvailableListeners.get(requestCode);
+            if (availableListener != null)
+            {
+                availableListener.onBillingNotAvailable(exception);
+            }
+            billingAvailableListeners.remove(requestCode);
         }
-    }
-
-    protected void notifyBillingNotAvailable(int requestCode, BillingExceptionType exception)
-    {
-        OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
-        if (availableListener != null)
-        {
-            availableListener.onBillingNotAvailable(exception);
-        }
-        unregisterBillingAvailableListener(requestCode);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Notify Product Identifier">
-    protected void notifyFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
-        if (productIdentifierFetchedListener != null)
-        {
-            productIdentifierFetchedListener.onFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
-        }
-        unregisterProductIdentifierFetchedListener(requestCode);
-    }
-
-    protected void notifyFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
-    {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
-        if (productIdentifierFetchedListener != null)
-        {
-            productIdentifierFetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
-        }
-        unregisterProductIdentifierFetchedListener(requestCode);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Notify Inventory Fetched">
-    protected void notifyInventoryFetchSuccess(
-            int requestCode,
-            List<ProductIdentifierType> productIdentifiers,
-            Map<ProductIdentifierType, ProductDetailType> inventory)
-    {
-        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener = getInventoryFetchedListener(requestCode);
-        if (inventoryFetchedListener != null)
-        {
-            inventoryFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
-        }
-        unregisterInventoryFetchedListener(requestCode);
-    }
-
-    protected void notifyInventoryFetchFail(
-            int requestCode,
-            List<ProductIdentifierType> productIdentifiers,
-            BillingExceptionType exception)
-    {
-        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener = getInventoryFetchedListener(requestCode);
-        if (inventoryFetchedListener != null)
-        {
-            inventoryFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
-        }
-        unregisterInventoryFetchedListener(requestCode);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Notify Purchase Fetched">
-    protected void notifyFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
-    {
-        BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
-        if (purchaseFetchedListener != null)
-        {
-            purchaseFetchedListener.onFetchedPurchases(requestCode, purchases);
-        }
-        unregisterPurchaseFetchedListener(requestCode);
-    }
-
-    protected void notifyFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
-    {
-        BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
-        if (purchaseFetchedListener != null)
-        {
-            purchaseFetchedListener.onFetchPurchasesFailed(requestCode, exception);
-        }
-        unregisterPurchaseFetchedListener(requestCode);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Notify Purchase Finished">
-    protected void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
-    {
-        BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener = getPurchaseFinishedListener(requestCode);
-        if (purchaseFinishedListener != null)
-        {
-            purchaseFinishedListener.onPurchaseFinished(requestCode, purchaseOrder, purchase);
-        }
-        unregisterPurchaseFinishedListener(requestCode);
-    }
-
-    protected void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
-    {
-        BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener = getPurchaseFinishedListener(requestCode);
-        if (purchaseFinishedListener != null)
-        {
-            purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
-        }
-        unregisterPurchaseFinishedListener(requestCode);
     }
     //</editor-fold>
 }

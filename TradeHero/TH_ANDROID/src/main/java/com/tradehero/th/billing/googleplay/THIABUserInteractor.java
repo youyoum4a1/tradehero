@@ -55,19 +55,19 @@ import timber.log.Timber;
 public class THIABUserInteractor
     extends
         THBaseBillingInteractor<
-                IABSKUListType,
-                IABSKU,
-                THIABProductDetail,
-                THIABPurchaseOrder,
-                THIABOrderId,
-                THIABPurchase,
-                THIABLogicHolder,
-                StoreSKUDetailView,
-                THSKUDetailsAdapter,
-                THIABPurchaserHolder,
-                THIABPurchaseReporterHolder,
-                THIABBillingRequestFull,
-                IABException>
+        IABSKUListType,
+        IABSKU,
+        THIABProductDetail,
+        THIABPurchaseOrder,
+        THIABOrderId,
+        THIABPurchase,
+        THIABLogicHolder,
+        StoreSKUDetailView,
+        THSKUDetailsAdapter,
+        THIABPurchaserHolder,
+        THIABPurchaseReporterHolder,
+        THIABBillingRequest,
+        IABException>
     implements THIABInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
@@ -298,7 +298,7 @@ public class THIABUserInteractor
     protected boolean hadErrorLoadingInventory()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.hadErrorLoadingInventory();
+        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().hadErrorLoadingInventory();
     }
 
     //<editor-fold desc="THIABInteractor">
@@ -339,7 +339,7 @@ public class THIABUserInteractor
                             }
                             int requestCode = getBillingLogicHolder().getUnusedRequestCode();
                             getBillingLogicHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
-                            getBillingLogicHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
+                            getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
                         }
                     });
             alertDialog = alertDialogBuilder.create();
@@ -453,7 +453,7 @@ public class THIABUserInteractor
         THIABLogicHolder logicHolder = getBillingLogicHolder();
         if (logicHolder != null)
         {
-            launchPurchaseSequence(logicHolder, purchaseOrder);
+            launchPurchaseSequence(logicHolder.getPurchaserHolder(), purchaseOrder);
         }
         else
         {
@@ -465,7 +465,7 @@ public class THIABUserInteractor
     //<editor-fold desc="Purchase Reporting Sequence">
     @Override protected void launchReportPurchaseSequence(THIABPurchase purchase)
     {
-        launchReportPurchaseSequence(getBillingLogicHolder(), purchase);
+        launchReportPurchaseSequence(getBillingLogicHolder().getPurchaseReporterHolder(), purchase);
     }
 
     protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
@@ -478,13 +478,13 @@ public class THIABUserInteractor
     //<editor-fold desc="Purchase Consumption Sequence">
     protected void launchConsumeSequence(THIABPurchase reportedPurchase)
     {
-        launchConsumeSequence(getBillingLogicHolder(), reportedPurchase);
+        launchConsumeSequence(getBillingLogicHolder().getPurchaseConsumerHolder(), reportedPurchase);
     }
 
     protected void launchConsumeSequence(THIABPurchaseConsumerHolder consumerHolder, THIABPurchase reportedPurchase)
     {
         int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-        consumerHolder.registerConsumptionFinishedListener(requestCode, consumptionFinishedListener);
+        consumerHolder.registerConsumeFinishedListener(requestCode, consumptionFinishedListener);
         consumerHolder.launchConsumeSequence(requestCode, reportedPurchase);
     }
 

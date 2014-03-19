@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
@@ -22,12 +23,12 @@ abstract public class BaseBillingPurchaserHolder<
         BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseFinishedListeners;
-    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<
+    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType>> parentPurchaseFinishedListeners;
+            BillingExceptionType>>> parentPurchaseFinishedListeners;
 
     public BaseBillingPurchaserHolder()
     {
@@ -60,7 +61,7 @@ abstract public class BaseBillingPurchaserHolder<
             ProductPurchaseType,
             BillingExceptionType> purchaseFinishedListener)
     {
-        parentPurchaseFinishedListeners.put(requestCode, purchaseFinishedListener);
+        parentPurchaseFinishedListeners.put(requestCode, new WeakReference<>(purchaseFinishedListener));
     }
 
     @Override public BillingPurchaser.OnPurchaseFinishedListener<
@@ -70,7 +71,17 @@ abstract public class BaseBillingPurchaserHolder<
             ProductPurchaseType,
             BillingExceptionType> getPurchaseFinishedListener(int requestCode)
     {
-        return parentPurchaseFinishedListeners.get(requestCode);
+        WeakReference<BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>> weakHandler = parentPurchaseFinishedListeners.get(requestCode);
+        if (weakHandler != null)
+        {
+            return weakHandler.get();
+        }
+        return null;
     }
 
     protected void notifyIABPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
