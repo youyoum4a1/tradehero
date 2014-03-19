@@ -8,8 +8,6 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 
@@ -23,12 +21,12 @@ abstract public class THBaseBillingLogicHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends THBillingRequest<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingExceptionType>,
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
         BaseBillingLogicHolder<
@@ -52,7 +50,6 @@ abstract public class THBaseBillingLogicHolder<
     protected PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReporterHolder;
 
     @Inject protected UserProfileCache userProfileCache;
-    @Inject protected UserServiceWrapper userServiceWrapper;
 
     public THBaseBillingLogicHolder()
     {
@@ -77,45 +74,6 @@ abstract public class THBaseBillingLogicHolder<
     {
         super.forgetRequestCode(requestCode);
         unregisterPurchaseReportedListener(requestCode);
-
-        billingRequests.remove(requestCode);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sequence Logic">
-    @Override public boolean run(int requestCode, BillingRequestType billingRequest)
-    {
-        boolean launched = super.run(requestCode, billingRequest);
-        // TODO other stuff
-        if (!launched && billingRequest != null)
-        {
-            if (billingRequest.fetchProductIdentifiers)
-            {
-                launchProductIdentifierFetchSequence(requestCode);
-                launched = true;
-            }
-            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
-            {
-                launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
-                launched = true;
-            }
-            else if (billingRequest.fetchPurchase)
-            {
-                launchFetchPurchaseSequence(requestCode);
-                launched = true;
-            }
-            else if (billingRequest.purchaseOrder != null)
-            {
-                launchPurchaseSequence(requestCode, billingRequest.purchaseOrder);
-                launched = true;
-            }
-            else if (billingRequest.purchaseToReport != null)
-            {
-                launchReportSequence(requestCode, billingRequest.purchaseToReport);
-                launched = true;
-            }
-        }
-        return launched;
     }
     //</editor-fold>
 
@@ -131,7 +89,7 @@ abstract public class THBaseBillingLogicHolder<
         {
             return null;
         }
-        return billingRequest.purchaseReportedListener;
+        return billingRequest.getPurchaseReportedListener();
     }
 
     @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener)
@@ -139,7 +97,7 @@ abstract public class THBaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseReportedListener = purchaseReportedListener;
+            billingRequest.setPurchaseReportedListener(purchaseReportedListener);
             purchaseReporterHolder.registerPurchaseReportedListener(requestCode, createPurchaseReportedListener());
         }
     }
@@ -166,7 +124,7 @@ abstract public class THBaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseReportedListener = null;
+            billingRequest.setPurchaseReportedListener(null);
         }
     }
 

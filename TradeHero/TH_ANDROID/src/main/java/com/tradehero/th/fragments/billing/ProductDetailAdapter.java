@@ -8,7 +8,6 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -29,10 +28,10 @@ abstract public class ProductDetailAdapter<
 
     protected Comparator<ProductDetailType> productDetailComparator;
     protected Map<ProductIdentifier, Boolean> enabledItems;
-    protected ProductIdentifierDomain skuDomain;
+    protected String skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, ProductIdentifierDomain skuDomain)
+    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
     {
         super(context, inflater, layoutResourceId);
         this.skuDomain = skuDomain;
@@ -145,12 +144,12 @@ abstract public class ProductDetailAdapter<
         return status == null || status;
     }
 
-    public ProductIdentifierDomain getSkuDomain()
+    public String getSkuDomain()
     {
         return skuDomain;
     }
 
-    public void setSkuDomain(ProductIdentifierDomain skuDomain)
+    public void setSkuDomain(String skuDomain)
     {
         this.skuDomain = skuDomain;
     }

@@ -1,7 +1,9 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +19,12 @@ abstract public class BaseBillingLogicHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends BillingRequest<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingExceptionType>,
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingLogicHolder<
         ProductIdentifierType,
@@ -67,13 +69,6 @@ abstract public class BaseBillingLogicHolder<
 
     @Override public void onDestroy()
     {
-        for (BillingRequestType billingRequest : billingRequests.values())
-        {
-            if (billingRequest != null)
-            {
-                billingRequest.onDestroy();
-            }
-        }
         billingRequests.clear();
 
         billingAvailableListeners.clear();
@@ -100,10 +95,10 @@ abstract public class BaseBillingLogicHolder<
         throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
     }
 
-    @Override public boolean isUnusedRequestCode(int requestCode)
+    @Override public boolean isUnusedRequestCode(int randomNumber)
     {
-        return !billingRequests.containsKey(requestCode)
-                && !billingAvailableListeners.containsKey(requestCode);
+        return !billingRequests.containsKey(randomNumber)
+                && !billingAvailableListeners.containsKey(randomNumber);
     }
 
     @Override public void forgetRequestCode(int requestCode)
@@ -121,29 +116,17 @@ abstract public class BaseBillingLogicHolder<
 
     @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
     {
-        registerBillingAvailableListener(requestCode, billingRequest.billingAvailableListener);
-        registerProductIdentifierFetchedListener(requestCode, billingRequest.productIdentifierFetchedListener);
-        registerInventoryFetchedListener(requestCode, billingRequest.inventoryFetchedListener);
-        registerPurchaseFetchedListener(requestCode, billingRequest.purchaseFetchedListener);
-        registerPurchaseFinishedListener(requestCode, billingRequest.purchaseFinishedListener);
+        registerBillingAvailableListener(requestCode, billingRequest.getBillingAvailableListener());
+        registerProductIdentifierFetchedListener(requestCode, billingRequest.getProductIdentifierFetchedListener());
+        registerInventoryFetchedListener(requestCode, billingRequest.getInventoryFetchedListener());
+        registerPurchaseFetchedListener(requestCode, billingRequest.getPurchaseFetchedListener());
+        registerPurchaseFinishedListener(requestCode, billingRequest.getPurchaseFinishedListener());
     }
 
-    /**
-     *
-     * @param requestCode
-     * @param billingRequest
-     * @return true if sequence launched, false otherwise
-     */
-    @Override public boolean run(int requestCode, BillingRequestType billingRequest)
+    @Override public void run(int requestCode, BillingRequestType billingRequest)
     {
         registerListeners(requestCode, billingRequest);
-        boolean launched = false;
-        if (billingRequest != null && billingRequest.billingAvailable)
-        {
-            testBillingAvailable();
-            launched = true;
-        }
-        return launched;
+        // TODO more
     }
 
     @Override public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
@@ -234,7 +217,7 @@ abstract public class BaseBillingLogicHolder<
         OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
         if (availableListener != null)
         {
-            availableListener.onBillingAvailable(requestCode);
+            availableListener.onBillingAvailable();
         }
         unregisterBillingAvailableListener(requestCode);
     }
@@ -254,7 +237,7 @@ abstract public class BaseBillingLogicHolder<
         OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
         if (availableListener != null)
         {
-            availableListener.onBillingNotAvailable(requestCode, exception);
+            availableListener.onBillingNotAvailable(exception);
         }
         unregisterBillingAvailableListener(requestCode);
     }
@@ -269,7 +252,7 @@ abstract public class BaseBillingLogicHolder<
         {
             return null;
         }
-        return billingRequest.productIdentifierFetchedListener;
+        return billingRequest.getProductIdentifierFetchedListener();
     }
 
     @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener)
@@ -277,7 +260,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.productIdentifierFetchedListener = productIdentifierFetchedListener;
+            billingRequest.setProductIdentifierFetchedListener(productIdentifierFetchedListener);
             productIdentifierFetcherHolder.registerProductIdentifierFetchedListener(requestCode, createProductIdentifierFetchedListener());
         }
     }
@@ -304,7 +287,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.productIdentifierFetchedListener = null;
+            billingRequest.setProductIdentifierFetchedListener(null);
         }
     }
 
@@ -337,7 +320,7 @@ abstract public class BaseBillingLogicHolder<
         {
             return null;
         }
-        return billingRequest.inventoryFetchedListener;
+        return billingRequest.getInventoryFetchedListener();
     }
 
     @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
@@ -345,7 +328,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.inventoryFetchedListener = inventoryFetchedListener;
+            billingRequest.setInventoryFetchedListener(inventoryFetchedListener);
             inventoryFetcherHolder.registerInventoryFetchedListener(requestCode, createInventoryFetchedListener());
         }
     }
@@ -372,7 +355,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.inventoryFetchedListener = null;
+            billingRequest.setInventoryFetchedListener(null);
         }
     }
 
@@ -405,7 +388,7 @@ abstract public class BaseBillingLogicHolder<
         {
             return null;
         }
-        return billingRequest.purchaseFetchedListener;
+        return billingRequest.getPurchaseFetchedListener();
     }
 
     @Override public void registerPurchaseFetchedListener(int requestCode, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener)
@@ -413,7 +396,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseFetchedListener = purchaseFetchedListener;
+            billingRequest.setPurchaseFetchedListener(purchaseFetchedListener);
             purchaseFetcherHolder.registerPurchaseFetchedListener(requestCode, createPurchaseFetchedListener());
         }
     }
@@ -440,7 +423,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseFetchedListener = null;
+            billingRequest.setPurchaseFetchedListener(null);
         }
     }
 
@@ -473,7 +456,7 @@ abstract public class BaseBillingLogicHolder<
         {
             return null;
         }
-        return billingRequest.purchaseFinishedListener;
+        return billingRequest.getPurchaseFinishedListener();
     }
 
     @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener)
@@ -481,7 +464,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseFinishedListener = purchaseFinishedListener;
+            billingRequest.setPurchaseFinishedListener(purchaseFinishedListener);
             purchaserHolder.registerPurchaseFinishedListener(requestCode, createPurchaseFinishedListener());
         }
     }
@@ -508,7 +491,7 @@ abstract public class BaseBillingLogicHolder<
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            billingRequest.purchaseFinishedListener = null;
+            billingRequest.setPurchaseFinishedListener(null);
         }
     }
 

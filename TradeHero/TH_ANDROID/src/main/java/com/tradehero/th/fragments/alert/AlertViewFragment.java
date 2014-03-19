@@ -281,8 +281,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
                 if (alertToggle.isChecked() && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
                 {
-                    // TODO
-                    //userInteractor.conditionalPopBuyStockAlerts();
+                    userInteractor.conditionalPopBuyStockAlerts();
                     alertToggle.setChecked(false);
                 }
             }

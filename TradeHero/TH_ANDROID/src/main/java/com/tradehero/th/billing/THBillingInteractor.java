@@ -7,8 +7,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 
 /**
  * Created by xavier on 2/24/14.
@@ -30,19 +28,12 @@ public interface THBillingInteractor<
                     THBillingRequestType,
                     BillingExceptionType>,
             THBillingRequestType extends THBillingRequest<
-                            ProductIdentifierType,
-                            ProductDetailType,
-                            PurchaseOrderType,
-                            OrderIdType,
-                            ProductPurchaseType,
-                            BillingExceptionType>,
-            THUIBillingRequestType extends THUIBillingRequest<
-                    ProductIdentifierType,
-                    ProductDetailType,
-                    PurchaseOrderType,
-                    OrderIdType,
-                    ProductPurchaseType,
-                    BillingExceptionType>,
+                ProductIdentifierType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
             BillingExceptionType extends BillingException>
         extends BillingInteractor<
             ProductIdentifierType,
@@ -52,8 +43,15 @@ public interface THBillingInteractor<
             ProductPurchaseType,
             THBillingLogicHolderType,
             THBillingRequestType,
-            THUIBillingRequestType,
-            BillingExceptionType>,
-        BillingAlertDialogUtil.OnDialogProductDetailClickListener<ProductDetailType>
+            BillingExceptionType>
 {
+    static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";
+    static final String DOMAIN_FOLLOW_CREDITS = "followCredits";
+    static final String DOMAIN_STOCK_ALERTS = "stockAlerts";
+    static final String DOMAIN_RESET_PORTFOLIO = "resetPortfolio";
+
+    THBillingLogicHolderType getTHBillingLogicHolder();
+
+    //void registerFollowRequestedListener(OnFollowResultListener followRequestedListener);
+    //void followHero(UserBaseKey userBaseKey);
 }

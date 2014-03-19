@@ -3,7 +3,6 @@ package com.tradehero.th.billing.googleplay;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
@@ -16,7 +15,7 @@ public class THIABProductDetail extends BaseIABProductDetail
     public int furtherDetailsResId = R.string.na;
     public boolean hasRibbon = false;
     public int iconRibbonResId = R.drawable.default_image;
-    public ProductIdentifierDomain domain;
+    public String domain;
 
     //<editor-fold desc="Constructors">
     public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
@@ -35,7 +34,7 @@ public class THIABProductDetail extends BaseIABProductDetail
         return "ThSkuDetails:" + json;
     }
 
-    public static Predicate<THIABProductDetail> getPredicateIsOfCertainDomain(final ProductIdentifierDomain domain)
+    public static Predicate<THIABProductDetail> getPredicateIsOfCertainDomain(final String domain)
     {
         return new Predicate<THIABProductDetail>()
         {

@@ -8,6 +8,6 @@ import com.tradehero.common.billing.exception.BillingException;
 public interface OnBillingAvailableListener<
         BillingExceptionType extends BillingException>
 {
-    void onBillingAvailable(int requestCode);
-    void onBillingNotAvailable(int requestCode, BillingExceptionType billingException);
+    void onBillingAvailable();
+    void onBillingNotAvailable(BillingExceptionType billingException);
 }

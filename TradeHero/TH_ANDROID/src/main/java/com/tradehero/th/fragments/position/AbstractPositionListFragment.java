@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -187,6 +188,8 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void createPositionItemAdapter();
+
+    @Override abstract protected void createUserInteractor();
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -589,8 +592,7 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                // TODO
-                //userInteractor.followHero(userBaseKey);
+                userInteractor.followHero(userBaseKey);
             }
         });
     }
@@ -657,15 +659,33 @@ abstract public class AbstractPositionListFragment<
     }
     //</editor-fold>
 
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    abstract public class AbstractPositionListTHIABUserInteractor extends THIABUserInteractor
     {
-        displayHeaderView();
-    }
+        public final String TAG = AbstractPositionListTHIABUserInteractor.class.getName();
 
-    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        displayHeaderView();
-        fetchSimplePage(true);
+        public AbstractPositionListTHIABUserInteractor()
+        {
+            super();
+        }
+
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            displayHeaderView();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    displayHeaderView();
+                    fetchSimplePage(true);
+                }
+            };
+        }
     }
 
     abstract protected class AbstractGetPositionsListener<

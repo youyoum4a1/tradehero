@@ -27,7 +27,6 @@ public class LocalyticsConstants
     public static final String Settings_About = "Settings/About";
     public static final String BuyCreditsDialog_Show = "BuyCreditsDialog/Show";
     public static final String BuyExtraCashDialog_Show = "BuyExtraCashDialog/Show";
-    public static final String BuyStockAlertDialog_Show = "BuyStockAlertDialog/Show";
     public static final String ResetPortfolioDialog_Show = "ResetPortfolioDialog/Show";
     public static final String ResetPortfolioPopUp_Show = "ResetPortfolioPopUp/Show";
     public static final String ResetPortfolioPopUp_Buy = "ResetPortfolioPopUp/Buy";

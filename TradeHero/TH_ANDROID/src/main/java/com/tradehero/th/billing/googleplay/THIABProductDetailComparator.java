@@ -1,7 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailComparator;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 
 /**
  * Created by xavier on 2/10/14.
@@ -18,8 +17,8 @@ public class THIABProductDetailComparator<THIABProductDetailType extends THIABPr
         {
             return parentCompare;
         }
-        ProductIdentifierDomain ldom = lhs.domain;
-        ProductIdentifierDomain rdom = rhs.domain;
+        String ldom = lhs.domain;
+        String rdom = rhs.domain;
 
         if (ldom == null)
         {

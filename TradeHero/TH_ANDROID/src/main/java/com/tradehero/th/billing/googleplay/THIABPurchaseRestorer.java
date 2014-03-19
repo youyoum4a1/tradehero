@@ -8,7 +8,6 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.utils.DaggerUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

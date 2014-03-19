@@ -20,6 +20,7 @@ import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -115,6 +116,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         this.infoFetcher = new HeroManagerInfoFetcher(new HeroManagerUserProfileCacheListener(), new HeroManagerHeroListCacheListener());
     }
 
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new HeroManagerTHIABUserInteractor();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -167,7 +173,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void handleBuyMoreClicked()
     {
-        // TODO conditionalPopBuyFollowCredits();
+        userInteractor.conditionalPopBuyFollowCredits();
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -188,8 +194,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    // TODO
-                    //userInteractor.followHero(clickedHeroDTO.getBaseKey());
+                    userInteractor.followHero(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -199,8 +204,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    // TODO
-                    //userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
+                    userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -277,17 +281,43 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
     {
-        display(updatedUserProfile);
-    }
-
-    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        linkWith(userProfileDTO, true);
-        if (infoFetcher != null)
+        public HeroManagerTHIABUserInteractor()
         {
-            infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
+            super();
+        }
+
+        @Override protected void handleShowProductDetailsMilestoneComplete()
+        {
+            super.handleShowProductDetailsMilestoneComplete();
+        }
+
+        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
+        {
+            super.handleShowProductDetailsMilestoneFailed(throwable);
+        }
+
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            display(updatedUserProfile);
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    HeroManagerFragment.this.linkWith(userProfileDTO, true);
+                    if (HeroManagerFragment.this.infoFetcher != null)
+                    {
+                        HeroManagerFragment.this.infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
+                    }
+                }
+            };
         }
     }
 

@@ -32,6 +32,8 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -59,7 +61,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     // data
     private LeaderboardUserDTO leaderboardItem;
     protected WeakReference<THIABUserInteractor> parentUserInteractor = new WeakReference<>(null);
-    @Inject protected THIABUserInteractor userInteractor;
+    protected THIABUserInteractor ownUserInteractor;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -172,7 +174,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFollowUser.setOnClickListener(null);
         }
         loadDefaultUserImage();
-        userInteractor = null;
+        ownUserInteractor = null;
 
         if (lbmuProfilePicture != null)
         {
@@ -210,7 +212,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         THIABUserInteractor userInteractorCopy = parentUserInteractor.get();
         if (currentUserProfileDTO == null || leaderboardItem == null ||
-                userInteractorCopy == null)
+                userInteractorCopy == null ||
+                userInteractorCopy.getApplicablePortfolioId() == null)
         {
             return null;
         }
@@ -396,8 +399,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void openFollowUserDialog()
     {
-        // TODO
-        //interactor.followHero(leaderboardItem.getBaseKey());
+        THIABUserInteractor parentCopy = parentUserInteractor.get();
+        if (ownUserInteractor == null && parentCopy != null)
+        {
+            ownUserInteractor = new LeaderboardMarkUserItemViewTHIABUserInteractor();
+            ownUserInteractor.setApplicablePortfolioId(parentCopy.getApplicablePortfolioId());
+        }
+        THIABUserInteractor interactor = ownUserInteractor;
+        if (interactor != null)
+        {
+            interactor.followHero(leaderboardItem.getBaseKey());
+        }
     }
 
     private void handleOpenPositionListClicked()
@@ -450,8 +462,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
+    public class LeaderboardMarkUserItemViewTHIABUserInteractor extends THIABUserInteractor
     {
-        linkWith(userProfileDTO, true);
+        public LeaderboardMarkUserItemViewTHIABUserInteractor()
+        {
+            super();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            followCallback = new LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
+        }
+
+        protected class LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback extends UserInteractorFollowHeroCallback
+        {
+            public LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
+            {
+                super(heroListCache, userProfileCache);
+            }
+
+            @Override public void success(UserProfileDTO userProfileDTO, Response response)
+            {
+                super.success(userProfileDTO, response);
+                LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
+            }
+        }
     }
 }

@@ -197,6 +197,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        userInteractor.setApplicablePortfolioId(null);
+    }
+
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -300,8 +306,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             @Override public void onPurchaseRestoreFailed(IABException iabException)
             {
                 Timber.d("onPurchaseRestoreFailed", iabException);
-                // TODO Inform
-                //userInteractor.conditionalPopBillingNotAvailable();
+                // Inform
+                userInteractor.conditionalPopBillingNotAvailable();
             }
         };
     }
@@ -789,8 +795,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleRestorePurchaseClicked()
     {
-        // TODO proper request
-        userInteractor.launchRestoreSequence();
+        if (userInteractor.popErrorConditional() == null)
+        {
+            userInteractor.launchRestoreSequence();
+        }
     }
 
     private Callback<UserProfileDTO> createUserProfileCallback()

@@ -3,7 +3,6 @@ package com.tradehero.common.billing;
 import android.content.Intent;
 import android.content.res.Resources;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingLogicHolder<
@@ -13,12 +12,12 @@ public interface BillingLogicHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends BillingRequest<
-                    ProductIdentifierType,
-                    ProductDetailType,
-                    PurchaseOrderType,
-                    OrderIdType,
-                    ProductPurchaseType,
-                    BillingExceptionType>,
+            ProductIdentifierType,
+            ProductDetailType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
         ProductIdentifierFetcherHolder<
@@ -46,7 +45,7 @@ public interface BillingLogicHolder<
     int getUnusedRequestCode();
 
     void registerListeners(int requestCode, BillingRequestType billingRequest);
-    boolean run(int requestCode, BillingRequestType billingRequest);
+    void run(int requestCode, BillingRequestType billingRequest);
 
     OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode);
 

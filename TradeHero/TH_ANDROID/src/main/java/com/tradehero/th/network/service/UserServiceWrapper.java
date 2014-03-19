@@ -225,11 +225,9 @@ import retrofit.RetrofitError;
         return userService.follow(userBaseKey.key);
     }
 
-    public MiddleCallbackUpdateUserProfile follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public void follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile = new MiddleCallbackUpdateUserProfile(callback);
-        userService.follow(userBaseKey.key, middleCallbackUpdateUserProfile);
-        return middleCallbackUpdateUserProfile;
+        userService.follow(userBaseKey.key, callback);
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
