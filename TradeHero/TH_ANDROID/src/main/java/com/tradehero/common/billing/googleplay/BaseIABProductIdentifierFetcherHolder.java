@@ -4,6 +4,7 @@ import com.tradehero.common.billing.BaseProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +30,22 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
 
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType> skuFetchedListener =
+                new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType>()
+                {
+                    @Override public void onFetchedProductIdentifiers(int requestCode,
+                            Map<String, List<IABSKUType>> availableSkus)
+                    {
+                        notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
+                    }
+
+                    @Override public void onFetchProductIdentifiersFailed(int requestCode,
+                            IABExceptionType exception)
+                    {
+                        notifyProductIdentifierFetchedFailed(requestCode, exception);
+                    }
+                };
+        productIdentifierFetchedListeners.put(requestCode, skuFetchedListener);
         ProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);

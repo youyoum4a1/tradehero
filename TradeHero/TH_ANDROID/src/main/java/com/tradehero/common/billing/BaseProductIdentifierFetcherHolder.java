@@ -13,6 +13,7 @@ abstract public class BaseProductIdentifierFetcherHolder<
         BillingExceptionType extends BillingException>
     implements ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType>
 {
+    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>> productIdentifierFetchedListeners;
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierType,
             BillingExceptionType>> parentProductIdentifierFetchedListeners;
@@ -20,16 +21,20 @@ abstract public class BaseProductIdentifierFetcherHolder<
     public BaseProductIdentifierFetcherHolder()
     {
         super();
+        productIdentifierFetchedListeners = new HashMap<>();
         parentProductIdentifierFetchedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {
-        return !parentProductIdentifierFetchedListeners.containsKey(randomNumber);
+        return
+                !productIdentifierFetchedListeners.containsKey(randomNumber) &&
+                !parentProductIdentifierFetchedListeners.containsKey(randomNumber);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
+        productIdentifierFetchedListeners.remove(requestCode);
         parentProductIdentifierFetchedListeners.remove(requestCode);
     }
 
@@ -45,22 +50,6 @@ abstract public class BaseProductIdentifierFetcherHolder<
             BillingExceptionType> productIdentifierFetchedListener)
     {
         parentProductIdentifierFetchedListeners.put(requestCode, productIdentifierFetchedListener);
-    }
-
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetchedListener()
-    {
-        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>()
-        {
-            @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
-            {
-                notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
-            }
-
-            @Override public void onFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
-            {
-                notifyProductIdentifierFetchedFailed(requestCode, exception);
-            }
-        };
     }
 
     protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
@@ -88,6 +77,7 @@ abstract public class BaseProductIdentifierFetcherHolder<
 
     @Override public void onDestroy()
     {
+        productIdentifierFetchedListeners.clear();
         parentProductIdentifierFetchedListeners.clear();
     }
 }

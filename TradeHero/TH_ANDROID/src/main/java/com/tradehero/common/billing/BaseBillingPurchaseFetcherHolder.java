@@ -18,6 +18,8 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         ProductPurchaseType,
         BillingExceptionType>
 {
+    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>>
+            purchaseFetchedListeners;
     protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
@@ -27,16 +29,19 @@ abstract public class BaseBillingPurchaseFetcherHolder<
     public BaseBillingPurchaseFetcherHolder()
     {
         super();
+        purchaseFetchedListeners = new HashMap<>();
         parentPurchaseFetchedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return !parentPurchaseFetchedListeners.containsKey(requestCode);
+        return !purchaseFetchedListeners.containsKey(requestCode) &&
+                !parentPurchaseFetchedListeners.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
+        purchaseFetchedListeners.remove(requestCode);
         parentPurchaseFetchedListeners.remove(requestCode);
     }
 
@@ -61,23 +66,6 @@ abstract public class BaseBillingPurchaseFetcherHolder<
             BillingExceptionType> purchaseFetchedListener)
     {
         parentPurchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
-    }
-
-    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
-    createPurchaseFetchedListener()
-    {
-        return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
-        {
-            @Override public void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
-            {
-                notifyPurchaseFetchedFailed(requestCode, exception);
-            }
-
-            @Override public void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
-            {
-                notifyPurchaseFetchedSuccess(requestCode, purchases);
-            }
-        };
     }
 
     protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
@@ -108,6 +96,7 @@ abstract public class BaseBillingPurchaseFetcherHolder<
 
     @Override public void onDestroy()
     {
+        purchaseFetchedListeners.clear();
         parentPurchaseFetchedListeners.clear();
     }
 }

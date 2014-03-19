@@ -66,8 +66,19 @@ abstract public class BaseIABPurchaserHolder<
 
     @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
     {
-        BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseListener =
-                createPurchaseFinishedListener();
+        BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType>()
+        {
+            @Override public void onPurchaseFinished(int requestCode, IABPurchaseOrderType purchaseOrder, IABPurchaseType purchase)
+            {
+                notifyIABPurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+
+            @Override public void onPurchaseFailed(int requestCode, IABPurchaseOrderType purchaseOrder, IABExceptionType exception)
+            {
+                notifyIABPurchaseFailed(requestCode, purchaseOrder, exception);
+            }
+        };
+        purchaseFinishedListeners.put(requestCode, purchaseListener);
         IABPurchaserType iabPurchaser = createPurchaser();
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         iabPurchasers.put(requestCode, iabPurchaser);
