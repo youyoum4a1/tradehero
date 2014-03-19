@@ -49,7 +49,13 @@ import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodViewHolder;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
+import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.NewsTitleListFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
@@ -194,6 +200,12 @@ import javax.inject.Singleton;
                         OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,
+                        PositionPartialBottomClosedView.class,
+                        PositionPartialBottomInPeriodClosedView.class,
+                        PositionPartialBottomInPeriodOpenView.class,
+                        PositionPartialBottomOpenView.class,
+                        PositionLockedView.class,
+                        PositionPartialBottomInPeriodViewHolder.class,
 
                         TradeListFragment.class,
                         TradeListInPeriodFragment.class,

@@ -421,11 +421,10 @@ abstract public class AbstractPositionListFragment<
 
     protected void rePurposeAdapter()
     {
-        if (this.getPositionsDTO != null && this.portfolioDTO != null)
+        if (this.getPositionsDTO != null)
         {
             createPositionItemAdapter();
             positionItemAdapter.setItems(getPositionsDTO.positions);
-            positionItemAdapter.linkWith(portfolioDTO);
             restoreExpandingStates();
             if (positionsListView != null)
             {

@@ -35,6 +35,7 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected PositionUtils positionUtils;
 
     private ImageView stockLogo;
     private TextView stockSymbol;
@@ -50,7 +51,6 @@ public class PositionPartialTopView extends LinearLayout
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
-    protected PortfolioDTO portfolioDTO;
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
@@ -130,15 +130,6 @@ public class PositionPartialTopView extends LinearLayout
         if (positionDTO != null)
         {
             linkWith(securityIdCache.get().get(positionDTO.getSecurityIntegerId()), andDisplay);
-        }
-    }
-
-    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        this.portfolioDTO = portfolioDTO;
-        if (andDisplay)
-        {
-            displayPositionLastAmount();
         }
     }
 
@@ -341,11 +332,11 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
-                PositionUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
+                positionUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
             else
             {
-                PositionUtils.setROISinceInception(positionPercent, positionDTO);
+                positionUtils.setROISinceInception(positionPercent, positionDTO);
             }
         }
     }
@@ -371,7 +362,7 @@ public class PositionPartialTopView extends LinearLayout
         if (positionLastAmount != null)
         {
             THSignedNumber number = null;
-            if (positionDTO != null && portfolioDTO != null)
+            if (positionDTO != null)
             {
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
@@ -380,7 +371,7 @@ public class PositionPartialTopView extends LinearLayout
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.realizedPLRefCcy,
                             true,
-                            portfolioDTO.getNiceCurrency(),
+                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                             );
                 }
@@ -390,7 +381,7 @@ public class PositionPartialTopView extends LinearLayout
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.marketValueRefCcy,
                             true,
-                            portfolioDTO.getNiceCurrency(),
+                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                     );
                 }

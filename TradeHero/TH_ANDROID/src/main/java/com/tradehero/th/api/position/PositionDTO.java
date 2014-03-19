@@ -147,6 +147,8 @@ public class PositionDTO extends PositionDTOCompact
                 ", shares=" + shares +
                 ", portfolioId=" + portfolioId +
                 ", averagePriceRefCcy=" + averagePriceRefCcy +
+                ", currencyDisplay=" + currencyDisplay +
+                ", currencyISO=" + currencyISO +
                 ", userId=" + userId +
                 ", securityId=" + securityId +
                 ", realizedPLRefCcy=" + realizedPLRefCcy +

@@ -1,9 +1,11 @@
 package com.tradehero.th.api.competition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +50,9 @@ public class ProviderDTO implements DTO
     public String ruleText;
     public boolean hasHelpVideo;
     public String wizardUrl;
+    public String ctaLocationTags;
+    public String currencyDisplay;
+    public String currencyISO;
 
     public PortfolioCompactDTO associatedPortfolio;
 
@@ -55,54 +60,74 @@ public class ProviderDTO implements DTO
      * Creates the id that identifies this DTO.
      * @return
      */
+    @JsonIgnore
     public ProviderId getProviderId()
     {
         return new ProviderId(id);
     }
 
+    @JsonIgnore
     public boolean hasWizard()
     {
         return wizardUrl != null && wizardUrl.length() > 0;
     }
 
+    @JsonIgnore
     public String getStatusSingleImageUrl(boolean isSelected)
     {
         return isSelected ? getStatusSingleSelectedImageUrl() : getStatusSingleImageUrl();
     }
 
+    @JsonIgnore
     public String getStatusSingleImageUrl()
     {
         return isUserEnrolled ? singleJoinedImageUrl : singleImageUrl;
     }
 
+    @JsonIgnore
     public String getStatusSingleSelectedImageUrl()
     {
         return isUserEnrolled ? singleJoinedSelectedImageUrl : singleSelectedImageUrl;
     }
 
+    @JsonIgnore
     public String getStatusMultiImageUrl(boolean isSelected)
     {
         return isSelected ? getStatusMultiSelectedImageUrl() : getStatusMultiImageUrl();
     }
 
+    @JsonIgnore
     public String getStatusMultiImageUrl()
     {
         return isUserEnrolled ? multiJoinedImageUrl : multiImageUrl;
     }
 
+    @JsonIgnore
     public String getStatusMultiSelectedImageUrl()
     {
         return isUserEnrolled ? multiJoinedSelectedImageUrl : multiSelectedImageUrl;
     }
 
+    @JsonIgnore
     public String getStatusTileImageUrl()
     {
         return isUserEnrolled ? tileJoinedImageUrl : tileImageUrl;
     }
 
+    @JsonIgnore
     public String getTradeButtonImageUrl(boolean isSelected)
     {
         return isSelected ? tradeButtonSelectedImageUrl : tradeButtonImageUrl;
+    }
+
+    @JsonIgnore
+    public String getNiceCurrency()
+    {
+        if (currencyDisplay != null && !currencyDisplay.isEmpty())
+        {
+            return currencyDisplay;
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
 
     public static List<ProviderId> getProviderIds(List<ProviderDTO> providerDTOs)
@@ -122,6 +147,7 @@ public class ProviderDTO implements DTO
         return providerIds;
     }
 
+    @JsonIgnore
     public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
     {
         if (associatedPortfolio == null)
@@ -171,6 +197,9 @@ public class ProviderDTO implements DTO
                 ", ruleText='" + ruleText + '\'' +
                 ", hasHelpVideo=" + hasHelpVideo +
                 ", wizardUrl='" + wizardUrl + '\'' +
+                ", ctaLocationTags=" + ctaLocationTags +
+                ", currencyDisplay=" + currencyDisplay +
+                ", currencyISO=" + currencyISO +
                 ", associatedPortfolio=" + associatedPortfolio +
                 '}';
     }

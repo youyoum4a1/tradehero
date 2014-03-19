@@ -7,8 +7,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 2/5/14.
@@ -31,11 +33,14 @@ public class PositionPartialBottomInPeriodViewHolder
     private PositionInPeriodDTO positionInPeriodDTO;
     private PortfolioDTO portfolioDTO;
 
+    @Inject protected PositionUtils positionUtils;
+
     public PositionPartialBottomInPeriodViewHolder(Context context, View container)
     {
         super();
         this.context = context;
         initViews(container);
+        DaggerUtils.inject(this);
     }
 
     public void initViews(View container)
@@ -131,14 +136,14 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (portfolioDTO != null)
             {
-                inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(context, positionInPeriodDTO, portfolioDTO.getNiceCurrency()));
+                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, positionInPeriodDTO));
             }
         }
     }
 
     public void displayInPeriodRoiValue()
     {
-        PositionUtils.setROIInPeriod(inPeriodRoiValue, positionInPeriodDTO);
+        positionUtils.setROIInPeriod(inPeriodRoiValue, positionInPeriodDTO);
     }
 
     public void displayInPeriodAdditionalInvested()
@@ -147,7 +152,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (portfolioDTO != null)
             {
-                inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(context, positionInPeriodDTO, portfolioDTO.getNiceCurrency()));
+                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, positionInPeriodDTO));
             }
         }
     }
@@ -158,7 +163,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (portfolioDTO != null)
             {
-                inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(context, positionInPeriodDTO, portfolioDTO.getNiceCurrency()));
+                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, positionInPeriodDTO));
             }
         }
     }

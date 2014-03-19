@@ -37,7 +37,6 @@ public abstract class AbstractPositionView<
     protected boolean hasHistoryButton = true;
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
-    protected PortfolioDTO portfolioDTO;
 
     protected PositionListener<PositionDTOType> listener = null;
 
@@ -235,22 +234,6 @@ public abstract class AbstractPositionView<
         if (andDisplay)
         {
             displayModelPart();
-        }
-    }
-
-    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        this.portfolioDTO = portfolioDTO;
-        if (this.topView != null)
-        {
-            this.topView.linkWith(portfolioDTO, andDisplay);
-        }
-        if (this.bottomView != null)
-        {
-            this.bottomView.linkWith(portfolioDTO, andDisplay);
-        }
-        if (andDisplay)
-        {
         }
     }
 

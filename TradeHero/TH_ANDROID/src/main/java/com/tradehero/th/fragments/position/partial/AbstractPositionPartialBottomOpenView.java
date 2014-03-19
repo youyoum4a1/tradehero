@@ -70,19 +70,6 @@ abstract public class AbstractPositionPartialBottomOpenView<
         }
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        super.linkWith(portfolioDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayUnrealisedPLValue();
-            displayRealisedPLValue();
-            displayTotalInvested();
-            displayMarketValue();
-            displayAveragePriceValue();
-        }
-    }
-
     @Override public void displayModelPart()
     {
         super.displayModelPart();
@@ -98,9 +85,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (unrealisedPLValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                unrealisedPLValue.setText(PositionUtils.getUnrealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                unrealisedPLValue.setText(positionUtils.getUnrealizedPL(getContext(), positionDTO));
             }
         }
     }
@@ -109,9 +96,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (realisedPLValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
             }
         }
     }
@@ -120,9 +107,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (totalInvestedValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
             }
         }
     }
@@ -131,9 +118,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (marketValueValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                marketValueValue.setText(PositionUtils.getMarketValue(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                marketValueValue.setText(positionUtils.getMarketValue(getContext(), positionDTO));
             }
         }
     }
@@ -157,9 +144,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (averagePriceValue != null)
         {
-            if (positionDTO != null && positionDTO.averagePriceRefCcy != null && portfolioDTO != null)
+            if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, false, portfolioDTO.getNiceCurrency());
+                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, false, positionDTO.getNiceCurrency());
                 averagePriceValue.setText(ThAveragePriceRefCcy.toString());
             }
             else
