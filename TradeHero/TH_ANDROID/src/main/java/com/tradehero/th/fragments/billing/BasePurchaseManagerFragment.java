@@ -8,6 +8,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -23,7 +25,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    @Inject protected THIABUserInteractor userInteractor;
+    @Inject protected THBillingInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;

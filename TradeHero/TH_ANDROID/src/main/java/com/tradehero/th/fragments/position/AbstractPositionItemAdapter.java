@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
@@ -256,7 +257,19 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutToInflate, parent, false);
+            try
+            {
+                convertView = inflater.inflate(layoutToInflate, parent, false);
+            }
+            catch (Throwable t)
+            {
+                do
+                {
+                    Timber.e(t, "error");
+                    t = t.getCause();
+                }
+                while (t != null);
+            }
         }
 
         Object item = getItem(position);

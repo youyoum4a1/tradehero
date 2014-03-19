@@ -22,7 +22,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -135,12 +134,13 @@ public class THIABLogicHolderFull
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
-    @Override public boolean run(int requestCode, THIABBillingRequestFull billingRequest)
+    @Override protected boolean runInternal(int requestCode)
     {
-        boolean launched = super.run(requestCode, billingRequest);
+        boolean launched = super.runInternal(requestCode);
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (!launched && billingRequest != null)
         {
-            if (billingRequest.purchaseToConsume != null)
+            if (billingRequest.consumePurchase && billingRequest.purchaseToConsume != null)
             {
                 launchConsumeSequence(requestCode, billingRequest.purchaseToConsume);
                 launched = true;
@@ -149,87 +149,40 @@ public class THIABLogicHolderFull
         return launched;
     }
 
-    @Override protected void handleBillingAvailable(int requestCode)
+    @Override protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, Map<IABSKU, THIABPurchase> purchases)
     {
-        super.handleBillingAvailable(requestCode);
+        super.prepareRequestForNextRunAfterPurchaseFetchedSuccess(requestCode, purchases);
+        // TODO restore?
     }
 
-    @Override protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableProductIdentifiers)
+    @Override protected void prepareRequestForNextRunAfterPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
     {
-        List<IABSKU> all = new ArrayList<>();
-        for (Map.Entry<String, List<IABSKU>> entry : availableProductIdentifiers.entrySet())
-        {
-            all.addAll(entry.getValue());
-        }
+        super.prepareRequestForNextRunAfterPurchaseFinished(requestCode, purchaseOrder, purchase);
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            if (billingRequest.fetchInventory)
-            {
-                // Tell that the fetch is done
-                billingRequest.fetchProductIdentifiers = false;
-            }
-            billingRequest.productIdentifiersForInventory = all;
-        }
-
-        super.handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
-        if (billingRequest != null)
-        {
-            launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
-        }
-    }
-
-    @Override protected void handleInventoryFetchedSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
-    {
-        super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-    }
-
-    @Override protected void handlePurchaseFetchedSuccess(int requestCode, Map<IABSKU, THIABPurchase> purchases)
-    {
-        super.handlePurchaseFetchedSuccess(requestCode, purchases);
-    }
-
-    @Override protected void handlePurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
-    {
-        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
-        if (billingRequest != null)
-        {
-            // Tell that purchase is done
-            billingRequest.purchaseOrder = null;
             billingRequest.purchaseToReport = purchase;
         }
-        super.handlePurchaseFinished(requestCode, purchaseOrder, purchase);
-        launchReportSequence(requestCode, purchase);
     }
 
-    @Override protected void handlePurchaseReportedSuccess(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    @Override protected void prepareRequestForNextRunAfterPurchaseReportedSuccess(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
+        super.prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            // Tell that report is done
-            billingRequest.purchaseToReport = null;
             billingRequest.purchaseToConsume = reportedPurchase;
-        }
-        super.handlePurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
-
-        // Consume if possible
-        if (reportedPurchase != null
-                && reportedPurchase.getType() != null
-                && !reportedPurchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
-        {
-            launchConsumeSequence(requestCode, reportedPurchase);
-        }
-        else
-        {
-            handlePurchaseConsumed(requestCode, reportedPurchase);
         }
     }
 
     protected void handlePurchaseConsumed(int requestCode, THIABPurchase purchase)
     {
         notifyPurchaseConsumed(requestCode, purchase);
-        // TODO more? like follow?
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumePurchase = false;
+        }
     }
     //</editor-fold>
 
@@ -305,7 +258,16 @@ public class THIABLogicHolderFull
     //<editor-fold desc="Launch Sequence Methods">
     @Override public void launchConsumeSequence(int requestCode, THIABPurchase purchase)
     {
-        purchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
+        if (purchase != null
+                && purchase.getType() != null
+                && !purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
+        {
+            purchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
+        }
+        else
+        {
+            handlePurchaseConsumed(requestCode, purchase);
+        }
     }
     //</editor-fold>
 

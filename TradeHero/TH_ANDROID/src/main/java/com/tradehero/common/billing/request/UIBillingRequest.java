@@ -30,6 +30,11 @@ public class UIBillingRequest<
     public OwnedPortfolioId applicablePortfolioId;
 
     /**
+     * When a listener is missing when an error occurs, the error should be sent to this listener.
+     */
+    public OnErrorListener<BillingExceptionType> onDefaultErrorListener;
+
+    /**
      * Indicates whether we want the purchases to be restored
      */
     public boolean restorePurchase;
@@ -98,5 +103,10 @@ public class UIBillingRequest<
     public UIBillingRequest()
     {
         super();
+    }
+
+    public static interface OnErrorListener<BillingExceptionType extends BillingException>
+    {
+        void onError(BillingExceptionType billingException);
     }
 }

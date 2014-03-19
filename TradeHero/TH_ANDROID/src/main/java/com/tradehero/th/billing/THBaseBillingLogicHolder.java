@@ -85,39 +85,39 @@ abstract public class THBaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
-    @Override public boolean run(int requestCode, BillingRequestType billingRequest)
+    @Override protected boolean runInternal(int requestCode)
     {
-        boolean launched = super.run(requestCode, billingRequest);
-        // TODO other stuff
+        boolean launched = super.runInternal(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (!launched && billingRequest != null)
         {
-            if (billingRequest.fetchProductIdentifiers)
-            {
-                launchProductIdentifierFetchSequence(requestCode);
-                launched = true;
-            }
-            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
-            {
-                launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
-                launched = true;
-            }
-            else if (billingRequest.fetchPurchase)
-            {
-                launchFetchPurchaseSequence(requestCode);
-                launched = true;
-            }
-            else if (billingRequest.purchaseOrder != null)
-            {
-                launchPurchaseSequence(requestCode, billingRequest.purchaseOrder);
-                launched = true;
-            }
-            else if (billingRequest.purchaseToReport != null)
+            if(billingRequest.reportPurchase && billingRequest.purchaseToReport != null)
             {
                 launchReportSequence(requestCode, billingRequest.purchaseToReport);
                 launched = true;
             }
         }
         return launched;
+    }
+
+    protected void handlePurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        if (updatedUserPortfolio != null)
+        {
+            userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+        }
+        notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
+        prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.reportPurchase = false;
+        }
     }
     //</editor-fold>
 
@@ -170,16 +170,6 @@ abstract public class THBaseBillingLogicHolder<
         {
             billingRequest.purchaseReportedListener = null;
         }
-    }
-
-    protected void handlePurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
-    {
-        if (updatedUserPortfolio != null)
-        {
-            userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
-        }
-        notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
-        // Sequence logic handled by child class
     }
 
     protected void notifyPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)

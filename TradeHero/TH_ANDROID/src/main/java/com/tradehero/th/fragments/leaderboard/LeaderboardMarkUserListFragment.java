@@ -177,7 +177,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
         }

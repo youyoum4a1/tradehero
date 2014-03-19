@@ -4,7 +4,9 @@ import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
@@ -45,7 +47,12 @@ public class THIABModule
         return productDetailCache;
     }
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THIABLogicHolder logicHolder)
+    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
+    {
+        return logicHolder;
+    }
+
+    @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THIABLogicHolder logicHolder)
     {
         return logicHolder;
     }
@@ -58,11 +65,6 @@ public class THIABModule
     @Provides THBillingInteractor provideTHBillingInteractor(THIABUserInteractor thiabUserInteractor)
     {
         return thiabUserInteractor;
-    }
-
-    @Provides THIABUserInteractor provideTHIABUserInteractor()
-    {
-        return new THIABUserInteractor();
     }
 
     @Provides THBillingRequest provideBillingRequest(THIABBillingRequestFull request)

@@ -9,8 +9,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:13 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListAdapter extends
@@ -18,7 +20,7 @@ public class LeaderboardMarkUserListAdapter extends
                 LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
     implements PullToRefreshBase.OnRefreshListener<ListView>
 {
-    protected WeakReference<THIABUserInteractor> userInteractor = new WeakReference<>(null);
+    @Inject protected THBillingInteractor userInteractor;
     protected UserProfileDTO currentUserProfileDTO;
 
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
@@ -29,12 +31,6 @@ public class LeaderboardMarkUserListAdapter extends
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
-        notifyDataSetChanged();
-    }
-
-    public void setUserInteractor(THIABUserInteractor userInteractor)
-    {
-        this.userInteractor = new WeakReference<>(userInteractor);
         notifyDataSetChanged();
     }
 
@@ -50,7 +46,6 @@ public class LeaderboardMarkUserListAdapter extends
 
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
-        dtoView.linkWith(userInteractor.get(), false);
         dtoView.linkWith(currentUserProfileDTO, true);
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);

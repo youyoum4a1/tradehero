@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
@@ -37,6 +38,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
@@ -245,6 +247,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
+                        LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
@@ -255,6 +258,7 @@ import javax.inject.Singleton;
                         CompetitionWebViewFragment.class,
 
                         IABServiceConnector.class,
+                        IABBillingAvailableTester.class,
                         IABBillingInventoryFetcher.class,
                         THIABPurchaseFetcher.class,
                         THIABBillingInventoryFetcher.class,

@@ -24,6 +24,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -58,8 +59,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     // data
     private LeaderboardUserDTO leaderboardItem;
-    protected WeakReference<THIABUserInteractor> parentUserInteractor = new WeakReference<>(null);
-    @Inject protected THIABUserInteractor userInteractor;
+    @Inject protected THBillingInteractor userInteractor;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -192,25 +192,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    /**
-     * The userInteractor should be strongly referenced elsewhere
-     * @param userInteractor
-     * @param andDisplay
-     */
-    public void linkWith(THIABUserInteractor userInteractor, boolean andDisplay)
-    {
-        this.parentUserInteractor = new WeakReference<>(userInteractor);
-        if (andDisplay)
-        {
-            displayFollow();
-        }
-    }
-
     public Boolean isCurrentUserFollowing()
     {
-        THIABUserInteractor userInteractorCopy = parentUserInteractor.get();
         if (currentUserProfileDTO == null || leaderboardItem == null ||
-                userInteractorCopy == null)
+                userInteractor == null)
         {
             return null;
         }

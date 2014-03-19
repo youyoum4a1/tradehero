@@ -122,7 +122,7 @@ public class DisplayablePortfolioFetchAssistant
         {
             @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
             {
-                Timber.d("Received UserProfileDTO %d", key);
+                Timber.d("Received UserProfileDTO %s", key);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
                 if (valueList != null)
                 {

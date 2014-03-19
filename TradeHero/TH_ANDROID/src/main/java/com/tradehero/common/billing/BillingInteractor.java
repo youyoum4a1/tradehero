@@ -38,8 +38,15 @@ public interface BillingInteractor<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
+    void onPause();
+    void onStop();
+    void onDestroy();
+
     int getUnusedRequestCode();
+    void forgetRequestCode(int requestCode);
     BillingLogicHolderType getBillingLogicHolder();
+
+    void doAction(int action);
 
     AlertDialog popBillingUnavailable(BillingExceptionType billingException);
     int run(UIBillingRequestType uiBillingRequest);

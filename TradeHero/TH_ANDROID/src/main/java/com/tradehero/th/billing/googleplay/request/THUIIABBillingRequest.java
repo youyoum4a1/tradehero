@@ -9,11 +9,13 @@ import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 3/13/14.
  */
-public class THUIIABBillingRequest extends THUIBillingRequest<
+public class THUIIABBillingRequest
+    extends THUIBillingRequest<
         IABSKU, THIABProductDetail,
         THIABPurchaseOrder, THIABOrderId,
         THIABPurchase, IABException>
@@ -30,7 +32,7 @@ public class THUIIABBillingRequest extends THUIBillingRequest<
             THIABPurchase,
             IABException> consumptionFinishedListener;
 
-    public THUIIABBillingRequest()
+    @Inject public THUIIABBillingRequest()
     {
         super();
     }

@@ -27,7 +27,7 @@ public class BillingRequest<
     /**
      * Indicates whether we want to test if billing is available
      */
-    public boolean billingAvailable;
+    public boolean testBillingAvailable;
     public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
 
     /**

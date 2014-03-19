@@ -88,6 +88,7 @@ abstract public class THBaseBillingInteractor<
                 BillingExceptionType>
 {
     public static final int MAX_RANDOM_RETRIES = 50;
+    public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @Inject protected CurrentActivityHolder currentActivityHolder;
     @Inject protected CurrentUserId currentUserId;
@@ -108,15 +109,15 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    public void onPause()
+    @Override public void onPause()
     {
     }
 
-    public void onStop()
+    @Override public void onStop()
     {
     }
 
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         if (progressDialog != null)
         {
@@ -130,10 +131,23 @@ abstract public class THBaseBillingInteractor<
             {
                 logicHolder.forgetRequestCode(entry.getKey());
             }
-            entry.getValue().followResultListener = null;
-            entry.getValue().purchaseFinishedListener = null;
+            cleanRequest(entry.getValue());
         }
         uiBillingRequests.clear();
+    }
+
+    protected void cleanRequest(THUIBillingRequestType uiBillingRequest)
+    {
+        if (uiBillingRequest != null)
+        {
+            uiBillingRequest.billingAvailableListener = null;
+            uiBillingRequest.followResultListener = null;
+            uiBillingRequest.productIdentifierFetchedListener = null;
+            uiBillingRequest.inventoryFetchedListener = null;
+            uiBillingRequest.purchaseFetchedListener = null;
+            uiBillingRequest.purchaseReportedListener = null;
+            uiBillingRequest.purchaseFinishedListener = null;
+        }
     }
     //</editor-fold>
 
@@ -143,6 +157,16 @@ abstract public class THBaseBillingInteractor<
         THBillingLogicHolderType,
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
+
+    @Override public void doAction(int action)
+    {
+        switch (action)
+        {
+            case ACTION_RESET_PORTFOLIO:
+                // TODO
+                break;
+        }
+    }
 
     //<editor-fold desc="Request Code Management">
     @Override public int getUnusedRequestCode()
@@ -165,6 +189,17 @@ abstract public class THBaseBillingInteractor<
         return getBillingLogicHolder().isUnusedRequestCode(requestCode)
                 && !uiBillingRequests.containsKey(requestCode);
     }
+
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+        if (logicHolder != null)
+        {
+            logicHolder.forgetRequestCode(requestCode);
+        }
+        cleanRequest(uiBillingRequests.get(requestCode));
+        uiBillingRequests.remove(requestCode);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
@@ -173,11 +208,11 @@ abstract public class THBaseBillingInteractor<
         int requestCode = getUnusedRequestCode();
         uiBillingRequests.put(requestCode, uiBillingRequest);
         // TODO show a dialog
-        getBillingLogicHolder().run(requestCode, create(uiBillingRequest));
+        getBillingLogicHolder().run(requestCode, createBillingRequest(uiBillingRequest));
         return requestCode;
     }
 
-    protected THBillingRequestType create(THUIBillingRequestType uiBillingRequest)
+    protected THBillingRequestType createBillingRequest(THUIBillingRequestType uiBillingRequest)
     {
         THBillingRequestType billingRequest = createEmptyBillingRequest(uiBillingRequest);
         populateBillingRequest(billingRequest, uiBillingRequest);
@@ -188,7 +223,7 @@ abstract public class THBaseBillingInteractor<
 
     protected void populateBillingRequest(THBillingRequestType request, THUIBillingRequestType uiBillingRequest)
     {
-        request.billingAvailable = uiBillingRequest.billingAvailable;
+        request.testBillingAvailable = uiBillingRequest.billingAvailable;
         request.billingAvailableListener = createBillingAvailableListener();
         request.fetchProductIdentifiers = uiBillingRequest.fetchProductIdentifiers;
         request.productIdentifierFetchedListener = createProductIdentifierFetchedListener();
@@ -201,6 +236,8 @@ abstract public class THBaseBillingInteractor<
 
         if (uiBillingRequest.domainToPresent != null)
         {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
             request.fetchInventory = true;
         }
     }
@@ -218,7 +255,12 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Product Detail Presentation">
-    protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain skuDomain, int titleResId)
+    protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain productIdentifierDomain)
+    {
+        return popBuyDialog(requestCode, productIdentifierDomain, productIdentifierDomain.storeTitleResId);
+    }
+
+    protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain productIdentifierDomain, int titleResId)
     {
         Activity currentActivity = currentActivityHolder.getCurrentActivity();
         if (currentActivity != null)
@@ -227,8 +269,8 @@ abstract public class THBaseBillingInteractor<
                     requestCode,
                     currentActivity,
                     getBillingLogicHolder(),
-                    THBaseBillingInteractor.this,
-                    skuDomain,
+                    this,
+                    productIdentifierDomain,
                     titleResId);
         }
         return null;
@@ -451,7 +493,8 @@ abstract public class THBaseBillingInteractor<
         {
             if (thuiBillingRequest.domainToPresent != null)
             {
-                // TODO present domain products
+                getBillingLogicHolder().forgetRequestCode(requestCode);
+                popBuyDialog(requestCode, thuiBillingRequest.domainToPresent);
             }
         }
     }
@@ -480,6 +523,10 @@ abstract public class THBaseBillingInteractor<
             if (billingRequest.inventoryFetchedListener != null)
             {
                 billingRequest.inventoryFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(exception);
             }
         }
         if (billingRequest == null || billingRequest.popIfInventoryFetchFailed)
@@ -562,6 +609,10 @@ abstract public class THBaseBillingInteractor<
             if (billingRequest.purchaseFetchedListener != null)
             {
                 billingRequest.purchaseFetchedListener.onFetchPurchasesFailed(requestCode, exception);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(exception);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFetchFailed)
@@ -651,6 +702,10 @@ abstract public class THBaseBillingInteractor<
             if (billingRequest.purchaseFinishedListener != null)
             {
                 billingRequest.purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(billingException);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFailed)
@@ -743,6 +798,10 @@ abstract public class THBaseBillingInteractor<
             if (billingRequest.purchaseReportedListener != null)
             {
                 billingRequest.purchaseReportedListener.onPurchaseReportFailed(requestCode, reportedPurchase, error);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(error);
             }
         }
         if (billingRequest == null || billingRequest.popIfReportFailed)

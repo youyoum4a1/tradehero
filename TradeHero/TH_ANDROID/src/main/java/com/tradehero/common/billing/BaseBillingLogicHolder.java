@@ -1,7 +1,10 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,12 +130,42 @@ abstract public class BaseBillingLogicHolder<
      */
     @Override public boolean run(int requestCode, BillingRequestType billingRequest)
     {
+        billingRequests.put(requestCode, billingRequest);
         registerListeners(requestCode, billingRequest);
+        return runInternal(requestCode);
+    }
+
+    protected boolean runInternal(int requestCode)
+    {
         boolean launched = false;
-        if (billingRequest != null && billingRequest.billingAvailable)
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
         {
-            launchBillingAvailableTestSequence(requestCode);
-            launched = true;
+            if (billingRequest.testBillingAvailable)
+            {
+                launchBillingAvailableTestSequence(requestCode);
+                launched = true;
+            }
+            else if (billingRequest.fetchProductIdentifiers)
+            {
+                launchProductIdentifierFetchSequence(requestCode);
+                launched = true;
+            }
+            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
+            {
+                launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
+                launched = true;
+            }
+            else if (billingRequest.fetchPurchase)
+            {
+                launchFetchPurchaseSequence(requestCode);
+                launched = true;
+            }
+            else if (billingRequest.doPurchase && billingRequest.purchaseOrder != null)
+            {
+                launchPurchaseSequence(requestCode, billingRequest.purchaseOrder);
+                launched = true;
+            }
         }
         return launched;
     }
@@ -167,31 +200,88 @@ abstract public class BaseBillingLogicHolder<
     //<editor-fold desc="Sequence Logic">
     protected void handleBillingAvailable(int requestCode)
     {
-        // TODO child class to continue with other sequence?
+        notifyBillingAvailable(requestCode);
+        prepareRequestForNextRunAfterBillingAvailable(requestCode);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterBillingAvailable(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.testBillingAvailable = false;
+        }
     }
 
     protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
     {
         notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
-        // TODO child class to continue with other sequence?
+        prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    {
+        List<ProductIdentifierType> all = new ArrayList<>();
+        for (Map.Entry<String, List<ProductIdentifierType>> entry : availableProductIdentifiers.entrySet())
+        {
+            all.addAll(entry.getValue());
+        }
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchProductIdentifiers = false;
+            billingRequest.productIdentifiersForInventory = all;
+        }
     }
 
     protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
         notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-        // TODO continue another sequence?
+        prepareRequestForNextRunAfterInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchInventory = false;
+        }
     }
 
     protected void handlePurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
     {
         notifyPurchaseFetchedSuccess(requestCode, purchases);
-        // TODO continue another sequence?
+        prepareRequestForNextRunAfterPurchaseFetchedSuccess(requestCode, purchases);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchPurchase = false;
+        }
     }
 
     protected void handlePurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
     {
         notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
-        // TODO continue with other sequence?
+        prepareRequestForNextRunAfterPurchaseFinished(requestCode, purchaseOrder, purchase);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.doPurchase = false;
+        }
     }
     //</editor-fold>
 
@@ -212,8 +302,24 @@ abstract public class BaseBillingLogicHolder<
         if (billingRequest != null)
         {
             billingRequest.billingAvailableListener = billingAvailableListener;
-            // TODO register in the holder
+            billingAvailableTesterHolder.registerBillingAvailableListener(requestCode, createBillingAvailableListener());
         }
+    }
+
+    protected BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> createBillingAvailableListener()
+    {
+        return new BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>()
+        {
+            @Override public void onBillingAvailable(int requestCode)
+            {
+                handleBillingAvailable(requestCode);
+            }
+
+            @Override public void onBillingNotAvailable(int requestCode, BillingExceptionType billingException)
+            {
+                notifyBillingNotAvailable(requestCode, billingException);
+            }
+        };
     }
 
     @Override public void unregisterBillingAvailableListener(int requestCode)

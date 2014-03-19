@@ -56,7 +56,6 @@ public class THIABUserInteractor
     implements THIABInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
-    public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @Inject THIABProductDetailCache thiabProductDetailCache;
     @Inject THIABLogicHolder billingActor;
@@ -72,7 +71,7 @@ public class THIABUserInteractor
     @Inject protected UserService userService;
 
     //<editor-fold desc="Constructors">
-    public THIABUserInteractor()
+    @Inject public THIABUserInteractor()
     {
         super();
         purchaseRestorer = new THIABPurchaseRestorer(billingActor);
@@ -140,6 +139,16 @@ public class THIABUserInteractor
         billingActor = null;
         super.onDestroy();
     }
+
+    @Override protected void cleanRequest(THUIIABBillingRequest uiBillingRequest)
+    {
+        super.cleanRequest(uiBillingRequest);
+        if (uiBillingRequest != null)
+        {
+            uiBillingRequest.consumptionFinishedListener = null;
+        }
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
@@ -147,6 +156,13 @@ public class THIABUserInteractor
     {
         return new THIABBillingRequestFull();
     }
+
+    @Override protected void populateBillingRequest(THIABBillingRequestFull request, THUIIABBillingRequest uiBillingRequest)
+    {
+        super.populateBillingRequest(request, uiBillingRequest);
+        // TODO add specific things for IAB
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Logic Holder Handling">
@@ -260,16 +276,6 @@ public class THIABUserInteractor
         }
     }
 
-    public void doAction(int action)
-    {
-        switch (action)
-        {
-            case ACTION_RESET_PORTFOLIO:
-                // TODO
-                break;
-        }
-    }
-
     //<editor-fold desc="Purchase Actions">
     @Override protected THIABBillingRequestFull createPurchaseBillingRequest(int requestCode, IABSKU productIdentifier)
     {
@@ -278,9 +284,12 @@ public class THIABUserInteractor
         if (uiBillingRequest != null)
         {
             request = new THIABBillingRequestFull();
+            request.doPurchase = true;
             request.purchaseOrder = new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
             request.purchaseFinishedListener = createPurchaseFinishedListener();
+            request.reportPurchase = true;
             request.purchaseReportedListener = createPurchaseReportedListener();
+            request.consumePurchase = true;
             request.consumptionFinishedListener = createConsumptionFinishedListener();
         }
 
@@ -438,6 +447,10 @@ public class THIABUserInteractor
             if (((THUIIABBillingRequest) billingRequest).consumptionFinishedListener != null)
             {
                 ((THUIIABBillingRequest) billingRequest).consumptionFinishedListener.onPurchaseConsumeFailed(requestCode, purchase, exception);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                ((THUIIABBillingRequest) billingRequest).onDefaultErrorListener.onError(exception);
             }
         }
 

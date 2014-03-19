@@ -12,17 +12,22 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
-import com.tradehero.th.billing.request.THBillingRequest;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
@@ -33,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
@@ -42,13 +48,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserId currentUserId;
-    @Inject THBillingInteractor billingInteractor;
-    @Inject Provider<THBillingRequest> billingRequestProvider;
+    @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+
+    private Integer showSkuRequestCode;
 
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
@@ -115,19 +122,19 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                // TODO
+                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                // TODO
+                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                // TODO
+                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                // TODO
+                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
@@ -200,28 +207,48 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return R.layout.tutorial_store_screen;
     }
 
-    public BillingRequest getShowSkuRequest()
+    public void cancelOthersAndShowSkuList(ProductIdentifierDomain domain)
     {
-        BillingRequest builder = billingRequestProvider.get();
-        builder.inventoryFetchedListener = new BillingInventoryFetcher.OnInventoryFetchedListener()
+        if (showSkuRequestCode != null)
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List productIdentifiers, Map inventory)
-            {
+            userInteractor.forgetRequestCode(showSkuRequestCode);
+        }
+        showSkuRequestCode = showSkuListForPurchase(domain);
+    }
 
-            }
+    public int showSkuListForPurchase(ProductIdentifierDomain domain)
+    {
+        return userInteractor.run(getShowSkuRequest(domain));
+    }
 
-            @Override public void onInventoryFetchFail(int requestCode, List productIdentifiers, BillingException exception)
+    public THUIBillingRequest getShowSkuRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.domainToPresent = domain;
+        Timber.d("Store domain set");
+        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        {
+            @Override public void onError(BillingException billingException)
             {
-                // TODO warn if there are things unset
-                if (exception instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
-                {
-                    alreadyNotifiedNeedCreateAccount = true;
-                    billingInteractor.popBillingUnavailable(exception);
-                }
-                // Nothing to do presumably
+                Timber.d("Store had error %s", billingException);
+                THToast.show(billingException.getMessage());
             }
         };
-        return builder;
+        Timber.d("Store listener set 1");
+        request.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                THToast.show("Purchase ok");
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+                THToast.show(error.getMessage());
+            }
+        };
+        Timber.d("Store listener set 2");
+        return request;
     }
 
     protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
