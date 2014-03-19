@@ -192,9 +192,7 @@ import javax.inject.Singleton;
                         DisplayablePortfolioFetchAssistant.class,
 
                         PositionListFragment.class,
-                        PositionListFragment.PositionListTHIABUserInteractor.class,
                         LeaderboardPositionListFragment.class,
-                        LeaderboardPositionListFragment.LeaderboardPositionListTHIABUserInteractor.class,
                         OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,

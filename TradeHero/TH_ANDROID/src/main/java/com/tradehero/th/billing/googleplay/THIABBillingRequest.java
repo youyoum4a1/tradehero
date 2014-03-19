@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -22,7 +22,7 @@ public class THIABBillingRequest extends IABBillingRequest<
     public static final String TAG = THIABBillingRequest.class.getSimpleName();
 
     protected THIABBillingRequest(
-            OnBillingAvailableListener<IABException> billingAvailableListener,
+            BillingAvailableTester.OnBillingAvailableListener<IABException> billingAvailableListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> purchaseFinishedListener,

@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABProductDetail;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -46,7 +46,7 @@ public class IABBillingRequest<
     private IABPurchaseType purchaseToConsume;
 
     protected IABBillingRequest(
-            OnBillingAvailableListener<IABExceptionType> billingAvailableListener,
+            BillingAvailableTester.OnBillingAvailableListener<IABExceptionType> billingAvailableListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener,

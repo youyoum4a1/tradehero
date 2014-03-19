@@ -18,7 +18,7 @@ public class BillingRequest<
     public static final String TAG = BillingRequest.class.getSimpleName();
 
     //<editor-fold desc="Listeners">
-    private OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+    private BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
     private BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
             ProductDetailType,
@@ -42,7 +42,7 @@ public class BillingRequest<
     private PurchaseOrderType purchaseOrder;
 
     protected BillingRequest(
-            OnBillingAvailableListener<BillingExceptionType> billingAvailableListener,
+            BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener,
             BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener,
             BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener,
@@ -64,12 +64,12 @@ public class BillingRequest<
 
     //<editor-fold desc="Accessors">
 
-    public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
+    public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
     {
         return billingAvailableListener;
     }
 
-    public void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
+    public void setBillingAvailableListener(BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
         this.billingAvailableListener = billingAvailableListener;
     }
@@ -127,7 +127,7 @@ public class BillingRequest<
             BillingExceptionType extends BillingException>
     {
         //<editor-fold desc="Listeners">
-        private OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+        private BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
         private BillingInventoryFetcher.OnInventoryFetchedListener<
                 ProductIdentifierType,
                 ProductDetailType,
@@ -196,12 +196,12 @@ public class BillingRequest<
         }
 
         //<editor-fold desc="Accessors">
-        public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
+        public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener()
         {
             return billingAvailableListener;
         }
 
-        public void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
+        public void setBillingAvailableListener(BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
         {
             this.billingAvailableListener = billingAvailableListener;
         }
