@@ -51,12 +51,14 @@ abstract public class THBaseBillingLogicHolder<
 {
     protected PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReporterHolder;
 
-    @Inject protected UserProfileCache userProfileCache;
-    @Inject protected UserServiceWrapper userServiceWrapper;
+    protected UserProfileCache userProfileCache;
+    protected UserServiceWrapper userServiceWrapper;
 
-    public THBaseBillingLogicHolder()
+    public THBaseBillingLogicHolder(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper)
     {
         super();
+        this.userProfileCache = userProfileCache;
+        this.userServiceWrapper = userServiceWrapper;
         purchaseReporterHolder = createPurchaseReporterHolder();
     }
 

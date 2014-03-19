@@ -2,20 +2,15 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
-import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
-import com.tradehero.common.billing.googleplay.IABResponse;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
@@ -23,8 +18,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +47,12 @@ public class THIABLogicHolderFull
 
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 
-    @Inject public THIABLogicHolderFull(IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
+    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
     {
-        super();
-        purchaseConsumerHolder = createPurchaseConsumeHolder();
+        super(userProfileCache, userServiceWrapper);
         this.iabskuListCache = iabskuListCache;
         this.thskuDetailCache = thskuDetailCache;
-        DaggerUtils.inject(this);
+        purchaseConsumerHolder = createPurchaseConsumeHolder();
     }
 
     @Override public void onDestroy()
