@@ -53,7 +53,6 @@ public class THBillingRequest<
             PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
-            Boolean fetchInventory,
             List<ProductIdentifierType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             PurchaseOrderType purchaseOrder,
@@ -67,7 +66,6 @@ public class THBillingRequest<
                 purchaseFinishedListener,
                 billingAvailable,
                 fetchProductIdentifiers,
-                fetchInventory,
                 productIdentifiersForInventory,
                 fetchPurchase,
                 purchaseOrder);
@@ -90,11 +88,6 @@ public class THBillingRequest<
     public ProductPurchaseType getPurchaseToReport()
     {
         return purchaseToReport;
-    }
-
-    public void setPurchaseToReport(ProductPurchaseType purchaseToReport)
-    {
-        this.purchaseToReport = purchaseToReport;
     }
     //</editor-fold>
 
@@ -140,7 +133,6 @@ public class THBillingRequest<
                     purchaseReportedListener,
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
-                    getFetchInventory(),
                     getProductIdentifiersForInventory(),
                     getFetchPurchase(),
                     getPurchaseOrder(),

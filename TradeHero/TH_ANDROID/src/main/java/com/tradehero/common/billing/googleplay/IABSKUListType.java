@@ -1,15 +1,13 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.os.Bundle;
-import com.tradehero.common.billing.ProductIdentifierListType;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:30 PM To change this template use File | Settings | File Templates. */
-public class IABSKUListType extends AbstractStringDTOKey implements ProductIdentifierListType
+public class IABSKUListType extends AbstractStringDTOKey
 {
     public static final String TAG = IABSKUListType.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = IABSKUListType.class.getName() + ".key";
-    public static final String KEY_ALL = "ALL";
 
     public static IABSKUListType getInApp()
     {
@@ -19,11 +17,6 @@ public class IABSKUListType extends AbstractStringDTOKey implements ProductIdent
     public static IABSKUListType getSubs()
     {
         return new IABSKUListType(IABConstants.ITEM_TYPE_SUBS);
-    }
-
-    public static IABSKUListType getAll()
-    {
-        return new IABSKUListType(KEY_ALL);
     }
 
     //<editor-fold desc="Constructors">

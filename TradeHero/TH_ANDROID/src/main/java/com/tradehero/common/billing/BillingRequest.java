@@ -41,7 +41,6 @@ public class BillingRequest<
 
     private Boolean billingAvailable;
     private Boolean fetchProductIdentifiers;
-    private Boolean fetchInventory;
     private List<ProductIdentifierType> productIdentifiersForInventory;
     private Boolean fetchPurchase;
     private PurchaseOrderType purchaseOrder;
@@ -54,7 +53,6 @@ public class BillingRequest<
             BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
-            Boolean fetchInventory,
             List<ProductIdentifierType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             PurchaseOrderType purchaseOrder)
@@ -67,7 +65,6 @@ public class BillingRequest<
 
         this.billingAvailable = billingAvailable;
         this.fetchProductIdentifiers = fetchProductIdentifiers;
-        this.fetchInventory = fetchInventory;
         this.productIdentifiersForInventory = productIdentifiersForInventory;
         this.fetchPurchase = fetchPurchase;
         this.purchaseOrder = purchaseOrder;
@@ -133,29 +130,9 @@ public class BillingRequest<
         return billingAvailable;
     }
 
-    public void setBillingAvailable(Boolean billingAvailable)
-    {
-        this.billingAvailable = billingAvailable;
-    }
-
     public Boolean getFetchProductIdentifiers()
     {
         return fetchProductIdentifiers;
-    }
-
-    public void setFetchProductIdentifiers(Boolean fetchProductIdentifiers)
-    {
-        this.fetchProductIdentifiers = fetchProductIdentifiers;
-    }
-
-    public Boolean getFetchInventory()
-    {
-        return fetchInventory;
-    }
-
-    public void setFetchInventory(Boolean fetchInventory)
-    {
-        this.fetchInventory = fetchInventory;
     }
 
     public List<ProductIdentifierType> getProductIdentifiersForInventory()
@@ -163,29 +140,14 @@ public class BillingRequest<
         return productIdentifiersForInventory;
     }
 
-    public void setProductIdentifiersForInventory(List<ProductIdentifierType> productIdentifiersForInventory)
-    {
-        this.productIdentifiersForInventory = productIdentifiersForInventory;
-    }
-
     public Boolean getFetchPurchase()
     {
         return fetchPurchase;
     }
 
-    public void setFetchPurchase(Boolean fetchPurchase)
-    {
-        this.fetchPurchase = fetchPurchase;
-    }
-
     public PurchaseOrderType getPurchaseOrder()
     {
         return purchaseOrder;
-    }
-
-    public void setPurchaseOrder(PurchaseOrderType purchaseOrder)
-    {
-        this.purchaseOrder = purchaseOrder;
     }
     //</editor-fold>
 
@@ -221,7 +183,6 @@ public class BillingRequest<
 
         private Boolean billingAvailable;
         private Boolean fetchProductIdentifiers;
-        private Boolean fetchInventory;
         private List<ProductIdentifierType> productIdentifiersForInventory;
         private Boolean fetchPurchase;
         private PurchaseOrderType purchaseOrder;
@@ -244,7 +205,6 @@ public class BillingRequest<
                     purchaseFinishedListener,
                     billingAvailable,
                     fetchProductIdentifiers,
-                    fetchInventory,
                     productIdentifiersForInventory,
                     fetchPurchase,
                     purchaseOrder);
@@ -347,16 +307,6 @@ public class BillingRequest<
         public void setFetchProductIdentifiers(Boolean fetchProductIdentifiers)
         {
             this.fetchProductIdentifiers = fetchProductIdentifiers;
-        }
-
-        public Boolean getFetchInventory()
-        {
-            return fetchInventory;
-        }
-
-        public void setFetchInventory(Boolean fetchInventory)
-        {
-            this.fetchInventory = fetchInventory;
         }
 
         public List<ProductIdentifierType> getProductIdentifiersForInventory()

@@ -1,5 +1,8 @@
-package com.tradehero.common.billing;
+package com.tradehero.th.persistence.billing;
 
+import com.tradehero.common.billing.ProductDetail;
+import com.tradehero.common.billing.ProductDetailTuner;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
 import java.util.List;

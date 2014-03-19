@@ -8,8 +8,6 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
 
 /**
  * Created by xavier on 3/14/14.
@@ -49,13 +47,13 @@ abstract public class THBaseBillingLogicHolder<
 {
     protected PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReporterHolder;
 
-    @Inject protected UserProfileCache userProfileCache;
-
     public THBaseBillingLogicHolder()
     {
         super();
         purchaseReporterHolder = createPurchaseReporterHolder();
     }
+
+    protected abstract PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseReporterHolder();
 
     @Override public void onDestroy()
     {
@@ -75,10 +73,6 @@ abstract public class THBaseBillingLogicHolder<
         super.forgetRequestCode(requestCode);
         unregisterPurchaseReportedListener(requestCode);
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Holder Creation">
-    protected abstract PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseReporterHolder();
     //</editor-fold>
 
     //<editor-fold desc="Report Purchase">
@@ -130,12 +124,8 @@ abstract public class THBaseBillingLogicHolder<
 
     protected void handlePurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
-        if (updatedUserPortfolio != null)
-        {
-            userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
-        }
         notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
-        // Sequence logic handled by child class
+        // TODO further action?
     }
 
     protected void notifyPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)

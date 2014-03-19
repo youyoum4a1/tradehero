@@ -57,7 +57,6 @@ public class THIABBillingRequest<
             IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionFinishedListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
-            Boolean fetchInventory,
             List<IABSKUType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             IABPurchaseOrderType purchaseOrder,
@@ -66,7 +65,7 @@ public class THIABBillingRequest<
     {
         super(billingAvailableListener, productIdentifierFetchedListener,
                 inventoryFetchedListener, purchaseFetchedListener, purchaseFinishedListener, purchaseReportedListener,
-                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport);
+                billingAvailable, fetchProductIdentifiers, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport);
         this.consumptionFinishedListener = consumptionFinishedListener;
         this.purchaseToConsume = purchaseToConsume;
     }
@@ -86,11 +85,6 @@ public class THIABBillingRequest<
     public IABPurchaseType getPurchaseToConsume()
     {
         return purchaseToConsume;
-    }
-
-    public void setPurchaseToConsume(IABPurchaseType purchaseToConsume)
-    {
-        this.purchaseToConsume = purchaseToConsume;
     }
     //</editor-fold>
 
@@ -138,7 +132,6 @@ public class THIABBillingRequest<
                     consumptionFinishedListener,
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
-                    getFetchInventory(),
                     getProductIdentifiersForInventory(),
                     getFetchPurchase(),
                     getPurchaseOrder(),
