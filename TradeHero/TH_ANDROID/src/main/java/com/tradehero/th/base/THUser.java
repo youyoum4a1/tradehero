@@ -212,6 +212,7 @@ public class THUser
 
             @Override public void failure(THException error)
             {
+                checkNeedForUpgrade(error);
                 callback.done(null, error);
             }
         };
@@ -232,36 +233,41 @@ public class THUser
 
             @Override public void failure(THException error)
             {
-                if (error.getCode() == ExceptionCode.DoNotRunBellow)
-                {
-                    final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
-                    alertDialogUtil.get().popWithOkCancelButton(
-                            currentActivity, R.string.upgrade_needed, R.string.please_update, R.string.update_now, R.string.later,
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override public void onClick(DialogInterface dialog, int which)
-                                {
-                                    try
-                                    {
-                                        THToast.show(R.string.update_guide);
-                                        currentActivity.startActivity(
-                                                new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                        currentActivity.finish();
-                                    }
-                                    catch (ActivityNotFoundException ex)
-                                    {
-
-                                        currentActivity.startActivity(
-                                                new Intent(Intent.ACTION_VIEW,
-                                                        Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                        currentActivity.finish();
-                                    }
-                                }
-                            });
-                }
+                checkNeedForUpgrade(error);
                 callback.done(null, error);
             }
         };
+    }
+
+    private static void checkNeedForUpgrade(THException error)
+    {
+        if (error.getCode() == ExceptionCode.DoNotRunBellow)
+        {
+            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+            alertDialogUtil.get().popWithOkCancelButton(
+                    currentActivity, R.string.upgrade_needed, R.string.please_update, R.string.update_now, R.string.later,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            try
+                            {
+                                THToast.show(R.string.update_guide);
+                                currentActivity.startActivity(
+                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                currentActivity.finish();
+                            }
+                            catch (ActivityNotFoundException ex)
+                            {
+
+                                currentActivity.startActivity(
+                                        new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                currentActivity.finish();
+                            }
+                        }
+                    });
+        }
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
