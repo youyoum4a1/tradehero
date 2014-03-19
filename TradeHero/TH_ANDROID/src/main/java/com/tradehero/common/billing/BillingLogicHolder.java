@@ -21,6 +21,8 @@ public interface BillingLogicHolder<
                     BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
+        BillingAvailableTesterHolder<
+                BillingExceptionType>,
         ProductIdentifierFetcherHolder<
                 ProductIdentifierType,
                 BillingExceptionType>,
@@ -41,17 +43,11 @@ public interface BillingLogicHolder<
                 BillingExceptionType>
 {
     String getBillingHolderName(Resources resources);
-    Boolean isBillingAvailable();
     void onActivityResult(int requestCode, int resultCode, Intent data);
     int getUnusedRequestCode();
 
     void registerListeners(int requestCode, BillingRequestType billingRequest);
     boolean run(int requestCode, BillingRequestType billingRequest);
-
-    OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode);
-
-    void registerBillingAvailableListener(int requestCode,
-            OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
 
     void unregisterBillingAvailableListener(int requestCode);
     void unregisterProductIdentifierFetchedListener(int requestCode);

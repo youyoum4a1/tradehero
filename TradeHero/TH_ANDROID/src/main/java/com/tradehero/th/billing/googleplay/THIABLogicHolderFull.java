@@ -2,7 +2,12 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
+import com.tradehero.common.billing.BillingAvailableTester;
+import com.tradehero.common.billing.BillingAvailableTesterHolder;
+import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
+import com.tradehero.common.billing.googleplay.IABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
@@ -43,7 +48,6 @@ public class THIABLogicHolderFull
     private IABSKUListCache iabskuListCache;
     private THIABProductDetailCache thskuDetailCache;
 
-    protected IABServiceConnector availabilityTester;
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 
     @Inject public THIABLogicHolderFull(IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
@@ -57,10 +61,6 @@ public class THIABLogicHolderFull
 
     @Override public void onDestroy()
     {
-        if (availabilityTester != null)
-        {
-            availabilityTester.onDestroy();
-        }
         purchaseConsumerHolder.onDestroy();
         super.onDestroy();
     }
@@ -68,12 +68,6 @@ public class THIABLogicHolderFull
     @Override public String getBillingHolderName(Resources resources)
     {
         return resources.getString(R.string.th_iab_logic_holder_name);
-    }
-
-    @Override protected void testBillingAvailable()
-    {
-        availabilityTester = new AvailabilityTester();
-        availabilityTester.startConnectionSetup();
     }
 
     //<editor-fold desc="Request Code Management">
@@ -128,6 +122,11 @@ public class THIABLogicHolderFull
         return new THBaseIABPurchaserHolder();
     }
 
+    @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
+    {
+        return new BaseIABBillingAvailableTesterHolder();
+    }
+
     protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
     {
         return new THBaseIABPurchaseConsumerHolder();
@@ -154,6 +153,11 @@ public class THIABLogicHolderFull
         return launched;
     }
 
+    @Override protected void handleBillingAvailable(int requestCode)
+    {
+        super.handleBillingAvailable(requestCode);
+    }
+
     @Override protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<IABSKU>> availableProductIdentifiers)
     {
         List<IABSKU> all = new ArrayList<>();
@@ -164,8 +168,14 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
+            if (billingRequest.fetchInventory)
+            {
+                // Tell that the fetch is done
+                billingRequest.fetchProductIdentifiers = false;
+            }
             billingRequest.productIdentifiersForInventory = all;
         }
+
         super.handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         if (billingRequest != null)
         {
@@ -188,6 +198,8 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
+            // Tell that purchase is done
+            billingRequest.purchaseOrder = null;
             billingRequest.purchaseToReport = purchase;
         }
         super.handlePurchaseFinished(requestCode, purchaseOrder, purchase);
@@ -199,6 +211,8 @@ public class THIABLogicHolderFull
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
+            // Tell that report is done
+            billingRequest.purchaseToReport = null;
             billingRequest.purchaseToConsume = reportedPurchase;
         }
         super.handlePurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
@@ -315,25 +329,5 @@ public class THIABLogicHolderFull
     @Override public boolean hadErrorLoadingInventory()
     {
         return inventoryFetcherHolder.hadErrorLoadingInventory();
-    }
-
-    public class AvailabilityTester extends IABServiceConnector
-    {
-        protected AvailabilityTester()
-        {
-            super();
-        }
-
-        @Override protected void handleSetupFinished(IABResponse response)
-        {
-            super.handleSetupFinished(response);
-            notifyBillingAvailable();
-        }
-
-        @Override protected void handleSetupFailed(IABException exception)
-        {
-            super.handleSetupFailed(exception);
-            notifyBillingNotAvailable(exception);
-        }
     }
 }

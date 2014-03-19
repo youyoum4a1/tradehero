@@ -28,6 +28,7 @@ public class THIABBillingRequest<
                 IABPurchaseType,
                 IABExceptionType>
 {
+    public boolean consumePurchase;
     public IABPurchaseType purchaseToConsume;
     public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,

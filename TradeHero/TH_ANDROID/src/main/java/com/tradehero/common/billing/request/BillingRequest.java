@@ -1,9 +1,9 @@
 package com.tradehero.common.billing.request;
 
+import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -28,7 +28,7 @@ public class BillingRequest<
      * Indicates whether we want to test if billing is available
      */
     public boolean billingAvailable;
-    public OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+    public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
 
     /**
      * Indicates whether we want to fetch the product identifiers
@@ -62,9 +62,10 @@ public class BillingRequest<
      * Indicates whether we want to restore purchases
      */
     public boolean restorePurchase;
-    // TODO restore listener
     public List<ProductPurchaseType> purchasesToRestore;
+    // TODO restore listener
 
+    public boolean doPurchase;
     public PurchaseOrderType purchaseOrder;
     public BillingPurchaser.OnPurchaseFinishedListener<
                 ProductIdentifierType,

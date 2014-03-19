@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OnBillingAvailableListener;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -198,6 +197,11 @@ abstract public class THBaseBillingInteractor<
         request.purchaseFetchedListener = createPurchaseFetchedListener();
         request.purchaseFinishedListener = createPurchaseFinishedListener();
         request.purchaseReportedListener = createPurchaseReportedListener();
+
+        if (uiBillingRequest.domainToPresent != null)
+        {
+            request.fetchInventory = true;
+        }
     }
     //</editor-fold>
 

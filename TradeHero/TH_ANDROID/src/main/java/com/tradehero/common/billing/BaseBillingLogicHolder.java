@@ -2,7 +2,6 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +36,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected Map<Integer, BillingRequestType> billingRequests;
 
-    protected Boolean billingAvailable = null;
-    protected Map<Integer, OnBillingAvailableListener<BillingExceptionType>> billingAvailableListeners;
-
+    protected BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
     protected ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType> productIdentifierFetcherHolder;
     protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
     protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
@@ -50,16 +47,14 @@ abstract public class BaseBillingLogicHolder<
         super();
         billingRequests = new HashMap<>();
 
-        billingAvailableListeners = new HashMap<>();
-
+        billingAvailableTesterHolder= createBillingAvailableTesterHolder();
         productIdentifierFetcherHolder = createProductIdentifierFetcherHolder();
         inventoryFetcherHolder = createInventoryFetcherHolder();
         purchaseFetcherHolder = createPurchaseFetcherHolder();
         purchaserHolder = createPurchaserHolder();
-
-        testBillingAvailable();
     }
 
+    abstract protected BillingAvailableTesterHolder<BillingExceptionType> createBillingAvailableTesterHolder();
     abstract protected ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetcherHolder();
     abstract protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetcherHolder();
     abstract protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFetcherHolder();
@@ -76,8 +71,7 @@ abstract public class BaseBillingLogicHolder<
         }
         billingRequests.clear();
 
-        billingAvailableListeners.clear();
-
+        billingAvailableTesterHolder.onDestroy();
         productIdentifierFetcherHolder.onDestroy();
         inventoryFetcherHolder.onDestroy();
         purchaseFetcherHolder.onDestroy();
@@ -102,15 +96,12 @@ abstract public class BaseBillingLogicHolder<
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return !billingRequests.containsKey(requestCode)
-                && !billingAvailableListeners.containsKey(requestCode);
+        return !billingRequests.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
         billingRequests.remove(requestCode);
-
-        billingAvailableListeners.remove(requestCode);
 
         unregisterProductIdentifierFetchedListener(requestCode);
         unregisterInventoryFetchedListener(requestCode);
@@ -140,18 +131,18 @@ abstract public class BaseBillingLogicHolder<
         boolean launched = false;
         if (billingRequest != null && billingRequest.billingAvailable)
         {
-            testBillingAvailable();
+            launchBillingAvailableTestSequence(requestCode);
             launched = true;
         }
         return launched;
     }
 
-    @Override public OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
+    //<editor-fold desc="Launch Sequence Methods">
+    public void launchBillingAvailableTestSequence(int requestCode)
     {
-        return billingAvailableListeners.get(requestCode);
+        billingAvailableTesterHolder.launchBillingAvailableTestSequence(requestCode);
     }
 
-    //<editor-fold desc="Launch Sequence Methods">
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         productIdentifierFetcherHolder.launchProductIdentifierFetchSequence(requestCode);
@@ -174,6 +165,11 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
+    protected void handleBillingAvailable(int requestCode)
+    {
+        // TODO child class to continue with other sequence?
+    }
+
     protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
     {
         notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
@@ -199,39 +195,40 @@ abstract public class BaseBillingLogicHolder<
     }
     //</editor-fold>
 
-
     //<editor-fold desc="Billing Available">
-    @Override public Boolean isBillingAvailable()
+    @Override public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
     {
-        return billingAvailable;
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.billingAvailableListener;
     }
 
-    abstract protected void testBillingAvailable();
-
-    @Override public void registerBillingAvailableListener(int requestCode,
-            OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
+    @Override public void registerBillingAvailableListener(int requestCode, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
-        billingAvailableListeners.put(requestCode, billingAvailableListener);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.billingAvailableListener = billingAvailableListener;
+            // TODO register in the holder
+        }
     }
 
     @Override public void unregisterBillingAvailableListener(int requestCode)
     {
-        billingAvailableListeners.remove(requestCode);
-    }
-
-    protected void notifyBillingAvailable()
-    {
-        billingAvailable = true;
-        // Protect from unsync when unregistering the listeners
-        for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
+        // TODO unregister holder
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
         {
-            notifyBillingAvailable(requestCode);
+            billingRequest.billingAvailableListener = null;
         }
     }
 
     protected void notifyBillingAvailable(int requestCode)
     {
-        OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
+        BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> availableListener = getBillingAvailableListener(requestCode);
         if (availableListener != null)
         {
             availableListener.onBillingAvailable(requestCode);
@@ -239,19 +236,9 @@ abstract public class BaseBillingLogicHolder<
         unregisterBillingAvailableListener(requestCode);
     }
 
-    protected void notifyBillingNotAvailable(BillingExceptionType exception)
-    {
-        billingAvailable = false;
-        // Protect from unsync when unregistering the listeners
-        for (Integer requestCode : new ArrayList<>(billingAvailableListeners.keySet()))
-        {
-            notifyBillingNotAvailable(requestCode, exception);
-        }
-    }
-
     protected void notifyBillingNotAvailable(int requestCode, BillingExceptionType exception)
     {
-        OnBillingAvailableListener<BillingExceptionType> availableListener = billingAvailableListeners.get(requestCode);
+        BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> availableListener = getBillingAvailableListener(requestCode);
         if (availableListener != null)
         {
             availableListener.onBillingNotAvailable(requestCode, exception);
