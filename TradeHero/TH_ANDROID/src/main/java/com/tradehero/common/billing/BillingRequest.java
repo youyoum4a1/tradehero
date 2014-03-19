@@ -1,7 +1,6 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Arrays;
 import java.util.List;
 

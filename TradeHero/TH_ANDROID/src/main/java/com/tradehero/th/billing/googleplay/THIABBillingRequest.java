@@ -12,8 +12,6 @@ import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.OnFollowResultListener;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBillingRequest;
 import java.util.List;
@@ -57,7 +55,6 @@ public class THIABBillingRequest<
             BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener,
             PurchaseReporter.OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseReportedListener,
             IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionFinishedListener,
-            OnFollowResultListener followResultListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
             Boolean fetchInventory,
@@ -65,13 +62,11 @@ public class THIABBillingRequest<
             Boolean fetchPurchase,
             IABPurchaseOrderType purchaseOrder,
             IABPurchaseType purchaseToReport,
-            IABPurchaseType purchaseToConsume,
-            UserBaseKey userToFollow)
+            IABPurchaseType purchaseToConsume)
     {
         super(billingAvailableListener, productIdentifierFetchedListener,
-                inventoryFetchedListener, purchaseFetchedListener, purchaseFinishedListener, purchaseReportedListener, followResultListener,
-                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport,
-                userToFollow);
+                inventoryFetchedListener, purchaseFetchedListener, purchaseFinishedListener, purchaseReportedListener,
+                billingAvailable, fetchProductIdentifiers, fetchInventory, productIdentifiersForInventory, fetchPurchase, purchaseOrder, purchaseToReport);
         this.consumptionFinishedListener = consumptionFinishedListener;
         this.purchaseToConsume = purchaseToConsume;
     }
@@ -141,7 +136,6 @@ public class THIABBillingRequest<
                     getPurchaseFinishedListener(),
                     getPurchaseReportedListener(),
                     consumptionFinishedListener,
-                    getFollowResultListener(),
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
                     getFetchInventory(),
@@ -149,8 +143,7 @@ public class THIABBillingRequest<
                     getFetchPurchase(),
                     getPurchaseOrder(),
                     getPurchaseToReport(),
-                    purchaseToConsume,
-                    getUserToFollow());
+                    purchaseToConsume);
         }
 
         @Override protected List<Object> getTests()

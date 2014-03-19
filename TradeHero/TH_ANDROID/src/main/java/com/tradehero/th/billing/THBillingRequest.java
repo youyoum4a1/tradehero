@@ -12,7 +12,6 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 
 /**
@@ -41,12 +40,9 @@ public class THBillingRequest<
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType> purchaseReportedListener;
-
-    private OnFollowResultListener followResultListener;
     //</editor-fold>
 
     private ProductPurchaseType purchaseToReport;
-    private UserBaseKey userToFollow;
 
     protected THBillingRequest(
             OnBillingAvailableListener<BillingExceptionType> billingAvailableListener,
@@ -55,15 +51,13 @@ public class THBillingRequest<
             BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener,
             BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener,
             PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener,
-            OnFollowResultListener followResultListener,
             Boolean billingAvailable,
             Boolean fetchProductIdentifiers,
             Boolean fetchInventory,
             List<ProductIdentifierType> productIdentifiersForInventory,
             Boolean fetchPurchase,
             PurchaseOrderType purchaseOrder,
-            ProductPurchaseType purchaseToReport,
-            UserBaseKey userToFollow)
+            ProductPurchaseType purchaseToReport)
     {
         super(
                 billingAvailableListener,
@@ -78,9 +72,7 @@ public class THBillingRequest<
                 fetchPurchase,
                 purchaseOrder);
         this.purchaseReportedListener = purchaseReportedListener;
-        this.followResultListener = followResultListener;
         this.purchaseToReport = purchaseToReport;
-        this.userToFollow = userToFollow;
     }
 
     //<editor-fold desc="Accessors">
@@ -103,16 +95,6 @@ public class THBillingRequest<
     public void setPurchaseToReport(ProductPurchaseType purchaseToReport)
     {
         this.purchaseToReport = purchaseToReport;
-    }
-
-    public UserBaseKey getUserToFollow()
-    {
-        return userToFollow;
-    }
-
-    public void setUserToFollow(UserBaseKey userToFollow)
-    {
-        this.userToFollow = userToFollow;
     }
     //</editor-fold>
 
@@ -137,12 +119,9 @@ public class THBillingRequest<
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType> purchaseReportedListener;
-
-        private OnFollowResultListener followResultListener;
         //</editor-fold>
 
         private ProductPurchaseType purchaseToReport;
-        private UserBaseKey userToFollow;
 
         public THBuilder()
         {
@@ -159,15 +138,13 @@ public class THBillingRequest<
                     getPurchaseFetchedListener(),
                     getPurchaseFinishedListener(),
                     purchaseReportedListener,
-                    followResultListener,
                     getBillingAvailable(),
                     getFetchProductIdentifiers(),
                     getFetchInventory(),
                     getProductIdentifiersForInventory(),
                     getFetchPurchase(),
                     getPurchaseOrder(),
-                    purchaseToReport,
-                    userToFollow);
+                    purchaseToReport);
         }
 
         @Override protected List<Object> getTests()
@@ -189,16 +166,6 @@ public class THBillingRequest<
             this.purchaseReportedListener = purchaseReportedListener;
         }
 
-        public OnFollowResultListener getFollowResultListener()
-        {
-            return followResultListener;
-        }
-
-        public void setFollowResultListener(OnFollowResultListener followResultListener)
-        {
-            this.followResultListener = followResultListener;
-        }
-
         public ProductPurchaseType getPurchaseToReport()
         {
             return purchaseToReport;
@@ -207,16 +174,6 @@ public class THBillingRequest<
         public void setPurchaseToReport(ProductPurchaseType purchaseToReport)
         {
             this.purchaseToReport = purchaseToReport;
-        }
-
-        public UserBaseKey getUserToFollow()
-        {
-            return userToFollow;
-        }
-
-        public void setUserToFollow(UserBaseKey userToFollow)
-        {
-            this.userToFollow = userToFollow;
         }
         //</editor-fold>
     }
