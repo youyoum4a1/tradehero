@@ -22,7 +22,7 @@ public class THIABProductDetail extends BaseIABProductDetail
     //<editor-fold desc="Constructors">
     public THIABProductDetail(IABSKUListKey itemType, String jsonSkuDetails) throws JSONException
     {
-        super(itemType.getBundleKey(), jsonSkuDetails);
+        super(itemType.key, jsonSkuDetails);
     }
 
     public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException

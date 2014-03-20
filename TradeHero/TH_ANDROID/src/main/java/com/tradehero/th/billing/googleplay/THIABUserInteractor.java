@@ -233,6 +233,7 @@ public class THIABUserInteractor
         if (uiBillingRequest != null)
         {
             request = new THIABBillingRequestFull();
+            request.testBillingAvailable = true;
             request.doPurchase = true;
             request.purchaseOrder = new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
             request.purchaseFinishedListener = createPurchaseFinishedListener();
@@ -455,6 +456,4 @@ public class THIABUserInteractor
         return null;
     }
     //</editor-fold>
-
-
 }

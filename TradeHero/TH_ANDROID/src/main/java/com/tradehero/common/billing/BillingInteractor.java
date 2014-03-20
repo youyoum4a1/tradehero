@@ -47,8 +47,6 @@ public interface BillingInteractor<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
-    void onPause();
-    void onStop();
     void onDestroy();
 
     int getUnusedRequestCode();

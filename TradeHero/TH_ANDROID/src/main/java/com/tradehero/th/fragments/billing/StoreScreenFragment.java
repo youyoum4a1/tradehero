@@ -11,13 +11,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
-import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -34,8 +31,6 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.LocalyticsConstants;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
@@ -55,7 +50,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
 
-    private Integer showSkuRequestCode;
+    private Integer showProductDetailRequestCode;
 
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
@@ -122,19 +117,19 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                cancelOthersAndShowSkuList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
@@ -207,23 +202,27 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return R.layout.tutorial_store_screen;
     }
 
-    public void cancelOthersAndShowSkuList(ProductIdentifierDomain domain)
+    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
     {
-        if (showSkuRequestCode != null)
+        if (showProductDetailRequestCode != null)
         {
-            userInteractor.forgetRequestCode(showSkuRequestCode);
+            userInteractor.forgetRequestCode(showProductDetailRequestCode);
         }
-        showSkuRequestCode = showSkuListForPurchase(domain);
+        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
     }
 
-    public int showSkuListForPurchase(ProductIdentifierDomain domain)
+    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
     {
-        return userInteractor.run(getShowSkuRequest(domain));
+        return userInteractor.run(getShowProductDetailRequest(domain));
     }
 
-    public THUIBillingRequest getShowSkuRequest(ProductIdentifierDomain domain)
+    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.startWithProgressDialog = true;
+        request.popIfBillingNotAvailable = true;
+        request.popIfProductIdentifierFetchFailed = true;
+        request.popIfInventoryFetchFailed = true;
         request.domainToPresent = domain;
         Timber.d("Store domain set");
         request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()

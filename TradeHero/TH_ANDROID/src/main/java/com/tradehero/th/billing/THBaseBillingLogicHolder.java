@@ -4,6 +4,7 @@ import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
+import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
@@ -24,6 +25,7 @@ abstract public class THBaseBillingLogicHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
+        ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
@@ -43,6 +45,7 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 ProductDetailType,
+                ProductTunerType,
                 PurchaseOrderType,
                 OrderIdType,
                 ProductPurchaseType,

@@ -17,6 +17,7 @@ abstract public class BaseBillingLogicHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
+        ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
@@ -294,6 +295,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
+        getProductDetailCache().put(inventory);
         notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         prepareRequestForNextRunAfterInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         runInternal(requestCode);
@@ -436,7 +438,7 @@ abstract public class BaseBillingLogicHolder<
 
     @Override public void unregisterBillingAvailableListener(int requestCode)
     {
-        // TODO unregister holder
+        billingAvailableTesterHolder.forgetRequestCode(requestCode);
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
@@ -537,6 +539,8 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Fetch Inventory">
+    abstract protected ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> getProductDetailCache();
+
     @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);

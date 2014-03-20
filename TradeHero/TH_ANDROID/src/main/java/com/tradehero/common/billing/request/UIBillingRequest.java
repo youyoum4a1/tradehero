@@ -37,6 +37,11 @@ public class UIBillingRequest<
     public OwnedPortfolioId applicablePortfolioId;
 
     /**
+     * Indicates whether we want a progress dialog to show while stuff is being prepared.
+     */
+    public boolean startWithProgressDialog;
+
+    /**
      * When a listener is missing when an error occurs, the error should be sent to this listener.
      */
     public OnErrorListener<BillingExceptionType> onDefaultErrorListener;

@@ -196,11 +196,11 @@ abstract public class IABBillingInventoryFetcher<
         else
         {
             Bundle querySkus = getQuerySKUBundle();
-            Bundle skuDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType.getBundleKey(),
+            Bundle productDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType.key,
                     querySkus);
-            if (!skuDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
+            if (!productDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
             {
-                int statusCode = IABConstants.getResponseCodeFromBundle(skuDetails);
+                int statusCode = IABConstants.getResponseCodeFromBundle(productDetails);
                 if (statusCode != IABConstants.BILLING_RESPONSE_RESULT_OK)
                 {
                     Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
@@ -214,7 +214,7 @@ abstract public class IABBillingInventoryFetcher<
                 }
             }
 
-            ArrayList<String> responseList = skuDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
+            ArrayList<String> responseList = productDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
 
             for (String json : responseList)
             {

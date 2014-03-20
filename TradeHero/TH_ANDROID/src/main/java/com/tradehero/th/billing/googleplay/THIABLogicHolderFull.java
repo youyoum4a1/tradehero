@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
+import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductIdentifierListKey;
@@ -38,6 +39,7 @@ public class THIABLogicHolderFull
                 IABSKU,
                 IABSKUList,
                 THIABProductDetail,
+                THIABProductDetailTuner,
                 THIABPurchaseOrder,
                 THIABOrderId,
                 THIABPurchase,
@@ -124,8 +126,12 @@ public class THIABLogicHolderFull
 
     @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        return ArrayUtils.filter(thskuDetailCache.get(getAllSkus()),
-                THIABProductDetail.getPredicateIsOfCertainDomain(domain));
+        List<THIABProductDetail> details = thskuDetailCache.get(getAllSkus());
+        if (details == null)
+        {
+            return null;
+        }
+        return ArrayUtils.filter(details, THIABProductDetail.getPredicateIsOfCertainDomain(domain));
     }
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
@@ -270,6 +276,13 @@ public class THIABLogicHolderFull
     @Override protected ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList> getProductIdentifierCache()
     {
         return iabskuListCache;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Fetch Inventory">
+    @Override protected ProductDetailCache<IABSKU, THIABProductDetail, THIABProductDetailTuner> getProductDetailCache()
+    {
+        return thskuDetailCache;
     }
     //</editor-fold>
 

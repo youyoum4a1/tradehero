@@ -5,6 +5,7 @@ import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.request.BillingRequest;
@@ -24,6 +25,7 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABProductDetailType,
                 IABException>,
+        ProductTunerType extends ProductDetailTuner<IABSKUType, IABProductDetailType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<
@@ -59,6 +61,7 @@ abstract public class BaseIABLogicHolder<
         IABSKUType,
         IABSKUListType,
         IABProductDetailType,
+        ProductTunerType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,

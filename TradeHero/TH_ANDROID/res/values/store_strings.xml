@@ -90,7 +90,7 @@
   <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
   <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your portfolio!</string>
 
-  <string name="store_buy_virtual_dollar_window_button_cancel">Later</string>
+  <string name="store_buy_virtual_dollar_window_button_cancel">Cancel</string>
   <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
 
   <!-- Manage heroes -->

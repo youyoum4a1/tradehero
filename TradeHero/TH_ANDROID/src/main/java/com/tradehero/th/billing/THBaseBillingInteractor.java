@@ -121,14 +121,6 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    @Override public void onPause()
-    {
-    }
-
-    @Override public void onStop()
-    {
-    }
-
     @Override public void onDestroy()
     {
         if (progressDialog != null)
@@ -225,7 +217,10 @@ abstract public class THBaseBillingInteractor<
     {
         int requestCode = getUnusedRequestCode();
         uiBillingRequests.put(requestCode, uiBillingRequest);
-        // TODO show a dialog
+        if (uiBillingRequest.startWithProgressDialog)
+        {
+            popDialogLoadingInfo();
+        }
         getBillingLogicHolder().run(requestCode, createBillingRequest(uiBillingRequest));
         return requestCode;
     }
@@ -295,6 +290,10 @@ abstract public class THBaseBillingInteractor<
         Activity currentActivity = currentActivityHolder.getCurrentActivity();
         if (currentActivity != null)
         {
+            if (progressDialog != null)
+            {
+                progressDialog.dismiss();
+            }
             return getBillingAlertDialogUtil().popBuyDialog(
                     requestCode,
                     currentActivity,
