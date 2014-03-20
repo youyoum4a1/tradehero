@@ -15,12 +15,15 @@ import retrofit.http.*;
  */
 public interface NewsServiceAsync
 {
+    //countries
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);
 
+    //social catefories
     @GET("/news/categories") void getCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback);
 
     @GET("/news/sources") void getSources(Callback<PaginatedDTO<NewsItemSourceDTO>> callback);
 
+    //news of specific region
     @GET("/news/regional") void getRegional(
             @Query("countryCode") String countryCode,
             @Query("languageCode") String languageCode,
@@ -28,21 +31,25 @@ public interface NewsServiceAsync
             @Query("perPage") int perPage/* = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
 
+    //global news
     @GET("/news/global") void getGlobal(
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
 
+    //news from social media
     @GET("/news/social") void getSocial(
             @Query("categoryId") int categoryId,
             @Query("page") int page/*        = 1*/,
             @Query("perPage") int perPage/*     = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
 
+    //my headlines
     @GET("/news/ofinterest") void getOfInterest(
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
+
 
     @GET("/news/securities") void getSecuritiesNewsList(
             @Query("securityId") int securityId,

@@ -59,10 +59,12 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-
+        // this need tobe early than super.onCreate or it will crash
+        // when device scrool into landscape. by alex
         // request the progress-bar feature for the activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
+        super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);

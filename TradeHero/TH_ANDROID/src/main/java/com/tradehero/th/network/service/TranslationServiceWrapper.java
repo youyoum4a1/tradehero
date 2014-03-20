@@ -10,6 +10,10 @@ import com.tradehero.th.utils.Constants;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import com.tradehero.th.models.translation.TokenData;
+import com.tradehero.th.models.translation.TranslationResult;
+import com.tradehero.th.network.NetworkConstants;
+import retrofit.RetrofitError;
 import timber.log.Timber;
 
 import javax.inject.Inject;

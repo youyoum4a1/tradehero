@@ -18,13 +18,24 @@
        <item>@drawable/img_placeholder_news_3</item>
        <item>@drawable/img_placeholder_news_4</item>
        <item>@drawable/img_placeholder_news_5</item>
+       <item>@drawable/img_placeholder_news_6</item>
+       <item>@drawable/img_placeholder_news_7</item>
+       <item>@drawable/img_placeholder_news_8</item>
+       <item>@drawable/img_placeholder_news_9</item>
+       <item>@drawable/img_placeholder_news_10</item>
+       <item>@drawable/img_placeholder_news_11</item>
+       <item>@drawable/img_placeholder_news_12</item>
+       <item>@drawable/img_placeholder_news_13</item>
+       <item>@drawable/img_placeholder_news_14</item>
+       <item>@drawable/img_placeholder_news_15</item>
+       <item>@drawable/img_placeholder_news_16</item>
+       <item>@drawable/img_placeholder_news_17</item>
+       <item>@drawable/img_placeholder_news_18</item>
+       <item>@drawable/img_placeholder_news_19</item>
+       <item>@drawable/img_placeholder_news_20</item>
+       <item>@drawable/img_placeholder_news_21</item>
+       <item>@drawable/img_placeholder_news_22</item>
+       <item>@drawable/img_placeholder_news_23</item>
+       <item>@drawable/img_placeholder_news_24</item>
    </array>
-
-    <integer-array name="news_item_background_list2">
-        <item>@drawable/img_placeholder_news_1</item>
-        <item>@drawable/img_placeholder_news_2</item>
-        <item>@drawable/img_placeholder_news_3</item>
-        <item>@drawable/img_placeholder_news_4</item>
-        <item>@drawable/img_placeholder_news_5</item>
-    </integer-array>
 </resources>

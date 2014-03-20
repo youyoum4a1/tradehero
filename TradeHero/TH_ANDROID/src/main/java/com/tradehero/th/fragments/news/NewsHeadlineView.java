@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
@@ -15,7 +18,6 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -24,10 +26,11 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 import javax.inject.Inject;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by julien on 11/10/13
@@ -38,6 +41,8 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
 {
     private static final String TAG = NewsHeadlineView.class.getSimpleName();
 
+    private View titleViewWrapper;
+    private View placeHolderView;
     private TextView dateTextView;
     private TextView titleTextView;
     private TextView descView;
@@ -78,14 +83,21 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
 
     private void fetchViews()
     {
-        titleTextView = (TextView) findViewById(R.id.news_title_title);
-        dateTextView = (TextView) findViewById(R.id.news_title_date);
-        descView = (TextView) findViewById(R.id.news_title_description);
+        placeHolderView = findViewById(R.id.news_item_placeholder);
+        titleViewWrapper = findViewById(R.id.news_item_layout_wrapper);
+        titleTextView = (TextView) titleViewWrapper.findViewById(R.id.news_title_title);
+        dateTextView = (TextView) titleViewWrapper.findViewById(R.id.news_title_date);
+        descView = (TextView) titleViewWrapper.findViewById(R.id.news_title_description);
+
         actionLikeView = findViewById(R.id.news_action_button_like_wrapper);
         actionCommentView = findViewById(R.id.news_action_button_comment_wrapper);
-        moreView = findViewById(R.id.news_action_button_share_wrapper);
-        registerListener();
+        moreView = findViewById(R.id.news_action_button_more_wrapper);
 
+        TextView tvMore = (TextView)moreView.findViewById(R.id.news_action_tv_more);
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "FontAwesome.ttf");
+        tvMore.setTypeface(font);
+        tvMore.setText("\uf141");
+        registerListener();
     }
 
     private void registerListener() {
@@ -120,7 +132,7 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
                 break;
             case R.id.news_action_button_comment_wrapper:
                 break;
-            case R.id.news_action_button_share_wrapper:
+            case R.id.news_action_button_more_wrapper:
                 showShareDialog();
                 break;
         }
@@ -137,36 +149,40 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     }
 
 
-    private void voteUpOrDown(boolean up) {
+    private void voteUpOrDown(boolean towardUp) {
         int id = newsHeadline.id;
-        VoteDirection direction = up ? VoteDirection.UpVote:VoteDirection.DownVote;
+        VoteDirection direction = towardUp ? VoteDirection.UpVote:VoteDirection.Unvote;
         DiscussionVoteKey key = new DiscussionVoteKey(DiscussionType.NEWS,id,direction);
-        discussionServiceWrapperLazy.get().vote(key,createVoteCallback(up));
+        discussionServiceWrapperLazy.get().vote(key,createVoteCallback(towardUp));
+        Timber.d("voteUpOrDown towardUp ? %s",towardUp);
     }
 
     private void changeLikeViewDisplay(boolean isVotedUp) {
-        android.widget.ImageView likeImageView = (android.widget.ImageView)actionLikeView.findViewById(R.id.new_action_iv_like);
         TextView likeTextView = (TextView)actionLikeView.findViewById(R.id.new_action_tv_like);
-
+        ImageView likeImageView = (ImageView)actionLikeView.findViewById(R.id.new_action_iv_like);
         likeTextView.setText(isVotedUp?"Unlike":"Like");
-
+        likeImageView.setImageResource(isVotedUp?R.drawable.icn_actions_downvote:R.drawable.icn_actions_upvote);
     }
 
-    private Callback<DiscussionDTO> createVoteCallback(final boolean up){
+    private void changeLikeViewDisplay() {
+        changeLikeViewDisplay(isVotedUp);
+    }
+
+    private Callback<DiscussionDTO> createVoteCallback(final boolean towardUp){
 
        return new Callback<DiscussionDTO>() {
             @Override
             public void success(DiscussionDTO discussionDTO, Response response) {
-                THToast.show("vote "+((up?"up":"down"))+" success");
-                changeLikeViewDisplay(up);
-                isVotedUp = !up;
+                THToast.show("vote " + ((towardUp ? "up" : "down")) + " success");
+                changeLikeViewDisplay(towardUp);
+                isVotedUp = towardUp;
                 newsHeadline.voteDirection = isVotedUp ? 1:0;
 
             }
 
             @Override
             public void failure(RetrofitError error) {
-                THToast.show("vote "+((up?"up":"down"))+" error");
+                THToast.show("vote " + ((towardUp ? "up" : "down")) + " error");
             }
         };
     }
@@ -178,8 +194,8 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout,null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback)contentView;
-        ((NewsDialogLayout)contentView).setNewsData(newsHeadline);
-        THDialog.showUpDialog(getContext(),contentView,callback);
+        ((NewsDialogLayout)contentView).setNewsData(newsHeadline, true);
+        THDialog.showUpDialog(getContext(), contentView, callback);
     }
 
     @Override
@@ -204,6 +220,18 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         this.newsHeadline = dto;
         this.isVotedUp = !(newsHeadline.voteDirection == 0);
         displayNews();
+        changeLikeViewDisplay();
+    }
+
+
+    private String parseHost(String url) {
+        try {
+            String host = new URL(url).getHost();
+            return host;
+        }catch (MalformedURLException e) {
+            return null;
+        }
+
     }
 
     private void displayNews()
@@ -221,17 +249,38 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         if (dateTextView != null && newsHeadline.createdAtUtc != null)
         {
             PrettyTime prettyTime = new PrettyTime();
-            dateTextView.setText(prettyTime.format(newsHeadline.createdAtUtc));
+            StringBuffer sb = new StringBuffer();
+            String text = prettyTime.format(newsHeadline.createdAtUtc);
+            sb.append(text);
+            if (newsHeadline.url != null) {
+                String source = parseHost(newsHeadline.url);
+                if (source != null) {
+                    sb.append(" via ").append(source);
+                }
+            }
+            dateTextView.setText(sb.toString());
         }
 
         if (descView != null)
         {
             descView.setText(newsHeadline.description);
-            if (TextUtils.isEmpty(newsHeadline.description)) {
-                descView.setVisibility(View.GONE);
-            }else {
-                descView.setVisibility(View.VISIBLE);
-            }
+//            if (TextUtils.isEmpty(newsHeadline.description)) {
+//                descView.setVisibility(View.GONE);
+//                Timber.d("newsHeadline description %s empty",newsHeadline.description);
+//            }else {
+//                descView.setVisibility(View.VISIBLE);
+//                Timber.d("newsHeadline description %s not empty",newsHeadline.description);
+//            }
         }
+
+//        int h = titleViewWrapper.getMeasuredHeight();
+//        if(h <= 0){
+//            titleViewWrapper.measure(MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT,View.MeasureSpec.AT_MOST
+//                   ), MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT,View.MeasureSpec.AT_MOST));
+//            h = titleViewWrapper.getMeasuredHeight();
+//        }
+//        ViewGroup.LayoutParams lp = placeHolderView.getLayoutParams();
+//        lp.height = h;
+//        placeHolderView.setLayoutParams(lp);
     }
 }

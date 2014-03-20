@@ -2,58 +2,139 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
+
+import java.util.*;
 
 /**
  * Created by julien on 11/10/13
- *
+ * <p/>
  * Map a Yahoo News object to a NewsHeadlineView.
  */
-public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadlineView>
-{
+public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadlineView> {
     private final static String TAG = NewsHeadlineAdapter.class.getSimpleName();
 
-    public int[] backgrounds = {
-            R.drawable.img_placeholder_news_1,
-            R.drawable.img_placeholder_news_2,
-            R.drawable.img_placeholder_news_3,
-            R.drawable.img_placeholder_news_4,
-            R.drawable.img_placeholder_news_5,
-    };
-    //public int[] backgrounds = null;
-    public NewsHeadlineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
-    {
+    //    public int[] backgrounds = {
+//            R.drawable.img_placeholder_news_1,
+//            R.drawable.img_placeholder_news_2,
+//            R.drawable.img_placeholder_news_3,
+//            R.drawable.img_placeholder_news_4,
+//            R.drawable.img_placeholder_news_5,
+//    };
+
+
+    public Integer[] backgrounds = null;
+    private Integer[] backgroundsArr = null;
+
+    public NewsHeadlineAdapter(Context context, LayoutInflater inflater, int layoutResourceId) {
         super(context, inflater, layoutResourceId);
-        //backgrounds = context.getResources().getIntArray(R.array.news_item_background_list2);
-        //loadBackground();
+        setItems(new ArrayList<NewsItemDTO>());
+        loadBackground();
     }
 
     private void loadBackground() {
-         int[] backgroundResArray = null;
-        TypedArray array = context.getResources().obtainTypedArray(R.array.news_item_background_list2);
-        int len = array.length();
-        backgroundResArray = new int[len];
-        for (int i=0;i<len;i++){
-            backgroundResArray[i] = array.getInt(i,0);
+        TypedArray array = null;
+        Integer[] backgroundResArray = null;
+        try {
+            array = context.getResources().obtainTypedArray(R.array.news_item_background_list);
+            int len = array.length();
+            backgroundResArray = new Integer[len];
+            for (int i = 0; i < len; i++) {
+                backgroundResArray[i] = array.getResourceId(i, 0);
+            }
+            backgrounds = backgroundResArray;
+        } catch (Exception e) {
+            Log.e(TAG, "loadBackground error", e);
+        } finally {
+            if (array != null) {
+                array.recycle();
+            }
         }
-        backgrounds = backgroundResArray;
+
     }
+
+    private void setBackgroundsArray() {
+        int count = getCount();
+        backgroundsArr = new Integer[count];
+    }
+
+    public int getBackgroundRes(int res) {
+        return backgroundsArr[res];
+    }
+
+    @Override
+    public void addItems(List<NewsItemDTO> data) {
+        super.addItems(data);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void addItems(NewsItemDTO[] items) {
+        super.addItems(items);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void addAll(Object[] items) {
+        super.addAll(items);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void remove(Object object) {
+        super.remove(object);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void addAll(Collection collection) {
+        super.addAll(collection);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void add(Object object) {
+        super.add(object);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void addItem(NewsItemDTO item) {
+        super.addItem(item);
+        setBackgroundsArray();
+    }
+
+    @Override
+    public void setItems(List<NewsItemDTO> items) {
+        super.setItems(items);
+        setBackgroundsArray();
+    }
+
     @Override
     protected View conditionalInflate(View convertView, ViewGroup viewGroup) {
         View view = super.conditionalInflate(convertView, viewGroup);
         return view;
     }
 
-    @Override protected void fineTune(final int position, NewsItemDTO dto, final NewsHeadlineView dtoView)
-    {
+    @Override
+    protected void fineTune(final int position, NewsItemDTO dto, final NewsHeadlineView dtoView) {
         View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
-        int index = position % backgrounds.length;
-        wrapperView.setBackgroundResource(backgrounds[index]);
+        if (backgroundsArr[position] != null) {
+            wrapperView.setBackgroundResource(backgroundsArr[position]);
+        }else {
+            int index = dto.id % backgrounds.length;
+            wrapperView.setBackgroundResource(backgrounds[index]);
+            backgroundsArr[position] = backgrounds[index];
+        }
+
     }
 }

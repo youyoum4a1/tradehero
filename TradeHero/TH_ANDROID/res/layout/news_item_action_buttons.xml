@@ -3,27 +3,29 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
   <LinearLayout
       android:id="@+id/timeline_share_buttons"
+      android:background="@drawable/headline_action_buttons_background"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      android:layout_marginLeft="@dimen/timeline_side_spacing"
-      android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:background="@drawable/timeline_action_buttons_background"
       android:baselineAligned="false"
+      android:gravity="center_vertical"
+      android:paddingLeft="@dimen/news_item_action_padding_l_r"
+      android:paddingRight="@dimen/news_item_action_padding_l_r"
       >
     <LinearLayout
         android:id="@+id/news_action_button_like_wrapper"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="wrap_content"
-        android:padding="@dimen/timeline_action_buttons_padding"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/news_item_action_padding_t_b"
+        android:paddingBottom="@dimen/news_item_action_padding_t_b"
         >
       <ImageView
            android:id="@+id/new_action_iv_like"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/icn_actions_monitor"
+          android:src="@drawable/icn_actions_upvote"
           android:contentDescription="@null"
           android:duplicateParentState="true"
           />
@@ -38,6 +40,7 @@
           android:shadowDy="1"
           android:shadowRadius="1"
           android:duplicateParentState="true"
+          android:layout_marginLeft="5dp"
           />
     </LinearLayout>
 
@@ -45,15 +48,16 @@
     <LinearLayout
         android:id="@+id/news_action_button_comment_wrapper"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
-        android:padding="@dimen/timeline_action_buttons_padding"
-        android:gravity="center"
+        android:paddingTop="@dimen/news_item_action_padding_t_b"
+        android:paddingBottom="@dimen/news_item_action_padding_t_b"
+        android:gravity="center_vertical"
         >
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/icn_actions_trade"
+          android:src="@drawable/icn_actions_comment"
           android:contentDescription="@null"
           />
       <TextView
@@ -65,35 +69,39 @@
           android:textStyle="bold"
           android:shadowColor="@color/timeline_action_button_text_color_shadow"
           android:shadowDy="1"
+          android:layout_marginLeft="5dp"
           android:shadowRadius="1"
           />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/news_action_button_share_wrapper"
+        android:id="@+id/news_action_button_more_wrapper"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
-        android:padding="@dimen/timeline_action_buttons_padding"
-        android:gravity="center"
+        android:paddingTop="@dimen/news_item_action_padding_t_b"
+        android:paddingBottom="@dimen/news_item_action_padding_t_b"
+        android:gravity="center_vertical|right"
         >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/icn_actions_share"
-          android:contentDescription="@null"
-          />
+      <!--<ImageView-->
+          <!--android:id="@+id/news_action_iv_more"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:src="@drawable/icn_actions_share"-->
+          <!--android:contentDescription="@null"-->
+          <!--android:visibility="gone"-->
+          <!--/>-->
       <TextView
-          android:id="@+id/news_action_tv_share"
+          android:id="@+id/news_action_tv_more"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/timeline_share"
+          android:text="more"
           android:textColor="@drawable/timeline_action_button_text_color_xml"
           android:textStyle="bold"
           android:shadowColor="@color/timeline_action_button_text_color_shadow"
           android:shadowDy="1"
           android:shadowRadius="1"
-          android:visibility="gone"
+          android:visibility="visible"
           />
     </LinearLayout>
   </LinearLayout>

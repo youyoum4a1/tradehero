@@ -10,6 +10,12 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import com.tradehero.th.BuildConfig;
+import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.security.SecurityId;
+import timber.log.Timber;
+
 import javax.inject.Singleton;
 
 /**

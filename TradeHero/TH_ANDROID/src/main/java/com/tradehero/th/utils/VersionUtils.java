@@ -82,17 +82,34 @@ public class VersionUtils
 
     public static String getAppVersion(Context context)
     {
-        String appVersion = "";
+        return getVersionName(context) + "(" + getVersionCode(context) + ")";
+    }
+
+    public static String getVersionName(Context context)
+    {
+        String v = "";
         try
         {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            appVersion = pInfo.versionName + "(" + pInfo.versionCode + ")";
+            v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         }
         catch (PackageManager.NameNotFoundException e)
         {
-            appVersion = Constants.TH_CLIENT_VERSION_VALUE;
         }
-        return appVersion;
+        return v;
+    }
+
+    public static int getVersionCode(Context context)
+    {
+        int v = 0;
+        try
+        {
+            v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            // Huh? Really?
+        }
+        return v;
     }
 
     public static String getDeviceName()
@@ -138,5 +155,10 @@ public class VersionUtils
         {
             return Character.toUpperCase(first) + s.substring(1);
         }
+    }
+
+    public static String getVersionId(Context context)
+    {
+        return getVersionName(context) + "." + getVersionCode(context);
     }
 }

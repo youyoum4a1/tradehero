@@ -123,7 +123,9 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-                    handleNewsClicked((NewsItemDTO) adapterView.getItemAtPosition(position));
+
+                    handleNewsClicked(position,(NewsItemDTO) adapterView.getItemAtPosition(position));
+
                 }
             });
         }
@@ -221,15 +223,15 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         }
     }
 
-    protected void handleNewsClicked(NewsItemDTO news)
+    protected void handleNewsClicked(int position,NewsItemDTO news)
     {
-        if (news != null && news.url != null)
+        if (news != null)
         {
+            int resId = adapter.getBackgroundRes(position);
             Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            Bundle bundle = new Bundle();
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.url);
-            //navigator.pushFragment(WebViewFragment.class, bundle);
-            navigator.pushFragment(NewsDetailFragment.class, news.toBundle(news.voteDirection==1));
+            Bundle bundle = news.toBundle(news.voteDirection==1);
+            bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+            navigator.pushFragment(NewsDetailFragment.class, bundle);
         }
     }
 }

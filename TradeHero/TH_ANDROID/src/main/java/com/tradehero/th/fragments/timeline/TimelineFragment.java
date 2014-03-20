@@ -157,6 +157,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onActivityCreated(savedInstanceState);
 
         UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        //create adapter and so on
         linkWith(newUserBaseKey, true);
 
         getActivity().getSupportLoaderManager().initLoader(

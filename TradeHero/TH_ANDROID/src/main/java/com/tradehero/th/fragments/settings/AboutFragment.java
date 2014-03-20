@@ -19,6 +19,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: nia Date: 18/10/13 Time: 5:21 PM To change this template use File | Settings | File Templates. */
@@ -72,7 +73,7 @@ public class AboutFragment extends DashboardFragment
             }
         });
 
-        versionHolder.setText(getString(R.string.settings_version_holder, Constants.TH_CLIENT_VERSION_VALUE));
+        versionHolder.setText(getString(R.string.settings_version_holder, VersionUtils.getVersionId(getActivity())));
 
         return view;
     }

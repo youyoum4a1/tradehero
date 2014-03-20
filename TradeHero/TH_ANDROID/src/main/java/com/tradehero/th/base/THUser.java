@@ -27,6 +27,7 @@ import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.VersionUtils;
 import com.urbanairship.push.PushManager;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -143,8 +144,10 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignIn:
-                LoginFormDTO loginFormDTO = new LoginFormDTO(PushManager.shared().getAPID(), DeviceType.Android, Constants.TH_CLIENT_VERSION_VALUE);
-                Timber.d("login Auth Header "+authenticator.getAuthHeader());
+                LoginFormDTO loginFormDTO = new LoginFormDTO(
+                        PushManager.shared().getAPID(),
+                        DeviceType.Android,
+                        VersionUtils.getVersionId(Application.context()));
                 sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }

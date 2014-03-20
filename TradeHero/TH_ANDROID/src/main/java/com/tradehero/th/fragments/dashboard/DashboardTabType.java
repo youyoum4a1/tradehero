@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.news.HeadlineFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -11,6 +12,7 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 1:26 PM To change this template use File | Settings | File Templates. */
 public enum DashboardTabType
 {
+    //NEWS(R.string.dashboard_headline, R.drawable.trending_selector, HeadlineFragment.class),
     TRENDING(R.string.dashboard_trending, R.drawable.trending_selector, TrendingFragment.class),
     COMMUNITY(R.string.dashboard_community, R.drawable.community_selector, LeaderboardCommunityFragment.class),
     TIMELINE(R.layout.home_selector, R.string.dashboard_home, R.drawable.home_selector, MeTimelineFragment.class),

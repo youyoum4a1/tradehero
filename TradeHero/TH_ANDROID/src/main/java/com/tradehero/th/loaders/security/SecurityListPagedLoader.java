@@ -24,6 +24,11 @@ public class SecurityListPagedLoader extends PagedDTOCacheLoader<
     @Inject protected Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject protected SecurityListTypeFactory securityListTypeFactory;
 
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+    }
+
     public SecurityListPagedLoader(Context context)
     {
         super(context);

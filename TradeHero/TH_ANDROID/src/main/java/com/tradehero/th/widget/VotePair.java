@@ -114,7 +114,7 @@ public class VotePair extends LinearLayout
                 discussionType,
                 discussionDTO.id,
                 voteDirection);
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>()
+        voteCallback = discussionServiceWrapper.get().voteCallBack(discussionVoteKey, new Callback<DiscussionDTO>()
         {
             @Override public void success(DiscussionDTO discussionDTO, Response response)
             {

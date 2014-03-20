@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.tradehero.th.fragments.news.HeadlineFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -90,6 +91,7 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
+import com.tradehero.th.loaders.HeadlineListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -289,9 +291,12 @@ import javax.inject.Singleton;
                         UserFriendDTOView.class,
                         FriendListLoader.class,
 
+                        //binding
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         NewsDetailFragment.class,
+                        HeadlineFragment.class,
+                        HeadlineListLoader.class
                 },
         staticInjections =
                 {

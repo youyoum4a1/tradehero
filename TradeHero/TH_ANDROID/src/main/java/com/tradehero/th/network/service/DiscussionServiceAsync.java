@@ -27,7 +27,7 @@ public interface DiscussionServiceAsync
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<DiscussionDTO>> callback); // = 42
-
+    // TODO add methods async based on DiscussionService
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     void vote(
@@ -42,4 +42,5 @@ public interface DiscussionServiceAsync
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback);
+
 }

@@ -1,5 +1,7 @@
 package com.tradehero.common.widget;
 
+import android.util.Log;
+import android.view.View;
 import android.widget.AbsListView;
 
 /**
@@ -62,9 +64,29 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
         this.active = false;
     }
 
-    @Override public void onScrollStateChanged(final AbsListView view, final int scrollState)
+    @Override public void onScrollStateChanged(final AbsListView view, final int state)
     {
+        int lastVisiblePosition = view.getLastVisiblePosition();
+        int height = view.getHeight();
+        try {
+            int childCount = view.getChildCount();
+            View child = view.getChildAt(childCount-1);
+
+            if(child != null && child.getBottom() >= height){
+                /**
+                 * Check that the scrolling has stopped, and that the last item is
+                 * visible.
+                 */
+//                if (state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && null != mOnLastItemVisibleListener && mLastItemVisible) {
+//                    mOnLastItemVisibleListener.onLastItemVisible();
+//                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     @Override public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount)
     {

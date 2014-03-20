@@ -104,4 +104,7 @@
     <dimen name="security_logo_margin_vertical">20dp</dimen>
     <dimen name="security_logo_offset">12dp</dimen>
     <dimen name="security_item_height">110dp</dimen>
+
+    <dimen name="news_item_action_padding_t_b">10dp</dimen>
+    <dimen name="news_item_action_padding_l_r">10dp</dimen>
 </resources>
