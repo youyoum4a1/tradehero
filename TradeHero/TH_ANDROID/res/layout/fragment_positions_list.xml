@@ -11,10 +11,14 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       />
+
   <com.tradehero.th.fragments.position.PositionListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_to_refresh_position_list"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent"
+      ptr:ptrMode="pullDownFromTop"
+      />
 
   <com.tradehero.th.widget.list.ExpandingListView
       android:id="@+id/position_list"
@@ -22,13 +26,4 @@
       android:layout_height="match_parent"
       android:clipToPadding="false"
       />
-
-  <!--<ProgressBar-->
-      <!--android:id="@android:id/progress"-->
-      <!--android:layout_width="wrap_content"-->
-      <!--android:layout_height="wrap_content"-->
-      <!--android:layout_centerInParent="true"-->
-      <!--/>-->
-  <!-- see PortfolioHeaderFactory.java for the different layout that are used -->
-
 </LinearLayout>

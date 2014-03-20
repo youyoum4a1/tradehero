@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -82,7 +81,6 @@ abstract public class AbstractPositionListFragment<
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
-    //@InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
@@ -108,8 +106,6 @@ abstract public class AbstractPositionListFragment<
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
@@ -142,7 +138,6 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
             {
-                pullToRefreshListView.onRefreshComplete();
                 linkWith(value, true);
             }
 
@@ -192,9 +187,9 @@ abstract public class AbstractPositionListFragment<
 
     private void initPullToRefreshListView(View view)
     {
+
         ((ViewGroup) view).removeView(positionsListView);
         pullToRefreshListView.setRefreshableView(positionsListView);
-        pullToRefreshListView.setRefreshing();
         pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
         {
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
@@ -206,6 +201,7 @@ abstract public class AbstractPositionListFragment<
                 fetchSimplePage(true);
             }
         });
+        displayProgress(true);
     }
 
     abstract protected void createPositionItemAdapter();
@@ -326,6 +322,12 @@ abstract public class AbstractPositionListFragment<
             positionItemAdapter.setCellListener(null);
         }
         positionItemAdapter = null;
+
+        if (pullToRefreshListView != null)
+        {
+            pullToRefreshListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
+        }
+
         super.onDestroyView();
     }
 
@@ -556,10 +558,7 @@ abstract public class AbstractPositionListFragment<
 
     public void displayProgress(boolean running)
     {
-        //if (progressBar != null)
-        //{
-        //    progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        //}
+        Timber.d("displayProgress %b", running);
         if (running)
         {
             pullToRefreshListView.setRefreshing();
