@@ -1,11 +1,13 @@
 package com.tradehero.th.billing.googleplay.request;
 
+import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABProductDetail;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.request.THBillingRequest;
 
@@ -13,7 +15,9 @@ import com.tradehero.th.billing.request.THBillingRequest;
  * Created by xavier on 3/13/14.
  */
 public class THIABBillingRequest<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
@@ -21,7 +25,9 @@ public class THIABBillingRequest<
         IABExceptionType extends IABException>
         extends
         THBillingRequest<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABProductDetailType,
                 IABPurchaseOrderType,
                 IABOrderIdType,

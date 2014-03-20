@@ -11,10 +11,14 @@ import java.util.Map;
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseIABInventoryFetcherHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherType extends IABBillingInventoryFetcher<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABProductDetailType>>
     extends BaseBillingInventoryFetcherHolder<
         IABSKUType,

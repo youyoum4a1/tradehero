@@ -7,24 +7,30 @@ import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingLogicHolder<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends BillingRequest<
-                    ProductIdentifierType,
-                    ProductDetailType,
-                    PurchaseOrderType,
-                    OrderIdType,
-                    ProductPurchaseType,
-                    BillingExceptionType>,
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
         BillingAvailableTesterHolder<
                 BillingExceptionType>,
         ProductIdentifierFetcherHolder<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
                 BillingExceptionType>,
         BillingInventoryFetcherHolder<
                 ProductIdentifierType,

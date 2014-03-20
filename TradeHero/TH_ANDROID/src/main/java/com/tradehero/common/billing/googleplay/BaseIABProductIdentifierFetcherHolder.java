@@ -10,13 +10,19 @@ import java.util.Map;
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseIABProductIdentifierFetcherHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         ProductIdentifierFetcherType extends ProductIdentifierFetcher<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseProductIdentifierFetcherHolder<
+        IABSKUListKeyType,
         IABSKUType,
+        IABSKUListType,
         IABExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcherType> skuFetchers;
@@ -29,7 +35,7 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
 
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUListKeyType, IABSKUType, IABSKUListType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
         ProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);

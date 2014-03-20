@@ -29,14 +29,4 @@ import javax.inject.Singleton;
     {
         throw new IllegalStateException("You should not fetch THIABProductDetail individually");
     }
-
-    @Override public THIABProductDetail put(IABSKU key, THIABProductDetail value)
-    {
-        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override public List<THIABProductDetail> put(List<THIABProductDetail> values)
-    {
-        return super.put(values);    //To change body of overridden methods use File | Settings | File Templates.
-    }
 }

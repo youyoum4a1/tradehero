@@ -18,6 +18,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -31,6 +32,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -41,8 +43,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject protected Lazy<THBillingInteractor> billingInteractor;
+    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserId currentUserId;
@@ -70,17 +74,14 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         setContentView(R.layout.dashboard_with_bottom_bar);
 
-        launchBilling();
-
-        this.dtoCacheUtil.initialPrefetches();
-    }
-
-    private void launchBilling()
-    {
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
             @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
             {
+                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
+                {
+                    restoreRequestCode = null;
+                }
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         DashboardActivity.this,
                         restoredPurchases,
@@ -89,9 +90,35 @@ public class DashboardActivity extends SherlockFragmentActivity
                         IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception("Tracing"))); // TODO have a better exception
             }
         };
+        launchBilling();
 
-        // TODO launch restore
+        this.dtoCacheUtil.initialPrefetches();
+    }
+
+    private void launchBilling()
+    {
+        if (restoreRequestCode != null)
+        {
+            billingInteractor.get().forgetRequestCode(restoreRequestCode);
+        }
+        restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
+    }
+
+    protected THUIBillingRequest createRestoreRequest()
+    {
+        THUIBillingRequest request = billingRequestProvider.get();
+        request.restorePurchase = true;
+        request.popIfRestorePurchaseFailed = false;
+        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
+        return request;
+    }
+
+    protected THUIBillingRequest createFetchInventoryRequest()
+    {
+        THUIBillingRequest request = billingRequestProvider.get();
+        request.fetchInventory = true;
+        return request;
     }
 
     @Override public void onBackPressed()
@@ -167,6 +194,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
+        billingInteractor.get().forgetRequestCode(restoreRequestCode);
         billingInteractor = null;
         if (navigator != null)
         {

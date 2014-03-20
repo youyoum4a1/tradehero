@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
-import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUListType;
+import com.tradehero.common.billing.googleplay.IABSKUList;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
@@ -42,8 +42,9 @@ import timber.log.Timber;
 public class THIABUserInteractor
     extends
         THBaseBillingInteractor<
-                IABSKUListType,
+                IABSKUListKey,
                 IABSKU,
+                IABSKUList,
                 THIABProductDetail,
                 THIABPurchaseOrder,
                 THIABOrderId,

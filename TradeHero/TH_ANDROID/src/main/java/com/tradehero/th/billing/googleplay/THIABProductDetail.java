@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import org.json.JSONException;
@@ -19,6 +20,11 @@ public class THIABProductDetail extends BaseIABProductDetail
     public ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
+    public THIABProductDetail(IABSKUListKey itemType, String jsonSkuDetails) throws JSONException
+    {
+        super(itemType.getBundleKey(), jsonSkuDetails);
+    }
+
     public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
     {
         super(itemType, jsonSkuDetails);

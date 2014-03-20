@@ -11,9 +11,13 @@ import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABLogicHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABException>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherHolderType extends IABInventoryFetcherHolder<
@@ -42,14 +46,18 @@ abstract public class BaseIABLogicHolder<
                 IABPurchaseType,
                 IABException>,
         BillingRequestType extends BillingRequest<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABProductDetailType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
     extends BaseBillingLogicHolder<
+        IABSKUListKeyType,
         IABSKUType,
+        IABSKUListType,
         IABProductDetailType,
         IABPurchaseOrderType,
         IABOrderIdType,
@@ -57,13 +65,15 @@ abstract public class BaseIABLogicHolder<
         BillingRequestType,
         IABException>
     implements IABLogicHolder<
-            IABSKUType,
-            IABProductDetailType,
-            IABPurchaseOrderType,
-            IABOrderIdType,
-            IABPurchaseType,
-            BillingRequestType,
-            IABException>
+        IABSKUListKeyType,
+        IABSKUType,
+        IABSKUListType,
+        IABProductDetailType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        BillingRequestType,
+        IABException>
 {
     protected IABServiceConnector availabilityTester;
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;

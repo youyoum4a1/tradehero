@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
-import com.tradehero.common.billing.googleplay.IABSKUListType;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THInventoryFetchMilestone;
 import com.tradehero.th.persistence.billing.ProductIdentifierListRetrievedAsyncMilestone;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:50 PM To change this template use File | Settings | File Templates. */
 public class THIABInventoryFetchMilestone
         extends THInventoryFetchMilestone<
-                    IABSKUListType,
+        IABSKUListKey,
                     IABSKU,
                     IABSKUList,
                     IABSKUListCache,
@@ -30,7 +30,7 @@ public class THIABInventoryFetchMilestone
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
-    public THIABInventoryFetchMilestone(IABSKUListType iabskuListType)
+    public THIABInventoryFetchMilestone(IABSKUListKey iabskuListType)
     {
         super(iabskuListType);
         DaggerUtils.inject(this);
@@ -49,8 +49,8 @@ public class THIABInventoryFetchMilestone
     }
 
     @Override
-    protected ProductIdentifierListRetrievedAsyncMilestone<IABSKUListType, IABSKU, IABSKUList, IABSKUListCache> createDependsOnMilestone(
-            IABSKUListType iabskuListType)
+    protected ProductIdentifierListRetrievedAsyncMilestone<IABSKUListKey, IABSKU, IABSKUList, IABSKUListCache> createDependsOnMilestone(
+            IABSKUListKey iabskuListType)
     {
         return new IABSKUListRetrievedAsyncMilestone(iabskuListType);
     }
@@ -67,10 +67,10 @@ public class THIABInventoryFetchMilestone
 
     @Override protected List<IABSKU> getAllProductIdentifiers()
     {
-        List<IABSKU> skus = iabskuListCache.get().get(IABSKUListType.getInApp());
-        if (iabskuListCache.get().get(IABSKUListType.getSubs()) != null)
+        List<IABSKU> skus = iabskuListCache.get().get(IABSKUListKey.getInApp());
+        if (iabskuListCache.get().get(IABSKUListKey.getSubs()) != null)
         {
-            skus.addAll(iabskuListCache.get().get(IABSKUListType.getSubs()));
+            skus.addAll(iabskuListCache.get().get(IABSKUListKey.getSubs()));
         }
         return skus;
     }

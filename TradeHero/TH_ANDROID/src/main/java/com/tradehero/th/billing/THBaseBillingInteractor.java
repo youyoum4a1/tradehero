@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
@@ -15,18 +16,14 @@ import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
+import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
@@ -39,14 +36,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by xavier on 2/24/14.
  */
 abstract public class THBaseBillingInteractor<
-        ProductIdentifierListKey extends DTOKey,
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
@@ -54,7 +51,9 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierType,
                 OrderIdType>,
         THBillingLogicHolderType extends THBillingLogicHolder<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
                 ProductDetailType,
                 PurchaseOrderType,
                 OrderIdType,
@@ -69,14 +68,18 @@ abstract public class THBaseBillingInteractor<
                 ProductDetailType,
                 ProductDetailViewType>,
         THBillingRequestType extends THBillingRequest<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingExceptionType>,
-        THUIBillingRequestType extends THUIBillingRequest<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
+        THUIBillingRequestType extends THUIBillingRequest<
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
                 ProductDetailType,
                 PurchaseOrderType,
                 OrderIdType,
@@ -84,15 +87,17 @@ abstract public class THBaseBillingInteractor<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
         implements THBillingInteractor<
-                ProductIdentifierType,
-                ProductDetailType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                THBillingLogicHolderType,
-                THBillingRequestType,
-                THUIBillingRequestType,
-                BillingExceptionType>
+        ProductIdentifierListKeyType,
+        ProductIdentifierType,
+        ProductIdentifierListType,
+        ProductDetailType,
+        PurchaseOrderType,
+        OrderIdType,
+        ProductPurchaseType,
+        THBillingLogicHolderType,
+        THBillingRequestType,
+        THUIBillingRequestType,
+        BillingExceptionType>
 {
     public static final int MAX_RANDOM_RETRIES = 50;
     public static final int ACTION_RESET_PORTFOLIO = 1;
@@ -253,6 +258,18 @@ abstract public class THBaseBillingInteractor<
             request.fetchProductIdentifiers = true;
             request.fetchInventory = true;
         }
+        else if (uiBillingRequest.restorePurchase)
+        {
+            request.testBillingAvailable = true;
+            request.fetchPurchase = true;
+            request.restorePurchase = true;
+        }
+        else if (uiBillingRequest.fetchInventory)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+        }
     }
     //</editor-fold>
 
@@ -385,14 +402,18 @@ abstract public class THBaseBillingInteractor<
 
     //<editor-fold desc="Product Identifier Fetch">
     protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType> createProductIdentifierFetchedListener()
     {
         return new THBaseBillingInteractorOnProductIdentifierFetchedListener();
     }
 
     protected class THBaseBillingInteractorOnProductIdentifierFetchedListener implements ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType>
     {
         private void forgetListener(int requestCode)
@@ -404,7 +425,7 @@ abstract public class THBaseBillingInteractor<
             }
         }
 
-        @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+        @Override public void onFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
         {
             forgetListener(requestCode);
             handleFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
@@ -419,11 +440,11 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void handleFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    protected void handleFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
     }
 
-    protected void notifyFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    protected void notifyFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
         THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
         if (billingRequest != null)

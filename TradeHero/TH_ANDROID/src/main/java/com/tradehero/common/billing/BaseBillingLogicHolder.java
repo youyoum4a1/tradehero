@@ -1,34 +1,39 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.request.BillingRequest;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseBillingLogicHolder<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends BillingRequest<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingExceptionType>,
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingLogicHolder<
+        ProductIdentifierListKeyType,
         ProductIdentifierType,
+        ProductIdentifierListType,
         ProductDetailType,
         PurchaseOrderType,
         OrderIdType,
@@ -41,7 +46,7 @@ abstract public class BaseBillingLogicHolder<
     protected Map<Integer, BillingRequestType> billingRequests;
 
     protected BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
-    protected ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType> productIdentifierFetcherHolder;
+    protected ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
     protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
     protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
     protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
@@ -60,7 +65,7 @@ abstract public class BaseBillingLogicHolder<
 
     //<editor-fold desc="Life Cycle">
     abstract protected BillingAvailableTesterHolder<BillingExceptionType> createBillingAvailableTesterHolder();
-    abstract protected ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetcherHolder();
+    abstract protected ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetcherHolder();
     abstract protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetcherHolder();
     abstract protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFetcherHolder();
     abstract protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaserHolder();
@@ -216,6 +221,7 @@ abstract public class BaseBillingLogicHolder<
     //<editor-fold desc="Sequence Logic">
     protected void handleBillingAvailable(int requestCode)
     {
+        Timber.d("Billing available %d", requestCode);
         notifyBillingAvailable(requestCode);
         prepareRequestForNextRunAfterBillingAvailable(requestCode);
         runInternal(requestCode);
@@ -232,6 +238,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleBillingNotAvailable(int requestCode, BillingExceptionType exception)
     {
+        Timber.d("Billing not available %d", requestCode);
         notifyBillingNotAvailable(requestCode, exception);
         prepareRequestForNextRunAfterBillingNotAvailable(requestCode, exception);
         runInternal(requestCode);
@@ -246,17 +253,18 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
+        getProductIdentifierCache().put(availableProductIdentifiers);
         notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         runInternal(requestCode);
     }
 
-    protected void prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    protected void prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
         List<ProductIdentifierType> all = new ArrayList<>();
-        for (Map.Entry<String, List<ProductIdentifierType>> entry : availableProductIdentifiers.entrySet())
+        for (Map.Entry<ProductIdentifierListKeyType, ProductIdentifierListType> entry : availableProductIdentifiers.entrySet())
         {
             all.addAll(entry.getValue());
         }
@@ -458,8 +466,10 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Fetch Product Identifier">
+    abstract protected ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> getProductIdentifierCache();
+
     @Override
-    public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
+    public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest == null)
@@ -469,7 +479,7 @@ abstract public class BaseBillingLogicHolder<
         return billingRequest.productIdentifierFetchedListener;
     }
 
-    @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener)
+    @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -479,11 +489,11 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetchedListener()
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetchedListener()
     {
-        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>()
+        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType>()
         {
-            @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+            @Override public void onFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
             {
                 handleProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
             }
@@ -505,9 +515,9 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableProductIdentifiers)
+    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
         if (productIdentifierFetchedListener != null)
         {
             productIdentifierFetchedListener.onFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
@@ -517,7 +527,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void notifyProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
     {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener = getProductIdentifierFetchedListener(requestCode);
         if (productIdentifierFetchedListener != null)
         {
             productIdentifierFetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);

@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.request;
 
+import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
@@ -9,6 +10,7 @@ import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
+import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
@@ -22,7 +24,9 @@ import java.util.Map;
  * Created by xavier on 3/13/14.
  */
 public class BillingRequest<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
@@ -40,7 +44,9 @@ public class BillingRequest<
      */
     public boolean fetchProductIdentifiers;
     public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType> productIdentifierFetchedListener;
 
     /**

@@ -21,7 +21,9 @@ import timber.log.Timber;
  * Created by julien on 4/11/13
  */
 abstract public class IABBillingInventoryFetcher<
+            IABSKUListKeyType extends IABSKUListKey,
             IABSKUType extends IABSKU,
+            IABSKUListType extends BaseIABSKUList<IABSKUType>,
             IABProductDetailsType extends IABProductDetail<IABSKUType>>
         extends IABServiceConnector
         implements BillingInventoryFetcher<
@@ -62,7 +64,7 @@ abstract public class IABBillingInventoryFetcher<
         return requestCode;
     }
 
-    abstract protected IABProductDetailsType createSKUDetails(String itemType, String json) throws JSONException;
+    abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;
 
     @Override public void fetchInventory(int requestCode)
     {
@@ -159,12 +161,11 @@ abstract public class IABBillingInventoryFetcher<
             return new HashMap<>();
         }
 
-        HashMap<IABSKUType, IABProductDetailsType> map = internalFetchSKUType(IABConstants.ITEM_TYPE_INAPP);
+        HashMap<IABSKUType, IABProductDetailsType> map = internalFetchSKUType(IABSKUListKey.getInApp());
 
         if (areSubscriptionsSupported())
         {
-            HashMap<IABSKUType, IABProductDetailsType> subscriptionsMap = internalFetchSKUType(
-                    IABConstants.ITEM_TYPE_SUBS);
+            HashMap<IABSKUType, IABProductDetailsType> subscriptionsMap = internalFetchSKUType(IABSKUListKey.getSubs());
             map.putAll(subscriptionsMap);
         }
 
@@ -184,7 +185,7 @@ abstract public class IABBillingInventoryFetcher<
         return querySkus;
     }
 
-    private HashMap<IABSKUType, IABProductDetailsType> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
+    private HashMap<IABSKUType, IABProductDetailsType> internalFetchSKUType(IABSKUListKey itemType) throws IABException, RemoteException, JSONException
     {
         HashMap<IABSKUType, IABProductDetailsType> map = new HashMap<>();
         IInAppBillingService billingServiceCopy = this.billingService;
@@ -195,7 +196,7 @@ abstract public class IABBillingInventoryFetcher<
         else
         {
             Bundle querySkus = getQuerySKUBundle();
-            Bundle skuDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType,
+            Bundle skuDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType.getBundleKey(),
                     querySkus);
             if (!skuDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
             {

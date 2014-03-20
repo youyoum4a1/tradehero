@@ -9,12 +9,16 @@ import java.util.Map;
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseProductIdentifierFetcherHolder<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
-    implements ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType>
+    implements ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType>> parentProductIdentifierFetchedListeners;
 
     public BaseProductIdentifierFetcherHolder()
@@ -34,24 +38,32 @@ abstract public class BaseProductIdentifierFetcherHolder<
     }
 
     @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
     {
         return parentProductIdentifierFetchedListeners.get(requestCode);
     }
 
     @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+            ProductIdentifierListKeyType,
             ProductIdentifierType,
+            ProductIdentifierListType,
             BillingExceptionType> productIdentifierFetchedListener)
     {
         parentProductIdentifierFetchedListeners.put(requestCode, productIdentifierFetchedListener);
     }
 
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetchedListener()
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
+            ProductIdentifierType,
+            ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetchedListener()
     {
-        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType>()
+        return new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType, BillingExceptionType>()
         {
-            @Override public void onFetchedProductIdentifiers(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
+            @Override public void onFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableSkus)
             {
                 notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
             }
@@ -63,10 +75,12 @@ abstract public class BaseProductIdentifierFetcherHolder<
         };
     }
 
-    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<String, List<ProductIdentifierType>> availableSkus)
+    protected void notifyProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableSkus)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
                 BillingExceptionType> fetchedListener = getProductIdentifierFetchedListener(requestCode);
         if (fetchedListener != null)
         {
@@ -77,7 +91,9 @@ abstract public class BaseProductIdentifierFetcherHolder<
     protected void notifyProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
                 BillingExceptionType> fetchedListener = getProductIdentifierFetchedListener(
                 requestCode);
         if (fetchedListener != null)

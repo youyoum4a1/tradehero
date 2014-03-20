@@ -1,6 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABSKUListType;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ShowProductDetailsMilestone;
 
@@ -12,7 +12,7 @@ public class ShowSkuDetailsMilestone extends ShowProductDetailsMilestone
     /**
      * @param userBaseKey
      */
-    public ShowSkuDetailsMilestone(IABSKUListType iabskuListType, final UserBaseKey userBaseKey)
+    public ShowSkuDetailsMilestone(IABSKUListKey iabskuListType, final UserBaseKey userBaseKey)
     {
         super(userBaseKey);
         add(new THIABInventoryFetchMilestone(iabskuListType));

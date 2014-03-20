@@ -2,7 +2,11 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
+import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABConstants;
@@ -10,7 +14,8 @@ import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUListType;
+import com.tradehero.common.billing.googleplay.IABSKUList;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
@@ -23,14 +28,15 @@ import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderFull
     extends THBaseBillingLogicHolder<
+                IABSKUListKey,
                 IABSKU,
+                IABSKUList,
                 THIABProductDetail,
                 THIABPurchaseOrder,
                 THIABOrderId,
@@ -124,8 +130,8 @@ public class THIABLogicHolderFull
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
     {
-        BaseIABSKUList<IABSKU> mixed = iabskuListCache.get(IABSKUListType.getInApp());
-        BaseIABSKUList<IABSKU> subs = iabskuListCache.get(IABSKUListType.getSubs());
+        BaseIABSKUList<IABSKU> mixed = iabskuListCache.get(IABSKUListKey.getInApp());
+        BaseIABSKUList<IABSKU> subs = iabskuListCache.get(IABSKUListKey.getSubs());
         if (subs != null)
         {
             mixed.addAll(subs);
@@ -257,6 +263,13 @@ public class THIABLogicHolderFull
                 prepareToRestoreOnePurchase(requestCode, billingRequest);
             }
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Fetch Product Identifier">
+    @Override protected ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList> getProductIdentifierCache()
+    {
+        return iabskuListCache;
     }
     //</editor-fold>
 

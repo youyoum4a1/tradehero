@@ -1,8 +1,10 @@
 package com.tradehero.th.billing.request;
 
+import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
@@ -16,14 +18,18 @@ import com.tradehero.th.billing.PurchaseReporter;
  * Created by xavier on 3/18/14.
  */
 public class THUIBillingRequest<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
         extends UIBillingRequest<
+        ProductIdentifierListKeyType,
         ProductIdentifierType,
+        ProductIdentifierListType,
         ProductDetailType,
         PurchaseOrderType,
         OrderIdType,

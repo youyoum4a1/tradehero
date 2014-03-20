@@ -8,7 +8,9 @@ import com.tradehero.common.billing.request.UIBillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface BillingInteractor<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
@@ -16,22 +18,28 @@ public interface BillingInteractor<
                 ProductIdentifierType,
                 OrderIdType>,
         BillingLogicHolderType extends BillingLogicHolder<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingRequestType,
-                        BillingExceptionType>,
-        BillingRequestType extends BillingRequest<
-                        ProductIdentifierType,
-                        ProductDetailType,
-                        PurchaseOrderType,
-                        OrderIdType,
-                        ProductPurchaseType,
-                        BillingExceptionType>,
-        UIBillingRequestType extends UIBillingRequest<
+                ProductIdentifierListKeyType,
                 ProductIdentifierType,
+                ProductIdentifierListType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingRequestType,
+                BillingExceptionType>,
+        BillingRequestType extends BillingRequest<
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
+                ProductDetailType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
+        UIBillingRequestType extends UIBillingRequest<
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
                 ProductDetailType,
                 PurchaseOrderType,
                 OrderIdType,

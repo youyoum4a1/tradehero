@@ -2,6 +2,8 @@ package com.tradehero.th.billing.googleplay.request;
 
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.IABSKUList;
+import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.request.UIIABBillingRequest;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
@@ -16,9 +18,14 @@ import javax.inject.Inject;
  */
 public class THUIIABBillingRequest
     extends THUIBillingRequest<
-        IABSKU, THIABProductDetail,
-        THIABPurchaseOrder, THIABOrderId,
-        THIABPurchase, IABException>
+        IABSKUListKey,
+        IABSKU,
+        IABSKUList,
+        THIABProductDetail,
+        THIABPurchaseOrder,
+        THIABOrderId,
+        THIABPurchase,
+        IABException>
     implements
         UIIABBillingRequest
 {
