@@ -21,7 +21,7 @@ public class IABPurchaseCache<
         super(maxSize);
     }
 
-    @Override protected IABPurchaseType fetch(IABSKUType key) throws Throwable
+    @Override protected IABPurchaseType fetch(IABOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }

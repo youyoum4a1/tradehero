@@ -2,6 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,14 +73,14 @@ abstract public class BaseBillingPurchaseFetcherHolder<
                 notifyPurchaseFetchedFailed(requestCode, exception);
             }
 
-            @Override public void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+            @Override public void onFetchedPurchases(int requestCode, List<ProductPurchaseType> purchases)
             {
                 notifyPurchaseFetchedSuccess(requestCode, purchases);
             }
         };
     }
 
-    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    protected void notifyPurchaseFetchedSuccess(int requestCode, List<ProductPurchaseType> purchases)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 ProductIdentifierType,

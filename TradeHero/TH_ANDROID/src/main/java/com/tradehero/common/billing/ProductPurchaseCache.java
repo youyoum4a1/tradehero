@@ -2,6 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,9 +12,9 @@ abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,
             OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
-        extends StraightDTOCache<ProductIdentifierType, ProductPurchaseType>
+        extends StraightDTOCache<OrderIdType, ProductPurchaseType>
 {
-    protected final ArrayList<ProductIdentifierType> keys;
+    protected final ArrayList<OrderIdType> keys;
 
     public ProductPurchaseCache(int maxSize)
     {
@@ -21,14 +22,14 @@ abstract public class ProductPurchaseCache<
         keys = new ArrayList<>();
     }
 
-    @Override public ProductPurchaseType put(ProductIdentifierType key, ProductPurchaseType value)
+    @Override public ProductPurchaseType put(OrderIdType key, ProductPurchaseType value)
     {
         ProductPurchaseType previous = super.put(key, value);
         keys.add(key);
         return previous;
     }
 
-    @Override public void invalidate(ProductIdentifierType key)
+    @Override public void invalidate(OrderIdType key)
     {
         super.invalidate(key);
         keys.remove(key);
@@ -40,22 +41,22 @@ abstract public class ProductPurchaseCache<
         keys.clear();
     }
 
-    public void put(Map<ProductIdentifierType, ProductPurchaseType> values)
+    public void put(List<ProductPurchaseType> values)
     {
         if (values != null)
         {
-            for (Map.Entry<ProductIdentifierType, ProductPurchaseType> entry : values.entrySet())
+            for (ProductPurchaseType purchase : values)
             {
-                if (entry != null && entry.getKey() != null)
+                if (purchase != null && purchase.getOrderId() != null)
                 {
-                    put(entry.getKey(), entry.getValue());
+                    put(purchase.getOrderId(), purchase);
                 }
             }
         }
     }
 
-    public ArrayList<ProductIdentifierType> getKeys()
+    public ArrayList<ProductPurchaseType> getValues()
     {
-        return new ArrayList<>(keys);
+        return new ArrayList<>(snapshot().values());
     }
 }

@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -36,7 +37,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -276,32 +276,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onDestroy();
     }
 
-    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
     {
-        return new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
-            @Override
-            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
+            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
             {
                 Timber.d("onPurchaseRestoreFinished3");
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
-                        consumed,
-                        reportFailed,
-                        consumeFailed,
+                        restoredPurchases,
+                        failedRestorePurchases,
+                        failedRestorePurchases,
                         IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
-            }
-
-            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-            {
-                Timber.d("onPurchaseRestoreFinished2");
-            }
-
-            @Override public void onPurchaseRestoreFailed(IABException iabException)
-            {
-                Timber.d("onPurchaseRestoreFailed", iabException);
-                // TODO Inform
-                //userInteractor.conditionalPopBillingNotAvailable();
             }
         };
     }

@@ -3,6 +3,7 @@ package com.tradehero.common.billing.request;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
@@ -11,7 +12,11 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xavier on 3/13/14.
@@ -57,13 +62,16 @@ public class BillingRequest<
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType> purchaseFetchedListener;
+    public LinkedList<ProductPurchaseType> fetchedPurchases;
 
     /**
      * Indicates whether we want to restore purchases
      */
     public boolean restorePurchase;
-    public List<ProductPurchaseType> purchasesToRestore;
-    // TODO restore listener
+    public List<ProductPurchaseType> restoredPurchases = new ArrayList<>();
+    public List<ProductPurchaseType> restoreFailedPurchases = new ArrayList<>();
+    public List<BillingExceptionType> restoreFailedErrors = new ArrayList<>();
+    public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
     public boolean doPurchase;
     public PurchaseOrderType purchaseOrder;

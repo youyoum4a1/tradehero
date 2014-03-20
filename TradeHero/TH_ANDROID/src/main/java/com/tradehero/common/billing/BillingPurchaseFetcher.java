@@ -1,7 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by xavier on 2/24/14.
@@ -23,7 +23,7 @@ public interface BillingPurchaseFetcher<
             ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
             BillingExceptionType extends BillingException>
     {
-        void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases);
+        void onFetchedPurchases(int requestCode, List<ProductPurchaseType> purchases);
         void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception);
     }
 }

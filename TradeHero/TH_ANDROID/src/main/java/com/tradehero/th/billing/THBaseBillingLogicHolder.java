@@ -8,6 +8,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -62,11 +63,13 @@ abstract public class THBaseBillingLogicHolder<
         purchaseReporterHolder = createPurchaseReporterHolder();
     }
 
+    //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
         purchaseReporterHolder.onDestroy();
         super.onDestroy();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Request Code Management">
     @Override public boolean isUnusedRequestCode(int requestCode)
@@ -84,7 +87,7 @@ abstract public class THBaseBillingLogicHolder<
     }
     //</editor-fold>
 
-    //<editor-fold desc="Sequence Logic">
+    //<editor-fold desc="Run Logic">
     @Override protected boolean runInternal(int requestCode)
     {
         boolean launched = super.runInternal(requestCode);
@@ -100,6 +103,20 @@ abstract public class THBaseBillingLogicHolder<
         return launched;
     }
 
+    @Override protected boolean prepareToRestoreOnePurchase(int requestCode, BillingRequestType billingRequest)
+    {
+        boolean prepared = false;
+        if (billingRequest != null && billingRequest.fetchedPurchases != null && billingRequest.fetchedPurchases.size() > 0)
+        {
+            billingRequest.reportPurchase = true;
+            billingRequest.purchaseToReport = billingRequest.fetchedPurchases.removeFirst();
+            prepared = true;
+        }
+        return prepared;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sequence Logic">
     protected void handlePurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         if (updatedUserPortfolio != null)
@@ -112,6 +129,22 @@ abstract public class THBaseBillingLogicHolder<
     }
 
     protected void prepareRequestForNextRunAfterPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.reportPurchase = false;
+        }
+    }
+
+    protected void handlePurchaseReportedFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    {
+        notifyPurchaseReportedFailed(requestCode, reportedPurchase, error);
+        prepareRequestForNextRunAfterPurchaseReportedFailed(requestCode, reportedPurchase, error);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseReportedFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -157,7 +190,7 @@ abstract public class THBaseBillingLogicHolder<
 
             @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
             {
-                notifyPurchaseReportedFailed(requestCode, reportedPurchase, error);
+                handlePurchaseReportedFailed(requestCode, reportedPurchase, error);
             }
         };
     }

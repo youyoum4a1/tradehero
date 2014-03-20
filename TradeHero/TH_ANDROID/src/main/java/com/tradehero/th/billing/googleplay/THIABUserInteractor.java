@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
@@ -64,7 +65,6 @@ public class THIABUserInteractor
     @Inject UserProfileDTOUtil userProfileDTOUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    protected THIABPurchaseRestorer purchaseRestorer;
     protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
 
     @Inject protected HeroListCache heroListCache;
@@ -74,55 +74,10 @@ public class THIABUserInteractor
     @Inject public THIABUserInteractor()
     {
         super();
-        purchaseRestorer = new THIABPurchaseRestorer(billingActor);
-        purchaseRestorer.init();
     }
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    protected THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerFinishedListener()
-    {
-        return new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
-        {
-            @Override
-            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
-            {
-                Timber.d("onPurchaseRestoreFinished3");
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-
-                Context currentContext = currentActivityHolder.getCurrentContext();
-                if (currentContext != null)
-                {
-                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                            currentContext,
-                            consumed,
-                            reportFailed,
-                            consumeFailed,
-                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, new Exception()),
-                            true); // TODO have a better exception
-                }
-            }
-
-            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-            {
-                Timber.d("onPurchaseRestoreFinished2");
-            }
-
-            @Override public void onPurchaseRestoreFailed(IABException iabException)
-            {
-                Timber.e(iabException, "onPurchaseRestoreFailed");
-                Context currentContext = currentActivityHolder.getCurrentContext();
-                if (currentContext != null)
-                {
-                    IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(currentContext, iabException);
-                }
-            }
-        };
-    }
-
     public void onPause()
     {
         inventoryFetchedForgetListener = null;
@@ -131,11 +86,6 @@ public class THIABUserInteractor
 
     public void onDestroy()
     {
-        if (purchaseRestorer != null)
-        {
-            purchaseRestorer.setPurchaseRestoreFinishedListener(null);
-        }
-        purchaseRestorer = null;
         billingActor = null;
         super.onDestroy();
     }
@@ -148,7 +98,6 @@ public class THIABUserInteractor
             uiBillingRequest.consumptionFinishedListener = null;
         }
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
@@ -162,7 +111,6 @@ public class THIABUserInteractor
         super.populateBillingRequest(request, uiBillingRequest);
         // TODO add specific things for IAB
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Logic Holder Handling">
@@ -353,6 +301,40 @@ public class THIABUserInteractor
     }
     //</editor-fold>
 
+    //<editor-fold desc="Purchase Restore">
+
+    @Override
+    protected void notifyPurchaseRestored(int requestCode, List<THIABPurchase> restoredPurchases, List<THIABPurchase> failedRestorePurchases,
+            List<IABException> failExceptions)
+    {
+        super.notifyPurchaseRestored(requestCode, restoredPurchases, failedRestorePurchases, failExceptions);
+        THUIIABBillingRequest billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.popIfRestorePurchaseFailed)
+            {
+                if (progressDialog != null)
+                {
+                    progressDialog.hide();
+                }
+
+                Context currentContext = currentActivityHolder.getCurrentContext();
+                if (currentContext != null)
+                {
+                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                            currentContext,
+                            restoredPurchases,
+                            failedRestorePurchases,
+                            failedRestorePurchases,
+                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, new Exception()),
+                            true); // TODO have a better exception
+                }
+            }
+        }
+    }
+
+    //</editor-fold>
+
     //<editor-fold desc="Purchase Consumption">
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createConsumptionFinishedListener()
     {
@@ -472,4 +454,6 @@ public class THIABUserInteractor
         return null;
     }
     //</editor-fold>
+
+
 }

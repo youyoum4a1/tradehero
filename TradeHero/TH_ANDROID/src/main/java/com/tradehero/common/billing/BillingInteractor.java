@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
@@ -50,4 +51,6 @@ public interface BillingInteractor<
 
     AlertDialog popBillingUnavailable(BillingExceptionType billingException);
     int run(UIBillingRequestType uiBillingRequest);
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

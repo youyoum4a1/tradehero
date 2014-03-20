@@ -22,10 +22,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderFull
@@ -54,11 +54,48 @@ public class THIABLogicHolderFull
         purchaseConsumerHolder = createPurchaseConsumeHolder();
     }
 
+     //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
         purchaseConsumerHolder.onDestroy();
         super.onDestroy();
     }
+
+    @Override protected THIABProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
+    {
+        return new THBaseIABProductIdentifierFetcherHolder();
+    }
+
+    @Override protected THIABInventoryFetcherHolder createInventoryFetcherHolder()
+    {
+        return new THBaseIABInventoryFetcherHolder();
+    }
+
+    @Override protected THIABPurchaseFetcherHolder createPurchaseFetcherHolder()
+    {
+        return new THBaseIABPurchaseFetcherHolder();
+    }
+
+    @Override protected THIABPurchaserHolder createPurchaserHolder()
+    {
+        return new THBaseIABPurchaserHolder();
+    }
+
+    @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
+    {
+        return new BaseIABBillingAvailableTesterHolder();
+    }
+
+    protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
+    {
+        return new THBaseIABPurchaseConsumerHolder();
+    }
+
+    @Override protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
+    {
+        return new THBaseIABPurchaseReporterHolder();
+    }
+    //</editor-fold>
 
     @Override public String getBillingHolderName(Resources resources)
     {
@@ -96,44 +133,7 @@ public class THIABLogicHolderFull
         return mixed;
     }
 
-    //<editor-fold desc="Holder Creation">
-    @Override protected THIABProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
-    {
-        return new THBaseIABProductIdentifierFetcherHolder();
-    }
-
-    @Override protected THIABInventoryFetcherHolder createInventoryFetcherHolder()
-    {
-        return new THBaseIABInventoryFetcherHolder();
-    }
-
-    @Override protected THIABPurchaseFetcherHolder createPurchaseFetcherHolder()
-    {
-        return new THBaseIABPurchaseFetcherHolder();
-    }
-
-    @Override protected THIABPurchaserHolder createPurchaserHolder()
-    {
-        return new THBaseIABPurchaserHolder();
-    }
-
-    @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
-    {
-        return new BaseIABBillingAvailableTesterHolder();
-    }
-
-    protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
-    {
-        return new THBaseIABPurchaseConsumerHolder();
-    }
-
-    @Override protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
-    {
-        return new THBaseIABPurchaseReporterHolder();
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sequence Logic">
+    //<editor-fold desc="Run Logic">
     @Override protected boolean runInternal(int requestCode)
     {
         boolean launched = super.runInternal(requestCode);
@@ -145,14 +145,39 @@ public class THIABLogicHolderFull
                 launchConsumeSequence(requestCode, billingRequest.purchaseToConsume);
                 launched = true;
             }
+            else if (billingRequest.restorePurchase && billingRequest.fetchedPurchases != null)
+            {
+                boolean prepared = billingRequest.fetchedPurchases.size() > 0 && prepareToRestoreOnePurchase(requestCode, billingRequest);
+                if (prepared)
+                {
+                    launched = runInternal(requestCode);
+                }
+
+                if (!launched)
+                {
+                    notifyPurchaseRestored(requestCode, billingRequest.restoredPurchases, billingRequest.restoreFailedPurchases, billingRequest.restoreFailedErrors);
+                }
+            }
         }
         return launched;
     }
 
-    @Override protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, Map<IABSKU, THIABPurchase> purchases)
+    @Override protected boolean prepareToRestoreOnePurchase(int requestCode, THIABBillingRequestFull billingRequest)
+    {
+        boolean prepared = super.prepareToRestoreOnePurchase(requestCode, billingRequest);
+        if (prepared && billingRequest != null)
+        {
+            billingRequest.consumePurchase = true;
+            prepared = true;
+        }
+        return prepared;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sequence Logic">
+    @Override protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, List<THIABPurchase> purchases)
     {
         super.prepareRequestForNextRunAfterPurchaseFetchedSuccess(requestCode, purchases);
-        // TODO restore?
     }
 
     @Override protected void prepareRequestForNextRunAfterPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
@@ -175,13 +200,62 @@ public class THIABLogicHolderFull
         }
     }
 
+    @Override protected void prepareRequestForNextRunAfterPurchaseReportedFailed(int requestCode, THIABPurchase reportedPurchase, IABException error)
+    {
+        super.prepareRequestForNextRunAfterPurchaseReportedFailed(requestCode, reportedPurchase, error);
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.restorePurchase)
+            {
+                Timber.e(error, "Failed to report a purchase to be restored");
+                billingRequest.restoreFailedPurchases.add(reportedPurchase);
+                billingRequest.restoreFailedErrors.add(error);
+                prepareToRestoreOnePurchase(requestCode, billingRequest);
+            }
+        }
+    }
+
     protected void handlePurchaseConsumed(int requestCode, THIABPurchase purchase)
     {
         notifyPurchaseConsumed(requestCode, purchase);
+        prepareRequestForNextRunAfterPurchaseConsumed(requestCode, purchase);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseConsumed(int requestCode, THIABPurchase purchase)
+    {
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
             billingRequest.consumePurchase = false;
+            if (billingRequest.reportPurchase)
+            {
+                billingRequest.restoredPurchases.add(purchase);
+                prepareToRestoreOnePurchase(requestCode, billingRequest);
+            }
+        }
+    }
+
+    protected void handlePurchaseConsumedFailed(int requestCode, THIABPurchase purchase, IABException exception)
+    {
+        notifyPurchaseConsumedFailed(requestCode, purchase, exception);
+        prepareRequestForNextRunAfterPurchaseConsumedFailed(requestCode, purchase, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseConsumedFailed(int requestCode, THIABPurchase purchase, IABException exception)
+    {
+        THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumePurchase = false;
+            if (billingRequest.reportPurchase)
+            {
+                Timber.e(exception, "Failed to consume a purchase to be restored");
+                billingRequest.restoreFailedPurchases.add(purchase);
+                prepareToRestoreOnePurchase(requestCode, billingRequest);
+            }
         }
     }
     //</editor-fold>
@@ -219,7 +293,7 @@ public class THIABLogicHolderFull
 
             @Override public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
             {
-                notifyPurchaseConsumedFailed(requestCode, purchase, exception);
+                handlePurchaseConsumedFailed(requestCode, purchase, exception);
             }
         };
     }

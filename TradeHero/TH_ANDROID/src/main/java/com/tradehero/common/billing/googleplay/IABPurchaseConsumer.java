@@ -133,7 +133,7 @@ abstract public class IABPurchaseConsumer<
     private void handleConsumeFinishedInternal(IABPurchaseType purchase)
     {
         consuming = false;
-        getPurchaseCache().invalidate(purchase.getProductIdentifier());
+        getPurchaseCache().invalidate(purchase.getOrderId());
         handleConsumeFinished(purchase);
         notifyListenerConsumeFinished(purchase);
     }

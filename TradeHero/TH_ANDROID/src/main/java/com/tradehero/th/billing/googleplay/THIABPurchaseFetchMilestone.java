@@ -5,6 +5,7 @@ import com.tradehero.common.billing.googleplay.IABPurchaseFetchMilestone;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -46,7 +47,7 @@ public class THIABPurchaseFetchMilestone
                 notifyFailedListener(exception);
             }
 
-            @Override public void onFetchedPurchases(int requestCode, Map<IABSKU, THIABPurchase> purchases)
+            @Override public void onFetchedPurchases(int requestCode, List<THIABPurchase> purchases)
             {
                 failed = false;
                 complete = true;

@@ -19,11 +19,13 @@ public class THIABPurchaseRestorerAlertUtil extends THIABAlertDialogUtil
         super(localyticsSession, activityUtil, thiabPurchaseCache);
     }
 
+    @Deprecated // TODO user list of exceptions
     public AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
     {
         return handlePurchaseRestoreFinished(context, consumed, reportFailed, consumeFailed, clickListener, false);
     }
 
+    @Deprecated // TODO user list of exceptions
     public AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener, boolean verbose)
     {
         int countOk = (consumed == null ? 0 : consumed.size());

@@ -3,6 +3,7 @@ package com.tradehero.common.billing.request;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
@@ -12,6 +13,8 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xavier on 3/18/14.
@@ -33,12 +36,6 @@ public class UIBillingRequest<
      * When a listener is missing when an error occurs, the error should be sent to this listener.
      */
     public OnErrorListener<BillingExceptionType> onDefaultErrorListener;
-
-    /**
-     * Indicates whether we want the purchases to be restored
-     */
-    public boolean restorePurchase;
-    // TODO restore listener
 
     /**
      * Indicates whether we want to test if billing is available
@@ -88,6 +85,16 @@ public class UIBillingRequest<
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType> purchaseFetchedListener;
+
+    /**
+     * Indicates whether we want to restore purchases
+     */
+    public boolean restorePurchase;
+    /**
+     * Indicates whether we want the Interactor to pop a dialog when the restore of purchases has failed
+     */
+    public boolean popIfRestorePurchaseFailed;
+    public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
     /**
      * Indicates whether we want the Interactor to pop a dialog when the purchase has failed

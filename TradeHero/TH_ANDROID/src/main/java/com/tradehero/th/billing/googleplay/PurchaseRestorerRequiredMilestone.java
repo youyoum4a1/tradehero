@@ -6,6 +6,7 @@ import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
         add(new PortfolioCompactListRetrievedMilestone(currentUserId.toUserBaseKey()));
     }
 
-    public Map<IABSKU, THIABPurchase> getFetchedPurchases()
+    public List<THIABPurchase> getFetchedPurchases()
     {
         return ((THIABPurchaseFetchMilestone) milestones.get(POSITION_FETCH_PURCHASE)).getFetchedPurchases();
     }

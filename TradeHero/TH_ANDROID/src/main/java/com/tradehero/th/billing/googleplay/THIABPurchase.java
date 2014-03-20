@@ -15,6 +15,7 @@
 
 package com.tradehero.th.billing.googleplay;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -32,6 +33,7 @@ public class THIABPurchase extends BaseIABPurchase
         super(itemType, jsonPurchaseInfo, signature);
     }
 
+    @JsonIgnore
     public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         if (developerPayload != null)

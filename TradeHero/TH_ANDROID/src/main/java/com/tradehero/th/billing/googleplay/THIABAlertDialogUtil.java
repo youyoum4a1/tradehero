@@ -225,10 +225,10 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
 
-        for (IABSKU key : thiabPurchaseCache.getKeys())
+        for (THIABPurchase key : thiabPurchaseCache.getValues())
         {
             Timber.d("Disabling %s", key);
-            enabledItems.put(key, false);
+            enabledItems.put(key.getProductIdentifier(), false);
         }
 
         if (enabledItems.size() == 0)

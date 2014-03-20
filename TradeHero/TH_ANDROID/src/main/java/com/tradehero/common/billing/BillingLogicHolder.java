@@ -35,6 +35,11 @@ public interface BillingLogicHolder<
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType>,
+        BillingPurchaseRestorerHolder<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType>,
         BillingPurchaserHolder<
                 ProductIdentifierType,
                 PurchaseOrderType,
@@ -53,6 +58,7 @@ public interface BillingLogicHolder<
     void unregisterProductIdentifierFetchedListener(int requestCode);
     void unregisterInventoryFetchedListener(int requestCode);
     void unregisterPurchaseFetchedListener(int requestCode);
+    void unregisterPurchaseRestorerListener(int requestCode);
     void unregisterPurchaseFinishedListener(int requestCode);
 
     void onDestroy();

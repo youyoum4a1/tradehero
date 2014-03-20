@@ -10,15 +10,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -42,11 +40,9 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    // TODO BillingLogicHolder
-    @Inject protected Lazy<THIABLogicHolder> billingLogicHolder;
+    @Inject protected Lazy<THBillingInteractor> billingInteractor;
 
-    private THIABPurchaseRestorer purchaseRestorer;
-    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserId currentUserId;
@@ -74,41 +70,27 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         setContentView(R.layout.dashboard_with_bottom_bar);
 
-        launchIAB();
+        launchBilling();
 
         this.dtoCacheUtil.initialPrefetches();
     }
 
-    private void launchIAB()
+    private void launchBilling()
     {
-        purchaseRestorer = new THIABPurchaseRestorer(billingLogicHolder.get());
-        purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
-            @Override
-            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
+            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
             {
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         DashboardActivity.this,
-                        consumed,
-                        reportFailed,
-                        consumeFailed,
+                        restoredPurchases,
+                        failedRestorePurchases,
+                        failExceptions,
                         IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception("Tracing"))); // TODO have a better exception
             }
-
-            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-            {
-            }
-
-            @Override public void onPurchaseRestoreFailed(IABException iabException)
-            {
-                // We keep silent on this one as we don't want to bother the user if for instance billing is not available
-                // On the other hand, the settings fragment will inform
-            }
         };
-        purchaseRestorer.setPurchaseRestoreFinishedListener(purchaseRestorerFinishedListener);
-        purchaseRestorer.init();
-        purchaseRestorer.launchRestorePurchaseSequence();
 
+        // TODO launch restore
         // TODO fetch more stuff?
     }
 
@@ -185,7 +167,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
-        billingLogicHolder = null;
+        billingInteractor = null;
         if (navigator != null)
         {
             navigator.onDestroy();
@@ -196,11 +178,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             currentActivityHolder.unsetActivity(this);
         }
-        if (purchaseRestorer != null)
-        {
-            purchaseRestorer.setPurchaseRestoreFinishedListener(null);
-        }
-        purchaseRestorer = null;
         purchaseRestorerFinishedListener = null;
 
         super.onDestroy();
@@ -243,6 +220,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onActivityResult(requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
-        billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
+        billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }
 }

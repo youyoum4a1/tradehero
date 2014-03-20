@@ -15,6 +15,7 @@
 
 package com.tradehero.common.billing.googleplay;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,31 +76,37 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
         this.signature = signature;
     }
 
+    @JsonIgnore
     @Override public String getType()
     {
         return itemType;
     }
 
+    @JsonIgnore
     @Override public String getToken()
     {
         return token;
     }
 
+    @JsonIgnore
     @Override public THIABOrderId getOrderId()
     {
         return orderId;
     }
 
+    @JsonIgnore
     @Override public IABSKU getProductIdentifier()
     {
         return iabSKU;
     }
 
+    @JsonIgnore
     @Override public String getOriginalJson()
     {
         return this.originalJson;
     }
 
+    @JsonIgnore
     @Override public String getSignature()
     {
         return this.signature;

@@ -6,6 +6,7 @@ import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,7 @@ abstract public class BaseBillingLogicHolder<
         purchaserHolder = createPurchaserHolder();
     }
 
+    //<editor-fold desc="Life Cycle">
     abstract protected BillingAvailableTesterHolder<BillingExceptionType> createBillingAvailableTesterHolder();
     abstract protected ProductIdentifierFetcherHolder<ProductIdentifierType, BillingExceptionType> createProductIdentifierFetcherHolder();
     abstract protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetcherHolder();
@@ -80,6 +82,7 @@ abstract public class BaseBillingLogicHolder<
         purchaseFetcherHolder.onDestroy();
         purchaserHolder.onDestroy();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Request Code Management">
     @Override public int getUnusedRequestCode()
@@ -119,9 +122,11 @@ abstract public class BaseBillingLogicHolder<
         registerProductIdentifierFetchedListener(requestCode, billingRequest.productIdentifierFetchedListener);
         registerInventoryFetchedListener(requestCode, billingRequest.inventoryFetchedListener);
         registerPurchaseFetchedListener(requestCode, billingRequest.purchaseFetchedListener);
+        registerPurchaseRestorerListener(requestCode, billingRequest.purchaseRestorerListener);
         registerPurchaseFinishedListener(requestCode, billingRequest.purchaseFinishedListener);
     }
 
+    //<editor-fold desc="Run Logic">
     /**
      *
      * @param requestCode
@@ -166,9 +171,15 @@ abstract public class BaseBillingLogicHolder<
                 launchPurchaseSequence(requestCode, billingRequest.purchaseOrder);
                 launched = true;
             }
+            // Restore is better placed in the bottom-child class as it involves repeating similar actions.
+            // When this is the last element to test, we are sure that all individual actions have been tested
+            // or run
         }
         return launched;
     }
+
+    abstract protected boolean prepareToRestoreOnePurchase(int requestCode, BillingRequestType billingRequest);
+    //</editor-fold>
 
     //<editor-fold desc="Launch Sequence Methods">
     public void launchBillingAvailableTestSequence(int requestCode)
@@ -191,6 +202,11 @@ abstract public class BaseBillingLogicHolder<
         purchaseFetcherHolder.launchFetchPurchaseSequence(requestCode);
     }
 
+    @Override public void launchRestorePurchaseSequence(int requestCode)
+    {
+        throw new IllegalArgumentException("Do not call this method");
+    }
+
     @Override public void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder)
     {
         purchaserHolder.launchPurchaseSequence(requestCode, purchaseOrder);
@@ -206,6 +222,22 @@ abstract public class BaseBillingLogicHolder<
     }
 
     protected void prepareRequestForNextRunAfterBillingAvailable(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.testBillingAvailable = false;
+        }
+    }
+
+    protected void handleBillingNotAvailable(int requestCode, BillingExceptionType exception)
+    {
+        notifyBillingNotAvailable(requestCode, exception);
+        prepareRequestForNextRunAfterBillingNotAvailable(requestCode, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterBillingNotAvailable(int requestCode, BillingExceptionType exception)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -236,6 +268,22 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
+    protected void handleProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
+    {
+        notifyProductIdentifierFetchedFailed(requestCode, exception);
+        prepareRequestForNextRunAfterProductIdentifierFetchedFailed(requestCode, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterProductIdentifierFetchedFailed(int requestCode, BillingExceptionType exception)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchProductIdentifiers = false;
+        }
+    }
+
     protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
         notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
@@ -252,14 +300,54 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void handlePurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    protected void handleInventoryFetchFailed(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+        notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
+        prepareRequestForNextRunAfterInventoryFetchFailed(requestCode, productIdentifiers, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterInventoryFetchFailed(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchInventory = false;
+        }
+    }
+
+    protected void handlePurchaseFetchedSuccess(int requestCode, List<ProductPurchaseType> purchases)
     {
         notifyPurchaseFetchedSuccess(requestCode, purchases);
         prepareRequestForNextRunAfterPurchaseFetchedSuccess(requestCode, purchases);
         runInternal(requestCode);
     }
 
-    protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, List<ProductPurchaseType> purchases)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.fetchPurchase = false;
+            if (purchases != null)
+            {
+                billingRequest.fetchedPurchases = new LinkedList<>();
+                for (ProductPurchaseType productPurchase : purchases)
+                {
+                    billingRequest.fetchedPurchases.add(productPurchase);
+                }
+            }
+        }
+    }
+
+    protected void handlePurchaseFetchedFailed(int requestCode, BillingExceptionType exception)
+    {
+        notifyPurchaseFetchedFailed(requestCode, exception);
+        prepareRequestForNextRunAfterPurchaseFetchedFailed(requestCode, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseFetchedFailed(int requestCode, BillingExceptionType exception)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -276,6 +364,22 @@ abstract public class BaseBillingLogicHolder<
     }
 
     protected void prepareRequestForNextRunAfterPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.doPurchase = false;
+        }
+    }
+
+    protected void handlePurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    {
+        notifyPurchaseFailed(requestCode, purchaseOrder, billingException);
+        prepareRequestForNextRunAfterPurchaseFailed(requestCode, purchaseOrder, billingException);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -317,7 +421,7 @@ abstract public class BaseBillingLogicHolder<
 
             @Override public void onBillingNotAvailable(int requestCode, BillingExceptionType billingException)
             {
-                notifyBillingNotAvailable(requestCode, billingException);
+                handleBillingNotAvailable(requestCode, billingException);
             }
         };
     }
@@ -386,7 +490,7 @@ abstract public class BaseBillingLogicHolder<
 
             @Override public void onFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
             {
-                notifyProductIdentifierFetchedFailed(requestCode, exception);
+                handleProductIdentifierFetchedFailed(requestCode, exception);
             }
         };
     }
@@ -454,7 +558,7 @@ abstract public class BaseBillingLogicHolder<
 
             @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
             {
-                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
+                handleInventoryFetchFailed(requestCode, productIdentifiers, exception);
             }
         };
     }
@@ -515,14 +619,14 @@ abstract public class BaseBillingLogicHolder<
     {
         return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
         {
-            @Override public void onFetchedPurchases(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+            @Override public void onFetchedPurchases(int requestCode, List<ProductPurchaseType> purchases)
             {
                 handlePurchaseFetchedSuccess(requestCode, purchases);
             }
 
             @Override public void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
             {
-                notifyPurchaseFetchedFailed(requestCode, exception);
+                handlePurchaseFetchedFailed(requestCode, exception);
             }
         };
     }
@@ -537,7 +641,7 @@ abstract public class BaseBillingLogicHolder<
         }
     }
 
-    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    protected void notifyPurchaseFetchedSuccess(int requestCode, List<ProductPurchaseType> purchases)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseFetchedListener(requestCode);
         if (purchaseFetchedListener != null)
@@ -553,6 +657,48 @@ abstract public class BaseBillingLogicHolder<
         if (purchaseFetchedListener != null)
         {
             purchaseFetchedListener.onFetchPurchasesFailed(requestCode, exception);
+        }
+        unregisterPurchaseFetchedListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Restore Purchase">
+    @Override public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseRestorerListener(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.purchaseRestorerListener;
+    }
+
+    @Override public void registerPurchaseRestorerListener(int requestCode, BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseRestorerListener = purchaseRestorerListener;
+        }
+    }
+
+    @Override public void unregisterPurchaseRestorerListener(int requestCode)
+    {
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseRestorerListener = null;
+        }
+    }
+
+    protected void notifyPurchaseRestored(int requestCode, List<ProductPurchaseType> restoredPurchases,
+            List<ProductPurchaseType> failedRestorePurchases, List<BillingExceptionType> failExceptions)
+    {
+        BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener = getPurchaseRestorerListener(
+                requestCode);
+        if (purchaseFetchedListener != null)
+        {
+            purchaseFetchedListener.onPurchaseRestored(requestCode, restoredPurchases, failedRestorePurchases, failExceptions);
         }
         unregisterPurchaseFetchedListener(requestCode);
     }
@@ -590,7 +736,7 @@ abstract public class BaseBillingLogicHolder<
 
             @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
             {
-                notifyPurchaseFailed(requestCode, purchaseOrder, exception);
+                handlePurchaseFailed(requestCode, purchaseOrder, exception);
             }
         };
     }
