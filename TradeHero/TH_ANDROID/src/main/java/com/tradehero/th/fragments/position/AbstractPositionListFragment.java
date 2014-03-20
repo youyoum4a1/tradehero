@@ -7,11 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -78,8 +82,10 @@ abstract public class AbstractPositionListFragment<
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
-    protected ExpandingListView positionsListView;
-    private ProgressBar progressBar;
+    //@InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
+    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
+    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
 
     protected OwnedPortfolioId shownOwnedPortfolioId;
     protected GetPositionsDTOType getPositionsDTO;
@@ -112,6 +118,7 @@ abstract public class AbstractPositionListFragment<
 
         View view = inflater.inflate(R.layout.fragment_positions_list, container, false);
 
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
@@ -135,6 +142,7 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
             {
+                pullToRefreshListView.onRefreshComplete();
                 linkWith(value, true);
             }
 
@@ -146,45 +154,58 @@ abstract public class AbstractPositionListFragment<
 
         if (view != null)
         {
-            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-
-            positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
-            positionsListView.setEmptyView(view.findViewById(android.R.id.empty));
-
             if (positionItemAdapter == null)
             {
                 createPositionItemAdapter();
             }
-            if (positionsListView != null)
+
+            positionsListView.setAdapter(positionItemAdapter);
+            positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
             {
-                positionsListView.setAdapter(positionItemAdapter);
-                positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
                 {
-                    @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-                    {
-                        handlePositionItemClicked(adapterView, view, position, id);
-                    }
+                    handlePositionItemClicked(adapterView, view, position, id);
+                }
 
-                    @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
-                    {
-                    }
+                @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
+                {
+                }
 
-                    @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
-                    {
-                    }
-                });
-            }
+                @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
+                {
+                }
+            });
+
+            initPullToRefreshListView(view);
 
             // portfolio header
             Bundle args = getArguments();
             if (args != null)
             {
-                ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
+                headerStub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
                 int headerLayoutId = headerFactory.get().layoutIdFor(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
-                stub.setLayoutResource(headerLayoutId);
-                this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
+                headerStub.setLayoutResource(headerLayoutId);
+                this.portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
             }
         }
+    }
+
+    private void initPullToRefreshListView(View view)
+    {
+        ((ViewGroup) view).removeView(positionsListView);
+        pullToRefreshListView.setRefreshableView(positionsListView);
+        pullToRefreshListView.setRefreshing();
+        pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                // refresh header values
+                fetchPortfolio(true);
+
+                // refresh position cache
+                fetchSimplePage(true);
+            }
+        });
     }
 
     abstract protected void createPositionItemAdapter();
@@ -316,7 +337,7 @@ abstract public class AbstractPositionListFragment<
 
         detachPortfolioTask();
         detachUserProfileTask();
-        fetchPortfolio();
+        fetchPortfolio(false);
         fetchUserProfile();
 
         fetchSimplePage();
@@ -327,7 +348,7 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
-    protected void fetchPortfolio()
+    protected void fetchPortfolio(boolean force)
     {
         detachPortfolioTask();
         if (shownOwnedPortfolioId != null)
@@ -336,7 +357,7 @@ abstract public class AbstractPositionListFragment<
             Boolean isOtherPeople = isShownOwnedPortfolioIdForOtherPeople(shownOwnedPortfolioId);
             if (isOtherPeople != null && !isOtherPeople)
             {
-                fetchPortfolioDTOTask = createPortfolioFetchTask(shownOwnedPortfolioId);
+                fetchPortfolioDTOTask = createPortfolioFetchTask(shownOwnedPortfolioId, force);
                 fetchPortfolioDTOTask.execute();
             }
             else
@@ -357,7 +378,7 @@ abstract public class AbstractPositionListFragment<
             if (!isShownOwnedPortfolioIdForOtherPeople(positionPortfolioId))
             {
                 this.shownOwnedPortfolioId = positionPortfolioId;
-                fetchPortfolio();
+                fetchPortfolio(false);
             }
         }
     }
@@ -414,9 +435,9 @@ abstract public class AbstractPositionListFragment<
         return userProfileCache.getOrFetch(userBaseKey, false, userProfileCacheListener);
     }
 
-    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId)
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId, boolean force)
     {
-        return portfolioCache.get().getOrFetch(ownedPortfolioId, false, portfolioCacheListener);
+        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, portfolioCacheListener);
     }
 
     protected void rePurposeAdapter()
@@ -535,9 +556,17 @@ abstract public class AbstractPositionListFragment<
 
     public void displayProgress(boolean running)
     {
-        if (progressBar != null)
+        //if (progressBar != null)
+        //{
+        //    progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        //}
+        if (running)
         {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+            pullToRefreshListView.setRefreshing();
+        }
+        else
+        {
+            pullToRefreshListView.onRefreshComplete();
         }
     }
 
