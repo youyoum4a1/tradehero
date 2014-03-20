@@ -247,13 +247,14 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        progressBar = null;
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
+        progressBar = null;
         watchlistUpdateCallback = null;
+
         super.onDestroy();
     }
 
