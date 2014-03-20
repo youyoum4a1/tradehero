@@ -64,9 +64,9 @@ public class WatchlistPositionFragment extends DashboardFragment
     private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistFetchTask;
 
-    @InjectView(android.R.id.list) protected SwipeListView watchlistListView;
-    @InjectView(R.id.watchlist_position_list_header) protected WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
-    @InjectView(R.id.pull_to_refresh_watchlist_listview) protected WatchlistPositionListView watchlistPositionListView;
+    @InjectView(android.R.id.list) SwipeListView watchlistListView;
+    @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
+    @InjectView(R.id.pull_to_refresh_watchlist_listview) WatchlistPositionListView watchlistPositionListView;
 
     private WatchlistAdapter watchListAdapter;
 
@@ -292,14 +292,14 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        super.onDestroy();
-
         watchlistFetchCompleteListener = null;
         broadcastReceiver = null;
         gainLossModeListener = null;
         watchlistRetrievedMilestoneListener = null;
         watchlistPositionListView.onRefreshComplete();
         watchlistPositionListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
+
+        super.onDestroy();
     }
 
     protected void detachWatchlistRetrievedMilestone()
