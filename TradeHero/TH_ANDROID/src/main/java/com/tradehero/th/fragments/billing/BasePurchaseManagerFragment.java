@@ -2,18 +2,24 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 /**
@@ -31,6 +37,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
+    @Inject protected com.tradehero.th.billing.googleplay.THIABAlertDialogUtil THIABAlertDialogUtil;
+    protected Integer showProductDetailRequestCode;
 
     abstract protected void initViews(View view);
 
@@ -138,7 +147,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedListener = null;
     }
 
-
     private void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
     {
         detachPortfolioRetrievedMilestone();
@@ -150,6 +158,40 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
+    }
+
+    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
+    {
+        if (showProductDetailRequestCode != null)
+        {
+            userInteractor.forgetRequestCode(showProductDetailRequestCode);
+        }
+        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+    }
+
+    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
+    {
+        return userInteractor.run(getShowProductDetailRequest(domain));
+    }
+
+    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.applicablePortfolioId = getApplicablePortfolioId();
+        request.startWithProgressDialog = true;
+        request.popIfBillingNotAvailable = true;
+        request.popIfProductIdentifierFetchFailed = true;
+        request.popIfInventoryFetchFailed = true;
+        request.domainToPresent = domain;
+        request.popIfPurchaseFailed = true;
+        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        {
+            @Override public void onError(int requestCode, BillingException billingException)
+            {
+                Timber.e(billingException, "Store had error");
+            }
+        };
+        return request;
     }
 
     protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener

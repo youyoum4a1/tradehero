@@ -395,7 +395,8 @@ public class THIABBillingInteractor
 
     protected void handlePurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
     {
-        if (progressDialog != null)
+        THUIIABBillingRequest billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
         {
             progressDialog.hide();
         }

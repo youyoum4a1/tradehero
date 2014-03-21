@@ -41,18 +41,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
     public static boolean alreadyNotifiedNeedCreateAccount = false;
+    protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
-    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
-
-    private Integer showProductDetailRequestCode;
-
-    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -93,6 +88,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
 
         storeItemAdapter.notifyDataSetChanged();
+        cancelOthersAndShowBillingAvailable();
     }
 
     @Override public void onDestroyView()
@@ -109,6 +105,37 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public boolean isTabBarVisible()
     {
         return true;
+    }
+
+    public void cancelOthersAndShowBillingAvailable()
+    {
+        if (showBillingAvailableRequestCode != null)
+        {
+            userInteractor.forgetRequestCode(showBillingAvailableRequestCode);
+        }
+        showBillingAvailableRequestCode = showBillingAvailable();
+    }
+
+    public int showBillingAvailable()
+    {
+        return userInteractor.run(getShowBillingAvailableRequest());
+    }
+
+    public THUIBillingRequest getShowBillingAvailableRequest()
+    {
+        THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.applicablePortfolioId = getApplicablePortfolioId();
+        request.startWithProgressDialog = false;
+        request.popIfBillingNotAvailable = true;
+        request.billingAvailable = true;
+        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        {
+            @Override public void onError(int requestCode, BillingException billingException)
+            {
+                Timber.e(billingException, "Store had error");
+            }
+        };
+        return request;
     }
 
     private void handlePositionClicked(int position)
@@ -179,61 +206,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    private void pushFragment(Class<? extends Fragment> fragmentClass)
-    {
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass);
-    }
-
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass, bundle);
     }
 
-    private void popPleaseWait()
-    {
-        THIABAlertDialogUtil.popWithNegativeButton(getActivity(),
-                R.string.error_incomplete_info_title,
-                R.string.error_incomplete_info_message,
-                R.string.error_incomplete_info_cancel);
-    }
-
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_store_screen;
-    }
-
-    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
-    {
-        if (showProductDetailRequestCode != null)
-        {
-            userInteractor.forgetRequestCode(showProductDetailRequestCode);
-        }
-        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
-    }
-
-    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
-    {
-        return userInteractor.run(getShowProductDetailRequest(domain));
-    }
-
-    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
-    {
-        THUIBillingRequest request = uiBillingRequestProvider.get();
-        request.applicablePortfolioId = getApplicablePortfolioId();
-        request.startWithProgressDialog = true;
-        request.popIfBillingNotAvailable = true;
-        request.popIfProductIdentifierFetchFailed = true;
-        request.popIfInventoryFetchFailed = true;
-        request.domainToPresent = domain;
-        request.popIfPurchaseFailed = true;
-        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
-        {
-            @Override public void onError(int requestCode, BillingException billingException)
-            {
-                Timber.e(billingException, "Store had error");
-            }
-        };
-        return request;
     }
 
     protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)

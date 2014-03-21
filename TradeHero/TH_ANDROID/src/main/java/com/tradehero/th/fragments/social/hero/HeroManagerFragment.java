@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -19,7 +21,10 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -40,7 +45,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
     private HeroManagerViewContainer viewContainer;
-    private ProgressDialog progressDialog;
 
     private HeroListItemAdapter heroListAdapter;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
@@ -134,11 +138,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Override public void onPause()
     {
         this.infoFetcher.onPause();
-
-        if (this.progressDialog != null)
-        {
-            this.progressDialog.hide();
-        }
         super.onPause();
     }
 
@@ -167,7 +166,26 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void handleBuyMoreClicked()
     {
-        // TODO conditionalPopBuyFollowCredits();
+        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = super.getShowProductDetailRequest(domain);
+        request.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                // TODO refresh view
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+                // TODO better
+                THToast.show(error.getMessage());
+            }
+        };
+        return request;
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)

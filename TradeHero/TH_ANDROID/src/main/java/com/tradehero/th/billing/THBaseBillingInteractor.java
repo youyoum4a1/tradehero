@@ -420,6 +420,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void handleBillingNotAvailable(int requestCode, BillingExceptionType billingException)
     {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void notifyBillingNotAvailable(int requestCode, BillingExceptionType billingException)
@@ -515,6 +520,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void handleFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
     {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void notifyFetchProductIdentifiersFailed(int requestCode, BillingExceptionType exception)
@@ -608,6 +618,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void handleInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
     {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void notifyInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
@@ -694,6 +709,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void handleFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
     {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void notifyFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
@@ -823,6 +843,11 @@ abstract public class THBaseBillingInteractor<
 
     protected void handlePurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
     {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void notifyPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType billingException)
@@ -915,7 +940,8 @@ abstract public class THBaseBillingInteractor<
 
     protected void handlePurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
-        if (progressDialog != null)
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null && billingRequest.startWithProgressDialog && progressDialog != null)
         {
             progressDialog.hide();
         }
