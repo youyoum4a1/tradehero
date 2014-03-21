@@ -20,6 +20,7 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -33,6 +34,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -107,9 +109,13 @@ abstract public class THBaseBillingInteractor<
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
 
+    protected THBillingInitialMilestone THBillingInitialMilestone;
+    protected Milestone.OnCompleteListener billingInitialMilestoneListener;
+    protected LinkedList<Integer> requestsToLaunchOnBillingInitialMilestoneComplete;
+
     protected Map<Integer, THUIBillingRequestType> uiBillingRequests;
 
-    @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject protected ProgressDialogUtil progressDialogUtil;
     protected ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
@@ -117,13 +123,25 @@ abstract public class THBaseBillingInteractor<
     {
         super();
         DaggerUtils.inject(this);
+        requestsToLaunchOnBillingInitialMilestoneComplete = new LinkedList<>();
         uiBillingRequests = new HashMap<>();
+
+        billingInitialMilestoneListener = new THBaseBillingInteractorShowProductDetailCompleteListener();
+        THBillingInitialMilestone = new THBillingInitialMilestone(currentUserId.toUserBaseKey());
+        THBillingInitialMilestone.setOnCompleteListener(billingInitialMilestoneListener);
+        THBillingInitialMilestone.launch();
     }
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
+        billingInitialMilestoneListener = null;
+        if (THBillingInitialMilestone != null)
+        {
+            THBillingInitialMilestone.setOnCompleteListener(null);
+        }
+
         if (progressDialog != null)
         {
             progressDialog.hide();
@@ -153,6 +171,7 @@ abstract public class THBaseBillingInteractor<
             uiBillingRequest.purchaseRestorerListener = null;
             uiBillingRequest.purchaseReportedListener = null;
             uiBillingRequest.purchaseFinishedListener = null;
+            uiBillingRequest.onDefaultErrorListener = null;
         }
     }
     //</editor-fold>
@@ -222,8 +241,26 @@ abstract public class THBaseBillingInteractor<
         {
             popInitialProgressDialog(uiBillingRequest);
         }
-        getBillingLogicHolder().run(requestCode, createBillingRequest(uiBillingRequest));
+        requestsToLaunchOnBillingInitialMilestoneComplete.addLast(requestCode);
+        THBillingInitialMilestone.launch();
         return requestCode;
+    }
+
+    protected void runWaitingRequests()
+    {
+        while (requestsToLaunchOnBillingInitialMilestoneComplete.size() > 0)
+        {
+            runRequestCode(requestsToLaunchOnBillingInitialMilestoneComplete.removeFirst());
+        }
+    }
+
+    protected void runRequestCode(int requestCode)
+    {
+        THUIBillingRequestType uiBillingRequest = uiBillingRequests.get(requestCode);
+        if (uiBillingRequest != null)
+        {
+            getBillingLogicHolder().run(requestCode, createBillingRequest(uiBillingRequest));
+        }
     }
 
     protected THBillingRequestType createBillingRequest(THUIBillingRequestType uiBillingRequest)
@@ -320,6 +357,18 @@ abstract public class THBaseBillingInteractor<
     abstract protected THBillingRequestType createPurchaseBillingRequest(int requestCode, ProductIdentifierType productIdentifier);
     abstract protected void launchPurchaseSequence(int requestCode, ProductIdentifierType productIdentifier);
     //</editor-fold>
+
+    protected void notifyDefaultErrorListener(int requestCode, BillingExceptionType billingException)
+    {
+        THUIBillingRequestType billingRequest = uiBillingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(requestCode, billingException);
+            }
+        }
+    }
 
     //<editor-fold desc="Billing Available">
     protected BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> createBillingAvailableListener()
@@ -940,6 +989,19 @@ abstract public class THBaseBillingInteractor<
                     R.string.store_billing_restoring_purchase_window_message);
             progressDialog.setCanceledOnTouchOutside(true);
             progressDialog.setCancelable(true);
+        }
+    }
+
+    protected class THBaseBillingInteractorShowProductDetailCompleteListener implements Milestone.OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            runWaitingRequests();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            // TODO
         }
     }
 }

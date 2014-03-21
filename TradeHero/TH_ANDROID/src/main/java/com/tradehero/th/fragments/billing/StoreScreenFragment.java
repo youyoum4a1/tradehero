@@ -225,29 +225,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         request.popIfProductIdentifierFetchFailed = true;
         request.popIfInventoryFetchFailed = true;
         request.domainToPresent = domain;
-        Timber.d("Store domain set");
+        request.popIfPurchaseFailed = true;
         request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
         {
             @Override public void onError(int requestCode, BillingException billingException)
             {
-                Timber.d("Store had error %s", billingException);
-                THToast.show(billingException.getMessage());
+                Timber.e(billingException, "Store had error");
             }
         };
-        Timber.d("Store listener set 1");
-        request.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                THToast.show("Purchase ok");
-            }
-
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-                THToast.show(error.getMessage());
-            }
-        };
-        Timber.d("Store listener set 2");
         return request;
     }
 

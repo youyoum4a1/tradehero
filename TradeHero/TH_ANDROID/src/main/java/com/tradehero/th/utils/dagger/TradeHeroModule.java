@@ -10,12 +10,10 @@ import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
@@ -113,6 +111,7 @@ import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
@@ -155,6 +154,7 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         MiddleCallbackUpdateUserProfile.class,
+                        MiddleCallbackAddCash.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,
                         AboutFragment.class,
@@ -265,14 +265,12 @@ import javax.inject.Singleton;
                         THIABPurchaseReporter.class,
                         THIABLogicHolderFull.class,
                         THIABPurchaseConsumer.class,
-                        THIABInventoryFetchMilestone.class,
                         THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseFetchMilestone.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        PurchaseRestorerRequiredMilestone.class,
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
 

@@ -8,16 +8,16 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 /**
  * Created by xavier on 2/25/14.
  */
-public class ShowProductDetailsMilestone extends BaseMilestoneGroup
+public class THBillingInitialMilestone extends BaseMilestoneGroup
 {
-    public static final String TAG = ShowProductDetailsMilestone.class.getSimpleName();
+    public static final String TAG = THBillingInitialMilestone.class.getSimpleName();
 
     public final UserBaseKey userBaseKey;
 
     /**
      * @param userBaseKey
      */
-    public ShowProductDetailsMilestone(final UserBaseKey userBaseKey)
+    public THBillingInitialMilestone(final UserBaseKey userBaseKey)
     {
         super();
         this.userBaseKey = userBaseKey;

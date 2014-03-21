@@ -30,8 +30,12 @@ public class THIABExceptionFactory extends IABExceptionFactory
                     exception = new PurchaseReportRetrofitException(message);
                     break;
 
-                case THIABConstants.MISSING_CACHED_DETAIL: // -2000
+                case THIABConstants.MISSING_CACHED_DETAIL: // -2002
                     exception = new MissingCachedProductDetailException(message);
+                    break;
+
+                case THIABConstants.MISSING_APPLICABLE_PORTFOLIO_ID: // -2003
+                    exception = new MissingApplicablePortfolioIdException(message);
                     break;
             }
         }

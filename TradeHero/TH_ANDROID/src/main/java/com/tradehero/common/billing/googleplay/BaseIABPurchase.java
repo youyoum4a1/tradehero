@@ -60,18 +60,19 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
         this.purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
 
         // HACK
-        Timber.d("%s {\"userId\":239284,\"portfolioId\"611105}", o.optString(JSON_KEY_DEVELOPER_PAY_LOAD));
-        if (o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) != null &&
-                o.optString(JSON_KEY_DEVELOPER_PAY_LOAD).equals("{\"userId\":239284,\"portfolioId\"611105}"))
-        {
-            Timber.d("HACK Fixing bad Json");
-            developerPayload = "{\"userId\":239284,\"portfolioId\":611105}";
-        }
-        else
-        {
-            this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD); // This is the only non-HACK line
-        }
+        //Timber.d("%s {\"userId\":239284,\"portfolioId\"611105}", o.optString(JSON_KEY_DEVELOPER_PAY_LOAD));
+        //if (o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) != null &&
+        //        o.optString(JSON_KEY_DEVELOPER_PAY_LOAD).equals("{\"userId\":239284,\"portfolioId\"611105}"))
+        //{
+        //    Timber.d("HACK Fixing bad Json");
+        //    developerPayload = "{\"userId\":239284,\"portfolioId\":611105}";
+        //}
+        //else
+        //{
+        //this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD); // This is the only non-HACK line
+        //}
 
+        this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD);
         this.token = o.optString(JSON_KEY_TOKEN, o.optString(JSON_KEY_PURCHASE_TOKEN));
         this.signature = signature;
     }

@@ -21,6 +21,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -199,7 +200,15 @@ public class THIABBillingInteractor
             request = new THIABBillingRequestFull();
             request.testBillingAvailable = true;
             request.doPurchase = true;
-            request.purchaseOrder = new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
+            try
+            {
+                request.purchaseOrder = new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
+            }
+            catch (MissingApplicablePortfolioIdException e)
+            {
+                // TODO call another perhaps
+                notifyDefaultErrorListener(requestCode, e);
+            }
             request.purchaseFinishedListener = createPurchaseFinishedListener();
             request.reportPurchase = true;
             request.purchaseReportedListener = createPurchaseReportedListener();

@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -79,11 +80,13 @@ import retrofit.RetrofitError;
         return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
     }
 
-    public void addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
+    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
-        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, callback);
+        MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);
+        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallbackAddCash);
+        return middleCallbackAddCash;
     }
     //</editor-fold>
 
