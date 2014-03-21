@@ -102,9 +102,9 @@ public class UIBillingRequest<
      */
     public boolean restorePurchase;
     /**
-     * Indicates whether we want the Interactor to pop a dialog when the restore of purchases has failed
+     * Indicates whether we want the Interactor to pop a progress dialog upon restore.
      */
-    public boolean popIfRestorePurchaseFailed;
+    public boolean popRestorePurchaseOutcome;
     public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
     /**
@@ -125,6 +125,6 @@ public class UIBillingRequest<
 
     public static interface OnErrorListener<BillingExceptionType extends BillingException>
     {
-        void onError(BillingExceptionType billingException);
+        void onError(int requestCode, BillingExceptionType billingException);
     }
 }

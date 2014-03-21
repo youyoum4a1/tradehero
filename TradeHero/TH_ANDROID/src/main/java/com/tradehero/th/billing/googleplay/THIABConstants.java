@@ -9,6 +9,7 @@ public class THIABConstants extends IABConstants
 {
     public static final int UNHANDLED_DOMAIN = -2000;
     public static final int PURCHASE_REPORT_RETROFIT_ERROR = -2001;
+    public static final int MISSING_CACHED_DETAIL = -2002;
 
     // Below are the codes as they are understood on Google Play
     public static final String EXTRA_CASH_T0_KEY = "com.myhero.th.extracash.t0";

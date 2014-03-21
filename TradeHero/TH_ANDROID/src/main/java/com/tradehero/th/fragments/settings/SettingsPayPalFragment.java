@@ -54,6 +54,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -124,7 +125,7 @@ public class SettingsPayPalFragment extends DashboardFragment
         {
             @Override public void onClick(View view)
             {
-                progressDialog = ProgressDialogUtil.show(
+                progressDialog = progressDialogUtil.show(
                         getActivity(),
                         R.string.alert_dialog_please_wait,
                         R.string.authentication_connecting_tradehero_only);

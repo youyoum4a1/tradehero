@@ -83,6 +83,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -269,7 +270,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         this.securityId = securityId;
 
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
         securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
         securityCompactCacheFetchTask.execute();
@@ -332,7 +333,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
         {
-            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.show();
             progressDialog.setCanceledOnTouchOutside(true);
             saveAlertProper(alertFormDTO);

@@ -3,7 +3,6 @@ package com.tradehero.th.billing.googleplay;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
@@ -30,7 +29,6 @@ import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -66,8 +64,6 @@ public class THIABUserInteractor
     @Inject UserProfileDTOUtil userProfileDTOUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
-
     @Inject protected HeroListCache heroListCache;
     @Inject protected UserService userService;
 
@@ -79,12 +75,6 @@ public class THIABUserInteractor
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    public void onPause()
-    {
-        inventoryFetchedForgetListener = null;
-        super.onPause();
-    }
-
     public void onDestroy()
     {
         billingActor = null;
@@ -137,19 +127,15 @@ public class THIABUserInteractor
                     .setTitle(R.string.store_billing_error_loading_window_title)
                     .setMessage(R.string.store_billing_error_loading_window_description)
                     .setCancelable(true)
-                    .setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialogInterface, int i)
-                        {
-                            if (inventoryFetchedForgetListener == null)
-                            {
-                                inventoryFetchedForgetListener = createForgetFetchedListener();
-                            }
-                            int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-                            getBillingLogicHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
-                            getBillingLogicHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
-                        }
-                    });
+                    //.setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
+                    //{
+                    //    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    //    {
+                    //        int requestCode = getBillingLogicHolder().getUnusedRequestCode();
+                    //        getBillingLogicHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
+                    //    }
+                    //})
+                    ;
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
@@ -172,27 +158,6 @@ public class THIABUserInteractor
         };
     }
 
-    public void launchRestoreSequence()
-    {
-        Context currentContext = currentActivityHolder.getCurrentContext();
-        if (currentContext != null)
-        {
-            progressDialog = ProgressDialog.show(
-                    currentContext,
-                    currentContext.getString(R.string.store_billing_restoring_purchase_window_title),
-                    currentContext.getString(R.string.store_billing_restoring_purchase_window_message),
-                    true,
-                    true,
-                    null);
-        }
-        //waitForSkuDetailsMilestoneComplete(new Runnable()
-        //{
-        //    @Override public void run()
-        //    {
-        //        purchaseRestorer.launchRestorePurchaseSequence();
-        //    }
-        //});
-    }
 
     protected void showProgressFollow()
     {
@@ -304,7 +269,6 @@ public class THIABUserInteractor
     //</editor-fold>
 
     //<editor-fold desc="Purchase Restore">
-
     @Override
     protected void notifyPurchaseRestored(int requestCode, List<THIABPurchase> restoredPurchases, List<THIABPurchase> failedRestorePurchases,
             List<IABException> failExceptions)
@@ -313,28 +277,34 @@ public class THIABUserInteractor
         THUIIABBillingRequest billingRequest = uiBillingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            if (billingRequest.popIfRestorePurchaseFailed)
+            if (progressDialog != null)
             {
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-
+                progressDialog.hide();
+            }
+            if (billingRequest.popRestorePurchaseOutcome)
+            {
                 Context currentContext = currentActivityHolder.getCurrentContext();
+                Exception exception;
+                if (failExceptions != null && failExceptions.size() > 0)
+                {
+                    exception = failExceptions.get(0);
+                }
+                else
+                {
+                    exception = new Exception();
+                }
                 if (currentContext != null)
                 {
                     IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                             currentContext,
                             restoredPurchases,
                             failedRestorePurchases,
-                            failedRestorePurchases,
-                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, new Exception()),
-                            true); // TODO have a better exception
+                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, exception),
+                            true);
                 }
             }
         }
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Purchase Consumption">
@@ -434,7 +404,7 @@ public class THIABUserInteractor
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
-                ((THUIIABBillingRequest) billingRequest).onDefaultErrorListener.onError(exception);
+                ((THUIIABBillingRequest) billingRequest).onDefaultErrorListener.onError(requestCode, exception);
             }
         }
 

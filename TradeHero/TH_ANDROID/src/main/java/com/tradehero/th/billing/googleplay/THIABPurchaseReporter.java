@@ -7,6 +7,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
+import com.tradehero.th.billing.googleplay.exception.MissingCachedProductDetailException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
@@ -64,6 +65,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         THIABProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
         if (cachedSkuDetail == null)
         {
+            notifyListenerReportFailed(new MissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));
             return;
         }
         if (purchase == null)

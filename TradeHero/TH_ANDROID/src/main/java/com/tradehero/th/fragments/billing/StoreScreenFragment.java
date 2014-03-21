@@ -219,6 +219,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.applicablePortfolioId = getApplicablePortfolioId();
         request.startWithProgressDialog = true;
         request.popIfBillingNotAvailable = true;
         request.popIfProductIdentifierFetchFailed = true;
@@ -227,7 +228,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         Timber.d("Store domain set");
         request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
         {
-            @Override public void onError(BillingException billingException)
+            @Override public void onError(int requestCode, BillingException billingException)
             {
                 Timber.d("Store had error %s", billingException);
                 THToast.show(billingException.getMessage());

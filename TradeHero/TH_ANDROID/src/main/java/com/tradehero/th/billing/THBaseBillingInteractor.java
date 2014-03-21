@@ -109,6 +109,7 @@ abstract public class THBaseBillingInteractor<
 
     protected Map<Integer, THUIBillingRequestType> uiBillingRequests;
 
+    @Inject ProgressDialogUtil progressDialogUtil;
     protected ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
@@ -219,7 +220,7 @@ abstract public class THBaseBillingInteractor<
         uiBillingRequests.put(requestCode, uiBillingRequest);
         if (uiBillingRequest.startWithProgressDialog)
         {
-            popDialogLoadingInfo();
+            popInitialProgressDialog(uiBillingRequest);
         }
         getBillingLogicHolder().run(requestCode, createBillingRequest(uiBillingRequest));
         return requestCode;
@@ -244,6 +245,7 @@ abstract public class THBaseBillingInteractor<
         request.inventoryFetchedListener = createInventoryFetchedListener();
         request.fetchPurchase = uiBillingRequest.fetchPurchase;
         request.purchaseFetchedListener = createPurchaseFetchedListener();
+        request.purchaseRestorerListener = createPurchaseRestorerFinishedListener();
         request.purchaseFinishedListener = createPurchaseFinishedListener();
         request.purchaseReportedListener = createPurchaseReportedListener();
 
@@ -378,6 +380,11 @@ abstract public class THBaseBillingInteractor<
             {
                 billingRequest.billingAvailableListener.onBillingNotAvailable(requestCode, billingException);
             }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(requestCode, billingException);
+            }
+
         }
         if (billingRequest == null || billingRequest.popIfBillingNotAvailable)
         {
@@ -467,6 +474,10 @@ abstract public class THBaseBillingInteractor<
             if (billingRequest.productIdentifierFetchedListener != null)
             {
                 billingRequest.productIdentifierFetchedListener.onFetchProductIdentifiersFailed(requestCode, exception);
+            }
+            else if (billingRequest.onDefaultErrorListener != null)
+            {
+                billingRequest.onDefaultErrorListener.onError(requestCode, exception);
             }
         }
         if (billingRequest == null || billingRequest.popIfProductIdentifierFetchFailed)
@@ -559,7 +570,7 @@ abstract public class THBaseBillingInteractor<
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
-                billingRequest.onDefaultErrorListener.onError(exception);
+                billingRequest.onDefaultErrorListener.onError(requestCode, exception);
             }
         }
         if (billingRequest == null || billingRequest.popIfInventoryFetchFailed)
@@ -645,7 +656,7 @@ abstract public class THBaseBillingInteractor<
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
-                billingRequest.onDefaultErrorListener.onError(exception);
+                billingRequest.onDefaultErrorListener.onError(requestCode, exception);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFetchFailed)
@@ -769,7 +780,7 @@ abstract public class THBaseBillingInteractor<
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
-                billingRequest.onDefaultErrorListener.onError(billingException);
+                billingRequest.onDefaultErrorListener.onError(requestCode, billingException);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFailed)
@@ -865,7 +876,7 @@ abstract public class THBaseBillingInteractor<
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
-                billingRequest.onDefaultErrorListener.onError(error);
+                billingRequest.onDefaultErrorListener.onError(requestCode, error);
             }
         }
         if (billingRequest == null || billingRequest.popIfReportFailed)
@@ -885,16 +896,41 @@ abstract public class THBaseBillingInteractor<
     }
     //</editor-fold>
 
-    protected void popDialogLoadingInfo()
+    protected void popInitialProgressDialog(THUIBillingRequestType billingRequest)
+    {
+        if (billingRequest.restorePurchase)
+        {
+            popRestorePurchaseProgress();
+        }
+        else
+        {
+            popProgressDialogLoadingInfo();
+        }
+    }
+
+    protected void popProgressDialogLoadingInfo()
     {
         Context currentContext = currentActivityHolder.getCurrentContext();
         if (currentContext != null)
         {
-            progressDialog = ProgressDialogUtil.show(
+            progressDialog = progressDialogUtil.show(
                     currentContext,
                     R.string.store_billing_loading_info_window_title,
-                    R.string.store_billing_loading_info_window_message
-            );
+                    R.string.store_billing_loading_info_window_message);
+            progressDialog.setCanceledOnTouchOutside(true);
+            progressDialog.setCancelable(true);
+        }
+    }
+
+    public void popRestorePurchaseProgress()
+    {
+        Context currentContext = currentActivityHolder.getCurrentContext();
+        if (currentContext != null)
+        {
+            progressDialog = progressDialogUtil.show(
+                    currentContext,
+                    R.string.store_billing_restoring_purchase_window_title,
+                    R.string.store_billing_restoring_purchase_window_message);
             progressDialog.setCanceledOnTouchOutside(true);
             progressDialog.setCancelable(true);
         }

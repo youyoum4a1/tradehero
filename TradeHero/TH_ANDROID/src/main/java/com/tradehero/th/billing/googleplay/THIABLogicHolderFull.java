@@ -124,6 +124,12 @@ public class THIABLogicHolderFull
     }
     //</editor-fold>
 
+    @Override public void registerListeners(int requestCode, THIABBillingRequestFull billingRequest)
+    {
+        super.registerListeners(requestCode, billingRequest);
+        registerConsumptionFinishedListener(requestCode, billingRequest.consumptionFinishedListener);
+    }
+
     @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
         List<THIABProductDetail> details = thskuDetailCache.get(getAllSkus());

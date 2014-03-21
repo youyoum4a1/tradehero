@@ -1,12 +1,15 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.BillingInteractor;
 import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
-import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingLogicHolder;
+import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
@@ -47,6 +50,16 @@ public class THIABModule
         return productDetailCache;
     }
 
+    @Provides BillingExceptionFactory provideBillingExceptionFactory(IABExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides IABExceptionFactory provideIABExceptionFactory(THIABExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
     @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
     {
         return logicHolder;
@@ -62,9 +75,14 @@ public class THIABModule
         return thiabLogicHolderFull;
     }
 
-    @Provides THBillingInteractor provideTHBillingInteractor(THIABUserInteractor thiabUserInteractor)
+    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
     {
-        return thiabUserInteractor;
+        return billingInteractor;
+    }
+
+    @Provides THBillingInteractor provideTHBillingInteractor(THIABUserInteractor thiabInteractor)
+    {
+        return thiabInteractor;
     }
 
     @Provides THBillingRequest provideBillingRequest(THIABBillingRequestFull request)

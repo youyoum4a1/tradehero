@@ -109,11 +109,6 @@ abstract public class BasePurchaseReporterHolder<
         };
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType
-    {
-        return createPurchaseReporter().reportPurchaseSync(purchase);
-    }
-
     protected void handlePurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);

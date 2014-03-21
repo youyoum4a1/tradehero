@@ -19,7 +19,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -36,9 +35,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -67,6 +66,7 @@ import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -76,7 +76,11 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
-    @Inject THIABUserInteractor userInteractor;
+    @Inject THBillingInteractor billingInteractor;
+    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
+
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject SocialServiceWrapper socialServiceWrapper;
@@ -96,6 +100,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
@@ -123,6 +128,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         DaggerUtils.inject(this);
 
         createSocialConnectLogInCallback();
+
+        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
+        {
+            @Override public void onPurchaseRestored(
+                    int requestCode,
+                    List restoredPurchases,
+                    List failedRestorePurchases,
+                    List failExceptions)
+            {
+                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
+                {
+                    restoreRequestCode = null;
+                }
+
+            }
+        };
     }
 
     private void createSocialConnectLogInCallback()
@@ -170,7 +191,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
         }
         this.currentUserProfileRetrievedMilestone.launch();
 
@@ -273,6 +294,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
+        this.purchaseRestorerFinishedListener = null;
         super.onDestroy();
     }
 
@@ -286,7 +308,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         restoredPurchases,
-                        failedRestorePurchases,
                         failedRestorePurchases,
                         IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
             }
@@ -613,7 +634,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private boolean changeEmailNotification(boolean enable)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_email_alert_title,
                 R.string.settings_notifications_email_alert_message);
 
@@ -625,7 +646,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private boolean changePushNotification(boolean enable)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_push_alert_title,
                 R.string.settings_notifications_push_alert_message);
 
@@ -644,14 +665,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             switch (socialNetwork)
             {
                 case FB:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.facebook,
                             R.string.authentication_connecting_to_facebook);
 
                     facebookUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
                 case TW:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.twitter,
                             R.string.authentication_twitter_connecting);
                     twitterUtils.get().logIn(getActivity(), socialConnectLogInCallback);
@@ -659,7 +680,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 case TH:
                     break;
                 case LN:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.linkedin,
                             R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
@@ -668,7 +689,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
         else
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(),
+            progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             detachMiddleCallbackDisconnect();
@@ -776,8 +797,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleRestorePurchaseClicked()
     {
-        // TODO proper request
-        userInteractor.launchRestoreSequence();
+        if (restoreRequestCode != null)
+        {
+            billingInteractor.forgetRequestCode(restoreRequestCode);
+        }
+        restoreRequestCode = billingInteractor.run(createRestoreRequest());
+    }
+
+    protected THUIBillingRequest createRestoreRequest()
+    {
+        THUIBillingRequest request = billingRequestProvider.get();
+        request.restorePurchase = true;
+        request.startWithProgressDialog = true;
+        request.popRestorePurchaseOutcome = true;
+        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
+        return request;
     }
 
     private Callback<UserProfileDTO> createUserProfileCallback()
@@ -810,7 +844,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleClearCacheClicked()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_cache_clearing_alert_title,
                 R.string.settings_misc_cache_clearing_alert_message);
 
@@ -839,7 +873,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         FragmentActivity activity = getActivity();
         if (activity != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(),
+            progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.settings_misc_cache_cleared_alert_title,
                     R.string.empty);
             getView().postDelayed(new Runnable()
@@ -882,7 +916,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void effectSignOut()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
         progressDialog.setCancelable(true);

@@ -43,7 +43,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject protected Lazy<THBillingInteractor> billingInteractor;
-    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
+    @Inject protected Provider<THUIBillingRequest> emptyBillingRequestProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
@@ -76,18 +76,16 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
-            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
+            @Override public void onPurchaseRestored(
+                    int requestCode,
+                    List restoredPurchases,
+                    List failedRestorePurchases,
+                    List failExceptions)
             {
                 if (Integer.valueOf(requestCode).equals(restoreRequestCode))
                 {
                     restoreRequestCode = null;
                 }
-                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                        DashboardActivity.this,
-                        restoredPurchases,
-                        failedRestorePurchases,
-                        failExceptions,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception("Tracing"))); // TODO have a better exception
             }
         };
         launchBilling();
@@ -107,16 +105,17 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected THUIBillingRequest createRestoreRequest()
     {
-        THUIBillingRequest request = billingRequestProvider.get();
+        THUIBillingRequest request = emptyBillingRequestProvider.get();
         request.restorePurchase = true;
-        request.popIfRestorePurchaseFailed = false;
+        request.startWithProgressDialog = false;
+        request.popRestorePurchaseOutcome = true;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
         return request;
     }
 
     protected THUIBillingRequest createFetchInventoryRequest()
     {
-        THUIBillingRequest request = billingRequestProvider.get();
+        THUIBillingRequest request = emptyBillingRequestProvider.get();
         request.fetchInventory = true;
         return request;
     }

@@ -100,6 +100,12 @@ abstract public class THBaseBillingLogicHolder<
     }
     //</editor-fold>
 
+    @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
+    {
+        super.registerListeners(requestCode, billingRequest);
+        registerPurchaseReportedListener(requestCode, billingRequest.purchaseReportedListener);
+    }
+
     //<editor-fold desc="Run Logic">
     @Override protected boolean runInternal(int requestCode)
     {
@@ -241,11 +247,6 @@ abstract public class THBaseBillingLogicHolder<
     @Override public void launchReportSequence(int requestCode, ProductPurchaseType purchase)
     {
         purchaseReporterHolder.launchReportSequence(requestCode, purchase);
-    }
-
-    @Override public UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType
-    {
-        return purchaseReporterHolder.launchReportSequenceSync(purchase);
     }
     //</editor-fold>
 }
