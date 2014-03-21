@@ -810,6 +810,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         request.restorePurchase = true;
         request.startWithProgressDialog = true;
         request.popRestorePurchaseOutcome = true;
+        request.popRestorePurchaseOutcomeVerbose = true;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
         return request;
     }

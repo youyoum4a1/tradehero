@@ -258,6 +258,8 @@ abstract public class THBaseBillingInteractor<
         else if (uiBillingRequest.restorePurchase)
         {
             request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
             request.fetchPurchase = true;
             request.restorePurchase = true;
         }
@@ -679,6 +681,11 @@ abstract public class THBaseBillingInteractor<
             @Override public void onPurchaseRestored(int requestCode, List<ProductPurchaseType> restoredPurchases, List<ProductPurchaseType> failedRestorePurchases,
                     List<BillingExceptionType> failExceptions)
             {
+                THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+                if (logicHolder != null)
+                {
+                    logicHolder.unregisterPurchaseRestorerListener(requestCode);
+                }
                 handlePurchaseRestored(requestCode, restoredPurchases, failedRestorePurchases, failExceptions);
             }
         };

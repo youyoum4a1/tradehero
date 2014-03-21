@@ -102,9 +102,13 @@ public class UIBillingRequest<
      */
     public boolean restorePurchase;
     /**
-     * Indicates whether we want the Interactor to pop a progress dialog upon restore.
+     * Indicates whether we want the Interactor to pop an outcome dialog upon restore.
      */
     public boolean popRestorePurchaseOutcome;
+    /**
+     * Indicates whether we want the Interactor to pop an outcome dialog upon restore, even if nothing to report.
+     */
+    public boolean popRestorePurchaseOutcomeVerbose;
     public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
     /**

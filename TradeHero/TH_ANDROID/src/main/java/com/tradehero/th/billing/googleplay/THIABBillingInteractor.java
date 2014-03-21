@@ -158,7 +158,6 @@ public class THIABBillingInteractor
         };
     }
 
-
     protected void showProgressFollow()
     {
         Context currentContext = currentActivityHolder.getCurrentContext();
@@ -300,7 +299,7 @@ public class THIABBillingInteractor
                             restoredPurchases,
                             failedRestorePurchases,
                             IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, exception),
-                            true);
+                            billingRequest.popRestorePurchaseOutcomeVerbose);
                 }
             }
         }

@@ -4,7 +4,9 @@ import com.tradehero.common.billing.BillingInteractor;
 import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -48,6 +50,16 @@ public class THIABModule
     @Provides @Singleton ProductDetailCache provideProductDetailCache(THIABProductDetailCache productDetailCache)
     {
         return productDetailCache;
+    }
+
+    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(IABPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton IABPurchaseCache provideIABPurchaseCache(THIABPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
     }
 
     @Provides BillingExceptionFactory provideBillingExceptionFactory(IABExceptionFactory exceptionFactory)

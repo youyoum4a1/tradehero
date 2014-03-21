@@ -241,15 +241,24 @@ public class THIABLogicHolderFull
         runInternal(requestCode);
     }
 
+    protected void handlePurchaseNeedNotBeConsumed(int requestCode, THIABPurchase purchase)
+    {
+        prepareRequestForNextRunAfterPurchaseConsumed(requestCode, purchase);
+        runInternal(requestCode);
+    }
+
     protected void prepareRequestForNextRunAfterPurchaseConsumed(int requestCode, THIABPurchase purchase)
     {
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
             billingRequest.consumePurchase = false;
-            if (billingRequest.reportPurchase)
+            if (billingRequest.restorePurchase)
             {
-                billingRequest.restoredPurchases.add(purchase);
+                if (purchase != null && purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
+                {
+                    billingRequest.restoredPurchases.add(purchase);
+                }
                 prepareToRestoreOnePurchase(requestCode, billingRequest);
             }
         }
@@ -268,7 +277,7 @@ public class THIABLogicHolderFull
         if (billingRequest != null)
         {
             billingRequest.consumePurchase = false;
-            if (billingRequest.reportPurchase)
+            if (billingRequest.restorePurchase)
             {
                 Timber.e(exception, "Failed to consume a purchase to be restored");
                 billingRequest.restoreFailedPurchases.add(purchase);
@@ -366,13 +375,13 @@ public class THIABLogicHolderFull
     {
         if (purchase != null
                 && purchase.getType() != null
-                && !purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
+                && purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
             purchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
         }
         else
         {
-            handlePurchaseConsumed(requestCode, purchase);
+            handlePurchaseNeedNotBeConsumed(requestCode, purchase);
         }
     }
     //</editor-fold>

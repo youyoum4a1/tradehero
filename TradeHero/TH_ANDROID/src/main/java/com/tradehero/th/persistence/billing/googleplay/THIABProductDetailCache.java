@@ -4,7 +4,6 @@ import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

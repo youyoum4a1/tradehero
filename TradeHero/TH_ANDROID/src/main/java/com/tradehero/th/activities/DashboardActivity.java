@@ -109,6 +109,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         request.restorePurchase = true;
         request.startWithProgressDialog = false;
         request.popRestorePurchaseOutcome = true;
+        request.popRestorePurchaseOutcomeVerbose = false;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
         return request;
     }
