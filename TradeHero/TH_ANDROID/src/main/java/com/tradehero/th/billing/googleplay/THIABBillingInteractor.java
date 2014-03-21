@@ -37,7 +37,7 @@ import timber.log.Timber;
 /**
  * It expects its Activity to implement THIABInteractor.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
-public class THIABUserInteractor
+public class THIABBillingInteractor
     extends
         THBaseBillingInteractor<
                 IABSKUListKey,
@@ -55,7 +55,7 @@ public class THIABUserInteractor
                 IABException>
     implements THIABInteractor
 {
-    public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
+    public static final String BUNDLE_KEY_ACTION = THIABBillingInteractor.class.getName() + ".action";
 
     @Inject THIABProductDetailCache thiabProductDetailCache;
     @Inject THIABLogicHolder billingActor;
@@ -68,7 +68,7 @@ public class THIABUserInteractor
     @Inject protected UserService userService;
 
     //<editor-fold desc="Constructors">
-    @Inject public THIABUserInteractor()
+    @Inject public THIABBillingInteractor()
     {
         super();
     }

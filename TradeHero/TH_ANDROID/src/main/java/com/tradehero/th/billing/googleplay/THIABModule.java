@@ -80,7 +80,7 @@ public class THIABModule
         return billingInteractor;
     }
 
-    @Provides THBillingInteractor provideTHBillingInteractor(THIABUserInteractor thiabInteractor)
+    @Provides THBillingInteractor provideTHBillingInteractor(THIABBillingInteractor thiabInteractor)
     {
         return thiabInteractor;
     }

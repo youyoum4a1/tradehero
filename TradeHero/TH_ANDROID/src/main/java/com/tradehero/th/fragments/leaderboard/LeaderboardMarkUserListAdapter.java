@@ -10,8 +10,6 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:13 PM Copyright (c) TradeHero */

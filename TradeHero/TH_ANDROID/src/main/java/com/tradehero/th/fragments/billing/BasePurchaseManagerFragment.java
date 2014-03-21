@@ -8,9 +8,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -52,7 +51,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
             if (thIntentBundle != null)
             {
-                int action = thIntentBundle.getInt(THIABUserInteractor.BUNDLE_KEY_ACTION);
+                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
                 if (action > 0)
                 {
                     userInteractor.doAction(action); // TODO place the action after portfolio has been set

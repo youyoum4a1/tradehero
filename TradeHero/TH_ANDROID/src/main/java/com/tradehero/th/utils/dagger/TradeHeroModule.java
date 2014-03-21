@@ -13,6 +13,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
+import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
@@ -22,7 +23,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -273,7 +273,7 @@ import javax.inject.Singleton;
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         PurchaseRestorerRequiredMilestone.class,
-                        THIABUserInteractor.class,
+                        THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
 
                         WatchlistEditFragment.class,
