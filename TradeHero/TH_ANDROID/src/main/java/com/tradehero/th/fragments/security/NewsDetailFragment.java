@@ -41,7 +41,8 @@ import javax.inject.Inject;
 /**
  * Created by tradehero on 14-3-10.
  */
-public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/ {
+public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/
+{
 
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDetailFragment.class.getName() + ".title_bg";
 
@@ -70,54 +71,59 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.news_detail_view,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.news_detail_view, container, false);
         initViews(view);
         linkWith();
         return view;
     }
 
-
-
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
         //linkWith();
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
     }
 
     private void initViews(View view)
     {
-        this.titleView = (TextView)view.findViewById(R.id.news_detail_title);
-        this.dateView = (TextView)view.findViewById(R.id.news_detail_date);
-        this.titlePlaceholderView = (ImageView)view.findViewById(R.id.news_detail_title_placeholder);
-        likeContainer = (LinearLayout)view.findViewById(R.id.news_action_button_like_wrapper);
+        this.titleView = (TextView) view.findViewById(R.id.news_detail_title);
+        this.dateView = (TextView) view.findViewById(R.id.news_detail_date);
+        this.titlePlaceholderView = (ImageView) view.findViewById(R.id.news_detail_title_placeholder);
+        likeContainer = (LinearLayout) view.findViewById(R.id.news_action_button_like_wrapper);
         likeContainer.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -125,9 +131,9 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
                 voteUpOrDown(sampleItemDto.voteDirection == 1 ? false : true);
             }
         });
-        likeTextView = (TextView)view.findViewById(R.id.new_action_tv_like);
-        likeImageView = (ImageView)view.findViewById(R.id.new_action_iv_like);
-        moreTextView = (TextView)view.findViewById(R.id.news_action_tv_more);
+        likeTextView = (TextView) view.findViewById(R.id.new_action_tv_like);
+        likeImageView = (ImageView) view.findViewById(R.id.new_action_iv_like);
+        moreTextView = (TextView) view.findViewById(R.id.news_action_tv_more);
         Typeface font = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "FontAwesome.ttf");
         moreTextView.setTypeface(font);
         moreTextView.setText("\uf141");
@@ -139,10 +145,11 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             }
         });
 
-        this.contentView = (TextView)view.findViewById(R.id.news_detail_content);
-        this.loadingView = (TextView)view.findViewById(R.id.news_detail_loading);
-        securityGridView = (GridView)view.findViewById(R.id.news_detail_reference_gv);
-        simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        this.contentView = (TextView) view.findViewById(R.id.news_detail_content);
+        this.loadingView = (TextView) view.findViewById(R.id.news_detail_loading);
+        securityGridView = (GridView) view.findViewById(R.id.news_detail_reference_gv);
+        simpleSecurityItemViewAdapter =
+                new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         securityGridView.setAdapter(simpleSecurityItemViewAdapter);
         securityGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -155,12 +162,13 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
                 getNavigator().pushFragment(BuySellFragment.class, args);
             }
         });
-        gridViewContainer = (LinearLayout)view.findViewById(R.id.news_detail_reference_gv_container);
+        gridViewContainer = (LinearLayout) view.findViewById(R.id.news_detail_reference_gv_container);
     }
 
-    private void linkWith() {
-        Bundle args =  getArguments();
-        this.sampleItemDto =  NewsItemDTO.getSampleNewsItemDTO(args);
+    private void linkWith()
+    {
+        Bundle args = getArguments();
+        this.sampleItemDto = NewsItemDTO.getSampleNewsItemDTO(args);
         this.titleView.setText(sampleItemDto.title);
         PrettyTime prettyTime = new PrettyTime();
         this.dateView.setText(prettyTime.format(sampleItemDto.createdAtUtc));
@@ -168,13 +176,14 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         int bgRes = args.getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         titlePlaceholderView.setImageResource(bgRes);
 
-        newsServiceWrapper.getSecurityNewsDetail(sampleItemDto.id,createNewsDetailCallback());
+        newsServiceWrapper.getSecurityNewsDetail(sampleItemDto.id, createNewsDetailCallback());
         //TODO change to R.string
         likeTextView.setText(sampleItemDto.voteDirection == 1 ? "Unlike" : "Like");
         likeImageView.setImageResource(sampleItemDto.voteDirection == 1 ? R.drawable.icn_actions_downvote : R.drawable.icn_actions_upvote);
     }
 
-    private void fillDetailData(NewsItemDTO data) {
+    private void fillDetailData(NewsItemDTO data)
+    {
         this.detailItemDto = data;
         this.contentView.setText(detailItemDto.text);
         contentView.setVisibility(View.VISIBLE);
@@ -184,25 +193,32 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
                 detailItemDto.getSecurityIds());
     }
 
-    private Callback<NewsItemDTO> createNewsDetailCallback() {
+    private Callback<NewsItemDTO> createNewsDetailCallback()
+    {
 
-        return new Callback<NewsItemDTO>() {
+        return new Callback<NewsItemDTO>()
+        {
             @Override
-            public void success(NewsItemDTO newsItemDTO, Response response) {
+            public void success(NewsItemDTO newsItemDTO, Response response)
+            {
                 fillDetailData(newsItemDTO);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(RetrofitError error)
+            {
             }
         };
     }
 
-    private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback() {
+    private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
+    {
 
-        return new Callback<List<SecurityCompactDTO>>() {
+        return new Callback<List<SecurityCompactDTO>>()
+        {
             @Override
-            public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response) {
+            public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
+            {
                 ViewGroup.LayoutParams lp = gridViewContainer.getLayoutParams();
                 //TODO it changes with solution
                 lp.width = 510 * securityCompactDTOList.size();
@@ -213,29 +229,35 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(RetrofitError error)
+            {
             }
         };
     }
 
     @Override
-    public boolean isTabBarVisible() {
+    public boolean isTabBarVisible()
+    {
         return false;
     }
 
-    private void voteUpOrDown(boolean towardUp) {
+    private void voteUpOrDown(boolean towardUp)
+    {
         int id = sampleItemDto.id;
         VoteDirection direction = towardUp ? VoteDirection.UpVote : VoteDirection.Unvote;
         DiscussionVoteKey key = new DiscussionVoteKey(DiscussionType.NEWS, id, direction);
         discussionServiceWrapperLazy.get().vote(key, createVoteCallback(towardUp));
     }
 
-    private Callback<DiscussionDTO> createVoteCallback(final boolean towardUp){
+    private Callback<DiscussionDTO> createVoteCallback(final boolean towardUp)
+    {
 
-        return new Callback<DiscussionDTO>() {
+        return new Callback<DiscussionDTO>()
+        {
             //TODO change to R.string
             @Override
-            public void success(DiscussionDTO discussionDTO, Response response) {
+            public void success(DiscussionDTO discussionDTO, Response response)
+            {
                 THToast.show("vote " + ((towardUp ? "up" : "down")) + " success");
                 likeTextView.setText(towardUp ? "Unlike" : "Like");
                 likeImageView.setImageResource(towardUp ? R.drawable.icn_actions_downvote : R.drawable.icn_actions_upvote);
@@ -243,16 +265,18 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(RetrofitError error)
+            {
                 THToast.show("vote " + ((towardUp ? "up" : "down")) + " error");
             }
         };
     }
 
-    private void showShareDialog() {
-        View contentView = LayoutInflater.from(getSherlockActivity()).inflate(R.layout.sharing_translation_dialog_layout,null);
-        THDialog.DialogCallback callback = (THDialog.DialogCallback)contentView;
-        ((NewsDialogLayout)contentView).setNewsData(detailItemDto == null ? sampleItemDto : detailItemDto, false);
+    private void showShareDialog()
+    {
+        View contentView = LayoutInflater.from(getSherlockActivity()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
+        ((NewsDialogLayout) contentView).setNewsData(detailItemDto == null ? sampleItemDto : detailItemDto, false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
 }
