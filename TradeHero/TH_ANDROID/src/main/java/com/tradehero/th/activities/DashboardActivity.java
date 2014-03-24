@@ -13,13 +13,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
-<<<<<<< HEAD
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-=======
-import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
->>>>>>> develop
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -115,9 +111,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
     }
 
-<<<<<<< HEAD
-    private void launchBilling()
-=======
     private void detachUserProfileFetchTask()
     {
         if (userProfileFetchTask != null)
@@ -127,8 +120,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileFetchTask = null;
     }
 
-    private void launchIAB()
->>>>>>> develop
+    private void launchBilling()
     {
         if (restoreRequestCode != null)
         {

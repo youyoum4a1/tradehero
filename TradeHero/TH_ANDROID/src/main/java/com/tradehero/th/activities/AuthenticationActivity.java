@@ -59,11 +59,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
-<<<<<<< HEAD
     @Inject ProgressDialogUtil progressDialogUtil;
-=======
     @Inject CurrentActivityHolder currentActivityHolder;
->>>>>>> develop
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
