@@ -278,6 +278,13 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         watchListAdapter = null;
 
+        if (watchlistPositionListView != null)
+        {
+            watchlistPositionListView.onRefreshComplete();
+            watchlistPositionListView.setOnRefreshListener(
+                    (PullToRefreshBase.OnRefreshListener<ListView>) null);
+        }
+
         super.onDestroyView();
     }
 
@@ -296,8 +303,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         broadcastReceiver = null;
         gainLossModeListener = null;
         watchlistRetrievedMilestoneListener = null;
-        watchlistPositionListView.onRefreshComplete();
-        watchlistPositionListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
 
         super.onDestroy();
     }
