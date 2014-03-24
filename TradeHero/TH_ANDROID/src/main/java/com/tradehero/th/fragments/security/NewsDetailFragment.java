@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.security;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -43,13 +39,12 @@ import retrofit.client.Response;
  */
 public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/
 {
-
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDetailFragment.class.getName() + ".title_bg";
 
-    SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
+    private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 
-    NewsItemDTO sampleItemDto;
-    NewsItemDTO detailItemDto;
+    private NewsItemDTO summaryNewsItemDTO;
+    private NewsItemDTO detailNewsItemDto;
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
@@ -90,7 +85,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         View view = inflater.inflate(R.layout.news_detail_view, container, false);
         ButterKnife.inject(this, view);
         initViews(view);
-        linkWith();
         return view;
     }
 
@@ -99,22 +93,33 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         showShareDialog();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        linkWith();
+    }
+
     private void initViews(View view)
     {
         fontUtil.setTypeFace(mNewsActionTvMore, FontUtil.FontType.AWESOME);
 
-        simpleSecurityItemViewAdapter =
-                new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
+                getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         mNewsDetailReferenceGv.setAdapter(simpleSecurityItemViewAdapter);
         mNewsDetailReferenceGv.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
-                Bundle args = new Bundle();
-                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                        ((SecurityCompactDTO) simpleSecurityItemViewAdapter.getItem(
-                                position)).getSecurityId().getArgs());
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                Object item = simpleSecurityItemViewAdapter.getItem(position);
+
+                if (item instanceof SecurityCompactDTO)
+                {
+                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) item;
+                    Bundle args = new Bundle();
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+                    getNavigator().pushFragment(BuySellFragment.class, args);
+                }
             }
         });
     }
@@ -122,27 +127,27 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     private void linkWith()
     {
         Bundle args = getArguments();
-        sampleItemDto = NewsItemDTO.getSampleNewsItemDTO(args);
-        mNewsDetailTitle.setText(sampleItemDto.title);
+        summaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
+        mNewsDetailTitle.setText(summaryNewsItemDTO.title);
         PrettyTime prettyTime = new PrettyTime();
-        mNewsDetailDate.setText(prettyTime.format(sampleItemDto.createdAtUtc));
+        mNewsDetailDate.setText(prettyTime.format(summaryNewsItemDTO.createdAtUtc));
 
         int bgRes = args.getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         mNewsDetailTitlePlaceholder.setImageResource(bgRes);
 
-        newsServiceWrapper.getSecurityNewsDetail(sampleItemDto.id, createNewsDetailCallback());
-        votePair.display(sampleItemDto);
+        newsServiceWrapper.getSecurityNewsDetail(summaryNewsItemDTO.id, createNewsDetailCallback());
+        votePair.display(summaryNewsItemDTO);
     }
 
     private void fillDetailData(NewsItemDTO data)
     {
-        this.detailItemDto = data;
-        mNewsDetailContent.setText(detailItemDto.text);
+        this.detailNewsItemDto = data;
+        mNewsDetailContent.setText(detailNewsItemDto.text);
         mNewsDetailContent.setVisibility(View.VISIBLE);
         mNewsDetailLoading.setVisibility(View.GONE);
 
         securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(),
-                detailItemDto.getSecurityIds());
+                detailNewsItemDto.getSecurityIds());
     }
 
     private Callback<NewsItemDTO> createNewsDetailCallback()
@@ -197,7 +202,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     {
         View contentView = LayoutInflater.from(getSherlockActivity()).inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(detailItemDto == null ? sampleItemDto : detailItemDto, false);
+        ((NewsDialogLayout) contentView).setNewsData(detailNewsItemDto == null ? summaryNewsItemDTO : detailNewsItemDto, false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
 }
