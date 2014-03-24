@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import java.util.List;
@@ -52,10 +53,11 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
+    @Inject FontUtil fontUtil;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
-    
+
     @InjectView(R.id.news_detail_title_placeholder) ImageView mNewsDetailTitlePlaceholder;
     @InjectView(R.id.news_detail_title) TextView mNewsDetailTitle;
     @InjectView(R.id.news_detail_date) TextView mNewsDetailDate;
@@ -83,18 +85,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.news_detail_view, container, false);
@@ -111,9 +101,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private void initViews(View view)
     {
-        Typeface font = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "FontAwesome.ttf");
-        mNewsActionTvMore.setTypeface(font);
-        mNewsActionTvMore.setText("\uf141");
+        fontUtil.setTypeFace(mNewsActionTvMore, FontUtil.FontType.AWESOME);
 
         simpleSecurityItemViewAdapter =
                 new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);

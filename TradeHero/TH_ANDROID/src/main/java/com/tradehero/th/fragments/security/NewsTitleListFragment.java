@@ -41,8 +41,6 @@ import javax.inject.Inject;
  */
 public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
 {
-    private final static String TAG = NewsTitleListFragment.class.getSimpleName();
-
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
     @Inject @ForCertainSecurityNews
     protected CommonNewsHeadlineCache newsTitleCache;

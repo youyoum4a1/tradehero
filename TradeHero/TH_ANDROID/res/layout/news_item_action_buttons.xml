@@ -65,7 +65,7 @@
           android:id="@+id/news_action_tv_more"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="more"
+          android:text="@string/more_character"
           android:textColor="@drawable/timeline_action_button_text_color_xml"
           android:textStyle="bold"
           android:shadowColor="@color/timeline_action_button_text_color_shadow"
