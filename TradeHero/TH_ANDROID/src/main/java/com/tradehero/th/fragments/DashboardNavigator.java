@@ -270,6 +270,7 @@ public class DashboardNavigator extends Navigator
     private void updateTabBarOnTabChanged(String tabId)
     {
         Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
+        resetBackPressCount();
 
         if (mOnTabChangedListener != null)
         {

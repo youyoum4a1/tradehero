@@ -31,30 +31,23 @@ public class PositionLockedView extends LinearLayout
     public PositionLockedView(Context context)
     {
         super(context);
-        init();
     }
 
     public PositionLockedView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public PositionLockedView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
-
-    private void init()
-    {
-        DaggerUtils.inject(this);
-    }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         initViews();
     }
 

@@ -14,8 +14,6 @@ import javax.inject.Inject;
  */
 public class PositionListFragment extends AbstractPositionListFragment<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
 {
-    public static final String TAG = PositionListFragment.class.getSimpleName();
-
     @Inject Lazy<GetPositionsCache> getPositionsCache;
 
     @Override protected void createPositionItemAdapter()

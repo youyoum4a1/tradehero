@@ -2,11 +2,13 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
@@ -33,6 +35,8 @@ public class Navigator
 
     private int fragmentContentId;
     private boolean animationInitiated;
+
+    private int backPressedCount;
 
     //<editor-fold desc="Constructors">
     public Navigator(Context context, FragmentManager manager, int fragmentContentId)
@@ -85,6 +89,8 @@ public class Navigator
 
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim, String backStackName)
     {
+        resetBackPressCount();
+
         Timber.d("Push Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
         Timber.d("Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
@@ -132,6 +138,23 @@ public class Navigator
     {
         Timber.d("Pop Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
         Timber.d("Popping fragment, count: " + manager.getBackStackEntryCount());
+
+
+        if (isBackStackEmpty())
+        {
+            if (backPressedCount > 0)
+            {
+                resetBackPressCount();
+                exitApp();
+            }
+            else
+            {
+                ++backPressedCount;
+                THToast.show(R.string.press_back_again_to_exit);
+            }
+            return;
+        }
+
         if (backStackName == null)
         {
             manager.popBackStack();
@@ -140,6 +163,14 @@ public class Navigator
         {
             manager.popBackStack(backStackName, 0);
         }
+    }
+
+    private void exitApp()
+    {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     public void popFragment()
@@ -162,5 +193,10 @@ public class Navigator
             return fragment;
         }
         return null;
+    }
+
+    protected void resetBackPressCount()
+    {
+        backPressedCount = 0;
     }
 }

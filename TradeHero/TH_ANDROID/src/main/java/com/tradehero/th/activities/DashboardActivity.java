@@ -1,6 +1,9 @@
 package com.tradehero.th.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Window;
@@ -10,9 +13,17 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
+<<<<<<< HEAD
 import com.tradehero.common.billing.BillingPurchaseRestorer;
+=======
+import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
+>>>>>>> develop
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
@@ -26,6 +37,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -48,7 +60,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
@@ -56,6 +68,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -90,10 +106,29 @@ public class DashboardActivity extends SherlockFragmentActivity
         };
         launchBilling();
 
+        detachUserProfileFetchTask();
+        userProfileFetchListener = new UserProfileFetchListener();
+        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
+        userProfileFetchTask.execute();
+
+        suggestUpgradeIfNecessary();
         this.dtoCacheUtil.initialPrefetches();
     }
 
+<<<<<<< HEAD
     private void launchBilling()
+=======
+    private void detachUserProfileFetchTask()
+    {
+        if (userProfileFetchTask != null)
+        {
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
+    }
+
+    private void launchIAB()
+>>>>>>> develop
     {
         if (restoreRequestCode != null)
         {
@@ -124,6 +159,33 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override public void onBackPressed()
     {
         getNavigator().popFragment();
+    }
+
+    private void suggestUpgradeIfNecessary()
+    {
+        if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
+        {
+            alertDialogUtil.get().popWithOkCancelButton(
+                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now, R.string.later,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            try
+                            {
+                                THToast.show(R.string.update_guide);
+                                startActivity(
+                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
+                            }
+                            catch (ActivityNotFoundException ex)
+                            {
+                                startActivity(
+                                        new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                            }
+                        }
+                    });
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -208,6 +270,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         purchaseRestorerFinishedListener = null;
 
+        detachUserProfileFetchTask();
         super.onDestroy();
     }
 
@@ -249,5 +312,18 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            supportInvalidateOptionsMenu();
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+
+        }
     }
 }

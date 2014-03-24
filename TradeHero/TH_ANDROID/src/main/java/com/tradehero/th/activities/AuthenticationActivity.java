@@ -12,7 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.THUser;
@@ -59,13 +59,19 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+<<<<<<< HEAD
     @Inject ProgressDialogUtil progressDialogUtil;
+=======
+    @Inject CurrentActivityHolder currentActivityHolder;
+>>>>>>> develop
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
+
+        currentActivityHolder.setCurrentActivity(this);
 
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
@@ -300,11 +306,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         return new LogInCallback()
         {
-            @Override public void done(UserBaseDTO user, THException ex)
+            @Override public void done(UserLoginDTO user, THException ex)
             {
                 if (user != null)
                 {
-                    ActivityHelper.launchDashboard(AuthenticationActivity.this);
+                    launchDashboard(user);
                     finish();
                 }
                 else
@@ -319,6 +325,20 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 // do nothing for now
             }
         };
+    }
+
+    private void launchDashboard(UserLoginDTO userLoginDTO)
+    {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);
+        intent.putExtra(UserLoginDTO.SUGGEST_LI_REAUTH, userLoginDTO.suggestLiReauth);
+        intent.putExtra(UserLoginDTO.SUGGEST_TW_REAUTH, userLoginDTO.suggestTwReauth);
+        intent.putExtra(UserLoginDTO.SUGGEST_FB_REAUTH, userLoginDTO.suggestFbReauth);
+
+        startActivity(intent);
+        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 
     private void setTwitterData(JSONObject json)
@@ -336,13 +356,13 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             this.providerName = providerName;
         }
 
-        @Override public void done(UserBaseDTO user, THException ex)
+        @Override public void done(UserLoginDTO user, THException ex)
         {
             Throwable cause;
             Response response;
             if (user != null)
             {
-                ActivityHelper.launchDashboard(AuthenticationActivity.this);
+                launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
                     (response = ((RetrofitError)cause).getResponse()) != null && response.getStatus() == 403) // Forbidden

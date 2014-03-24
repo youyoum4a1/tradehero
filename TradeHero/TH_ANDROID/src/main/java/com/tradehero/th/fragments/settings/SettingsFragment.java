@@ -32,6 +32,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
@@ -150,7 +151,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         socialConnectLogInCallback = new LogInCallback()
         {
-            @Override public void done(UserBaseDTO user, THException ex)
+            @Override public void done(UserLoginDTO user, THException ex)
             {
                 // when user cancel the process
                 if (!isDetached())

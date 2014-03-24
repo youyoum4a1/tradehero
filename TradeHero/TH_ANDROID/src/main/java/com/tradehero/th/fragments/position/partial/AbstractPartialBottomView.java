@@ -31,30 +31,23 @@ abstract public class AbstractPartialBottomView<
     public AbstractPartialBottomView(Context context)
     {
         super(context);
-        init();
     }
 
     public AbstractPartialBottomView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public AbstractPartialBottomView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
-
-    private void init()
-    {
-        DaggerUtils.inject(this);
-    }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         initViews();
     }
 

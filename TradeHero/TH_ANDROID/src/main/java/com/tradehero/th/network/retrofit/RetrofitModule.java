@@ -1,15 +1,17 @@
 package com.tradehero.th.network.retrofit;
 
+import android.content.Context;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.HttpResponseCache;
+import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
-import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -32,13 +34,19 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Module;
 import dagger.Provides;
+import java.io.File;
+import java.io.IOException;
 import javax.inject.Singleton;
 import retrofit.RestAdapter;
 import retrofit.Server;
+import retrofit.client.Client;
+import retrofit.client.OkClient;
 import retrofit.converter.Converter;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:39 AM Copyright (c) TradeHero
@@ -181,7 +189,7 @@ public class RetrofitModule
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(
-            FriendlyUrlConnectionClient client,
+            Client client,
             Converter converter,
             RetrofitSynchronousErrorHandler errorHandler)
     {
@@ -200,5 +208,25 @@ public class RetrofitModule
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+    }
+
+    @Provides Client provideOkClient(Context context)
+    {
+        File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
+
+        HttpResponseCache httpResponseCache = null;
+        try
+        {
+            httpResponseCache = new HttpResponseCache(httpCacheDirectory, 10 * 1024);
+        }
+        catch (IOException e)
+        {
+            Timber.e("Could not create http cache", e);
+        }
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setResponseCache(httpResponseCache);
+        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
+        return new OkClient(okHttpClient);
     }
 }

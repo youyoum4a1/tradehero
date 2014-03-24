@@ -952,35 +952,37 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayQuickPriceButtonSet()
     {
-        if (mQuickPriceButtonSet != null)
+        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
+        if (buttonSetCopy != null)
         {
             if (quoteDTO == null)
             {
-                mQuickPriceButtonSet.setEnabled(false);
+                buttonSetCopy.setEnabled(false);
             }
             else if (isTransactionTypeBuy && quoteDTO.ask == null)
             {
-                mQuickPriceButtonSet.setEnabled(false);
+                buttonSetCopy.setEnabled(false);
             }
             else if (isTransactionTypeBuy)
             {
-                mQuickPriceButtonSet.setEnabled(true);
+                buttonSetCopy.setEnabled(true);
                 if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
                 {
-                    mQuickPriceButtonSet.setMaxPrice(userProfileDTO.portfolio.cashBalance);
+                    buttonSetCopy.setMaxPrice(userProfileDTO.portfolio.cashBalance);
                 }
             }
             else if (!isTransactionTypeBuy && (quoteDTO.bid == null || quoteDTO.toUSDRate == null))
             {
-                mQuickPriceButtonSet.setEnabled(false);
+                buttonSetCopy.setEnabled(false);
             }
             else if (!isTransactionTypeBuy)
             {
-                mQuickPriceButtonSet.setEnabled(true);
+                buttonSetCopy.setEnabled(true);
                 Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares != null)
                 {
-                    mQuickPriceButtonSet.setMaxPrice(maxSellableShares * quoteDTO.ask * quoteDTO.toUSDRate);
+                    // TODO see other currencies
+                    buttonSetCopy.setMaxPrice(maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate);
                 }
             }
         }
