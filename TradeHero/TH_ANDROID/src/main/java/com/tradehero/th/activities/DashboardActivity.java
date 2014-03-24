@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -25,7 +24,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -66,9 +64,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
-    private View.OnClickListener menuItemClickListener;
 
-        // this need tobe early than super.onCreate or it will crash
+    // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
         // request the progress-bar feature for the activity
 
@@ -89,7 +86,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         // wrap main view inside a container, this container can be generic, which adds in view components like sidebar, slide-in widget ...
         ViewGroup dashboardWrapper = appContainer.get(this);
-        ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
+        // ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
 
         launchIAB();
 
@@ -227,7 +224,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         purchaseRestorer = null;
         purchaseRestorerFinishedListener = null;
-        menuItemClickListener = null;
 
         super.onDestroy();
     }
