@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -159,9 +160,12 @@ public class InviteFriendFragment extends DashboardFragment
                         currentUserId.toUserBaseKey(),
                         UserFormFactory.create(json),
                         createSocialConnectCallback());
-                if (!isDetached())
+                FragmentActivity activity = getActivity();
+                if (!isDetached() && activity != null && !activity.isFinishing())
                 {
-                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                    progressDialog.setMessage(getString(
+                            R.string.authentication_connecting_tradehero,
+                            currentSocialNetworkConnect.getName()));
                 }
                 return false;
             }
