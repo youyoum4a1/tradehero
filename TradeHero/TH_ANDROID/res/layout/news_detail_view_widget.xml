@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.news.NewsDetailView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/news_detail_title_placeholder"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/news_detail_title_layout_wrapper"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+      <TextView
+          android:id="@+id/news_detail_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="Google to be bought by private equity"
+          android:textSize="17sp"
+          />
+
+      <TextView
+          android:id="@+id/news_detail_date"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="A big one"
+          android:textSize="11sp"
+          android:textColor="#777"
+          android:layout_marginTop="5dp"
+          android:layout_marginBottom="8dp"
+          />
+
+    </LinearLayout>
+  </FrameLayout>
+
+  <include layout="@layout/news_item_action_buttons"/>
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          android:id="@+id/news_detail_desc"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginTop="10dp"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="14sp"
+          tools:text="A big one"
+          android:textStyle="italic"
+          android:textColor="#777"
+          />
+
+      <TextView
+          android:id="@+id/news_detail_content"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginTop="15dp"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="15sp"
+          tools:text="A big one"
+          android:textColor="#444"
+          android:visibility="gone"
+          />
+      <TextView
+          android:id="@+id/news_detail_loading"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginTop="50dp"
+          android:layout_marginBottom="30dp"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="15sp"
+          android:text="Loading..."
+          android:textColor="#888"
+          android:gravity="center"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="View on the Web"
+          android:gravity="center"
+          android:background="#ddd"
+          android:paddingTop="5dp"
+          android:layout_marginTop="15dp"
+          android:paddingBottom="5dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"/>
+
+      <HorizontalScrollView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+          <LinearLayout
+              android:id="@+id/news_detail_reference_gv_container"
+              android:layout_width="600dp"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+            <GridView
+                android:id="@+id/news_detail_reference_gv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="10dp"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbars="horizontal"
+                />
+          </LinearLayout>
+        </FrameLayout>
+      </HorizontalScrollView>
+
+      <TextView android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Add a comment..."
+          android:gravity="left|center_vertical"
+          android:background="#ddd"
+          android:paddingTop="10dp"
+          android:layout_marginTop="15dp"
+          android:paddingBottom="10dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:paddingLeft="5dp"
+          />
+
+      <ListView
+          android:id="@+id/news_detail_comment_list"
+          android:layout_width="match_parent"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_height="match_parent"/>
+
+      <TextView android:id="@+id/news_detail_comment_empty"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Be the first to comment."
+          android:gravity="center"
+          android:textColor="#777"/>
+
+    </LinearLayout>
+  </ScrollView>
+
+</com.tradehero.th.fragments.news.NewsDetailView>
