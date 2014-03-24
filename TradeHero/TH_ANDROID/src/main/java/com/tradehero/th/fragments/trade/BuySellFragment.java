@@ -32,6 +32,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -50,6 +52,9 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -118,7 +123,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCompactListCache portfolioCompactListCache;
-    @Inject PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -130,7 +134,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected SecurityAlertAssistant securityAlertAssistant;
     protected PageIndicator mBottomPagerIndicator;
-    protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
     protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchTask;
 
@@ -150,8 +153,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
-        portfolioCompactListMilestoneListener = new BuySellPortfolioCompactListMilestoneListener();
         this.userWatchlistPositionCacheListener = new BuySellUserWatchlistCacheListener();
+    }
+
+    @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    {
+        return new BuySellPortfolioCompactListMilestoneListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -352,11 +359,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
-
-        detachPortfolioCompactMilestone();
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserId);
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListMilestoneListener);
-        portfolioCompactListRetrievedMilestone.launch();
     }
 
     @Override public void onPause()
@@ -368,7 +370,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        detachPortfolioCompactMilestone();
         detachWatchlistFetchTask();
 
         securityAlertAssistant.setOnPopulatedListener(null);
@@ -433,19 +434,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        portfolioCompactListMilestoneListener = null;
         this.userWatchlistPositionCacheListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
-    }
-
-    protected void detachPortfolioCompactMilestone()
-    {
-        if (portfolioCompactListRetrievedMilestone != null)
-        {
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
-        }
-        portfolioCompactListRetrievedMilestone = null;
     }
 
     protected void detachWatchlistFetchTask()
@@ -539,7 +530,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (mTradeQuantityView != null)
         {
+            Timber.d("linkWith PurchaseReported ");
             mTradeQuantityView.linkWith(userProfileDTO, andDisplay);
+        }
+        else
+        {
+            Timber.d("linkWith PurchaseReported mTrade null");
         }
         if (andDisplay)
         {
@@ -1317,8 +1313,27 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void handleBtnAddCashPressed()
     {
-        // TODO
-        //userInteractor.conditionalPopBuyVirtualDollars();
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
+        billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                Timber.d("BuySellFragment onPurchaseReported " + updatedUserPortfolio);
+                linkWith(updatedUserPortfolio, true);
+                prepareApplicableOwnedPortolioId();
+                linkWithApplicable(getApplicablePortfolioId(), true);
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+            }
+        };
+        return billingRequest;
     }
 
     private void handleBtnAddTriggerClicked()
@@ -1609,10 +1624,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListMilestoneListener implements Milestone.OnCompleteListener
+    protected class BuySellPortfolioCompactListMilestoneListener extends BasePurchaseManagementPortfolioCompactListRetrievedListener
     {
         @Override public void onComplete(Milestone milestone)
         {
+            super.onComplete(milestone);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();

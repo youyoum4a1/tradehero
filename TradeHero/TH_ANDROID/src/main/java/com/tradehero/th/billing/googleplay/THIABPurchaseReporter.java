@@ -5,6 +5,7 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
@@ -17,6 +18,7 @@ import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -38,6 +40,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
+    @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
@@ -124,15 +127,30 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
-                userService.get().addCredit(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        new THIABPurchaseReporterPurchaseCallback());
+                addCredit(portfolioId);
                 break;
 
             default:
                 notifyListenerReportFailed(new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method"));
                 break;
+        }
+    }
+
+    private void addCredit(OwnedPortfolioId portfolioId)
+    {
+        if (purchase.getUserToFollow() != null)
+        {
+            userServiceWrapper.follow(
+                    purchase.getUserToFollow(),
+                    purchase.getGooglePlayPurchaseDTO(),
+                    new THIABPurchaseReporterPurchaseCallback());
+        }
+        else
+        {
+            userService.get().addCredit(
+                    portfolioId.userId,
+                    purchase.getGooglePlayPurchaseDTO(),
+                    new THIABPurchaseReporterPurchaseCallback());
         }
     }
 
@@ -153,31 +171,6 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 portfolioId.getUserBaseKey(),
                 purchase.getGooglePlayPurchaseDTO(),
                 new THIABPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
-    }
-
-    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws IABException
-    {
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
-
-        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
-        {
-            case DOMAIN_RESET_PORTFOLIO:
-                return portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO());
-
-            case DOMAIN_VIRTUAL_DOLLAR:
-                return portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO());
-
-            case DOMAIN_STOCK_ALERTS:
-                return reportAlertPurchaseSync(purchase);
-
-            case DOMAIN_FOLLOW_CREDITS:
-                return userService.get().addCredit(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            default:
-                throw new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method");
-        }
     }
 
     protected UserProfileDTO reportAlertPurchaseSync(THIABPurchase purchase) throws IABException

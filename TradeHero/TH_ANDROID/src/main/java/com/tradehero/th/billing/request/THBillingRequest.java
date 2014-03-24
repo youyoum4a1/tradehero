@@ -6,10 +6,11 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseOrder;
 
 /**
  * Created by xavier on 3/13/14.
@@ -19,7 +20,7 @@ public class THBillingRequest<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
+        THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
@@ -28,7 +29,7 @@ public class THBillingRequest<
         ProductIdentifierType,
         ProductIdentifierListType,
         ProductDetailType,
-        PurchaseOrderType,
+        THPurchaseOrderType,
         OrderIdType,
         ProductPurchaseType,
         BillingExceptionType>

@@ -43,6 +43,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -102,6 +103,11 @@ abstract public class AbstractPositionListFragment<
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new AbstractPositionListUserFollowedListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -616,8 +622,7 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                // TODO
-                //userInteractor.followHero(userBaseKey);
+                followUser(userBaseKey);
             }
         });
     }
@@ -684,17 +689,6 @@ abstract public class AbstractPositionListFragment<
     }
     //</editor-fold>
 
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-    {
-        displayHeaderView();
-    }
-
-    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        displayHeaderView();
-        fetchSimplePage(true);
-    }
-
     abstract protected class AbstractGetPositionsListener<
             CacheQueryIdType,
             PositionDTOType extends PositionDTO,
@@ -712,5 +706,15 @@ abstract public class AbstractPositionListFragment<
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
+    }
+
+    protected class AbstractPositionListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            displayHeaderView();
+            fetchSimplePage(true);
+        }
     }
 }

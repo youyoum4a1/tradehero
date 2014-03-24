@@ -10,6 +10,7 @@ import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import java.util.List;
@@ -237,9 +238,11 @@ import retrofit.RetrofitError;
         return userService.follow(userBaseKey.key, purchaseDTO);
     }
 
-    public void follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
-        userService.follow(userBaseKey.key, purchaseDTO, callback);
+        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
+        userService.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
+        return middleCallbackFollowUser;
     }
     //</editor-fold>
 
@@ -249,9 +252,12 @@ import retrofit.RetrofitError;
         return userService.unfollow(userBaseKey.key);
     }
 
-    public void unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallbackFollowUser unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        userService.unfollow(userBaseKey.key, callback);
+        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
+        userService.unfollow(userBaseKey.key, middleCallbackFollowUser);
+        return middleCallbackFollowUser;
+
     }
     //</editor-fold>
 }

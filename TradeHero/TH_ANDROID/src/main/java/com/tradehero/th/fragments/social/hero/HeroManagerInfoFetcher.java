@@ -87,9 +87,14 @@ public class HeroManagerInfoFetcher
 
     public void fetchHeroes(UserBaseKey userBaseKey)
     {
+        fetchHeroes(userBaseKey, false);
+    }
+
+    public void fetchHeroes(UserBaseKey userBaseKey, boolean force)
+    {
         HeroIdList heroIds = heroListCache.get().get(userBaseKey);
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
-        if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
+        if (!force && heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
             if (this.heroListListener != null)
             {
@@ -102,7 +107,7 @@ public class HeroManagerInfoFetcher
             {
                 heroListFetchTask.setListener(null);
             }
-            heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
+            heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, force, heroListListener);
             heroListFetchTask.execute();
         }
     }

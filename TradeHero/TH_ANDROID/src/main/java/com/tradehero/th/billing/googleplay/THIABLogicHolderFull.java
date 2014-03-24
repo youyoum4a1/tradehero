@@ -27,6 +27,7 @@ import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
@@ -54,9 +55,10 @@ public class THIABLogicHolderFull
 
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 
-    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
+    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper,
+            HeroListCache heroListCache, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
     {
-        super(userProfileCache, userServiceWrapper);
+        super(userProfileCache, userServiceWrapper, heroListCache);
         this.iabskuListCache = iabskuListCache;
         this.thskuDetailCache = thskuDetailCache;
         purchaseConsumerHolder = createPurchaseConsumeHolder();

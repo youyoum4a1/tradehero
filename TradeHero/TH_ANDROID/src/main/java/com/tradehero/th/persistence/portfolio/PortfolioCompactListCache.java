@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 
     @Inject protected Lazy<PortfolioService> portfolioService;
     @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactListCache()
@@ -50,6 +51,19 @@ import javax.inject.Singleton;
             put(key, ownedPortfolioIds);
         }
         return ownedPortfolioIds;
+    }
+
+    @Override public void invalidate(UserBaseKey key)
+    {
+        OwnedPortfolioIdList value = get(key);
+        if (value != null)
+        {
+            for (OwnedPortfolioId ownedPortfolioId : value)
+            {
+                portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioId());
+                portfolioCache.get().invalidate(ownedPortfolioId);
+            }
+        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,15 +22,19 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.social.HeroCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
@@ -58,6 +61,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<HeroCache> heroCache;
     private HeroManagerInfoFetcher infoFetcher;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new HeroManagerUserFollowedListener();
+    }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -176,13 +184,12 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
-                // TODO refresh view
+                display(updatedUserPortfolio);
             }
 
             @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
             {
-                // TODO better
-                THToast.show(error.getMessage());
+                // Anything to report?
             }
         };
         return request;
@@ -206,8 +213,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    // TODO
-                    //userInteractor.followHero(clickedHeroDTO.getBaseKey());
+                    followUser(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -217,8 +223,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    // TODO
-                    //userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
+                    unfollowUser(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -295,18 +300,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-    {
-        display(updatedUserProfile);
-    }
-
-    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
+    public void handleFollowSuccess(UserProfileDTO userProfileDTO)
     {
         linkWith(userProfileDTO, true);
-        if (infoFetcher != null)
-        {
-            infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
-        }
+        infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId, true);
     }
 
     private class HeroManagerUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
@@ -347,6 +344,15 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         @Override public void onClick(View view)
         {
             handleGoMostSkilled();
+        }
+    }
+
+    protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            handleFollowSuccess(currentUserProfileDTO);
         }
     }
 }

@@ -111,6 +111,7 @@ import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
@@ -155,6 +156,7 @@ import javax.inject.Singleton;
                         SettingsProfileFragment.class,
                         MiddleCallbackUpdateUserProfile.class,
                         MiddleCallbackAddCash.class,
+                        FollowUserAssistant.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,
                         AboutFragment.class,

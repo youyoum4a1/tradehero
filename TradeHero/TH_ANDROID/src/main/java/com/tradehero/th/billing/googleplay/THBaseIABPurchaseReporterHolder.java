@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.BasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -24,6 +25,7 @@ public class THBaseIABPurchaseReporterHolder
 {
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
 
     public THBaseIABPurchaseReporterHolder()
@@ -40,6 +42,11 @@ public class THBaseIABPurchaseReporterHolder
     @Override protected PortfolioCompactListCache getPortfolioCompactListCache()
     {
         return portfolioCompactListCache.get();
+    }
+
+    @Override protected PortfolioCompactCache getPortfolioCompactCache()
+    {
+        return portfolioCompactCache.get();
     }
 
     @Override protected PortfolioCache getPortfolioCache()

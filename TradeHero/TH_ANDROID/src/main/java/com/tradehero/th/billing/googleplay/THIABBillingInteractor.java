@@ -191,6 +191,19 @@ public class THIABBillingInteractor
     }
 
     //<editor-fold desc="Purchase Actions">
+    @Override protected void launchPurchaseSequence(int requestCode, IABSKU productIdentifier)
+    {
+        THIABLogicHolder logicHolder = getBillingLogicHolder();
+        if (logicHolder != null)
+        {
+            logicHolder.run(requestCode, createPurchaseBillingRequest(requestCode, productIdentifier));
+        }
+        else
+        {
+            Timber.e(new NullPointerException("logicHolder just became null"), "");
+        }
+    }
+
     @Override protected THIABBillingRequestFull createPurchaseBillingRequest(int requestCode, IABSKU productIdentifier)
     {
         THIABBillingRequestFull request = null;
@@ -219,17 +232,31 @@ public class THIABBillingInteractor
         return request;
     }
 
-    @Override protected void launchPurchaseSequence(int requestCode, IABSKU productIdentifier)
+    @Override protected THIABBillingRequestFull createEmptyBillingRequest()
     {
-        THIABLogicHolder logicHolder = getBillingLogicHolder();
-        if (logicHolder != null)
+        return new THIABBillingRequestFull();
+    }
+
+    @Override protected void populatePurchaseBillingRequest(int requestCode, THIABBillingRequestFull request, IABSKU productIdentifier)
+    {
+        super.populatePurchaseBillingRequest(requestCode, request, productIdentifier);
+        THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
+        if (uiBillingRequest != null)
         {
-            logicHolder.run(requestCode, createPurchaseBillingRequest(requestCode, productIdentifier));
+            request.testBillingAvailable = true;
+            request.consumePurchase = true;
+            request.consumptionFinishedListener = createConsumptionFinishedListener();
         }
-        else
+    }
+
+    @Override protected THIABPurchaseOrder createEmptyPurchaseOrder(int requestCode, IABSKU productIdentifier) throws MissingApplicablePortfolioIdException
+    {
+        THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
+        if (uiBillingRequest != null)
         {
-            Timber.e(new NullPointerException("logicHolder just became null"), "");
+            return new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
         }
+        return null;
     }
 
     @Override protected AlertDialog popPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)

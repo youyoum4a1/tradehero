@@ -14,6 +14,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
 import retrofit.client.Response;
@@ -31,6 +32,11 @@ public class PushableTimelineFragment extends TimelineFragment
     private MenuItem menuFollow;
     private MenuItem followingStamp;
     private TextView followButton;
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new PushableTimelineUserFollowedListener();
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -141,8 +147,7 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                // TODO use request
-                //userInteractor.followHero(shownUserBaseKey);
+                followUser(shownUserBaseKey);
             }
         });
     }
@@ -154,18 +159,12 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    protected void handleShowProductDetailsMilestoneComplete()
+    protected class PushableTimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
     {
-        displayFollowButton();
-    }
-
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-    {
-        displayFollowButton();
-    }
-
-    public void followSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        displayFollowButton();
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            displayFollowButton();
+        }
     }
 }

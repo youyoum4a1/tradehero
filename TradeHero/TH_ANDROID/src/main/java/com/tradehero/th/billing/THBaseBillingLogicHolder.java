@@ -7,15 +7,14 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
+import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
 
 /**
  * Created by xavier on 3/14/14.
@@ -26,17 +25,17 @@ abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailType>,
-        PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
+        THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
-        ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        THProductPurchaseType extends THProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingRequestType extends THBillingRequest<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 ProductDetailType,
-                PurchaseOrderType,
+                THPurchaseOrderType,
                 OrderIdType,
-                ProductPurchaseType,
+                THProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
@@ -46,9 +45,9 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierListType,
                 ProductDetailType,
                 ProductTunerType,
-                PurchaseOrderType,
+                THPurchaseOrderType,
                 OrderIdType,
-                ProductPurchaseType,
+                THProductPurchaseType,
                 BillingRequestType,
                 BillingExceptionType>
     implements
@@ -57,22 +56,26 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 ProductDetailType,
-                PurchaseOrderType,
+                THPurchaseOrderType,
                 OrderIdType,
-                ProductPurchaseType,
+                THProductPurchaseType,
                 BillingRequestType,
                 BillingExceptionType>
 {
-    protected PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReporterHolder;
+    protected PurchaseReporterHolder<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReporterHolder;
 
     protected UserProfileCache userProfileCache;
     protected UserServiceWrapper userServiceWrapper;
+    protected HeroListCache heroListCache;
 
-    public THBaseBillingLogicHolder(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper)
+    public THBaseBillingLogicHolder(UserProfileCache userProfileCache,
+            UserServiceWrapper userServiceWrapper,
+            HeroListCache heroListCache)
     {
         super();
         this.userProfileCache = userProfileCache;
         this.userServiceWrapper = userServiceWrapper;
+        this.heroListCache = heroListCache;
         purchaseReporterHolder = createPurchaseReporterHolder();
     }
 
@@ -136,18 +139,26 @@ abstract public class THBaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Sequence Logic">
-    protected void handlePurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    @Override protected void prepareRequestForNextRunAfterPurchaseFinished(int requestCode, THPurchaseOrderType purchaseOrder, THProductPurchaseType purchase)
+    {
+        super.prepareRequestForNextRunAfterPurchaseFinished(requestCode, purchaseOrder, purchase);
+        // In case it was meant to follow a user
+        purchase.setUserToFollow(purchaseOrder.getUserToFollow());
+    }
+
+    protected void handlePurchaseReportedSuccess(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         if (updatedUserPortfolio != null)
         {
             userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+            heroListCache.invalidate(updatedUserPortfolio.getBaseKey());
         }
         notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         runInternal(requestCode);
     }
 
-    protected void prepareRequestForNextRunAfterPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    protected void prepareRequestForNextRunAfterPurchaseReportedSuccess(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -156,14 +167,14 @@ abstract public class THBaseBillingLogicHolder<
         }
     }
 
-    protected void handlePurchaseReportedFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    protected void handlePurchaseReportedFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         notifyPurchaseReportedFailed(requestCode, reportedPurchase, error);
         prepareRequestForNextRunAfterPurchaseReportedFailed(requestCode, reportedPurchase, error);
         runInternal(requestCode);
     }
 
-    protected void prepareRequestForNextRunAfterPurchaseReportedFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    protected void prepareRequestForNextRunAfterPurchaseReportedFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -174,11 +185,11 @@ abstract public class THBaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Holder Creation">
-    protected abstract PurchaseReporterHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseReporterHolder();
+    protected abstract PurchaseReporterHolder<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReporterHolder();
     //</editor-fold>
 
     //<editor-fold desc="Report Purchase">
-    @Override public PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseReportedListener(int requestCode)
+    @Override public PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> getPurchaseReportedListener(int requestCode)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest == null)
@@ -188,7 +199,7 @@ abstract public class THBaseBillingLogicHolder<
         return billingRequest.purchaseReportedListener;
     }
 
-    @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener)
+    @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReportedListener)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
@@ -198,16 +209,16 @@ abstract public class THBaseBillingLogicHolder<
         }
     }
 
-    protected PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
+    protected PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {
-        return new PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
+        return new PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            @Override public void onPurchaseReported(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
                 handlePurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
             }
 
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+            @Override public void onPurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
             {
                 handlePurchaseReportedFailed(requestCode, reportedPurchase, error);
             }
@@ -224,9 +235,9 @@ abstract public class THBaseBillingLogicHolder<
         }
     }
 
-    protected void notifyPurchaseReportedSuccess(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    protected void notifyPurchaseReportedSuccess(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
-        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener = getPurchaseReportedListener(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReportedListener = getPurchaseReportedListener(requestCode);
         if (purchaseReportedListener != null)
         {
             purchaseReportedListener.onPurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
@@ -234,9 +245,9 @@ abstract public class THBaseBillingLogicHolder<
         unregisterPurchaseReportedListener(requestCode);
     }
 
-    protected void notifyPurchaseReportedFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    protected void notifyPurchaseReportedFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
-        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener = getPurchaseReportedListener(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReportedListener = getPurchaseReportedListener(requestCode);
         if (purchaseReportedListener != null)
         {
             purchaseReportedListener.onPurchaseReportFailed(requestCode, reportedPurchase, error);
@@ -244,7 +255,7 @@ abstract public class THBaseBillingLogicHolder<
         unregisterPurchaseReportedListener(requestCode);
     }
 
-    @Override public void launchReportSequence(int requestCode, ProductPurchaseType purchase)
+    @Override public void launchReportSequence(int requestCode, THProductPurchaseType purchase)
     {
         purchaseReporterHolder.launchReportSequence(requestCode, purchase);
     }
