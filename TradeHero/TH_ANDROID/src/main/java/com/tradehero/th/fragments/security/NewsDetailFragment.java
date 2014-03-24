@@ -17,13 +17,8 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -33,6 +28,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,7 +38,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by Alex on 14-3-10.
+ * Created by Alex & Liang on 14-3-10.
  */
 public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/
 {
@@ -64,9 +60,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_detail_title) TextView mNewsDetailTitle;
     @InjectView(R.id.news_detail_date) TextView mNewsDetailDate;
     @InjectView(R.id.news_detail_title_layout_wrapper) LinearLayout mNewsDetailTitleLayoutWrapper;
-    @InjectView(R.id.new_action_iv_like) ImageView mNewActionIvLike;
-    @InjectView(R.id.new_action_tv_like) TextView mNewActionTvLike;
-    @InjectView(R.id.news_action_button_like_wrapper) LinearLayout mNewsActionButtonLikeWrapper;
+    @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.news_action_tv_comment) TextView mNewsActionTvComment;
     @InjectView(R.id.news_action_button_comment_wrapper) LinearLayout mNewsActionButtonCommentWrapper;
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
@@ -110,11 +104,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         return view;
     }
 
-    @OnClick(R.id.news_action_button_like_wrapper) void onClickLike(View v)
-    {
-        voteUpOrDown(sampleItemDto.voteDirection == 1 ? false : true);
-    }
-
     @OnClick(R.id.news_action_tv_more) void onClickTvMore(View v)
     {
         showShareDialog();
@@ -154,9 +143,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         mNewsDetailTitlePlaceholder.setImageResource(bgRes);
 
         newsServiceWrapper.getSecurityNewsDetail(sampleItemDto.id, createNewsDetailCallback());
-        //TODO change to R.string
-        mNewActionTvLike.setText(sampleItemDto.voteDirection == 1 ? "Unlike" : "Like");
-        mNewActionIvLike.setImageResource(sampleItemDto.voteDirection == 1 ? R.drawable.icn_actions_downvote : R.drawable.icn_actions_upvote);
+        votePair.display(sampleItemDto);
     }
 
     private void fillDetailData(NewsItemDTO data)
@@ -216,37 +203,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     public boolean isTabBarVisible()
     {
         return false;
-    }
-
-    private void voteUpOrDown(boolean towardUp)
-    {
-        int id = sampleItemDto.id;
-        VoteDirection direction = towardUp ? VoteDirection.UpVote : VoteDirection.Unvote;
-        DiscussionVoteKey key = new DiscussionVoteKey(DiscussionType.NEWS, id, direction);
-        discussionServiceWrapperLazy.get().vote(key, createVoteCallback(towardUp));
-    }
-
-    private Callback<DiscussionDTO> createVoteCallback(final boolean towardUp)
-    {
-
-        return new Callback<DiscussionDTO>()
-        {
-            //TODO change to R.string
-            @Override
-            public void success(DiscussionDTO discussionDTO, Response response)
-            {
-                THToast.show("vote " + ((towardUp ? "up" : "down")) + " success");
-                mNewActionTvLike.setText(towardUp ? "Unlike" : "Like");
-                mNewActionIvLike.setImageResource(towardUp ? R.drawable.icn_actions_downvote : R.drawable.icn_actions_upvote);
-                sampleItemDto.voteDirection = towardUp ? 1 : 0;
-            }
-
-            @Override
-            public void failure(RetrofitError error)
-            {
-                THToast.show("vote " + ((towardUp ? "up" : "down")) + " error");
-            }
-        };
     }
 
     private void showShareDialog()

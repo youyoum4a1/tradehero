@@ -46,7 +46,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     private TextView dateTextView;
     private TextView titleTextView;
     private TextView descView;
-    private View actionLikeView;
     private View actionCommentView;
     private View moreView;
 
@@ -89,7 +88,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         dateTextView = (TextView) titleViewWrapper.findViewById(R.id.news_title_date);
         descView = (TextView) titleViewWrapper.findViewById(R.id.news_title_description);
 
-        actionLikeView = findViewById(R.id.news_action_button_like_wrapper);
         actionCommentView = findViewById(R.id.news_action_button_comment_wrapper);
         moreView = findViewById(R.id.news_action_button_more_wrapper);
 
@@ -101,9 +99,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     }
 
     private void registerListener() {
-        if (actionLikeView != null) {
-            actionLikeView.setOnClickListener(this);
-        }
         if (actionCommentView != null) {
             actionCommentView.setOnClickListener(this);
         }
@@ -113,9 +108,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     }
 
     private void unregisterListener() {
-        if (actionLikeView != null) {
-            actionLikeView.setOnClickListener(null);
-        }
         if (actionCommentView != null) {
             actionCommentView.setOnClickListener(null);
         }
@@ -127,9 +119,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.news_action_button_like_wrapper:
-                voteUpOrDown(!isVotedUp);
-                break;
             case R.id.news_action_button_comment_wrapper:
                 break;
             case R.id.news_action_button_more_wrapper:
@@ -157,24 +146,12 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         Timber.d("voteUpOrDown towardUp ? %s",towardUp);
     }
 
-    private void changeLikeViewDisplay(boolean isVotedUp) {
-        TextView likeTextView = (TextView)actionLikeView.findViewById(R.id.new_action_tv_like);
-        ImageView likeImageView = (ImageView)actionLikeView.findViewById(R.id.new_action_iv_like);
-        likeTextView.setText(isVotedUp?"Unlike":"Like");
-        likeImageView.setImageResource(isVotedUp?R.drawable.icn_actions_downvote:R.drawable.icn_actions_upvote);
-    }
-
-    private void changeLikeViewDisplay() {
-        changeLikeViewDisplay(isVotedUp);
-    }
-
     private Callback<DiscussionDTO> createVoteCallback(final boolean towardUp){
 
        return new Callback<DiscussionDTO>() {
             @Override
             public void success(DiscussionDTO discussionDTO, Response response) {
                 THToast.show("vote " + ((towardUp ? "up" : "down")) + " success");
-                changeLikeViewDisplay(towardUp);
                 isVotedUp = towardUp;
                 newsHeadline.voteDirection = isVotedUp ? 1:0;
 
@@ -220,7 +197,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         this.newsHeadline = dto;
         this.isVotedUp = !(newsHeadline.voteDirection == 0);
         displayNews();
-        changeLikeViewDisplay();
     }
 
 

@@ -12,38 +12,8 @@
       android:paddingLeft="@dimen/news_item_action_padding_l_r"
       android:paddingRight="@dimen/news_item_action_padding_l_r"
       >
-    <LinearLayout
-        android:id="@+id/news_action_button_like_wrapper"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingTop="@dimen/news_item_action_padding_t_b"
-        android:paddingBottom="@dimen/news_item_action_padding_t_b"
-        >
-      <ImageView
-           android:id="@+id/new_action_iv_like"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/icn_actions_upvote"
-          android:contentDescription="@null"
-          android:duplicateParentState="true"
-          />
-      <TextView
-          android:id="@+id/new_action_tv_like"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/news_like"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:duplicateParentState="true"
-          android:layout_marginLeft="5dp"
-          />
-    </LinearLayout>
 
+    <include layout="@layout/vote_pair"/>
 
     <LinearLayout
         android:id="@+id/news_action_button_comment_wrapper"
