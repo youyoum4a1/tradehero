@@ -12,26 +12,16 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.PaginatedDTO;
-import com.tradehero.th.api.PaginationDTO;
-import com.tradehero.th.api.news.NewsHeadline;
-import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.news.CommonNewsHeadlineCache;
-import com.tradehero.th.persistence.news.NewsHeadlineCache;
+import com.tradehero.th.persistence.news.NewsCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.dagger.ForCertainSecurityNews;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by julien on 10/10/13
@@ -41,13 +31,13 @@ import javax.inject.Inject;
  */
 public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
 {
+    @Inject NewsCache newsTitleCache;
+    @Inject NewsServiceWrapper newsServiceWrapper;
+
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
-    @Inject @ForCertainSecurityNews
-    protected CommonNewsHeadlineCache newsTitleCache;
     private ListView listView;
     private ProgressBar progressBar;
     private NewsHeadlineAdapter adapter;
-    @Inject NewsServiceWrapper newsServiceWrapper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

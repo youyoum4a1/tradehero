@@ -122,7 +122,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     private void linkWith()
     {
         Bundle args = getArguments();
-        this.sampleItemDto = NewsItemDTO.getSampleNewsItemDTO(args);
+        sampleItemDto = NewsItemDTO.getSampleNewsItemDTO(args);
         mNewsDetailTitle.setText(sampleItemDto.title);
         PrettyTime prettyTime = new PrettyTime();
         mNewsDetailDate.setText(prettyTime.format(sampleItemDto.createdAtUtc));
