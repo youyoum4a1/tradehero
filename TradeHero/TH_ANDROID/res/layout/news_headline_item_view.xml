@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.th.fragments.news.NewsHeadlineView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="12dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    >
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/news_item_bg"
-            >
+  <LinearLayout android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:background="@drawable/news_item_bg"
+      >
 
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
 
     <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            >
-        <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
-                   android:id="@+id/news_item_placeholder"
-                   android:scaleType="centerCrop"
-                   android:alpha="0.2"
-                android:background="@drawable/img_placeholder_news_2"/>
+        >
+      <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
+          android:id="@+id/news_item_placeholder"
+          android:scaleType="centerCrop"
+          android:alpha="0.2"
+          android:background="@drawable/img_placeholder_news_2"/>
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:id="@+id/news_item_layout_wrapper"
-                      android:orientation="vertical"
-                      android:layout_marginBottom="5dp"
-                      android:paddingTop="8dp"
-                      android:layout_marginLeft="10dp"
-                      android:layout_marginRight="10dp">
-            <TextView
-                    android:id="@+id/news_title_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Google to be bought by private equity"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                      android:singleLine="true"
-                    />
+      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+          android:id="@+id/news_item_layout_wrapper"
+          android:orientation="vertical"
+          android:layout_marginBottom="5dp"
+          android:paddingTop="8dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp">
+        <TextView
+            android:id="@+id/news_title_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Google to be bought by private equity"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:singleLine="true"
+            />
 
-            <TextView
-                    android:id="@+id/news_title_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="A big one"
-                    android:textSize="11sp"
-                    android:textColor="#777"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="8dp"
+        <TextView
+            android:id="@+id/news_title_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="A big one"
+            android:textSize="11sp"
+            android:textColor="#777"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="8dp"
 
-                    />
-            <TextView
-                    android:id="@+id/news_title_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    tools:text="A big one"
-                    android:textColor="#444"
-                    android:maxLines="4"
-                    />
-        </LinearLayout>
+            />
+        <TextView
+            android:id="@+id/news_title_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            tools:text="A big one"
+            android:textColor="#444"
+            android:maxLines="4"
+            />
+      </LinearLayout>
     </FrameLayout>
 
     <!--<View android:layout_width="match_parent" android:layout_height="1px"-->
-            <!--android:background="#ddd"-->
-            <!--/>-->
+    <!--android:background="#ddd"-->
+    <!--/>-->
 
 
     <include layout="@layout/news_item_action_buttons"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
 
-            />
+        />
 
-        <!--android:background="@drawable/timeline_action_buttons_background"-->
-    </LinearLayout>
+    <!--android:background="@drawable/timeline_action_buttons_background"-->
+  </LinearLayout>
 
 
 </com.tradehero.th.fragments.news.NewsHeadlineView>

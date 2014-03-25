@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-  <LinearLayout
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <RelativeLayout
       android:id="@+id/timeline_share_buttons"
       android:background="@drawable/headline_action_buttons_background"
       android:layout_width="match_parent"
@@ -15,64 +18,35 @@
 
     <include layout="@layout/vote_pair"/>
 
-    <LinearLayout
-        android:id="@+id/news_action_button_comment_wrapper"
-        android:layout_width="0dp"
-        android:layout_weight="3"
+    <TextView
+        android:id="@+id/news_action_button_comment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/news_item_action_padding_t_b"
-        android:paddingBottom="@dimen/news_item_action_padding_t_b"
-        android:gravity="center_vertical"
-        >
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/icn_actions_comment"
-          android:contentDescription="@null"
-          />
-      <TextView
-          android:id="@+id/news_action_tv_comment"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/news_comment"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:layout_marginLeft="5dp"
-          android:shadowRadius="1"
-          />
-    </LinearLayout>
+        android:layout_toRightOf="@+id/vote_pair"
+        android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
+        android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
+        android:drawableLeft="@drawable/icn_comment"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:shadowColor="@color/timeline_action_button_text_color_shadow"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="0"
+        tools:text="200"
+        />
 
-    <LinearLayout
-        android:id="@+id/news_action_button_more_wrapper"
-        android:layout_width="0dp"
-        android:layout_weight="3"
+    <TextView
+        android:id="@+id/news_action_tv_more"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/more_character"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:visibility="visible"
         android:paddingTop="@dimen/news_item_action_padding_t_b"
         android:paddingBottom="@dimen/news_item_action_padding_t_b"
-        android:gravity="center_vertical|right"
-        >
-      <!--<ImageView-->
-          <!--android:id="@+id/news_action_iv_more"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:src="@drawable/icn_actions_share"-->
-          <!--android:contentDescription="@null"-->
-          <!--android:visibility="gone"-->
-          <!--/>-->
-      <TextView
-          android:id="@+id/news_action_tv_more"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="more"
-          android:textColor="@drawable/timeline_action_button_text_color_xml"
-          android:textStyle="bold"
-          android:shadowColor="@color/timeline_action_button_text_color_shadow"
-          android:shadowDy="1"
-          android:shadowRadius="1"
-          android:visibility="visible"
-          />
-    </LinearLayout>
-  </LinearLayout>
+        android:layout_alignParentRight="true"
+        />
+  </RelativeLayout>
 </merge>

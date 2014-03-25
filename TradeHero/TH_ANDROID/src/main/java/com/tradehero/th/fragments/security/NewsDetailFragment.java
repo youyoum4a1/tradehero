@@ -58,11 +58,8 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_detail_date) TextView mNewsDetailDate;
     @InjectView(R.id.news_detail_title_layout_wrapper) LinearLayout mNewsDetailTitleLayoutWrapper;
     @InjectView(R.id.vote_pair) VotePair votePair;
-    @InjectView(R.id.news_action_tv_comment) TextView mNewsActionTvComment;
-    @InjectView(R.id.news_action_button_comment_wrapper) LinearLayout mNewsActionButtonCommentWrapper;
+    @InjectView(R.id.news_action_button_comment) TextView mNewsActionButtonCommentWrapper;
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
-    @InjectView(R.id.news_action_button_more_wrapper) LinearLayout mNewsActionButtonMoreWrapper;
-    @InjectView(R.id.timeline_share_buttons) LinearLayout mTimelineShareButtons;
     @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
     @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;

@@ -10,8 +10,6 @@ import butterknife.ButterKnife;
  */
 public class NewsDetailView extends LinearLayout
 {
-
-
     //<editor-fold desc="Constructors">
     public NewsDetailView(Context context)
     {
