@@ -74,7 +74,6 @@ abstract public class DTORetrievedAsyncMilestone<
 
     @Override public boolean isComplete()
     {
-        Timber.d("AsyncMilestone PurchaseReported " + getCache().get(key));
         return getCache().get(key) != null;
     }
 

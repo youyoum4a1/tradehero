@@ -139,7 +139,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             }
         }
 
-        Timber.d("purchase applicablePortfolio %s", applicablePortfolioId);
         if (applicablePortfolioId.portfolioId == null)
         {
             // At this stage, portfolioId is still null, we need to wait for the fetch

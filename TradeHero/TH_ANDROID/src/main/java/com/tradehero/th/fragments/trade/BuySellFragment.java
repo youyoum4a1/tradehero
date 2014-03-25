@@ -122,7 +122,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
+
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -294,7 +294,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.buy_sell_menu_toggle, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE);
         displayExchangeSymbol(actionBar);
     }
 
@@ -530,12 +532,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (mTradeQuantityView != null)
         {
-            Timber.d("linkWith PurchaseReported ");
             mTradeQuantityView.linkWith(userProfileDTO, andDisplay);
-        }
-        else
-        {
-            Timber.d("linkWith PurchaseReported mTrade null");
         }
         if (andDisplay)
         {
@@ -1321,12 +1318,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
         billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
         {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
             {
-                Timber.d("BuySellFragment onPurchaseReported " + updatedUserPortfolio);
-                linkWith(updatedUserPortfolio, true);
-                prepareApplicableOwnedPortolioId();
-                linkWithApplicable(getApplicablePortfolioId(), true);
+                linkWith(updatedUserProfile, true);
+                waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
             }
 
             @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
@@ -1561,7 +1556,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                     }
                     else
                     {
-                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
+                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy),
+                                true);
                     }
                 }
                 displaySlider();
@@ -1633,6 +1629,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
             displaySlider();
+            displayTradeQuantityView();
         }
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
