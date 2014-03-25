@@ -8,6 +8,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ public class LeaderboardMarkUserListAdapter extends
 {
     @Inject protected THBillingInteractor userInteractor;
     protected UserProfileDTO currentUserProfileDTO;
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
@@ -30,6 +32,11 @@ public class LeaderboardMarkUserListAdapter extends
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
         notifyDataSetChanged();
+    }
+
+    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListener = followRequestedListener;
     }
 
     @Override public Object getItem(int position)
@@ -45,6 +52,7 @@ public class LeaderboardMarkUserListAdapter extends
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
         dtoView.linkWith(currentUserProfileDTO, true);
+        dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
@@ -56,5 +64,25 @@ public class LeaderboardMarkUserListAdapter extends
     @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
     {
         getLoader().loadPrevious();
+    }
+
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    {
+        return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
+        {
+            @Override public void onFollowRequested(UserBaseKey userBaseKey)
+            {
+                notifyFollowRequested(userBaseKey);
+            }
+        };
+    }
+
+    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    {
+        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null)
+        {
+            followRequestedListenerCopy.onFollowRequested(userBaseKey);
+        }
     }
 }

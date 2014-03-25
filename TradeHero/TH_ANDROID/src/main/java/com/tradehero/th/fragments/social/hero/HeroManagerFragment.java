@@ -60,7 +60,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<HeroCache> heroCache;
     private HeroManagerInfoFetcher infoFetcher;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {

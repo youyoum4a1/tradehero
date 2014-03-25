@@ -124,7 +124,7 @@ abstract public class BasePurchaseReporterHolder<
         {
             getPortfolioCompactListCache().invalidate(applicablePortfolioId.getUserBaseKey());
             // TODO put back when #68094144 is fixed
-            //getPortfolioCompactCache().invalidate(applicablePortfolioId.getPortfolioId());
+            //getPortfolioCompactCache().invalidate(applicablePortfolioId.getPortfolioIdKey());
             getPortfolioCache().invalidate(applicablePortfolioId);
         }
 

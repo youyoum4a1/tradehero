@@ -22,6 +22,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -54,10 +55,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
+    protected OnFollowRequestedListener followRequestedListener;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
-    @Inject protected THBillingInteractor userInteractor;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -170,7 +171,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFollowUser.setOnClickListener(null);
         }
         loadDefaultUserImage();
-        userInteractor = null;
 
         if (lbmuProfilePicture != null)
         {
@@ -192,12 +192,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public Boolean isCurrentUserFollowing()
     {
-        if (currentUserProfileDTO == null || leaderboardItem == null ||
-                userInteractor == null)
+        if (currentUserProfileDTO == null || leaderboardItem == null)
         {
             return null;
         }
         return currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
+    }
+
+    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListener = followRequestedListener;
     }
 
     @Override public void display(LeaderboardUserDTO expandableItem)
@@ -372,15 +376,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
             case R.id.leaderboard_user_item_follow:
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                openFollowUserDialog();
+                notifyFollowRequested();
                 break;
         }
-    }
-
-    private void openFollowUserDialog()
-    {
-        // TODO
-        //interactor.followHero(leaderboardItem.getBaseKey());
     }
 
     private void handleOpenPositionListClicked()
@@ -436,5 +434,19 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
     {
         linkWith(userProfileDTO, true);
+    }
+
+    protected void notifyFollowRequested()
+    {
+        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null)
+        {
+            followRequestedListenerCopy.onFollowRequested(leaderboardItem.getBaseKey());
+        }
+    }
+
+    public static interface OnFollowRequestedListener
+    {
+        void onFollowRequested(UserBaseKey userBaseKey);
     }
 }

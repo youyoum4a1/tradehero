@@ -29,7 +29,7 @@ public class MiddleCallbackAddCash extends MiddleCallbackUpdateUserProfile
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         portfolioCompactListCache.invalidate(ownedPortfolioId.getUserBaseKey());
-        portfolioCompactCache.invalidate(ownedPortfolioId.getPortfolioId());
+        portfolioCompactCache.invalidate(ownedPortfolioId.getPortfolioIdKey());
         portfolioCache.invalidate(ownedPortfolioId);
         super.success(userProfileDTO, response);
     }

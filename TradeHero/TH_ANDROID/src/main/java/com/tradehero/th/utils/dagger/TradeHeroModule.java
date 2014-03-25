@@ -113,6 +113,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
+import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
@@ -156,6 +157,7 @@ import javax.inject.Singleton;
                         SettingsProfileFragment.class,
                         MiddleCallbackUpdateUserProfile.class,
                         MiddleCallbackAddCash.class,
+                        MiddleCallbackFollowUser.class,
                         FollowUserAssistant.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,

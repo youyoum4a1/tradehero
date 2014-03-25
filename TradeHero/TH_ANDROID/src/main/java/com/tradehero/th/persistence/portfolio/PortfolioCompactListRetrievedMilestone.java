@@ -6,7 +6,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -52,7 +51,7 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMil
         }
         for (OwnedPortfolioId id : keyList)
         {
-            if (portfolioCompactCache.get(id.getPortfolioId()) == null)
+            if (portfolioCompactCache.get(id.getPortfolioIdKey()) == null)
             {
                 return false;
             }

@@ -60,7 +60,7 @@ import javax.inject.Singleton;
         {
             for (OwnedPortfolioId ownedPortfolioId : value)
             {
-                portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioId());
+                portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioIdKey());
                 portfolioCache.get().invalidate(ownedPortfolioId);
             }
         }
@@ -87,7 +87,7 @@ import javax.inject.Singleton;
             {
                 return null;
             }
-            portfolioId = ownedPortfolioId.getPortfolioId();
+            portfolioId = ownedPortfolioId.getPortfolioIdKey();
             if (portfolioId.key == null)
             {
                 return null;

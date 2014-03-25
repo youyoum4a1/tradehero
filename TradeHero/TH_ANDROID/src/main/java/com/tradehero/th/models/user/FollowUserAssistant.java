@@ -4,6 +4,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -33,15 +34,17 @@ public class FollowUserAssistant implements
     protected UserProfileDTO currentUserProfile;
     @Inject protected UserServiceWrapper userServiceWrapper;
     protected final UserBaseKey userToFollow;
+    protected final OwnedPortfolioId applicablePortfolioId;
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
-    public FollowUserAssistant(OnUserFollowedListener userFollowedListener, UserBaseKey userToFollow)
+    public FollowUserAssistant(OnUserFollowedListener userFollowedListener, UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
     {
         this.userFollowedListener = userFollowedListener;
         this.userToFollow = userToFollow;
+        this.applicablePortfolioId = applicablePortfolioId;
         DaggerUtils.inject(this);
     }
 
@@ -130,6 +133,7 @@ public class FollowUserAssistant implements
     {
         THUIBillingRequest billingRequest = billingRequestProvider.get();
         billingRequest.domainToPresent = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
+        billingRequest.applicablePortfolioId = applicablePortfolioId;
         billingRequest.userToFollow = userToFollow;
         billingRequest.startWithProgressDialog = true;
         billingRequest.popIfBillingNotAvailable = true;

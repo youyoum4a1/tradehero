@@ -16,16 +16,12 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.models.user.MiddleCallbackFollowUser;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -49,6 +45,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected FollowUserAssistant followUserAssistant;
     protected FollowUserAssistant.OnUserFollowedListener userFollowedListener;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     abstract protected void initViews(View view);
 
@@ -226,14 +223,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public void followUser(UserBaseKey userToFollow)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow);
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchFollow();
     }
 
     public void unfollowUser(UserBaseKey userToUnFollow)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow);
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchUnFollow();
     }
 

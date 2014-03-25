@@ -91,11 +91,11 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 
     public AlertDialog popSKUAlreadyOwned(final Context context)
     {
-        return popSKUAlreadyOwned(context, null);
+        return popSKUAlreadyOwned(context, null, null);
     }
 
     public <SKUDetailsType extends BaseIABProductDetail>
-    AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
+    AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails, DialogInterface.OnClickListener restoreClickListener)
     {
         return popWithOkCancelButton(context,
                 skuDetails == null ?
@@ -111,7 +111,8 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                         dialog.cancel();
                         sendSupportEmailPurchaseNotRestored(context);
                     }
-                });
+                },
+                restoreClickListener);
     }
 
     public void sendSupportEmailPurchaseNotRestored(final Context context)

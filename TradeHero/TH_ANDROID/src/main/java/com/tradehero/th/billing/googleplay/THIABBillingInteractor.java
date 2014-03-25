@@ -204,34 +204,6 @@ public class THIABBillingInteractor
         }
     }
 
-    @Override protected THIABBillingRequestFull createPurchaseBillingRequest(int requestCode, IABSKU productIdentifier)
-    {
-        THIABBillingRequestFull request = null;
-        THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
-        if (uiBillingRequest != null)
-        {
-            request = new THIABBillingRequestFull();
-            request.testBillingAvailable = true;
-            request.doPurchase = true;
-            try
-            {
-                request.purchaseOrder = new THIABPurchaseOrder(productIdentifier, uiBillingRequest.applicablePortfolioId);
-            }
-            catch (MissingApplicablePortfolioIdException e)
-            {
-                // TODO call another perhaps
-                notifyDefaultErrorListener(requestCode, e);
-            }
-            request.purchaseFinishedListener = createPurchaseFinishedListener();
-            request.reportPurchase = true;
-            request.purchaseReportedListener = createPurchaseReportedListener();
-            request.consumePurchase = true;
-            request.consumptionFinishedListener = createConsumptionFinishedListener();
-        }
-
-        return request;
-    }
-
     @Override protected THIABBillingRequestFull createEmptyBillingRequest()
     {
         return new THIABBillingRequestFull();
@@ -259,9 +231,13 @@ public class THIABBillingInteractor
         return null;
     }
 
-    @Override protected AlertDialog popPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
+    @Override protected AlertDialog popPurchaseFailed(
+            int requestCode,
+            THIABPurchaseOrder purchaseOrder,
+            IABException exception,
+            AlertDialog.OnClickListener restoreClickListener)
     {
-        AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception);
+        AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception, restoreClickListener);
         if (dialog == null)
         {
             Context currentContext = currentActivityHolder.getCurrentContext();
@@ -286,8 +262,8 @@ public class THIABBillingInteractor
                 else if (exception instanceof IABItemAlreadyOwnedException)
                 {
                     dialog = THIABAlertDialogUtil.popSKUAlreadyOwned(currentContext,
-                            thiabProductDetailCache
-                                    .get(purchaseOrder.getProductIdentifier()));
+                            thiabProductDetailCache.get(purchaseOrder.getProductIdentifier()),
+                            restoreClickListener);
                 }
                 else if (exception instanceof IABSendIntentException)
                 {

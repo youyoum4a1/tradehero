@@ -37,9 +37,9 @@
 
   <string name="store_billing_sku_already_owned_window_title">You already own one of this object</string>
   <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
-  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Restart TradeHero?</string>
-  <string name="store_billing_sku_already_owned_ok">I already restarted</string>
-  <string name="store_billing_sku_already_owned_cancel">No need</string>
+  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Attempt a Restore?</string>
+  <string name="store_billing_sku_already_owned_ok">I already restored</string>
+  <string name="store_billing_sku_already_owned_cancel">Restore</string>
 
   <string name="store_billing_bad_response_window_title">Huh?</string>
   <string name="store_billing_bad_response_window_description">We received a bad response from GooglePlay.</string>

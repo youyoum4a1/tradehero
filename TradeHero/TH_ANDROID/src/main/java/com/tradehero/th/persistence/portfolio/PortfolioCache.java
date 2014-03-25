@@ -41,7 +41,7 @@ import javax.inject.Singleton;
     {
         if (value != null)
         {
-            portfolioCompactCache.get().put(key.getPortfolioId(), value);
+            portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
             getPositionsCache.get().invalidate(key);
         }
 

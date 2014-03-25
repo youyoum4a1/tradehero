@@ -23,9 +23,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
-import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
@@ -39,7 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import timber.log.Timber;
 
 /**
@@ -915,13 +911,40 @@ abstract public class THBaseBillingInteractor<
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFailed)
         {
-            popPurchaseFailed(requestCode, purchaseOrder, billingException);
+            popPurchaseFailed(requestCode, purchaseOrder, billingException, createRestoreClickListener(requestCode));
         }
     }
 
-    protected AlertDialog popPurchaseFailed(int requestCode, THPurchaseOrderType purchaseOrder, BillingExceptionType billingException)
+    protected AlertDialog popPurchaseFailed(
+            int requestCode,
+            THPurchaseOrderType purchaseOrder,
+            BillingExceptionType billingException,
+            AlertDialog.OnClickListener restoreClickListener)
     {
         return null;
+    }
+
+    protected AlertDialog.OnClickListener createRestoreClickListener(final int requestCode)
+    {
+        return new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                flipRequestFromPurchaseToRestore(requestCode);
+                runRequestCode(requestCode);
+            }
+        };
+    }
+
+    protected void flipRequestFromPurchaseToRestore(int requestCode)
+    {
+        THUIBillingRequestType uiBillingRequest = uiBillingRequests.get(requestCode);
+        if (uiBillingRequest != null)
+        {
+            uiBillingRequest.startWithProgressDialog = true;
+            uiBillingRequest.domainToPresent = null;
+            uiBillingRequest.restorePurchase = true;
+        }
     }
     //</editor-fold>
 

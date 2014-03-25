@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +18,12 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.loaders.ListLoader;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
@@ -62,6 +65,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         super.onCreate(savedInstanceState);
         leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
         currentLeaderboardKey = getInitialLeaderboardKey();
+    }
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new LeaderboardMarkUserListUserFollowedListener();
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -177,6 +185,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
         }
@@ -220,6 +229,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         if (leaderboardMarkUserListAdapter != null)
         {
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(null);
+            leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
         }
         leaderboardMarkUserListAdapter = null;
 
@@ -304,6 +314,22 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
+    protected void handleFollowRequested(final UserBaseKey userBaseKey)
+    {
+        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                followUser(userBaseKey);
+            }
+        });
+    }
+
+    protected void handleFollowSuccess(UserProfileDTO userProfileDTO)
+    {
+        setCurrentUserProfileDTO(userProfileDTO);
+    }
+
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
@@ -331,6 +357,23 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             }
             leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
             leaderboardMarkUserListView.onRefreshComplete();
+        }
+    }
+
+    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserItemView.OnFollowRequestedListener
+    {
+        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        {
+            handleFollowRequested(userBaseKey);
+        }
+    }
+
+    protected class LeaderboardMarkUserListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            handleFollowSuccess(currentUserProfileDTO);
         }
     }
 }

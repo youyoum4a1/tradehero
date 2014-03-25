@@ -74,8 +74,6 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.viewpagerindicator.PageIndicator;
@@ -361,6 +359,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
+
+        displayButtonAddCash();
     }
 
     @Override public void onPause()
@@ -568,7 +568,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
-            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioId()), andDisplay);
+            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()), andDisplay);
         }
         else
         {
@@ -577,6 +577,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (andDisplay)
         {
             displaySelectedPortfolio();
+            displayButtonAddCash();
         }
     }
 
@@ -689,7 +690,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-            PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
+            PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
             newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
             TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
@@ -725,7 +726,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             while (iterator.hasNext())
             {
                 OwnedPortfolioId ownedPortfolioId = iterator.next();
-                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioIdKey());
                 if (portfolioCompactDTO == null)
                 {
                     Timber.e(new NullPointerException("Missing portfolioCompact for " + ownedPortfolioId), "");
@@ -778,6 +779,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         displaySelectedPortfolio();
         displayPricingBidAskView();
         displayTradeQuantityView();
+        displayButtonAddCash();
         displayBuyButton();
         displayBottomViewPager();
         displayStockName();
@@ -874,6 +876,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mTradeQuantityView != null)
         {
             mTradeQuantityView.display();
+        }
+    }
+
+    public void displayButtonAddCash()
+    {
+        if (mBtnAddCash != null)
+        {
+            mBtnAddCash.setEnabled(purchaseApplicableOwnedPortfolioId != null && purchaseApplicableOwnedPortfolioId.isValid());
         }
     }
 
