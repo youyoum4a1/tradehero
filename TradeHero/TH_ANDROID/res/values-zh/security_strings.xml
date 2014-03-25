@@ -41,8 +41,7 @@
   <string name="security_close">Close</string>
 
   <!--share-->
-  <string name="need_install_wechat">Please install weChat</string>
-  <string name="share_to_wechat_timeline">Share to weChat timeline</string>
-
+  <string name="need_install_wechat">请安装微信</string>
+  <string name="share_to_wechat_timeline">分享到微信朋友圈</string>
 
 </resources>

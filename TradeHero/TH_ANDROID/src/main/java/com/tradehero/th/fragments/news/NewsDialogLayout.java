@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -11,6 +13,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.SendMessageToWX;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.mm.sdk.openapi.WXMediaMessage;
+import com.tencent.mm.sdk.openapi.WXWebpageObject;
+import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -26,6 +34,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.translation.TranslationResult;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.TranslationServiceWrapper;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import retrofit.Callback;
@@ -36,7 +45,8 @@ import javax.inject.Inject;
 /**
  * Created by tradehero on 14-3-7.
  */
-public class NewsDialogLayout extends LinearLayout implements View.OnClickListener,AdapterView.OnItemClickListener,THDialog.DialogCallback {
+public class NewsDialogLayout extends LinearLayout implements View.OnClickListener,
+        AdapterView.OnItemClickListener,THDialog.DialogCallback {
     private TextView newsTitleView;
     private TextView newsSubTitleView;
     private TextView shareTitleView;
@@ -100,8 +110,9 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     }
 
     private void fillData() {
+        //TODO
         String[] dataForFirst = {"Sharing","Translation"};
-        String[] dataForSecond = {"Facebook","Twitter","LinkedIn"};
+        String[] dataForSecond = {"Facebook","Twitter","LinkedIn","WeChat"};
         MyListAdapter adapterForFirst = new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,dataForFirst);
         MyListAdapter adapterForSecond = new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,dataForSecond);
         listViewFirst.setAdapter(adapterForFirst);
@@ -125,6 +136,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     }
 
     private void setShareTitle() {
+        //TODO
         shareTitleView.setText("Share to...");
     }
 
@@ -158,6 +170,34 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
             case 2:
                 socialNetworkEnum = SocialNetworkEnum.LN;
                 break;
+            case 3:
+                Timber.d("lyl begin");
+                IWXAPI api = WXAPIFactory.createWXAPI(getContext(), Constants.WECHAT_APP_ID, false);
+                api.registerApp(Constants.WECHAT_APP_ID);
+                //api.handleIntent(new Intent(), this);//maybe we don't need callback
+                boolean isWXInstalled = api.isWXAppInstalled();
+                if (isWXInstalled)
+                {
+                    WXWebpageObject webpage = new WXWebpageObject();
+                    webpage.webpageUrl = "http://tradehero.mobi";
+                    WXMediaMessage msg = new WXMediaMessage(webpage);
+                    msg.title = getContext().getString(R.string.share_to_wechat_timeline);
+                    msg.description = msg.title;
+                    Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+                    msg.thumbData = Util.bmpToByteArray(thumb, true);
+
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.transaction = String.valueOf(System.currentTimeMillis()); //not sure for transaction, maybe identify id?
+                    req.message = msg;
+                    req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                    boolean work = api.sendReq(req);
+                    Timber.d("lyl end work=%b", work);
+                }
+                else
+                {
+                    THToast.show(getContext().getString(R.string.need_install_wechat));
+                }
+                return;
             default:
                 break;
 

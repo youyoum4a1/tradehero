@@ -310,6 +310,14 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/Tapstream.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>libammsdk</groupId>
+      <artifactId>libammsdk</artifactId>
+      <version>2.6.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>
+    </dependency>
+
 
   </dependencies>
 
