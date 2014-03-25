@@ -25,7 +25,8 @@ import org.ocpsoft.prettytime.PrettyTime;
  *
  * modified by Wang Liang.
  */
-public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDTO>, THDialog.OnDialogItemClickListener
+public class NewsHeadlineView extends LinearLayout
+        implements DTOView<NewsItemDTO>, THDialog.OnDialogItemClickListener
 {
     @InjectView(R.id.news_title_date) TextView dateTextView;
     @InjectView(R.id.news_title_description) TextView descView;
@@ -153,23 +154,6 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         if (descView != null)
         {
             descView.setText(newsHeadline.description);
-            //            if (TextUtils.isEmpty(newsHeadline.description)) {
-            //                descView.setVisibility(View.GONE);
-            //                Timber.d("newsHeadline description %s empty",newsHeadline.description);
-            //            }else {
-            //                descView.setVisibility(View.VISIBLE);
-            //                Timber.d("newsHeadline description %s not empty",newsHeadline.description);
-            //            }
         }
-
-        //        int h = titleViewWrapper.getMeasuredHeight();
-        //        if(h <= 0){
-        //            titleViewWrapper.measure(MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT,View.MeasureSpec.AT_MOST
-        //                   ), MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT,View.MeasureSpec.AT_MOST));
-        //            h = titleViewWrapper.getMeasuredHeight();
-        //        }
-        //        ViewGroup.LayoutParams lp = placeHolderView.getLayoutParams();
-        //        lp.height = h;
-        //        placeHolderView.setLayoutParams(lp);
     }
 }

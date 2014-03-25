@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <FrameLayout
+  <com.tradehero.th.fragments.news.NewsDetailSummaryView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:id="@+id/news_detail_summary"
       >
     <ImageView
         android:layout_width="match_parent"
@@ -45,5 +46,5 @@
           android:layout_marginBottom="8dp"
           />
     </LinearLayout>
-  </FrameLayout>
+  </com.tradehero.th.fragments.news.NewsDetailSummaryView>
 </merge>

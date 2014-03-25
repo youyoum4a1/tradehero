@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +18,7 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.SecurityItemViewAdapterFactory;
+import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -29,7 +29,6 @@ import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -53,10 +52,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
-    @InjectView(R.id.news_detail_title_placeholder) ImageView mNewsDetailTitlePlaceholder;
-    @InjectView(R.id.news_detail_title) TextView mNewsDetailTitle;
-    @InjectView(R.id.news_detail_date) TextView mNewsDetailDate;
-    @InjectView(R.id.news_detail_title_layout_wrapper) LinearLayout mNewsDetailTitleLayoutWrapper;
+    @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.news_action_button_comment) TextView mNewsActionButtonCommentWrapper;
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
@@ -125,15 +121,11 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     {
         Bundle args = getArguments();
         mSummaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
-        mNewsDetailTitle.setText(mSummaryNewsItemDTO.title);
-        PrettyTime prettyTime = new PrettyTime();
-        mNewsDetailDate.setText(prettyTime.format(mSummaryNewsItemDTO.createdAtUtc));
-
-        int bgRes = args.getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
-        mNewsDetailTitlePlaceholder.setImageResource(bgRes);
 
         newsServiceWrapper.getSecurityNewsDetail(mSummaryNewsItemDTO.id, createNewsDetailCallback());
         votePair.display(mSummaryNewsItemDTO);
+
+        newsDetailSummaryView.display(mSummaryNewsItemDTO);
     }
 
     private void fillDetailData(NewsItemDTO data)
