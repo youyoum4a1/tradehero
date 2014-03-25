@@ -33,5 +33,7 @@
   <string name="twitter">Twitter</string>
   <string name="authentication_twitter_email">Email</string>
   <string name="authentication_twitter_connecting">Connecting to Twitter</string>
+  <string name="sina_weibo">Weibo</string>
+  <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
 
 </resources>

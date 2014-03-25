@@ -2,10 +2,8 @@ package com.tradehero.th.utils.dagger;
 
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.auth.operator.ConsumerKey;
-import com.tradehero.th.auth.operator.ConsumerSecret;
-import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.auth.operator.FacebookPermissions;
+import com.tradehero.th.auth.operator.*;
+import com.tradehero.th.auth.weibo.WeiboAppAuthData;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collection;
@@ -29,6 +27,14 @@ public class SocialNetworkModule
     private static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
     private static final String FACEBOOK_APP_ID = "431745923529834";
 
+    private static final String WEIBO_APP_ID = "551229853";
+    private static final String WEIBO_REDIRECT_URL = "http://www.tradehero.mobi";
+    private static final String WEIBO_SCOPE =
+            "email,direct_messages_read,direct_messages_write,"
+                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
+                    + "follow_app_official_microblog," + "invitation_write";
+
+
     @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
@@ -50,6 +56,16 @@ public class SocialNetworkModule
     @Provides @Singleton @FacebookAppId String provideFacebookAppId()
     {
         return FACEBOOK_APP_ID;
+    }
+
+    @Provides @Singleton @ForWeiboAppAuthData
+    WeiboAppAuthData provideWeiboAppId()
+    {
+        WeiboAppAuthData data = new WeiboAppAuthData();
+        data.appId = WEIBO_APP_ID;
+        data.redirectUrl = WEIBO_REDIRECT_URL;
+        data.scope = WEIBO_SCOPE;
+        return data;
     }
 
     @Provides @Singleton @FacebookPermissions Collection<String> provideFacebookPermissions()

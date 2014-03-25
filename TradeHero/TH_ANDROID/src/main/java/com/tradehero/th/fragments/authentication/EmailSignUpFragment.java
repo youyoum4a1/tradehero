@@ -26,6 +26,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+/**
+ * Register using email.
+ */
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
     private static final int REQUEST_GALLERY = 111;

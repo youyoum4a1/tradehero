@@ -21,4 +21,7 @@
   <string name="discussion_loaded">All discussions loaded</string>
   <string name="discussion_loading">Loading discussions…</string>
   <string name="discussion_empty">Be the first to discuss this.</string>
+  <string name="network_error">Sorry,network error.</string>
+
+
 </resources>
