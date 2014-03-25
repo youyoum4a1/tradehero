@@ -137,7 +137,7 @@ public class TimelineDiscussion extends DashboardFragment
 
     private ListLoader<DiscussionDTO> createTimelineDiscussionLoader()
     {
-        return new DiscussionListLoader(getActivity(), timelineItemDTOKey);
+        return new TimelineCommentListLoader(getActivity(), timelineItemDTOKey);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -167,7 +167,7 @@ public class TimelineDiscussion extends DashboardFragment
         discussionDTO.inReplyToId = timelineItemDTOKey.key;
 
         comment.setText(null);
-        discussionMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, createCommentSubmitCallback());
+        discussionMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, new CommentSubmitCallback());
     }
 
     private void detachCommentSubmitMiddleCallback()
@@ -177,11 +177,6 @@ public class TimelineDiscussion extends DashboardFragment
             discussionMiddleCallback.setPrimaryCallback(null);
         }
         discussionMiddleCallback = null;
-    }
-
-    private Callback<DiscussionDTO> createCommentSubmitCallback()
-    {
-        return new CommentSubmitCallback();
     }
 
     private String getEditingComment()
