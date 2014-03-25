@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge>
-  <com.tradehero.th.fragments.news.NewsDetailView
+  <com.tradehero.th.fragments.news.NewsDetailFullView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -176,5 +176,5 @@
       </LinearLayout>
     </ScrollView>
 
-  </com.tradehero.th.fragments.news.NewsDetailView>
+  </com.tradehero.th.fragments.news.NewsDetailFullView>
 </merge>

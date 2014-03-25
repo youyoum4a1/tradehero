@@ -67,8 +67,5 @@ public class NewsDetailSummaryView extends FrameLayout
     {
         mNewsDetailTitle.setText(dto.title);
         mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
-        //
-        //int bgRes = args.getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
-        //mNewsDetailTitlePlaceholder.setImageResource(bgRes);
     }
 }

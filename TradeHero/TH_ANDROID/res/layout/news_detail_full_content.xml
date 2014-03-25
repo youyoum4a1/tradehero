@@ -8,7 +8,8 @@
   <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent">
-    <LinearLayout
+    <com.tradehero.th.fragments.news.NewsDetailFullView
+        android:id="@+id/news_detail_full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -104,6 +105,6 @@
           android:layout_marginRight="10dp"
           android:paddingLeft="5dp"
           />
-    </LinearLayout>
+    </com.tradehero.th.fragments.news.NewsDetailFullView>
   </ScrollView>
 </merge>

@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -15,19 +12,15 @@ import butterknife.OnClick;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.SecurityItemViewAdapterFactory;
+import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
-import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
-import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -40,29 +33,27 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDetailFragment.class.getName() + ".title_bg";
 
-    private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
+    @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private NewsItemDTO mSummaryNewsItemDTO;
     private NewsItemDTO mDetailNewsItemDto;
 
     @Inject NewsServiceWrapper newsServiceWrapper;
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
     @Inject FontUtil fontUtil;
 
-    @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
-
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
+    @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
+
+    // Action buttons
     @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.news_action_button_comment) TextView mNewsActionButtonCommentWrapper;
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
-    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
-    @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
-    @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;
-    @InjectView(R.id.news_detail_reference_gv) GridView mNewsDetailReferenceGv;
-    @InjectView(R.id.news_detail_reference_gv_container) LinearLayout mNewsDetailReferenceGvContainer;
+
+    // Comment list
     @InjectView(R.id.news_detail_comment_list) ListView mNewsDetailCommentList;
     @InjectView(R.id.news_detail_comment_empty) TextView mNewsDetailCommentEmpty;
+
+    private MiddleCallback<NewsItemDTO> newsServiceCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -91,30 +82,27 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         super.onResume();
 
         linkWith();
+
+        // TODO have to remove this hack, please!
+        int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
+        if (bgRes != 0)
+        {
+            newsDetailSummaryView.setBackgroundResource(bgRes);
+        }
+    }
+
+    @Override public void onDestroy()
+    {
+        if (newsServiceCallback != null)
+        {
+            newsServiceCallback.setPrimaryCallback(null);
+        }
+        super.onDestroy();
     }
 
     private void initViews(View view)
     {
         fontUtil.setTypeFace(mNewsActionTvMore, FontUtil.FontType.AWESOME);
-
-        simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
-                getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
-        mNewsDetailReferenceGv.setAdapter(simpleSecurityItemViewAdapter);
-        mNewsDetailReferenceGv.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-            {
-                Object item = simpleSecurityItemViewAdapter.getItem(position);
-
-                if (item instanceof SecurityCompactDTO)
-                {
-                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) item;
-                    Bundle args = new Bundle();
-                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-                    getNavigator().pushFragment(BuySellFragment.class, args);
-                }
-            }
-        });
     }
 
     private void linkWith()
@@ -122,20 +110,16 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         Bundle args = getArguments();
         mSummaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
 
-        newsServiceWrapper.getSecurityNewsDetail(mSummaryNewsItemDTO.id, createNewsDetailCallback());
         votePair.display(mSummaryNewsItemDTO);
-
         newsDetailSummaryView.display(mSummaryNewsItemDTO);
+
+        newsServiceCallback = newsServiceWrapper.getSecurityNewsDetail(mSummaryNewsItemDTO.id, createNewsDetailCallback());
     }
 
-    private void fillDetailData(NewsItemDTO data)
+    private void linkWith(NewsItemDTO newsItemDTO)
     {
-        mDetailNewsItemDto = data;
-        mNewsDetailContent.setText(mDetailNewsItemDto.text);
-        mNewsDetailContent.setVisibility(View.VISIBLE);
-        mNewsDetailLoading.setVisibility(View.GONE);
-
-        securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), mDetailNewsItemDto.getSecurityIds());
+        mDetailNewsItemDto = newsItemDTO;
+        newsDetailFullView.display(mDetailNewsItemDto);
     }
 
     private Callback<NewsItemDTO> createNewsDetailCallback()
@@ -145,7 +129,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             @Override
             public void success(NewsItemDTO newsItemDTO, Response response)
             {
-                fillDetailData(newsItemDTO);
+                linkWith(newsItemDTO);
             }
 
             @Override
@@ -153,35 +137,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             {
             }
         };
-    }
-
-    private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
-    {
-        return new Callback<List<SecurityCompactDTO>>()
-        {
-            @Override
-            public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
-            {
-                ViewGroup.LayoutParams lp = mNewsDetailReferenceGvContainer.getLayoutParams();
-                //TODO it changes with solution
-                lp.width = 510 * securityCompactDTOList.size();
-                mNewsDetailReferenceGvContainer.setLayoutParams(lp);
-                mNewsDetailReferenceGv.setNumColumns(securityCompactDTOList.size());
-                simpleSecurityItemViewAdapter.setItems(securityCompactDTOList);
-                simpleSecurityItemViewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void failure(RetrofitError error)
-            {
-            }
-        };
-    }
-
-    @Override
-    public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     private void showShareDialog()
@@ -190,5 +145,11 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDto == null ? mSummaryNewsItemDTO : mDetailNewsItemDto, false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
+    }
+
+    @Override
+    public boolean isTabBarVisible()
+    {
+        return false;
     }
 }
