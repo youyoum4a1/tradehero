@@ -226,11 +226,11 @@ import retrofit.RetrofitError;
         return userService.follow(userBaseKey.key);
     }
 
-    public MiddleCallbackUpdateUserProfile follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile = new MiddleCallbackUpdateUserProfile(callback);
-        userService.follow(userBaseKey.key, middleCallbackUpdateUserProfile);
-        return middleCallbackUpdateUserProfile;
+        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
+        userServiceAsync.follow(userBaseKey.key, middleCallbackFollowUser);
+        return middleCallbackFollowUser;
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
@@ -241,7 +241,7 @@ import retrofit.RetrofitError;
     public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userService.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
+        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
         return middleCallbackFollowUser;
     }
     //</editor-fold>
@@ -255,7 +255,7 @@ import retrofit.RetrofitError;
     public MiddleCallbackFollowUser unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userService.unfollow(userBaseKey.key, middleCallbackFollowUser);
+        userServiceAsync.unfollow(userBaseKey.key, middleCallbackFollowUser);
         return middleCallbackFollowUser;
 
     }
