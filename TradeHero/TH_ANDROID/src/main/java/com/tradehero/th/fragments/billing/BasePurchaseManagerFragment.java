@@ -40,7 +40,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
-    @Inject protected com.tradehero.th.billing.googleplay.THIABAlertDialogUtil THIABAlertDialogUtil;
     protected Integer showProductDetailRequestCode;
 
     protected FollowUserAssistant followUserAssistant;
