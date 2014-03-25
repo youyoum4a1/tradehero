@@ -59,7 +59,7 @@
       android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         >
 
@@ -105,7 +105,7 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="View on the Web"
+          android:text="@string/news_view_on_web"
           android:gravity="center"
           android:background="#ddd"
           android:paddingTop="5dp"
@@ -121,12 +121,9 @@
           android:layout_marginLeft="10dp"
           android:layout_marginRight="10dp"
           >
-
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
           <LinearLayout
               android:id="@+id/news_detail_reference_gv_container"
               android:layout_width="600dp"
@@ -147,7 +144,7 @@
 
       <TextView android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Add a comment..."
+          android:text="@string/add_a_comment"
           android:gravity="left|center_vertical"
           android:background="#ddd"
           android:paddingTop="10dp"
@@ -168,10 +165,9 @@
       <TextView android:id="@+id/news_detail_comment_empty"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Be the first to comment."
+          android:text="@string/discussion_empty"
           android:gravity="center"
           android:textColor="#777"/>
-
     </LinearLayout>
   </ScrollView>
 

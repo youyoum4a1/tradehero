@@ -43,8 +43,8 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 
-    private NewsItemDTO summaryNewsItemDTO;
-    private NewsItemDTO detailNewsItemDto;
+    private NewsItemDTO mSummaryNewsItemDTO;
+    private NewsItemDTO mDetailNewsItemDto;
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
@@ -127,32 +127,30 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     private void linkWith()
     {
         Bundle args = getArguments();
-        summaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
-        mNewsDetailTitle.setText(summaryNewsItemDTO.title);
+        mSummaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
+        mNewsDetailTitle.setText(mSummaryNewsItemDTO.title);
         PrettyTime prettyTime = new PrettyTime();
-        mNewsDetailDate.setText(prettyTime.format(summaryNewsItemDTO.createdAtUtc));
+        mNewsDetailDate.setText(prettyTime.format(mSummaryNewsItemDTO.createdAtUtc));
 
         int bgRes = args.getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         mNewsDetailTitlePlaceholder.setImageResource(bgRes);
 
-        newsServiceWrapper.getSecurityNewsDetail(summaryNewsItemDTO.id, createNewsDetailCallback());
-        votePair.display(summaryNewsItemDTO);
+        newsServiceWrapper.getSecurityNewsDetail(mSummaryNewsItemDTO.id, createNewsDetailCallback());
+        votePair.display(mSummaryNewsItemDTO);
     }
 
     private void fillDetailData(NewsItemDTO data)
     {
-        this.detailNewsItemDto = data;
-        mNewsDetailContent.setText(detailNewsItemDto.text);
+        mDetailNewsItemDto = data;
+        mNewsDetailContent.setText(mDetailNewsItemDto.text);
         mNewsDetailContent.setVisibility(View.VISIBLE);
         mNewsDetailLoading.setVisibility(View.GONE);
 
-        securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(),
-                detailNewsItemDto.getSecurityIds());
+        securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), mDetailNewsItemDto.getSecurityIds());
     }
 
     private Callback<NewsItemDTO> createNewsDetailCallback()
     {
-
         return new Callback<NewsItemDTO>()
         {
             @Override
@@ -170,7 +168,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
     {
-
         return new Callback<List<SecurityCompactDTO>>()
         {
             @Override
@@ -202,7 +199,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     {
         View contentView = LayoutInflater.from(getSherlockActivity()).inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(detailNewsItemDto == null ? summaryNewsItemDTO : detailNewsItemDto, false);
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDto == null ? mSummaryNewsItemDTO : mDetailNewsItemDto, false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
 }
