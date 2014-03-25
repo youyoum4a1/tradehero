@@ -110,6 +110,7 @@ public class FollowUserAssistant implements
         {
             billingInteractor.forgetRequestCode(requestCode);
         }
+        requestCode =  null;
     }
 
     protected void follow()
@@ -120,7 +121,8 @@ public class FollowUserAssistant implements
         }
         else
         {
-            billingInteractor.run(createPurchaseCCRequest());
+            haveInteractorForget();
+            requestCode = billingInteractor.run(createPurchaseCCRequest());
         }
     }
 
