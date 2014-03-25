@@ -32,7 +32,8 @@ public class EasyDebugTree implements Timber.Tree, Timber.TaggedTree
 
     public static String getStackTraceClass()
     {
-        String tag = new Throwable().getStackTrace()[7].getClassName();
+        StackTraceElement element = new Throwable().getStackTrace()[7];
+        String tag = String.format("%s:%d", element.getClassName(), element.getLineNumber());
         Matcher m = ANONYMOUS_CLASS.matcher(tag);
         if (m.find())
         {
