@@ -19,6 +19,4 @@ public class DiscussionListAdapter extends LoaderDTOAdapter<DiscussionDTO, Discu
     {
 
     }
-
-
 }

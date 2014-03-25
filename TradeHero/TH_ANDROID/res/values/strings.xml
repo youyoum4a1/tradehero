@@ -21,4 +21,6 @@
   <string name="discussion_loaded">All discussions loaded</string>
   <string name="discussion_loading">Loading discussions…</string>
   <string name="discussion_empty">Be the first to discuss this.</string>
+  <string name="news_view_on_web">View on the Web</string>
+  <string name="add_a_comment">Add a comment…</string>
 </resources>
