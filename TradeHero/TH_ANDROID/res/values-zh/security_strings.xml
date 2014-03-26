@@ -42,6 +42,11 @@
 
   <!--share-->
   <string name="need_install_wechat">请安装微信</string>
-  <string name="share_to_wechat_timeline">分享到微信朋友圈</string>
+  <string name="need_update_wechat">请升级微信到4.2版本或更新</string>
+  <string name="share_to_wechat_timeline_news">我在股货英雄上分享了一条新闻，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_create_dis">我在股货英雄上发起了一段讨论，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_dis">我在股货英雄上分享了一段讨论，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_buy_sell">我在股货英雄上完成了一笔交易，快来加入吧。</string>
 
 </resources>

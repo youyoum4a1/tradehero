@@ -42,7 +42,10 @@
 
   <!--share-->
   <string name="need_install_wechat">Please install weChat</string>
-  <string name="share_to_wechat_timeline">Share to weChat timeline</string>
-
-
+  <string name="need_update_wechat">Please update weChat to 4.2 or later</string>
+  <string name="share_to_wechat_timeline_news">I\'ve shared a news on tradehero, come and join us.</string>
+  <string name="share_to_wechat_timeline_create_dis">I\'ve created a discussion on tradehero, come and join us.</string>
+  <string name="share_to_wechat_timeline_dis">I\'ve shared a discussion on tradehero, come and join us.</string>
+  <string name="share_to_wechat_timeline_timeline">I\'ve shared my timeline on tradehero, come and join us.</string>
+  <string name="share_to_wechat_timeline_buy_sell">I\'ve done a stock trade on tradehero, come and join us.</string>
 </resources>
