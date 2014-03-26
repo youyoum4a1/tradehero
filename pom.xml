@@ -7,7 +7,7 @@
   <repositories>
     <repository>
       <id>mymaven.repo</id>
-      <url>https://github.com/nguyentruongtho/maven-repo/raw/master</url>
+      <url>https://github.com/TradeHero/TH_MAVEN/raw/master</url>
       <!-- use snapshot version -->
       <snapshots>
         <enabled>true</enabled>
