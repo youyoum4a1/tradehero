@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductDetail;
@@ -11,7 +13,9 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
+import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +40,20 @@ abstract public class BillingAlertDialogUtil<
         extends AlertDialogUtil
 {
     protected LocalyticsSession localyticsSession;
+    public ActivityUtil activityUtil;
 
-    public BillingAlertDialogUtil(LocalyticsSession localyticsSession)
+    public BillingAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil)
     {
         super();
         this.localyticsSession = localyticsSession;
+        this.activityUtil = activityUtil;
+    }
+
+    public AlertDialog popWaitWhileLoading(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.store_billing_loading_window_title,
+                R.string.store_billing_loading_window_description,
+                R.string.store_billing_loading_cancel);
     }
 
     //<editor-fold desc="Billing Available">
@@ -60,7 +73,12 @@ abstract public class BillingAlertDialogUtil<
                 });
     }
 
-    abstract public void goToCreateAccount(final Context context);
+    public void goToCreateAccount(final Context context)
+    {
+        Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+        addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
+        context.startActivity(addAccountIntent);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Product Detail Presentation">
@@ -164,4 +182,41 @@ abstract public class BillingAlertDialogUtil<
                 R.string.store_billing_report_api_error_window_description,
                 R.string.store_billing_report_api_error_cancel);
     }
+
+    public AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
+    {
+        return popWithOkCancelButton(context,
+                R.string.google_play_send_support_email_report_fail_title,
+                R.string.google_play_send_support_email_report_fail_message,
+                R.string.google_play_send_support_email_report_fail_ok,
+                R.string.google_play_send_support_email_report_fail_cancel,
+                okClickListener);
+    }
+
+    public AlertDialog popUnknownError(final Context context, final Exception exception)
+    {
+        return popWithOkCancelButton(context,
+                R.string.store_billing_unknown_error_window_title,
+                R.string.store_billing_unknown_error_window_description,
+                R.string.store_billing_unknown_error_ok,
+                R.string.store_billing_unknown_error_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
+                    }
+                });
+    }
+
+    public void sendSupportEmailBillingUnknownError(final Context context, final Exception exception)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+
 }

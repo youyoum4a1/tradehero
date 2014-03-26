@@ -34,28 +34,12 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 {
     public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
 
-    public ActivityUtil activityUtil;
     protected THIABPurchaseCache thiabPurchaseCache;
 
     @Inject public THIABAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)
     {
-        super(localyticsSession);
-        this.activityUtil = activityUtil;
+        super(localyticsSession, activityUtil);
         this.thiabPurchaseCache = thiabPurchaseCache;
-    }
-
-    @Override public void goToCreateAccount(final Context context)
-    {
-        Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-        addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
-        context.startActivity(addAccountIntent);
-    }
-
-    public AlertDialog popWaitWhileLoading(final Context context)
-    {
-        return popWithNegativeButton(context, R.string.store_billing_loading_window_title,
-                R.string.store_billing_loading_window_description,
-                R.string.store_billing_loading_cancel);
     }
 
     public AlertDialog popVerificationFailed(final Context context)
@@ -155,40 +139,6 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         return popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
                 R.string.store_billing_load_info_error_window_description,
                 R.string.store_billing_load_info_error_cancel);
-    }
-
-    public AlertDialog popUnknownError(final Context context, final Exception exception)
-    {
-        return popWithOkCancelButton(context,
-                R.string.store_billing_unknown_error_window_title,
-                R.string.store_billing_unknown_error_window_description,
-                R.string.store_billing_unknown_error_ok,
-                R.string.store_billing_unknown_error_cancel,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                        sendSupportEmailBillingUnknownError(context, exception);
-                    }
-                });
-    }
-
-    public void sendSupportEmailBillingUnknownError(final Context context, final Exception exception)
-    {
-        Intent emailIntent = VersionUtils.getSupportEmailIntent(VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
-        activityUtil.sendSupportEmail(context, emailIntent);
-    }
-
-    public AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
-    {
-        return popWithOkCancelButton(context,
-                R.string.google_play_send_support_email_report_fail_title,
-                R.string.google_play_send_support_email_report_fail_message,
-                R.string.google_play_send_support_email_report_fail_ok,
-                R.string.google_play_send_support_email_report_fail_cancel,
-                okClickListener);
     }
 
     public AlertDialog popOfferSendEmailSupportConsumeFailed(final Context context, final Exception exception)
