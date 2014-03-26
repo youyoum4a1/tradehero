@@ -50,9 +50,10 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     }
 
     private void checkLocale() {
+        boolean isChineseLocale = MetaHelper.isChineseLocale(getActivity());
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s",language);
-        if (language != null && language.equalsIgnoreCase("zh")) {
+        if (isChineseLocale) {
             showViewForChinese();
         }
     }

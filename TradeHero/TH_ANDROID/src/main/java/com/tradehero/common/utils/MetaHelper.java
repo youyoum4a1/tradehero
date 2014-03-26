@@ -27,6 +27,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.view.Display;
 import android.view.WindowManager;
+import timber.log.Timber;
 
 public class MetaHelper {
 
@@ -203,6 +204,28 @@ public class MetaHelper {
 		return language;
 	}
 
+
+    public static boolean isChineseLocale(Context context)
+    {
+        try
+        {
+            Locale locale = context.getResources().getConfiguration().locale;
+            if ((Locale.CHINA.equals(locale)) ||
+                    (Locale.CHINESE.equals(locale)) ||
+                    (Locale.SIMPLIFIED_CHINESE.equals(locale))
+                    /*||(Locale.TAIWAN.equals(locale))*/)
+                return true;
+        }
+        catch (Exception e) {
+            return true;
+        }
+        return false;
+
+        //String language = MetaHelper.getLanguage(context);
+        //Timber.d("language %s", language);
+        //if (language != null && language.equalsIgnoreCase("zh")) {
+        //}
+    }
 
 
 	public static String getAppName(Context ctx) {
