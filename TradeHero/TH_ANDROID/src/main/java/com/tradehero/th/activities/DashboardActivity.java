@@ -248,8 +248,12 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
-        billingInteractor.get().forgetRequestCode(restoreRequestCode);
-        billingInteractor = null;
+        THBillingInteractor billingInteractorCopy = billingInteractor.get();
+        if (billingInteractorCopy != null && restoreRequestCode != null)
+        {
+            billingInteractorCopy.forgetRequestCode(restoreRequestCode);
+        }
+
         if (navigator != null)
         {
             navigator.onDestroy();

@@ -11,9 +11,11 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
+import com.tradehero.common.billing.googleplay.exception.IABResultErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
@@ -190,6 +192,37 @@ public class THIABBillingInteractor
         }
     }
 
+    //<editor-fold desc="Inventory Fetch">
+    @Override protected AlertDialog popInventoryFetchFail(int requestCode,
+            List<IABSKU> productIdentifiers, IABException exception)
+    {
+        AlertDialog dialog = super.popInventoryFetchFail(requestCode, productIdentifiers, exception);
+        if (dialog == null)
+        {
+            Context currentContext = currentActivityHolder.getCurrentContext();
+            if (currentContext != null)
+            {
+                if (exception instanceof IABUserCancelledException)
+                {
+                    dialog = THIABAlertDialogUtil.popUserCancelled(currentContext);
+                }
+                else if (exception instanceof IABBadResponseException)
+                {
+                    dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
+                }
+                else if (exception instanceof IABResultErrorException)
+                {
+                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                }
+                else if (!(exception instanceof IABBillingUnavailableException)) // No need to tell again
+                {
+                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
+                }
+            }
+        }
+        return dialog;    }
+    //</editor-fold>
+
     //<editor-fold desc="Purchase Actions">
     @Override protected void launchPurchaseSequence(int requestCode, IABSKU productIdentifier)
     {
@@ -255,6 +288,10 @@ public class THIABBillingInteractor
                 {
                     dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
                 }
+                else if (exception instanceof IABResultErrorException)
+                {
+                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                }
                 else if (exception instanceof IABRemoteException)
                 {
                     dialog = THIABAlertDialogUtil.popRemoteError(currentContext);
@@ -271,7 +308,7 @@ public class THIABBillingInteractor
                 }
                 else
                 {
-                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext);
+                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }

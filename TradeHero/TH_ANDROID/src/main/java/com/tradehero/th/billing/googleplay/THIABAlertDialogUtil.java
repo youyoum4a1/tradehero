@@ -129,6 +129,13 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                 R.string.store_billing_bad_response_cancel);
     }
 
+    public AlertDialog popResultError(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.store_billing_result_error_window_title,
+                R.string.store_billing_result_error_window_description,
+                R.string.store_billing_result_error_cancel);
+    }
+
     public AlertDialog popRemoteError(final Context context)
     {
         return popWithNegativeButton(context, R.string.store_billing_remote_error_window_title,
@@ -150,7 +157,7 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                 R.string.store_billing_load_info_error_cancel);
     }
 
-    public AlertDialog popUnknownError(final Context context)
+    public AlertDialog popUnknownError(final Context context, final Exception exception)
     {
         return popWithOkCancelButton(context,
                 R.string.store_billing_unknown_error_window_title,
@@ -161,8 +168,8 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        // TODO open email
                         dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
                     }
                 });
     }

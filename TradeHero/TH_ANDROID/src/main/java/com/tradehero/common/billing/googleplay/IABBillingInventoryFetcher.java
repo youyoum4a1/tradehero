@@ -205,7 +205,7 @@ abstract public class IABBillingInventoryFetcher<
                 {
                     Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
                             statusCode));
-                    throw iabExceptionFactory.get().create(statusCode);
+                    throw iabExceptionFactory.get().create(statusCode, String.format("While getting itemType=%s", itemType));
                 }
                 else
                 {

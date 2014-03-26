@@ -692,6 +692,7 @@ abstract public class THBaseBillingInteractor<
 
     protected AlertDialog popInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
     {
+        Timber.e(exception, "");
         return null;
     }
     //</editor-fold>
@@ -921,6 +922,7 @@ abstract public class THBaseBillingInteractor<
             BillingExceptionType billingException,
             AlertDialog.OnClickListener restoreClickListener)
     {
+        Timber.e(billingException, "");
         return null;
     }
 

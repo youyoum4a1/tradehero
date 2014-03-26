@@ -46,6 +46,11 @@
   <!--string name="store_billing_bad_response_ok">Sure</string-->
   <string name="store_billing_bad_response_cancel">OK</string>
 
+  <string name="store_billing_result_error_window_title">Huh?</string>
+  <string name="store_billing_result_error_window_description">We received a result error from Google Play. You may need to clear the cache of the Google Play Store app.</string>
+  <!--string name="store_billing_result_error_ok">Sure</string-->
+  <string name="store_billing_result_error_cancel">OK</string>
+
   <string name="store_billing_remote_error_window_title">Huh?</string>
   <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>
   <!--string name="store_billing_remote_error_ok">Sure</string-->

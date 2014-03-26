@@ -109,11 +109,17 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     public void cancelOthersAndShowBillingAvailable()
     {
+        if (alreadyNotifiedNeedCreateAccount)
+        {
+            return;
+        }
+
         if (showBillingAvailableRequestCode != null)
         {
             userInteractor.forgetRequestCode(showBillingAvailableRequestCode);
         }
         showBillingAvailableRequestCode = showBillingAvailable();
+        alreadyNotifiedNeedCreateAccount = true;
     }
 
     public int showBillingAvailable()
@@ -126,7 +132,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         THUIBillingRequest request = uiBillingRequestProvider.get();
         request.applicablePortfolioId = getApplicablePortfolioId();
         request.startWithProgressDialog = false;
-        request.popIfBillingNotAvailable = true;
+        request.popIfBillingNotAvailable = !alreadyNotifiedNeedCreateAccount;
         request.billingAvailable = true;
         request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
         {
@@ -214,16 +220,5 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_store_screen;
-    }
-
-    protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-    {
-        // TODO warn if there are things unset
-        if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
-        {
-            alreadyNotifiedNeedCreateAccount = true;
-            userInteractor.popBillingUnavailable((IABBillingUnavailableException) throwable);
-        }
-        // Nothing to do presumably
     }
 }
