@@ -3,6 +3,7 @@ package com.tradehero.th.billing;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 
 /**
@@ -15,4 +16,5 @@ public interface THProductPurchase<
 {
     void setUserToFollow(UserBaseKey userToFollow);
     UserBaseKey getUserToFollow();
+    OwnedPortfolioId getApplicableOwnedPortfolioId();
 }

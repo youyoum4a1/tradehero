@@ -2,7 +2,6 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -24,7 +23,7 @@ abstract public class BasePurchaseReporterHolder<
         PurchaseReporterType extends PurchaseReporter<
             ProductIdentifierType,
             OrderIdType,
-                THProductPurchaseType,
+            THProductPurchaseType,
             BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements PurchaseReporterHolder<

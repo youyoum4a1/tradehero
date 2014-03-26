@@ -27,7 +27,8 @@ import org.json.JSONException;
 /**
  * Represents an in-app billing purchase usable in TradeHero.
  */
-public class THIABPurchase extends BaseIABPurchase
+public class THIABPurchase
+        extends BaseIABPurchase<IABSKU, THIABOrderId>
     implements THProductPurchase<IABSKU, THIABOrderId>
 {
     public static final String TAG = THIABPurchase.class.getSimpleName();
@@ -39,8 +40,18 @@ public class THIABPurchase extends BaseIABPurchase
         super(itemType, jsonPurchaseInfo, signature);
     }
 
+    @Override protected IABSKU createIABSKU(String skuString)
+    {
+        return new IABSKU(skuString);
+    }
+
+    @Override protected THIABOrderId createIABOrderId(String orderIdString)
+    {
+        return new THIABOrderId(orderIdString);
+    }
+
     @JsonIgnore
-    public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         if (developerPayload != null)
         {

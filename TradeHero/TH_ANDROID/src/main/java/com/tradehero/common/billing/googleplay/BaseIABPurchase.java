@@ -16,7 +16,6 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
@@ -24,7 +23,10 @@ import timber.log.Timber;
 /**
  * Represents an in-app billing purchase.
  */
-abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
+abstract public class BaseIABPurchase<
+        IABSKUType extends IABSKU,
+        IABOrderIdType extends IABOrderId>
+        implements IABPurchase<IABSKUType, IABOrderIdType>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -36,9 +38,9 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
     public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
-    protected final THIABOrderId orderId;
+    protected final IABOrderIdType orderId;
     public final String packageName;
-    protected final IABSKU iabSKU;
+    protected final IABSKUType iabSKU;
     public final long purchaseTime;
     public final int purchaseState;
     public final String developerPayload;
@@ -52,10 +54,10 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
         this.originalJson = jsonPurchaseInfo;
         JSONObject o = new JSONObject(this.originalJson);
         String orderIdString = o.optString(JSON_KEY_ORDER_ID);
-        this.orderId = new THIABOrderId(orderIdString);
+        this.orderId = createIABOrderId(orderIdString);
         this.packageName = o.optString(JSON_KEY_PACKAGE_NAME);
         String skuString = o.optString(JSON_KEY_PRODUCT_ID);
-        this.iabSKU = new IABSKU(skuString);
+        this.iabSKU = createIABSKU(skuString);
         this.purchaseTime = o.optLong(JSON_KEY_PURCHASE_TIME);
         this.purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
 
@@ -77,6 +79,9 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
         this.signature = signature;
     }
 
+    abstract protected IABSKUType createIABSKU(String skuString);
+    abstract protected IABOrderIdType createIABOrderId(String orderIdString);
+
     @JsonIgnore
     @Override public String getType()
     {
@@ -90,13 +95,13 @@ abstract public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderI
     }
 
     @JsonIgnore
-    @Override public THIABOrderId getOrderId()
+    @Override public IABOrderIdType getOrderId()
     {
         return orderId;
     }
 
     @JsonIgnore
-    @Override public IABSKU getProductIdentifier()
+    @Override public IABSKUType getProductIdentifier()
     {
         return iabSKU;
     }
