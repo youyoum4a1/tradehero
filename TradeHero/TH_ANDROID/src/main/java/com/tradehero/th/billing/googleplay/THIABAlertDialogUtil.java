@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -15,8 +14,8 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.fragments.billing.StoreSKUDetailView;
-import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
+import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
+import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.Comparator;
@@ -29,8 +28,8 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
         THIABLogicHolder,
-        StoreSKUDetailView,
-        THSKUDetailsAdapter>
+        THIABStoreProductDetailView,
+        THSKUDetailAdapter>
 {
     public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
 
@@ -168,10 +167,10 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     }
 
     //<editor-fold desc="SKU related">
-    @Override protected THSKUDetailsAdapter createProductDetailAdapter(Activity activity,
+    @Override protected THSKUDetailAdapter createProductDetailAdapter(Activity activity,
             LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
     {
-        return new THSKUDetailsAdapter(activity, layoutInflater, skuDomain);
+        return new THSKUDetailAdapter(activity, layoutInflater, skuDomain);
     }
 
     @Override protected Comparator<THIABProductDetail> createProductDetailComparator()

@@ -26,16 +26,16 @@ import java.util.Map;
  */
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
-        ProductDetailType extends ProductDetail<ProductIdentifierType>,
+        THProductDetailType extends THProductDetail<ProductIdentifierType>,
         ProductDetailDomainInformerType extends ProductDetailDomainInformer<
                 ProductIdentifierType,
-                ProductDetailType>,
+                THProductDetailType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,
-                ProductDetailType>,
+                THProductDetailType>,
         ProductDetailAdapterType extends ProductDetailAdapter<
                 ProductIdentifierType,
-                ProductDetailType,
+                THProductDetailType,
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
@@ -92,7 +92,7 @@ abstract public class BillingAlertDialogUtil<
             int requestCode,
             Activity activity,
             ProductDetailDomainInformerType domainInformer,
-            OnDialogProductDetailClickListener<ProductDetailType> clickListener,
+            OnDialogProductDetailClickListener<THProductDetailType> clickListener,
             ProductIdentifierDomain skuDomain,
             int titleResId)
     {
@@ -103,7 +103,7 @@ abstract public class BillingAlertDialogUtil<
             int requestCode,
             Activity activity,
             ProductDetailDomainInformerType domainInformer,
-            OnDialogProductDetailClickListener<ProductDetailType> clickListener,
+            OnDialogProductDetailClickListener<THProductDetailType> clickListener,
             ProductIdentifierDomain skuDomain,
             int titleResId,
             Map<ProductIdentifier, Boolean> enabledItems)
@@ -111,7 +111,7 @@ abstract public class BillingAlertDialogUtil<
         final ProductDetailAdapterType detailAdapter = createProductDetailAdapter(activity, activity.getLayoutInflater(), skuDomain);
         detailAdapter.setEnabledItems(enabledItems);
         detailAdapter.setProductDetailComparator(createProductDetailComparator());
-        List<ProductDetailType> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
+        List<THProductDetailType> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailAdapter.setItems(desiredSkuDetails);
 
         localyticsSession.tagEvent(skuDomain.localyticsShowTag);
@@ -123,14 +123,14 @@ abstract public class BillingAlertDialogUtil<
             Activity activity,
             LayoutInflater layoutInflater,
             ProductIdentifierDomain skuDomain);
-    abstract protected Comparator<ProductDetailType> createProductDetailComparator();
+    abstract protected Comparator<THProductDetailType> createProductDetailComparator();
 
     public AlertDialog popBuyDialog(
             final int requestCode,
             final Context context,
             final ProductDetailAdapterType detailsAdapter,
             int titleResId,
-            final OnDialogProductDetailClickListener<ProductDetailType> clickListener)
+            final OnDialogProductDetailClickListener<THProductDetailType> clickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -146,7 +146,7 @@ abstract public class BillingAlertDialogUtil<
                                     requestCode,
                                     dialogInterface,
                                     i,
-                                    (ProductDetailType) detailsAdapter.getItem(i)
+                                    (THProductDetailType) detailsAdapter.getItem(i)
                             );
                         }
                         dialogInterface.cancel();

@@ -15,7 +15,6 @@ public interface ProductIdentifierFetcher<
     ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener();
     void setProductIdentifierListener(ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener);
     void fetchProductIdentifiers(int requestCode);
-    Map<ProductIdentifierListKeyType, ProductIdentifierListType> fetchProductIdentifiersSync();
 
     public static interface OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType extends ProductIdentifierListKey,

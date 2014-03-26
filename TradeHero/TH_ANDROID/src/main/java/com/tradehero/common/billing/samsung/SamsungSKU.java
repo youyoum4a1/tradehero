@@ -14,5 +14,20 @@ public class SamsungSKU implements ProductIdentifier
     {
         this.groupId = groupId;
         this.itemId = itemId;
+        checkIsValid();
+    }
+
+    protected void checkIsValid()
+    {
+        if (!isValid())
+        {
+            throw new IllegalArgumentException("One element is null or empty");
+        }
+    }
+
+    public boolean isValid()
+    {
+        return groupId != null && !groupId.isEmpty() &&
+                itemId != null && !itemId.isEmpty();
     }
 }

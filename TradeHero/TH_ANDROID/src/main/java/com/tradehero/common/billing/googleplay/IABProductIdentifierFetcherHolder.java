@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay;
+package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;

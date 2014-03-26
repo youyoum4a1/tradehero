@@ -4,30 +4,32 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.fragments.billing.googleplay.SKUDetailView;
+import com.tradehero.th.billing.THProductDetail;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
-public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
+public class StoreProductDetailView<
+        ProductIdentifierType extends ProductIdentifier,
+        ProductDetailType extends THProductDetail<ProductIdentifierType>>
+        extends ProductDetailView<ProductIdentifierType, ProductDetailType>
 {
     protected ImageView icDeliverable;
     protected TextView furtherDescription;
     protected ImageView icRibbon;
 
-
     //<editor-fold desc="Constructors">
-    public StoreSKUDetailView(Context context)
+    public StoreProductDetailView(Context context)
     {
         super(context);
     }
 
-    public StoreSKUDetailView(Context context, AttributeSet attrs)
+    public StoreProductDetailView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public StoreSKUDetailView(Context context, AttributeSet attrs, int defStyle)
+    public StoreProductDetailView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -55,7 +57,7 @@ public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
         {
             if (skuDetails != null)
             {
-                icDeliverable.setImageResource(skuDetails.iconResId);
+                icDeliverable.setImageResource(skuDetails.getIconResId());
             }
         }
     }
@@ -66,8 +68,8 @@ public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
         {
             if (skuDetails != null)
             {
-                furtherDescription.setVisibility(skuDetails.hasFurtherDetails ? VISIBLE : GONE);
-                furtherDescription.setText(skuDetails.furtherDetailsResId);
+                furtherDescription.setVisibility(skuDetails.getHasFurtherDetails() ? VISIBLE : GONE);
+                furtherDescription.setText(skuDetails.getFurtherDetailsResId());
             }
         }
     }
@@ -78,8 +80,8 @@ public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
         {
             if (skuDetails != null)
             {
-                icRibbon.setVisibility(skuDetails.hasRibbon ? VISIBLE : GONE);
-                icRibbon.setImageResource(skuDetails.iconRibbonResId);
+                icRibbon.setVisibility(skuDetails.getHasRibbon() ? VISIBLE : GONE);
+                icRibbon.setImageResource(skuDetails.getIconRibbonResId());
             }
         }
     }

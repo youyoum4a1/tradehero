@@ -16,4 +16,10 @@ public class THSamsungConstants extends SamsungConstants
     // Below are the codes as they are understood on Samsung Store
     public static final String EXTRA_CASH_T0_ITEM_ID = "000001016731";
     public static final String EXTRA_CASH_T0_DATA_1 = "com.myhero.th.extracash.t0";
+
+    public static final String EXTRA_CASH_T1_ITEM_ID = "000001016742";
+    public static final String EXTRA_CASH_T1_DATA_1 = "com.myhero.th.extracash.t1";
+
+    public static final String EXTRA_CASH_T2_ITEM_ID = "000001016743";
+    public static final String EXTRA_CASH_T2_DATA_1 = "com.myhero.th.extracash.t2";
 }

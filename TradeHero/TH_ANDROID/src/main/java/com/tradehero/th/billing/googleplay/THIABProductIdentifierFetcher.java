@@ -61,9 +61,4 @@ public class THIABProductIdentifierFetcher
         super.fetchProductIdentifiers(requestCode);
         notifyListenerFetched(Collections.unmodifiableMap(availableProductIdentifiers));
     }
-
-    @Override public Map<IABSKUListKey, IABSKUList> fetchProductIdentifiersSync()
-    {
-        return Collections.unmodifiableMap(availableProductIdentifiers);
-    }
 }

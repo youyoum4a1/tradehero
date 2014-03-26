@@ -13,7 +13,6 @@ import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OrderId;
-import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierListKey;
@@ -45,7 +44,7 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
-        ProductDetailType extends ProductDetail<ProductIdentifierType>,
+        THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         THProductPurchaseType extends THProductPurchase<
@@ -55,7 +54,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
+                THProductDetailType,
                 THPurchaseOrderType,
                 OrderIdType,
                 THProductPurchaseType,
@@ -63,16 +62,16 @@ abstract public class THBaseBillingInteractor<
                 BillingExceptionType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,
-                ProductDetailType>,
+                THProductDetailType>,
         ProductDetailAdapterType extends ProductDetailAdapter<
                 ProductIdentifierType,
-                ProductDetailType,
+                THProductDetailType,
                 ProductDetailViewType>,
         THBillingRequestType extends THBillingRequest<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
+                THProductDetailType,
                 THPurchaseOrderType,
                 OrderIdType,
                 THProductPurchaseType,
@@ -81,7 +80,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
+                THProductDetailType,
                 THPurchaseOrderType,
                 OrderIdType,
                 THProductPurchaseType,
@@ -91,7 +90,7 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListKeyType,
         ProductIdentifierType,
         ProductIdentifierListType,
-        ProductDetailType,
+        THProductDetailType,
         THPurchaseOrderType,
         OrderIdType,
         THProductPurchaseType,
@@ -177,7 +176,7 @@ abstract public class THBaseBillingInteractor<
 
     abstract protected BillingAlertDialogUtil<
         ProductIdentifierType,
-        ProductDetailType,
+            THProductDetailType,
         THBillingLogicHolderType,
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
@@ -346,7 +345,7 @@ abstract public class THBaseBillingInteractor<
     }
 
     @Override public void onDialogProductDetailClicked(int requestCode, DialogInterface dialogInterface,
-            int position, ProductDetailType productDetail)
+            int position, THProductDetailType productDetail)
     {
         launchPurchaseSequence(requestCode, productDetail.getProductIdentifier());
     }
@@ -601,7 +600,7 @@ abstract public class THBaseBillingInteractor<
     //<editor-fold desc="Inventory Fetch">
     protected BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
-            ProductDetailType,
+            THProductDetailType,
             BillingExceptionType> createInventoryFetchedListener()
     {
         return new THBaseBillingInteractorOnInventoryFetchedListener();
@@ -609,7 +608,7 @@ abstract public class THBaseBillingInteractor<
 
     protected class THBaseBillingInteractorOnInventoryFetchedListener implements BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
-            ProductDetailType,
+            THProductDetailType,
             BillingExceptionType>
     {
         private void forgetListener(int requestCode)
@@ -621,7 +620,7 @@ abstract public class THBaseBillingInteractor<
             }
         }
 
-        @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+        @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
         {
             forgetListener(requestCode);
             handleInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
@@ -636,7 +635,7 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void handleInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+    protected void handleInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
     {
         THUIBillingRequestType thuiBillingRequest = uiBillingRequests.get(requestCode);
         if (thuiBillingRequest != null)
@@ -649,7 +648,7 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void notifyInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
+    protected void notifyInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
     {
         THUIBillingRequestType thuiBillingRequest = uiBillingRequests.get(requestCode);
         if (thuiBillingRequest != null)
