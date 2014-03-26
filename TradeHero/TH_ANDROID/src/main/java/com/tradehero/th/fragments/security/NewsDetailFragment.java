@@ -54,15 +54,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_detail_comment_empty) TextView mNewsDetailCommentEmpty;
 
     private MiddleCallback<NewsItemDTO> newsServiceCallback;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
