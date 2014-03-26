@@ -6,9 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-  <include layout="@layout/news_detail_summary_view"/>
-  <include layout="@layout/news_item_action_buttons"/>
-  <include layout="@layout/news_detail_full_content"/>
 
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/news_comment_list_wrapper"

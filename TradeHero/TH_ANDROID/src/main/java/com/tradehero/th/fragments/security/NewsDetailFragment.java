@@ -9,6 +9,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -41,8 +42,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDetailFragment.class.getName() + ".title_bg";
 
-    @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
-
     private NewsItemDTO mSummaryNewsItemDTO;
     private NewsItemDTO mDetailNewsItemDTO;
 
@@ -58,9 +57,9 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
 
     // Comment list
-    @InjectView(R.id.news_comment_list_wrapper) BetterViewAnimator mNewsCommentListWrapper;
-    @InjectView(R.id.news_detail_comment_list) ListView mNewsDetailCommentList;
-    @InjectView(R.id.news_detail_comment_empty) TextView mNewsDetailCommentEmpty;
+    @InjectView(R.id.news_comment_list_wrapper) @Optional BetterViewAnimator mNewsCommentListWrapper;
+    @InjectView(R.id.news_detail_comment_list) @Optional ListView mNewsDetailCommentList;
+    @InjectView(R.id.news_detail_comment_empty) @Optional TextView mNewsDetailCommentEmpty;
 
     private MiddleCallback<NewsItemDTO> newsServiceCallback;
     private DiscussionListAdapter discussionAdapter;
@@ -78,20 +77,17 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.news_detail_view, container, false);
-        ButterKnife.inject(this, view);
-        initViews(view);
-        return view;
+        View listViewWrapper = inflater.inflate(R.layout.news_detail_view, container, false);
+        View listHeaderWrapper = inflater.inflate(R.layout.news_detail_view_header, null);
+        ButterKnife.inject(this, listHeaderWrapper);
+        initViews(listViewWrapper);
+        mNewsDetailCommentList.addHeaderView(listHeaderWrapper);
+        return listViewWrapper;
     }
 
     @OnClick(R.id.news_action_tv_more) void onClickTvMore(View v)
     {
         showShareDialog();
-    }
-
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override public void onResume()
@@ -185,6 +181,9 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     private void initViews(View view)
     {
         fontUtil.setTypeFace(mNewsActionTvMore, FontUtil.FontType.AWESOME);
+        mNewsCommentListWrapper = (BetterViewAnimator) view.findViewById(R.id.news_comment_list_wrapper);
+        mNewsDetailCommentList = (ListView) view.findViewById(R.id.news_detail_comment_list);
+        mNewsDetailCommentEmpty = (TextView) view.findViewById(R.id.news_detail_comment_empty);
     }
 
     private void linkWith()
