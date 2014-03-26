@@ -60,6 +60,13 @@
       <type>apklib</type>
     </dependency>
 
+    <dependency>
+      <groupId>com.sec.android.iap</groupId>
+      <artifactId>samsunglib</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>apklib</type>
+    </dependency>
+
     <!-- The current version, 1.3.0, has problem of conflicting with HTTPRequest, 2.0 will resolve it however it's still in beta-->
     <dependency>
       <groupId>com.squareup.okhttp</groupId>
