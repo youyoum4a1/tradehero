@@ -9,18 +9,26 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.SecurityItemViewAdapterFactory;
+import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
+import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
+import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -36,7 +44,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private NewsItemDTO mSummaryNewsItemDTO;
-    private NewsItemDTO mDetailNewsItemDto;
+    private NewsItemDTO mDetailNewsItemDTO;
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject FontUtil fontUtil;
@@ -50,10 +58,14 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
 
     // Comment list
+    @InjectView(R.id.news_comment_list_wrapper) BetterViewAnimator mNewsCommentListWrapper;
     @InjectView(R.id.news_detail_comment_list) ListView mNewsDetailCommentList;
     @InjectView(R.id.news_detail_comment_empty) TextView mNewsDetailCommentEmpty;
 
     private MiddleCallback<NewsItemDTO> newsServiceCallback;
+    private DiscussionListAdapter discussionAdapter;
+    private NewsItemDTOKey newsItemDTOKey;
+    private int commentListWrapperDisplayedChildId;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -77,9 +89,24 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         showShareDialog();
     }
 
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override public void onResume()
     {
         super.onResume();
+
+        if (commentListWrapperDisplayedChildId != 0)
+        {
+            mNewsCommentListWrapper.setDisplayedChildByLayoutId(commentListWrapperDisplayedChildId);
+        }
+
+        //if (newsItemDTOKey == null)
+        //{
+        //    newsItemDTOKey = new NewsItemDTOKey(getArguments());
+        //}
 
         linkWith();
 
@@ -89,6 +116,61 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         {
             newsDetailSummaryView.setBackgroundResource(bgRes);
         }
+
+        discussionAdapter = createDiscussionAdapter();
+        mNewsDetailCommentList.setAdapter(discussionAdapter);
+        mNewsDetailCommentList.setEmptyView(mNewsDetailCommentEmpty);
+
+        getActivity().getSupportLoaderManager()
+                .initLoader(discussionAdapter.getLoaderId(), null,
+                        discussionAdapter.getLoaderCallback());
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+
+        commentListWrapperDisplayedChildId = mNewsCommentListWrapper.getDisplayedChildLayoutId();
+    }
+
+    private DiscussionListAdapter createDiscussionAdapter()
+    {
+        // TODO, following code looks ugly coz of all the hacks :(, remove hacks
+        int loaderId = 0;
+        if (mSummaryNewsItemDTO != null)
+        {
+            loaderId = mSummaryNewsItemDTO.id;
+        }
+        else if (mDetailNewsItemDTO != null)
+        {
+            loaderId = mDetailNewsItemDTO.id;
+        }
+
+        DiscussionListAdapter adapter = new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(),
+                loaderId, R.layout.news_discussion_comment_item);
+        adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
+        {
+            @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
+            {
+                mNewsCommentListWrapper.setDisplayedChildByLayoutId(R.id.news_detail_comment_list);
+                //if (discussionStatus != null)
+                //{
+                //    int statusResource = discussionListAdapter.getCount() != 0 ? R.string.discussion_loaded : R.string.discussion_empty;
+                //    discussionStatus.setText(getString(statusResource));
+                //}
+            }
+
+            @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)
+            {
+                return createNewsDiscussionLoader();
+            }
+        });
+        return adapter;
+    }
+
+    private ListLoader<DiscussionDTO> createNewsDiscussionLoader()
+    {
+        return new NewsDiscussionListLoader(getActivity(), newsItemDTOKey);
     }
 
     @Override public void onDestroy()
@@ -109,6 +191,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     {
         Bundle args = getArguments();
         mSummaryNewsItemDTO = NewsItemDTO.getSampleNewsItemDTO(args);
+        newsItemDTOKey = new NewsItemDTOKey(mSummaryNewsItemDTO.id);
 
         votePair.display(mSummaryNewsItemDTO);
         newsDetailSummaryView.display(mSummaryNewsItemDTO);
@@ -118,8 +201,8 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private void linkWith(NewsItemDTO newsItemDTO)
     {
-        mDetailNewsItemDto = newsItemDTO;
-        newsDetailFullView.display(mDetailNewsItemDto);
+        mDetailNewsItemDTO = newsItemDTO;
+        newsDetailFullView.display(mDetailNewsItemDTO);
     }
 
     private Callback<NewsItemDTO> createNewsDetailCallback()
@@ -143,7 +226,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     {
         View contentView = LayoutInflater.from(getSherlockActivity()).inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDto == null ? mSummaryNewsItemDTO : mDetailNewsItemDto, false);
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO == null ? mSummaryNewsItemDTO : mDetailNewsItemDTO, false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
 
