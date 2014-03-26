@@ -56,23 +56,15 @@ abstract public class BaseSamsungPurchaser<
         mIapHelper.startPayment(sku.groupId, sku.itemId, true, this);
     }
 
-    @Override public void onPayment(ErrorVo _errorVO, PurchaseVo _purchaseVO)
+    @Override public void onPayment(ErrorVo errorVo, PurchaseVo purchaseVo)
     {
-        if (_errorVO == null && _purchaseVO != null)
+        if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
-            notifyPurchaseFinished(createSamsungPurchase(_purchaseVO));
-        }
-        else if (_errorVO != null && _purchaseVO == null)
-        {
-            notifyPurchaseFailed(createSamsungException(_errorVO));
-        }
-        else if (_errorVO == null)
-        {
-            throw new IllegalArgumentException("Both error and purchase are null");
+            notifyPurchaseFinished(createSamsungPurchase(purchaseVo));
         }
         else
         {
-            throw new IllegalArgumentException(String.format("Not implemented Error:%s Purchase:%s", _errorVO.dump(), _purchaseVO.dump()));
+            notifyPurchaseFailed(createSamsungException(errorVo));
         }
     }
 
