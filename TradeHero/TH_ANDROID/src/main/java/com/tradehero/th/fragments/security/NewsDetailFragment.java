@@ -18,7 +18,6 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.competition.SecurityItemViewAdapterFactory;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
