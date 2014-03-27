@@ -23,19 +23,19 @@ public class THIABExceptionFactory extends IABExceptionFactory
             switch (responseStatus)
             {
                 case THIABConstants.UNHANDLED_DOMAIN: // -2000
-                    exception = new UnhandledSKUDomainException(message);
+                    exception = new IABUnhandledSKUDomainException(message);
                     break;
 
                 case THIABConstants.PURCHASE_REPORT_RETROFIT_ERROR: // -2001
-                    exception = new PurchaseReportRetrofitException(message);
+                    exception = new IABPurchaseReportRetrofitException(message);
                     break;
 
                 case THIABConstants.MISSING_CACHED_DETAIL: // -2002
-                    exception = new MissingCachedProductDetailException(message);
+                    exception = new IABMissingCachedProductDetailException(message);
                     break;
 
                 case THIABConstants.MISSING_APPLICABLE_PORTFOLIO_ID: // -2003
-                    exception = new MissingApplicablePortfolioIdException(message);
+                    exception = new IABMissingApplicablePortfolioIdException(message);
                     break;
             }
         }

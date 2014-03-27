@@ -7,7 +7,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
-import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
+import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
 import java.io.IOException;
 import timber.log.Timber;
 
@@ -22,13 +22,15 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
+    public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload) throws
+            IABMissingApplicablePortfolioIdException
     {
         this(sku, 1, developerPayload);
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
-    public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
+    public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload) throws
+            IABMissingApplicablePortfolioIdException
     {
         this.sku = sku;
         this.quantity = quantity;
@@ -37,11 +39,12 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     }
     //</editor-fold>
 
-    public void testOwnedPortfolioIdValid(OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
+    public void testOwnedPortfolioIdValid(OwnedPortfolioId developerPayload) throws
+            IABMissingApplicablePortfolioIdException
     {
         if (developerPayload == null || !developerPayload.isValid())
         {
-            throw new MissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
+            throw new IABMissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
         }
     }
 

@@ -40,8 +40,4 @@ public interface IABLogicHolder<
                 IABPurchaseType,
                 IABExceptionType>
 {
-    IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener(int requestCode);
-    void registerConsumptionFinishedListener(int requestCode,
-            IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionFinishedListener);
-    void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
 }

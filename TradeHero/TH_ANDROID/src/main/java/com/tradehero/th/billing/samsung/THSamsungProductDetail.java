@@ -80,15 +80,4 @@ public class THSamsungProductDetail
     {
         return getItemDesc();
     }
-
-    public static Predicate<THSamsungProductDetail> getPredicateIsOfCertainDomain(final ProductIdentifierDomain domain)
-    {
-        return new Predicate<THSamsungProductDetail>()
-        {
-            @Override public boolean apply(THSamsungProductDetail thSamsungProductDetail)
-            {
-                return thSamsungProductDetail != null && (thSamsungProductDetail.domain == null ? domain == null : thSamsungProductDetail.domain.equals(domain));
-            }
-        };
-    }
 }

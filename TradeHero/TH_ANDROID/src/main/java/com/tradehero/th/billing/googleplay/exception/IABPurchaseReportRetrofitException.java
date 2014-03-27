@@ -5,37 +5,37 @@ import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueExce
 import com.tradehero.th.billing.googleplay.THIABConstants;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
-public class PurchaseReportRetrofitException extends IABOneResponseValueException
+public class IABPurchaseReportRetrofitException extends IABOneResponseValueException
 {
-    public static final String TAG = PurchaseReportRetrofitException.class.getSimpleName();
+    public static final String TAG = IABPurchaseReportRetrofitException.class.getSimpleName();
     public static final int VALID_RESPONSE = THIABConstants.PURCHASE_REPORT_RETROFIT_ERROR;
 
-    public PurchaseReportRetrofitException(IABResult r)
+    public IABPurchaseReportRetrofitException(IABResult r)
     {
         super(r);
     }
 
-    public PurchaseReportRetrofitException(IABResult r, Exception cause)
+    public IABPurchaseReportRetrofitException(IABResult r, Exception cause)
     {
         super(r, cause);
     }
 
-    public PurchaseReportRetrofitException(String message)
+    public IABPurchaseReportRetrofitException(String message)
     {
         super(VALID_RESPONSE, message);
     }
 
-    public PurchaseReportRetrofitException(String message, Exception cause)
+    public IABPurchaseReportRetrofitException(String message, Exception cause)
     {
         super(VALID_RESPONSE, message, cause);
     }
 
-    public PurchaseReportRetrofitException(String message, Throwable cause)
+    public IABPurchaseReportRetrofitException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
-    public PurchaseReportRetrofitException(Throwable cause)
+    public IABPurchaseReportRetrofitException(Throwable cause)
     {
         super(cause);
     }

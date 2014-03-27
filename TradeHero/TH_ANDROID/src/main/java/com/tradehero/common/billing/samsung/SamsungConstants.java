@@ -10,6 +10,4 @@ public class SamsungConstants
     public static final int IAP_ERROR_IOEXCEPTION_ERROR = -1009;
     public static final int IAP_ERROR_SOCKET_TIMEOUT = -1010;
     public static final int IAP_ERROR_CONNECT_TIMEOUT = -1011;
-
-
 }

@@ -83,15 +83,4 @@ public class THIABProductDetail extends BaseIABProductDetail
     {
         return description;
     }
-
-    public static Predicate<THIABProductDetail> getPredicateIsOfCertainDomain(final ProductIdentifierDomain domain)
-    {
-        return new Predicate<THIABProductDetail>()
-        {
-            @Override public boolean apply(THIABProductDetail thIABProductDetail)
-            {
-                return thIABProductDetail != null && (thIABProductDetail.domain == null ? domain == null : thIABProductDetail.domain.equals(domain));
-            }
-        };
-    }
 }

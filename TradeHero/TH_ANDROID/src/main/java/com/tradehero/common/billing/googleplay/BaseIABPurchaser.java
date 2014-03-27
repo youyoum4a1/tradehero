@@ -228,7 +228,7 @@ abstract public class BaseIABPurchaser<
      *     false if the result was not related to a purchase, in which case you should
      *     handle it normally.
      */
-    public boolean handleActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public boolean handleActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("handleActivityResult requestCode: %d, resultCode: %d", requestCode, resultCode);
         if (requestCode != activityRequestCode)

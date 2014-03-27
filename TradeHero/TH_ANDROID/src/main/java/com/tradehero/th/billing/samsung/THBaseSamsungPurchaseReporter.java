@@ -1,16 +1,16 @@
-package com.tradehero.th.billing.googleplay;
+package com.tradehero.th.billing.samsung;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBasePurchaseReporter;
-import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
-import com.tradehero.th.billing.googleplay.exception.IABMissingCachedProductDetailException;
-import com.tradehero.th.billing.googleplay.exception.IABPurchaseReportRetrofitException;
-import com.tradehero.th.billing.googleplay.exception.IABUnhandledSKUDomainException;
+import com.tradehero.th.billing.samsung.exception.SamsungMissingApplicablePortfolioIdException;
+import com.tradehero.th.billing.samsung.exception.SamsungMissingCachedProductDetailException;
+import com.tradehero.th.billing.samsung.exception.SamsungPurchaseReportRetrofitException;
+import com.tradehero.th.billing.samsung.exception.SamsungUnhandledSKUDomainException;
 import com.tradehero.th.billing.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -18,7 +18,7 @@ import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -29,13 +29,13 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
-public class THBaseIABPurchaseReporter
+public class THBaseSamsungPurchaseReporter
         extends THBasePurchaseReporter<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>
-    implements THIABPurchaseReporter
+        SamsungSKU,
+        THSamsungOrderId,
+        THSamsungPurchase,
+        SamsungException>
+    implements THSamsungPurchaseReporter
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
@@ -43,17 +43,17 @@ public class THBaseIABPurchaseReporter
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
-    @Inject Lazy<THIABProductDetailCache> skuDetailCache;
+    @Inject Lazy<THSamsungProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     private MiddleCallbackAddCash middleCallbackAddCash;
 
-    public THBaseIABPurchaseReporter()
+    public THBaseSamsungPurchaseReporter()
     {
         DaggerUtils.inject(this);
     }
 
-    private OwnedPortfolioId getApplicableOwnedPortfolioId(THIABPurchase purchase) throws
-            IABMissingApplicablePortfolioIdException
+    private OwnedPortfolioId getApplicableOwnedPortfolioId(THSamsungPurchase purchase) throws
+            SamsungMissingApplicablePortfolioIdException
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
@@ -62,12 +62,12 @@ public class THBaseIABPurchaseReporter
         }
         if (portfolioId == null)
         {
-            throw new IABMissingApplicablePortfolioIdException("PortfolioId was not in payload or cache: " + currentUserId.toUserBaseKey());
+            throw new SamsungMissingApplicablePortfolioIdException("PortfolioId was not in payload or cache: " + currentUserId.toUserBaseKey());
         }
         return portfolioId;
     }
 
-    @Override public void reportPurchase(int requestCode, THIABPurchase purchase)
+    @Override public void reportPurchase(int requestCode, THSamsungPurchase purchase)
     {
         this.requestCode = requestCode;
         this.purchase = purchase;
@@ -76,7 +76,7 @@ public class THBaseIABPurchaseReporter
         {
             portfolioId = getApplicableOwnedPortfolioId(purchase);
         }
-        catch (IABMissingApplicablePortfolioIdException e)
+        catch (SamsungMissingApplicablePortfolioIdException e)
         {
             Timber.e(e, "Could not get ApplicablePortfolioId");
             notifyListenerReportFailed(e);
@@ -84,10 +84,10 @@ public class THBaseIABPurchaseReporter
         }
 
         // TODO do something when info is not available
-        THIABProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
+        THSamsungProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
         if (cachedSkuDetail == null)
         {
-            notifyListenerReportFailed(new IABMissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));
+            notifyListenerReportFailed(new SamsungMissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));
             return;
         }
         if (purchase == null)
@@ -104,10 +104,10 @@ public class THBaseIABPurchaseReporter
         switch (cachedSkuDetail.domain)
         {
             case DOMAIN_RESET_PORTFOLIO:
-                portfolioServiceWrapper.get().resetPortfolio(
-                        portfolioId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        new THIABPurchaseReporterPurchaseCallback());
+                //portfolioServiceWrapper.get().resetPortfolio(
+                //        portfolioId,
+                //        purchase.getGooglePlayPurchaseDTO(),
+                //        new THSamsungPurchaseReporterPurchaseCallback());
                 break;
 
             case DOMAIN_VIRTUAL_DOLLAR:
@@ -115,17 +115,17 @@ public class THBaseIABPurchaseReporter
                 {
                     middleCallbackAddCash.setPrimaryCallback(null);
                 }
-                middleCallbackAddCash = portfolioServiceWrapper.get().addCash(
-                        portfolioId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        new THIABPurchaseReporterPurchaseCallback());
+                //middleCallbackAddCash = portfolioServiceWrapper.get().addCash(
+                //        portfolioId,
+                //        purchase.getGooglePlayPurchaseDTO(),
+                //        new THSamsungPurchaseReporterPurchaseCallback());
                 break;
 
             case DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        new THIABPurchaseReporterAlertPlanPurchaseCallback());
+                //alertPlanService.get().subscribeToAlertPlan(
+                //        portfolioId.userId,
+                //        purchase.getGooglePlayPurchaseDTO(),
+                //        new THSamsungPurchaseReporterAlertPlanPurchaseCallback());
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
@@ -133,7 +133,7 @@ public class THBaseIABPurchaseReporter
                 break;
 
             default:
-                notifyListenerReportFailed(new IABUnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method"));
+                notifyListenerReportFailed(new SamsungUnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method"));
                 break;
         }
     }
@@ -142,17 +142,17 @@ public class THBaseIABPurchaseReporter
     {
         if (purchase.getUserToFollow() != null)
         {
-            userServiceWrapper.follow(
-                    purchase.getUserToFollow(),
-                    purchase.getGooglePlayPurchaseDTO(),
-                    new THIABPurchaseReporterPurchaseCallback());
+            //userServiceWrapper.follow(
+            //        purchase.getUserToFollow(),
+            //        purchase.getGooglePlayPurchaseDTO(),
+            //        new THSamsungPurchaseReporterPurchaseCallback());
         }
         else
         {
-            userService.get().addCredit(
-                    portfolioId.userId,
-                    purchase.getGooglePlayPurchaseDTO(),
-                    new THIABPurchaseReporterPurchaseCallback());
+            //userService.get().addCredit(
+            //        portfolioId.userId,
+            //        purchase.getGooglePlayPurchaseDTO(),
+            //        new THSamsungPurchaseReporterPurchaseCallback());
         }
     }
 
@@ -163,16 +163,16 @@ public class THBaseIABPurchaseReporter
         {
             portfolioId = getApplicableOwnedPortfolioId(purchase);
         }
-        catch (IABMissingApplicablePortfolioIdException e)
+        catch (SamsungMissingApplicablePortfolioIdException e)
         {
             Timber.e(e, "Could not get ApplicablePortfolioId");
             notifyListenerReportFailed(e);
             return;
         }
-        alertPlanServiceWrapper.get().checkAlertPlanAttribution(
-                portfolioId.getUserBaseKey(),
-                purchase.getGooglePlayPurchaseDTO(),
-                new THIABPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
+        //alertPlanServiceWrapper.get().checkAlertPlanAttribution(
+        //        portfolioId.getUserBaseKey(),
+        //        purchase.getGooglePlayPurchaseDTO(),
+        //        new THSamsungPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
     }
 
     protected void handleCallbackSuccess(UserProfileDTO userProfileDTO, Response response)
@@ -183,7 +183,7 @@ public class THBaseIABPurchaseReporter
     protected void handleCallbackFailed(RetrofitError error)
     {
         Timber.e("Failed reporting to TradeHero server", error);
-        notifyListenerReportFailed(new IABPurchaseReportRetrofitException(error));
+        notifyListenerReportFailed(new SamsungPurchaseReportRetrofitException(error));
     }
 
     protected void handleCallbackStatusSuccess(AlertPlanStatusDTO alertPlanStatusDTO, Response response, RetrofitError errorFromReport)
@@ -193,7 +193,7 @@ public class THBaseIABPurchaseReporter
         {
             portfolioId = getApplicableOwnedPortfolioId(purchase);
         }
-        catch (IABMissingApplicablePortfolioIdException e)
+        catch (SamsungMissingApplicablePortfolioIdException e)
         {
             Timber.e(e, "Could not get ApplicablePortfolioId");
             notifyListenerReportFailed(e);
@@ -207,13 +207,13 @@ public class THBaseIABPurchaseReporter
         }
         else
         {
-            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THIABPurchaseReporterPurchaseCallback());
+            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THSamsungPurchaseReporterPurchaseCallback());
         }
     }
 
-    protected class THIABPurchaseReporterPurchaseCallback implements Callback<UserProfileDTO>
+    protected class THSamsungPurchaseReporterPurchaseCallback implements Callback<UserProfileDTO>
     {
-        public THIABPurchaseReporterPurchaseCallback()
+        public THSamsungPurchaseReporterPurchaseCallback()
         {
             super();
         }
@@ -229,9 +229,9 @@ public class THBaseIABPurchaseReporter
         }
     }
 
-    protected class THIABPurchaseReporterAlertPlanPurchaseCallback extends THIABPurchaseReporterPurchaseCallback
+    protected class THSamsungPurchaseReporterAlertPlanPurchaseCallback extends THSamsungPurchaseReporterPurchaseCallback
     {
-        public THIABPurchaseReporterAlertPlanPurchaseCallback()
+        public THSamsungPurchaseReporterAlertPlanPurchaseCallback()
         {
             super();
         }
@@ -242,11 +242,11 @@ public class THBaseIABPurchaseReporter
         }
     }
 
-    protected class THIABPurchaseReporterAlertPlanStatusCallback implements Callback<AlertPlanStatusDTO>
+    protected class THSamsungPurchaseReporterAlertPlanStatusCallback implements Callback<AlertPlanStatusDTO>
     {
         protected final RetrofitError errorFromReport;
 
-        public THIABPurchaseReporterAlertPlanStatusCallback(RetrofitError errorFromReport)
+        public THSamsungPurchaseReporterAlertPlanStatusCallback(RetrofitError errorFromReport)
         {
             super();
             this.errorFromReport = errorFromReport;

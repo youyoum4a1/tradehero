@@ -6,7 +6,7 @@ import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungInventoryFetcher;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
+import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class THBaseSamsungInventoryFetcher
         SamsungException>
     implements THSamsungInventoryFetcher
 {
-    @Inject protected SamsungExceptionFactory samsungExceptionFactory;
+    @Inject protected THSamsungExceptionFactory samsungExceptionFactory;
 
     public THBaseSamsungInventoryFetcher(Context context, int mode)
     {

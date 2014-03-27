@@ -5,27 +5,27 @@ import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueExce
 import com.tradehero.th.billing.googleplay.THIABConstants;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
-public class UnhandledSKUDomainException extends IABOneResponseValueException
+public class IABMissingCachedProductDetailException extends IABOneResponseValueException
 {
-    public static final String TAG = UnhandledSKUDomainException.class.getSimpleName();
-    public static final int VALID_RESPONSE = THIABConstants.UNHANDLED_DOMAIN;
+    public static final String TAG = IABMissingCachedProductDetailException.class.getSimpleName();
+    public static final int VALID_RESPONSE = THIABConstants.MISSING_CACHED_DETAIL;
 
-    public UnhandledSKUDomainException(IABResult r)
+    public IABMissingCachedProductDetailException(IABResult r)
     {
         super(r);
     }
 
-    public UnhandledSKUDomainException(IABResult r, Exception cause)
+    public IABMissingCachedProductDetailException(IABResult r, Exception cause)
     {
         super(r, cause);
     }
 
-    public UnhandledSKUDomainException(String message)
+    public IABMissingCachedProductDetailException(String message)
     {
         super(VALID_RESPONSE, message);
     }
 
-    public UnhandledSKUDomainException(String message, Exception cause)
+    public IABMissingCachedProductDetailException(String message, Exception cause)
     {
         super(VALID_RESPONSE, message, cause);
     }

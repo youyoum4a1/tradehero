@@ -29,7 +29,8 @@ import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
 import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcher;
-import com.tradehero.th.billing.samsung.THSamsungPurchaser;
+import com.tradehero.th.billing.samsung.THBaseSamsungPurchaser;
+import com.tradehero.th.billing.samsung.THBaseSamsungPurchaserHolder;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -293,7 +294,8 @@ import javax.inject.Singleton;
                         THBaseSamsungProductIdentifierFetcherHolder.class,
                         THBaseSamsungInventoryFetcher.class,
                         THBaseSamsungInventoryFetcherHolder.class,
-                        THSamsungPurchaser.class,
+                        THBaseSamsungPurchaser.class,
+                        THBaseSamsungPurchaserHolder.class,
                         THBaseSamsungPurchaseFetcher.class,
                         THBaseSamsungPurchaseFetcherHolder.class,
 

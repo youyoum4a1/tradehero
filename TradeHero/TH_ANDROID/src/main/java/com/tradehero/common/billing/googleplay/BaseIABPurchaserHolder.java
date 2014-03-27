@@ -74,7 +74,7 @@ abstract public class BaseIABPurchaserHolder<
         iabPurchaser.purchase(requestCode, purchaseOrder);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         BaseIABPurchaser iabPurchaser = iabPurchasers.get(requestCode);

@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -136,7 +137,7 @@ public class THIABLogicHolderFull
         {
             return null;
         }
-        return ArrayUtils.filter(details, THIABProductDetail.getPredicateIsOfCertainDomain(domain));
+        return ArrayUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
     }
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
@@ -185,7 +186,6 @@ public class THIABLogicHolderFull
         if (prepared && billingRequest != null)
         {
             billingRequest.consumePurchase = true;
-            prepared = true;
         }
         return prepared;
     }

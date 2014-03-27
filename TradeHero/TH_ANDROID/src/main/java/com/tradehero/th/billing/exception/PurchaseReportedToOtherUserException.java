@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.exception;
+package com.tradehero.th.billing.exception;
 
 /**
  * Created by xavier on 2/12/14.

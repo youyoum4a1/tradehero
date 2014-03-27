@@ -2,12 +2,15 @@ package com.tradehero.th.billing.samsung;
 
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
+import com.tradehero.th.billing.THBillingConstants;
 import com.tradehero.th.utils.Constants;
 
 /**
  * Created by xavier on 3/26/14.
  */
-public class THSamsungConstants extends SamsungConstants
+public class THSamsungConstants
+        extends SamsungConstants
+        implements THBillingConstants
 {
     public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
 

@@ -7,7 +7,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
+import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class THBaseSamsungProductIdentifierFetcher
             SamsungException>
     implements THSamsungProductIdentifierFetcher
 {
-    @Inject protected SamsungExceptionFactory samsungExceptionFactory;
+    @Inject protected THSamsungExceptionFactory samsungExceptionFactory;
 
     public THBaseSamsungProductIdentifierFetcher(Context context, int mode)
     {
