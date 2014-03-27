@@ -8,7 +8,7 @@ import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
-import com.tradehero.th.fragments.discussion.TimelineDiscussion;
+import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
@@ -45,7 +45,7 @@ import javax.inject.Singleton;
                 ExtraTileAdapter.class,
                 ProviderTileView.class,
 
-                TimelineDiscussion.class,
+                TimelineDiscussionFragment.class,
         },
         complete = false,
         library = true

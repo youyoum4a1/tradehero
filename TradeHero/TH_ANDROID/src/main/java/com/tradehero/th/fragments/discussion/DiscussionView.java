@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -44,26 +43,6 @@ public class DiscussionView extends LinearLayout
     @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.timeline_action_button_more) TextView more;
 
-    @OnClick({
-            R.id.timeline_user_profile_name,
-            R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more,
-    })
-    public void onItemClicked(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                openOtherTimeline();
-                break;
-            case R.id.timeline_action_button_more:
-                //PopupMenu popUpMenu = createActionPopupMenu();
-                //popUpMenu.show();
-                break;
-        }
-    }
-
     @Inject CurrentUserId currentUserId;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject Lazy<Picasso> picasso;
@@ -96,6 +75,12 @@ public class DiscussionView extends LinearLayout
         DaggerUtils.inject(this);
     }
 
+    @Override protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
     @Override public void display(DiscussionDTO dto)
     {
         this.discussionDTO = dto;
@@ -115,6 +100,39 @@ public class DiscussionView extends LinearLayout
             displayCommentTime(discussionDTO);
 
             votePair.display(discussionDTO);
+        }
+    }
+
+
+    @OnClick({
+            R.id.timeline_user_profile_name,
+            R.id.timeline_user_profile_picture,
+            R.id.timeline_action_button_more,
+            R.id.timeline_action_button_comment
+    })
+    public void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_user_profile_picture:
+            case R.id.timeline_user_profile_name:
+                openOtherTimeline();
+                break;
+            case R.id.timeline_action_button_more:
+                //PopupMenu popUpMenu = createActionPopupMenu();
+                //popUpMenu.show();
+                break;
+            case R.id.timeline_action_button_comment:
+                openDiscussion();
+                break;
+        }
+    }
+
+    private void openDiscussion()
+    {
+        if (discussionDTO != null)
+        {
+            getNavigator().pushFragment(TimelineDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
         }
     }
 

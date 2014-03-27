@@ -45,7 +45,7 @@ public class SecurityNewsCache extends StraightDTOCache<SecurityId, PaginatedDTO
         {
             for (NewsItemDTO news: newsList)
             {
-                newsCache.get().put(news.getNewsItemDTOKey(), news);
+                newsCache.get().put(news.getDiscussionKey(), news);
             }
         }
 

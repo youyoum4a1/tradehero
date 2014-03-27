@@ -23,7 +23,6 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -36,7 +35,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.discussion.TimelineDiscussion;
+import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -44,7 +43,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.timeline.TimelineCache;
@@ -157,7 +155,7 @@ public class TimelineItemView extends LinearLayout
 
     private void openTimelineDiscussion()
     {
-        getNavigator().pushFragment(TimelineDiscussion.class, timelineItemDTO.getTimelineKey().getArgs());
+        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getTimelineKey().getArgs());
     }
 
     private void openOtherTimeline()
@@ -206,15 +204,15 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    @Override public void display(TimelineItemDTOKey itemKey)
+    public void linkWith(TimelineItemDTOEnhanced timelineItemDTO)
     {
-        this.timelineItemDTO = timelineCache.get().get(itemKey);
-        if (timelineItemDTO == null)
+        this.timelineItemDTO = timelineItemDTO;
+        if (this.timelineItemDTO == null)
         {
             return;
         }
 
-        UserProfileCompactDTO user = timelineItemDTO.getUser();
+        UserProfileCompactDTO user = this.timelineItemDTO.getUser();
         if (user == null)
         {
             return;
@@ -227,19 +225,19 @@ public class TimelineItemView extends LinearLayout
         displayUserProfilePicture(user);
 
         // markup text
-        displayMarkupText(timelineItemDTO);
+        displayMarkupText(this.timelineItemDTO);
 
         // timeline time
-        displayTimelineTime(timelineItemDTO);
+        displayTimelineTime(this.timelineItemDTO);
 
         // vendor logo
-        displayVendorLogo(timelineItemDTO);
+        displayVendorLogo(this.timelineItemDTO);
 
         displayWatchlistIndicator();
 
         if (votePair != null)
         {
-            votePair.display(timelineItemDTO);
+            votePair.display(this.timelineItemDTO);
         }
 
         updateActionButtons();
@@ -566,4 +564,9 @@ public class TimelineItemView extends LinearLayout
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
     //</editor-fold>
+
+    @Override public void display(TimelineItemDTOKey dtoKey)
+    {
+        linkWith(timelineCache.get().get(dtoKey));
+    }
 }

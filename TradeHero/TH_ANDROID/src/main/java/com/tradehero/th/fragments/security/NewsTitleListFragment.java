@@ -234,7 +234,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             int resId = adapter.getBackgroundRes(position);
             Navigator navigator =
                     ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            NewsItemDTOKey newsItemDTOKey = news.getNewsItemDTOKey();
+            NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = newsItemDTOKey.getArgs();
             bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
             navigator.pushFragment(NewsDetailFragment.class, bundle);

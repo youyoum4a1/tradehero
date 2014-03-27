@@ -1,6 +1,7 @@
 package com.tradehero.th.api.timeline;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -16,11 +17,6 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
     public Integer pushTypeId;
 
     private List<SecurityMediaDTO> medias;
-
-    public TimelineItemDTOKey getTimelineKey()
-    {
-        return new TimelineItemDTOKey(id);
-    }
 
     public List<SecurityMediaDTO> getMedias()
     {
@@ -61,5 +57,15 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
     public UserProfileCompactDTO getUser()
     {
         return (UserProfileCompactDTO) get(UserProfileCompactDTO.TAG);
+    }
+
+    @Override public AbstractPrimitiveDTOKey getDiscussionKey()
+    {
+        return getTimelineKey();
+    }
+
+    public TimelineItemDTOKey getTimelineKey()
+    {
+        return new TimelineItemDTOKey(id);
     }
 }

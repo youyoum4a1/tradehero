@@ -117,8 +117,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         }
 
         DiscussionListAdapter adapter =
-                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(),
-                        loaderId, R.layout.news_discussion_comment_item);
+                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(), loaderId, R.layout.news_discussion_comment_item);
         adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
         {
             @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)

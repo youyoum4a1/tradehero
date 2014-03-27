@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion;
 
+import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import com.tradehero.th.api.ExtendedDTO;
 import java.util.Date;
 
@@ -24,5 +25,10 @@ public class AbstractDiscussionDTO extends ExtendedDTO
         target.upvoteCount = upvoteCount;
         target.downvoteCount = downvoteCount;
         target.voteDirection = voteDirection;
+    }
+
+    public AbstractPrimitiveDTOKey getDiscussionKey()
+    {
+        return new DiscussionKey(id);
     }
 }
