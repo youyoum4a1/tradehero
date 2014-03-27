@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.discussion.DiscussionListLoader;
+import com.tradehero.th.fragments.discussion.TimelineCommentListLoader;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -31,11 +32,12 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.TranslationService;
+import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.network.service.*;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
 import dagger.Module;
@@ -58,6 +60,7 @@ import retrofit.converter.Converter;
                 SettingsPayPalFragment.class,
                 ProviderPageIntent.class,
                 DiscussionListLoader.class,
+                TimelineCommentListLoader.class,
 
                 VotePair.class
         },
