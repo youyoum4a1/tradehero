@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -21,6 +22,8 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -40,11 +43,13 @@ public class NewsDetailFullView extends LinearLayout
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
     @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;
     @InjectView(R.id.news_detail_reference_gv) GridView mNewsDetailReferenceGv;
+    @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
     @InjectView(R.id.news_detail_reference_gv_container) LinearLayout mNewsDetailReferenceGvContainer;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
     private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
+    private NewsItemDTO newsItemDTO;
 
     //<editor-fold desc="Constructors">
     public NewsDetailFullView(Context context)
@@ -70,6 +75,26 @@ public class NewsDetailFullView extends LinearLayout
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
         initViews();
+    }
+
+    @OnClick(R.id.news_view_on_web) void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.news_view_on_web:
+                openNewsOnWeb();
+                break;
+        }
+    }
+
+    private void openNewsOnWeb()
+    {
+        if (newsItemDTO != null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, newsItemDTO.url);
+            getNavigator().pushFragment(WebViewFragment.class, bundle);
+        }
     }
 
     private void initViews()
@@ -112,6 +137,7 @@ public class NewsDetailFullView extends LinearLayout
 
     @Override public void display(NewsItemDTO dto)
     {
+        this.newsItemDTO = dto;
         if (dto != null)
         {
             if (dto.text != null && !dto.text.isEmpty())
