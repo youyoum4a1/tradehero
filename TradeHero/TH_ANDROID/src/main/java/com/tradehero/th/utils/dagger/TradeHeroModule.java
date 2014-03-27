@@ -21,6 +21,8 @@ import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
+import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTester;
+import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTesterHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcher;
 import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
@@ -285,6 +287,8 @@ import javax.inject.Singleton;
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
 
+                        THBaseSamsungBillingAvailableTester.class,
+                        THBaseSamsungBillingAvailableTesterHolder.class,
                         THBaseSamsungProductIdentifierFetcher.class,
                         THBaseSamsungProductIdentifierFetcherHolder.class,
                         THBaseSamsungInventoryFetcher.class,
