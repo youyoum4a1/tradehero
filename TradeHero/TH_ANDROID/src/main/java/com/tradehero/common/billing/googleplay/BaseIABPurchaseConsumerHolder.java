@@ -12,10 +12,10 @@ abstract public class BaseIABPurchaseConsumerHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseConsumerType extends IABPurchaseConsumer<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType>>
+        IABPurchaseConsumerType extends BaseIABPurchaseConsumer<
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType>>
     implements IABPurchaseConsumerHolder<
         IABSKUType,
         IABOrderIdType,

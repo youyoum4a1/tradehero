@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
-import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
@@ -20,16 +19,14 @@ import timber.log.Timber;
 /**
  * Created by julien on 4/11/13
  */
-abstract public class IABBillingInventoryFetcher<
-            IABSKUListKeyType extends IABSKUListKey,
+abstract public class BaseIABInventoryFetcher<
             IABSKUType extends IABSKU,
-            IABSKUListType extends BaseIABSKUList<IABSKUType>,
             IABProductDetailsType extends IABProductDetail<IABSKUType>>
         extends IABServiceConnector
-        implements BillingInventoryFetcher<
-            IABSKUType,
-            IABProductDetailsType,
-            IABException>
+        implements IABInventoryFetcher<
+                    IABSKUType,
+                    IABProductDetailsType,
+                    IABException>
 {
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;
@@ -37,7 +34,7 @@ abstract public class IABBillingInventoryFetcher<
 
     private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
 
-    public IABBillingInventoryFetcher()
+    public BaseIABInventoryFetcher()
     {
         super();
         this.inventory = new HashMap<>();

@@ -19,7 +19,7 @@ public class THBaseIABPurchaseReporterHolder
             IABSKU,
             THIABOrderId,
             THIABPurchase,
-            THIABPurchaseReporter,
+        THBaseIABPurchaseReporter,
             IABException>
     implements THIABPurchaseReporterHolder
 {
@@ -54,8 +54,8 @@ public class THBaseIABPurchaseReporterHolder
         return portfolioCache.get();
     }
 
-    @Override protected THIABPurchaseReporter createPurchaseReporter()
+    @Override protected THBaseIABPurchaseReporter createPurchaseReporter()
     {
-        return new THIABPurchaseReporter();
+        return new THBaseIABPurchaseReporter();
     }
 }

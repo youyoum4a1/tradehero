@@ -14,7 +14,7 @@ public class THBaseIABPurchaserHolder
         THIABPurchaseOrder,
         THIABOrderId,
         THIABPurchase,
-        THIABPurchaser,
+        THBaseIABPurchaser,
         IABException>
     implements THIABPurchaserHolder
 {
@@ -23,8 +23,8 @@ public class THBaseIABPurchaserHolder
         super();
     }
 
-    @Override protected THIABPurchaser createPurchaser()
+    @Override protected THBaseIABPurchaser createPurchaser()
     {
-        return new THIABPurchaser();
+        return new THBaseIABPurchaser();
     }
 }

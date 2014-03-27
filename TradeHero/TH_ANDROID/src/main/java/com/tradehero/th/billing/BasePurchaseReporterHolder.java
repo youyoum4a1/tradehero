@@ -20,11 +20,11 @@ abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, OrderIdType>,
-        PurchaseReporterType extends PurchaseReporter<
-            ProductIdentifierType,
-            OrderIdType,
-            THProductPurchaseType,
-            BillingExceptionType>,
+        PurchaseReporterType extends THPurchaseReporter<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    THProductPurchaseType,
+                    BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements PurchaseReporterHolder<
         ProductIdentifierType,
@@ -35,7 +35,7 @@ abstract public class BasePurchaseReporterHolder<
     public static final String TAG = BasePurchaseReporterHolder.class.getSimpleName();
 
     protected Map<Integer /*requestCode*/, PurchaseReporterType> purchaseReporters;
-    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<
+    protected Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             THProductPurchaseType,
@@ -66,7 +66,7 @@ abstract public class BasePurchaseReporterHolder<
         purchaseReporters.remove(requestCode);
     }
 
-    @Override public PurchaseReporter.OnPurchaseReportedListener<
+    @Override public THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             THProductPurchaseType,
@@ -75,7 +75,7 @@ abstract public class BasePurchaseReporterHolder<
         return parentPurchaseReportedHandlers.get(requestCode);
     }
 
-    @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<
+    @Override public void registerPurchaseReportedListener(int requestCode, THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             THProductPurchaseType,
@@ -86,16 +86,16 @@ abstract public class BasePurchaseReporterHolder<
 
     @Override public void launchReportSequence(int requestCode, THProductPurchaseType purchase)
     {
-        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> reportedListener = createPurchaseReportedListener();
+        THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> reportedListener = createPurchaseReportedListener();
         PurchaseReporterType purchaseReporter = createPurchaseReporter();
         purchaseReporter.setPurchaseReporterListener(reportedListener);
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    protected PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
+    protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {
-        return new PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
+        return new THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
             @Override public void onPurchaseReported(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
@@ -127,7 +127,7 @@ abstract public class BasePurchaseReporterHolder<
             getPortfolioCache().invalidate(applicablePortfolioId);
         }
 
-        PurchaseReporter.OnPurchaseReportedListener<
+        THPurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
                 THProductPurchaseType,
@@ -151,7 +151,7 @@ abstract public class BasePurchaseReporterHolder<
     protected void handlePurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
-        PurchaseReporter.OnPurchaseReportedListener<
+        THPurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
                 THProductPurchaseType,

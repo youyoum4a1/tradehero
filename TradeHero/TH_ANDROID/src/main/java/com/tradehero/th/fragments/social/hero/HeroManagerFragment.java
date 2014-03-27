@@ -21,21 +21,16 @@ import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.social.HeroCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
 public class HeroManagerFragment extends BasePurchaseManagerFragment
@@ -179,7 +174,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest request = super.getShowProductDetailRequest(domain);
-        request.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        request.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
         {
             @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {

@@ -12,7 +12,7 @@ import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.OnFollowResultListener;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 
 /**
  * Created by xavier on 3/18/14.
@@ -45,7 +45,7 @@ public class THUIBillingRequest<
      * Indicates whether we want the Interactor to pop a dialog when reporting fails
      */
     public boolean popIfReportFailed;
-    public PurchaseReporter.OnPurchaseReportedListener<
+    public THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,

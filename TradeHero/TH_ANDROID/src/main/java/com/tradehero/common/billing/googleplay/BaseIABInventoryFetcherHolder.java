@@ -11,23 +11,17 @@ import java.util.Map;
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseIABInventoryFetcherHolder<
-        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
-        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
-        IABInventoryFetcherType extends IABBillingInventoryFetcher<
-                IABSKUListKeyType,
-                IABSKUType,
-                IABSKUListType,
-                IABProductDetailType>>
+        IABInventoryFetcherType extends BaseIABInventoryFetcher<
+                                IABSKUType,
+                                IABProductDetailType>>
     extends BaseBillingInventoryFetcherHolder<
         IABSKUType,
         IABProductDetailType,
         IABException>
 {
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
-    protected boolean inventoryReady = false; // TODO this feels HACKy
-    protected boolean errorLoadingInventory = false; // TODO here too
     protected Exception latestInventoryFetcherException; // TODO here too
 
     public BaseIABInventoryFetcherHolder()

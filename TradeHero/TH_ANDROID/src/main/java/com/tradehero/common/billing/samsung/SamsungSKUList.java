@@ -8,6 +8,7 @@ import java.util.Collection;
 public class SamsungSKUList
     extends BaseSamsungSKUList<SamsungSKU>
 {
+    //<editor-fold desc="Constructors">
     public SamsungSKUList()
     {
         super();
@@ -22,4 +23,5 @@ public class SamsungSKUList
     {
         super(collection);
     }
+    //</editor-fold>
 }

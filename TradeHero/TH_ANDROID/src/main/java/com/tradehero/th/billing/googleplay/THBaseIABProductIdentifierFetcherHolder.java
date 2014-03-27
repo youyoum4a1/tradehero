@@ -14,12 +14,12 @@ public class THBaseIABProductIdentifierFetcherHolder
         IABSKUListKey,
         IABSKU,
         IABSKUList,
-        THIABProductIdentifierFetcher,
+        THBaseIABProductIdentifierFetcher,
         IABException>
     implements THIABProductIdentifierFetcherHolder
 {
-    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher()
+    @Override protected THBaseIABProductIdentifierFetcher createProductIdentifierFetcher()
     {
-        return new THIABProductIdentifierFetcher();
+        return new THBaseIABProductIdentifierFetcher();
     }
 }

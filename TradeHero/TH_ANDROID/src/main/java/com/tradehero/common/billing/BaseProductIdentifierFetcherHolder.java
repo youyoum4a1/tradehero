@@ -13,7 +13,11 @@ abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
-    implements ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType>
+    implements ProductIdentifierFetcherHolder<
+        ProductIdentifierListKeyType,
+        ProductIdentifierType,
+        ProductIdentifierListType,
+        BillingExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,

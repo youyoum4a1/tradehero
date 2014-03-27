@@ -33,7 +33,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -336,7 +336,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         uiBillingRequest.popIfProductIdentifierFetchFailed = true;
         uiBillingRequest.popIfInventoryFetchFailed = true;
         uiBillingRequest.popIfPurchaseFailed = true;
-        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        uiBillingRequest.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
         {
             @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {

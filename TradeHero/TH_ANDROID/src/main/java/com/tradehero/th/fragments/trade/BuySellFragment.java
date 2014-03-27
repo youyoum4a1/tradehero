@@ -53,7 +53,7 @@ import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -1326,7 +1326,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
-        billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        billingRequest.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
         {
             @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
             {

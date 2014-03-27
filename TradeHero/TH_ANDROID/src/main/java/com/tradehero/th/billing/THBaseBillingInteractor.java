@@ -950,7 +950,7 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Reporting Sequence">
-    protected PurchaseReporter.OnPurchaseReportedListener<
+    protected THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             THProductPurchaseType,
@@ -959,7 +959,7 @@ abstract public class THBaseBillingInteractor<
         return new THBaseBillingInteractorOnPurchaseReportedListener();
     }
 
-    protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<
+    protected class THBaseBillingInteractorOnPurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             THProductPurchaseType,

@@ -1,8 +1,8 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
+import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
+import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -10,17 +10,17 @@ import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
+import com.tradehero.th.billing.googleplay.THBaseIABPurchaseFetcher;
+import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
+import com.tradehero.th.billing.googleplay.THBaseIABPurchaser;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
+import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcher;
 import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
@@ -268,14 +268,14 @@ import javax.inject.Singleton;
                         CompetitionWebViewFragment.class,
 
                         IABServiceConnector.class,
-                        IABBillingAvailableTester.class,
-                        IABBillingInventoryFetcher.class,
-                        THIABPurchaseFetcher.class,
-                        THIABBillingInventoryFetcher.class,
-                        THIABPurchaser.class,
-                        THIABPurchaseReporter.class,
+                        BaseIABBillingAvailableTester.class,
+                        BaseIABInventoryFetcher.class,
+                        THBaseIABPurchaseFetcher.class,
+                        THBaseIABInventoryFetcher.class,
+                        THBaseIABPurchaser.class,
+                        THBaseIABPurchaseReporter.class,
                         THIABLogicHolderFull.class,
-                        THIABPurchaseConsumer.class,
+                        THBaseIABPurchaseConsumer.class,
                         THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
                         THIABPurchaseFetchMilestone.class,
