@@ -12,11 +12,11 @@ abstract public class BaseSamsungPurchaseFetcherHolder<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
-        SamsungPurchaseFetcherType extends SamsungPurchaseFetcher<
-                SamsungSKUType,
-                SamsungOrderIdType,
-                SamsungPurchaseType,
-                SamsungExceptionType>,
+        SamsungPurchaseFetcherType extends BaseSamsungPurchaseFetcher<
+                        SamsungSKUType,
+                        SamsungOrderIdType,
+                        SamsungPurchaseType,
+                        SamsungExceptionType>,
         SamsungExceptionType extends SamsungException>
     extends BaseBillingPurchaseFetcherHolder<
         SamsungSKUType,

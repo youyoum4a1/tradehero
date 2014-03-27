@@ -10,11 +10,13 @@ public class BaseSamsungActor
 {
     private int activityRequestCode;
     protected SamsungIapHelper mIapHelper;
+    protected final int mode;
 
     public BaseSamsungActor(Context context, int mode)
     {
         super();
         mIapHelper = SamsungIapHelper.getInstance(context, mode);
+        this.mode = mode;
     }
 
     public int getRequestCode()

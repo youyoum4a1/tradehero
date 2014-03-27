@@ -15,7 +15,7 @@ public class THBaseSamsungPurchaseFetcherHolder
         SamsungSKU,
         THSamsungOrderId,
         THSamsungPurchase,
-        THSamsungPurchaseFetcher,
+        THBaseSamsungPurchaseFetcher,
         SamsungException>
     implements THSamsungPurchaseFetcherHolder
 {
@@ -27,8 +27,8 @@ public class THBaseSamsungPurchaseFetcherHolder
         DaggerUtils.inject(this);
     }
 
-    @Override protected THSamsungPurchaseFetcher createPurchaseFetcher()
+    @Override protected THBaseSamsungPurchaseFetcher createPurchaseFetcher()
     {
-        return new THSamsungPurchaseFetcher(currentActivityHolder.getCurrentContext(), THSamsungConstants.PURCHASE_MODE);
+        return new THBaseSamsungPurchaseFetcher(currentActivityHolder.getCurrentContext(), THSamsungConstants.PURCHASE_MODE);
     }
 }

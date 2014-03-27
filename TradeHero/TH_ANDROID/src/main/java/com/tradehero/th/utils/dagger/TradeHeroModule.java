@@ -21,8 +21,10 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
+import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseFetcher;
+import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcher;
 import com.tradehero.th.billing.samsung.THSamsungPurchaser;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -281,9 +283,11 @@ import javax.inject.Singleton;
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
 
-                        THSamsungPurchaseFetcher.class,
-                        THBaseSamsungPurchaseFetcherHolder.class,
+                        THBaseSamsungProductIdentifierFetcher.class,
+                        THBaseSamsungProductIdentifierFetcherHolder.class,
                         THSamsungPurchaser.class,
+                        THBaseSamsungPurchaseFetcher.class,
+                        THBaseSamsungPurchaseFetcherHolder.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
