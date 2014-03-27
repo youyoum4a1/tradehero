@@ -21,6 +21,9 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
+import com.tradehero.th.billing.samsung.THSamsungPurchaseFetcher;
+import com.tradehero.th.billing.samsung.THSamsungPurchaser;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -277,6 +280,10 @@ import javax.inject.Singleton;
                         UserProfileRetrievedMilestone.class,
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
+
+                        THSamsungPurchaseFetcher.class,
+                        THBaseSamsungPurchaseFetcherHolder.class,
+                        THSamsungPurchaser.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

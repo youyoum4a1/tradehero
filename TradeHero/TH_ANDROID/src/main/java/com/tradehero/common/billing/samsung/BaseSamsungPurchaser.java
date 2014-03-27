@@ -15,6 +15,7 @@ abstract public class BaseSamsungPurchaser<
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
         SamsungExceptionType extends SamsungException>
+    extends BaseSamsungActor
     implements SamsungPurchaser<
         SamsungSKUType,
         SamsungPurchaseOrderType,
@@ -22,20 +23,12 @@ abstract public class BaseSamsungPurchaser<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
-    private int activityRequestCode;
-    private SamsungPurchaseOrderType purchaseOrder;
+    protected SamsungPurchaseOrderType purchaseOrder;
     private OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener;
-    private SamsungIapHelper mIapHelper;
 
     public BaseSamsungPurchaser(Context context, int mode)
     {
-        super();
-        mIapHelper = SamsungIapHelper.getInstance(context, mode);
-    }
-
-    @Override public int getRequestCode()
-    {
-        return activityRequestCode;
+        super(context, mode);
     }
 
     @Override public OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getPurchaseFinishedListener()
@@ -50,7 +43,7 @@ abstract public class BaseSamsungPurchaser<
 
     @Override public void purchase(int requestCode, SamsungPurchaseOrderType purchaseOrder)
     {
-        this.activityRequestCode = requestCode;
+        setRequestCode(requestCode);
         this.purchaseOrder = purchaseOrder;
         SamsungSKUType sku = purchaseOrder.getProductIdentifier();
         mIapHelper.startPayment(sku.groupId, sku.itemId, true, this);
@@ -68,15 +61,15 @@ abstract public class BaseSamsungPurchaser<
         }
     }
 
-    abstract SamsungPurchaseType createSamsungPurchase(PurchaseVo purchaseVo);
-    abstract SamsungExceptionType createSamsungException(ErrorVo errorVo);
+    abstract protected SamsungPurchaseType createSamsungPurchase(PurchaseVo purchaseVo);
+    abstract protected  SamsungExceptionType createSamsungException(ErrorVo errorVo);
 
     protected void notifyPurchaseFinished(SamsungPurchaseType purchase)
     {
         OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> listenerCopy = purchaseFinishedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onPurchaseFinished(activityRequestCode, purchaseOrder, purchase);
+            listenerCopy.onPurchaseFinished(getRequestCode(), purchaseOrder, purchase);
         }
     }
 
@@ -85,7 +78,7 @@ abstract public class BaseSamsungPurchaser<
         OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> listenerCopy = purchaseFinishedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onPurchaseFailed(activityRequestCode, purchaseOrder, exception);
+            listenerCopy.onPurchaseFailed(getRequestCode(), purchaseOrder, exception);
         }
     }
 }

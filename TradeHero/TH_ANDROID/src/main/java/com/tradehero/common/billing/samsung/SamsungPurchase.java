@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import com.sec.android.iap.lib.vo.InboxVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -24,6 +25,12 @@ abstract public class SamsungPurchase<
     }
 
     public SamsungPurchase(String groupId, PurchaseVo toCopyFrom)
+    {
+        super(toCopyFrom.getJsonString());
+        this.groupId = groupId;
+    }
+
+    public SamsungPurchase(String groupId, InboxVo toCopyFrom)
     {
         super(toCopyFrom.getJsonString());
         this.groupId = groupId;
