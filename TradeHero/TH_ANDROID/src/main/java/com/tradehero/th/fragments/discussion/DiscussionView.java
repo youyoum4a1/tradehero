@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -107,10 +108,9 @@ public class DiscussionView extends LinearLayout
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more,
-            R.id.timeline_action_button_comment
+            R.id.timeline_action_button_more
     })
-    public void onItemClicked(View view)
+    void onItemClicked(View view)
     {
         switch (view.getId())
         {
@@ -122,6 +122,16 @@ public class DiscussionView extends LinearLayout
                 //PopupMenu popUpMenu = createActionPopupMenu();
                 //popUpMenu.show();
                 break;
+        }
+    }
+
+    @Optional @OnClick({
+            R.id.timeline_action_button_comment
+    })
+    void onCommentClicked(View view)
+    {
+        switch (view.getId())
+        {
             case R.id.timeline_action_button_comment:
                 openDiscussion();
                 break;

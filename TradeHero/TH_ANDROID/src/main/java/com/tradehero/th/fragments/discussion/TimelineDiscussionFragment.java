@@ -35,12 +35,12 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.onViewCreated(view, savedInstanceState);
-
         if (timelineItemView != null)
         {
             discussionList.addHeaderView(timelineItemView);
         }
+
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onDestroyView()

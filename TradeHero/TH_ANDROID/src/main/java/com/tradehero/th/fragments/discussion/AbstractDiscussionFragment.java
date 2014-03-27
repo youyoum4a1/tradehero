@@ -77,6 +77,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
         linkWith(discussionKey, true);
 
         discussionListAdapter = createDiscussionListAdapter();
+        discussionList.setAdapter(discussionListAdapter);
         getActivity().getSupportLoaderManager()
                 .initLoader(discussionListAdapter.getLoaderId(), null, discussionListAdapter.getLoaderCallback());
     }
@@ -88,7 +89,6 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        discussionList.setAdapter(discussionListAdapter);
     }
 
     @Override public void onDestroyView()
