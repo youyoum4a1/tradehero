@@ -10,7 +10,9 @@
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/news_comment_list_wrapper"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      >
     <ListView
         android:id="@+id/news_detail_comment_list"
         android:layout_width="match_parent"
