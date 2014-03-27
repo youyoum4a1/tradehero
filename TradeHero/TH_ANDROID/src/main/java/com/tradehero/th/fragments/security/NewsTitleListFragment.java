@@ -13,25 +13,26 @@ import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.news.NewsCache;
+import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
- * Created by julien on 10/10/13
- * Display a ListView of News object for a given SecurityId - It uses the NewsHeadlineCache to get or fetch the news
- * from an abstract provider as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
- * The task is cancelled when the fragment is paused.
+ * Created by julien on 10/10/13 Display a ListView of News object for a given SecurityId - It uses
+ * the NewsHeadlineCache to get or fetch the news from an abstract provider as needed. In case the
+ * news are not in the cache, the download is done in the background using the `fetchTask`
+ * AsyncTask. The task is cancelled when the fragment is paused.
  */
 public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
 {
-    @Inject NewsCache newsTitleCache;
+    @Inject SecurityNewsCache newsTitleCache;
     @Inject NewsServiceWrapper newsServiceWrapper;
 
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
@@ -44,22 +45,24 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
         Timber.d("NewsTitleListFragment onCreate");
-
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
         Timber.d("NewsTitleListFragment onActivityCreated");
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity activity)
+    {
         super.onAttach(activity);
         Timber.d("NewsTitleListFragment onAttach");
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         Timber.d("NewsTitleListFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
@@ -68,38 +71,44 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("NewsTitleListFragment onViewCreated");
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
         Timber.d("NewsTitleListFragment onStart");
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         Timber.d("NewsTitleListFragment onResume");
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
         Timber.d("NewsTitleListFragment onStop");
     }
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
         Timber.d("NewsTitleListFragment onPause");
     }
 
     private void initViews(View view)
     {
-        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
+        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(),
+                R.layout.news_headline_item_view);
 
         listView = (ListView) view.findViewById(R.id.list_news_headline);
         progressBar = (ProgressBar) view.findViewById(R.id.list_news_headline_progressbar);
@@ -109,28 +118,32 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                @Override public void onItemClick(AdapterView<?> adapterView, View view,
+                        int position, long l)
                 {
 
-                    handleNewsClicked(position,(NewsItemDTO) adapterView.getItemAtPosition(position));
-
+                    handleNewsClicked(position,
+                            (NewsItemDTO) adapterView.getItemAtPosition(position));
                 }
             });
         }
     }
 
-    private void showNewsList(){
+    private void showNewsList()
+    {
         listView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
-    private void showLoadingNews(){
+    private void showLoadingNews()
+    {
         listView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         Timber.d("NewsTitleListFragment onDetach");
     }
@@ -149,7 +162,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
         Timber.d("NewsTitleListFragment onDestroy");
     }
@@ -179,7 +193,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             if (news == null)
             {
                 detachFetchTask();
-                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
+                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true,
+                        this); //force fetch - we know the value is not in cache
                 this.fetchTask.execute();
             }
             else
@@ -197,7 +212,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     }
 
     @Override
-    public void onErrorThrown(SecurityId key, Throwable error) {
+    public void onErrorThrown(SecurityId key, Throwable error)
+    {
         super.onErrorThrown(key, error);
         showNewsList();
     }
@@ -211,13 +227,15 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         }
     }
 
-    protected void handleNewsClicked(int position,NewsItemDTO news)
+    protected void handleNewsClicked(int position, NewsItemDTO news)
     {
         if (news != null)
         {
             int resId = adapter.getBackgroundRes(position);
-            Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            Bundle bundle = news.toBundle(news.voteDirection==1);
+            Navigator navigator =
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            NewsItemDTOKey newsItemDTOKey = news.getNewsItemDTOKey();
+            Bundle bundle = newsItemDTOKey.getArgs();
             bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
             navigator.pushFragment(NewsDetailFragment.class, bundle);
         }

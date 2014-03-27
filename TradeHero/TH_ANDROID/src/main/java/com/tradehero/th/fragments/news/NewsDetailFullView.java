@@ -32,7 +32,7 @@ import retrofit.client.Response;
  * Created with IntelliJ IDEA. User: tho Date: 3/24/14 Time: 5:36 PM Copyright (c) TradeHero
  */
 public class NewsDetailFullView extends LinearLayout
-    implements DTOView<NewsItemDTO>
+        implements DTOView<NewsItemDTO>
 {
     @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
@@ -116,7 +116,10 @@ public class NewsDetailFullView extends LinearLayout
             mNewsDetailContent.setVisibility(View.VISIBLE);
             mNewsDetailLoading.setVisibility(View.GONE);
 
-            securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
+            if (dto.getSecurityIds() != null)
+            {
+                securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
+            }
         }
     }
 
