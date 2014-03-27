@@ -26,7 +26,7 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.persistence.news.NewsCache;
+import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
@@ -47,7 +47,7 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject Lazy<NewsCache> newsCache;
+    @Inject Lazy<SecurityNewsCache> newsCache;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
