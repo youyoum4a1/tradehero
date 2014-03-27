@@ -240,26 +240,11 @@ public interface UserService
             @Path("userId") int userId)
         throws RetrofitError;
 
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/follow")
-    void follow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
-
     @POST("/users/{userId}/follow")
     UserProfileDTO follow(
             @Path("userId") int userId,
-            GooglePlayPurchaseDTO purchaseDTO)
+            @Body GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/follow")
-    void follow(
-            @Path("userId") int userId,
-            GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
@@ -267,13 +252,6 @@ public interface UserService
     UserProfileDTO unfollow(
             @Path("userId") int userId)
         throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/unfollow")
-    void unfollow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">

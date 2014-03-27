@@ -188,7 +188,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,
-            GooglePlayPurchaseDTO purchaseDTO,
+            @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

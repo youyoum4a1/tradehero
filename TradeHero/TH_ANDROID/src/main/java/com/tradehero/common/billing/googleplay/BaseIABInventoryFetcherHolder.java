@@ -11,10 +11,14 @@ import java.util.Map;
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseIABInventoryFetcherHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherType extends IABBillingInventoryFetcher<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABProductDetailType>>
     extends BaseBillingInventoryFetcherHolder<
         IABSKUType,
@@ -54,19 +58,7 @@ abstract public class BaseIABInventoryFetcherHolder<
     {
         latestInventoryFetcherException = null;
         BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
-                fetchedListener = new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>()
-        {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
-            {
-                notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-            }
-
-            @Override public void onInventoryFetchFail(int requestCode, List<IABSKUType> productIdentifiers, IABException exception)
-            {
-                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
-            }
-        };
-        inventoryFetchedListeners.put(requestCode, fetchedListener);
+                fetchedListener = createInventoryFetchedListener();
 
         IABInventoryFetcherType inventoryFetcher = createInventoryFetcher();
         iabInventoryFetchers.put(requestCode, inventoryFetcher);

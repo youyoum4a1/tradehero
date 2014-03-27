@@ -9,5 +9,5 @@ public interface ProductDetailDomainInformer<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>>
 {
-    List<ProductDetailType> getDetailsOfDomain(String domain);
+    List<ProductDetailType> getDetailsOfDomain(ProductIdentifierDomain domain);
 }

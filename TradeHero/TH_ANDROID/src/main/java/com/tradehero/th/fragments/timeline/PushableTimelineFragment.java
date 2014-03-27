@@ -13,8 +13,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
 import retrofit.client.Response;
@@ -33,9 +33,9 @@ public class PushableTimelineFragment extends TimelineFragment
     private MenuItem followingStamp;
     private TextView followButton;
 
-    @Override protected void createUserInteractor()
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
-        userInteractor = new PushableTimelineTHIABUserInteractor();
+        return new PushableTimelineUserFollowedListener();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -119,7 +119,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         if (userInteractor != null)
         {
-            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
@@ -147,7 +147,7 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                userInteractor.followHero(shownUserBaseKey);
+                followUser(shownUserBaseKey);
             }
         });
     }
@@ -159,37 +159,12 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    protected class PushableTimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
     {
-        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
-
-        public PushableTimelineTHIABUserInteractor()
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayFollowButton();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            displayFollowButton();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    displayFollowButton();
-                }
-            };
         }
     }
 }

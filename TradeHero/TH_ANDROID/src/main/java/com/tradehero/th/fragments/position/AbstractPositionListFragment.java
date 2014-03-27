@@ -28,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -44,6 +43,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -103,6 +103,11 @@ abstract public class AbstractPositionListFragment<
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new AbstractPositionListUserFollowedListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -205,8 +210,6 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void createPositionItemAdapter();
-
-    @Override abstract protected void createUserInteractor();
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -619,7 +622,7 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                userInteractor.followHero(userBaseKey);
+                followUser(userBaseKey);
             }
         });
     }
@@ -686,35 +689,6 @@ abstract public class AbstractPositionListFragment<
     }
     //</editor-fold>
 
-    abstract public class AbstractPositionListTHIABUserInteractor extends THIABUserInteractor
-    {
-        public final String TAG = AbstractPositionListTHIABUserInteractor.class.getName();
-
-        public AbstractPositionListTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            displayHeaderView();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    displayHeaderView();
-                    fetchSimplePage(true);
-                }
-            };
-        }
-    }
-
     abstract protected class AbstractGetPositionsListener<
             CacheQueryIdType,
             PositionDTOType extends PositionDTO,
@@ -732,5 +706,15 @@ abstract public class AbstractPositionListFragment<
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
+    }
+
+    protected class AbstractPositionListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            displayHeaderView();
+            fetchSimplePage(true);
+        }
     }
 }

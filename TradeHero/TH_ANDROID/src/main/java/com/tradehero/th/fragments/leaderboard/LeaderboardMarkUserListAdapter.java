@@ -8,9 +8,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import java.lang.ref.WeakReference;
+import com.tradehero.th.billing.THBillingInteractor;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:13 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListAdapter extends
@@ -18,8 +19,9 @@ public class LeaderboardMarkUserListAdapter extends
                 LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
     implements PullToRefreshBase.OnRefreshListener<ListView>
 {
-    protected WeakReference<THIABUserInteractor> userInteractor = new WeakReference<>(null);
+    @Inject protected THBillingInteractor userInteractor;
     protected UserProfileDTO currentUserProfileDTO;
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
@@ -32,10 +34,9 @@ public class LeaderboardMarkUserListAdapter extends
         notifyDataSetChanged();
     }
 
-    public void setUserInteractor(THIABUserInteractor userInteractor)
+    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
-        this.userInteractor = new WeakReference<>(userInteractor);
-        notifyDataSetChanged();
+        this.followRequestedListener = followRequestedListener;
     }
 
     @Override public Object getItem(int position)
@@ -50,8 +51,8 @@ public class LeaderboardMarkUserListAdapter extends
 
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
-        dtoView.linkWith(userInteractor.get(), false);
         dtoView.linkWith(currentUserProfileDTO, true);
+        dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
@@ -63,5 +64,25 @@ public class LeaderboardMarkUserListAdapter extends
     @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
     {
         getLoader().loadPrevious();
+    }
+
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    {
+        return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
+        {
+            @Override public void onFollowRequested(UserBaseKey userBaseKey)
+            {
+                notifyFollowRequested(userBaseKey);
+            }
+        };
+    }
+
+    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    {
+        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null)
+        {
+            followRequestedListenerCopy.onFollowRequested(userBaseKey);
+        }
     }
 }

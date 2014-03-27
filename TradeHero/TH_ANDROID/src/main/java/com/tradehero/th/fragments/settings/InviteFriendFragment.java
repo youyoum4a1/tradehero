@@ -75,6 +75,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
@@ -449,7 +450,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = ProgressDialogUtil.show(
+        progressDialog = progressDialogUtil.show(
                 getActivity(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);

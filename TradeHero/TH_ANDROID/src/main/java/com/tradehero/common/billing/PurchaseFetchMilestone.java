@@ -3,6 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.BaseMilestone;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ abstract public class PurchaseFetchMilestone<
             ProductPurchaseType,
             BillingExceptionType> purchaseFetchedListener;
     protected int requestCode;
-    protected Map<ProductIdentifierType, ProductPurchaseType> fetchedPurchases;
+    protected List<ProductPurchaseType> fetchedPurchases;
 
     public PurchaseFetchMilestone(BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder)
     {
@@ -61,9 +62,9 @@ abstract public class PurchaseFetchMilestone<
         this.purchaseFetcherHolder = billingActor;
     }
 
-    public Map<ProductIdentifierType, ProductPurchaseType> getFetchedPurchases()
+    public List<ProductPurchaseType> getFetchedPurchases()
     {
-        return Collections.unmodifiableMap(fetchedPurchases);
+        return Collections.unmodifiableList(fetchedPurchases);
     }
 
     @Override public void launch()

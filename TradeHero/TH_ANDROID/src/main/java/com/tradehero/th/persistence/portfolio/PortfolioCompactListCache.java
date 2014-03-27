@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 
     @Inject protected Lazy<PortfolioService> portfolioService;
     @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactListCache()
@@ -52,6 +53,19 @@ import javax.inject.Singleton;
         return ownedPortfolioIds;
     }
 
+    @Override public void invalidate(UserBaseKey key)
+    {
+        OwnedPortfolioIdList value = get(key);
+        if (value != null)
+        {
+            for (OwnedPortfolioId ownedPortfolioId : value)
+            {
+                portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioIdKey());
+                portfolioCache.get().invalidate(ownedPortfolioId);
+            }
+        }
+    }
+
     /**
      * The default portfolio is the one without providerId.
      * @param key
@@ -73,7 +87,7 @@ import javax.inject.Singleton;
             {
                 return null;
             }
-            portfolioId = ownedPortfolioId.getPortfolioId();
+            portfolioId = ownedPortfolioId.getPortfolioIdKey();
             if (portfolioId.key == null)
             {
                 return null;

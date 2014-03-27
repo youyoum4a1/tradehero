@@ -40,6 +40,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Inject UserTransactionHistoryCache userTransactionHistoryCache;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     protected DTOCache.GetOrFetchTask<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionHistoryListFetchTask;
     protected DTOCache.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionListCacheListener;
@@ -81,7 +82,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListViewAdapter = new SettingsTransactionHistoryAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.fragment_settings_transaction_history_adapter);
         transactionListView.setAdapter(transactionListViewAdapter);
 
-        progressDialog = ProgressDialogUtil.show(
+        progressDialog = progressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);

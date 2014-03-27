@@ -2,15 +2,14 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,48 +19,44 @@ import java.util.Map;
 abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
-        ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        THProductPurchaseType extends THProductPurchase<ProductIdentifierType, OrderIdType>,
         PurchaseReporterType extends PurchaseReporter<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType,
+            THProductPurchaseType,
             BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements PurchaseReporterHolder<
         ProductIdentifierType,
         OrderIdType,
-        ProductPurchaseType,
+        THProductPurchaseType,
         BillingExceptionType>
 {
     public static final String TAG = BasePurchaseReporterHolder.class.getSimpleName();
 
     protected Map<Integer /*requestCode*/, PurchaseReporterType> purchaseReporters;
-    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseReportedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<PurchaseReporter.OnPurchaseReportedListener<
+    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType>>> parentPurchaseReportedHandlers;
+            THProductPurchaseType,
+            BillingExceptionType>> parentPurchaseReportedHandlers;
 
     public BasePurchaseReporterHolder()
     {
         super();
 
         purchaseReporters = new HashMap<>();
-        purchaseReportedListeners = new HashMap<>();
         parentPurchaseReportedHandlers = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return !purchaseReporters.containsKey(requestCode) &&
-                !purchaseReportedListeners.containsKey(requestCode) &&
                 !parentPurchaseReportedHandlers.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        purchaseReportedListeners.remove(requestCode);
         parentPurchaseReportedHandlers.remove(requestCode);
         PurchaseReporterType purchaseReporter = purchaseReporters.get(requestCode);
         if (purchaseReporter != null)
@@ -74,57 +69,47 @@ abstract public class BasePurchaseReporterHolder<
     @Override public PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType> getPurchaseReportListener(int requestCode)
+            THProductPurchaseType,
+            BillingExceptionType> getPurchaseReportedListener(int requestCode)
     {
-        WeakReference<PurchaseReporter.OnPurchaseReportedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
-        if (weakHandler != null)
-        {
-            return weakHandler.get();
-        }
-        return null;
+        return parentPurchaseReportedHandlers.get(requestCode);
     }
 
     @Override public void registerPurchaseReportedListener(int requestCode, PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType,
+            THProductPurchaseType,
             BillingExceptionType> purchaseReportedHandler)
     {
-        parentPurchaseReportedHandlers.put(requestCode, new WeakReference<>(purchaseReportedHandler));
+        parentPurchaseReportedHandlers.put(requestCode, purchaseReportedHandler);
     }
 
-    @Override public void launchReportSequence(int requestCode, ProductPurchaseType purchase)
+    @Override public void launchReportSequence(int requestCode, THProductPurchaseType purchase)
     {
-        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> reportedListener = new PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                handlePurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
-            }
-
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
-            {
-                handlePurchaseReportFailed(requestCode, reportedPurchase, error);
-            }
-        };
-        purchaseReportedListeners.put(requestCode, reportedListener);
+        PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> reportedListener = createPurchaseReportedListener();
         PurchaseReporterType purchaseReporter = createPurchaseReporter();
         purchaseReporter.setPurchaseReporterListener(reportedListener);
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(ProductPurchaseType purchase) throws BillingExceptionType
+    protected PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {
-        return createPurchaseReporter().reportPurchaseSync(purchase);
+        return new PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
+        {
+            @Override public void onPurchaseReported(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                handlePurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
+            {
+                handlePurchaseReportFailed(requestCode, reportedPurchase, error);
+            }
+        };
     }
 
-    protected void handlePurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    protected void handlePurchaseReported(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);
 
@@ -137,14 +122,16 @@ abstract public class BasePurchaseReporterHolder<
         if (applicablePortfolioId != null)
         {
             getPortfolioCompactListCache().invalidate(applicablePortfolioId.getUserBaseKey());
+            // TODO put back when #68094144 is fixed
+            //getPortfolioCompactCache().invalidate(applicablePortfolioId.getPortfolioIdKey());
             getPortfolioCache().invalidate(applicablePortfolioId);
         }
 
         PurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType> handler = getPurchaseReportListener(requestCode);
+                THProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseReportedListener(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReported passing on the purchase for requestCode " + requestCode);
@@ -158,16 +145,17 @@ abstract public class BasePurchaseReporterHolder<
 
     abstract protected UserProfileCache getUserProfileCache();
     abstract protected PortfolioCompactListCache getPortfolioCompactListCache();
+    abstract protected PortfolioCompactCache getPortfolioCompactCache();
     abstract protected PortfolioCache getPortfolioCache();
 
-    protected void handlePurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, BillingExceptionType error)
+    protected void handlePurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
         THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
         PurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType> handler = getPurchaseReportListener(requestCode);
+                THProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseReportedListener(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReportFailed passing on the exception for requestCode " + requestCode);
@@ -189,7 +177,6 @@ abstract public class BasePurchaseReporterHolder<
             }
         }
         purchaseReporters.clear();
-        purchaseReportedListeners.clear();
         parentPurchaseReportedHandlers.clear();
     }
 

@@ -17,7 +17,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;

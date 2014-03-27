@@ -15,6 +15,8 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
@@ -26,7 +28,10 @@ import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -149,7 +154,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                userInteractor.conditionalPopBuyStockAlerts();
+                showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
             }
         });
 
@@ -171,7 +176,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
         }
 
-        detachCompactListCacheFetchTask();
+        detachAlertCompactListCacheFetchTask();
         refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
                 currentUserId.toUserBaseKey(), true, alertCompactListCallback);
         refreshAlertCompactListCacheTask.execute();
@@ -186,7 +191,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         detachUserProfileMilestone();
-        detachCompactListCacheFetchTask();
+        detachAlertCompactListCacheFetchTask();
 
         if (alertListView != null)
         {
@@ -226,13 +231,36 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         userProfileRetrievedMilestone = null;
     }
 
-    protected void detachCompactListCacheFetchTask()
+    protected void detachAlertCompactListCacheFetchTask()
     {
         if (refreshAlertCompactListCacheTask != null)
         {
             refreshAlertCompactListCacheTask.setListener(null);
         }
         refreshAlertCompactListCacheTask = null;
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
+        uiBillingRequest.startWithProgressDialog = true;
+        uiBillingRequest.popIfBillingNotAvailable = true;
+        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
+        uiBillingRequest.popIfInventoryFetchFailed = true;
+        uiBillingRequest.popIfPurchaseFailed = true;
+        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                displayAlertCount();
+                displayAlertCountIcon();
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+            }
+        };
+        return uiBillingRequest;
     }
 
     private void displayAlertCount()

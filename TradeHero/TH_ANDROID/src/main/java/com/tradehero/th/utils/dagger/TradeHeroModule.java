@@ -1,7 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
+import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
@@ -10,20 +10,17 @@ import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
+import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -38,6 +35,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
@@ -113,6 +111,9 @@ import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.MiddleCallbackAddCash;
+import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
@@ -155,6 +156,9 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         MiddleCallbackUpdateUserProfile.class,
+                        MiddleCallbackAddCash.class,
+                        MiddleCallbackFollowUser.class,
+                        FollowUserAssistant.class,
                         SettingsFragment.class,
                         MiddleCallbackLogout.class,
                         AboutFragment.class,
@@ -179,7 +183,6 @@ import javax.inject.Singleton;
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         MarkdownTextView.class,
 
                         NewsTitleListFragment.class,
@@ -194,9 +197,7 @@ import javax.inject.Singleton;
                         DisplayablePortfolioFetchAssistant.class,
 
                         PositionListFragment.class,
-                        PositionListFragment.PositionListTHIABUserInteractor.class,
                         LeaderboardPositionListFragment.class,
-                        LeaderboardPositionListFragment.LeaderboardPositionListTHIABUserInteractor.class,
                         OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,
@@ -249,7 +250,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
-                        LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
+                        LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
@@ -260,6 +261,7 @@ import javax.inject.Singleton;
                         CompetitionWebViewFragment.class,
 
                         IABServiceConnector.class,
+                        IABBillingAvailableTester.class,
                         IABBillingInventoryFetcher.class,
                         THIABPurchaseFetcher.class,
                         THIABBillingInventoryFetcher.class,
@@ -267,21 +269,14 @@ import javax.inject.Singleton;
                         THIABPurchaseReporter.class,
                         THIABLogicHolderFull.class,
                         THIABPurchaseConsumer.class,
-                        THIABInventoryFetchMilestone.class,
                         THBaseIABInventoryFetcherHolder.class,
                         THBaseIABPurchaseReporterHolder.class,
-                        THIABPurchaseRestorer.class,
                         THIABPurchaseFetchMilestone.class,
-                        BaseIABLogicHolder.AvailabilityTester.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        PurchaseRestorerRequiredMilestone.class,
-                        THIABUserInteractor.class,
-                        StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
-                        HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
+                        THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
-                        BuySellFragment.BuySellTHIABUserInteractor.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

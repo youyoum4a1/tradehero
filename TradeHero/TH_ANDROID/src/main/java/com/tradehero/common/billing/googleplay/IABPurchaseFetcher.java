@@ -15,6 +15,7 @@ import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -34,14 +35,14 @@ abstract public class IABPurchaseFetcher<
 {
     protected int requestCode;
     protected boolean fetching;
-    protected Map<IABSKUType, IABPurchaseType> purchases;
+    protected List<IABPurchaseType> purchases;
     protected OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener;
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABPurchaseFetcher()
     {
         super();
-        purchases = new HashMap<>();
+        purchases = new ArrayList<>();
     }
 
     @Override public void onDestroy()
@@ -82,10 +83,10 @@ abstract public class IABPurchaseFetcher<
     @Override protected void handleSetupFinished(IABResponse response)
     {
         super.handleSetupFinished(response);
-        AsyncTask<Void, Void, HashMap<IABSKUType, IABPurchaseType>> backgroundTask = new AsyncTask<Void, Void, HashMap<IABSKUType, IABPurchaseType>>()
+        AsyncTask<Void, Void, ArrayList<IABPurchaseType>> backgroundTask = new AsyncTask<Void, Void, ArrayList<IABPurchaseType>>()
         {
             private Exception exception;
-            @Override protected HashMap<IABSKUType, IABPurchaseType> doInBackground(Void... params)
+            @Override protected ArrayList<IABPurchaseType> doInBackground(Void... params)
             {
                 if (!disposed)
                 {
@@ -103,7 +104,7 @@ abstract public class IABPurchaseFetcher<
                 return null;
             }
 
-            @Override protected void onPostExecute(HashMap<IABSKUType, IABPurchaseType> skuGooglePurchaseHashMap)
+            @Override protected void onPostExecute(ArrayList<IABPurchaseType> skuGooglePurchaseHashMap)
             {
                 if (disposed)
                 {
@@ -124,25 +125,25 @@ abstract public class IABPurchaseFetcher<
         backgroundTask.execute();
     }
 
-    protected HashMap<IABSKUType, IABPurchaseType> queryPurchases() throws JSONException, RemoteException, IABException
+    protected ArrayList<IABPurchaseType> queryPurchases() throws JSONException, RemoteException, IABException
     {
-        HashMap<IABSKUType, IABPurchaseType> map = queryPurchases(IABConstants.ITEM_TYPE_INAPP);
+        ArrayList<IABPurchaseType> list = queryPurchases(IABConstants.ITEM_TYPE_INAPP);
         if (areSubscriptionsSupported())
         {
-            HashMap<IABSKUType, IABPurchaseType> subscriptionMap = queryPurchases(IABConstants.ITEM_TYPE_SUBS);
-            map.putAll(subscriptionMap);
+            ArrayList<IABPurchaseType> subscriptionAll = queryPurchases(IABConstants.ITEM_TYPE_SUBS);
+            list.addAll(subscriptionAll);
         }
-        getPurchaseCache().put(map);
-        return map;
+        getPurchaseCache().put(list);
+        return list;
     }
 
-    protected HashMap<IABSKUType, IABPurchaseType> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
+    protected ArrayList<IABPurchaseType> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
         // Query purchase
         Timber.d("Querying owned items, item type: %s", itemType);
         Timber.d("Package name: %s", Application.context().getPackageName());
         String continueToken = null;
-        HashMap<IABSKUType, IABPurchaseType> purchasesMap = new HashMap<>();
+        ArrayList<IABPurchaseType> purchasesList = new ArrayList<>();
 
         do
         {
@@ -150,7 +151,7 @@ abstract public class IABPurchaseFetcher<
 
             if (ownedItems == null)
             {
-                return purchasesMap;
+                return purchasesList;
             }
 
             int response = IABConstants.getResponseCodeFromBundle(ownedItems);
@@ -187,7 +188,7 @@ abstract public class IABPurchaseFetcher<
                     }
 
                     // Record ownership and token
-                    purchasesMap.put(purchase.getProductIdentifier(), purchase);
+                    purchasesList.add(purchase);
                 }
                 else
                 {
@@ -199,7 +200,7 @@ abstract public class IABPurchaseFetcher<
             Timber.d("Continuation token: %s", continueToken);
         }
         while (!TextUtils.isEmpty(continueToken));
-        return purchasesMap;
+        return purchasesList;
     }
 
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException

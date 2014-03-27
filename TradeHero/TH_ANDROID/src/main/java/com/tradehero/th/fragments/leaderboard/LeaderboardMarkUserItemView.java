@@ -22,9 +22,10 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -32,8 +33,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -41,7 +40,6 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import retrofit.client.Response;
@@ -57,11 +55,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
+    protected OnFollowRequestedListener followRequestedListener;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
-    protected WeakReference<THIABUserInteractor> parentUserInteractor = new WeakReference<>(null);
-    protected THIABUserInteractor ownUserInteractor;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -174,7 +171,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFollowUser.setOnClickListener(null);
         }
         loadDefaultUserImage();
-        ownUserInteractor = null;
 
         if (lbmuProfilePicture != null)
         {
@@ -194,30 +190,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    /**
-     * The userInteractor should be strongly referenced elsewhere
-     * @param userInteractor
-     * @param andDisplay
-     */
-    public void linkWith(THIABUserInteractor userInteractor, boolean andDisplay)
-    {
-        this.parentUserInteractor = new WeakReference<>(userInteractor);
-        if (andDisplay)
-        {
-            displayFollow();
-        }
-    }
-
     public Boolean isCurrentUserFollowing()
     {
-        THIABUserInteractor userInteractorCopy = parentUserInteractor.get();
-        if (currentUserProfileDTO == null || leaderboardItem == null ||
-                userInteractorCopy == null ||
-                userInteractorCopy.getApplicablePortfolioId() == null)
+        if (currentUserProfileDTO == null || leaderboardItem == null)
         {
             return null;
         }
         return currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
+    }
+
+    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListener = followRequestedListener;
     }
 
     @Override public void display(LeaderboardUserDTO expandableItem)
@@ -392,23 +376,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
             case R.id.leaderboard_user_item_follow:
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                openFollowUserDialog();
+                notifyFollowRequested();
                 break;
-        }
-    }
-
-    private void openFollowUserDialog()
-    {
-        THIABUserInteractor parentCopy = parentUserInteractor.get();
-        if (ownUserInteractor == null && parentCopy != null)
-        {
-            ownUserInteractor = new LeaderboardMarkUserItemViewTHIABUserInteractor();
-            ownUserInteractor.setApplicablePortfolioId(parentCopy.getApplicablePortfolioId());
-        }
-        THIABUserInteractor interactor = ownUserInteractor;
-        if (interactor != null)
-        {
-            interactor.followHero(leaderboardItem.getBaseKey());
         }
     }
 
@@ -462,30 +431,22 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public class LeaderboardMarkUserItemViewTHIABUserInteractor extends THIABUserInteractor
+    protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
     {
-        public LeaderboardMarkUserItemViewTHIABUserInteractor()
-        {
-            super();
-        }
+        linkWith(userProfileDTO, true);
+    }
 
-        @Override protected void createFollowCallback()
+    protected void notifyFollowRequested()
+    {
+        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null)
         {
-            followCallback = new LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
+            followRequestedListenerCopy.onFollowRequested(leaderboardItem.getBaseKey());
         }
+    }
 
-        protected class LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback extends UserInteractorFollowHeroCallback
-        {
-            public LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
-            {
-                super(heroListCache, userProfileCache);
-            }
-
-            @Override public void success(UserProfileDTO userProfileDTO, Response response)
-            {
-                super.success(userProfileDTO, response);
-                LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
-            }
-        }
+    public static interface OnFollowRequestedListener
+    {
+        void onFollowRequested(UserBaseKey userBaseKey);
     }
 }

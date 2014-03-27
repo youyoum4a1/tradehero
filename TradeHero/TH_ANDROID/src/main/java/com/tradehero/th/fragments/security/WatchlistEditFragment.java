@@ -67,6 +67,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -175,7 +176,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
+            progressBar = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
         }
         try
         {

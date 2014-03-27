@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +9,8 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -19,15 +20,21 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.social.HeroCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
@@ -41,7 +48,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
     private HeroManagerViewContainer viewContainer;
-    private ProgressDialog progressDialog;
 
     private HeroListItemAdapter heroListAdapter;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
@@ -54,7 +60,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<HeroCache> heroCache;
     private HeroManagerInfoFetcher infoFetcher;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new HeroManagerUserFollowedListener();
+    }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -116,11 +126,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         this.infoFetcher = new HeroManagerInfoFetcher(new HeroManagerUserProfileCacheListener(), new HeroManagerHeroListCacheListener());
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new HeroManagerTHIABUserInteractor();
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -140,11 +145,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Override public void onPause()
     {
         this.infoFetcher.onPause();
-
-        if (this.progressDialog != null)
-        {
-            this.progressDialog.hide();
-        }
         super.onPause();
     }
 
@@ -173,7 +173,25 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void handleBuyMoreClicked()
     {
-        userInteractor.conditionalPopBuyFollowCredits();
+        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = super.getShowProductDetailRequest(domain);
+        request.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                display(updatedUserPortfolio);
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+                // Anything to report?
+            }
+        };
+        return request;
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -194,7 +212,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    userInteractor.followHero(clickedHeroDTO.getBaseKey());
+                    followUser(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -204,7 +222,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
+                    unfollowUser(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -281,44 +299,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
+    public void handleFollowSuccess(UserProfileDTO userProfileDTO)
     {
-        public HeroManagerTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-        {
-            super.handleShowProductDetailsMilestoneFailed(throwable);
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            display(updatedUserProfile);
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    HeroManagerFragment.this.linkWith(userProfileDTO, true);
-                    if (HeroManagerFragment.this.infoFetcher != null)
-                    {
-                        HeroManagerFragment.this.infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
-                    }
-                }
-            };
-        }
+        linkWith(userProfileDTO, true);
+        infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId, true);
     }
 
     private class HeroManagerUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
@@ -359,6 +343,15 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         @Override public void onClick(View view)
         {
             handleGoMostSkilled();
+        }
+    }
+
+    protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            handleFollowSuccess(currentUserProfileDTO);
         }
     }
 }

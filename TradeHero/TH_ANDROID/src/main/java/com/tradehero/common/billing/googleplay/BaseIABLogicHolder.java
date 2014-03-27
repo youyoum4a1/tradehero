@@ -5,21 +5,27 @@ import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.BillingRequest;
+import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABLogicHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABException>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherHolderType extends IABInventoryFetcherHolder<
                 IABSKUType,
                 IABProductDetailType,
                 IABException>,
+        ProductTunerType extends ProductDetailTuner<IABSKUType, IABProductDetailType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<
@@ -42,28 +48,35 @@ abstract public class BaseIABLogicHolder<
                 IABPurchaseType,
                 IABException>,
         BillingRequestType extends BillingRequest<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
                 IABProductDetailType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
     extends BaseBillingLogicHolder<
+        IABSKUListKeyType,
         IABSKUType,
+        IABSKUListType,
         IABProductDetailType,
+        ProductTunerType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
         BillingRequestType,
         IABException>
     implements IABLogicHolder<
-            IABSKUType,
-            IABProductDetailType,
-            IABPurchaseOrderType,
-            IABOrderIdType,
-            IABPurchaseType,
-            BillingRequestType,
-            IABException>
+        IABSKUListKeyType,
+        IABSKUType,
+        IABSKUListType,
+        IABProductDetailType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        BillingRequestType,
+        IABException>
 {
     protected IABServiceConnector availabilityTester;
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
@@ -116,12 +129,6 @@ abstract public class BaseIABLogicHolder<
         }
     }
 
-    @Override protected void testBillingAvailable()
-    {
-        availabilityTester = new AvailabilityTester();
-        availabilityTester.startConnectionSetup();
-    }
-
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return
@@ -171,25 +178,5 @@ abstract public class BaseIABLogicHolder<
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         purchaserHolder.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public class AvailabilityTester extends IABServiceConnector
-    {
-        protected AvailabilityTester()
-        {
-            super();
-        }
-
-        @Override protected void handleSetupFinished(IABResponse response)
-        {
-            super.handleSetupFinished(response);
-            notifyBillingAvailable();
-        }
-
-        @Override protected void handleSetupFailed(IABException exception)
-        {
-            super.handleSetupFailed(exception);
-            notifyBillingNotAvailable(exception);
-        }
     }
 }

@@ -71,6 +71,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<PrettyTime> prettyTime;
+    @Inject protected ProgressDialogUtil progressDialogUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
@@ -238,7 +239,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         if (alertId != null)
         {
             detachAlertFetchTask();
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
             alertCacheFetchTask = alertCache.get().getOrFetch(alertId, alertCacheListener);
             alertCacheFetchTask.execute();
@@ -281,7 +282,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
                 if (alertToggle.isChecked() && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
                 {
-                    userInteractor.conditionalPopBuyStockAlerts();
+                    // TODO
+                    //userInteractor.conditionalPopBuyStockAlerts();
                     alertToggle.setChecked(false);
                 }
             }
@@ -378,7 +380,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
         if (userProfileDTO != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
 
             if (alertDTO != null)

@@ -32,6 +32,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -50,7 +52,9 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -70,8 +74,6 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.viewpagerindicator.PageIndicator;
@@ -118,8 +120,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
-    @Inject PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -131,7 +132,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected SecurityAlertAssistant securityAlertAssistant;
     protected PageIndicator mBottomPagerIndicator;
-    protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
     protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchTask;
 
@@ -151,8 +151,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
-        portfolioCompactListMilestoneListener = new BuySellPortfolioCompactListMilestoneListener();
         this.userWatchlistPositionCacheListener = new BuySellUserWatchlistCacheListener();
+    }
+
+    @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    {
+        return new BuySellPortfolioCompactListMilestoneListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -281,11 +285,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setOnPopulatedListener(this);
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new BuySellTHIABUserInteractor();
-    }
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -293,7 +292,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.buy_sell_menu_toggle, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE);
         displayExchangeSymbol(actionBar);
     }
 
@@ -359,18 +360,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
 
-        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
-        {
-            @Override public void run()
-            {
-                display();
-            }
-        });
-
-        detachPortfolioCompactMilestone();
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserId);
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListMilestoneListener);
-        portfolioCompactListRetrievedMilestone.launch();
+        displayButtonAddCash();
     }
 
     @Override public void onPause()
@@ -382,7 +372,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        detachPortfolioCompactMilestone();
         detachWatchlistFetchTask();
 
         securityAlertAssistant.setOnPopulatedListener(null);
@@ -447,19 +436,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        portfolioCompactListMilestoneListener = null;
         this.userWatchlistPositionCacheListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
-    }
-
-    protected void detachPortfolioCompactMilestone()
-    {
-        if (portfolioCompactListRetrievedMilestone != null)
-        {
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
-        }
-        portfolioCompactListRetrievedMilestone = null;
     }
 
     protected void detachWatchlistFetchTask()
@@ -589,7 +568,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
-            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioId()), andDisplay);
+            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()), andDisplay);
         }
         else
         {
@@ -598,6 +577,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (andDisplay)
         {
             displaySelectedPortfolio();
+            displayButtonAddCash();
         }
     }
 
@@ -710,7 +690,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-            PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
+            PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
             newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
             TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
@@ -746,7 +726,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             while (iterator.hasNext())
             {
                 OwnedPortfolioId ownedPortfolioId = iterator.next();
-                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioIdKey());
                 if (portfolioCompactDTO == null)
                 {
                     Timber.e(new NullPointerException("Missing portfolioCompact for " + ownedPortfolioId), "");
@@ -799,6 +779,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         displaySelectedPortfolio();
         displayPricingBidAskView();
         displayTradeQuantityView();
+        displayButtonAddCash();
         displayBuyButton();
         displayBottomViewPager();
         displayStockName();
@@ -895,6 +876,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mTradeQuantityView != null)
         {
             mTradeQuantityView.display();
+        }
+    }
+
+    public void displayButtonAddCash()
+    {
+        if (mBtnAddCash != null)
+        {
+            mBtnAddCash.setEnabled(purchaseApplicableOwnedPortfolioId != null && purchaseApplicableOwnedPortfolioId.isValid());
         }
     }
 
@@ -1331,7 +1320,25 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void handleBtnAddCashPressed()
     {
-        userInteractor.conditionalPopBuyVirtualDollars();
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
+        billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+            {
+                linkWith(updatedUserProfile, true);
+                waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+            }
+        };
+        return billingRequest;
     }
 
     private void handleBtnAddTriggerClicked()
@@ -1559,7 +1566,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                     }
                     else
                     {
-                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
+                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy),
+                                true);
                     }
                 }
                 displaySlider();
@@ -1611,27 +1619,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         return R.layout.tutorial_buy_sell;
     }
 
-    public class BuySellTHIABUserInteractor extends THIABUserInteractor
-    {
-        public BuySellTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-            // Like this we retest for the possibility to buy and sell
-            display(); // TODO
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-        {
-            super.handleShowProductDetailsMilestoneFailed(throwable);
-            Timber.e("Failed to load the sku details", throwable);
-        }
-    }
-
     protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
     {
         @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
@@ -1643,14 +1630,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListMilestoneListener implements Milestone.OnCompleteListener
+    protected class BuySellPortfolioCompactListMilestoneListener extends BasePurchaseManagementPortfolioCompactListRetrievedListener
     {
         @Override public void onComplete(Milestone milestone)
         {
+            super.onComplete(milestone);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
             displaySlider();
+            displayTradeQuantityView();
         }
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)

@@ -5,16 +5,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.Settings;
 import android.view.LayoutInflater;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
-import com.tradehero.th.fragments.billing.StoreSKUDetailView;
-import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
+import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.Comparator;
@@ -27,31 +28,17 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
         THIABLogicHolder,
-        StoreSKUDetailView,
-        THSKUDetailsAdapter>
+        THIABStoreProductDetailView,
+        THSKUDetailAdapter>
 {
     public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
 
-    @Inject public ActivityUtil activityUtil;
-    @Inject THIABPurchaseCache thiabPurchaseCache;
+    protected THIABPurchaseCache thiabPurchaseCache;
 
-    @Inject public THIABAlertDialogUtil()
+    @Inject public THIABAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)
     {
-        super();
-    }
-
-    @Override public void goToCreateAccount(final Context context)
-    {
-        Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-        addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
-        context.startActivity(addAccountIntent);
-    }
-
-    public AlertDialog popWaitWhileLoading(final Context context)
-    {
-        return popWithNegativeButton(context, R.string.store_billing_loading_window_title,
-                R.string.store_billing_loading_window_description,
-                R.string.store_billing_loading_cancel);
+        super(localyticsSession, activityUtil);
+        this.thiabPurchaseCache = thiabPurchaseCache;
     }
 
     public AlertDialog popVerificationFailed(final Context context)
@@ -87,11 +74,11 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 
     public AlertDialog popSKUAlreadyOwned(final Context context)
     {
-        return popSKUAlreadyOwned(context, null);
+        return popSKUAlreadyOwned(context, null, null);
     }
 
     public <SKUDetailsType extends BaseIABProductDetail>
-    AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
+    AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails, DialogInterface.OnClickListener restoreClickListener)
     {
         return popWithOkCancelButton(context,
                 skuDetails == null ?
@@ -107,7 +94,8 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                         dialog.cancel();
                         sendSupportEmailPurchaseNotRestored(context);
                     }
-                });
+                },
+                restoreClickListener);
     }
 
     public void sendSupportEmailPurchaseNotRestored(final Context context)
@@ -122,6 +110,13 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         return popWithNegativeButton(context, R.string.store_billing_bad_response_window_title,
                 R.string.store_billing_bad_response_window_description,
                 R.string.store_billing_bad_response_cancel);
+    }
+
+    public AlertDialog popResultError(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.store_billing_result_error_window_title,
+                R.string.store_billing_result_error_window_description,
+                R.string.store_billing_result_error_cancel);
     }
 
     public AlertDialog popRemoteError(final Context context)
@@ -143,40 +138,6 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         return popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
                 R.string.store_billing_load_info_error_window_description,
                 R.string.store_billing_load_info_error_cancel);
-    }
-
-    public AlertDialog popUnknownError(final Context context)
-    {
-        return popWithOkCancelButton(context,
-                R.string.store_billing_unknown_error_window_title,
-                R.string.store_billing_unknown_error_window_description,
-                R.string.store_billing_unknown_error_ok,
-                R.string.store_billing_unknown_error_cancel,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        // TODO open email
-                        dialog.cancel();
-                    }
-                });
-    }
-
-    public void sendSupportEmailBillingUnknownError(final Context context, final Exception exception)
-    {
-        Intent emailIntent = VersionUtils.getSupportEmailIntent(VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
-        activityUtil.sendSupportEmail(context, emailIntent);
-    }
-
-    public AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
-    {
-        return popWithOkCancelButton(context,
-                R.string.google_play_send_support_email_report_fail_title,
-                R.string.google_play_send_support_email_report_fail_message,
-                R.string.google_play_send_support_email_report_fail_ok,
-                R.string.google_play_send_support_email_report_fail_cancel,
-                okClickListener);
     }
 
     public AlertDialog popOfferSendEmailSupportConsumeFailed(final Context context, final Exception exception)
@@ -206,10 +167,10 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     }
 
     //<editor-fold desc="SKU related">
-    @Override protected THSKUDetailsAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, String skuDomain)
+    @Override protected THSKUDetailAdapter createProductDetailAdapter(Activity activity,
+            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
     {
-        return new THSKUDetailsAdapter(activity, layoutInflater, skuDomain);
+        return new THSKUDetailAdapter(activity, layoutInflater, skuDomain);
     }
 
     @Override protected Comparator<THIABProductDetail> createProductDetailComparator()
@@ -221,10 +182,10 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
 
-        for (IABSKU key : thiabPurchaseCache.getKeys())
+        for (THIABPurchase key : thiabPurchaseCache.getValues())
         {
             Timber.d("Disabling %s", key);
-            enabledItems.put(key, false);
+            enabledItems.put(key.getProductIdentifier(), false);
         }
 
         if (enabledItems.size() == 0)

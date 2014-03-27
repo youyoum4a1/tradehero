@@ -3,15 +3,12 @@ package com.tradehero.th.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
 import java.util.List;
-import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 4:55 PM To change this template use File | Settings | File Templates. */
 public class VersionUtils

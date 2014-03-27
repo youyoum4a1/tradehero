@@ -6,11 +6,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 6:05 PM To change this template use File | Settings | File Templates. */
-@Singleton public class IABExceptionFactory implements BillingExceptionFactory
+public class IABExceptionFactory implements BillingExceptionFactory
 {
     public static final String TAG = IABExceptionFactory.class.getSimpleName();
 
-    @Inject public IABExceptionFactory()
+    public IABExceptionFactory()
     {
         super();
     }

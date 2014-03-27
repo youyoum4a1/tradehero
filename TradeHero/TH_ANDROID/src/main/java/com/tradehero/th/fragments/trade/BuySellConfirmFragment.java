@@ -98,6 +98,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject ProgressDialogUtil progressDialogUtil;
     private boolean isBuying = false;
     private boolean isSelling = false;
     private BaseBuySellAsyncTask buySellTask;
@@ -490,7 +491,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         @Override protected void onPreExecute()
         {
             transactionDialog =
-                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.processing, R.string.alert_dialog_please_wait);
+                    progressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.processing, R.string.alert_dialog_please_wait);
             super.onPreExecute();
         }
 

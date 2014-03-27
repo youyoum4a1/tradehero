@@ -59,6 +59,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -203,7 +204,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         if (currentFragment instanceof EmailSignInOrUpFragment)
         {
-            progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
+            progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
             EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
@@ -239,21 +240,21 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private void authenticateWithLinkedIn()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
-        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback("LinkedIn"));
     }
 
     private void authenticateWithFacebook()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_Facebook);
-        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
         facebookUtils.get().logIn(this, new SocialAuthenticationCallback("Facebook"));
     }
 
     private void authenticateWithTwitter()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_Twitter);
-        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
