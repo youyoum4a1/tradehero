@@ -65,7 +65,10 @@ public class NewsDetailSummaryView extends FrameLayout
 
     @Override public void display(NewsItemDTO dto)
     {
-        mNewsDetailTitle.setText(dto.title);
-        mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+        if (dto != null)
+        {
+            mNewsDetailTitle.setText(dto.title);
+            mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+        }
     }
 }

@@ -110,11 +110,14 @@ public class NewsDetailFullView extends LinearLayout
 
     @Override public void display(NewsItemDTO dto)
     {
-        mNewsDetailContent.setText(dto.text);
-        mNewsDetailContent.setVisibility(View.VISIBLE);
-        mNewsDetailLoading.setVisibility(View.GONE);
+        if (dto != null)
+        {
+            mNewsDetailContent.setText(dto.text);
+            mNewsDetailContent.setVisibility(View.VISIBLE);
+            mNewsDetailLoading.setVisibility(View.GONE);
 
-        securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
+            securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
+        }
     }
 
     private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
