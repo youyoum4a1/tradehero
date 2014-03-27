@@ -20,6 +20,11 @@ public class NewsItemDTOKey extends DiscussionKey
         super(args);
     }
 
+    public NewsItemDTOKey(DiscussionKey discussionKey)
+    {
+        super(discussionKey.key);
+    }
+
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

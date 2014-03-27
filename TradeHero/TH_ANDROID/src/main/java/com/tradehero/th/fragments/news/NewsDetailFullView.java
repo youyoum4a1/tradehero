@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -20,6 +21,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
@@ -112,9 +114,13 @@ public class NewsDetailFullView extends LinearLayout
     {
         if (dto != null)
         {
-            mNewsDetailContent.setText(dto.text);
-            mNewsDetailContent.setVisibility(View.VISIBLE);
-            mNewsDetailLoading.setVisibility(View.GONE);
+            if (dto.text != null && !dto.text.isEmpty())
+            {
+                mNewsDetailContent.setText(dto.text);
+
+                mNewsDetailContent.setVisibility(View.VISIBLE);
+                mNewsDetailLoading.setVisibility(View.GONE);
+            }
 
             if (dto.getSecurityIds() != null)
             {
@@ -142,6 +148,7 @@ public class NewsDetailFullView extends LinearLayout
             @Override
             public void failure(RetrofitError error)
             {
+                THToast.show(new THException(error));
             }
         };
     }

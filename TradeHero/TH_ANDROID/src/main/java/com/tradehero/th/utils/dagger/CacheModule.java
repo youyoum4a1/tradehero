@@ -8,6 +8,7 @@ import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
@@ -46,6 +47,7 @@ import javax.inject.Singleton;
                 ProviderTileView.class,
 
                 TimelineDiscussionFragment.class,
+                NewsDiscussionFragment.class,
         },
         complete = false,
         library = true

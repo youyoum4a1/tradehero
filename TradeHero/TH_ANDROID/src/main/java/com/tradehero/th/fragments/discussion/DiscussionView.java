@@ -142,7 +142,7 @@ public class DiscussionView extends LinearLayout
     {
         if (discussionDTO != null)
         {
-            getNavigator().pushFragment(TimelineDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
+            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
         }
     }
 
