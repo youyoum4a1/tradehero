@@ -1,6 +1,8 @@
 package com.tradehero.th.billing.samsung;
 
 import com.android.internal.util.Predicate;
+import com.sec.android.iap.lib.vo.ItemVo;
+import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
@@ -9,33 +11,35 @@ import com.tradehero.th.billing.THProductDetail;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
 public class THSamsungProductDetail
+        extends BaseSamsungProductDetail<SamsungSKU>
         implements SamsungProductDetail<SamsungSKU>,
-            THProductDetail<SamsungSKU>
+        THProductDetail<SamsungSKU>
 {
     public static final String TAG = THSamsungProductDetail.class.getSimpleName();
 
-    private final SamsungSKU samsungSKU;
     public int iconResId;
     public boolean hasFurtherDetails = false;
     public int furtherDetailsResId = R.string.na;
     public boolean hasRibbon = false;
     public int iconRibbonResId = R.drawable.default_image;
     public ProductIdentifierDomain domain;
-    public String price;
-    public String description;
 
     //<editor-fold desc="Constructors">
     public THSamsungProductDetail(SamsungSKU samsungSKU)
     {
-        super();
-        this.samsungSKU = samsungSKU;
+        super(samsungSKU);
+    }
+
+    public THSamsungProductDetail(SamsungSKU samsungSKU, String _jsonString)
+    {
+        super(samsungSKU, _jsonString);
+    }
+
+    public THSamsungProductDetail(SamsungSKU samsungSKU, ItemVo itemVo)
+    {
+        super(samsungSKU, itemVo);
     }
     //</editor-fold>
-
-    @Override public SamsungSKU getProductIdentifier()
-    {
-        return samsungSKU;
-    }
 
     @Override public int getIconResId()
     {
@@ -69,12 +73,12 @@ public class THSamsungProductDetail
 
     @Override public String getPriceText()
     {
-        return price;
+        return getItemPriceString();
     }
 
     @Override public String getDescription()
     {
-        return description;
+        return getItemDesc();
     }
 
     public static Predicate<THSamsungProductDetail> getPredicateIsOfCertainDomain(final ProductIdentifierDomain domain)

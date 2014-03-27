@@ -67,16 +67,6 @@ abstract public class BaseIABInventoryFetcherHolder<
         inventoryFetcher.fetchInventory(requestCode);
     }
 
-    @Override public boolean hadErrorLoadingInventory()
-    {
-        return errorLoadingInventory;
-    }
-
-    @Override public boolean isInventoryReady()
-    {
-        return inventoryReady;
-    }
-
     @Override public void onDestroy()
     {
         for (IABInventoryFetcherType inventoryFetcher : iabInventoryFetchers.values())

@@ -13,7 +13,7 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,
         SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>,
-        ProductIdentifierFetcherType extends ProductIdentifierFetcher<
+        SamsungProductIdentifierFetcherType extends SamsungProductIdentifierFetcher<
                 SamsungSKUListKeyType,
                 SamsungSKUType,
                 SamsungSKUListType,
@@ -25,7 +25,7 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListType,
         SamsungExceptionType>
 {
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcherType> skuFetchers;
+    protected Map<Integer /*requestCode*/, SamsungProductIdentifierFetcherType> skuFetchers;
 
     public BaseSamsungProductIdentifierFetcherHolder()
     {
@@ -36,15 +36,32 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        ProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
+        SamsungProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
         skuFetcher.fetchProductIdentifiers(requestCode);
     }
 
+    @Override public boolean isUnusedRequestCode(int requestCode)
+    {
+        return super.isUnusedRequestCode(requestCode) &&
+                !skuFetchers.containsKey(requestCode);
+    }
+
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        super.forgetRequestCode(requestCode);
+        SamsungProductIdentifierFetcherType inventoryFetcher = skuFetchers.get(requestCode);
+        if (inventoryFetcher != null)
+        {
+            inventoryFetcher.setProductIdentifierListener(null);
+        }
+        skuFetchers.remove(requestCode);
+    }
+
     @Override public void onDestroy()
     {
-        for (ProductIdentifierFetcherType inventoryFetcher : skuFetchers.values())
+        for (SamsungProductIdentifierFetcherType inventoryFetcher : skuFetchers.values())
         {
             if (inventoryFetcher != null)
             {
@@ -56,5 +73,5 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         super.onDestroy();
     }
 
-    abstract protected ProductIdentifierFetcherType createProductIdentifierFetcher();
+    abstract protected SamsungProductIdentifierFetcherType createProductIdentifierFetcher();
 }

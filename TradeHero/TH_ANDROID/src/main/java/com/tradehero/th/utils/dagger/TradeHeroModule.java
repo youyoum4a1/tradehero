@@ -21,6 +21,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcher;
+import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
 import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
@@ -285,6 +287,8 @@ import javax.inject.Singleton;
 
                         THBaseSamsungProductIdentifierFetcher.class,
                         THBaseSamsungProductIdentifierFetcherHolder.class,
+                        THBaseSamsungInventoryFetcher.class,
+                        THBaseSamsungInventoryFetcherHolder.class,
                         THSamsungPurchaser.class,
                         THBaseSamsungPurchaseFetcher.class,
                         THBaseSamsungPurchaseFetcherHolder.class,

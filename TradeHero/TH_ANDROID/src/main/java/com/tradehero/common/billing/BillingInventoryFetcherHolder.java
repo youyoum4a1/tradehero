@@ -14,9 +14,5 @@ public interface BillingInventoryFetcherHolder<
     BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode);
     void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener);
     void launchInventoryFetchSequence(int requestCode, List<ProductIdentifierType> allIds);
-    @Deprecated
-    boolean isInventoryReady();
-    @Deprecated
-    boolean hadErrorLoadingInventory();
     void onDestroy();
 }

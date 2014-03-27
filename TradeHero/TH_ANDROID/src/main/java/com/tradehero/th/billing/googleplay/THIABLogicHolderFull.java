@@ -393,16 +393,4 @@ public class THIABLogicHolderFull
         ((IABPurchaserHolder<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>) purchaserHolder).onActivityResult(
                 requestCode, resultCode, data);
     }
-
-    @Deprecated
-    @Override public boolean isInventoryReady()
-    {
-        return inventoryFetcherHolder.isInventoryReady();
-    }
-
-    @Deprecated
-    @Override public boolean hadErrorLoadingInventory()
-    {
-        return inventoryFetcherHolder.hadErrorLoadingInventory();
-    }
 }

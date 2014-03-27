@@ -12,45 +12,56 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Product Identifier Fetcher and Inventory Fetcher are essentially making the same calls.
  * Created by xavier on 3/27/14.
  */
-abstract public class BaseSamsungProductIdentifierFetcher<
-        SamsungSKUListKeyType extends SamsungSKUListKey,
+abstract public class BaseSamsungInventoryFetcher<
         SamsungSKUType extends SamsungSKU,
-        SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>,
+        SamsungProductDetailType extends SamsungProductDetail<SamsungSKUType>,
         SamsungExceptionType extends SamsungException>
-        extends BaseSamsungActor
-        implements SamsungProductIdentifierFetcher<
-        SamsungSKUListKeyType,
+    extends BaseSamsungActor
+    implements SamsungInventoryFetcher<
         SamsungSKUType,
-        SamsungSKUListType,
+        SamsungProductDetailType,
         SamsungExceptionType>
 {
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
-    protected Map<SamsungSKUListKeyType, SamsungSKUListType> samsungSKUs;
-    private OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> fetchedListener;
+    protected List<SamsungSKUType> samsungSKUs;
+    protected Map<SamsungSKUType, SamsungProductDetailType> inventory;
+    private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
 
-    public BaseSamsungProductIdentifierFetcher(Context context, int mode)
+    public BaseSamsungInventoryFetcher(Context context, int mode)
     {
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
-        samsungSKUs = new HashMap<>();
+        samsungSKUs = new ArrayList<>();
+        inventory = new HashMap<>();
     }
 
-    @Override public OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> getProductIdentifierListener()
+    @Override public OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> getInventoryFetchedListener()
     {
-        return fetchedListener;
+        return inventoryFetchedListener;
     }
 
-    @Override public void setProductIdentifierListener(OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listener)
+    @Override public void setInventoryFetchedListener(OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> onInventoryFetchedListener)
     {
-        this.fetchedListener = listener;
+        this.inventoryFetchedListener = onInventoryFetchedListener;
     }
 
-    @Override public void fetchProductIdentifiers(int requestCode)
+    @Override public List<SamsungSKUType> getProductIdentifiers()
+    {
+        return samsungSKUs;
+    }
+
+    @Override public void setProductIdentifiers(List<SamsungSKUType> productIdentifiers)
+    {
+        this.samsungSKUs = productIdentifiers;
+    }
+
+    @Override public void fetchInventory(int requestCode)
     {
         checkNotFetching();
         this.fetching = true;
@@ -101,7 +112,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
     {
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
-            addToSkus(fetchingGroupId, itemList);
+            addToInventory(fetchingGroupId, itemList);
         }
         else
         {
@@ -109,36 +120,41 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         }
     }
 
-    protected void addToSkus(String groupId, ArrayList<ItemVo> itemList)
+    protected void addToInventory(String groupId, ArrayList<ItemVo> itemList)
     {
         if (itemList != null)
         {
+            SamsungSKUType samsungSKU;
             for (ItemVo itemVo : itemList)
             {
-                samsungSKUs.get(createSamsungListKey(itemVo.getType())).add(createSamsungSku(groupId, itemVo.getItemId()));
+                samsungSKU = createSamsungSku(groupId, itemVo.getItemId());
+                inventory.put(
+                        samsungSKU,
+                        createSamsungProductDetail(samsungSKU, itemVo));
             }
         }
     }
 
-    abstract protected SamsungSKUListKeyType createSamsungListKey(String itemType);
     abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
+    abstract protected SamsungProductDetailType createSamsungProductDetail(SamsungSKUType samsungSKU, ItemVo itemVo);
     abstract protected SamsungExceptionType createException(int errorCode);
 
     protected void notifyListenerFetched()
     {
-        OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listenerCopy = getProductIdentifierListener();
+        OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onFetchedProductIdentifiers(getRequestCode(), this.samsungSKUs);
+            listenerCopy.onInventoryFetchSuccess(getRequestCode(), getProductIdentifiers(),
+                    inventory);
         }
     }
 
     protected void notifyListenerFetchFailed(SamsungExceptionType exception)
     {
-        OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listenerCopy = getProductIdentifierListener();
+        OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onFetchProductIdentifiersFailed(getRequestCode(), exception);
+            listenerCopy.onInventoryFetchFail(getRequestCode(), getProductIdentifiers(), exception);
         }
     }
 }

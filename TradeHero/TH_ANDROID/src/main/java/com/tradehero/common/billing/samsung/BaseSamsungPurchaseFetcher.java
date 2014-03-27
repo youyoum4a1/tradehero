@@ -43,8 +43,8 @@ abstract public class BaseSamsungPurchaseFetcher<
     @Override public void fetchPurchases(int requestCode)
     {
         checkNotFetching();
-        setRequestCode(requestCode);
         this.fetching = true;
+        setRequestCode(requestCode);
         fetchKnownItemGroups();
     }
 
