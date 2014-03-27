@@ -66,14 +66,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     private int commentListWrapperDisplayedChildId;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View listViewWrapper = inflater.inflate(R.layout.news_detail_view, container, false);
