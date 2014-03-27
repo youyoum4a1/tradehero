@@ -15,7 +15,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -94,13 +96,7 @@ public class DiscussionView extends LinearLayout
             // user profile picture
             displayUserProfilePicture(discussionDTO.user);
 
-            // markup text
-            displayComment(discussionDTO);
-
-            // timeline time
-            displayCommentTime(discussionDTO);
-
-            votePair.display(discussionDTO);
+            display((AbstractDiscussionDTO) discussionDTO);
         }
     }
 
@@ -173,12 +169,12 @@ public class DiscussionView extends LinearLayout
                 .into(avatar);
     }
 
-    private void displayComment(DiscussionDTO item)
+    private void displayComment(AbstractDiscussionDTO item)
     {
         content.setText(item.text);
     }
 
-    private void displayCommentTime(DiscussionDTO item)
+    private void displayCommentTime(AbstractDiscussionDTO item)
     {
         time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
     }
@@ -203,5 +199,21 @@ public class DiscussionView extends LinearLayout
     private Navigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+    }
+
+    public void display(NewsItemDTO newsItemDTO)
+    {
+        display((AbstractDiscussionDTO) newsItemDTO);
+    }
+
+    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    {
+        // markup text
+        displayComment(abstractDiscussionDTO);
+
+        // timeline time
+        displayCommentTime(abstractDiscussionDTO);
+
+        votePair.display(abstractDiscussionDTO);
     }
 }

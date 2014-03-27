@@ -224,8 +224,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
     {
-        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value, boolean fromCache)
         {
             linkWith(value);
         }
