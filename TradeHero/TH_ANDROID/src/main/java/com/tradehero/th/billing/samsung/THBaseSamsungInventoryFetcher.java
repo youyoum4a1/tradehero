@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.samsung;
 
 import android.content.Context;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungInventoryFetcher;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -46,8 +47,8 @@ public class THBaseSamsungInventoryFetcher
         return new THSamsungProductDetail(samsungSKU, itemVo);
     }
 
-    @Override protected SamsungException createException(int errorCode)
+    @Override protected SamsungException createException(ErrorVo errorVo)
     {
-        return samsungExceptionFactory.create(errorCode);
+        return samsungExceptionFactory.create(errorVo);
     }
 }

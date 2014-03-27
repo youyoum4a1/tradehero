@@ -1,7 +1,9 @@
 package com.tradehero.common.billing.samsung.exception;
 
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.samsung.SamsungConstants;
 
 /**
  * Created by xavier on 3/26/14.
@@ -12,6 +14,11 @@ public class SamsungExceptionFactory
     @Override public SamsungException create(int responseStatus)
     {
         return create(responseStatus, null);
+    }
+
+    public SamsungException create(ErrorVo errorVo)
+    {
+        return create(errorVo.getErrorCode(), errorVo.dump());
     }
 
     @Override public SamsungException create(int responseStatus, String message)
@@ -52,6 +59,26 @@ public class SamsungExceptionFactory
 
             case SamsungIapHelper.IAP_ERROR_CONFIRM_INBOX: // -1006
                 exception = new SamsungConfirmInboxException(message);
+                break;
+
+            case SamsungConstants.IAP_ERROR_ITEM_GROUP_DOES_NOT_EXIST: // -1007
+                exception = new SamsungGroupNotExistException(message);
+                break;
+
+            case SamsungConstants.IAP_ERROR_NETWORK_NOT_AVAILABLE: // -1008
+                exception = new SamsungNetworkUnavailableException(message);
+                break;
+
+            case SamsungConstants.IAP_ERROR_IOEXCEPTION_ERROR: // -1009
+                exception = new SamsungIOException(message);
+                break;
+
+            case SamsungConstants.IAP_ERROR_SOCKET_TIMEOUT: // -1010
+                exception = new SamsungSocketTimeoutException(message);
+                break;
+
+            case SamsungConstants.IAP_ERROR_CONNECT_TIMEOUT: // -1011
+                exception = new SamsungConnectTimeoutException(message);
                 break;
         }
         return exception;

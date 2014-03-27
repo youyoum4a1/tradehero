@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 3/27/14.
@@ -26,6 +27,8 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         SamsungSKUListType,
         SamsungExceptionType>
 {
+    public static final int FIRST_ITEM_NUM = 1;
+
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
@@ -91,7 +94,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         fetchingGroupId = groupId;
         mIapHelper.getItemList(
                 groupId,
-                0, Integer.MAX_VALUE,
+                FIRST_ITEM_NUM, Integer.MAX_VALUE,
                 SamsungIapHelper.ITEM_TYPE_ALL,
                 mode,
                 this);
@@ -105,7 +108,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         }
         else
         {
-            notifyListenerFetchFailed(createException(errorVo.getErrorCode()));
+            notifyListenerFetchFailed(createException(errorVo));
         }
     }
 
@@ -122,7 +125,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
 
     abstract protected SamsungSKUListKeyType createSamsungListKey(String itemType);
     abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
-    abstract protected SamsungExceptionType createException(int errorCode);
+    abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
     protected void notifyListenerFetched()
     {
@@ -135,6 +138,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
 
     protected void notifyListenerFetchFailed(SamsungExceptionType exception)
     {
+        Timber.e(exception, "");
         OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listenerCopy = getProductIdentifierListener();
         if (listenerCopy != null)
         {

@@ -5,6 +5,7 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 3/26/14.
@@ -62,7 +63,7 @@ abstract public class BaseSamsungPurchaser<
     }
 
     abstract protected SamsungPurchaseType createSamsungPurchase(PurchaseVo purchaseVo);
-    abstract protected  SamsungExceptionType createSamsungException(ErrorVo errorVo);
+    abstract protected SamsungExceptionType createSamsungException(ErrorVo errorVo);
 
     protected void notifyPurchaseFinished(SamsungPurchaseType purchase)
     {
@@ -75,6 +76,7 @@ abstract public class BaseSamsungPurchaser<
 
     protected void notifyPurchaseFailed(SamsungExceptionType exception)
     {
+        Timber.e(exception, "");
         OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> listenerCopy = purchaseFinishedListener;
         if (listenerCopy != null)
         {

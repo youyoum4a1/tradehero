@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /**
  * Product Identifier Fetcher and Inventory Fetcher are essentially making the same calls.
@@ -25,6 +26,8 @@ abstract public class BaseSamsungInventoryFetcher<
         SamsungProductDetailType,
         SamsungExceptionType>
 {
+    public static final int FIRST_ITEM_NUM = 1;
+
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
@@ -102,7 +105,7 @@ abstract public class BaseSamsungInventoryFetcher<
         fetchingGroupId = groupId;
         mIapHelper.getItemList(
                 groupId,
-                0, Integer.MAX_VALUE,
+                FIRST_ITEM_NUM, Integer.MAX_VALUE,
                 SamsungIapHelper.ITEM_TYPE_ALL,
                 mode,
                 this);
@@ -116,7 +119,7 @@ abstract public class BaseSamsungInventoryFetcher<
         }
         else
         {
-            notifyListenerFetchFailed(createException(errorVo.getErrorCode()));
+            notifyListenerFetchFailed(createException(errorVo));
         }
     }
 
@@ -137,7 +140,7 @@ abstract public class BaseSamsungInventoryFetcher<
 
     abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
     abstract protected SamsungProductDetailType createSamsungProductDetail(SamsungSKUType samsungSKU, ItemVo itemVo);
-    abstract protected SamsungExceptionType createException(int errorCode);
+    abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
     protected void notifyListenerFetched()
     {
@@ -151,6 +154,7 @@ abstract public class BaseSamsungInventoryFetcher<
 
     protected void notifyListenerFetchFailed(SamsungExceptionType exception)
     {
+        Timber.e(exception, "");
         OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {

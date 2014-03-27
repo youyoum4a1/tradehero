@@ -10,6 +10,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 3:31 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseSamsungPurchaseFetcher<
@@ -24,6 +25,8 @@ abstract public class BaseSamsungPurchaseFetcher<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
+    public static final int FIRST_ITEM_NUM = 1;
+
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
@@ -81,7 +84,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         fetchingGroupId = groupId;
         mIapHelper.getItemInboxList(
                 groupId,
-                0, Integer.MAX_VALUE,
+                FIRST_ITEM_NUM, Integer.MAX_VALUE,
                 "", "",
                 this);
     }
@@ -94,11 +97,11 @@ abstract public class BaseSamsungPurchaseFetcher<
         }
         else
         {
-            notifyListenerFetchFailed(createException(errorVo.getErrorCode()));
+            notifyListenerFetchFailed(createException(errorVo));
         }
     }
 
-    abstract protected SamsungExceptionType createException(int errorCode);
+    abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
     protected void addToPurchases(String groupId, ArrayList<InboxVo> inboxList)
     {
@@ -134,6 +137,7 @@ abstract public class BaseSamsungPurchaseFetcher<
 
     protected void notifyListenerFetchFailed(SamsungExceptionType exception)
     {
+        Timber.e(exception, "");
         OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> listenerCopy = getFetchListener();
         if (listenerCopy != null)
         {

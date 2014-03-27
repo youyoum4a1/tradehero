@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.samsung;
 
 import android.content.Context;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.BaseSamsungPurchaseFetcher;
 import com.tradehero.common.billing.samsung.SamsungPurchaseCache;
@@ -49,8 +50,8 @@ public class THBaseSamsungPurchaseFetcher
         return new THSamsungPurchase(groupId, inboxVo, null);
     }
 
-    @Override protected SamsungException createException(int errorCode)
+    @Override protected SamsungException createException(ErrorVo errorVo)
     {
-        return samsungExceptionFactory.create(errorCode);
+        return samsungExceptionFactory.create(errorVo);
     }
 }
