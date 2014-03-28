@@ -53,6 +53,7 @@ public class AppContainerImpl implements AppContainer
             }
         };
 
+        resideMenu.getMenuItems().clear();
         for (DashboardTabType tabType: DashboardTabType.values())
         {
             ResideMenuItem menuItem = new ResideMenuItem(activity, tabType.drawableResId, tabType.stringResId);
