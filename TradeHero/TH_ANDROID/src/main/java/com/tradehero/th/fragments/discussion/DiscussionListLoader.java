@@ -18,17 +18,18 @@ import javax.inject.Inject;
  */
 public class DiscussionListLoader extends PaginatedLoader<DiscussionDTO>
 {
-    private static final String TYPE = DiscussionType.TIMELINE_ITEM.description;
-    private final TimelineItemDTOKey timelineItemKey;
+    private final int timelineId;
+    private final DiscussionType discussionType;
 
     @Inject DiscussionService discussionService;
 
     private PaginatedDTO<DiscussionDTO> currentPaginatedDiscussion;
 
-    public DiscussionListLoader(Context context, TimelineItemDTOKey timelineItemKey)
+    public DiscussionListLoader(Context context, DiscussionType discussionType, int timelineId)
     {
         super(context);
-        this.timelineItemKey = timelineItemKey;
+        this.timelineId = timelineId;
+        this.discussionType = discussionType;
 
         DaggerUtils.inject(this);
     }
@@ -87,7 +88,7 @@ public class DiscussionListLoader extends PaginatedLoader<DiscussionDTO>
             paginationDTO.perPage = Constants.TIMELINE_ITEM_PER_PAGE;
         }
 
-        currentPaginatedDiscussion = discussionService.getDiscussions(TYPE, timelineItemKey.key, paginationDTO.page, paginationDTO.perPage);
+        currentPaginatedDiscussion = discussionService.getDiscussions(discussionType.description, timelineId, paginationDTO.page, paginationDTO.perPage);
 
         return currentPaginatedDiscussion;
     }

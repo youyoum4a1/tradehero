@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -32,7 +33,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 5:47 PM Copyright (c) TradeHero
  */
-public class DiscussionView extends RelativeLayout
+public class DiscussionView extends LinearLayout
         implements DTOView<DiscussionDTO>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;

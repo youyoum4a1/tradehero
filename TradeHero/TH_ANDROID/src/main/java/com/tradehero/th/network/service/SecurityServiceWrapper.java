@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -12,11 +13,22 @@ import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Repurpose queries
@@ -26,13 +38,76 @@ import retrofit.RetrofitError;
 {
     private final SecurityService securityService;
     private final ProviderServiceWrapper providerServiceWrapper;
+    private final ObjectMapper objectMapper;
 
-    @Inject public SecurityServiceWrapper(SecurityService securityService, ProviderServiceWrapper providerServiceWrapper)
+    @Inject public SecurityServiceWrapper(SecurityService securityService, ProviderServiceWrapper providerServiceWrapper,ObjectMapper objectMapper)
     {
         super();
         this.securityService = securityService;
         this.providerServiceWrapper = providerServiceWrapper;
+        this.objectMapper = objectMapper;
     }
+
+    private String read(InputStream in){
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        }catch (IOException e){
+            //System.err.println("========read error=========");
+            //e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public void getMultipleSecurities2(final Callback<List<SecurityCompactDTO>> callback,final List<Integer> ids)
+            throws RetrofitError
+    {
+        final int len = ids.size();
+        StringBuffer sb = new StringBuffer();
+        for (int i=0;i<len;i++){
+            sb.append(ids.get(i));
+            if (i != len-1){
+                sb.append(",");
+            }
+        }
+
+        Callback<Response> middleCallback =  new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response response2) {
+
+                try {
+                    InputStream is = response.getBody().in();
+                    JSONObject obj = new JSONObject(read(is));
+                    List<SecurityCompactDTO> list = new ArrayList<SecurityCompactDTO>(len);
+                    for (int i=0;i<len;i++){
+                        JSONObject o = obj.getJSONObject(String.valueOf(ids.get(i)));
+                        SecurityCompactDTO dto = objectMapper.readValue(o.toString(),SecurityCompactDTO.class);
+                        list.add(dto);
+                    }
+                    callback.success(list,response2);
+
+                }catch (Exception e) {
+                    Timber.e(e,"middleCallback parse data error");
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        };
+
+        securityService.getMultipleSecurities2(sb.toString(),middleCallback);
+    }
+
 
     //<editor-fold desc="Routing SecurityListType">
     public List<SecurityCompactDTO> getSecurities(SecurityListType key)

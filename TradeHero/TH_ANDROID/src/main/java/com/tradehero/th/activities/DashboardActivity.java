@@ -3,6 +3,8 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.Window;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -10,16 +12,17 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -27,6 +30,8 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -48,23 +53,30 @@ public class DashboardActivity extends SherlockFragmentActivity
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
-    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
+    @Inject CurrentUserId currentUserId;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject AppContainer appContainer;
+    @Inject ViewWrapper slideMenuContainer;
+    @Inject ResideMenu resideMenu;
+
+    // this need tobe early than super.onCreate or it will crash
+        // when device scrool into landscape. by alex
+        // request the progress-bar feature for the activity
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-
-        // request the progress-bar feature for the activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
+        super.onCreate(savedInstanceState);
+
         DaggerUtils.inject(this);
+
         currentActivityHolder.setCurrentActivity(this);
 
         if (Constants.RELEASE)
@@ -72,11 +84,20 @@ public class DashboardActivity extends SherlockFragmentActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        setContentView(R.layout.dashboard_with_bottom_bar);
+        // wrap main view inside a container, this container can be generic, which adds in view components like sidebar, slide-in widget ...
+        ViewGroup dashboardWrapper = appContainer.get(this);
+        // ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
 
         launchIAB();
 
-        this.dtoCacheUtil.initialPrefetches();
+        dtoCacheUtil.initialPrefetches();
+
+        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
     private void launchIAB()
@@ -165,11 +186,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         super.onResume();
 
-        if (navigator == null)
-        {
-            //initialize tabs
-            navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        }
+        //if (navigator == null)
+        //{
+        //    //initialize tabs
+        //    navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        //}
 
         launchActions();
 

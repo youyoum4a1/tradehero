@@ -5,13 +5,12 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="6dp"
-        android:paddingBottom="4dp">
+        >
     <TextView
             android:id="@+id/popup_text"
             android:textColor="@android:color/holo_blue_dark"
             android:layout_width="fill_parent"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:gravity="center"
              />
     <!--android:textSize="@dimen/TitleTextSize"-->

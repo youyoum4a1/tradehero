@@ -558,7 +558,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
      * @return
      */
     Bitmap reszieBackgroundBitmap(int targetWidth, int targetHeight,
-                                  Bitmap result, int exifRotation,boolean recycle) {
+            Bitmap result, int exifRotation,boolean recycle) {
         //Log.i(TAG, "targetWidth "+targetWidth+" targetHeight "+targetHeight+" original "+result.getWidth() +","+result.getHeight());
         boolean swapDimens = exifRotation == 90 || exifRotation == 270;
         int inWidth = swapDimens ? result.getHeight() : result.getWidth();
@@ -580,15 +580,15 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     .floor(inHeight * (heightRatio / widthRatio));
             drawY = (inHeight - newSize) / 2;
             drawHeight = newSize;
-//            Log.d(TAG, String.format("transformResult 1:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
-//                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
+            //            Log.d(TAG, String.format("transformResult 1:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
+            //                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
         } else {
             scale = heightRatio;
             int newSize = (int) Math.floor(inWidth * (widthRatio / heightRatio));
             drawX = (inWidth - newSize) / 2;
             drawWidth = newSize;
-//            Log.d(TAG, String.format("transformResult 2:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
-//                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
+            //            Log.d(TAG, String.format("transformResult 2:targetWidth:%s,inWidth:%s,targetHeight:%s,inHeight:%s,scale:%s, drawX:%s, drawY:%s, drawWidth:%s, drawHeight:%s",
+            //                    targetWidth,inWidth,targetHeight,inHeight,scale,drawX, drawY, drawWidth, drawHeight));
         }
         matrix.preScale(scale, scale);
 
@@ -729,9 +729,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     }
 
     private Bitmap processTransformation(ImageView target, Bitmap bmp) {
-//        if(true){
-//            return bmp;
-//        }
 
         if(bmp == null || bmp.isRecycled()){
             return null;

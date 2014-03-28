@@ -1,145 +1,245 @@
 package com.tradehero.th.fragments.security;
 
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
+import com.tradehero.th.fragments.news.NewsDetailFullView;
+import com.tradehero.th.fragments.news.NewsDetailSummaryView;
+import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
+import com.tradehero.th.loaders.ListLoader;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
+import com.tradehero.th.utils.FontUtil;
+import com.tradehero.th.widget.VotePair;
+import java.util.List;
 import javax.inject.Inject;
-import java.util.Random;
 
 /**
- * Created by tradehero on 14-3-10.
+ * Created by Alex & Liang on 14-3-10.
  */
-public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/ {
+public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/
+{
+    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
+            NewsDetailFragment.class.getName() + ".title_bg";
 
+    private NewsItemDTO mDetailNewsItemDTO;
 
-    TextView titleView;
-    TextView dateView;
-    View titlePlaceholderView;
-    TextView contentView;
+    @Inject NewsServiceWrapper newsServiceWrapper;
+    @Inject NewsCache newsCache;
+    @Inject FontUtil fontUtil;
 
-    NewsItemDTO sampleItemDto;
-    NewsItemDTO detailItemDto;
+    @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
+    @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
 
-    @Inject
-    NewsServiceWrapper newsServiceWrapper;
+    // Action buttons
+    @InjectView(R.id.vote_pair) VotePair votePair;
+    @InjectView(R.id.news_action_button_comment) TextView mNewsActionButtonCommentWrapper;
+    @InjectView(R.id.news_action_tv_more) TextView mNewsActionTvMore;
+
+    // Comment list
+    @InjectView(R.id.news_comment_list_wrapper) @Optional BetterViewAnimator mNewsCommentListWrapper;
+    @InjectView(R.id.news_detail_comment_list) @Optional ListView mNewsDetailCommentList;
+    @InjectView(R.id.news_detail_comment_empty) @Optional TextView mNewsDetailCommentEmpty;
+
+    private MiddleCallback<NewsItemDTO> newsServiceCallback;
+    private DiscussionListAdapter discussionAdapter;
+    private NewsItemDTOKey newsItemDTOKey;
+    private int commentListWrapperDisplayedChildId;
+    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
+    private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        View listViewWrapper = inflater.inflate(R.layout.news_detail_view, container, false);
+        View listHeaderWrapper = inflater.inflate(R.layout.news_detail_view_header, null);
+        ButterKnife.inject(this, listHeaderWrapper);
+        initViews(listViewWrapper);
+        mNewsDetailCommentList.addHeaderView(listHeaderWrapper);
+
+        newsCacheFetchListener = new NewsFetchListener();
+        return listViewWrapper;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
+    @OnClick(R.id.news_action_tv_more) void onClickTvMore(View v)
+    {
+        showShareDialog();
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.news_detail_view,container,false);
-        initViews(view);
-        linkWith();
-        return view;
-    }
-
-
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //linkWith();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-
-    @Override
-    public void onResume() {
+    @Override public void onResume()
+    {
         super.onResume();
+
+        if (commentListWrapperDisplayedChildId != 0)
+        {
+            mNewsCommentListWrapper.setDisplayedChildByLayoutId(commentListWrapperDisplayedChildId);
+        }
+
+        if (newsItemDTOKey == null)
+        {
+            newsItemDTOKey = new NewsItemDTOKey(getArguments());
+        }
+
+        linkWith(newsItemDTOKey);
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+
+        commentListWrapperDisplayedChildId = mNewsCommentListWrapper.getDisplayedChildLayoutId();
+    }
+
+    private DiscussionListAdapter createDiscussionAdapter()
+    {
+        int loaderId = 0;
+        if (newsItemDTOKey != null)
+        {
+            loaderId = newsItemDTOKey.key;
+        }
+
+        DiscussionListAdapter adapter =
+                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(),
+                        loaderId, R.layout.news_discussion_comment_item);
+        adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
+        {
+            @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
+            {
+                mNewsCommentListWrapper.setDisplayedChildByLayoutId(R.id.news_detail_comment_list);
+                //if (discussionStatus != null)
+                //{
+                //    int statusResource = discussionListAdapter.getCount() != 0 ? R.string.discussion_loaded : R.string.discussion_empty;
+                //    discussionStatus.setText(getString(statusResource));
+                //}
+            }
+
+            @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)
+            {
+                return createNewsDiscussionLoader();
+            }
+        });
+        return adapter;
+    }
+
+    private ListLoader<DiscussionDTO> createNewsDiscussionLoader()
+    {
+        return new NewsDiscussionListLoader(getActivity(), newsItemDTOKey);
+    }
+
+    @Override public void onDestroyView()
+    {
+        newsCacheFetchListener = null;
+        detachNewsFetchTask();
+
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        if (newsServiceCallback != null)
+        {
+            newsServiceCallback.setPrimaryCallback(null);
+        }
+        super.onDestroy();
     }
 
     private void initViews(View view)
     {
-        this.titleView = (TextView)view.findViewById(R.id.news_detail_title);
-        this.dateView = (TextView)view.findViewById(R.id.news_detail_date);
-        this.titlePlaceholderView = view.findViewById(R.id.news_detail_title_placeholder);
-        this.contentView = (TextView)view.findViewById(R.id.news_detail_content);
-
-
+        fontUtil.setTypeFace(mNewsActionTvMore, FontUtil.FontType.AWESOME);
+        mNewsCommentListWrapper =
+                (BetterViewAnimator) view.findViewById(R.id.news_comment_list_wrapper);
+        mNewsDetailCommentList = (ListView) view.findViewById(R.id.news_detail_comment_list);
+        mNewsDetailCommentEmpty = (TextView) view.findViewById(R.id.news_detail_comment_empty);
     }
 
-    private void linkWith() {
+    private void linkWith(NewsItemDTOKey newsItemDTOKey)
+    {
+        NewsItemDTO cachedNews = newsCache.get(newsItemDTOKey);
+        linkWith(cachedNews);
 
-//        int[] backgroundResArray = null;
-//        TypedArray array = getActivity().getResources().obtainTypedArray(R.array.news_item_background_list);
-//        int len = array.length();
-//        backgroundResArray = new int[len];
-//        for (int i=0;i<len;i++){
-//            backgroundResArray[i] = array.getInt(i,0);
-//        }
+        detachNewsFetchTask();
+        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, true, newsCacheFetchListener);
+        newsFetchTask.execute();
 
-        Bundle args =  getArguments();
-        this.sampleItemDto =  NewsItemDTO.getSampleNewsItemDTO(args);
-        this.titleView.setText(sampleItemDto.title);
-        PrettyTime prettyTime = new PrettyTime();
-        this.dateView.setText(prettyTime.format(sampleItemDto.createdAtUtc));
+        // TODO have to remove this hack, please!
+        int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
+        if (bgRes != 0)
+        {
+            newsDetailSummaryView.setBackgroundResource(bgRes);
+        }
 
-        int[]backgroundResArray = getActivity().getResources().getIntArray(R.array.news_item_background_list2);
+        discussionAdapter = createDiscussionAdapter();
+        mNewsDetailCommentList.setAdapter(discussionAdapter);
+        mNewsDetailCommentList.setEmptyView(mNewsDetailCommentEmpty);
 
-        int imageBackroundRes = new Random().nextInt(backgroundResArray.length);
-        //this.titlePlaceholderView.setBackgroundResource(imageBackroundRes);
-
-        newsServiceWrapper.getSecurityNewsDetail(sampleItemDto.id,createNewsDetailCallback());
+        getActivity().getSupportLoaderManager()
+                .initLoader(discussionAdapter.getLoaderId(), null, discussionAdapter.getLoaderCallback());
     }
 
-    private void fillDetailData(NewsItemDTO data) {
-        this.detailItemDto = data;
-        this.contentView.setText(detailItemDto.text);
+    private void detachNewsFetchTask()
+    {
+        if (newsFetchTask != null)
+        {
+            newsFetchTask.setListener(null);
+        }
+        newsFetchTask = null;
     }
 
-    private Callback<NewsItemDTO> createNewsDetailCallback() {
+    private void linkWith(NewsItemDTO newsItemDTO)
+    {
+        mDetailNewsItemDTO = newsItemDTO;
 
-        return new Callback<NewsItemDTO>() {
-            @Override
-            public void success(NewsItemDTO newsItemDTO, Response response) {
-                fillDetailData(newsItemDTO);
-            }
+        votePair.display(mDetailNewsItemDTO);
+        newsDetailSummaryView.display(mDetailNewsItemDTO);
+        newsDetailFullView.display(mDetailNewsItemDTO);
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        };
+    private void showShareDialog()
+    {
+        View contentView = LayoutInflater.from(getSherlockActivity())
+                .inflate(R.layout.sharing_translation_dialog_layout, null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO, false);
+        THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
 
     @Override
-    public boolean isTabBarVisible() {
+    public boolean isTabBarVisible()
+    {
         return false;
+    }
+
+    private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
+    {
+        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value,
+                boolean fromCache)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(NewsItemDTOKey key, Throwable error)
+        {
+
+        }
     }
 }

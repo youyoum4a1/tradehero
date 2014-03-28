@@ -1,66 +1,55 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tradehero.common.utils.THToast;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.news.NewsHeadline;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
-import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
+import com.tradehero.th.utils.FontUtil;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.inject.Inject;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
+import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by julien on 11/10/13
  *
  * modified by Wang Liang.
  */
-public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDTO>,View.OnClickListener,THDialog.OnDialogItemClickListener
+public class NewsHeadlineView extends LinearLayout
+        implements DTOView<NewsItemDTO>, THDialog.OnDialogItemClickListener
 {
-    private static final String TAG = NewsHeadlineView.class.getSimpleName();
+    @InjectView(R.id.news_title_date) TextView dateTextView;
+    @InjectView(R.id.news_title_description) TextView descView;
+    @InjectView(R.id.news_action_button_comment) View actionCommentView;
+    @InjectView(R.id.news_title_title) TextView titleTextView;
+    @InjectView(R.id.news_item_layout_wrapper) View titleViewWrapper;
+    @InjectView(R.id.news_item_placeholder) View placeHolderView;
+    @InjectView(R.id.news_action_tv_more) View moreView;
+    @InjectView(R.id.news_action_tv_more) TextView more;
 
-    private TextView dateTextView;
-    private TextView titleTextView;
-    private TextView descView;
-    private View actionLikeView;
-    private View actionCommentView;
-    private View moreView;
+    @Inject FontUtil fontUtil;
 
     private NewsItemDTO newsHeadline;
-
-    private boolean isVotedUp = false;
-
-    @Inject
-    Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
     {
-        this(context, null);
+        super(context);
     }
 
     public NewsHeadlineView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public NewsHeadlineView(Context context, AttributeSet attrs, int defStyle)
@@ -72,63 +61,22 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        fetchViews();
+        ButterKnife.inject(this);
         DaggerUtils.inject(this);
+
+        initView();
     }
 
-    private void fetchViews()
+    private void initView()
     {
-        titleTextView = (TextView) findViewById(R.id.news_title_title);
-        dateTextView = (TextView) findViewById(R.id.news_title_date);
-        descView = (TextView) findViewById(R.id.news_title_description);
-        actionLikeView = findViewById(R.id.news_action_button_like_wrapper);
-        actionCommentView = findViewById(R.id.news_action_button_comment_wrapper);
-        moreView = findViewById(R.id.news_action_button_share_wrapper);
-        registerListener();
-
-    }
-
-    private void registerListener() {
-        if (actionLikeView != null) {
-            actionLikeView.setOnClickListener(this);
-        }
-        if (actionCommentView != null) {
-            actionCommentView.setOnClickListener(this);
-        }
-        if (moreView != null) {
-            moreView.setOnClickListener(this);
-        }
-    }
-
-    private void unregisterListener() {
-        if (actionLikeView != null) {
-            actionLikeView.setOnClickListener(null);
-        }
-        if (actionCommentView != null) {
-            actionCommentView.setOnClickListener(null);
-        }
-        if (moreView != null) {
-            moreView.setOnClickListener(null);
-        }
+        fontUtil.setTypeFace(more, FontUtil.FontType.AWESOME);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.news_action_button_like_wrapper:
-                voteUpOrDown(!isVotedUp);
-                break;
-            case R.id.news_action_button_comment_wrapper:
-                break;
-            case R.id.news_action_button_share_wrapper:
-                showShareDialog();
-                break;
-        }
-    }
-
-    @Override
-    public void onClick(int whichButton){
-        switch (whichButton) {
+    public void onClick(int whichButton)
+    {
+        switch (whichButton)
+        {
             case 0:
                 break;
             case 1:
@@ -136,74 +84,42 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         }
     }
 
-
-    private void voteUpOrDown(boolean up) {
-        int id = newsHeadline.id;
-        VoteDirection direction = up ? VoteDirection.UpVote:VoteDirection.DownVote;
-        DiscussionVoteKey key = new DiscussionVoteKey(DiscussionType.NEWS,id,direction);
-        discussionServiceWrapperLazy.get().vote(key,createVoteCallback(up));
-    }
-
-    private void changeLikeViewDisplay(boolean isVotedUp) {
-        android.widget.ImageView likeImageView = (android.widget.ImageView)actionLikeView.findViewById(R.id.new_action_iv_like);
-        TextView likeTextView = (TextView)actionLikeView.findViewById(R.id.new_action_tv_like);
-
-        likeTextView.setText(isVotedUp?"Unlike":"Like");
-
-    }
-
-    private Callback<DiscussionDTO> createVoteCallback(final boolean up){
-
-       return new Callback<DiscussionDTO>() {
-            @Override
-            public void success(DiscussionDTO discussionDTO, Response response) {
-                THToast.show("vote "+((up?"up":"down"))+" success");
-                changeLikeViewDisplay(up);
-                isVotedUp = !up;
-                newsHeadline.voteDirection = isVotedUp ? 1:0;
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                THToast.show("vote "+((up?"up":"down"))+" error");
-            }
-        };
-    }
-
     /**
      * show dialog including sharing and translation.
      */
-    private void showShareDialog() {
+    @OnClick(R.id.news_action_tv_more) void showShareDialog()
+    {
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout,null);
-        THDialog.DialogCallback callback = (THDialog.DialogCallback)contentView;
-        ((NewsDialogLayout)contentView).setNewsData(newsHeadline);
-        THDialog.showUpDialog(getContext(),contentView,callback);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
+        ((NewsDialogLayout) contentView).setNewsData(newsHeadline, true);
+        THDialog.showUpDialog(getContext(), contentView, callback);
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        registerListener();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
+    protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
-        unregisterListener();
     }
 
     @Override public void display(NewsItemDTO dto)
     {
         this.newsHeadline = dto;
-        this.isVotedUp = !(newsHeadline.voteDirection == 0);
         displayNews();
+    }
+
+    private String parseHost(String url)
+    {
+        try
+        {
+            String host = new URL(url).getHost();
+            return host;
+        }
+        catch (MalformedURLException e)
+        {
+            return null;
+        }
     }
 
     private void displayNews()
@@ -221,17 +137,23 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsItemDT
         if (dateTextView != null && newsHeadline.createdAtUtc != null)
         {
             PrettyTime prettyTime = new PrettyTime();
-            dateTextView.setText(prettyTime.format(newsHeadline.createdAtUtc));
+            StringBuilder sb = new StringBuilder();
+            String text = prettyTime.format(newsHeadline.createdAtUtc);
+            sb.append(text);
+            if (newsHeadline.url != null)
+            {
+                String source = parseHost(newsHeadline.url);
+                if (source != null)
+                {
+                    sb.append(" via ").append(source);
+                }
+            }
+            dateTextView.setText(sb.toString());
         }
 
         if (descView != null)
         {
             descView.setText(newsHeadline.description);
-            if (TextUtils.isEmpty(newsHeadline.description)) {
-                descView.setVisibility(View.GONE);
-            }else {
-                descView.setVisibility(View.VISIBLE);
-            }
         }
     }
 }

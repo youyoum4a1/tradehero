@@ -38,7 +38,7 @@ import retrofit.Callback;
         return middleCallback;
     }
 
-    public MiddleCallback<DiscussionDTO> vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> voteCallBack(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
         discussionServiceAsync.vote(
@@ -66,7 +66,14 @@ import retrofit.Callback;
                 discussionVoteKey.voteDirection.description);
     }
 
-
+    public void vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback middleCallback =  new MiddleCallback(callback);
+        discussionServiceAsync.vote(
+                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToId,
+                discussionVoteKey.voteDirection.description,middleCallback);
+    }
 
     public DiscussionDTO share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {

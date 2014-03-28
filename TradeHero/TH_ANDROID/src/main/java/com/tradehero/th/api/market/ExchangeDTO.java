@@ -95,6 +95,7 @@ public class ExchangeDTO implements DTO
         {
             return name.equals(((ExchangeDTO) other).name);
         }
+        //if both names are null,return true
         return ((ExchangeDTO) other).name == null;
     }
 }

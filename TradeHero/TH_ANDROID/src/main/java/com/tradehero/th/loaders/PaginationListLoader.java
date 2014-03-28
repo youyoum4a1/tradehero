@@ -29,7 +29,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
     }
 
     // load next items
-    public void loadNext()
+    public void loadNext(Object...params)
     {
         if (loadMode != LoadMode.IDLE)
         {
@@ -41,7 +41,15 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
         onLoadNext(newestItem);
     }
 
-    public void loadPrevious()
+    protected boolean isBusy() {
+        return loadMode != LoadMode.IDLE;
+    }
+
+    protected void setNotBusy() {
+        loadMode = LoadMode.IDLE;
+    }
+
+    public void loadPrevious(Object...params)
     {
         if (loadMode != LoadMode.IDLE)
         {
@@ -78,7 +86,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
                 }
             }
             super.deliverResult(data);
-            loadMode = LoadMode.IDLE;
+            setNotBusy();
         }
     }
 

@@ -10,4 +10,11 @@ public class NewsItemCategoryDTO
 {
     public Integer id;
     public String name;
+
+    public NewsItemCategoryDTO(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    public NewsItemCategoryDTO() {
+    }
 }

@@ -1,18 +1,16 @@
 package com.tradehero.th.api.news;
 
-import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:10 PM Copyright (c) TradeHero
  */
 public class NewsItemDTO extends AbstractDiscussionDTO
-    implements DTO
+        implements DTO
 {
     public String title;
     public String caption;
@@ -69,7 +67,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public List<Integer> getSecurityIds()
     {
-        return Collections.unmodifiableList(securityIds);
+        return securityIds != null ? Collections.unmodifiableList(securityIds) : null;
     }
 
     public void setSecurityIds(List<Integer> securityIds)
@@ -77,29 +75,9 @@ public class NewsItemDTO extends AbstractDiscussionDTO
         this.securityIds = securityIds;
     }
 
-    private static String KEY_PARAMETER_ID = "news_id";
-    private static String KEY_PARAMETER_TITLE = "news_title";
-    private static String KEY_PARAMETER_DATE = "news_date";
-    private static String KEY_PARAMETER_URL = "url";
-    private static String KEY_PARAMETER_IS_VOTED_UP = "is_voted_up";
-
-    public Bundle toBundle(boolean isVotedUp){
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_PARAMETER_ID,id);
-        bundle.putString(KEY_PARAMETER_TITLE,title);
-        bundle.putSerializable(KEY_PARAMETER_DATE,createdAtUtc);
-        bundle.putString(KEY_PARAMETER_URL,url);
-        bundle.putBoolean(KEY_PARAMETER_IS_VOTED_UP,isVotedUp);
-        return bundle;
-    }
-
-    public static NewsItemDTO getSampleNewsItemDTO(Bundle bundle) {
-        NewsItemDTO dto = new NewsItemDTO();
-        dto.id = bundle.getInt(KEY_PARAMETER_ID);
-        dto.title = bundle.getString(KEY_PARAMETER_TITLE);
-        dto.createdAtUtc = (Date)bundle.getSerializable(KEY_PARAMETER_DATE);
-        dto.url = bundle.getString(KEY_PARAMETER_URL);
-        dto.voteDirection = bundle.getBoolean(KEY_PARAMETER_IS_VOTED_UP) ? 1:0;
-        return dto;
+    //convenient method
+    public NewsItemDTOKey getNewsItemDTOKey()
+    {
+        return new NewsItemDTOKey(id);
     }
 }

@@ -236,76 +236,76 @@ public class LruMemFileCache extends LruCache
         }
     }
 
-//    public Bitmap getAsync(String key){
-//
-//        Log.d(TAG,TAG+" getAsync method main? "+(Looper.getMainLooper().getThread() == Thread.currentThread())+" key "+key
-//                +" mem size "+super.size()+">>>");
-//
-//        Bitmap bitmap = super.get(key);
-//
-//
-//        if (bitmap == null && diskLruCache != null)
-//        {
-//            synchronized (setLock)
-//            {
-//                try
-//                {
-//                    DiskLruCache.Snapshot retrieved = null;
-//                    try
-//                    {
-//                        String hashKey = hashKey(key);
-//                        retrieved = diskLruCache.get(hashKey);
-//                        Log.d(TAG,TAG+" getAsync from discache hashKey:"+hashKey);
-//                        if (retrieved != null)
-//                        {
-//                            InputStream is = retrieved.getInputStream(DEFAULT_INDEX);
-//                            bitmap = BitmapFactory.decodeStream(is);
-//                            is.close();
-//                            if (bitmap != null)
-//                            {
-//                                super.set(key, bitmap);
-//                                //THLog.i(TAG, "Got bitmap from disk " + key);
-//                                Log.d(TAG,TAG+" getAsync from discache and set to memcache hashKey:"+hashKey);
-//                            }
-//                            else
-//                            {
-//                                //THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
-//                            }
-//                        }
-//                        else
-//                        {
-//                            //THLog.i(TAG, "Retrieved was null for " + key);
-//                        }
-//                    }
-//                    catch (IOException e)
-//                    {
-//                        Timber.e("Failed to get entry %s", key, e);
-//                    }
-//                    catch (OutOfMemoryError e)
-//                    {
-//                        Timber.e("Failed to decode %s", key, e);
-//                    }
-//
-//                    if (retrieved != null)
-//                    {
-//                        retrieved.close();
-//                    }
-//                }
-//                catch (Exception e)
-//                {
-//                    Timber.e("Failed to get entry %s", key, e);
-//                }
-//            }
-//        }
-//        else
-//        {
-//            //THLog.i(TAG, "Got bitmap from ram " + key);
-//        }
-//
-//        Log.d(TAG,TAG+" getAsync method main ?"+(Looper.myLooper()==Looper.getMainLooper())+" return:"+bitmap+" >>>");
-//
-//        return bitmap;
-//    }
+    //    public Bitmap getAsync(String key){
+    //
+    //        Log.d(TAG,TAG+" getAsync method main? "+(Looper.getMainLooper().getThread() == Thread.currentThread())+" key "+key
+    //                +" mem size "+super.size()+">>>");
+    //
+    //        Bitmap bitmap = super.get(key);
+    //
+    //
+    //        if (bitmap == null && diskLruCache != null)
+    //        {
+    //            synchronized (setLock)
+    //            {
+    //                try
+    //                {
+    //                    DiskLruCache.Snapshot retrieved = null;
+    //                    try
+    //                    {
+    //                        String hashKey = hashKey(key);
+    //                        retrieved = diskLruCache.get(hashKey);
+    //                        Log.d(TAG,TAG+" getAsync from discache hashKey:"+hashKey);
+    //                        if (retrieved != null)
+    //                        {
+    //                            InputStream is = retrieved.getInputStream(DEFAULT_INDEX);
+    //                            bitmap = BitmapFactory.decodeStream(is);
+    //                            is.close();
+    //                            if (bitmap != null)
+    //                            {
+    //                                super.set(key, bitmap);
+    //                                //THLog.i(TAG, "Got bitmap from disk " + key);
+    //                                Log.d(TAG,TAG+" getAsync from discache and set to memcache hashKey:"+hashKey);
+    //                            }
+    //                            else
+    //                            {
+    //                                //THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
+    //                            }
+    //                        }
+    //                        else
+    //                        {
+    //                            //THLog.i(TAG, "Retrieved was null for " + key);
+    //                        }
+    //                    }
+    //                    catch (IOException e)
+    //                    {
+    //                        Timber.e("Failed to get entry %s", key, e);
+    //                    }
+    //                    catch (OutOfMemoryError e)
+    //                    {
+    //                        Timber.e("Failed to decode %s", key, e);
+    //                    }
+    //
+    //                    if (retrieved != null)
+    //                    {
+    //                        retrieved.close();
+    //                    }
+    //                }
+    //                catch (Exception e)
+    //                {
+    //                    Timber.e("Failed to get entry %s", key, e);
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            //THLog.i(TAG, "Got bitmap from ram " + key);
+    //        }
+    //
+    //        Log.d(TAG,TAG+" getAsync method main ?"+(Looper.myLooper()==Looper.getMainLooper())+" return:"+bitmap+" >>>");
+    //
+    //        return bitmap;
+    //    }
 
     @Override public Bitmap get(String key)
     {
