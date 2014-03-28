@@ -335,13 +335,13 @@ public class TimelineItemView extends LinearLayout
         {
             switch (item.getItemId())
             {
-                case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+                case R.id.timeline_action_add_to_watchlist:
                 {
                     openWatchlistEditor();
                     return true;
                 }
 
-                case R.id.timeline_popup_menu_monitor_enable_stock_alert:
+                case R.id.timeline_action_add_alert:
                     openStockAlertEditor();
                     return true;
 
@@ -503,7 +503,7 @@ public class TimelineItemView extends LinearLayout
         {
             SecurityId securityId = getSecurityId();
 
-            MenuItem watchListMenuItem = menu.findItem(R.id.timeline_popup_menu_monitor_add_to_watch_list);
+            MenuItem watchListMenuItem = menu.findItem(R.id.timeline_action_add_to_watchlist);
             if (watchListMenuItem != null)
             {
                 if (securityId != null)
