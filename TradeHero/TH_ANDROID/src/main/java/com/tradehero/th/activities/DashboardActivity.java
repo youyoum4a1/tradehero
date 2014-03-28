@@ -24,7 +24,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -61,7 +61,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;

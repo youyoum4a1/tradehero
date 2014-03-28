@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungPurchaseCache;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 3/27/14.
@@ -14,9 +15,8 @@ public class THSamsungPurchaseCache
 {
     public static final int MAX_SIZE = 300;
 
-    public THSamsungPurchaseCache()
+    @Inject public THSamsungPurchaseCache()
     {
         super(MAX_SIZE);
     }
-
 }

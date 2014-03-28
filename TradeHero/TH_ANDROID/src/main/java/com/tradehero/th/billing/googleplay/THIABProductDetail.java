@@ -75,6 +75,15 @@ public class THIABProductDetail
         return "THIABProductDetail:" + json;
     }
 
+    @Override public Double getPrice()
+    {
+        if (priceAmountMicros == null)
+        {
+            return null;
+        }
+        return (double) priceAmountMicros;
+    }
+
     @Override public String getPriceText()
     {
         return price;

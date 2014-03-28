@@ -71,6 +71,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
+        actionBar.setSubtitle(userInteractor.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 

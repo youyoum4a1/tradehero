@@ -19,10 +19,6 @@ public class DaggerUtils
         return new Object[]
                 {
                         new com.tradehero.th.utils.dagger.TradeHeroModule(app),
-                        new com.tradehero.th.models.intent.IntentDaggerModule(),
-                        new com.tradehero.th.fragments.competition.CompetitionModule(),
-                        new com.tradehero.th.filter.FilterModule(),
-                        new com.tradehero.th.models.graphics.TransformationModule(),
                 };
     }
 

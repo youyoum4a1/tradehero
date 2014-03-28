@@ -31,13 +31,12 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -91,7 +90,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
     @Inject LruMemFileCache lruCache;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABAlertDialogUtil thiabAlertDialogUtil;
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
@@ -306,11 +305,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
             {
                 Timber.d("onPurchaseRestoreFinished3");
-                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                thiabAlertDialogUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         restoredPurchases,
                         failedRestorePurchases,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
+                        thiabAlertDialogUtil.createFailedRestoreClickListener(getActivity(),
+                                new Exception())); // TODO have a better exception
             }
         };
     }

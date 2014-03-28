@@ -8,7 +8,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
@@ -23,10 +22,10 @@ public class THBaseSamsungPurchaseReporterHolder
                 SamsungException>
     implements THSamsungPurchaseReporterHolder
 {
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @Inject Lazy<PortfolioCache> portfolioCache;
+    @Inject UserProfileCache userProfileCache;
+    @Inject PortfolioCompactListCache portfolioCompactListCache;
+    @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject PortfolioCache portfolioCache;
 
     public THBaseSamsungPurchaseReporterHolder()
     {
@@ -36,22 +35,22 @@ public class THBaseSamsungPurchaseReporterHolder
 
     @Override protected UserProfileCache getUserProfileCache()
     {
-        return userProfileCache.get();
+        return userProfileCache;
     }
 
     @Override protected PortfolioCompactListCache getPortfolioCompactListCache()
     {
-        return portfolioCompactListCache.get();
+        return portfolioCompactListCache;
     }
 
     @Override protected PortfolioCompactCache getPortfolioCompactCache()
     {
-        return portfolioCompactCache.get();
+        return portfolioCompactCache;
     }
 
     @Override protected PortfolioCache getPortfolioCache()
     {
-        return portfolioCache.get();
+        return portfolioCache;
     }
 
     @Override protected THBaseSamsungPurchaseReporter createPurchaseReporter()

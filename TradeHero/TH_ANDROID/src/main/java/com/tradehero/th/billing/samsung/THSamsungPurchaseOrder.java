@@ -16,17 +16,28 @@ public class THSamsungPurchaseOrder
     protected final int quantity;
     protected UserBaseKey userToFollow;
 
+    //<editor-fold desc="Constructors">
+    public THSamsungPurchaseOrder(String groupId, String itemId)
+    {
+        this(groupId, itemId, 1);
+    }
+
+    public THSamsungPurchaseOrder(String groupId, String itemId, int quantity)
+    {
+        this(new SamsungSKU(groupId, itemId), quantity);
+    }
+
+    public THSamsungPurchaseOrder(SamsungSKU productIdentifier)
+    {
+        this(productIdentifier, 1);
+    }
+
     public THSamsungPurchaseOrder(SamsungSKU productIdentifier, int quantity)
     {
         this.productIdentifier = productIdentifier;
         this.quantity = quantity;
     }
-
-    public THSamsungPurchaseOrder(String groupId, String itemId, int quantity)
-    {
-        this.productIdentifier = new SamsungSKU(groupId, itemId);
-        this.quantity = quantity;
-    }
+    //</editor-fold>
 
     @Override public SamsungSKU getProductIdentifier()
     {

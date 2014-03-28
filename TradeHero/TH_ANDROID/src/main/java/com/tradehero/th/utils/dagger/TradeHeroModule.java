@@ -1,41 +1,20 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaser;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
-import com.tradehero.th.billing.googleplay.THIABModule;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
-import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTester;
-import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTesterHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaser;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaserHolder;
+import com.tradehero.th.billing.BillingModule;
+import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
@@ -116,6 +95,8 @@ import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoa
 import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
 import com.tradehero.th.models.chart.ChartModule;
+import com.tradehero.th.models.graphics.TransformationModule;
+import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -127,7 +108,6 @@ import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -158,8 +138,12 @@ import javax.inject.Singleton;
                 PreferenceModule.class,
                 ChartModule.class,
                 ActivityModule.class,
-                THIABModule.class,
+                BillingModule.class,
                 NewsModule.class,
+                FilterModule.class,
+                IntentDaggerModule.class,
+                CompetitionModule.class,
+                TransformationModule.class,
         },
         injects =
                 {
@@ -270,34 +254,9 @@ import javax.inject.Singleton;
 
                         CompetitionWebViewFragment.class,
 
-                        IABServiceConnector.class,
-                        BaseIABBillingAvailableTester.class,
-                        BaseIABInventoryFetcher.class,
-                        THBaseIABPurchaseFetcher.class,
-                        THBaseIABInventoryFetcher.class,
-                        THBaseIABPurchaser.class,
-                        THBaseIABPurchaseReporter.class,
-                        THIABLogicHolderFull.class,
-                        THBaseIABPurchaseConsumer.class,
-                        THBaseIABInventoryFetcherHolder.class,
-                        THBaseIABPurchaseReporterHolder.class,
-                        THIABPurchaseFetchMilestone.class,
-                        IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
-
-                        THBaseSamsungBillingAvailableTester.class,
-                        THBaseSamsungBillingAvailableTesterHolder.class,
-                        THBaseSamsungProductIdentifierFetcher.class,
-                        THBaseSamsungProductIdentifierFetcherHolder.class,
-                        THBaseSamsungInventoryFetcher.class,
-                        THBaseSamsungInventoryFetcherHolder.class,
-                        THBaseSamsungPurchaser.class,
-                        THBaseSamsungPurchaserHolder.class,
-                        THBaseSamsungPurchaseFetcher.class,
-                        THBaseSamsungPurchaseFetcherHolder.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
@@ -326,7 +285,7 @@ import javax.inject.Singleton;
                         NumberDisplayUtils.class,
                 },
         complete = false,
-        library = true // TODO remove this line
+        library = false // TODO remove this line
 )
 public class TradeHeroModule
 {

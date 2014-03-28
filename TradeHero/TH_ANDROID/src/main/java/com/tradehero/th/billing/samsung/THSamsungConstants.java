@@ -14,7 +14,7 @@ public class THSamsungConstants
 {
     public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
 
-    public static final String IAP_ITEM_GROUP_ID = "100000103210d";
+    public static final String IAP_ITEM_GROUP_ID = "100000103210";
 
     // Below are the codes as they are understood on Samsung Store
     public static final String EXTRA_CASH_T0_ITEM_ID = "000001016731";

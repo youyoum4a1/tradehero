@@ -118,13 +118,19 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         {
             for (ItemVo itemVo : itemList)
             {
-                samsungSKUs.get(createSamsungListKey(itemVo.getType())).add(createSamsungSku(groupId, itemVo.getItemId()));
+                SamsungSKUListKeyType key = createSamsungListKey(itemVo.getType());
+                if (samsungSKUs.get(key) == null)
+                {
+                    samsungSKUs.put(key, createSamsungSKUList());
+                }
+                samsungSKUs.get(key).add(createSamsungSku(groupId, itemVo.getItemId()));
             }
         }
     }
 
     abstract protected SamsungSKUListKeyType createSamsungListKey(String itemType);
     abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
+    abstract protected SamsungSKUListType createSamsungSKUList();
     abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
     protected void notifyListenerFetched()

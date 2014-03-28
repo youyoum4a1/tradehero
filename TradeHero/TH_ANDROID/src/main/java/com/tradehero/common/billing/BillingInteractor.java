@@ -47,6 +47,8 @@ public interface BillingInteractor<
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
+    String getName();
+
     void onDestroy();
 
     int getUnusedRequestCode();

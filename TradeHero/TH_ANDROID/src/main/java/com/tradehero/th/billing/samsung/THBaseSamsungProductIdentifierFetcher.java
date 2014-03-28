@@ -49,6 +49,11 @@ public class THBaseSamsungProductIdentifierFetcher
         return new SamsungSKU(groupId, itemId);
     }
 
+    @Override protected SamsungSKUList createSamsungSKUList()
+    {
+        return new SamsungSKUList();
+    }
+
     @Override protected SamsungException createException(ErrorVo errorVo)
     {
         return samsungExceptionFactory.create(errorVo);

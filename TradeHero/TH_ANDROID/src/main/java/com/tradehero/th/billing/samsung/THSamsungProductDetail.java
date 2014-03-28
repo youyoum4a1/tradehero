@@ -70,6 +70,11 @@ public class THSamsungProductDetail
         return domain;
     }
 
+    @Override public Double getPrice()
+    {
+        return getItemPrice();
+    }
+
     @Override public String getPriceText()
     {
         return getItemPriceString();

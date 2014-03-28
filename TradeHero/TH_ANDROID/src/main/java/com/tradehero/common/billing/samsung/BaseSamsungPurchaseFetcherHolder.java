@@ -3,6 +3,7 @@ package com.tradehero.common.billing.samsung;
 import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,7 +35,7 @@ abstract public class BaseSamsungPurchaseFetcherHolder<
     public BaseSamsungPurchaseFetcherHolder()
     {
         super();
-        purchaseFetchers = null;
+        purchaseFetchers = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)

@@ -25,11 +25,6 @@
   <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>
   <string name="store_billing_loading_cancel">Got it</string>
 
-  <string name="store_billing_verification_failed_window_title">Verification failed</string>
-  <string name="store_billing_verification_failed_window_description">This is embarassing, we could not trust the communication with GooglePlay.</string>
-  <!--string name="store_billing_verification_failed_ok">Sure</string-->
-  <string name="store_billing_verification_failed_cancel">No worry</string>
-
   <string name="store_billing_user_cancelled_window_title">You cancelled the purchase</string>
   <string name="store_billing_user_cancelled_window_description">Anything you may want to let us know about?</string>
   <string name="store_billing_user_cancelled_ok">Sure</string>
@@ -41,25 +36,10 @@
   <string name="store_billing_sku_already_owned_ok">I already restored</string>
   <string name="store_billing_sku_already_owned_cancel">Restore</string>
 
-  <string name="store_billing_bad_response_window_title">Huh?</string>
-  <string name="store_billing_bad_response_window_description">We received a bad response from GooglePlay.</string>
-  <!--string name="store_billing_bad_response_ok">Sure</string-->
-  <string name="store_billing_bad_response_cancel">OK</string>
-
-  <string name="store_billing_result_error_window_title">Huh?</string>
-  <string name="store_billing_result_error_window_description">We received a result error from Google Play. You may need to clear the cache of the Google Play Store app.</string>
-  <!--string name="store_billing_result_error_ok">Sure</string-->
-  <string name="store_billing_result_error_cancel">OK</string>
-
   <string name="store_billing_remote_error_window_title">Huh?</string>
   <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>
   <!--string name="store_billing_remote_error_ok">Sure</string-->
   <string name="store_billing_remote_error_cancel">OK</string>
-
-  <string name="store_billing_send_intent_error_window_title">Huh?</string>
-  <string name="store_billing_send_intent_error_window_description">We got an error when launching GooglePlay.</string>
-  <!--string name="store_billing_send_intent_error_ok">Sure</string-->
-  <string name="store_billing_send_intent_error_cancel">OK</string>
 
   <string name="store_billing_loading_info_window_title">Loading Required Information</string>
   <string name="store_billing_loading_info_window_message">Please wait&#8230;</string>
@@ -154,40 +134,35 @@
   <string name="manage_alerts_plan">"Plan: "</string>
   <string name="manage_alerts_with_count">%d alerts</string>
 
-  <!-- Google Play elements -->
-  <string name="google_play_send_support_email_chooser_title">Send an email to TradeHero support</string>
+  <!-- In-App Purchases elements -->
+  <string name="iap_send_support_email_chooser_title">Send an email to TradeHero support</string>
 
-  <string name="google_play_send_support_email_report_fail_title">Purchase Report Failed</string>
-  <string name="google_play_send_support_email_report_fail_message">Do you mind reporting the incident to TradeHero?</string>
-  <string name="google_play_send_support_email_report_fail_ok">Sure</string>
-  <string name="google_play_send_support_email_report_fail_cancel">Never Mind</string>
+  <string name="iap_send_support_email_report_fail_title">Purchase Report Failed</string>
+  <string name="iap_send_support_email_report_fail_message">Do you mind reporting the incident to TradeHero?</string>
+  <string name="iap_send_support_email_report_fail_ok">Sure</string>
+  <string name="iap_send_support_email_report_fail_cancel">Never Mind</string>
 
-  <string name="google_play_send_support_email_consume_fail_title">Purchase Consume Failed</string>
-  <string name="google_play_send_support_email_consume_fail_message">Do you mind reporting the incident to TradeHero?</string>
-  <string name="google_play_send_support_email_consume_fail_ok">Sure</string>
-  <string name="google_play_send_support_email_consume_fail_cancel">Never Mind</string>
+  <string name="iap_consumed_purchase_title">Purchased</string>
+  <string name="iap_consumed_purchase_message">Your purchase went through OK</string>
+  <string name="iap_consumed_purchase_message_info">Your "%s" went through OK</string>
+  <string name="iap_consumed_purchase_cancel">Okay</string>
 
-  <string name="google_play_consumed_purchase_title">Purchased</string>
-  <string name="google_play_consumed_purchase_message">Your purchase went through OK</string>
-  <string name="google_play_consumed_purchase_message_info">Your "%s" went through OK</string>
-  <string name="google_play_consumed_purchase_cancel">Okay</string>
+  <string name="iap_purchase_restored_none_title">No Purchase To Restore</string>
+  <string name="iap_purchase_restored_none_message">All your purchases have been processed.</string>
+  <string name="iap_purchase_restored_none_cancel">Okay</string>
 
-  <string name="google_play_purchase_restored_none_title">No Purchase To Restore</string>
-  <string name="google_play_purchase_restored_none_message">All your purchases have been processed.</string>
-  <string name="google_play_purchase_restored_none_cancel">Okay</string>
+  <string name="iap_purchase_restored_title">Purchases Restored</string>
+  <string name="iap_purchase_restored_message">We have restored %1$d purchases of yours.</string>
+  <string name="iap_purchase_restored_cancel">Okay</string>
 
-  <string name="google_play_purchase_restored_title">Purchases Restored</string>
-  <string name="google_play_purchase_restored_message">We have restored %1$d purchases of yours.</string>
-  <string name="google_play_purchase_restored_cancel">Okay</string>
+  <string name="iap_send_support_email_restore_fail_partial_title">Purchases Restored</string>
+  <string name="iap_send_support_email_restore_fail_partial_message">We have restored %1$d purchases of yours, but %2$d could not be restored. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="iap_send_support_email_restore_fail_partial_ok">Sure</string>
+  <string name="iap_send_support_email_restore_fail_partial_cancel">Never Mind</string>
 
-  <string name="google_play_send_support_email_restore_fail_partial_title">Purchases Restored</string>
-  <string name="google_play_send_support_email_restore_fail_partial_message">We have restored %1$d purchases of yours, but %2$d could not be restored. \n\nDo you mind reporting the incident to TradeHero?</string>
-  <string name="google_play_send_support_email_restore_fail_partial_ok">Sure</string>
-  <string name="google_play_send_support_email_restore_fail_partial_cancel">Never Mind</string>
-
-  <string name="google_play_send_support_email_restore_fail_title">Purchases Failed To Restore</string>
-  <string name="google_play_send_support_email_restore_fail_message">We could not restore your %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
-  <string name="google_play_send_support_email_restore_fail_ok">Sure</string>
-  <string name="google_play_send_support_email_restore_fail_cancel">Never Mind</string>
+  <string name="iap_send_support_email_restore_fail_title">Purchases Failed To Restore</string>
+  <string name="iap_send_support_email_restore_fail_message">We could not restore your %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="iap_send_support_email_restore_fail_ok">Sure</string>
+  <string name="iap_send_support_email_restore_fail_cancel">Never Mind</string>
 
 </resources>

@@ -8,6 +8,7 @@ import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 3/27/14.
@@ -23,7 +24,7 @@ public class THSamsungRequestFull
         THSamsungPurchase,
         SamsungException>
 {
-    protected THSamsungRequestFull()
+    @Inject public THSamsungRequestFull()
     {
         super();
     }

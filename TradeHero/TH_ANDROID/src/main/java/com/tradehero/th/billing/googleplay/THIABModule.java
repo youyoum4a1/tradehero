@@ -6,7 +6,10 @@ import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
+import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
+import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -17,6 +20,7 @@ import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Module;
 import dagger.Provides;
@@ -27,6 +31,20 @@ import javax.inject.Singleton;
  */
 @Module(
         injects = {
+                IABServiceConnector.class,
+                BaseIABBillingAvailableTester.class,
+                BaseIABInventoryFetcher.class,
+                THBaseIABPurchaseFetcher.class,
+                THBaseIABInventoryFetcher.class,
+                THBaseIABPurchaser.class,
+                THBaseIABPurchaseReporter.class,
+                THIABLogicHolderFull.class,
+                THBaseIABPurchaseConsumer.class,
+                THBaseIABInventoryFetcherHolder.class,
+                THBaseIABPurchaseReporterHolder.class,
+                THIABPurchaseFetchMilestone.class,
+                IABSKUListRetrievedAsyncMilestone.class,
+                THIABBillingInteractor.class,
         },
         staticInjections = {
         },

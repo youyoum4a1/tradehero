@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
@@ -62,8 +63,7 @@ public class THIABBillingInteractor
 
     @Inject THIABProductDetailCache thiabProductDetailCache;
     @Inject THIABLogicHolder billingActor;
-    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABAlertDialogUtil thIABAlertDialogUtil;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
     @Inject LocalyticsSession localyticsSession;
 
@@ -76,6 +76,11 @@ public class THIABBillingInteractor
         super();
     }
     //</editor-fold>
+
+    @Override public String getName()
+    {
+        return IABConstants.NAME;
+    }
 
     //<editor-fold desc="Life Cycle">
     public void onDestroy()
@@ -116,7 +121,7 @@ public class THIABBillingInteractor
 
     @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, THIABStoreProductDetailView, THIABSKUDetailAdapter> getBillingAlertDialogUtil()
     {
-        return THIABAlertDialogUtil;
+        return thIABAlertDialogUtil;
     }
 
     public AlertDialog popErrorWhenLoading()
@@ -204,19 +209,19 @@ public class THIABBillingInteractor
             {
                 if (exception instanceof IABUserCancelledException)
                 {
-                    dialog = THIABAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = thIABAlertDialogUtil.popUserCancelled(currentContext);
                 }
                 else if (exception instanceof IABBadResponseException)
                 {
-                    dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
+                    dialog = thIABAlertDialogUtil.popBadResponse(currentContext);
                 }
                 else if (exception instanceof IABResultErrorException)
                 {
-                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                    dialog = thIABAlertDialogUtil.popResultError(currentContext);
                 }
                 else if (!(exception instanceof IABBillingUnavailableException)) // No need to tell again
                 {
-                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
+                    dialog = thIABAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }
@@ -279,37 +284,38 @@ public class THIABBillingInteractor
             {
                 if (exception instanceof IABVerificationFailedException)
                 {
-                    dialog = THIABAlertDialogUtil.popVerificationFailed(currentContext);
+                    dialog = thIABAlertDialogUtil.popVerificationFailed(currentContext);
                 }
                 else if (exception instanceof IABUserCancelledException)
                 {
-                    dialog = THIABAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = thIABAlertDialogUtil.popUserCancelled(currentContext);
                 }
                 else if (exception instanceof IABBadResponseException)
                 {
-                    dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
+                    dialog = thIABAlertDialogUtil.popBadResponse(currentContext);
                 }
                 else if (exception instanceof IABResultErrorException)
                 {
-                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                    dialog = thIABAlertDialogUtil.popResultError(currentContext);
                 }
                 else if (exception instanceof IABRemoteException)
                 {
-                    dialog = THIABAlertDialogUtil.popRemoteError(currentContext);
+                    dialog = thIABAlertDialogUtil.popRemoteError(currentContext);
                 }
                 else if (exception instanceof IABItemAlreadyOwnedException)
                 {
-                    dialog = THIABAlertDialogUtil.popSKUAlreadyOwned(currentContext,
+                    dialog = thIABAlertDialogUtil.popSKUAlreadyOwned(
+                            currentContext,
                             thiabProductDetailCache.get(purchaseOrder.getProductIdentifier()),
                             restoreClickListener);
                 }
                 else if (exception instanceof IABSendIntentException)
                 {
-                    dialog = THIABAlertDialogUtil.popSendIntent(currentContext);
+                    dialog = thIABAlertDialogUtil.popSendIntent(currentContext);
                 }
                 else
                 {
-                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
+                    dialog = thIABAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }
@@ -344,11 +350,11 @@ public class THIABBillingInteractor
                 }
                 if (currentContext != null)
                 {
-                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                    thIABAlertDialogUtil.handlePurchaseRestoreFinished(
                             currentContext,
                             restoredPurchases,
                             failedRestorePurchases,
-                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, exception),
+                            thIABAlertDialogUtil.createFailedRestoreClickListener(currentContext, exception),
                             billingRequest.popRestorePurchaseOutcomeVerbose);
                 }
             }
@@ -471,7 +477,7 @@ public class THIABBillingInteractor
         Context currentContext = currentActivityHolder.getCurrentContext();
         if (currentContext != null)
         {
-            return THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
+            return thIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
         }
         return null;
     }

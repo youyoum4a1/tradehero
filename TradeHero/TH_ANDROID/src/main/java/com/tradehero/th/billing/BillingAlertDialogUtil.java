@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.th.R;
+import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
@@ -123,7 +125,11 @@ abstract public class BillingAlertDialogUtil<
             Activity activity,
             LayoutInflater layoutInflater,
             ProductIdentifierDomain skuDomain);
-    abstract protected Comparator<THProductDetailType> createProductDetailComparator();
+
+    protected Comparator<THProductDetailType> createProductDetailComparator()
+    {
+        return new THProductDetailDecreasingPriceComparator<>();
+    }
 
     public AlertDialog popBuyDialog(
             final int requestCode,
@@ -176,6 +182,52 @@ abstract public class BillingAlertDialogUtil<
     }
     //</editor-fold>
 
+    public AlertDialog popFailedToLoadRequiredInfo(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
+                R.string.store_billing_load_info_error_window_description,
+                R.string.store_billing_load_info_error_cancel);
+    }
+
+    public AlertDialog popSKUAlreadyOwned(final Context context)
+    {
+        return popSKUAlreadyOwned(context, null, null);
+    }
+
+    public AlertDialog popSKUAlreadyOwned(
+            final Context context,
+            THProductDetailType skuDetails,
+            DialogInterface.OnClickListener restoreClickListener)
+    {
+        return popWithOkCancelButton(context,
+                skuDetails == null ?
+                        context.getString(R.string.store_billing_sku_already_owned_window_title) :
+                        String.format(context.getString(
+                                        R.string.store_billing_sku_already_owned_name_window_title),
+                                skuDetails.getDescription()
+                        ),
+                context.getString(R.string.store_billing_sku_already_owned_window_description),
+                R.string.store_billing_sku_already_owned_ok,
+                R.string.store_billing_sku_already_owned_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailPurchaseNotRestored(context);
+                    }
+                },
+                restoreClickListener
+        );
+    }
+
+    public void sendSupportEmailPurchaseNotRestored(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
     public AlertDialog popFailedToReport(final Context context)
     {
         return popWithNegativeButton(context, R.string.store_billing_report_api_error_window_title,
@@ -186,10 +238,10 @@ abstract public class BillingAlertDialogUtil<
     public AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context,
-                R.string.google_play_send_support_email_report_fail_title,
-                R.string.google_play_send_support_email_report_fail_message,
-                R.string.google_play_send_support_email_report_fail_ok,
-                R.string.google_play_send_support_email_report_fail_cancel,
+                R.string.iap_send_support_email_report_fail_title,
+                R.string.iap_send_support_email_report_fail_message,
+                R.string.iap_send_support_email_report_fail_ok,
+                R.string.iap_send_support_email_report_fail_cancel,
                 okClickListener);
     }
 
@@ -207,7 +259,8 @@ abstract public class BillingAlertDialogUtil<
                         dialog.cancel();
                         sendSupportEmailBillingUnknownError(context, exception);
                     }
-                });
+                }
+        );
     }
 
     public void sendSupportEmailBillingUnknownError(final Context context, final Exception exception)
@@ -216,6 +269,73 @@ abstract public class BillingAlertDialogUtil<
                 VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
         activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    public AlertDialog popRemoteError(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.store_billing_remote_error_window_title,
+                R.string.store_billing_remote_error_window_description,
+                R.string.store_billing_remote_error_cancel);
+    }
+
+    public AlertDialog popUserCancelled(final Context context)
+    {
+        return popWithOkCancelButton(context,
+                R.string.store_billing_user_cancelled_window_title,
+                R.string.store_billing_user_cancelled_window_description,
+                R.string.store_billing_user_cancelled_ok,
+                R.string.store_billing_user_cancelled_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailCancelledPurchase(context);
+                    }
+                });
+    }
+
+    public void sendSupportEmailCancelledPurchase(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    public AlertDialog popNoPurchaseToRestore(final Context context)
+    {
+        return popWithNegativeButton(context,
+                context.getString(R.string.iap_purchase_restored_none_title),
+                context.getString(R.string.iap_purchase_restored_none_message),
+                context.getString(R.string.iap_purchase_restored_none_cancel));
+    }
+
+    public AlertDialog popPurchasesRestored(final Context context, final int countOk)
+    {
+        return popWithNegativeButton(context,
+                context.getString(R.string.iap_purchase_restored_title),
+                context.getString(R.string.iap_purchase_restored_message, countOk),
+                context.getString(R.string.iap_purchase_restored_cancel));
+    }
+
+    public AlertDialog popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener, final int countOk, final int countFailed)
+    {
+        return popWithOkCancelButton(context,
+                context.getString(R.string.iap_send_support_email_restore_fail_partial_title),
+                context.getString(R.string.iap_send_support_email_restore_fail_partial_message, countOk, countFailed),
+                R.string.iap_send_support_email_restore_fail_partial_ok,
+                R.string.iap_send_support_email_restore_fail_partial_cancel,
+                clickListener);
+    }
+
+    public AlertDialog popSendEmailSupportRestoreFailed(final Context context, int count, final DialogInterface.OnClickListener clickListener)
+    {
+        return popWithOkCancelButton(context,
+                context.getString(R.string.iap_send_support_email_restore_fail_title),
+                context.getString(R.string.iap_send_support_email_restore_fail_message, count),
+                R.string.iap_send_support_email_restore_fail_ok,
+                R.string.iap_send_support_email_restore_fail_cancel,
+                clickListener);
     }
 
 

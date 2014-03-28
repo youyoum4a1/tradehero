@@ -8,7 +8,7 @@ import javax.inject.Inject;
  */
 public class StringPreference extends AbstractPreference<String>
 {
-    @Inject public StringPreference(SharedPreferences preference, String key, String defaultValue)
+    public StringPreference(SharedPreferences preference, String key, String defaultValue)
     {
         super(preference, key, defaultValue);
     }
