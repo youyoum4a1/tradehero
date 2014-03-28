@@ -390,6 +390,14 @@
     <!--</dependency>-->
 
 
+    <dependency>
+      <groupId>alipay</groupId>
+      <artifactId>alipay</artifactId>
+      <version>1.0.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/alipay.jar</systemPath>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
@@ -112,6 +113,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
                 userInteractor.conditionalPopBuyVirtualDollars();
+                beginAlipay(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
@@ -140,6 +142,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 THToast.show("Clicked at position " + position);
                 break;
         }
+    }
+
+    private void beginAlipay(int type)
+    {
+        Timber.d("lyl beginAlipay");
+        //String info = getNewOrderInfo(position);
+        //String sign = Rsa.sign(info, Keys.PRIVATE);
     }
 
     private void pushStockAlertFragment()
