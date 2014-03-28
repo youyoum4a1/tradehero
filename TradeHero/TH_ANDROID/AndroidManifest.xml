@@ -115,6 +115,11 @@
         android:launchMode="singleInstance"
         android:exported="true"/>
 
+    <activity
+        android:name="com.alipay.android.app.sdk.WapPayActivity"
+        android:screenOrientation="portrait" >
+    </activity>
+    
     <meta-data
         android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 
