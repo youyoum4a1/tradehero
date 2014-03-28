@@ -350,6 +350,12 @@ public class TimelineItemView extends LinearLayout
                     openStockInfo();
                     return true;
                 }
+                case R.id.timeline_action_button_share:
+                {
+                    PopupMenu popupMenu = createSharePopupMenu();
+                    popupMenu.show();
+                    return true;
+                }
             }
             return false;
         }
@@ -489,12 +495,11 @@ public class TimelineItemView extends LinearLayout
 
     private PopupMenu createSharePopupMenu()
     {
-        //PopupMenu popupMenu = new PopupMenu(getContext(), shareActionButton);
-        //MenuInflater menuInflater = popupMenu.getMenuInflater();
-        //menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
-        //popupMenu.setOnMenuItemClickListener(sharePopupMenuClickListener);
-        //return popupMenu;
-        return null;
+        PopupMenu popupMenu = new PopupMenu(getContext(), more);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(sharePopupMenuClickListener);
+        return popupMenu;
     }
 
     private void updateMonitorMenuView(Menu menu)
