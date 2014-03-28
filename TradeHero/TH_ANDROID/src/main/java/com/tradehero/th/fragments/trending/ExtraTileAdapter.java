@@ -50,6 +50,9 @@ public class ExtraTileAdapter extends BaseAdapter
     private Pair<TileType, Integer>[] extraTilesMarker;
     // selected marker which contain the most number of tiles and positions
     private Pair<TileType, Integer>[] masterTilesMarker;
+    private boolean surveyEnabled;
+    private boolean providerDataAvailable;
+    private int headingTilesCount;
 
     public ExtraTileAdapter(Context context, ListAdapter wrappedAdapter)
     {
@@ -257,16 +260,16 @@ public class ExtraTileAdapter extends BaseAdapter
             Pair<TileType, Integer>[] tempMarker = null;
             if (!refreshIndexes && !refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                //Timber.d("Reusing marker!");
                 tempMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
             else
             {
+                updateHeadingTilesStatus();
+
                 // regenerate indexes for tiles, reuse as much as possible
                 int[] extraTileIndexes = null;
                 if (!refreshIndexes && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
                 {
-                    //Timber.d("Reusing indexes");
                     extraTileIndexes = new int[extraTileCount];
                     for (int i=0; i<extraTileCount; ++i)
                     {
@@ -282,7 +285,6 @@ public class ExtraTileAdapter extends BaseAdapter
                 TileType[] showingTiles = null;
                 if (!refreshTiles && masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
                 {
-                    //Timber.d("Reusing tile types randomness");
                     showingTiles = new TileType[extraTileCount];
                     for (int i=0; i<extraTileCount; ++i)
                     {
@@ -318,45 +320,37 @@ public class ExtraTileAdapter extends BaseAdapter
         }
     }
 
+    private void updateHeadingTilesStatus()
+    {
+        surveyEnabled = isSurveyEnabled();
+        providerDataAvailable = isProviderDataAvailable();
+
+        headingTilesCount = 0;
+        headingTilesCount += surveyEnabled ? 1 : 0;
+        headingTilesCount += providerDataAvailable ? 1 : 0;
+    }
+
     private Pair<TileType, Integer>[] createHeadingTiles(Pair<TileType, Integer>[] originalMarker)
     {
         if (originalMarker == null)
         {
             return null;
         }
-        boolean surveyEnabled = isSurveyEnabled();
-        boolean providerDataAvailable = isProviderDataAvailable();
 
-        int newTilesCount = originalMarker.length;
-        newTilesCount += (surveyEnabled ? 1 : 0);
-        newTilesCount += (providerDataAvailable ? 1 : 0);
-
-        Pair<TileType, Integer>[] headingTiles = new Pair[newTilesCount];
+        Pair<TileType, Integer>[] headingTiles = new Pair[originalMarker.length + headingTilesCount];
 
         int specialTileIndex = 0;
         if (surveyEnabled)
         {
-            //Timber.d("Add survey at beginning of trending list");
             headingTiles[specialTileIndex] = Pair.create(TileType.Survey, specialTileIndex);
             ++specialTileIndex;
         }
 
         if (providerDataAvailable)
         {
-            //Timber.d("Add provider tile at beginning of trending list");
             headingTiles[specialTileIndex] = Pair.create(TileType.FromProvider, specialTileIndex);
             ++specialTileIndex;
         }
-
-        //for (int i=specialTileIndex; i < originalMarker.length; ++i)
-        //{
-        //    int newIndex = originalMarker[i].second;
-        //    if (newIndex < specialTileIndex)
-        //    {
-        //        newIndex += specialTileIndex;
-        //    }
-        //    headingTiles[i] = Pair.create(originalMarker[i].first, newIndex);
-        //}
 
         System.arraycopy(originalMarker, 0, headingTiles, specialTileIndex, originalMarker.length);
         return headingTiles;
@@ -399,11 +393,11 @@ public class ExtraTileAdapter extends BaseAdapter
                 showingTileTypes.add(tileType);
             }
         }
-        if (!isSurveyEnabled())
+        if (!surveyEnabled)
         {
             showingTileTypes.remove(TileType.Survey);
         }
-        if (!isProviderDataAvailable())
+        if (!providerDataAvailable)
         {
             showingTileTypes.remove(TileType.FromProvider);
         }
@@ -412,6 +406,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
+        Timber.d("Regenerating ... with headingTilesCount=%d", headingTilesCount);
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
         int[] extraTileIndexes = new int[extraTileCount];
@@ -425,11 +420,12 @@ public class ExtraTileAdapter extends BaseAdapter
             }
             else if (previousIndex == -1 && newTileIndex <= 1)
             {
-                ++newTileIndex;
+                newTileIndex += headingTilesCount;
             }
             // side effect of previous tiles insertion, also there should not be any overlapping between 2 tiles random space
             newTileIndex += i % EXTRA_TILE_MIN_DISTANCE;
             newTileIndex = Math.min(maxTileIndex, newTileIndex);
+            Timber.d("Tile index: %d", newTileIndex);
             previousIndex = newTileIndex;
             extraTileIndexes[i] = newTileIndex;
         }
