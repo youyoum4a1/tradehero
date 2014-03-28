@@ -7,8 +7,7 @@ import com.tradehero.common.persistence.DTO;
 public interface IABPurchase<
             IABSKUType extends IABSKU,
             IABOrderIdType extends IABOrderId>
-        extends ProductPurchase<IABSKUType, IABOrderIdType>,
-            DTO
+        extends ProductPurchase<IABSKUType, IABOrderIdType>
 {
     String getType();
     String getToken();
