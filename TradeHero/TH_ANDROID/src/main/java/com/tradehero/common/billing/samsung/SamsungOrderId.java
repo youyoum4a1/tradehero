@@ -1,11 +1,11 @@
 package com.tradehero.common.billing.samsung;
 
-import com.tradehero.common.billing.OrderId;
+import com.tradehero.th.billing.THOrderId;
 
 /**
  * Created by xavier on 3/26/14.
  */
-public class SamsungOrderId implements OrderId
+public class SamsungOrderId implements THOrderId
 {
     public final String purchaseId;
 

@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.th.billing.BasePurchaseReporterHolder;
+import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -15,12 +15,12 @@ import javax.inject.Inject;
  * Created by xavier on 2/24/14.
  */
 public class THBaseIABPurchaseReporterHolder
-    extends BasePurchaseReporterHolder<
-            IABSKU,
-            THIABOrderId,
-            THIABPurchase,
-        THBaseIABPurchaseReporter,
-            IABException>
+    extends THBasePurchaseReporterHolder<
+                IABSKU,
+                THIABOrderId,
+                THIABPurchase,
+            THBaseIABPurchaseReporter,
+                IABException>
     implements THIABPurchaseReporterHolder
 {
     @Inject Lazy<UserProfileCache> userProfileCache;

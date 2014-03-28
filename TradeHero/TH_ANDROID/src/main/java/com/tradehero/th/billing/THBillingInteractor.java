@@ -2,7 +2,6 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
@@ -19,17 +18,17 @@ public interface THBillingInteractor<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
-        OrderIdType extends OrderId,
+        THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<
                 ProductIdentifierType,
-                OrderIdType>,
+                THOrderIdType>,
         THBillingLogicHolderType extends THBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 ProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 THBillingRequestType,
                 BillingExceptionType>,
@@ -39,7 +38,7 @@ public interface THBillingInteractor<
                 ProductIdentifierListType,
                 ProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         THUIBillingRequestType extends THUIBillingRequest<
@@ -48,7 +47,7 @@ public interface THBillingInteractor<
                 ProductIdentifierListType,
                 ProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
@@ -58,7 +57,7 @@ public interface THBillingInteractor<
         ProductIdentifierListType,
         ProductDetailType,
         THPurchaseOrderType,
-        OrderIdType,
+        THOrderIdType,
         THProductPurchaseType,
         THBillingLogicHolderType,
         THBillingRequestType,

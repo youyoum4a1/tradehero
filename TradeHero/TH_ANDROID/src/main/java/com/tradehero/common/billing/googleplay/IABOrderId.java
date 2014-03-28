@@ -1,9 +1,9 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.OrderId;
+import com.tradehero.th.billing.THOrderId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 11:29 AM To change this template use File | Settings | File Templates. */
-public class IABOrderId implements OrderId
+public class IABOrderId implements THOrderId
 {
     public static final String TAG = IABOrderId.class.getSimpleName();
 

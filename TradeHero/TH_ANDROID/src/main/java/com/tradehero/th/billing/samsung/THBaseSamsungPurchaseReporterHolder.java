@@ -2,7 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.th.billing.BasePurchaseReporterHolder;
+import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -15,12 +15,12 @@ import javax.inject.Inject;
  * Created by xavier on 2/24/14.
  */
 public class THBaseSamsungPurchaseReporterHolder
-    extends BasePurchaseReporterHolder<
-            SamsungSKU,
-            THSamsungOrderId,
-            THSamsungPurchase,
-            THBaseSamsungPurchaseReporter,
-            SamsungException>
+    extends THBasePurchaseReporterHolder<
+                SamsungSKU,
+                THSamsungOrderId,
+                THSamsungPurchase,
+                THBaseSamsungPurchaseReporter,
+                SamsungException>
     implements THSamsungPurchaseReporterHolder
 {
     @Inject Lazy<UserProfileCache> userProfileCache;

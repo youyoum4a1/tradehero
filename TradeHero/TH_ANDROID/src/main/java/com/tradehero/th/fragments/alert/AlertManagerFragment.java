@@ -30,7 +30,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -58,7 +58,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
 
     private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener;
     private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
@@ -294,7 +294,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
+            alertPlanCountIcon.setImageResource(THIABSecurityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 

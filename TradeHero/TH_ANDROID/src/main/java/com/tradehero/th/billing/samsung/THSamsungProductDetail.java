@@ -12,8 +12,7 @@ import com.tradehero.th.billing.THProductDetail;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
 public class THSamsungProductDetail
         extends BaseSamsungProductDetail<SamsungSKU>
-        implements SamsungProductDetail<SamsungSKU>,
-        THProductDetail<SamsungSKU>
+        implements THProductDetail<SamsungSKU>
 {
     public static final String TAG = THSamsungProductDetail.class.getSimpleName();
 

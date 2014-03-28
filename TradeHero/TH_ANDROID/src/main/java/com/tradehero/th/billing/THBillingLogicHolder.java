@@ -2,11 +2,9 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
@@ -20,16 +18,16 @@ public interface THBillingLogicHolder<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
-        OrderIdType extends OrderId,
-        ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        THOrderIdType extends THOrderId,
+        THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>,
         BillingRequestType extends BillingRequest<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 ProductDetailType,
                 PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
+                THOrderIdType,
+                THProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
     extends
@@ -39,15 +37,15 @@ public interface THBillingLogicHolder<
                 ProductIdentifierListType,
                 ProductDetailType,
                 PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
+                THOrderIdType,
+                THProductPurchaseType,
                 BillingRequestType,
                 BillingExceptionType>,
-        PurchaseReporterHolder<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
+        THPurchaseReporterHolder<
+                        ProductIdentifierType,
+                THOrderIdType,
+                THProductPurchaseType,
+                        BillingExceptionType>,
         ProductDetailDomainInformer<
             ProductIdentifierType,
             ProductDetailType>

@@ -9,11 +9,11 @@ import javax.inject.Singleton;
 /**
  * Created by xavier on 2/10/14.
  */
-@Singleton public class SecurityAlertKnowledge
+@Singleton public class THIABSecurityAlertKnowledge
 {
-    public static final String TAG = SecurityAlertKnowledge.class.getSimpleName();
+    public static final String TAG = THIABSecurityAlertKnowledge.class.getSimpleName();
 
-    @Inject public SecurityAlertKnowledge()
+    @Inject public THIABSecurityAlertKnowledge()
     {
     }
 

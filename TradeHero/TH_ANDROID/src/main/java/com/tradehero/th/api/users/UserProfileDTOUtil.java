@@ -4,7 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ public class UserProfileDTOUtil
 {
     public static final String TAG = UserProfileDTOUtil.class.getSimpleName();
 
-    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     @Inject public UserProfileDTOUtil()
@@ -57,7 +57,7 @@ public class UserProfileDTOUtil
                     localSKU = new IABSKU(userAlertPlanDTO.alertPlan.productIdentifier);
                     subscribedAlerts.add(localSKU);
 
-                    serverEquivalent = securityAlertKnowledge.getServerEquivalentSKU(localSKU);
+                    serverEquivalent = THIABSecurityAlertKnowledge.getServerEquivalentSKU(localSKU);
                     if (serverEquivalent != null)
                     {
                         subscribedAlerts.add(serverEquivalent);

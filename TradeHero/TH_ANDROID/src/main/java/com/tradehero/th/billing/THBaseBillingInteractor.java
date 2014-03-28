@@ -12,7 +12,6 @@ import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierListKey;
@@ -46,17 +45,17 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
-        OrderIdType extends OrderId,
+        THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<
                 ProductIdentifierType,
-                OrderIdType>,
+                THOrderIdType>,
         THBillingLogicHolderType extends THBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 THBillingRequestType,
                 BillingExceptionType>,
@@ -73,7 +72,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         THUIBillingRequestType extends THUIBillingRequest<
@@ -82,7 +81,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
@@ -92,7 +91,7 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListType,
         THProductDetailType,
         THPurchaseOrderType,
-        OrderIdType,
+        THOrderIdType,
         THProductPurchaseType,
         THBillingLogicHolderType,
         THBillingRequestType,
@@ -699,7 +698,7 @@ abstract public class THBaseBillingInteractor<
     //<editor-fold desc="Fetch Purchases">
     protected  BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseFetchedListener()
     {
@@ -708,7 +707,7 @@ abstract public class THBaseBillingInteractor<
 
     protected class THBaseBillingInteractorOnPurchaseFetchedListener implements BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {
@@ -788,9 +787,9 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Restore">
-    protected BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseRestorerFinishedListener()
+    protected BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseRestorerFinishedListener()
     {
-        return new BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
+        return new BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
             @Override public void onPurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases, List<THProductPurchaseType> failedRestorePurchases,
                     List<BillingExceptionType> failExceptions)
@@ -827,7 +826,7 @@ abstract public class THBaseBillingInteractor<
     protected BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             THPurchaseOrderType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseFinishedListener()
     {
@@ -837,7 +836,7 @@ abstract public class THBaseBillingInteractor<
     protected class THBaseBillingInteractorOnPurchaseFinishedListener implements BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             THPurchaseOrderType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {
@@ -952,7 +951,7 @@ abstract public class THBaseBillingInteractor<
     //<editor-fold desc="Purchase Reporting Sequence">
     protected THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseReportedListener()
     {
@@ -961,7 +960,7 @@ abstract public class THBaseBillingInteractor<
 
     protected class THBaseBillingInteractorOnPurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {

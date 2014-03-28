@@ -10,8 +10,9 @@ import com.tradehero.th.billing.THProductDetail;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
-public class THIABProductDetail extends BaseIABProductDetail
-    implements THProductDetail<IABSKU>
+public class THIABProductDetail
+        extends BaseIABProductDetail
+        implements THProductDetail<IABSKU>
 {
     public static final String TAG = THIABProductDetail.class.getSimpleName();
 
