@@ -2,8 +2,6 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BaseProductIdentifierList;
-import com.tradehero.common.billing.ProductDetail;
-import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
@@ -20,8 +18,8 @@ abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
-        ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailType>,
+        THProductDetailType extends THProductDetail<ProductIdentifierType>,
+        THProductTunerType extends THProductDetailTuner<ProductIdentifierType, THProductDetailType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>,
@@ -29,7 +27,7 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
+                THProductDetailType,
                 THPurchaseOrderType,
                 THOrderIdType,
                 THProductPurchaseType,
@@ -40,8 +38,8 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
-                ProductTunerType,
+                THProductDetailType,
+                THProductTunerType,
                 THPurchaseOrderType,
                 THOrderIdType,
                 THProductPurchaseType,
@@ -52,7 +50,7 @@ abstract public class THBaseBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
-                ProductDetailType,
+                THProductDetailType,
                 THPurchaseOrderType,
                 THOrderIdType,
                 THProductPurchaseType,

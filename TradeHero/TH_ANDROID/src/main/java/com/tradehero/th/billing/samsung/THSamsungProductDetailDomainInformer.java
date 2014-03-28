@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.billing.ProductDetailDomainInformer;
+import com.tradehero.th.billing.THProductDetailDomainInformer;
 
 public interface THSamsungProductDetailDomainInformer
-    extends ProductDetailDomainInformer<SamsungSKU, THSamsungProductDetail>
+    extends THProductDetailDomainInformer<SamsungSKU, THSamsungProductDetail>
 {
 }

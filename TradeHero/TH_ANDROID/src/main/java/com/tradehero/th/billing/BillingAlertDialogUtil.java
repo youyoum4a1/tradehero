@@ -27,9 +27,9 @@ import java.util.Map;
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
-        ProductDetailDomainInformerType extends ProductDetailDomainInformer<
-                ProductIdentifierType,
-                THProductDetailType>,
+        ProductDetailDomainInformerType extends THProductDetailDomainInformer<
+                        ProductIdentifierType,
+                        THProductDetailType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,
                 THProductDetailType>,
