@@ -24,6 +24,11 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUType,
         SamsungSKUListType,
         SamsungExceptionType>
+    implements SamsungProductIdentifierFetcherHolder<
+        SamsungSKUListKeyType,
+        SamsungSKUType,
+        SamsungSKUListType,
+        SamsungExceptionType>
 {
     protected Map<Integer /*requestCode*/, SamsungProductIdentifierFetcherType> skuFetchers;
 

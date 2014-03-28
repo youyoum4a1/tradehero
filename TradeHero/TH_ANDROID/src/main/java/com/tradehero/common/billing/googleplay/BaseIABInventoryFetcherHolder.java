@@ -20,6 +20,10 @@ abstract public class BaseIABInventoryFetcherHolder<
         IABSKUType,
         IABProductDetailType,
         IABException>
+    implements IABInventoryFetcherHolder<
+        IABSKUType,
+        IABProductDetailType,
+        IABException>
 {
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
     protected Exception latestInventoryFetcherException; // TODO here too

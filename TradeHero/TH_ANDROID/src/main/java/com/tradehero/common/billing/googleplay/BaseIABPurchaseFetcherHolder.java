@@ -22,6 +22,11 @@ abstract public class BaseIABPurchaseFetcherHolder<
         IABOrderIdType,
         IABPurchaseType,
         IABException>
+    implements IABPurchaseFetcherHolder<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABException>
 {
     protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
 
