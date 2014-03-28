@@ -208,11 +208,6 @@ abstract public class BaseBillingLogicHolder<
         purchaseFetcherHolder.launchFetchPurchaseSequence(requestCode);
     }
 
-    @Override public void launchRestorePurchaseSequence(int requestCode)
-    {
-        throw new IllegalArgumentException("Do not call this method");
-    }
-
     @Override public void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder)
     {
         purchaserHolder.launchPurchaseSequence(requestCode, purchaseOrder);

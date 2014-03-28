@@ -23,6 +23,5 @@ public interface BillingPurchaseRestorerHolder<
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType> purchaseFetchedListener);
-    void launchRestorePurchaseSequence(int requestCode);
     void onDestroy();
 }
