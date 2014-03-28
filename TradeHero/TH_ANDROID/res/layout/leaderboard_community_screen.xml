@@ -6,7 +6,6 @@
     android:id="@+id/community_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/leaderboard_bottom_padding"
     >
 
   <ProgressBar

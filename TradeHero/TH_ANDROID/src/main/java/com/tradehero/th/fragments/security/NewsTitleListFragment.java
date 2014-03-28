@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.security;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
@@ -22,7 +23,6 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by julien on 10/10/13 Display a ListView of News object for a given SecurityId - It uses
@@ -35,95 +35,45 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     @Inject SecurityNewsCache newsTitleCache;
     @Inject NewsServiceWrapper newsServiceWrapper;
 
+    @InjectView(R.id.list_news_headline) ListView listView;
+    @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
+
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
-    private ListView listView;
-    private ProgressBar progressBar;
     private NewsHeadlineAdapter adapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        Timber.d("NewsTitleListFragment onCreate");
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        Timber.d("NewsTitleListFragment onActivityCreated");
-    }
-
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        Timber.d("NewsTitleListFragment onAttach");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("NewsTitleListFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
+
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        Timber.d("NewsTitleListFragment onViewCreated");
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        Timber.d("NewsTitleListFragment onStart");
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        Timber.d("NewsTitleListFragment onResume");
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        Timber.d("NewsTitleListFragment onStop");
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        Timber.d("NewsTitleListFragment onPause");
-    }
-
     private void initViews(View view)
     {
-        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                R.layout.news_headline_item_view);
+        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
 
-        listView = (ListView) view.findViewById(R.id.list_news_headline);
-        progressBar = (ProgressBar) view.findViewById(R.id.list_news_headline_progressbar);
         showLoadingNews();
         if (listView != null)
         {
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view,
-                        int position, long l)
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-
-                    handleNewsClicked(position,
-                            (NewsItemDTO) adapterView.getItemAtPosition(position));
+                    Object o = adapterView.getItemAtPosition(position);
+                    if (o instanceof NewsItemDTO)
+                    {
+                        handleNewsClicked(position, (NewsItemDTO) o);
+                    }
                 }
             });
         }
@@ -141,13 +91,6 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        Timber.d("NewsTitleListFragment onDetach");
-    }
-
     @Override public void onDestroyView()
     {
         detachFetchTask();
@@ -158,14 +101,6 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         listView = null;
         adapter = null;
         super.onDestroyView();
-        Timber.d("NewsTitleListFragment onDestroyView");
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        Timber.d("NewsTitleListFragment onDestroy");
     }
 
     @Override LiveDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>> getInfoCache()
@@ -177,7 +112,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     {
         if (fetchTask != null)
         {
-            fetchTask.cancel(false);
+            fetchTask.setListener(null);
         }
         fetchTask = null;
     }
@@ -192,9 +127,9 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             PaginatedDTO<NewsItemDTO> news = newsTitleCache.get(this.securityId);
             if (news == null)
             {
+                //force fetch - we know the value is not in cache
                 detachFetchTask();
-                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true,
-                        this); //force fetch - we know the value is not in cache
+                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true, this);
                 this.fetchTask.execute();
             }
             else
@@ -232,12 +167,15 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         if (news != null)
         {
             int resId = adapter.getBackgroundRes(position);
-            Navigator navigator =
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
             NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = newsItemDTOKey.getArgs();
             bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            navigator.pushFragment(NewsDetailFragment.class, bundle);
+            getNavigator().pushFragment(NewsDetailFragment.class, bundle);
         }
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 }

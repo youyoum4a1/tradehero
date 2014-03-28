@@ -118,6 +118,7 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
+import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
