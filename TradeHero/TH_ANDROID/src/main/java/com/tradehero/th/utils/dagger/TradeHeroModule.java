@@ -240,6 +240,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
+                        FriendLeaderboardMarkUserListFragment.LeaderBorarTabContentFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
                         LeaderboardFilterFragment.class,
 

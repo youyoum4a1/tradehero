@@ -170,9 +170,6 @@ public class DashboardNavigator extends Navigator
     public void replaceTab(DashboardTabType currentTab, DashboardTabType targetTabType)
     {
 
-
-
-
         if (false) {
             FragmentTransaction ft = manager.beginTransaction();
             String name = makeFragmentName(targetTabType);

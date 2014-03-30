@@ -169,6 +169,9 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     {
         switch (dto.id)
         {
+            case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID:
+                return R.drawable.leaderboard_friends;
+
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 return R.drawable.leaderboard_friends;
 

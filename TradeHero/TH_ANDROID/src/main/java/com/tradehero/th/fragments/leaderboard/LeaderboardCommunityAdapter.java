@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:48 PM Copyright (c) TradeHero
@@ -61,6 +62,8 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             if (type.getKey() != null)
             {
                 typeMap.put(type, leaderboardDefListCache.get().get(type.getKey()));
+                Timber.d("notifyDataSetChanged map:type %s,value:%s",type,leaderboardDefListCache.get().get(
+                        type.getKey()));
             }
             else
             {
@@ -79,7 +82,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     {
         List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
         
-        if (skillAndFriend != null && skillAndFriend.size() < 2)
+        if (skillAndFriend != null && skillAndFriend.size() < 3)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
@@ -88,6 +91,19 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             skillAndFriend.add(fakeDto.getLeaderboardDefKey());
+
+            //add an entry 'followers'
+            fakeDto = new LeaderboardDefDTO();
+            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID;
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_followers);
+
+            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
+            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
+
+
+            LeaderboardDefKey first = skillAndFriend.remove(0);
+            skillAndFriend.add(first);
+;
         }
 
         List<LeaderboardDefKey> sectorAndExchange = typeMap.get(LeaderboardCommunityType.SectorAndExchange);
@@ -118,8 +134,10 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             if (items.get(type) != null)
             {
                 totalItems += items.get(type).size();
+                Timber.d("getCount type %s,size:%s",type,items.get(type).size());
             }
         }
+        Timber.d("getCount CompetitionCount %s",getCompetitionCount());
         return getCompetitionCount() + totalItems;
     }
 
