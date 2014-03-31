@@ -92,17 +92,22 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             skillAndFriend.add(fakeDto.getLeaderboardDefKey());
 
+            //add an entry 'myheros'
+            fakeDto = new LeaderboardDefDTO();
+            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_HERO_ID;
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_heros);
+            //fakeDto.sortTypes = null;
+
+            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
+            skillAndFriend.add(0,fakeDto.getLeaderboardDefKey());
+
             //add an entry 'followers'
             fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID;
             fakeDto.name = getContext().getString(R.string.leaderboard_community_followers);
 
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
-
-
-            LeaderboardDefKey first = skillAndFriend.remove(0);
-            skillAndFriend.add(first);
+            skillAndFriend.add(1,fakeDto.getLeaderboardDefKey());
 ;
         }
 

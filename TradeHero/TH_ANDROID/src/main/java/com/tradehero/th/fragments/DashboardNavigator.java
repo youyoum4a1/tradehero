@@ -38,8 +38,8 @@ public class DashboardNavigator extends Navigator
         super(context, manager, fragmentContentId);
         this.activity = (FragmentActivity) context;
 
-        //initTabs();
-        //initAnimation();
+        initTabs();
+        initAnimation();
     }
 
     private void initAnimation()

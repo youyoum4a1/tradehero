@@ -30,7 +30,8 @@ public class AppContainerImpl implements AppContainer
 
     @Override public ViewGroup get(final Activity activity)
     {
-        activity.setContentView(R.layout.residemenu_main);
+        //activity.setContentView(R.layout.residemenu_main);
+        activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());

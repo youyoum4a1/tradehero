@@ -16,8 +16,10 @@ public class LeaderboardDefDTO extends ExtendedDTO
     public static final int LEADERBOARD_DEF_SECTOR_ID = -2;
     public static final int LEADERBOARD_DEF_EXCHANGE_ID = -3;
     public static final int LEADERBOARD_FRIEND_ID = -1;
+    //my heros
+    public static final int LEADERBOARD_HERO_ID = -4;
     //my followers
-    public static final int LEADERBOARD_FOLLOWER_ID = -4;
+    public static final int LEADERBOARD_FOLLOWER_ID = -5;
     public static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
 
 

@@ -22,11 +22,13 @@ public class HeroManagerViewContainer
     public final ProgressBar progressBar;
     public final ListView heroListView;
 
+
     public HeroManagerViewContainer(View view)
     {
         super();
 
-        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+        //progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+        progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
         followCreditCount = (TextView) view.findViewById(R.id.manage_heroes_follow_credit_count);
         icnCoinStack = (ImageView) view.findViewById(R.id.icn_credit_quantity);
         btnBuyMore = (ImageButton) view.findViewById(R.id.btn_buy_more);

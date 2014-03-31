@@ -96,11 +96,11 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         dtoCacheUtil.initialPrefetches();
 
-        //navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.main_fragment);
+        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        //navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.main_fragment);
 
-        navigator.replaceTab(null,DashboardTabType.TRENDING);
-        currentTab = DashboardTabType.TRENDING;
+        //navigator.replaceTab(null,DashboardTabType.TRENDING);
+        //currentTab = DashboardTabType.TRENDING;
     }
 
     @Override

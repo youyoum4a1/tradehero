@@ -8,11 +8,14 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -108,11 +111,41 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 getNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
                 break;
-
+            case LeaderboardDefDTO.LEADERBOARD_HERO_ID :
+                pushHeroFragment();
+                break;
+            case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID :
+                pushFollowerFragment();
+                break;
             default:
                 getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
+    }
+
+
+    protected void pushHeroFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+    }
+
+    protected void pushFollowerFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserId.get());
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            bundle.putBundle(FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public boolean isTabBarVisible()

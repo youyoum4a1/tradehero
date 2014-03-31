@@ -48,4 +48,28 @@
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 
   <string name="leaderboard_community_followers">Followers</string>
+  <string name="leaderboard_community_heros">Heros</string>
+
+  <!--<plurals name="leaderboard_community_hero_free">-->
+    <!--<item quantity="zero">Free</item>-->
+    <!--<item quantity="one">Free(%d)</item>-->
+  <!--</plurals>-->
+
+  <!--<plurals name="leaderboard_community_hero_premium">-->
+    <!--<item quantity="zero">Premium</item>-->
+    <!--<item quantity="one">Premium(%d)</item>-->
+    <!--<item quantity="other">Premium(%d)</item>-->
+  <!--</plurals>-->
+
+  <!--<plurals name="leaderboard_community_hero_all">-->
+    <!--<item quantity="zero">All</item>-->
+    <!--<item quantity="other">All(%d)</item>-->
+  <!--</plurals>-->
+
+
+
+  <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
+  <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
+  <string name="leaderboard_community_hero_all">{0,choice,0#Free|0&lt;Free({0})}</string>
+
 </resources>

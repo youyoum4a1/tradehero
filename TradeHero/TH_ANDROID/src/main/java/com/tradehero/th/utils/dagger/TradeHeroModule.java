@@ -240,7 +240,6 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
-                        FriendLeaderboardMarkUserListFragment.LeaderBorarTabContentFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
                         LeaderboardFilterFragment.class,
 
@@ -268,7 +267,8 @@ import javax.inject.Singleton;
                         PurchaseRestorerRequiredMilestone.class,
                         THIABUserInteractor.class,
                         StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
-                        HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
+                        HeroManagerFragment.HerosTabContentFragment.class,
+                        HeroManagerFragment.HerosTabContentFragment.HeroManagerTHIABUserInteractor.class,
                         HeroManagerInfoFetcher.class,
                         BuySellFragment.BuySellTHIABUserInteractor.class,
 
