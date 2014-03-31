@@ -165,11 +165,13 @@ public class DashboardNavigator extends Navigator
         return super.pushFragment(fragmentClass, args, anim, backStackName);
     }
 
-
-
+    /**
+     * Yes ,a better way is to use FragmentTabHost to manage the fragments and their states.
+     * @param currentTab
+     * @param targetTabType
+     */
     public void replaceTab(DashboardTabType currentTab, DashboardTabType targetTabType)
     {
-
         if (false) {
             FragmentTransaction ft = manager.beginTransaction();
             String name = makeFragmentName(targetTabType);

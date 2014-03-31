@@ -278,6 +278,10 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private DashboardTabType currentTab = DashboardTabType.TRENDING;
 
+    /**
+     * @deprecated
+     * @param tabType
+     */
     @Override public void onResideMenuItemClick(DashboardTabType tabType)
     {
         switch (tabType) {
