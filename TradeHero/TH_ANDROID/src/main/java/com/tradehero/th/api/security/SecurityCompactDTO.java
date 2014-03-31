@@ -148,8 +148,7 @@ public class SecurityCompactDTO extends ExtendedDTO
 
     public SecurityId getSecurityId()
     {
-        //add a new field 'id'
-        return new SecurityId(exchange, symbol,id);
+        return new SecurityId(exchange, symbol);
     }
 
     public static List<SecurityId> getSecurityIds(List<SecurityCompactDTO> values)

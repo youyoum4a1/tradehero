@@ -1,13 +1,12 @@
 package com.tradehero.th.ui;
 
 import android.app.Activity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import com.special.ResideMenu.ResideMenu;
 import com.special.ResideMenu.ResideMenuItem;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import javax.inject.Inject;
 
@@ -29,15 +28,32 @@ public class AppContainerImpl implements AppContainer
         this.menuListener = menuListener;
     }
 
-    @Override public ViewGroup get(Activity activity)
+    @Override public ViewGroup get(final Activity activity)
     {
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
-        //resideMenu.setMenuListener();
-        ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener();
 
+        // hAcK to make the menu works while waiting for a injectable navigator
+        ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                super.onClick(v);
+                if (activity instanceof DashboardNavigatorActivity && !activity.isFinishing())
+                {
+                    Object tag = v.getTag();
+                    if (tag instanceof DashboardTabType)
+                    {
+                        DashboardTabType tabType = (DashboardTabType) tag;
+                        ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(tabType);
+                    }
+                }
+            }
+        };
+
+        resideMenu.getMenuItems().clear();
         for (DashboardTabType tabType: DashboardTabType.values())
         {
             ResideMenuItem menuItem = new ResideMenuItem(activity, tabType.drawableResId, tabType.stringResId);
