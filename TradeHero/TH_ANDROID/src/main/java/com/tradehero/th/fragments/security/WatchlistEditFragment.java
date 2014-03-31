@@ -86,42 +86,27 @@ public class WatchlistEditFragment extends DashboardFragment
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
             {
-                if (watchlistPositionDTO == null)
+                watchlistPositionCache.get().put(securityKeyId, watchlistPositionDTO);
+                if (isResumed())
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "");
-                }
-                else if (watchlistPositionDTO.securityDTO == null)
-                {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "");
+                    SecurityIdList currentUserWatchlistSecurities =
+                            userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+                    if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityKeyId))
+                    {
+                        currentUserWatchlistSecurities.add(securityKeyId);
+                    }
+                    String returnFragment = null;
+                    Bundle args = getArguments();
+                    if (args != null)
+                    {
+                        returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+                    }
+
+                    getNavigator().popFragment(returnFragment);
                 }
                 else
                 {
-                    SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-                    watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-                    if (isResumed())
-                    {
-                        SecurityIdList currentUserWatchlistSecurities =
-                                userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-                        if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
-                        {
-                            currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
-                        }
-                        Bundle args = getArguments();
-                        if (args != null)
-                        {
-                            String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-                            if (returnFragment != null)
-                            {
-                                getNavigator().popFragment(returnFragment);
-                                return;
-                            }
-                        }
-                        getNavigator().popFragment();
-                    }
-                    else
-                    {
-                        dismissProgress();
-                    }
+                    dismissProgress();
                 }
             }
 
@@ -269,21 +254,18 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         this.securityKeyId = securityId;
 
-        if (securityId != null)
+        // TODO change the test to something passed in the args bundle
+        if (watchlistPositionCache.get().get(securityId) != null)
         {
-            if (watchlistPositionCache.get().get(securityId) != null)
-            {
-                setActionBarTitle(getString(R.string.watchlist_edit_title));
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
-            }
-            else
-            {
-                setActionBarTitle(getString(R.string.watchlist_add_title));
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
-            }
-
-            querySecurity(securityId, andDisplay);
+            setActionBarTitle(getString(R.string.watchlist_edit_title));
+            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
         }
+        else
+        {
+            setActionBarTitle(getString(R.string.watchlist_add_title));
+            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
+        }
+        querySecurity(securityId, andDisplay);
 
         if (andDisplay)
         {
