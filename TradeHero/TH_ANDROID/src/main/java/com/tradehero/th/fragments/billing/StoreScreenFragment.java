@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.alipay.android.app.net.SSLSocketFactoryEx;
 import com.alipay.android.app.sdk.AliPay;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.alipay.Result;
@@ -21,6 +23,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -30,8 +33,28 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.LocalyticsConstants;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyStore;
 import javax.inject.Inject;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
@@ -121,7 +144,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
                 //userInteractor.conditionalPopBuyVirtualDollars();
-                beginAlipay(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        beginAlipay(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
+                    }
+                }.start();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
@@ -161,20 +191,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         info += "&sign=\"" + sign + "\"&" + "sign_type=\"RSA\"";
         Timber.d("lyl info=%s", info);
 
-        final String orderInfo = info;
-        new Thread() {
-            public void run() {
-                AliPay alipay = new AliPay(getSherlockActivity(), mHandler);
-                String result = alipay.pay(orderInfo);
-                Timber.d("lyl result=%s", result);
-            }
-        }.start();
+        AliPay alipay = new AliPay(getSherlockActivity(), mHandler);
+        String result = alipay.pay(info);
+        Timber.d("lyl result=%s", result);
+
+        Message msg = new Message();
+        msg.what = 1;//RQF_PAY;
+        msg.obj = result;
+        mHandler.sendMessage(msg);
     }
 
-    Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+    Handler mHandler = new Handler()
+    {
+        public void handleMessage(android.os.Message msg)
+        {
             Result result = new Result((String) msg.obj);
             Timber.d("lyl result=%s", result);
+            Timber.d("lyl result=%s", result.getResult());
             //switch (msg.what) {
             //    case RQF_PAY:
             //    case RQF_LOGIN: {
@@ -186,22 +219,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             //    default:
             //        break;
             //}
-        };
+        }
+
+        ;
     };
 
-    private String getOutTradeNo() {
-
-
-        //return key;
-        return "alipay-2";
-    }
-
-    private String getNewOrderInfo() {
+    private String getNewOrderInfo()
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("partner=\"");
         sb.append(Constants.DEFAULT_PARTNER);
         sb.append("\"&out_trade_no=\"");
-        sb.append(getOutTradeNo());
+        sb.append("alipay-" + getOrderId());
         sb.append("\"&subject=\"");
         sb.append("subject");
         sb.append("\"&body=\"");
@@ -211,8 +240,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         sb.append("\"&notify_url=\"");
 
         // 网址需要做URL编码
-        //sb.append(URLEncoder.encode("http://notify.java.jpxx.org/index.jsp"));
-        sb.append(URLEncoder.encode("https://www.tradehero.mobi/api/alipay/notify"));
+        sb.append(URLEncoder.encode("http://www.tradehero.mobi/api/alipay/notify"));
         sb.append("\"&service=\"mobile.securitypay.pay");
         sb.append("\"&_input_charset=\"UTF-8");
         sb.append("\"&return_url=\"");
@@ -229,6 +257,59 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return new String(sb);
     }
 
+    private String getOrderId()
+    {
+        String url = "https://www.tradehero.mobi/api/alipay/createOrder/10";
+        String resultStr = "";
+        HttpClient httpclient = getNewHttpClient();
+
+        HttpPost httppost = new HttpPost(url);
+        try
+        {
+            httppost.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+            HttpResponse response;
+            response = httpclient.execute(httppost);
+            resultStr = EntityUtils.toString(response.getEntity());
+            Timber.d("lyl orderId=%s", resultStr);
+        } catch (UnsupportedEncodingException e)
+        {
+            Timber.d("lyl UnsupportedEncodingException");
+            e.printStackTrace();
+        } catch (ClientProtocolException e)
+        {
+            Timber.d("lyl ClientProtocolException");
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            Timber.d("lyl IOException");
+            e.printStackTrace();
+        }
+
+        return resultStr;
+    }
+
+    public static HttpClient getNewHttpClient()
+    {
+        try
+        {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            SSLSocketFactory sf = new SSLSocketFactoryEx(trustStore);
+            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            HttpParams params = new BasicHttpParams();
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sf, 443));
+            ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+            return new DefaultHttpClient(ccm, params);
+        } catch (Exception e)
+        {
+            return new DefaultHttpClient();
+        }
+    }
+
     private void pushStockAlertFragment()
     {
         Bundle bundle = new Bundle();
@@ -243,7 +324,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    applicablePortfolio.getArgs());
         }
         pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -255,7 +337,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(
+                    FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    applicablePortfolio.getArgs());
         }
         pushFragment(FollowerManagerFragment.class, bundle);
     }
