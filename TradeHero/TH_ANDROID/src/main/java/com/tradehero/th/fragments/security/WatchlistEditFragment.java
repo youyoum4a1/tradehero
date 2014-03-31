@@ -81,22 +81,18 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override protected void finish()
             {
-                ProgressDialog progressBarCopy = progressBar;
-                if (progressBarCopy != null)
-                {
-                    progressBarCopy.dismiss();
-                }
+                dismissProgress();
             }
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
             {
                 if (watchlistPositionDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO was null for key " + securityKeyId);
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "");
                 }
                 else if (watchlistPositionDTO.securityDTO == null)
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO.securityDTO was null for key " + securityKeyId);
+                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "");
                 }
                 else
                 {
@@ -122,13 +118,18 @@ public class WatchlistEditFragment extends DashboardFragment
                         }
                         getNavigator().popFragment();
                     }
+                    else
+                    {
+                        dismissProgress();
+                    }
                 }
             }
 
             @Override protected void failure(THException ex)
             {
-                Timber.e("Failed to update watchlist position", ex);
+                Timber.e(ex, "Failed to update watchlist position");
                 THToast.show(ex);
+                dismissProgress();
             }
         };
     }
@@ -202,17 +203,22 @@ public class WatchlistEditFragment extends DashboardFragment
                     watchlistService.get().createWatchlistEntry(watchPositionItemForm, watchlistUpdateCallback);
                 }
             }
+            else
+            {
+                Timber.e(new Exception("SecurityCompactDTO from cache was null"),"");
+                dismissProgress();
+            }
         }
         catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
             Timber.e("Parsing error", ex);
-            progressBar.dismiss();
+            dismissProgress();
         }
         catch (Exception ex)
         {
             THToast.show(ex.getMessage());
-            progressBar.dismiss();
+            dismissProgress();
         }
     }
 
@@ -290,6 +296,15 @@ public class WatchlistEditFragment extends DashboardFragment
         if (securityTitle != null)
         {
             securityTitle.setText(String.format("%s:%s", securityKeyId.exchange, securityKeyId.securitySymbol));
+        }
+    }
+
+    private void dismissProgress()
+    {
+        ProgressDialog progressBarCopy = progressBar;
+        if (progressBarCopy != null)
+        {
+            progressBarCopy.dismiss();
         }
     }
 
