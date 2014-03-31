@@ -117,9 +117,13 @@
 
     <activity
         android:name="com.alipay.android.app.sdk.WapPayActivity"
-        android:screenOrientation="portrait" >
-    </activity>
-
+        android:screenOrientation="portrait" />
+    <activity
+        android:name="com.tradehero.common.billing.alipay.AlipayActivity"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Translucent"
+        android:launchMode="singleInstance"/>
+        <!--android:exported="true"/>-->
     <meta-data
         android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 

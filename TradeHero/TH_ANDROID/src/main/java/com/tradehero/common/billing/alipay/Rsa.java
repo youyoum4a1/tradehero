@@ -1,9 +1,3 @@
-/*
- * Copyright (C) 2010 The MobileSecurePay Project
- * All right reserved.
- * author: shiqun.shi@alipay.com
- */
-
 package com.tradehero.common.billing.alipay;
 
 import java.security.KeyFactory;
@@ -12,9 +6,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
 import javax.crypto.Cipher;
-
 import android.util.Log;
 
 public class Rsa {

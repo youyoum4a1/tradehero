@@ -3,9 +3,7 @@ package com.tradehero.common.billing.alipay;
 import com.tradehero.th.utils.Constants;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.json.JSONObject;
-
 import android.util.Log;
 
 public class Result {

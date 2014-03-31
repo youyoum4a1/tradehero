@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.billing;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.alipay.android.app.net.SSLSocketFactoryEx;
 import com.alipay.android.app.sdk.AliPay;
 import com.localytics.android.LocalyticsSession;
+import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.alipay.Result;
 import com.tradehero.common.billing.alipay.Rsa;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
@@ -144,14 +146,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
                 //userInteractor.conditionalPopBuyVirtualDollars();
-                new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        beginAlipay(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
-                    }
-                }.start();
+                Intent intent = new Intent(getSherlockActivity(), AlipayActivity.class);
+                getSherlockActivity().startActivity(intent);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
