@@ -104,7 +104,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         {
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback());
         }
-        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), leaderboardMarkUserListAdapter);
+        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), providerDTO, leaderboardMarkUserListAdapter);
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
