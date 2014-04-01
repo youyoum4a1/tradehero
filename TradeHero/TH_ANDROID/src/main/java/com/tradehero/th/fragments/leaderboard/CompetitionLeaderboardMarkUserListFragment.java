@@ -11,15 +11,18 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -45,6 +48,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
     protected CompetitionDTO competitionDTO;
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
+    private CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -92,6 +96,25 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_competition_mode);
+    }
+
+    protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
+    {
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setDTOLoaderCallback(new CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback());
+        }
+        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), leaderboardMarkUserListAdapter);
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        if (competitionAdapter == null)
+        {
+            competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
+        }
+        leaderboardMarkUserListView.setAdapter(competitionAdapter);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -168,6 +191,15 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         @Override protected Class<?> getClassToPop()
         {
             return CompetitionLeaderboardMarkUserListFragment.class;
+        }
+    }
+
+    protected class CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback extends LeaderboardMarkUserListViewFragmentListLoaderCallback
+    {
+        @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
+        {
+            competitionAdapter.notifyDataSetChanged();
+            super.onLoadFinished(loader, data);
         }
     }
 }

@@ -53,7 +53,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected int leaderboardId;
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
-    private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
+    protected LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
 
@@ -186,8 +186,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
             leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         }
 
         Bundle loaderBundle = new Bundle(getArguments());
@@ -337,7 +337,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
-    private class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
+    protected class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
     {
         @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
         {
