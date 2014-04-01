@@ -29,6 +29,11 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     }
     //</editor-fold>
 
+    public static ChartTimeSpan getDefaultChartTimeSpan()
+    {
+        return new ChartTimeSpan(ChartTimeSpan.MONTH_3);
+    }
+
     public void linkWith(ProviderId providerId)
     {
         this.providerId = providerId;
@@ -121,7 +126,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     private void populateForChartFragment(Bundle args)
     {
         args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
-        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, ChartTimeSpan.MONTH_3);
+        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
     }
 
     @Override public int getItemPosition(Object object)

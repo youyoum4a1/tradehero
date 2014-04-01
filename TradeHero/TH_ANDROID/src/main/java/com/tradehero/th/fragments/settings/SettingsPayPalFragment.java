@@ -27,7 +27,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;

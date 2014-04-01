@@ -40,7 +40,7 @@ import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
 

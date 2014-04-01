@@ -14,7 +14,7 @@ import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 
 /**

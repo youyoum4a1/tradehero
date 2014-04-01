@@ -68,6 +68,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
@@ -76,11 +77,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.viewpagerindicator.PageIndicator;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
+import java.util.*;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -120,6 +120,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
@@ -339,6 +340,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        localyticsSession.tagEvent(LocalyticsConstants.BuySellPanel_Chart, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
+    }
 
     @Override public void onResume()
     {
@@ -1542,9 +1549,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onClick(View v)
             {
+                trackBuyClickEvent();
                 pushBuySellConfirmFragmentIn();
             }
         };
+    }
+
+    private void trackBuyClickEvent()
+    {
+        localyticsSession.tagEvent(
+                isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy : LocalyticsConstants.Trade_Sell,
+                securityId);
     }
 
     private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()

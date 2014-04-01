@@ -9,6 +9,8 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -28,28 +30,31 @@ import javax.inject.Singleton;
 )
 public class UxModule
 {
-    private static final String TABSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
-    private static final String TABSTREAM_APP_NAME = "tradehero";
+    private static final String TAPSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
+    private static final String TAPSTREAM_APP_NAME = "tradehero";
 
     // localytics
-    @Provides @Singleton LocalyticsSession provideLocalyticsSession(Context context)
+    @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)
     {
-        return new LocalyticsSession(context);
+        return localyticsSession;
     }
 
-    // tabstream
-
-    @Provides @Singleton Tapstream provideTabStream(Application app, Config config)
+    @Provides @Singleton THLocalyticsSession provideThLocalyticsSession(Context context, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
-        Tapstream.create(app, TABSTREAM_APP_NAME, TABSTREAM_KEY, config);
+        return new THLocalyticsSession(context, chartTimeSpanMetricsCodeFactory);
+    }
+
+    // TapStream
+    @Provides @Singleton Tapstream provideTapStream(Application app, Config config)
+    {
+        Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
         return Tapstream.getInstance();
     }
 
-    @Provides @Singleton Config provideTabStreamConfig()
+    @Provides @Singleton Config provideTapStreamConfig()
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
         return config;
     }
-
 }

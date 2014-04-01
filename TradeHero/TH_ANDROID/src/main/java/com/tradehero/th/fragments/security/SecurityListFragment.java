@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -57,6 +58,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

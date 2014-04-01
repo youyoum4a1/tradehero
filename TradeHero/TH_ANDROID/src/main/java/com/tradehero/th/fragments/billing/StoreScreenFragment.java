@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.utils.LocalyticsConstants;
+
 import javax.inject.Inject;
 import timber.log.Timber;
 

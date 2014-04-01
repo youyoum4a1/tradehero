@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
