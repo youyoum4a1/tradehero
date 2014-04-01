@@ -13,7 +13,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.googleplay.GooglePlayUtils;
+import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
 import com.tradehero.th.fragments.billing.samsung.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.samsung.THSamsungStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;

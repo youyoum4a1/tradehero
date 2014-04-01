@@ -108,7 +108,27 @@ public class THIABBillingInteractor
     @Override protected void populateBillingRequest(THIABBillingRequestFull request, THUIIABBillingRequest uiBillingRequest)
     {
         super.populateBillingRequest(request, uiBillingRequest);
-        // TODO add specific things for IAB
+
+        if (uiBillingRequest.domainToPresent != null)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+        }
+        else if (uiBillingRequest.restorePurchase)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+            request.fetchPurchase = true;
+            request.restorePurchase = true;
+        }
+        else if (uiBillingRequest.fetchInventory)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+        }
     }
     //</editor-fold>
 

@@ -1,6 +1,9 @@
-package com.tradehero.common.billing.samsung;
+package com.tradehero.common.billing.samsung.persistence;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
+import com.tradehero.common.billing.samsung.SamsungOrderId;
+import com.tradehero.common.billing.samsung.SamsungPurchase;
+import com.tradehero.common.billing.samsung.SamsungSKU;
 
 /**
  * Created by xavier on 2/11/14.

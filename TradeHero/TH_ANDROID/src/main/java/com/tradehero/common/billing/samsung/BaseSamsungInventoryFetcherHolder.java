@@ -6,6 +6,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 2/24/14.
@@ -37,6 +38,7 @@ abstract public class BaseSamsungInventoryFetcherHolder<
 
     @Override public void launchInventoryFetchSequence(int requestCode, List<SamsungSKUType> allIds)
     {
+        Timber.d("Launching fetch sequence");
         BillingInventoryFetcher.OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> skuFetchedListener = createInventoryFetchedListener();
         SamsungInventoryFetcherType inventoryFetcher = createProductIdentifierFetcher();
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);

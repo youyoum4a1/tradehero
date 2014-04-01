@@ -2,11 +2,10 @@ package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
-import com.sec.android.iap.lib.listener.OnGetInboxListener;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
-import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,6 +93,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
             addToPurchases(fetchingGroupId, inboxList);
+            notifyListenerFetched();
         }
         else
         {

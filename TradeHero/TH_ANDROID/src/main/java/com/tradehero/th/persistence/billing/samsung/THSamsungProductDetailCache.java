@@ -1,10 +1,7 @@
 package com.tradehero.th.persistence.billing.samsung;
 
 import com.tradehero.common.billing.ProductDetailCache;
-import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungProductDetailTuner;
 import javax.inject.Inject;
@@ -14,6 +11,8 @@ import javax.inject.Singleton;
 @Singleton public class THSamsungProductDetailCache extends ProductDetailCache<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
+
+    @Inject SamsungSKUListCache samsungSKUListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungProductDetailCache()
@@ -30,5 +29,11 @@ import javax.inject.Singleton;
     @Override protected THSamsungProductDetail fetch(SamsungSKU key)
     {
         throw new IllegalStateException("You should not fetch THSamsungProductDetail individually");
+    }
+
+    @Override public THSamsungProductDetail put(SamsungSKU key, THSamsungProductDetail value)
+    {
+        samsungSKUListCache.add(value);
+        return super.put(key, value);
     }
 }

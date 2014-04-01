@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
+import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.th.billing.THBillingConstants;
 import com.tradehero.th.utils.Constants;
 
@@ -15,6 +16,10 @@ public class THSamsungConstants
     public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
 
     public static final String IAP_ITEM_GROUP_ID = "100000103210";
+    public static SamsungItemGroup getItemGroupId()
+    {
+        return new SamsungItemGroup(IAP_ITEM_GROUP_ID);
+    }
 
     // Below are the codes as they are understood on Samsung Store
     public static final String EXTRA_CASH_T0_ITEM_ID = "000001016731";

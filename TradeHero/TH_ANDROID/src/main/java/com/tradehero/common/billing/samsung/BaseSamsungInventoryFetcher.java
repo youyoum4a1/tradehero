@@ -31,7 +31,6 @@ abstract public class BaseSamsungInventoryFetcher<
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
-    protected List<SamsungSKUType> samsungSKUs;
     protected Map<SamsungSKUType, SamsungProductDetailType> inventory;
     private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
 
@@ -40,7 +39,6 @@ abstract public class BaseSamsungInventoryFetcher<
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
-        samsungSKUs = new ArrayList<>();
         inventory = new HashMap<>();
     }
 
@@ -56,16 +54,17 @@ abstract public class BaseSamsungInventoryFetcher<
 
     @Override public List<SamsungSKUType> getProductIdentifiers()
     {
-        return samsungSKUs;
+        throw new IllegalArgumentException("This list is not to be used on this class");
     }
 
     @Override public void setProductIdentifiers(List<SamsungSKUType> productIdentifiers)
     {
-        this.samsungSKUs = productIdentifiers;
+        throw new IllegalArgumentException("It is not necessary to set the identifiers on this one");
     }
 
     @Override public void fetchInventory(int requestCode)
     {
+        Timber.d("Fetching inventory");
         checkNotFetching();
         this.fetching = true;
         setRequestCode(requestCode);
@@ -82,6 +81,7 @@ abstract public class BaseSamsungInventoryFetcher<
 
     protected void fetchKnownItemGroups()
     {
+        Timber.d("fetchKnownItemGroups");
         remainingGroupIds = new LinkedList<>(getKnownItemGroups());
         fetchOneInRemainingItemGroups();
     }
@@ -102,6 +102,7 @@ abstract public class BaseSamsungInventoryFetcher<
 
     protected void fetchItemGroup(String groupId)
     {
+        Timber.d("FetchItemGroup %s", groupId);
         fetchingGroupId = groupId;
         mIapHelper.getItemList(
                 groupId,
@@ -113,9 +114,11 @@ abstract public class BaseSamsungInventoryFetcher<
 
     @Override public void onGetItem(ErrorVo errorVo, ArrayList<ItemVo> itemList)
     {
+        Timber.d("onGetItem error:%s count:%d", errorVo.dump(), itemList.size());
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
             addToInventory(fetchingGroupId, itemList);
+            notifyListenerFetched();
         }
         else
         {
@@ -130,6 +133,7 @@ abstract public class BaseSamsungInventoryFetcher<
             SamsungSKUType samsungSKU;
             for (ItemVo itemVo : itemList)
             {
+                Timber.d("Adding %s", itemVo.dump());
                 samsungSKU = createSamsungSku(groupId, itemVo.getItemId());
                 inventory.put(
                         samsungSKU,
@@ -147,8 +151,15 @@ abstract public class BaseSamsungInventoryFetcher<
         OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchSuccess(getRequestCode(), getProductIdentifiers(),
+            Timber.d("Notify listener");
+            listenerCopy.onInventoryFetchSuccess(
+                    getRequestCode(),
+                    new ArrayList<>(inventory.keySet()),
                     inventory);
+        }
+        else
+        {
+            Timber.d("Listener null");
         }
     }
 
@@ -158,7 +169,7 @@ abstract public class BaseSamsungInventoryFetcher<
         OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchFail(getRequestCode(), getProductIdentifiers(), exception);
+            listenerCopy.onInventoryFetchFail(getRequestCode(), null, exception);
         }
     }
 }

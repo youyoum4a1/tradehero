@@ -282,27 +282,6 @@ abstract public class THBaseBillingInteractor<
         request.purchaseRestorerListener = createPurchaseRestorerFinishedListener();
         request.purchaseFinishedListener = createPurchaseFinishedListener();
         request.purchaseReportedListener = createPurchaseReportedListener();
-
-        if (uiBillingRequest.domainToPresent != null)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-        }
-        else if (uiBillingRequest.restorePurchase)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-            request.fetchPurchase = true;
-            request.restorePurchase = true;
-        }
-        else if (uiBillingRequest.fetchInventory)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-        }
     }
     //</editor-fold>
 
@@ -621,6 +600,7 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
         {
+            Timber.d("Inventory fetched count %d", productIdentifiers.size());
             forgetListener(requestCode);
             handleInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
             notifyInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
@@ -628,6 +608,7 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
         {
+            Timber.e(exception, "inventory failed");
             forgetListener(requestCode);
             handleInventoryFetchFail(requestCode, productIdentifiers, exception);
             notifyInventoryFetchFail(requestCode, productIdentifiers, exception);

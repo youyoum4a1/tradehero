@@ -14,6 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
+import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCache;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
@@ -21,6 +22,7 @@ import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -43,15 +45,18 @@ public class THSamsungLogicHolderFull
 
     private SamsungSKUListCache samsungSkuListCache;
     private THSamsungProductDetailCache thskuDetailCache;
+    private THSamsungGroupItemCache groupItemCache;
 
     @Inject public THSamsungLogicHolderFull(UserProfileCache userProfileCache,
             UserServiceWrapper userServiceWrapper,
             HeroListCache heroListCache, SamsungSKUListCache samsungSkuListCache,
-            THSamsungProductDetailCache thskuDetailCache)
+            THSamsungProductDetailCache thskuDetailCache,
+            THSamsungGroupItemCache groupItemCache)
     {
         super(userProfileCache, userServiceWrapper, heroListCache);
         this.samsungSkuListCache = samsungSkuListCache;
         this.thskuDetailCache = thskuDetailCache;
+        this.groupItemCache = groupItemCache;
     }
 
      //<editor-fold desc="Life Cycle">
@@ -180,6 +185,55 @@ public class THSamsungLogicHolderFull
     //</editor-fold>
 
     //<editor-fold desc="Fetch Inventory">
+    @Override public void launchInventoryFetchSequence(int requestCode, List<SamsungSKU> allIds)
+    {
+        List<SamsungSKU> groupValues = allIds == null ? groupItemCache.get(THSamsungConstants.getItemGroupId()) : null;
+        boolean allIn = true;
+        if (groupValues != null)
+        {
+            for (SamsungSKU id : groupValues)
+            {
+                allIn &= groupValues.contains(id);
+            }
+        }
+        else
+        {
+            allIn = false;
+        }
+
+        Map<SamsungSKU, THSamsungProductDetail> details = thskuDetailCache.getMap(groupValues);
+        if (groupValues != null && details != null)
+        {
+            for (SamsungSKU id : groupValues)
+            {
+                allIn &= details.containsKey(id) && details.get(id) != null;
+            }
+        }
+        else
+        {
+            allIn = false;
+        }
+
+        if (allIn)
+        {
+            handleInventoryFetchedSuccess(requestCode, groupValues, details);
+        }
+        else
+        {
+            super.launchInventoryFetchSequence(requestCode, allIds);
+        }
+    }
+
+    @Override protected void handleInventoryFetchedSuccess(int requestCode, List<SamsungSKU> productIdentifiers, Map<SamsungSKU, THSamsungProductDetail> inventory)
+    {
+        groupItemCache.add(productIdentifiers);
+        if (inventory != null)
+        {
+            groupItemCache.add(inventory.keySet());
+        }
+        super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+    }
+
     @Override protected ProductDetailCache<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner> getProductDetailCache()
     {
         return thskuDetailCache;

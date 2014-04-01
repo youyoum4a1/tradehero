@@ -162,7 +162,7 @@ abstract public class BaseBillingLogicHolder<
                 launchProductIdentifierFetchSequence(requestCode);
                 launched = true;
             }
-            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
+            else if (billingRequest.fetchInventory)
             {
                 launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
                 launched = true;

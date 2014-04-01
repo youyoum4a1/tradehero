@@ -2,6 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,23 +38,23 @@ abstract public class ProductDetailCache<
 
     @Override public ProductDetailsType get(ProductIdentifierType key)
     {
-        Timber.d("THIABProductDetailCache get me " + me);
+        Timber.d("get me %d", me);
         return super.get(key);
     }
 
     @Override public ProductDetailsType put(ProductIdentifierType key, ProductDetailsType value)
     {
-        Timber.d("THIABProductDetailCache put me " + me);
+        Timber.d("put me %d", me);
         detailsTuner.fineTune(value);
         return super.put(key, value);
     }
 
     public HashMap<ProductIdentifierType, ProductDetailsType> put(Map<ProductIdentifierType, ProductDetailsType> inventory)
     {
-        Timber.d("THIABProductDetailCache putMap me " + me);
+        Timber.d("putMap me %d", me);
         if (inventory == null)
         {
-            Timber.d("THIABProductDetailCache putMap null me " + me);
+            Timber.d("putMap null me %d", me);
             return null;
         }
 
@@ -69,10 +70,10 @@ abstract public class ProductDetailCache<
 
     public List<ProductDetailsType> put(List<ProductDetailsType> values)
     {
-        Timber.d("THIABProductDetailCache putList me " + me);
+        Timber.d("putList me %d", me);
         if (values == null)
         {
-            Timber.d("THIABProductDetailCache putList null me " + me);
+            Timber.d("putList null me %d", me);
             return null;
         }
 
@@ -88,10 +89,10 @@ abstract public class ProductDetailCache<
 
     public List<ProductDetailsType> get(List<ProductIdentifierType> keys)
     {
-        Timber.d("THIABProductDetailCache getList me " + me);
+        Timber.d("getList me %d", me);
         if (keys == null)
         {
-            Timber.d("THIABProductDetailCache getList null me " + me);
+            Timber.d("getList null me %d", me);
             return null;
         }
 
@@ -103,5 +104,20 @@ abstract public class ProductDetailCache<
         }
 
         return skuDetails;
+    }
+
+    public HashMap<ProductIdentifierType, ProductDetailsType> getMap(Collection<ProductIdentifierType> ids)
+    {
+        if (ids == null)
+        {
+            return null;
+        }
+
+        HashMap<ProductIdentifierType, ProductDetailsType> map = new HashMap<>();
+        for (ProductIdentifierType id : ids)
+        {
+            map.put(id, get(id));
+        }
+        return map;
     }
 }

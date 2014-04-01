@@ -102,7 +102,24 @@ public class THSamsungBillingInteractor
     @Override protected void populateBillingRequest(THSamsungRequestFull request, THUISamsungRequest uiBillingRequest)
     {
         super.populateBillingRequest(request, uiBillingRequest);
-        // TODO add specific things for Samsung
+
+        if (uiBillingRequest.domainToPresent != null)
+        {
+            request.testBillingAvailable = true;
+            request.fetchInventory = true;
+        }
+        else if (uiBillingRequest.restorePurchase)
+        {
+            request.testBillingAvailable = true;
+            request.fetchInventory = true;
+            request.fetchPurchase = true;
+            request.restorePurchase = true;
+        }
+        else if (uiBillingRequest.fetchInventory)
+        {
+            request.testBillingAvailable = true;
+            request.fetchInventory = true;
+        }
     }
     //</editor-fold>
 

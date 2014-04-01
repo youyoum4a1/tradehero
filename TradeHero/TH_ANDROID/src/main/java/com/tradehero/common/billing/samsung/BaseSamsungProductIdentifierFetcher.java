@@ -105,6 +105,7 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
             addToSkus(fetchingGroupId, itemList);
+            notifyListenerFetched();
         }
         else
         {
