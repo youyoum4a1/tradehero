@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryCache;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 

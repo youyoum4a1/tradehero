@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.List;
 import javax.inject.Inject;
 

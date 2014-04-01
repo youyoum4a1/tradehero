@@ -21,7 +21,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;

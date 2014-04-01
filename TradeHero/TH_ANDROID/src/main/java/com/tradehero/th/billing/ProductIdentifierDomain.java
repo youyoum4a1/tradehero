@@ -1,7 +1,7 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.th.R;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 
 /**
  * Created by xavier on 3/18/14.

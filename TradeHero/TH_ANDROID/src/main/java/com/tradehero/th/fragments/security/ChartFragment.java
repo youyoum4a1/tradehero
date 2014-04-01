@@ -17,6 +17,8 @@ import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -41,6 +43,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Inject protected SecurityCompactCache securityCompactCache;
     @Inject protected Picasso picasso;
     @Inject protected ChartDTOFactory chartDTOFactory;
+    @Inject protected THLocalyticsSession localyticsSession;
     private Runnable chooseChartImageSizeTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -93,6 +96,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
+                localyticsSession.tagEvent(LocalyticsConstants.PickChart, selected, securityId);
                 linkWith(selected, true);
             }
         };
