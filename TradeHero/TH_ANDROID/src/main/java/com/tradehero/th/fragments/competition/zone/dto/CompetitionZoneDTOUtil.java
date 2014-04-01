@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -34,6 +35,7 @@ import timber.log.Timber;
         if (providerDTO != null)
         {
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
+
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
             if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.tradeNowBtnImageResId > 0)
             {
@@ -46,6 +48,14 @@ import timber.log.Timber;
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
+
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
+            if (providerDTO.hasAdvertisement())
+            {
+                int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
+                AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
+                preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));
+            }
 
             if (providerDTO.associatedPortfolio != null)
             {
