@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -338,6 +339,9 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleOtherView.class,
                         
                         AlertDialogUtil.class,
+                        MessageEraser.class,
+                        //alipay
+                        AlipayActivity.class,
                 },
         staticInjections =
                 {

@@ -32,19 +32,19 @@ public class THIABProductIdentifierFetcher
         // TODO hard-coded while there is nothing coming from the server.
         List<IABSKU> inAppIABSKUs = new ArrayList<>();
         List<IABSKU> subsIABSKUs = new ArrayList<>();
-        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T0_KEY));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T1_KEY));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T2_KEY));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_1));
+        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T0_KEY));//10k 10
+        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T1_KEY));//50k 11
+        inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T2_KEY));//100k 12
+        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_1));//2
         //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_5));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_10));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_20));
+        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_10));//1
+        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_20));//3
 
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_1));
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_5));
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_UNLIMITED));
+        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_1));//17
+        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_5));//18
+        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_UNLIMITED));//19
 
-        inAppIABSKUs.add(new IABSKU(THIABConstants.RESET_PORTFOLIO_0));
+        inAppIABSKUs.add(new IABSKU(THIABConstants.RESET_PORTFOLIO_0));//13
 
         availableProductIdentifiers.put(IABConstants.ITEM_TYPE_INAPP, inAppIABSKUs);
         availableProductIdentifiers.put(IABConstants.ITEM_TYPE_SUBS, subsIABSKUs);

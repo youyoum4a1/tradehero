@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="alipay_virtual_dollars_subject">Trade Hero Virtual Dollars</string>
+  <string name="alipay_follow_credits_subject">Trade Hero Follow Credits</string>
+  <string name="alipay_stock_alerts_subject">Trade Hero Stock Alerts</string>
+  <string name="alipay_reset_portfolio_subject">Trade Hero Reset Portfolio</string>
+  <array name="alipay_virtual_dollars_array">
+    <item>10 000 virtual dollars(¥6.00)</item>
+    <item>50 000 virtual dollars(¥18.00)</item>
+    <item>100 000 virtual dollars(¥30.00)</item>
+  </array>
+  <array name="alipay_follow_credits_array">
+    <item>1 point(¥12.00)</item>
+    <item>10 points(¥123.00)</item>
+    <item>20 points(¥238.00)</item>
+  </array>
+  <array name="alipay_stock_alerts_array">
+    <item>2 alerts(¥12.00)</item>
+    <item>5 alerts(¥30.00)</item>
+    <item>unlimited alerts(¥68.00)</item>
+  </array>
+  <array name="alipay_reset_portfolio_array">
+    <item>reset portfolio(¥12.00)</item>
+  </array>
+</resources>

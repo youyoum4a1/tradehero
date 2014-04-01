@@ -18,23 +18,31 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="com.android.vending.BILLING"/>
   <uses-permission android:name="android.permission.READ_CONTACTS"/>
   <!--tap stream-->
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
   <!-- BEGIN push notification permission -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
   <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+  <!--alipay-->
+  <uses-permission android:name="android.permission.SEND_SMS"/>
+  <uses-permission android:name="android.permission.READ_SMS"/>
+  <uses-permission android:name="com.ut.permission.DEVICE_STATE"/>
+  <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+  <uses-permission android:name="android.permission.READ_SETTINGS"/>
+  <permission android:name="com.ut.permission.DEVICE_STATE"/>
+
   <permission
       android:name="com.tradehero.th.permission.C2D_MESSAGE"
-      android:protectionLevel="signature" />
-  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE" />
+      android:protectionLevel="signature"/>
+  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>
 
 
   <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
@@ -85,11 +93,16 @@
         <!--<action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />-->
         <data android:host="tradehero" android:path="/view" android:scheme="http"/>
 
-        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending" android:pathPattern=".*"/>
-        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community" android:pathPattern=".*"/>
-        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile" android:pathPattern=".*"/>
-        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
-        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending"
+            android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community"
+            android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile"
+            android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio"
+            android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store"
+            android:pathPattern=".*"/>
 
       </intent-filter>
 
@@ -115,34 +128,92 @@
         android:launchMode="singleInstance"
         android:exported="true"/>
 
-    <activity
-        android:name="com.alipay.android.app.sdk.WapPayActivity"
-        android:screenOrientation="portrait" />
+    <!--<activity-->
+        <!--android:name="com.alipay.android.app.sdk.WapPayActivity"-->
+        <!--android:screenOrientation="portrait" />-->
     <activity
         android:name="com.tradehero.common.billing.alipay.AlipayActivity"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Translucent"
-        android:launchMode="singleInstance"/>
-        <!--android:exported="true"/>-->
+        />
+    <activity android:name="com.alipay.android.mini.window.sdk.MiniLaucherActivity"
+        android:configChanges="orientation"
+        android:excludeFromRecents="true"
+        android:launchMode="singleTop"
+        android:theme="@style/MspAppTheme">
+      <intent-filter>
+        <action android:name="com.alipay.mobilepay.android"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <meta-data
+          android:name="com.taobao.android.ski.NODERIVATION"
+          android:value="true"/>
+    </activity>
+    <activity
+        android:name="com.alipay.android.mini.window.sdk.TransContainer"
+        android:configChanges="orientation"
+        android:excludeFromRecents="true"
+        android:exported="false"
+        android:launchMode="singleTop"
+        android:theme="@style/MspAppTheme">
+      <meta-data
+          android:name="com.taobao.android.ski.NODERIVATION"
+          android:value="true"/>
+    </activity>
+    <activity
+        android:name="com.alipay.android.mini.window.sdk.MiniPayActivity"
+        android:configChanges="orientation"
+        android:excludeFromRecents="true"
+        android:exported="false"
+        android:label="@string/msp_app_name"
+        android:launchMode="singleTop"
+        android:screenOrientation="portrait"
+        android:theme="@style/MspAppTheme"
+        android:windowSoftInputMode="adjustResize">
+      <intent-filter android:priority="800">
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <meta-data
+          android:name="com.taobao.android.ski.NODERIVATION"
+          android:value="true"/>
+    </activity>
+    <activity
+        android:name="com.alipay.android.mini.window.sdk.MiniWebActivity"
+        android:configChanges="orientation|keyboardHidden|navigation"
+        android:excludeFromRecents="true"
+        android:exported="false"
+        android:launchMode="singleTop"
+        android:theme="@style/MspAppTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <meta-data
+          android:name="com.taobao.android.ski.NODERIVATION"
+          android:value="true"/>
+    </activity>
+    <service android:name="com.alipay.android.app.MspService"/>
+
     <meta-data
         android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 
     <!-- GCM -->
     <!-- REQUIRED for Urban Airship GCM-->
-    <receiver android:name="com.urbanairship.CoreReceiver" />
+    <receiver android:name="com.urbanairship.CoreReceiver"/>
     <receiver
         android:name="com.urbanairship.push.GCMPushReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
         <!-- MODIFICATION REQUIRED - Use your package name as the category -->
-        <category android:name="com.tradehero.th" />
+        <category android:name="com.tradehero.th"/>
       </intent-filter>
       <!-- REQUIRED for detecting when the application is upgraded so it can request a new GCM ID -->
       <intent-filter>
-        <action android:name="android.intent.action.PACKAGE_REPLACED" />
+        <action android:name="android.intent.action.PACKAGE_REPLACED"/>
         <data android:scheme="package"/>
       </intent-filter>
     </receiver>
@@ -152,7 +223,7 @@
         android:label="Push Notification Service"/>
     <service
         android:name="com.urbanairship.analytics.EventService"
-        android:label="Event Service" />
+        android:label="Event Service"/>
 
     <!-- This is required for persisting preferences related to push and location -->
     <!-- MODIFICATION REQUIRED - Use your package name + ".urbanairship.provider" in the android:authorities -->
@@ -160,17 +231,20 @@
         android:name="com.urbanairship.UrbanAirshipProvider"
         android:authorities="com.tradehero.th.urbanairship.provider"
         android:exported="false"
-        android:multiprocess="true" />
+        android:multiprocess="true"/>
 
     <!-- OPTIONAL (for segments support) -->
-    <service android:name="com.urbanairship.location.LocationService" android:label="Segments Service"/>
+    <service android:name="com.urbanairship.location.LocationService"
+        android:label="Segments Service"/>
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
-    <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver" />
+    <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
 
-    <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
-    <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>
+    <meta-data android:name="com.crashlytics.ApiKey"
+        android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
+    <meta-data android:name="LOCALYTICS_APP_KEY"
+        android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>
   </application>
 
 </manifest>

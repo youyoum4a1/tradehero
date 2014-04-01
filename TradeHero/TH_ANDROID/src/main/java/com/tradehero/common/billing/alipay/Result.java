@@ -78,7 +78,7 @@ public class Result {
 			sign = sign.replace("\"", "");
 
 			if (signType.equalsIgnoreCase("RSA")) {
-				retVal = Rsa.doCheck(signContent, sign, Constants.PUBLIC);
+				retVal = Rsa.doCheck(signContent, sign, Constants.ALIPAY_PUBLIC);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
