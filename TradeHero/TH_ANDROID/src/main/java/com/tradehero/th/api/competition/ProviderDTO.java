@@ -147,6 +147,11 @@ public class ProviderDTO implements DTO
         return providerIds;
     }
 
+    public boolean hasAdvertisement()
+    {
+        return advertisements != null && !advertisements.isEmpty();
+    }
+
     @JsonIgnore
     public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
     {

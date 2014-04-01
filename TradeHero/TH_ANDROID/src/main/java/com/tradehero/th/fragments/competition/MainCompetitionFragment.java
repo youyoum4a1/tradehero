@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -26,6 +27,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
@@ -37,6 +39,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
@@ -235,6 +238,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 getActivity().getLayoutInflater(),
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_trade_now,
+                R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item, R.layout.competition_zone_legal_mentions);
@@ -303,8 +307,23 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             pushLegalElement((CompetitionZoneLegalDTO) competitionZoneDTO);
         }
-
+        else if (competitionZoneDTO instanceof CompetitionZoneAdvertisementDTO)
+        {
+            pushAdvertisement((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
+        }
         // TODO others?
+    }
+
+    private void pushAdvertisement(CompetitionZoneAdvertisementDTO competitionZoneDTO)
+    {
+        AdDTO adDTO = competitionZoneDTO.getAdDTO();
+        if (adDTO != null && adDTO.redirectUrl != null)
+        {
+            Bundle args = new Bundle();
+            String url = adDTO.redirectUrl + String.format("&userId=%s", currentUserId.get());
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, url);
+            getNavigator().pushFragment(WebViewFragment.class, args);
+        }
     }
 
     private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
