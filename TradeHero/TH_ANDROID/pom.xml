@@ -53,10 +53,7 @@
       <version>1.0-SNAPSHOT</version>
       <type>apklib</type>
     </dependency>
-<<<<<<< HEAD
-=======
 
->>>>>>> fe421c677ca26649df20011d0f81215a4f4152bb
     <dependency>
       <groupId>com.jakewharton.timber</groupId>
       <artifactId>timber</artifactId>
