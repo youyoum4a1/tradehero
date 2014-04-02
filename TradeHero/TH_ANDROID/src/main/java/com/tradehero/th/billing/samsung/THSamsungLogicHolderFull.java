@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Handler;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
@@ -21,6 +22,7 @@ import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.dagger.ForUIThread;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -46,20 +48,23 @@ public class THSamsungLogicHolderFull
     private SamsungSKUListCache samsungSkuListCache;
     private THSamsungProductDetailCache thskuDetailCache;
     private THSamsungGroupItemCache groupItemCache;
+    protected Handler uiHandler;
 
     @Inject public THSamsungLogicHolderFull(UserProfileCache userProfileCache,
             UserServiceWrapper userServiceWrapper,
             HeroListCache heroListCache, SamsungSKUListCache samsungSkuListCache,
             THSamsungProductDetailCache thskuDetailCache,
-            THSamsungGroupItemCache groupItemCache)
+            THSamsungGroupItemCache groupItemCache,
+            @ForUIThread Handler uiHandler)
     {
         super(userProfileCache, userServiceWrapper, heroListCache);
         this.samsungSkuListCache = samsungSkuListCache;
         this.thskuDetailCache = thskuDetailCache;
         this.groupItemCache = groupItemCache;
+        this.uiHandler = uiHandler;
     }
 
-     //<editor-fold desc="Life Cycle">
+    //<editor-fold desc="Life Cycle">
     @Override protected THSamsungProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
     {
         return new THBaseSamsungProductIdentifierFetcherHolder();
@@ -138,6 +143,119 @@ public class THSamsungLogicHolderFull
     }
     //</editor-fold>
 
+    //<editor-fold desc="Launch Sequence Methods">
+    /**
+     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
+     * @param requestCode
+     */
+    @Override public void launchBillingAvailableTestSequence(final int requestCode)
+    {
+        uiHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                THSamsungLogicHolderFull.super.launchBillingAvailableTestSequence(requestCode);
+            }
+        });
+    }
+
+    /**
+     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
+     * @param requestCode
+     */
+    @Override public void launchProductIdentifierFetchSequence(final int requestCode)
+    {
+        uiHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                THSamsungLogicHolderFull.super.launchProductIdentifierFetchSequence(requestCode);
+            }
+        });
+    }
+
+    /**
+     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
+     * @param requestCode
+     * @param allIds
+     */
+    @Override public void launchInventoryFetchSequence(final int requestCode, final List<SamsungSKU> allIds)
+    {
+        List<SamsungSKU> groupValues = allIds == null ? groupItemCache.get(THSamsungConstants.getItemGroupId()) : null;
+        boolean allIn = true;
+        if (groupValues != null)
+        {
+            for (SamsungSKU id : groupValues)
+            {
+                allIn &= groupValues.contains(id);
+            }
+        }
+        else
+        {
+            allIn = false;
+        }
+
+        Map<SamsungSKU, THSamsungProductDetail> details = thskuDetailCache.getMap(groupValues);
+        if (groupValues != null && details != null)
+        {
+            for (SamsungSKU id : groupValues)
+            {
+                allIn &= details.containsKey(id) && details.get(id) != null;
+            }
+        }
+        else
+        {
+            allIn = false;
+        }
+
+        if (allIn)
+        {
+            handleInventoryFetchedSuccess(requestCode, groupValues, details);
+        }
+        else
+        {
+            uiHandler.post(new Runnable()
+            {
+                public void run()
+                {
+                    THSamsungLogicHolderFull.super.launchInventoryFetchSequence(requestCode, allIds);
+                }
+            });
+        }
+    }
+
+    /**
+     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
+     * @param requestCode
+     * @param purchaseOrder
+     */
+    @Override public void launchPurchaseSequence(final int requestCode, final THSamsungPurchaseOrder purchaseOrder)
+    {
+        uiHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                THSamsungLogicHolderFull.super.launchPurchaseSequence(requestCode, purchaseOrder);
+            }
+        });
+    }
+
+    /**
+     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
+     * @param requestCode
+     */
+    @Override public void launchFetchPurchaseSequence(final int requestCode)
+    {
+        uiHandler.post(new Runnable()
+        {
+            @Override public void run()
+            {
+                THSamsungLogicHolderFull.super.launchFetchPurchaseSequence(requestCode);
+            }
+        });
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Sequence Logic">
     @Override protected void prepareRequestForNextRunAfterPurchaseFetchedSuccess(int requestCode, List<THSamsungPurchase> purchases)
     {
@@ -185,45 +303,6 @@ public class THSamsungLogicHolderFull
     //</editor-fold>
 
     //<editor-fold desc="Fetch Inventory">
-    @Override public void launchInventoryFetchSequence(int requestCode, List<SamsungSKU> allIds)
-    {
-        List<SamsungSKU> groupValues = allIds == null ? groupItemCache.get(THSamsungConstants.getItemGroupId()) : null;
-        boolean allIn = true;
-        if (groupValues != null)
-        {
-            for (SamsungSKU id : groupValues)
-            {
-                allIn &= groupValues.contains(id);
-            }
-        }
-        else
-        {
-            allIn = false;
-        }
-
-        Map<SamsungSKU, THSamsungProductDetail> details = thskuDetailCache.getMap(groupValues);
-        if (groupValues != null && details != null)
-        {
-            for (SamsungSKU id : groupValues)
-            {
-                allIn &= details.containsKey(id) && details.get(id) != null;
-            }
-        }
-        else
-        {
-            allIn = false;
-        }
-
-        if (allIn)
-        {
-            handleInventoryFetchedSuccess(requestCode, groupValues, details);
-        }
-        else
-        {
-            super.launchInventoryFetchSequence(requestCode, allIds);
-        }
-    }
-
     @Override protected void handleInventoryFetchedSuccess(int requestCode, List<SamsungSKU> productIdentifiers, Map<SamsungSKU, THSamsungProductDetail> inventory)
     {
         groupItemCache.add(productIdentifiers);

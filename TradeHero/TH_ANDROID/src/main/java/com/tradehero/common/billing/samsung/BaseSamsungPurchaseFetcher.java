@@ -6,6 +6,7 @@ import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
+import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         SamsungExceptionType>
 {
     public static final int FIRST_ITEM_NUM = 1;
+    public static final String FIRST_DATE = "20140101";
 
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
@@ -84,7 +86,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         mIapHelper.getItemInboxList(
                 groupId,
                 FIRST_ITEM_NUM, Integer.MAX_VALUE,
-                "", "",
+                FIRST_DATE, THSamsungConstants.getTodayStringForInbox(),
                 this);
     }
 
