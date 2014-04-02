@@ -19,6 +19,47 @@
       />
 
   <RelativeLayout
+      android:id="@+id/portfolio_selector_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:visibility="visible"
+      android:background="#80F3F3F3"
+      >
+
+    <TextView
+        android:id="@+id/selected_title_anchor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/buy_sell_portfolio_selected_title"
+        android:textSize="16sp"
+        />
+
+    <ImageView
+        android:id="@+id/portfolio_drop_down_hint"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="8dp"
+        android:src="@drawable/expand"
+        android:rotation="90"
+        />
+
+    <TextView
+        android:id="@+id/portfolio_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_toLeftOf="@id/portfolio_drop_down_hint"
+        android:layout_toRightOf="@id/selected_title_anchor"
+        tools:text="Main Portfolio"
+        android:textSize="16sp"
+        />
+
+  </RelativeLayout>
+
+  <RelativeLayout
       android:id="@+id/chart_frame"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -265,46 +306,5 @@
         />
 
   </RelativeLayout>
-
-  <!--<RelativeLayout-->
-  <!--android:id="@+id/portfolio_selector_container"-->
-  <!--android:layout_width="match_parent"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:padding="8dp"-->
-  <!--android:visibility="visible"-->
-  <!--android:background="#80F3F3F3"-->
-  <!-->-->
-
-  <!--<TextView-->
-  <!--android:id="@+id/selected_title_anchor"-->
-  <!--android:layout_width="wrap_content"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_alignParentLeft="true"-->
-  <!--android:text="@string/buy_sell_portfolio_selected_title"-->
-  <!--android:textSize="16sp"-->
-  <!--/>-->
-
-  <!--<ImageView-->
-  <!--android:id="@+id/portfolio_drop_down_hint"-->
-  <!--android:layout_width="16dp"-->
-  <!--android:layout_height="16dp"-->
-  <!--android:layout_alignParentRight="true"-->
-  <!--android:layout_marginLeft="8dp"-->
-  <!--android:src="@drawable/expand"-->
-  <!--android:rotation="90"-->
-  <!--/>-->
-
-  <!--<TextView-->
-  <!--android:id="@+id/portfolio_selected"-->
-  <!--android:layout_width="wrap_content"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_marginLeft="16dp"-->
-  <!--android:layout_toLeftOf="@id/portfolio_drop_down_hint"-->
-  <!--android:layout_toRightOf="@id/selected_title_anchor"-->
-  <!--tools:text="Main Portfolio"-->
-  <!--android:textSize="16sp"-->
-  <!--/>-->
-
-  <!--</RelativeLayout>-->
 
 </LinearLayout>
