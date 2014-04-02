@@ -10,7 +10,13 @@ public class FollowerSummaryDTO implements DTO
 
     public List<UserFollowerDTO> userFollowers;
     public double totalRevenue;
+    //TODO
     public HeroPayoutSummaryDTO payoutSummary;
+
+
+    public int paidFollowerCount;
+
+    public int freeFollowerCount;
 
     public FollowerSummaryDTO()
     {

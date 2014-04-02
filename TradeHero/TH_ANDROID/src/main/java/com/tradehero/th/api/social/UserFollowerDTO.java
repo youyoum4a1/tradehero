@@ -12,6 +12,8 @@ public class UserFollowerDTO extends UserProfileCompactDTO implements DTO
     public List<FollowerTransactionDTO> followerTransactions;
     public double totalRevenue;
 
+    //TODO fake data,whether this follower paid money to follow me
+    public boolean paidFollower;
     public UserFollowerDTO()
     {
         super();

@@ -18,6 +18,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -27,6 +28,8 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.social.HeroCache;
 import dagger.Lazy;
 import java.text.MessageFormat;
@@ -37,12 +40,68 @@ import retrofit.client.Response;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
 public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/
 {
+
+    public static class HeroTypeExt
+    {
+        public final int titleRes;
+        public final HeroType heroType;
+        public final int pageIndex;
+
+        public HeroTypeExt(int titleRes, HeroType followerType,int pageIndex)
+        {
+            this.titleRes = titleRes;
+            this.heroType = followerType;
+            this.pageIndex = pageIndex;
+        }
+
+        public static HeroTypeExt[] getSortedList()
+        {
+            HeroType[] arr = HeroType.values();
+            int len = arr.length;
+            HeroTypeExt[] result = new HeroTypeExt[arr.length];
+
+            for(int i=0;i< len;i++){
+                int typeId = arr[i].typeId;
+                if (typeId== HeroType.PREMIUM.typeId){
+                    result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_premium,
+                            HeroType.PREMIUM,0);
+                }else if (typeId== HeroType.FREE.typeId){
+                    result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_free, HeroType.FREE,1);
+                }else if (typeId== HeroType.ALL.typeId){
+                    result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_all, HeroType.ALL,2);
+                }
+            }
+            return result;
+        }
+
+        public static HeroTypeExt fromIndex(HeroTypeExt[] arr,int pageIndex)
+        {
+            for (HeroTypeExt type:arr)
+            {
+                if (type.pageIndex == pageIndex)
+                {
+                    return type;
+                }
+            }
+            return null;
+
+        }
+
+    }
+
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
     /**
      * We are showing the heroes of this follower
      */
     public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
+    /**categories of hero:premium,free,all*/
+    private HeroTypeExt[] heroTypes;
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        heroTypes = HeroTypeExt.getSortedList();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -59,32 +118,38 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
 
 
     private void addTabs() {
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         //actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
-        Fragment f0 = new HerosTabContentFragment(0);
-        f0.setArguments(getArguments());
-
-        Fragment f1 = new HerosTabContentFragment(1);
-        f1.setArguments(getArguments());
-
-        Fragment f2 = new HerosTabContentFragment(2);
-        f2.setArguments(getArguments());
-
-
-        ////Action Bar Tab must have a Callback
-        actionBar.addTab(actionBar.newTab().setText(MessageFormat.format(getSherlockActivity().getString(
-                R.string.leaderboard_community_hero_premium),0)).setTabListener(
-                new TabListener(f0)));
-        actionBar.addTab(actionBar.newTab().setText(MessageFormat.format(
-                getSherlockActivity().getString(R.string.leaderboard_community_hero_free),
-                0)).setTabListener(
-                new TabListener(f1)));
-        actionBar.addTab(actionBar.newTab().setText(MessageFormat.format(
-                getSherlockActivity().getString(R.string.leaderboard_community_hero_all),
-                0)).setTabListener(
-                new TabListener(f2)));
+        HeroTypeExt[] types = heroTypes;
+        for (HeroTypeExt type:types)
+        {
+            HerosTabContentFragment fragment = null;
+            switch (type.heroType)
+            {
+                case PREMIUM:
+                    fragment = new PrimiumHeroFragment(type.pageIndex,type.heroType);
+                    break;
+                case FREE:
+                    fragment = new FreeHeroFragment(type.pageIndex,type.heroType);
+                    break;
+                case ALL:
+                    fragment = new AllHeroFragment(type.pageIndex,type.heroType);
+                    break;
+                default:
+                    break;
+            }
+            fragment.setArguments(getArguments());
+            //fragment.setOnFollowersLoadedListener(onFollowersLoadedListener);
+            //Action Bar Tab must have a Callback
+            ActionBar.Tab tab = actionBar.newTab().setTabListener(
+                    new TabListener(fragment));
+            tab.setTag(type.heroType.typeId);
+            setTabTitle(tab, type.titleRes, 0);
+            actionBar.addTab(tab);
+        }
 
     }
 
@@ -93,6 +158,13 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.removeAllTabs();
+    }
+
+    private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
+    {
+        String title;
+        title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
+        tab.setText(title);
     }
 
     /**
@@ -159,15 +231,45 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
 
     }
 
+
+    public static class PrimiumHeroFragment extends HerosTabContentFragment
+    {
+
+        public PrimiumHeroFragment(int page,HeroType heroType)
+        {
+            super(page,heroType);
+        }
+    }
+
+    public static class FreeHeroFragment extends HerosTabContentFragment
+    {
+
+        public FreeHeroFragment(int page,HeroType heroType)
+        {
+            super(page,heroType);
+        }
+    }
+
+    public static class AllHeroFragment extends HerosTabContentFragment
+    {
+
+        public AllHeroFragment(int page,HeroType heroType)
+        {
+            super(page,heroType);
+        }
+    }
+
     /**
      *
      */
     public static class HerosTabContentFragment extends BasePurchaseManagerFragment {
 
         private int page;
-        public HerosTabContentFragment(int page)
+        private HeroType heroType;
+        public HerosTabContentFragment(int page,HeroType heroType)
         {
             this.page = page;
+            this.heroType = heroType;
         }
 
         private HeroManagerViewContainer viewContainer;
@@ -278,8 +380,17 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             super.onResume();
             this.followerId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWER_ID));
             displayProgress(true);
-            this.infoFetcher.fetch(this.followerId);
+
+            this.infoFetcher.fetch(this.followerId,getHeroType());
         }
+
+        private HeroType getHeroType()
+        {
+            return this.heroType;
+        }
+
+
+
 
         @Override public void onPause()
         {
@@ -460,7 +571,7 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
                         HerosTabContentFragment.this.linkWith(userProfileDTO, true);
                         if (HerosTabContentFragment.this.infoFetcher != null)
                         {
-                            HerosTabContentFragment.this.infoFetcher.fetchHeroes(HerosTabContentFragment.this.followerId);
+                            HerosTabContentFragment.this.infoFetcher.fetchHeroes(HerosTabContentFragment.this.followerId,getHeroType());
                         }
                     }
                 };
@@ -484,16 +595,20 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             }
         }
 
-        private class HeroManagerHeroListCacheListener implements DTOCache.Listener<UserBaseKey, HeroIdList>
+        private class HeroManagerHeroListCacheListener implements DTOCache.Listener<HeroKey, HeroIdExtWrapper>
         {
-            @Override public void onDTOReceived(UserBaseKey key, HeroIdList value, boolean fromCache)
+            @Override public void onDTOReceived(HeroKey key, HeroIdExtWrapper value, boolean fromCache)
             {
                 //displayProgress(false);
                 setListShown(true);
+
+                HeroIdExtWrapper heroIdExtWrapper = heroCache.get().get(value);
+
+                
                 display(heroCache.get().get(value));
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(HeroKey key, Throwable error)
             {
                 displayProgress(false);
                 setListShown(false);
