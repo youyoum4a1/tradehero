@@ -30,7 +30,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
         implements WithTutorial
@@ -120,22 +119,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
                 userInteractor.conditionalPopBuyVirtualDollars();
-                showBuyDialog(position);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
                 userInteractor.conditionalPopBuyFollowCredits();
-                showBuyDialog(position);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
                 userInteractor.conditionalPopBuyStockAlerts();
-                showBuyDialog(position);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
                 userInteractor.conditionalPopBuyResetPortfolio();
-                showBuyDialog(position);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
@@ -152,56 +147,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 THToast.show("Clicked at position " + position);
                 break;
         }
-    }
-
-    private void showBuyDialog(int type)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        int array = 0;
-        mAlipayType = type;
-        switch (type)
-        {
-            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                array = R.array.alipay_virtual_dollars_array;
-                break;
-            case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                array = R.array.alipay_follow_credits_array;
-                break;
-            case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                array = R.array.alipay_stock_alerts_array;
-                break;
-            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                array = R.array.alipay_reset_portfolio_array;
-                break;
-        }
-        builder.setTitle(R.string.app_name)
-                .setItems(getResources().getStringArray(array),
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                final int position = which;
-                                new Thread()
-                                {
-                                    @Override
-                                    public void run()
-                                    {
-                                        startAlipay(position);
-                                    }
-                                }.start();
-                            }
-                        });
-        builder.create().show();
-    }
-
-    private void startAlipay(int position)
-    {
-        Timber.d("lyl startAlipay type=%d position=%d", mAlipayType, position);
-
-        Intent intent = new Intent(getSherlockActivity(), AlipayActivity.class);
-        intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, mAlipayType);
-        intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, position);
-        getSherlockActivity().startActivity(intent);
     }
 
     private void pushStockAlertFragment()

@@ -11,18 +11,27 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.StoreItemAdapter;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import timber.log.Timber;
 
@@ -33,14 +42,25 @@ public class AlipayActivity extends Activity
 {
     public static String ALIPAY_TYPE_KEY = "alipay_type_key";
     public static String ALIPAY_POSITION_KEY = "alipay_position_key";
+    public static String ALIPAY_PORTFOLIO_ID_KEY = "portfolioId";
+    public static String ALIPAY_PRODUCT_ID_KEY = "productId";
+    public static String ALIPAY_ERROR_CODE_CANCELED_BY_USER = "6001";
+    public static String ALIPAY_ERROR_CODE_SUCCESS = "9000";
     private int mType = 0;
     private int mPosition = 0;
-    private String PRICE[][] = {{"0.01", "0.02", "0.03"}, {"0.01", "0.02", "0.03"}, {"0.01", "0.02", "0.03"}, {"0.01"}};
+    private String mOrderId = "";
+    private OwnedPortfolioId mPortfolioId;
+    private String PRICE[][] =
+            {{"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"},
+                    {"0.01"}};
     //private int PRICE[][] = {{6, 18, 30}, {12, 123, 238}, {12, 30, 68}, {12}};
-    public static int ORDER_ID[][] = {{10, 11, 12}, {2, 1, 3}, {17, 18, 19}, {13}};
+    public static int PRODUCT_ID[][] = {{10, 11, 12}, {2, 1, 3}, {17, 18, 19}, {13}};
 
     @Inject CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected PortfolioCompactCache portfolioCompactCache;
+    @Inject protected PortfolioCache portfolioCache;
+    @Inject protected UserProfileCache userProfileCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -79,28 +99,8 @@ public class AlipayActivity extends Activity
         }.start();
     }
 
-    //private void beginAlipay(int type)
-    //{
-    //    Timber.d("lyl beginAlipay");
-    //    String info = getNewOrderInfo();
-    //    String sign = Rsa.sign(info, Constants.ALIPAY_PRIVATE);
-    //    sign = URLEncoder.encode(sign);
-    //    info += "&sign=\"" + sign + "\"&" + "sign_type=\"RSA\"";
-    //    Timber.d("lyl info=%s", info);
-
-    //AliPay alipay = new AliPay(this, mHandler);
-    //String result = alipay.pay(info);
-    //Timber.d("lyl result=%s", result);
-
-    //Message msg = new Message();
-    //msg.what = 1;//RQF_PAY;
-    //msg.obj = result;
-    //mHandler.sendMessage(msg);
-    //}
-
     private void beginAlipay()
     {
-        Timber.d("lyl beginAlipay");
         PayTask.initialization(getApplicationContext(), Constants.ALIPAY_DEFAULT_PARTNER);
         String info = getNewOrderInfo();
         String sign = Rsa.sign(info, Constants.ALIPAY_PRIVATE);
@@ -113,43 +113,90 @@ public class AlipayActivity extends Activity
         intent.setAction("com.alipay.mobilepay.android");
         intent.putExtra("order_info", info);
         startActivityForResult(intent, 0);
-
-        //PayTask payTask = new PayTask(this, new PayTask.OnPayListener() {
-        //    @Override
-        //    public void onPaySuccess(Context context, String resultStatus,
-        //            String memo, String result) {
-        //        Timber.d("lyl :)");
-        //    }
-        //
-        //    @Override
-        //    public void onPayFailed(Context context, String resultStatus,
-        //            String memo, String result) {
-        //        Timber.d("lyl :(");
-        //    }
-        //});
-        //payTask.initialization(getApplicationContext(), Constants.ALIPAY_DEFAULT_PARTNER);
-        //payTask.execute(info);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int result, Intent data)
     {
         super.onActivityResult(requestCode, result, data);
-
-        Timber.d("lyl onActivityResult requestCode=%d result=%d", requestCode, result);
-
         if (data != null)
         {
-            String action = data.getAction();
+            //String action = data.getAction();
             String resultStatus = data.getStringExtra("resultStatus");
-            String memo = data.getStringExtra("memo");
-            String resultString = data.getStringExtra("result");
-            Toast.makeText(getApplicationContext(), "action = [" + action
-                    + "], resultStatus = " + resultStatus + ", memo = [" + memo
-                    + "], result = [" + resultString + "]", Toast.LENGTH_LONG).show();
-            Timber.d("lyl onActivityResult resultStatus=%s memo=%s resultString=%s"
-                    , resultStatus, memo, resultString);
+            //String memo = data.getStringExtra("memo");
+            //String resultString = data.getStringExtra("result");
+            //Toast.makeText(getApplicationContext(), "action = [" + action
+            //        + "], resultStatus = " + resultStatus + ", memo = [" + memo
+            //        + "], result = [" + resultString + "]", Toast.LENGTH_LONG).show();
+            Timber.d("lyl onActivityResult resultStatus=%s", resultStatus);
+            if (resultStatus.contains(ALIPAY_ERROR_CODE_CANCELED_BY_USER))
+            {
+                Toast.makeText(getApplicationContext(), R.string.alipay_cancel, Toast.LENGTH_LONG)
+                        .show();
+            }
+            else if (resultStatus.contains(ALIPAY_ERROR_CODE_SUCCESS))
+            {
+                Toast.makeText(getApplicationContext(), R.string.alipay_success, Toast.LENGTH_LONG)
+                        .show();
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        checkWithServer();
+                    }
+                }.start();
+            }
+        }
+    }
+
+    private void checkWithServer()
+    {
+        String url = "https://www.tradehero.mobi/api/alipay/order/" + mOrderId;
+        String resultStr = "";
+        HttpClient httpClient = new DefaultHttpClient();
+
+        HttpGet httpGet = new HttpGet(url);
+        try
+        {
+            httpGet.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+            HttpResponse response;
+            response = httpClient.execute(httpGet);
+            resultStr = EntityUtils.toString(response.getEntity());
+            Timber.d("lyl resultStr=%s", resultStr);
+
+            //portfolioCompactCache.invalidate(mPortfolioId);
+            switch (mType)
+            {
+                case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
+                    portfolioCache.invalidate(mPortfolioId);//update portfolioId's detail
+                    break;
+                case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
+                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
+                    break;
+                case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
+                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
+                    break;
+                case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
+                    portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());//update portfolio list
+                    break;
+            }
+            if (resultStr.contains("\"status\"=2"))
+            {
+            }
             finish();
+        } catch (UnsupportedEncodingException e)
+        {
+            Timber.d("lyl UnsupportedEncodingException");
+            e.printStackTrace();
+        } catch (ClientProtocolException e)
+        {
+            Timber.d("lyl ClientProtocolException");
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            Timber.d("lyl IOException");
+            e.printStackTrace();
         }
     }
 
@@ -180,7 +227,7 @@ public class AlipayActivity extends Activity
         sb.append("body");
         sb.append("\"&total_fee=\"");
         //sb.append("0.01");
-        sb.append(PRICE[mType-1][mPosition]);
+        sb.append(PRICE[mType - 1][mPosition]);
         sb.append("\"&notify_url=\"");
 
         // 网址需要做URL编码
@@ -203,23 +250,38 @@ public class AlipayActivity extends Activity
 
     private String getOrderId()
     {
-
         OwnedPortfolioId portfolioId = portfolioCompactListCache.getDefaultPortfolio(
                 currentUserId.toUserBaseKey());
-        Timber.d("lyl portfolioId=%s", portfolioId.portfolioId.toString());
-        String url = "https://www.tradehero.mobi/api/alipay/createOrder/" + String.valueOf(ORDER_ID[mType-1][mPosition]);
+        if (portfolioId != null)
+        {
+            Timber.d("lyl portfolioId=%s", portfolioId.portfolioId.toString());
+            mPortfolioId = portfolioId;
+        }
+        String url = "https://www.tradehero.mobi/api/alipay/createOrder";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair(ALIPAY_PRODUCT_ID_KEY,
+                String.valueOf(PRODUCT_ID[mType - 1][mPosition])));
+        switch (mType)
+        {
+            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
+            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
+                nameValuePairs.add(new BasicNameValuePair(ALIPAY_PORTFOLIO_ID_KEY,
+                        portfolioId.portfolioId.toString()));
+                break;
+        }
 
         String resultStr = "";
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpClient = new DefaultHttpClient();
 
-        HttpPost httppost = new HttpPost(url);
+        HttpPost httpPost = new HttpPost(url);
         try
         {
-            httppost.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+            httpPost.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response;
-            response = httpclient.execute(httppost);
+            response = httpClient.execute(httpPost);
             resultStr = EntityUtils.toString(response.getEntity());
-            Timber.d("lyl orderId=%s", resultStr);
         } catch (UnsupportedEncodingException e)
         {
             Timber.d("lyl UnsupportedEncodingException");
@@ -234,7 +296,7 @@ public class AlipayActivity extends Activity
             e.printStackTrace();
         }
 
+        mOrderId = resultStr;
         return resultStr;
     }
-
 }

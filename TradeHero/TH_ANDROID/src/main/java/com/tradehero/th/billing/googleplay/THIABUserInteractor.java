@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OnBillingAvailableListener;
+import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
@@ -31,6 +33,7 @@ import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.ShowProductDetailsMilestone;
 import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.fragments.billing.StoreSKUDetailView;
 import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
@@ -43,6 +46,7 @@ import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -51,35 +55,36 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
- * It expects its Activity to implement THIABInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
+ * It expects its Activity to implement THIABInteractor. Created with IntelliJ IDEA. User: xavier
+ * Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates.
+ */
 public class THIABUserInteractor
-    extends
+        extends
         THBaseBillingInteractor<
-        IABSKUListType,
-        IABSKU,
-        THIABProductDetail,
-        THIABPurchaseOrder,
-        THIABOrderId,
-        THIABPurchase,
-        THIABLogicHolder,
-        StoreSKUDetailView,
-        THSKUDetailsAdapter,
-        BillingPurchaser.OnPurchaseFinishedListener<
+                IABSKUListType,
                 IABSKU,
+                THIABProductDetail,
                 THIABPurchaseOrder,
                 THIABOrderId,
                 THIABPurchase,
-                IABException>,
-        THIABPurchaserHolder,
-        PurchaseReporter.OnPurchaseReportedListener<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>,
-        THIABPurchaseReporterHolder,
-        IABException>
-    implements THIABInteractor
+                THIABLogicHolder,
+                StoreSKUDetailView,
+                THSKUDetailsAdapter,
+                BillingPurchaser.OnPurchaseFinishedListener<
+                        IABSKU,
+                        THIABPurchaseOrder,
+                        THIABOrderId,
+                        THIABPurchase,
+                        IABException>,
+                THIABPurchaserHolder,
+                PurchaseReporter.OnPurchaseReportedListener<
+                        IABSKU,
+                        THIABOrderId,
+                        THIABPurchase,
+                        IABException>,
+                THIABPurchaseReporterHolder,
+                IABException>
+        implements THIABInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THIABUserInteractor.class.getName() + ".action";
     public static final int ACTION_RESET_PORTFOLIO = 1;
@@ -92,14 +97,17 @@ public class THIABUserInteractor
     @Inject LocalyticsSession localyticsSession;
 
     protected THIABPurchaseRestorer purchaseRestorer;
-    protected BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
+    protected
+    BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>
+            inventoryFetchedForgetListener;
 
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-        IABSKU,
-        THIABOrderId,
-        THIABPurchase,
-        IABException> consumptionFinishedListener;
-    protected THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+            IABSKU,
+            THIABOrderId,
+            THIABPurchase,
+            IABException> consumptionFinishedListener;
+    protected THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener
+            purchaseRestorerFinishedListener;
 
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<UserService> userService;
@@ -136,73 +144,84 @@ public class THIABUserInteractor
 
         if (consumptionFinishedListener == null)
         {
-            consumptionFinishedListener = new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
-            {
-                @Override public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
-                {
-                    haveLogicHolderForget(requestCode);
-                    runOnPurchaseComplete = null;
-                    Timber.e("Failed to consume purchase", exception);
-                    if (progressDialog != null)
+            consumptionFinishedListener =
+                    new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
                     {
-                        progressDialog.hide();
-                    }
-                    Context currentContext = currentActivityHolder.getCurrentContext();
-                    if (currentContext != null)
-                    {
-                        THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
-                    }
-                }
+                        @Override
+                        public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase,
+                                IABException exception)
+                        {
+                            haveLogicHolderForget(requestCode);
+                            runOnPurchaseComplete = null;
+                            Timber.e("Failed to consume purchase", exception);
+                            if (progressDialog != null)
+                            {
+                                progressDialog.hide();
+                            }
+                            Context currentContext = currentActivityHolder.getCurrentContext();
+                            if (currentContext != null)
+                            {
+                                THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(
+                                        currentContext, exception);
+                            }
+                        }
 
-                @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
-                {
-                    haveLogicHolderForget(requestCode);
-                    handlePurchaseConsumed(purchase);
-                }
-            };
+                        @Override
+                        public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
+                        {
+                            haveLogicHolderForget(requestCode);
+                            handlePurchaseConsumed(purchase);
+                        }
+                    };
         }
 
         if (purchaseRestorerFinishedListener == null)
         {
-            purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
-            {
-                @Override
-                public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
-                {
-                    Timber.d("onPurchaseRestoreFinished3");
-                    if (progressDialog != null)
+            purchaseRestorerFinishedListener =
+                    new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
                     {
-                        progressDialog.hide();
-                    }
+                        @Override
+                        public void onPurchaseRestoreFinished(List<THIABPurchase> consumed,
+                                List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
+                        {
+                            Timber.d("onPurchaseRestoreFinished3");
+                            if (progressDialog != null)
+                            {
+                                progressDialog.hide();
+                            }
 
-                    Context currentContext = currentActivityHolder.getCurrentContext();
-                    if (currentContext != null)
-                    {
-                        IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                                currentContext,
-                                consumed,
-                                reportFailed,
-                                consumeFailed,
-                                IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, new Exception()),
-                                true); // TODO have a better exception
-                    }
-                }
+                            Context currentContext = currentActivityHolder.getCurrentContext();
+                            if (currentContext != null)
+                            {
+                                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                                        currentContext,
+                                        consumed,
+                                        reportFailed,
+                                        consumeFailed,
+                                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(
+                                                currentContext, new Exception()),
+                                        true); // TODO have a better exception
+                            }
+                        }
 
-                @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-                {
-                    Timber.d("onPurchaseRestoreFinished2");
-                }
+                        @Override
+                        public void onPurchaseRestoreFinished(List<THIABPurchase> consumed,
+                                List<THIABPurchase> consumeFailed)
+                        {
+                            Timber.d("onPurchaseRestoreFinished2");
+                        }
 
-                @Override public void onPurchaseRestoreFailed(IABException iabException)
-                {
-                    Timber.e(iabException, "onPurchaseRestoreFailed");
-                    Context currentContext = currentActivityHolder.getCurrentContext();
-                    if (currentContext != null)
-                    {
-                        IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(currentContext, iabException);
-                    }
-                }
-            };
+                        @Override public void onPurchaseRestoreFailed(IABException iabException)
+                        {
+                            Timber.e(iabException, "onPurchaseRestoreFailed");
+                            Context currentContext = currentActivityHolder.getCurrentContext();
+                            if (currentContext != null)
+                            {
+                                IABPurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(
+                                        currentContext, iabException);
+                            }
+                        }
+                    };
         }
 
         if (followCallback == null)
@@ -211,12 +230,14 @@ public class THIABUserInteractor
         }
     }
 
-    @Override protected BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> createPurchaseFinishedListener()
+    @Override
+    protected BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException> createPurchaseFinishedListener()
     {
         return new THIABUserInteractorOnPurchaseFinishedListener();
     }
 
-    @Override protected PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseReportedListener()
+    @Override
+    protected PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> createPurchaseReportedListener()
     {
         return new THIABUserInteractorOnPurchaseReportedListener();
     }
@@ -255,8 +276,8 @@ public class THIABUserInteractor
     }
     //</editor-fold>
 
-
-    @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, StoreSKUDetailView, THSKUDetailsAdapter> getBillingAlertDialogUtil()
+    @Override
+    protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, StoreSKUDetailView, THSKUDetailsAdapter> getBillingAlertDialogUtil()
     {
         return THIABAlertDialogUtil;
     }
@@ -280,14 +301,18 @@ public class THIABUserInteractor
         throw new IllegalStateException("Not implemented");
     }
 
-    @Override protected OnBillingAvailableListener<IABException> createPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId ownedPortfolioId)
+    @Override
+    protected OnBillingAvailableListener<IABException> createPurchaseVirtualDollarWhenAvailableListener(
+            OwnedPortfolioId ownedPortfolioId)
     {
         return new THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener(ownedPortfolioId);
     }
 
-    protected class THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener extends THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener
+    protected class THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener
+            extends THBaseBillingInteractorPurchaseVirtualDollarWhenAvailableListener
     {
-        public THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener(OwnedPortfolioId portfolioId)
+        public THIABUserInteractorPurchaseVirtualDollarWhenAvailableListener(
+                OwnedPortfolioId portfolioId)
         {
             super(portfolioId);
         }
@@ -299,17 +324,17 @@ public class THIABUserInteractor
     }
     //</editor-fold>
 
-
-
     protected void createFollowCallback()
     {
-        followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
+        followCallback =
+                new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
     }
 
     protected boolean hadErrorLoadingInventory()
     {
         THIABLogicHolder billingActorCopy = this.billingActor;
-        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder().hadErrorLoadingInventory();
+        return billingActorCopy != null && billingActorCopy.getInventoryFetcherHolder()
+                .hadErrorLoadingInventory();
     }
 
     //<editor-fold desc="THIABInteractor">
@@ -340,19 +365,27 @@ public class THIABUserInteractor
                     .setTitle(R.string.store_billing_error_loading_window_title)
                     .setMessage(R.string.store_billing_error_loading_window_description)
                     .setCancelable(true)
-                    .setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialogInterface, int i)
-                        {
-                            if (inventoryFetchedForgetListener == null)
+                    .setPositiveButton(R.string.store_billing_error_loading_act,
+                            new DialogInterface.OnClickListener()
                             {
-                                inventoryFetchedForgetListener = createForgetFetchedListener();
-                            }
-                            int requestCode = getBillingLogicHolder().getUnusedRequestCode();
-                            getBillingLogicHolder().getInventoryFetcherHolder().registerInventoryFetchedListener(requestCode, inventoryFetchedForgetListener);
-                            getBillingLogicHolder().getInventoryFetcherHolder().launchInventoryFetchSequence(requestCode, new ArrayList<IABSKU>());
-                        }
-                    });
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i)
+                                {
+                                    if (inventoryFetchedForgetListener == null)
+                                    {
+                                        inventoryFetchedForgetListener =
+                                                createForgetFetchedListener();
+                                    }
+                                    int requestCode =
+                                            getBillingLogicHolder().getUnusedRequestCode();
+                                    getBillingLogicHolder().getInventoryFetcherHolder()
+                                            .registerInventoryFetchedListener(requestCode,
+                                                    inventoryFetchedForgetListener);
+                                    getBillingLogicHolder().getInventoryFetcherHolder()
+                                            .launchInventoryFetchSequence(requestCode,
+                                                    new ArrayList<IABSKU>());
+                                }
+                            });
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
@@ -363,12 +396,16 @@ public class THIABUserInteractor
     {
         return new BillingInventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
+            @Override
+            public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers,
+                    Map<IABSKU, THIABProductDetail> inventory)
             {
                 getBillingLogicHolder().forgetRequestCode(requestCode);
             }
 
-            @Override public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers, IABException exception)
+            @Override
+            public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers,
+                    IABException exception)
             {
                 getBillingLogicHolder().forgetRequestCode(requestCode);
             }
@@ -378,7 +415,16 @@ public class THIABUserInteractor
     //<editor-fold desc="Pop SKU list">
     public void conditionalPopBuyVirtualDollars()
     {
-        conditionalPopBuyVirtualDollars(null);
+        String language = Locale.getDefault().getLanguage();
+        Timber.d("lyl language=%s", language);
+        if ("zh".equals(language))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
+        }
+        else
+        {
+            conditionalPopBuyVirtualDollars(null);
+        }
     }
 
     public void conditionalPopBuyVirtualDollars(Runnable runOnPurchaseComplete)
@@ -389,15 +435,66 @@ public class THIABUserInteractor
         }
     }
 
+    public void alipayPopBuy(int type)
+    {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
+        int array = 0;
+        switch (type)
+        {
+            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
+                array = R.array.alipay_virtual_dollars_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
+                array = R.array.alipay_follow_credits_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
+                array = R.array.alipay_stock_alerts_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
+                array = R.array.alipay_reset_portfolio_array;
+                break;
+        }
+        final int type1 = type;
+        builder.setTitle(R.string.app_name)
+                .setItems(currentActivityHolder.getCurrentActivity()
+                        .getResources()
+                        .getStringArray(array),
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                final int position = which;
+                                Intent intent =
+                                        new Intent(currentActivityHolder.getCurrentActivity(),
+                                                AlipayActivity.class);
+                                intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
+                                intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, position);
+                                currentActivityHolder.getCurrentActivity().startActivity(intent);
+                            }
+                        });
+        builder.create().show();
+    }
+
     public void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
     {
         localyticsSession.tagEvent(LocalyticsConstants.BuyExtraCashDialog_Show);
-        popBuyDialog(THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR,
+                R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyFollowCredits()
     {
-        conditionalPopBuyFollowCredits(null);
+        String language = Locale.getDefault().getLanguage();
+        Timber.d("lyl language=%s", language);
+        if ("zh".equals(language))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS);
+        }
+        else
+        {
+            conditionalPopBuyFollowCredits(null);
+        }
     }
 
     public void conditionalPopBuyFollowCredits(Runnable runOnPurchaseComplete)
@@ -411,12 +508,22 @@ public class THIABUserInteractor
     public void popBuyFollowCredits(Runnable runOnPurchaseComplete)
     {
         localyticsSession.tagEvent(LocalyticsConstants.BuyCreditsDialog_Show);
-        popBuyDialog(THBillingInteractor.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_FOLLOW_CREDITS,
+                R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyStockAlerts()
     {
-        conditionalPopBuyStockAlerts(null);
+        String language = Locale.getDefault().getLanguage();
+        Timber.d("lyl language=%s", language);
+        if ("zh".equals(language))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_STOCK_ALERTS);
+        }
+        else
+        {
+            conditionalPopBuyStockAlerts(null);
+        }
     }
 
     public void conditionalPopBuyStockAlerts(Runnable runOnPurchaseComplete)
@@ -429,12 +536,22 @@ public class THIABUserInteractor
 
     public void popBuyStockAlerts(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THBillingInteractor.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_STOCK_ALERTS,
+                R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
     }
 
     public void conditionalPopBuyResetPortfolio()
     {
-        conditionalPopBuyResetPortfolio(null);
+        String language = Locale.getDefault().getLanguage();
+        Timber.d("lyl language=%s", language);
+        if ("zh".equals(language))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
+        }
+        else
+        {
+            conditionalPopBuyResetPortfolio(null);
+        }
     }
 
     public void conditionalPopBuyResetPortfolio(Runnable runOnPurchaseComplete)
@@ -448,7 +565,8 @@ public class THIABUserInteractor
     public void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
     {
         localyticsSession.tagEvent(LocalyticsConstants.ResetPortfolioDialog_Show);
-        popBuyDialog(THBillingInteractor.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
+        popBuyDialog(THBillingInteractor.DOMAIN_RESET_PORTFOLIO,
+                R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
     }
 
     //</editor-fold>
@@ -468,7 +586,8 @@ public class THIABUserInteractor
         }
         else
         {
-            Timber.e(new NullPointerException("logicHolder just became null for " + purchaseOrder), "logicHolder just became null for " + purchaseOrder);
+            Timber.e(new NullPointerException("logicHolder just became null for " + purchaseOrder),
+                    "logicHolder just became null for " + purchaseOrder);
         }
     }
     //</editor-fold>
@@ -479,7 +598,8 @@ public class THIABUserInteractor
         launchReportPurchaseSequence(getBillingLogicHolder().getPurchaseReporterHolder(), purchase);
     }
 
-    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
+            UserProfileDTO updatedUserProfile)
     {
         super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
         launchConsumeSequence(reportedPurchase);
@@ -489,10 +609,12 @@ public class THIABUserInteractor
     //<editor-fold desc="Purchase Consumption Sequence">
     protected void launchConsumeSequence(THIABPurchase reportedPurchase)
     {
-        launchConsumeSequence(getBillingLogicHolder().getPurchaseConsumerHolder(), reportedPurchase);
+        launchConsumeSequence(getBillingLogicHolder().getPurchaseConsumerHolder(),
+                reportedPurchase);
     }
 
-    protected void launchConsumeSequence(THIABPurchaseConsumerHolder consumerHolder, THIABPurchase reportedPurchase)
+    protected void launchConsumeSequence(THIABPurchaseConsumerHolder consumerHolder,
+            THIABPurchase reportedPurchase)
     {
         int requestCode = getBillingLogicHolder().getUnusedRequestCode();
         consumerHolder.registerConsumeFinishedListener(requestCode, consumptionFinishedListener);
@@ -508,7 +630,8 @@ public class THIABUserInteractor
             Context currentContext = currentActivityHolder.getCurrentContext();
             if (currentContext != null)
             {
-                dialog.setMessage(currentContext.getString(R.string.store_billing_report_api_finishing_window_title));
+                dialog.setMessage(currentContext.getString(
+                        R.string.store_billing_report_api_finishing_window_title));
             }
         }
 
@@ -552,8 +675,10 @@ public class THIABUserInteractor
         {
             progressDialog = ProgressDialog.show(
                     currentContext,
-                    currentContext.getString(R.string.store_billing_restoring_purchase_window_title),
-                    currentContext.getString(R.string.store_billing_restoring_purchase_window_message),
+                    currentContext.getString(
+                            R.string.store_billing_restoring_purchase_window_title),
+                    currentContext.getString(
+                            R.string.store_billing_restoring_purchase_window_message),
                     true,
                     true,
                     new DialogInterface.OnCancelListener()
@@ -616,7 +741,8 @@ public class THIABUserInteractor
                 progressDialog = ProgressDialog.show(
                         currentContext,
                         currentContext.getString(R.string.manage_heroes_follow_progress_title),
-                        currentContext.getResources().getString(R.string.manage_heroes_follow_progress_message),
+                        currentContext.getResources()
+                                .getString(R.string.manage_heroes_follow_progress_message),
                         true,
                         true
                 );
@@ -655,7 +781,8 @@ public class THIABUserInteractor
 
     protected class UserInteractorFollowHeroCallback extends FollowHeroCallback
     {
-        public UserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
+        public UserInteractorFollowHeroCallback(HeroListCache heroListCache,
+                UserProfileCache userProfileCache)
         {
             super(heroListCache, userProfileCache);
         }
@@ -681,20 +808,23 @@ public class THIABUserInteractor
         }
     }
 
-    protected class THIABUserInteractorOnPurchaseFinishedListener extends THBaseBillingInteractorOnPurchaseFinishedListener
+    protected class THIABUserInteractorOnPurchaseFinishedListener
+            extends THBaseBillingInteractorOnPurchaseFinishedListener
     {
         public THIABUserInteractorOnPurchaseFinishedListener()
         {
             super();
         }
 
-        @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
+        @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder,
+                THIABPurchase purchase)
         {
             super.onPurchaseFinished(requestCode, purchaseOrder, purchase);
             launchReportPurchaseSequence(purchase);
         }
 
-        @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
+        @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder,
+                IABException exception)
         {
             super.onPurchaseFailed(requestCode, purchaseOrder, exception);
             Context currentContext = currentActivityHolder.getCurrentContext();
@@ -734,7 +864,8 @@ public class THIABUserInteractor
         }
     }
 
-    protected class THIABUserInteractorOnPurchaseReportedListener extends THBaseBillingInteractorOnPurchaseReportedListener
+    protected class THIABUserInteractorOnPurchaseReportedListener
+            extends THBaseBillingInteractorOnPurchaseReportedListener
     {
         public THIABUserInteractorOnPurchaseReportedListener()
         {
