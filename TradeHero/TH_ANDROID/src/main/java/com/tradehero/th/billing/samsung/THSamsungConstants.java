@@ -23,6 +23,7 @@ public class THSamsungConstants
         return new SimpleDateFormat(THSamsungConstants.INBOX_SIMPLE_DATE_FORMAT).format(new Date());
     }
 
+    // All IAP items on the Samsung store are grouped under this GroupId.
     public static final String IAP_ITEM_GROUP_ID = "100000103210";
     public static SamsungItemGroup getItemGroupId()
     {
@@ -30,12 +31,23 @@ public class THSamsungConstants
     }
 
     // Below are the codes as they are understood on Samsung Store
-    public static final String EXTRA_CASH_T0_ITEM_ID = "000001016731";
     public static final String EXTRA_CASH_T0_DATA_1 = "com.myhero.th.extracash.t0";
-
-    public static final String EXTRA_CASH_T1_ITEM_ID = "000001016742";
     public static final String EXTRA_CASH_T1_DATA_1 = "com.myhero.th.extracash.t1";
-
-    public static final String EXTRA_CASH_T2_ITEM_ID = "000001016743";
     public static final String EXTRA_CASH_T2_DATA_1 = "com.myhero.th.extracash.t2";
+
+    public static final String CREDIT_1_DATA_1 = "com.myhero.th.1cc";
+    //public static final String CREDIT_5_DATA_1 = "com.myhero.th.5cc";
+    public static final String CREDIT_10_DATA_1 = "com.myhero.th.10cc";
+    public static final String CREDIT_20_DATA_1 = "com.myhero.th.20cc";
+
+    public static final String RESET_PORTFOLIO_0_DATA_1 = "com.myhero.th.resetportfolio.0";
+
+    public static final String ALERT_1_DATA_1 = "com.myhero.th.stockalert.subscription.t0";
+    public static final String ALERT_5_DATA_1 = "com.myhero.th.stockalert.subscription.t1";
+    public static final String ALERT_UNLIMITED_DATA_1 = "com.myhero.th.stockalert.subscription.t2";
+
+    // Below are the codes as they may be returned from the server
+    public static final String SERVER_ALERT_1 = "TH.StockAlert.Subscription.0";
+    public static final String SERVER_ALERT_5 = "TH.StockAlert.Subscription.1";
+    public static final String SERVER_ALERT_UNLIMITED = "TH.StockAlert.Subscription.2";
 }
