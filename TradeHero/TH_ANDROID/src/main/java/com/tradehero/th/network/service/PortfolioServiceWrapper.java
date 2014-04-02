@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -81,6 +82,24 @@ import retrofit.RetrofitError;
     }
 
     public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
+        throws RetrofitError
+    {
+        basicCheck(ownedPortfolioId);
+        MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);
+        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallbackAddCash);
+        return middleCallbackAddCash;
+    }
+
+    @Deprecated // TODO implement in server
+    public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO)
+        throws RetrofitError
+    {
+        basicCheck(ownedPortfolioId);
+        return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+    }
+
+    @Deprecated // TODO implement in server
+    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);

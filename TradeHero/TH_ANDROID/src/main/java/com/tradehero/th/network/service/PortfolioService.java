@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -73,6 +74,22 @@ public interface PortfolioService
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
+
+    @Deprecated // TODO implement in server
+    @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
+    UserProfileDTO addCash(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Body SamsungPurchaseDTO purchaseDTO)
+            throws RetrofitError;
+
+    @Deprecated // TODO implement in server
+    @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
+    void addCash(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Body SamsungPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
