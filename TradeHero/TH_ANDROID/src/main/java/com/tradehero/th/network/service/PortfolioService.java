@@ -59,6 +59,22 @@ public interface PortfolioService
             @Path("portfolioId") int portfolioId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
+
+    @Deprecated // TODO create on server
+    @POST("/users/{userId}/portfolios/{portfolioId}/reset")
+    UserProfileDTO resetPortfolio(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Body SamsungPurchaseDTO purchaseDTO)
+        throws RetrofitError;
+
+    @Deprecated // TODO create on server
+    @POST("/users/{userId}/portfolios/{portfolioId}/reset")
+    void resetPortfolio(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Body SamsungPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">

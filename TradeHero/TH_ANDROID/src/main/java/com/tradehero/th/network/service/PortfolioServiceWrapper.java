@@ -71,6 +71,22 @@ import retrofit.RetrofitError;
         basicCheck(ownedPortfolioId);
         this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, callback);
     }
+
+    @Deprecated // TODO create on server
+    public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO)
+        throws RetrofitError
+    {
+        basicCheck(ownedPortfolioId);
+        return this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+    }
+
+    @Deprecated // TODO create on server
+    public void resetPortfolio(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
+        throws RetrofitError
+    {
+        basicCheck(ownedPortfolioId);
+        this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, callback);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">

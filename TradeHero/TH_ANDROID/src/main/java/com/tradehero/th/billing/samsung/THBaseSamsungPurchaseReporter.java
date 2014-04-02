@@ -104,10 +104,10 @@ public class THBaseSamsungPurchaseReporter
         switch (cachedSkuDetail.domain)
         {
             case DOMAIN_RESET_PORTFOLIO:
-                //portfolioServiceWrapper.get().resetPortfolio(
-                //        portfolioId,
-                //        purchase.getGooglePlayPurchaseDTO(),
-                //        new THSamsungPurchaseReporterPurchaseCallback());
+                portfolioServiceWrapper.get().resetPortfolio(
+                        portfolioId,
+                        purchase.getPurchaseDTO(),
+                        new THSamsungPurchaseReporterPurchaseCallback());
                 break;
 
             case DOMAIN_VIRTUAL_DOLLAR:
@@ -115,17 +115,17 @@ public class THBaseSamsungPurchaseReporter
                 {
                     middleCallbackAddCash.setPrimaryCallback(null);
                 }
-                //middleCallbackAddCash = portfolioServiceWrapper.get().addCash(
-                //        portfolioId,
-                //        purchase.getGooglePlayPurchaseDTO(),
-                //        new THSamsungPurchaseReporterPurchaseCallback());
+                middleCallbackAddCash = portfolioServiceWrapper.get().addCash(
+                        portfolioId,
+                        purchase.getPurchaseDTO(),
+                        new THSamsungPurchaseReporterPurchaseCallback());
                 break;
 
             case DOMAIN_STOCK_ALERTS:
-                //alertPlanService.get().subscribeToAlertPlan(
-                //        portfolioId.userId,
-                //        purchase.getGooglePlayPurchaseDTO(),
-                //        new THSamsungPurchaseReporterAlertPlanPurchaseCallback());
+                alertPlanService.get().subscribeToAlertPlan(
+                        portfolioId.userId,
+                        purchase.getPurchaseDTO(),
+                        new THSamsungPurchaseReporterAlertPlanPurchaseCallback());
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
@@ -142,17 +142,17 @@ public class THBaseSamsungPurchaseReporter
     {
         if (purchase.getUserToFollow() != null)
         {
-            //userServiceWrapper.follow(
-            //        purchase.getUserToFollow(),
-            //        purchase.getGooglePlayPurchaseDTO(),
-            //        new THSamsungPurchaseReporterPurchaseCallback());
+            userServiceWrapper.follow(
+                    purchase.getUserToFollow(),
+                    purchase.getPurchaseDTO(),
+                    new THSamsungPurchaseReporterPurchaseCallback());
         }
         else
         {
-            //userService.get().addCredit(
-            //        portfolioId.userId,
-            //        purchase.getGooglePlayPurchaseDTO(),
-            //        new THSamsungPurchaseReporterPurchaseCallback());
+            userService.get().addCredit(
+                    portfolioId.userId,
+                    purchase.getPurchaseDTO(),
+                    new THSamsungPurchaseReporterPurchaseCallback());
         }
     }
 
@@ -169,10 +169,10 @@ public class THBaseSamsungPurchaseReporter
             notifyListenerReportFailed(e);
             return;
         }
-        //alertPlanServiceWrapper.get().checkAlertPlanAttribution(
-        //        portfolioId.getUserBaseKey(),
-        //        purchase.getGooglePlayPurchaseDTO(),
-        //        new THSamsungPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
+        alertPlanServiceWrapper.get().checkAlertPlanAttribution(
+                portfolioId.getUserBaseKey(),
+                purchase.getPurchaseDTO(),
+                new THSamsungPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
     }
 
     protected void handleCallbackSuccess(UserProfileDTO userProfileDTO, Response response)

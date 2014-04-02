@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.common.billing.samsung.SamsungPurchase;
+import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
@@ -232,6 +234,21 @@ public interface UserService
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
+
+    @Deprecated // TODO create on server
+    @POST("/users/{userId}/addCredit")
+    UserProfileDTO addCredit(
+            @Path("userId") int userId,
+            @Body SamsungPurchase purchaseDTO)
+        throws RetrofitError;
+
+    // TODO use UserServiceWrapper and UserServiceAsync
+    @Deprecated // TODO create on server
+    @POST("/users/{userId}/addCredit")
+    void addCredit(
+            @Path("userId") int userId,
+            @Body SamsungPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
@@ -244,6 +261,13 @@ public interface UserService
     UserProfileDTO follow(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO)
+        throws RetrofitError;
+
+    @Deprecated // TODO create on server
+    @POST("/users/{userId}/follow")
+    UserProfileDTO follow(
+            @Path("userId") int userId,
+            @Body SamsungPurchaseDTO purchaseDTO)
         throws RetrofitError;
     //</editor-fold>
 

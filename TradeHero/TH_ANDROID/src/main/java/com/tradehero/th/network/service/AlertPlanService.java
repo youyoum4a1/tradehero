@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
@@ -38,6 +39,19 @@ public interface AlertPlanService
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
+
+    @Deprecated // TODO set on server
+    @POST("/users/{userId}/alertPlans")
+    UserProfileDTO subscribeToAlertPlan(
+            @Path("userId") int userId,
+            @Body SamsungPurchaseDTO purchaseDTO);
+
+    @Deprecated // TODO set on server
+    @POST("/users/{userId}/alertPlans")
+    void subscribeToAlertPlan(
+            @Path("userId") int userId,
+            @Body SamsungPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Alert Plan Subscription">
@@ -63,6 +77,21 @@ public interface AlertPlanService
             @Path("userId") int userId,
             @Query("google_play_data") String googlePlayData,
             @Query("google_play_signature") String googlePlaySignature,
+            Callback<AlertPlanStatusDTO> callback);
+
+    @Deprecated // TODO set in server
+    @GET("/users/{userId}/alertPlans/checkSamsung")
+    AlertPlanStatusDTO checkAlertPlanAttributionSamsung(
+            @Path("userId") int userId,
+            @Query("paymentId") String paymentId,
+            @Query("productCode") String productCode);
+
+    @Deprecated // TODO set in server
+    @GET("/users/{userId}/alertPlans/checkSamsung")
+    void checkAlertPlanAttributionSamsung(
+            @Path("userId") int userId,
+            @Query("paymentId") String paymentId,
+            @Query("productCode") String productCode,
             Callback<AlertPlanStatusDTO> callback);
     //</editor-fold>
 

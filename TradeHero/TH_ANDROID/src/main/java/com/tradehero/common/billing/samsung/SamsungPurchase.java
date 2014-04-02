@@ -64,4 +64,9 @@ abstract public class SamsungPurchase<
             Timber.e(new Exception(jsonString, e), "");
         }
     }
+
+    public SamsungPurchaseDTO getPurchaseDTO()
+    {
+        return new SamsungPurchaseDTO(this);
+    }
 }

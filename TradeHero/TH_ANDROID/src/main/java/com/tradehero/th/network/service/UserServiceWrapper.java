@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -239,6 +240,20 @@ import retrofit.RetrofitError;
     }
 
     public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
+        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
+        return middleCallbackFollowUser;
+    }
+
+    @Deprecated // TODO create on server
+    public UserProfileDTO follow(UserBaseKey userBaseKey, SamsungPurchaseDTO purchaseDTO)
+    {
+        return userService.follow(userBaseKey.key, purchaseDTO);
+    }
+
+    @Deprecated // TODO create on server
+    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
         userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
