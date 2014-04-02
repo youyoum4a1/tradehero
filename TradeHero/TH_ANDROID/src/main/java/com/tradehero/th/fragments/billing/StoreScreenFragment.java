@@ -85,6 +85,16 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         cancelOthersAndShowBillingAvailable();
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setSubtitle(null);
+        }
+        super.onDestroyOptionsMenu();
+    }
+
     @Override public void onDestroyView()
     {
         if (listView != null)
