@@ -94,6 +94,21 @@ public class THSamsungBillingInteractor
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
+
+    @Override public int run(THUISamsungRequest uiBillingRequest)
+    {
+        // Here we disable the initial restore
+        if (uiBillingRequest != null && uiBillingRequest.restorePurchase && !uiBillingRequest.startWithProgressDialog)
+        {
+            // In effect skip it
+            return getUnusedRequestCode();
+        }
+        else
+        {
+            return super.run(uiBillingRequest);
+        }
+    }
+
     @Override protected THSamsungRequestFull createEmptyBillingRequest(THUISamsungRequest uiBillingRequest)
     {
         return new THSamsungRequestFull();
