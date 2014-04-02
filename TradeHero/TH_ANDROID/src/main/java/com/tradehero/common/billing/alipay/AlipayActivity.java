@@ -23,6 +23,8 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
