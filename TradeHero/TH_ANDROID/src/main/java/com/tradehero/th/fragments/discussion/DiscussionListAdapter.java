@@ -20,5 +20,9 @@ public class DiscussionListAdapter extends LoaderDTOAdapter<DiscussionDTO, Discu
 
     }
 
-
+    @Override
+    public boolean isEmpty()
+    {
+        return false;
+    }
 }

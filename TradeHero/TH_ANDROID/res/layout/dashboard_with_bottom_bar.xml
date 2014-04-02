@@ -19,7 +19,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:background="@color/tab_color">
+      android:background="@color/tab_color"
+      android:visibility="gone"
+      >
 
     <FrameLayout
         android:id="@android:id/tabcontent"

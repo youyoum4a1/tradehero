@@ -7,7 +7,7 @@
   <repositories>
     <repository>
       <id>mymaven.repo</id>
-      <url>https://github.com/nguyentruongtho/maven-repo/raw/master</url>
+      <url>https://github.com/TradeHero/TH_MAVEN/raw/master</url>
       <!-- use snapshot version -->
       <snapshots>
         <enabled>true</enabled>
@@ -62,6 +62,7 @@
     <module>facebook-android-sdk/facebook</module>
     <module>StickyListHeaders/library</module>
     <module>picasso/picasso</module>
+    <module>AndroidResideMenu/ResideMenu</module>
   </modules>
 
   <organization>
