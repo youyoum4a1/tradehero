@@ -5,6 +5,8 @@ import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.th.billing.THBillingConstants;
 import com.tradehero.th.utils.Constants;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by xavier on 3/26/14.
@@ -14,6 +16,12 @@ public class THSamsungConstants
         implements THBillingConstants
 {
     public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
+
+    public static String INBOX_SIMPLE_DATE_FORMAT = "yyyyMMdd";
+    public static String getTodayStringForInbox()
+    {
+        return new SimpleDateFormat(THSamsungConstants.INBOX_SIMPLE_DATE_FORMAT).format(new Date());
+    }
 
     public static final String IAP_ITEM_GROUP_ID = "100000103210";
     public static SamsungItemGroup getItemGroupId()
