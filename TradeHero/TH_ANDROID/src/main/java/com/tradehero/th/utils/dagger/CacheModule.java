@@ -12,6 +12,7 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussion;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
+import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
@@ -46,6 +47,7 @@ import javax.inject.Singleton;
                 ProviderTileView.class,
 
                 TimelineDiscussion.class,
+                UserProfileResideMenuItem.class,
         },
         complete = false,
         library = true
