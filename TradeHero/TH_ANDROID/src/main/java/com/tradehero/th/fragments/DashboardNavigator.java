@@ -137,8 +137,11 @@ public class DashboardNavigator extends Navigator
     {
         View tabView = activity.getLayoutInflater().inflate(tabType.viewResId, mTabHost.getTabWidget(), false);
         ImageView imageView = (ImageView) tabView.findViewById(android.R.id.icon);
-        imageView.setImageResource(tabType.drawableResId);
-        imageView.setVisibility(View.VISIBLE);
+        if (imageView != null)
+        {
+            imageView.setImageResource(tabType.drawableResId);
+            imageView.setVisibility(View.VISIBLE);
+        }
 
         return mTabHost.newTabSpec(activity.getString(tabType.stringResId))
                 .setIndicator(tabView);
