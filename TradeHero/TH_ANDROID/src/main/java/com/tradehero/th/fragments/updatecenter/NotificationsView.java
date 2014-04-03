@@ -135,6 +135,7 @@ public class NotificationsView extends BetterViewAnimator
                 {
                     paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
                 }
+
                 if (nextPageDelta >= 0)
                 {
                     paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
@@ -156,7 +157,7 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList, boolean fromCache)
         {
-            setDisplayedChildByLayoutId(notificationList.getId());
+            onFinish();
 
             if (notificationKeyList != null)
             {
@@ -176,8 +177,17 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void onErrorThrown(NotificationListKey key, Throwable error)
         {
+            onFinish();
+
             nextPageDelta = 0;
             THToast.show(new THException(error));
+        }
+
+        private void onFinish()
+        {
+            loading = false;
+
+            setDisplayedChildByLayoutId(notificationList.getId());
         }
     }
 }

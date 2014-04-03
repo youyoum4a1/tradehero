@@ -38,6 +38,16 @@ public class PaginatedNotificationListKey extends NotificationListKey
     }
     //</editor-fold>
 
+    @Override public void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        args.putInt(PAGE, page);
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return super.equals(other) && ((PaginatedNotificationListKey) other).page == page;
+    }
 
     //<editor-fold desc="PaginatedKey">
     @Override public int getPage()
