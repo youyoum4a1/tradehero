@@ -2,9 +2,7 @@ package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
-import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.ui.UIComponents;
-import com.tradehero.th.ui.ViewWrapper;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -20,6 +18,7 @@ import org.ocpsoft.prettytime.PrettyTime;
         injects = {
                 TimelineItemView.class,
                 LeaderboardMarkUserListFragment.class,
+                UpdateCenterFragment.class
         },
         complete = false,
         library = true
