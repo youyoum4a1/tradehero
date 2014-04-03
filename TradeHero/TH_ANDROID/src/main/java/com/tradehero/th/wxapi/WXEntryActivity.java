@@ -52,6 +52,7 @@ import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
+    public static final int WECHAT_MESSAGE_TYPE_NONE = -1;
     public static final int WECHAT_MESSAGE_TYPE_BUY_SELL = 0;
     public static final int WECHAT_MESSAGE_TYPE_CREATE_DIS = 1;
     public static final int WECHAT_MESSAGE_TYPE_DIS = 2;
@@ -78,11 +79,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mMsgType = getIntent().getIntExtra(WECHAT_MESSAGE_TYPE_KEY, WECHAT_MESSAGE_TYPE_NONE);
+        mMsgId = getIntent().getIntExtra(WECHAT_MESSAGE_ID_KEY, 0);
         api = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APP_ID, false);
         api.handleIntent(getIntent(), this);
-
-        mMsgType = getIntent().getIntExtra(WECHAT_MESSAGE_TYPE_KEY, 0);
-        mMsgId = getIntent().getIntExtra(WECHAT_MESSAGE_ID_KEY, 0);
 
         api.registerApp(Constants.WECHAT_APP_ID);
         boolean isWXInstalled = api.isWXAppInstalled();
@@ -126,8 +126,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         String resultStr = "";
         HttpClient httpclient = getNewHttpClient();
 
-        Timber.d("WX userId=%s mMsgId=%d", currentUserId.toUserBaseKey().key, mMsgId);
-        //THToast.show("WX " + mMsgType);
+        //Timber.d("WX userId=%s mMsgId=%d", currentUserId.toUserBaseKey().key, mMsgId);
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair(WECHAT_SHARE_MSG_KEY,
                 WECHAT_SHARE_NEWS_KEY + String.valueOf(mMsgId)));
@@ -140,7 +139,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             HttpResponse response;
             response = httpclient.execute(httppost);
             resultStr = EntityUtils.toString(response.getEntity());
-            Timber.d("WX resultStr=%s", resultStr);
+            //Timber.d("WX resultStr=%s", resultStr);
         } catch (UnsupportedEncodingException e)
         {
             Timber.d("WX UnsupportedEncodingException");
@@ -154,6 +153,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             Timber.d("WX IOException");
             e.printStackTrace();
         }
+        finish();
     }
 
     public static HttpClient getNewHttpClient()
@@ -205,11 +205,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Override
     public void onResp(BaseResp resp)
     {
+        //Timber.d("WX onResp %d %d", resp.errCode, mMsgType);
         //THToast.show("WX onResp=" + resp.errCode + " mMsgType=" + mMsgType);
         int result = 0;
         switch (resp.errCode)
         {
             case BaseResp.ErrCode.ERR_OK:
+                THToast.show(getString(R.string.share_success));
                 new Thread()
                 {
                     @Override
@@ -220,17 +222,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 }.start();
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
-                //result = R.string.errcode_cancel;
+                finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
-                //result = R.string.errcode_deny;
+                finish();
                 break;
             default:
-                //result = R.string.errcode_unknown;
+                finish();
                 break;
         }
-
-        finish();
     }
 
     private String getMsgTitle(int type)

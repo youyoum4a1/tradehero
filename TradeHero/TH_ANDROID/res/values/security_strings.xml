@@ -48,4 +48,5 @@
   <string name="share_to_wechat_timeline_dis">I\'ve shared a discussion on tradehero, come and join us.</string>
   <string name="share_to_wechat_timeline_timeline">I\'ve shared my timeline on tradehero, come and join us.</string>
   <string name="share_to_wechat_timeline_buy_sell">I\'ve done a stock trade on tradehero, come and join us.</string>
+  <string name="share_success">Your share is success</string>
 </resources>
