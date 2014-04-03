@@ -22,4 +22,13 @@ public class FollowerSummaryDTO implements DTO
     {
         super();
     }
+
+    @Override public String toString()
+    {
+        if (userFollowers != null)
+        {
+            return String.format("userFollowers:%d,paidFollowerCount:%d,freeFollowerCount:%d",userFollowers.size(),paidFollowerCount,freeFollowerCount);
+        }
+        return String.format("userFollowers is null,paidFollowerCount:%d,freeFollowerCount:%d",userFollowers.size(),paidFollowerCount,freeFollowerCount);
+    }
 }

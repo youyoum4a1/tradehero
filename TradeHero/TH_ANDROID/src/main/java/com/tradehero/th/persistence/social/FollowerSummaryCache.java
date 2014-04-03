@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
 @Singleton public class FollowerSummaryCache extends StraightDTOCache<HeroKey, FollowerSummaryDTO>
@@ -55,6 +56,8 @@ import javax.inject.Singleton;
     {
         if (key.heroType == HeroType.ALL)
         {
+            FollowerSummaryDTO data = super.get(key);
+            Timber.d("FollowerSummaryDTO get(key:%s),data %s",key,data);
             return super.get(key);
         }else {
             //since we just cache all followers,so we need to find the followers of requested type
@@ -65,7 +68,9 @@ import javax.inject.Singleton;
                 Map<HeroType,FollowerSummaryDTO> followersMap = splitFollowers(allFollowers);
                 if (followersMap != null)
                 {
-                    return followersMap.get(key.heroType);
+                    FollowerSummaryDTO data = followersMap.get(key.heroType);
+                    Timber.d("FollowerSummaryDTO get(key:%s),data %s",key,data);
+                    return data;
                 }
             }
             return null;
@@ -161,10 +166,10 @@ import javax.inject.Singleton;
             }
         }
         paidFollowerSummaryDTO.freeFollowerCount = data.freeFollowerCount;
-        paidFollowerSummaryDTO.freeFollowerCount = data.freeFollowerCount;
+        paidFollowerSummaryDTO.paidFollowerCount = data.paidFollowerCount;
 
-        paidFollowerSummaryDTO.paidFollowerCount = data.paidFollowerCount;
-        paidFollowerSummaryDTO.paidFollowerCount = data.paidFollowerCount;
+        freeFollowerSummaryDTO.freeFollowerCount = data.freeFollowerCount;
+        freeFollowerSummaryDTO.paidFollowerCount = data.paidFollowerCount;
 
         return map;
     }

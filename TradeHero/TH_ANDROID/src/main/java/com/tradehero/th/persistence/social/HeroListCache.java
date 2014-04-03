@@ -160,6 +160,7 @@ import javax.inject.Singleton;
 
             result[0] = paidCount;
             result[1] = totalCount - paidCount;
+            return result;
         }
         return null;
 

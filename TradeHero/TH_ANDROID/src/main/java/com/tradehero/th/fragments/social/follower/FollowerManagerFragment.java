@@ -131,6 +131,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
+        Timber.d("%s,onCreateView",TAG);
         View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
         ButterKnife.inject(this, view);
         addTabs();
@@ -199,6 +200,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             setTabTitle(tab, type.titleRes, 0);
             actionBar.addTab(tab);
         }
+
+        Timber.d("%s,addTabs",TAG);
     }
 
     private void changetTabTitle(int page, int number)
@@ -218,6 +221,15 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         tab.setText(title);
     }
 
+    private void changetTabTitle(int number1,int number2,int number3)
+    {
+        changetTabTitle(0,number1);
+        changetTabTitle(1,number2);
+        changetTabTitle(2,number3);
+
+        Timber.d("%s,changetTabTitle result:%d,%d,%d",TAG,number1,number2,number3);
+    }
+
     private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
     {
         String title = "";
@@ -235,12 +247,13 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     OnFollowersLoadedListener onFollowersLoadedListener = new OnFollowersLoadedListener()
     {
 
-        @Override public void onFollowerLoaded(int page)
+        @Override public void onFollowerLoaded(int page,FollowerSummaryDTO value)
         {
             if (!isDetached())
             {
                 //remove the function to send message
                 setMessageLayoutShown(false);
+                changetTabTitle(value.paidFollowerCount,value.freeFollowerCount,(value.paidFollowerCount+value.freeFollowerCount));
             }
         }
     };
@@ -281,7 +294,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
     public static interface OnFollowersLoadedListener
     {
-        void onFollowerLoaded(int page);
+        void onFollowerLoaded(int page,FollowerSummaryDTO followerSummaryDTO);
     }
 
     /**
@@ -374,6 +387,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             View view =
                     inflater.inflate(R.layout.fragment_store_manage_followers, container, false);
             initViews(view);
+            Timber.d("%s,FollowerManagerTabFragment onCreateView",TAG);
             return view;
         }
 
@@ -424,6 +438,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         @Override public void onResume()
         {
             super.onResume();
+            Timber.d("%s,FollowerManagerTabFragment onResume",TAG);
             this.followedId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWED_ID));
 
             Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
@@ -529,7 +544,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             {
                 displayProgress(false);
                 display(value);
-                notifyFollowerLoaded();
+                notifyFollowerLoaded(value);
             }
 
             @Override public void onErrorThrown(HeroKey key, Throwable error)
@@ -547,11 +562,12 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             this.onFollowersLoadedListener = listener;
         }
 
-        private void notifyFollowerLoaded()
+        private void notifyFollowerLoaded(FollowerSummaryDTO value)
         {
+            Timber.d("%s,notifyFollowerLoaded for page:%d",TAG,page);
             if (onFollowersLoadedListener != null && !isDetached())
             {
-                onFollowersLoadedListener.onFollowerLoaded(page);
+                onFollowersLoadedListener.onFollowerLoaded(page,value);
             }
         }
     }

@@ -142,6 +142,7 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
                     break;
             }
             fragment.setArguments(getArguments());
+            fragment.setOnHerossLoadedListener(onHerosLoadedListener);
             //fragment.setOnFollowersLoadedListener(onFollowersLoadedListener);
             //Action Bar Tab must have a Callback
             ActionBar.Tab tab = actionBar.newTab().setTabListener(
@@ -195,10 +196,34 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         tab.setText(title);
     }
 
+    private void changetTabTitle(int number1,int number2,int number3)
+    {
+        changetTabTitle(0,number1);
+        changetTabTitle(1,number2);
+        changetTabTitle(2,number3);
+    }
+
     @Override public void onDestroyView()
     {
         super.onDestroyView();
         clearTabs();
+    }
+
+    OnHerosLoadedListener onHerosLoadedListener = new OnHerosLoadedListener()
+    {
+        @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
+        {
+            if (!isDetached())
+            {
+                changetTabTitle(0,value.herosCountGetPaid);
+                changetTabTitle(1,value.herosCountNotGetPaid);
+                changetTabTitle(2,(value.herosCountGetPaid+value.herosCountNotGetPaid));
+            }
+        }
+    };
+    static interface OnHerosLoadedListener
+    {
+        void onHerosLoaded(int page,HeroIdExtWrapper value);
     }
 
     /**
@@ -601,17 +626,14 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             {
                 //displayProgress(false);
                 setListShown(true);
-
-                HeroIdExtWrapper heroIdExtWrapper = heroCache.get().get(value);
-
-                
-                display(heroCache.get().get(value));
+                display(heroCache.get().get(value.heroIdList));
+                notifyHerosLoaded(value);
             }
 
             @Override public void onErrorThrown(HeroKey key, Throwable error)
             {
                 displayProgress(false);
-                setListShown(false);
+                setListShown(true);
                 THLog.e(TAG, "Could not fetch heroes", error);
                 THToast.show(R.string.error_fetch_hero);
             }
@@ -624,7 +646,23 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
                 handleGoMostSkilled();
             }
         }
+
+        OnHerosLoadedListener onHerossLoadedListener;
+
+        public void setOnHerossLoadedListener(OnHerosLoadedListener onHerossLoadedListener)
+        {
+            this.onHerossLoadedListener = onHerossLoadedListener;
+        }
+
+        private void notifyHerosLoaded(HeroIdExtWrapper value)
+        {
+            if (onHerossLoadedListener != null && !isDetached())
+            {
+                onHerossLoadedListener.onHerosLoaded(page, value);
+            }
+        }
     }
+
     }
 
 

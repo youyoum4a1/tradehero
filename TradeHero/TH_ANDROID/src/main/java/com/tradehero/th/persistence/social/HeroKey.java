@@ -44,4 +44,9 @@ public class HeroKey implements DTOKey
         result = 31 * result + (heroType != null ? heroType.hashCode() : 0);
         return result;
     }
+
+    @Override public String toString()
+    {
+       return String.format("UserBaseKey %s,HeroType%s",userBaseKey,heroType);
+    }
 }
