@@ -417,7 +417,7 @@ public class THIABUserInteractor
     {
         String language = Locale.getDefault().getLanguage();
         Timber.d("lyl language=%s", language);
-        if ("zh".equals(language))
+        if ("zh".equals(language) || true)
         {
             alipayPopBuy(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
         }
@@ -487,7 +487,7 @@ public class THIABUserInteractor
     {
         String language = Locale.getDefault().getLanguage();
         Timber.d("lyl language=%s", language);
-        if ("zh".equals(language))
+        if ("zh".equals(language) || true)
         {
             alipayPopBuy(StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS);
         }
@@ -516,7 +516,7 @@ public class THIABUserInteractor
     {
         String language = Locale.getDefault().getLanguage();
         Timber.d("lyl language=%s", language);
-        if ("zh".equals(language))
+        if ("zh".equals(language) || true)
         {
             alipayPopBuy(StoreItemAdapter.POSITION_BUY_STOCK_ALERTS);
         }
@@ -544,7 +544,7 @@ public class THIABUserInteractor
     {
         String language = Locale.getDefault().getLanguage();
         Timber.d("lyl language=%s", language);
-        if ("zh".equals(language))
+        if ("zh".equals(language) || true)
         {
             alipayPopBuy(StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
         }
