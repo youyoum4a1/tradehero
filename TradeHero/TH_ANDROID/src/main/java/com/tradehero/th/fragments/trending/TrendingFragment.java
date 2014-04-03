@@ -222,7 +222,6 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroyView()
     {
-        Timber.d("Wangliang TrendingFragment onDestroyView");
         detachExchangeListFetchTask();
         detachProviderListTask();
         detachExchangeListFetchTask();
@@ -269,7 +268,6 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroy()
     {
-        Timber.d("Wangliang TrendingFragment onDestroy");
         exchangeListTypeCacheListener = null;
         userProfileFetchListener = null;
         thIntentPassedListener = null;
@@ -492,7 +490,6 @@ public class TrendingFragment extends SecurityListFragment
                 Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
             }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
-            Timber.d("Wangliang TrendingOnFilterTypeChangedListener forceInitialLoad");
             // TODO
             forceInitialLoad();
         }

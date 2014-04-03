@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.social.hero;
 
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -22,7 +24,10 @@ abstract public class FollowHeroCallback implements Callback<UserProfileDTO>
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
+        //userProfileDTO.getBaseKey()
+
         userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
-        heroListCache.invalidate(userProfileDTO.getBaseKey());
+        //TODO followed user should include user type(PREMIUM,FREE)
+        heroListCache.invalidate(new HeroKey(userProfileDTO.getBaseKey(),HeroType.ALL));
     }
 }

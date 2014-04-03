@@ -2,6 +2,8 @@ package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.updatecenter.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.NotificationsCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import dagger.Module;
 import dagger.Provides;
@@ -18,7 +20,9 @@ import org.ocpsoft.prettytime.PrettyTime;
         injects = {
                 TimelineItemView.class,
                 LeaderboardMarkUserListFragment.class,
-                UpdateCenterFragment.class
+                UpdateCenterFragment.class,
+                MessagesCenterFragment.class,
+                NotificationsCenterFragment.class,
         },
         complete = false,
         library = true

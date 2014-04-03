@@ -207,7 +207,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     protected void forceInitialLoad()
     {
-        Timber.d("Wangliang TrendingFragment forceInitialLoad");
         Loader loader = getActivity().getSupportLoaderManager().getLoader(getSecurityIdListLoaderId());
         SecurityListPagedLoader pagedLoader = (SecurityListPagedLoader) loader;
         pagedLoader.setQueryKey(getInitialSecurityListType());

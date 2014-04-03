@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
@@ -140,12 +142,16 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             if (dto.id > 0)
             {
                 leaderboardDefUserRank.setText(getContext().getString(R.string.leaderboard_not_ranked));
+            }else
+            {
+                leaderboardDefUserRank.setText("");
             }
         }
         else
         {
             leaderboardDefUserRank.setText(rank.toString());
         }
+        Timber.d("updateRankTitle rank %s for %s result:%s",rank,dto.name,leaderboardDefUserRank.getText().toString());
     }
 
     private void updateLeaderboardOwnRank(UserProfileDTO userProfileDTO)
@@ -169,6 +175,12 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     {
         switch (dto.id)
         {
+            case LeaderboardDefDTO.LEADERBOARD_HERO_ID:
+                return R.drawable.leaderboard_friends;
+
+            case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID:
+                return R.drawable.leaderboard_friends;
+
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 return R.drawable.leaderboard_friends;
 
