@@ -13,12 +13,14 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 public enum DashboardTabType
 {
     //NEWS(R.string.dashboard_headline, R.drawable.trending_selector, HeadlineFragment.class),
-    TIMELINE(R.layout.home_selector, R.string.dashboard_home, R.drawable.home_selector, MeTimelineFragment.class),
+    TIMELINE(R.layout.home_selector, R.string.empty, R.color.transparent, MeTimelineFragment.class),
     TRENDING(R.string.dashboard_trending, R.drawable.icn_menu_trending, TrendingFragment.class),
     COMMUNITY(R.string.dashboard_community, R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
     PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class),
     STORE(R.string.dashboard_store, R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.string.settings, R.drawable.icn_menu_settings, SettingsFragment.class);
+
+    private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
     public final int viewResId;
     public final int stringResId;
@@ -36,6 +38,11 @@ public enum DashboardTabType
 
     private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
     {
-        this(R.layout.tab_indicator_holo, stringResId, drawableResId, fragmentClass);
+        this(DEFAULT_VIEW_LAYOUT_ID, stringResId, drawableResId, fragmentClass);
+    }
+    
+    public boolean hasCustomView()
+    {
+        return viewResId != DEFAULT_VIEW_LAYOUT_ID;
     }
 }

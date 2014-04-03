@@ -1,6 +1,8 @@
 package com.tradehero.th.ui;
 
 import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.special.ResideMenu.ResideMenu;
@@ -56,13 +58,32 @@ public class AppContainerImpl implements AppContainer
         resideMenu.getMenuItems().clear();
         for (DashboardTabType tabType: DashboardTabType.values())
         {
-            ResideMenuItem menuItem = new ResideMenuItem(activity, tabType.drawableResId, tabType.stringResId);
+            View menuItem = createMenuItemFromTabType(activity, tabType);
             menuItem.setTag(tabType);
             resideMenu.addMenuItem(menuItem);
             menuItem.setOnClickListener(menuItemClickListener);
         }
 
         return findById(activity, android.R.id.content);
+    }
+
+    /**
+     * TODO this is a hack due to time constraint
+     * @param context
+     * @param tabType
+     * @return
+     */
+    private View createMenuItemFromTabType(Context context, DashboardTabType tabType)
+    {
+        if (tabType.hasCustomView())
+        {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            return inflater.inflate(tabType.viewResId, null);
+        }
+        else
+        {
+            return new ResideMenuItem(context, tabType.drawableResId, tabType.stringResId);
+        }
     }
 
     private class ResideMenuItemClickListener implements View.OnClickListener
