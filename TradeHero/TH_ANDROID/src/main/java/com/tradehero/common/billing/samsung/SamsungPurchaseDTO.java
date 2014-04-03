@@ -8,13 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SamsungPurchaseDTO
 {
-    @JsonProperty("samsung_item_id")
-    public String itemId;
+    public static final String PAYMENT_ID_JSON_KEY = "samsung_payment_id";
+    public static final String PURCHASE_ID_JSON_KEY = "samsung_purchase_id";
+    public static final String PRODUCT_CODE_JSON_KEY = "samsung_product_code";
 
-    @JsonProperty("samsung_payment_id")
+    @JsonProperty(PAYMENT_ID_JSON_KEY)
     public String paymentId;
-
-    @JsonProperty("samsung_product_code")
+    @JsonProperty(PURCHASE_ID_JSON_KEY)
+    public String purchaseId;
+    @JsonProperty(PRODUCT_CODE_JSON_KEY)
     public String productCode;
 
     public SamsungPurchaseDTO()
@@ -25,8 +27,8 @@ public class SamsungPurchaseDTO
     public SamsungPurchaseDTO(SamsungPurchase samsungPurchase)
     {
         super();
-        itemId = samsungPurchase.getItemId();
         paymentId = samsungPurchase.getPaymentId();
+        purchaseId = samsungPurchase.getPurchaseId();
         productCode = samsungPurchase.getProductCode();
     }
 }
