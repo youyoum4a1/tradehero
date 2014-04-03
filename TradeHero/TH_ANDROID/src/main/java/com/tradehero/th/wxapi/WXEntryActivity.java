@@ -65,7 +65,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_KEY = "type";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
-    private static final String WECHAT_SHARE_URL = "https://192.168.0.176/api/users/";
+    private static final String WECHAT_SHARE_URL = "https://www.tradehero.mobi/api/users/";
 
     private IWXAPI api;
     private int mMsgType;

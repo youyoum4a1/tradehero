@@ -36,5 +36,5 @@ public class Constants
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
 
     //WeChat
-    public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";
+    public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";
 }
