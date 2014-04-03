@@ -4,6 +4,7 @@ import android.content.Context;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.api.security.SecurityId;
 
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import java.util.HashMap;
@@ -51,6 +52,21 @@ public class THLocalyticsSession extends LocalyticsSession
         if (securityId != null)
         {
             dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY, String.format(SECURITY_ID_FORMAT, securityId.exchange, securityId.securitySymbol));
+        }
+    }
+
+    public void tagEvent(String event, TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        Map<String, String> dic = new HashMap<>();
+        populate(dic, trendingFilterTypeDTO);
+        super.tagEvent(event, dic);
+    }
+
+    private void populate(Map<String, String> dic, TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        if (trendingFilterTypeDTO != null)
+        {
+            dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
         }
     }
 }
