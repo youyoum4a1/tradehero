@@ -10,10 +10,25 @@ public class FollowerSummaryDTO implements DTO
 
     public List<UserFollowerDTO> userFollowers;
     public double totalRevenue;
+    //TODO
     public HeroPayoutSummaryDTO payoutSummary;
+
+
+    public int paidFollowerCount;
+
+    public int freeFollowerCount;
 
     public FollowerSummaryDTO()
     {
         super();
+    }
+
+    @Override public String toString()
+    {
+        if (userFollowers != null)
+        {
+            return String.format("userFollowers:%d,paidFollowerCount:%d,freeFollowerCount:%d",userFollowers.size(),paidFollowerCount,freeFollowerCount);
+        }
+        return String.format("userFollowers is null,paidFollowerCount:%d,freeFollowerCount:%d",userFollowers.size(),paidFollowerCount,freeFollowerCount);
     }
 }

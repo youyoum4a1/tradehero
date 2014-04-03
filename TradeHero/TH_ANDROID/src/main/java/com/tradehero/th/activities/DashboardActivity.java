@@ -3,6 +3,8 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -24,6 +26,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -31,6 +34,7 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.AppContainerImpl;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -41,7 +45,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity
+        implements DashboardNavigatorActivity,AppContainerImpl.OnResideMenuItemClickListener
 {
     private DashboardNavigator navigator;
 
@@ -93,6 +97,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        //navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.main_fragment);
+
+        //navigator.replaceTab(null,DashboardTabType.TRENDING);
+        //currentTab = DashboardTabType.TRENDING;
     }
 
     @Override
@@ -266,5 +274,30 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
+    }
+
+    private DashboardTabType currentTab = DashboardTabType.TRENDING;
+
+    /**
+     * @deprecated
+     * @param tabType
+     */
+    @Override public void onResideMenuItemClick(DashboardTabType tabType)
+    {
+        switch (tabType) {
+            case TRENDING:
+                break;
+            case PORTFOLIO:
+                break;
+            case STORE:
+                break;
+            default:
+                break;
+        }
+        if (currentTab != tabType) {
+            navigator.replaceTab(currentTab,tabType);
+            currentTab = tabType;
+        }
+
     }
 }

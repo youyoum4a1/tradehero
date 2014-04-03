@@ -2,15 +2,19 @@ package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
@@ -18,7 +22,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class FollowerListItemView extends RelativeLayout implements DTOView<UserFollowerDTO>
+public class FollowerListItemView extends RelativeLayout implements DTOView<UserFollowerDTO>,View.OnClickListener
 {
     public static final String TAG = FollowerListItemView.class.getName();
 
@@ -58,6 +62,42 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
                     .transform(peopleIconTransformation)
                     .into(userIcon);
         }
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (userIcon != null)
+        {
+            userIcon.setOnClickListener(this);
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+        if (userIcon != null)
+        {
+            userIcon.setOnClickListener(null);
+        }
+    }
+
+
+    @Override public void onClick(View v)
+    {
+        if (v.getId() == R.id.follower_profile_picture)
+        {
+            if (userFollowerDTO != null)
+            {
+                handleUserIconClicked();
+            }
+        }
+    }
+
+    private void handleUserIconClicked(){
+        THToast.show(String.format("user icon click %s",
+                userFollowerDTO.displayName));
+        TimelineFragment.viewProfile((DashboardActivity) getContext(), userFollowerDTO.id);
     }
 
     private void initViews()
@@ -131,5 +171,6 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
             }
         }
     }
+
     //</editor-fold>
 }

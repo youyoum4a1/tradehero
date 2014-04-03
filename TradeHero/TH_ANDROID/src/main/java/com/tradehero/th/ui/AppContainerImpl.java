@@ -32,6 +32,7 @@ public class AppContainerImpl implements AppContainer
 
     @Override public ViewGroup get(final Activity activity)
     {
+        //activity.setContentView(R.layout.residemenu_main);
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
@@ -64,9 +65,17 @@ public class AppContainerImpl implements AppContainer
             menuItem.setOnClickListener(menuItemClickListener);
         }
 
+        if (activity instanceof OnResideMenuItemClickListener) {
+            mOnResideMenuItemClickListener = ((OnResideMenuItemClickListener)activity);
+        }
         return findById(activity, android.R.id.content);
     }
 
+
+    private OnResideMenuItemClickListener mOnResideMenuItemClickListener;
+    public interface OnResideMenuItemClickListener {
+        void onResideMenuItemClick(DashboardTabType tabType);
+    }
     /**
      * TODO this is a hack due to time constraint
      * @param context
@@ -90,7 +99,10 @@ public class AppContainerImpl implements AppContainer
     {
         @Override public void onClick(View v)
         {
+            //mOnResideMenuItemClickListener.onResideMenuItemClick(tabType);
             resideMenu.closeMenu();
+
         }
+
     }
 }

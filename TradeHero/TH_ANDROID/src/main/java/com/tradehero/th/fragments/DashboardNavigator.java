@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.r11.app.FragmentTabHost;
 import android.view.View;
 import android.view.animation.Animation;
@@ -154,6 +155,76 @@ public class DashboardNavigator extends Navigator
 
         mTabHost.addTab(makeNewTabSpec(tabType), tabType.fragmentClass, bundle);
     }
+
+    public String makeFragmentName(DashboardTabType tabType)
+    {
+        return "TH-tab:"+tabType.ordinal();
+    }
+
+    @Override
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim,
+            String backStackName)
+    {
+        return super.pushFragment(fragmentClass, args, anim, backStackName);
+    }
+
+    /**
+     * Yes ,a better way is to use FragmentTabHost to manage the fragments and their states.
+     * @param currentTab
+     * @param targetTabType
+     */
+    public void replaceTab(DashboardTabType currentTab, DashboardTabType targetTabType)
+    {
+        if (false) {
+            FragmentTransaction ft = manager.beginTransaction();
+            String name = makeFragmentName(targetTabType);
+            Fragment targetFragment = manager.findFragmentByTag(name);
+            Fragment currentragment = null;
+            if (currentTab != null) {
+                currentragment = manager.findFragmentByTag(makeFragmentName(currentTab));
+            }
+            if (currentragment != null)
+            {
+                ft.detach(currentragment);
+                Timber.d("replaceTab detach currentragment %s",currentragment);
+            }
+            if (targetFragment != null)
+            {
+                ft.attach(targetFragment);
+                Timber.d("replaceTab attach targetFragment %s",targetFragment);
+            }
+            else
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringResId));
+                targetFragment =
+                        Fragment.instantiate(activity, targetTabType.fragmentClass.getName(), bundle);
+                ft.add(R.id.main_fragment, targetFragment, name);
+                Timber.d("replaceTab add targetFragment %s",targetFragment);
+            }
+            ft.commit();
+
+        } else {
+            //resideMenu.clearIgnoredViewList();
+
+            Timber.d("replaceTab replace findFragmentById %s",manager.findFragmentById(R.id.main_fragment));
+            Bundle bundle = new Bundle();
+            bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringResId));
+            Fragment targetFragment =
+                    Fragment.instantiate(activity, targetTabType.fragmentClass.getName(), bundle);
+            manager
+                    .beginTransaction()
+                    .replace(R.id.main_fragment, targetFragment, "fragment")
+                    //.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+
+            Timber.d("replaceTab replace targetFragment %s,findFragmentById:%s",targetFragment,manager.findFragmentById(R.id.main_fragment));
+        }
+
+
+
+    }
+
 
     public void goToPage(final THIntent thIntent)
     {
