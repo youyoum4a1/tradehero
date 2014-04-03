@@ -1,12 +1,20 @@
 package com.tradehero.common.billing.samsung;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by xavier on 2014/4/2.
  */
 public class SamsungPurchaseDTO
 {
+    @JsonProperty("samsung_item_id")
     public String itemId;
+
+    @JsonProperty("samsung_payment_id")
     public String paymentId;
+
+    @JsonProperty("samsung_product_code")
     public String productCode;
 
     public SamsungPurchaseDTO()
