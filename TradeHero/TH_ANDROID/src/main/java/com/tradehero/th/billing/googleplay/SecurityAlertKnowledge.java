@@ -27,7 +27,7 @@ import javax.inject.Singleton;
         {
             return R.drawable.buy_alerts_2;
         }
-        else if (count <= 5)
+        else if (count <= 5 || count == 7)//temp for bug ,alex
         {
             return R.drawable.buy_alerts_5;
         }
