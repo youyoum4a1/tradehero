@@ -1,12 +1,12 @@
-package com.tradehero.common.billing.samsung;
+package com.tradehero.th.api.billing;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.common.billing.samsung.SamsungPurchase;
 
 /**
  * Created by xavier on 2014/4/2.
  */
-public class SamsungPurchaseDTO
+public class SamsungPurchaseReportDTO implements PurchaseReportDTO
 {
     public static final String PAYMENT_ID_JSON_KEY = "samsung_payment_id";
     public static final String PURCHASE_ID_JSON_KEY = "samsung_purchase_id";
@@ -19,12 +19,12 @@ public class SamsungPurchaseDTO
     @JsonProperty(PRODUCT_CODE_JSON_KEY)
     public String productCode;
 
-    public SamsungPurchaseDTO()
+    public SamsungPurchaseReportDTO()
     {
         super();
     }
 
-    public SamsungPurchaseDTO(SamsungPurchase samsungPurchase)
+    public SamsungPurchaseReportDTO(SamsungPurchase samsungPurchase)
     {
         super();
         paymentId = samsungPurchase.getPaymentId();

@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -234,29 +233,15 @@ import retrofit.RetrofitError;
         return middleCallbackFollowUser;
     }
 
-    public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO follow(UserBaseKey userBaseKey, PurchaseReportDTO purchaseReportDTO)
     {
-        return userService.follow(userBaseKey.key, purchaseDTO);
+        return userService.follow(userBaseKey.key, purchaseReportDTO);
     }
 
-    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, PurchaseReportDTO purchaseReportDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
-        return middleCallbackFollowUser;
-    }
-
-    @Deprecated // TODO create on server
-    public UserProfileDTO follow(UserBaseKey userBaseKey, SamsungPurchaseDTO purchaseDTO)
-    {
-        return userService.follow(userBaseKey.key, purchaseDTO);
-    }
-
-    @Deprecated // TODO create on server
-    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
-    {
-        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
+        userServiceAsync.follow(userBaseKey.key, purchaseReportDTO, middleCallbackFollowUser);
         return middleCallbackFollowUser;
     }
     //</editor-fold>

@@ -1,19 +1,21 @@
-package com.tradehero.common.billing.googleplay;
+package com.tradehero.th.api.billing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 11:31 AM To change this template use File | Settings | File Templates. */
-public class GooglePlayPurchaseDTO
+public class GooglePlayPurchaseReportDTO implements PurchaseReportDTO
 {
-    public static final String TAG = GooglePlayPurchaseDTO.class.getSimpleName();
+    public static final String DATA_JSON_KEY = "google_play_data";
+    public static final String SIGNATURE_JSON_KEY = "google_play_signature";
 
     // Pass it back as the original JSON
-    @JsonProperty("google_play_data")
+    @JsonProperty(DATA_JSON_KEY)
     public final String googlePlayData;
-    @JsonProperty("google_play_signature")
+    @JsonProperty(SIGNATURE_JSON_KEY)
     public final String googlePlaySignature;
 
-    public GooglePlayPurchaseDTO(final String googlePlayData, final String googlePlaySignature)
+    public GooglePlayPurchaseReportDTO(final String googlePlayData,
+            final String googlePlaySignature)
     {
         this.googlePlayData = googlePlayData;
         this.googlePlaySignature = googlePlaySignature;

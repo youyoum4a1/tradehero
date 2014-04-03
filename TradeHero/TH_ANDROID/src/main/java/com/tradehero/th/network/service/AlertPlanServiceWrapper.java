@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
+import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ import retrofit.Callback;
     //<editor-fold desc="Check Alert Plan Attribution">
     public AlertPlanStatusDTO checkAlertPlanAttribution(
             UserBaseKey userBaseKey,
-            GooglePlayPurchaseDTO googlePlayPurchaseDTO)
+            GooglePlayPurchaseReportDTO googlePlayPurchaseDTO)
     {
         return alertPlanService.checkAlertPlanAttribution(
                 userBaseKey.key,
@@ -34,7 +34,7 @@ import retrofit.Callback;
 
     public void checkAlertPlanAttribution(
             UserBaseKey userBaseKey,
-            GooglePlayPurchaseDTO googlePlayPurchaseDTO,
+            GooglePlayPurchaseReportDTO googlePlayPurchaseDTO,
             Callback<AlertPlanStatusDTO> callback)
     {
         alertPlanService.checkAlertPlanAttribution(
@@ -47,7 +47,7 @@ import retrofit.Callback;
     @Deprecated // TODO set in server
     public AlertPlanStatusDTO checkAlertPlanAttribution(
             UserBaseKey userBaseKey,
-            SamsungPurchaseDTO purchaseDTO)
+            SamsungPurchaseReportDTO purchaseDTO)
     {
         return alertPlanService.checkAlertPlanAttributionSamsung(
                 userBaseKey.key,
@@ -58,7 +58,7 @@ import retrofit.Callback;
     @Deprecated // TODO set in server
     public void checkAlertPlanAttribution(
             UserBaseKey userBaseKey,
-            SamsungPurchaseDTO purchaseDTO,
+            SamsungPurchaseReportDTO purchaseDTO,
             Callback<AlertPlanStatusDTO> callback)
     {
         alertPlanService.checkAlertPlanAttributionSamsung(

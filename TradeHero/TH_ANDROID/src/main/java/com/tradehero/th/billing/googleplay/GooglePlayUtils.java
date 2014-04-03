@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.BillingUtils;
 import com.tradehero.th.utils.StringUtils;
@@ -35,7 +35,7 @@ public class GooglePlayUtils
 
         if (purchase != null)
         {
-            GooglePlayPurchaseDTO googlePlayPurchaseDTO = purchase.getGooglePlayPurchaseDTO();
+            GooglePlayPurchaseReportDTO googlePlayPurchaseDTO = purchase.getGooglePlayPurchaseDTO();
             reported.add("data:");
             reported.add(googlePlayPurchaseDTO.googlePlayData);
             reported.add("signature:");

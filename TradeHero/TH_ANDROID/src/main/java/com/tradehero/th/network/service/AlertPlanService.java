@@ -1,9 +1,8 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
@@ -32,25 +31,12 @@ public interface AlertPlanService
     @POST("/users/{userId}/alertPlans")
     UserProfileDTO subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body PurchaseReportDTO purchaseReportDTO);
 
     @POST("/users/{userId}/alertPlans")
     void subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
-
-    @Deprecated // TODO set on server
-    @POST("/users/{userId}/alertPlans")
-    UserProfileDTO subscribeToAlertPlan(
-            @Path("userId") int userId,
-            @Body SamsungPurchaseDTO purchaseDTO);
-
-    @Deprecated // TODO set on server
-    @POST("/users/{userId}/alertPlans")
-    void subscribeToAlertPlan(
-            @Path("userId") int userId,
-            @Body SamsungPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

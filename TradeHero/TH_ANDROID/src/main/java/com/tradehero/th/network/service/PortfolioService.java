@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -50,30 +49,15 @@ public interface PortfolioService
     UserProfileDTO resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO)
+            @Body PurchaseReportDTO purchaseReportDTO)
         throws RetrofitError;
 
+    @Deprecated // TODO move to Async
     @POST("/users/{userId}/portfolios/{portfolioId}/reset")
     void resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
-
-    @Deprecated // TODO create on server
-    @POST("/users/{userId}/portfolios/{portfolioId}/reset")
-    UserProfileDTO resetPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body SamsungPurchaseDTO purchaseDTO)
-        throws RetrofitError;
-
-    @Deprecated // TODO create on server
-    @POST("/users/{userId}/portfolios/{portfolioId}/reset")
-    void resetPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body SamsungPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -82,30 +66,15 @@ public interface PortfolioService
     UserProfileDTO addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO)
+            @Body PurchaseReportDTO purchaseReportDTO)
         throws RetrofitError;
 
+    @Deprecated // TODO move to Async
     @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
     void addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
-
-    @Deprecated // TODO implement in server
-    @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
-    UserProfileDTO addCash(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body SamsungPurchaseDTO purchaseDTO)
-            throws RetrofitError;
-
-    @Deprecated // TODO implement in server
-    @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
-    void addCash(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body SamsungPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

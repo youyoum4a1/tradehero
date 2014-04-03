@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.samsung.SamsungPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -58,69 +57,39 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Reset Cash">
-    public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, PurchaseReportDTO purchaseReportDTO)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
-        return this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+        return this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId,
+                purchaseReportDTO);
     }
 
-    public void resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
+    public void resetPortfolio(OwnedPortfolioId ownedPortfolioId, PurchaseReportDTO purchaseReportDTO, Callback<UserProfileDTO>  callback)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
-        this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, callback);
-    }
-
-    @Deprecated // TODO create on server
-    public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO)
-        throws RetrofitError
-    {
-        basicCheck(ownedPortfolioId);
-        return this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
-    }
-
-    @Deprecated // TODO create on server
-    public void resetPortfolio(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
-        throws RetrofitError
-    {
-        basicCheck(ownedPortfolioId);
-        this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, callback);
+        this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId,
+                purchaseReportDTO, callback);
     }
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
-    public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, PurchaseReportDTO purchaseReportDTO)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
-        return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+        return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId,
+                purchaseReportDTO);
     }
 
-    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
+    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, PurchaseReportDTO purchaseReportDTO, Callback<UserProfileDTO>  callback)
         throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
         MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);
-        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallbackAddCash);
-        return middleCallbackAddCash;
-    }
-
-    @Deprecated // TODO implement in server
-    public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO)
-        throws RetrofitError
-    {
-        basicCheck(ownedPortfolioId);
-        return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
-    }
-
-    @Deprecated // TODO implement in server
-    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, SamsungPurchaseDTO purchaseDTO, Callback<UserProfileDTO>  callback)
-        throws RetrofitError
-    {
-        basicCheck(ownedPortfolioId);
-        MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);
-        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallbackAddCash);
+        this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId,
+                purchaseReportDTO, middleCallbackAddCash);
         return middleCallbackAddCash;
     }
     //</editor-fold>

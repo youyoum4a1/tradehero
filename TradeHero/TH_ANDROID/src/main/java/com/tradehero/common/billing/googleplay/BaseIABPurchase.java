@@ -18,7 +18,6 @@ package com.tradehero.common.billing.googleplay;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONException;
 import org.json.JSONObject;
-import timber.log.Timber;
 
 /**
  * Represents an in-app billing purchase.
@@ -116,25 +115,6 @@ abstract public class BaseIABPurchase<
     @Override public String getSignature()
     {
         return this.signature;
-    }
-
-    @Override public GooglePlayPurchaseDTO getGooglePlayPurchaseDTO()
-    {
-        String signature = this.signature;
-        if (signature != null)
-        {
-            // Test its length is a multiple of 4
-            int remainderFour = this.signature.length() % 4;
-            if (remainderFour != 0)
-            {
-                Timber.e(new IllegalArgumentException("Patching Google purchase signature that was not of the right length " + signature.length() + " " + this.originalJson + " " + signature), "");
-                for (int i = 0; i < 4 - remainderFour; i++)
-                {
-                    signature += "=";
-                }
-            }
-        }
-        return new GooglePlayPurchaseDTO(this.originalJson, signature);
     }
 
     @Override public String toString()

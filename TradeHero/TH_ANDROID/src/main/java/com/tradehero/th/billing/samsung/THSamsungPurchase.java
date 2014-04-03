@@ -4,6 +4,7 @@ import com.sec.android.iap.lib.vo.InboxVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
@@ -71,4 +72,10 @@ public class THSamsungPurchase
     {
         this.applicablePortfolioId = applicablePortfolioId;
     }
+
+    public SamsungPurchaseReportDTO getPurchaseDTO()
+    {
+        return new SamsungPurchaseReportDTO(this);
+    }
+
 }
