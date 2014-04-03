@@ -2,6 +2,7 @@ package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.updatecenter.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.NotificationsView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import dagger.Module;
@@ -22,6 +23,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 UpdateCenterFragment.class,
                 NotificationsView.class,
+                NotificationItemView.class,
         },
         complete = false,
         library = true
