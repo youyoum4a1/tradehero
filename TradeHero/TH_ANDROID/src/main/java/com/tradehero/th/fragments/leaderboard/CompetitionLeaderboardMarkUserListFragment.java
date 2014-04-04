@@ -66,6 +66,16 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
     }
 
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem filterMenu = menu.findItem(R.id.button_leaderboard_filter);
+        if (filterMenu != null)
+        {
+            filterMenu.setVisible(false);
+        }
+    }
+
     @Override protected int getHeaderViewResId()
     {
         return R.layout.leaderboard_listview_header_competition;

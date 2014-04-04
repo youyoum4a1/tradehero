@@ -90,4 +90,5 @@ public class LocalyticsConstants
     public static final String Trade_Sell = "Trade/Sell";//
 
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
+    public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
 }

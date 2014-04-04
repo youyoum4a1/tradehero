@@ -36,6 +36,10 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         this.inflater = LayoutInflater.from(context);
         this.providerDTO = providerDTO;
         this.leaderboardMarkUserListAdapter = leaderboardMarkUserListAdapter;
+        if (leaderboardMarkUserListAdapter != null && leaderboardMarkUserListAdapter.getCount() > 0)
+        {
+            generateExtraTile();
+        }
     }
 
     @Override public void notifyDataSetChanged()

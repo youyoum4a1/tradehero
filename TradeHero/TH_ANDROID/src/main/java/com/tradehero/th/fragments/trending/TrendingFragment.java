@@ -164,7 +164,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trending);
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trade);
 
         // fetch user
         detachUserFetchTask();
