@@ -8,6 +8,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import timber.log.Timber;
 
 /**
  * Created by tradehero on 14-4-3.
@@ -60,6 +61,7 @@ public class TitleTabView extends RelativeLayout
 
     public void setTitle(String title)
     {
-        numberView.setText(title);
+        titleView.setText(title);
+        Timber.d("TitleTabView setTitle %s",title);
     }
 }

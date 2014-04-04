@@ -23,8 +23,6 @@ import timber.log.Timber;
 public class UpdateCenterFragment extends DashboardFragment
 {
 
-
-
     public static final String KEY_PAGE = "page";
 
 
@@ -49,6 +47,7 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         addTabs();
+        changeTabTitleNumber(0,80);
     }
 
 
@@ -100,6 +99,7 @@ public class UpdateCenterFragment extends DashboardFragment
             ActionBar.Tab tab = actionBar.newTab().setTabListener(
                     new TabListener(fragment));
             tab.setTag(tabTitle.id);
+            setTabStyle(tab);
             setTabTitleNumber(tab, tabTitle.titleRes, 0);
             actionBar.addTab(tab);
         }
@@ -116,19 +116,40 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void setTabTitleNumber(ActionBar.Tab tab, int titleRes, int number)
     {
-        String title = "";
-        title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
-        tab.setText(title);
+        String title ;
+        title = String.format(getSherlockActivity().getString(titleRes), number);
+        TitleTabView tabView =  (TitleTabView)tab.getCustomView();
+        tabView.setTitle(title);
 
+        tabView.setTitleNumber(number);
+    }
 
+    private void changeTabTitleNumber(int page,int number)
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        ActionBar.Tab tab = actionBar.getTabAt(page);
+        TitleTabView tabView = (TitleTabView)tab.getCustomView();
+        tabView.setTitleNumber(number);
     }
 
     private void setTabStyle(ActionBar.Tab tab)
     {
-        tab.setCustomView(R.layout.message_tab_item);
+
+        View v = LayoutInflater.from(getActivity())
+                .inflate(R.layout.message_tab_item, (ViewGroup)getActivity().getWindow().getDecorView(),false);
+
+        tab.setCustomView(v);
         TitleTabView tabView =  (TitleTabView)tab.getCustomView();
 
     }
+
+    TitleNumberCallback titleNumberCallback = new TitleNumberCallback()
+    {
+        @Override public void onTitleNumberChanged(int page, int number)
+        {
+            changeTabTitleNumber(page,number);
+        }
+    };
 
     public static interface TitleNumberCallback
     {
