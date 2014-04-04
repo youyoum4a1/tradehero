@@ -7,12 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -36,33 +33,15 @@ public class UpdateCenterFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
         addTabs();
     }
 
-
     @Override public void onDestroyView()
     {
+        clearTabs();
+
         super.onDestroyView();
-        clearTabs();
-    }
-
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        Timber.d("UpdateCenterFragment onCreateOptionsMenu");
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        Timber.d("UpdateCenterFragment onPrepareOptionsMenu");
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        clearTabs();
-        super.onDestroyOptionsMenu();
     }
 
     private void addTabs()
@@ -81,18 +60,13 @@ public class UpdateCenterFragment extends DashboardFragment
         for (UpdateCenterTabType tabTitle : types)
         {
             args.putInt(KEY_PAGE, tabTitle.pageIndex);
-            Fragment fragment =
-                    Fragment.instantiate(getActivity(), tabTitle.tabClass.getName(), args);
-            //fragment.setOnFollowersLoadedListener(onFollowersLoadedListener);
-            //Action Bar Tab must have a Callback
-            ActionBar.Tab tab = actionBar.newTab().setTabListener(
-                    new TabListener(fragment));
+            Fragment fragment = Fragment.instantiate(getActivity(), tabTitle.tabClass.getName(), args);
+            
+            ActionBar.Tab tab = actionBar.newTab().setTabListener(new TabListener(fragment));
             tab.setTag(tabTitle.id);
             setTabTitleNumber(tab, tabTitle.titleRes, 0);
             actionBar.addTab(tab);
         }
-
-        //Timber.d("%s,addTabs", TAG);
     }
 
     private void clearTabs()
@@ -107,20 +81,16 @@ public class UpdateCenterFragment extends DashboardFragment
         String title = "";
         title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
         tab.setText(title);
-
-
     }
 
     private void setTabStyle(ActionBar.Tab tab)
     {
         tab.setCustomView(R.layout.message_tab_item);
         TitleTabView tabView =  (TitleTabView)tab.getCustomView();
-
     }
 
     public static interface TitleNumberCallback
     {
-
         void onTitleNumberChanged(int page, int number);
     }
 
@@ -139,7 +109,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
         @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
         {
-
             ft.add(R.id.fragment_content, mFragment, mFragment.getTag());
         }
 
