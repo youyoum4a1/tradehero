@@ -61,7 +61,7 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             args.putInt(KEY_PAGE, tabTitle.pageIndex);
             Fragment fragment = Fragment.instantiate(getActivity(), tabTitle.tabClass.getName(), args);
-            
+
             ActionBar.Tab tab = actionBar.newTab().setTabListener(new TabListener(fragment));
             tab.setTag(tabTitle.id);
             setTabTitleNumber(tab, tabTitle.titleRes, 0);
