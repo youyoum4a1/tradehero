@@ -1,5 +1,6 @@
 package com.tradehero.th.ui;
 
+import com.tradehero.th.fragments.discussion.stock.StockDiscussion;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
@@ -7,10 +8,13 @@ import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.persistence.message.MessageListCache;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -36,7 +40,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 MessagesView.class,
                 MessageItemView.class,
-                SendMessageFragment.class
+                SendMessageFragment.class,
+                StockDiscussion.class,
         },
         complete = false,
         library = true

@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.fragments.discussion.stock.StockDiscussion;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
@@ -93,7 +94,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
                     populateForChartFragment(args);
                     break;
                 case 1:
-                    fragment = new StockInfoValueFragment();
+                    fragment = new StockDiscussion();
                     break;
                 case 2:
                     fragment = new NewsTitleListFragment();
