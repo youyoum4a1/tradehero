@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter;
+package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import timber.log.Timber;
 
 /**
@@ -15,19 +16,13 @@ import timber.log.Timber;
  */
 public class MessagesCenterFragment extends DashboardFragment
 {
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         Timber.d("MessagesCenterFragment onCreateOptionsMenu");
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         TextView textView = new TextView(getActivity());
         textView.setText("Hello world");
@@ -39,5 +34,10 @@ public class MessagesCenterFragment extends DashboardFragment
     public void setTitleNumberCallback(UpdateCenterFragment.TitleNumberCallback callback)
     {
         this.callback = callback;
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
     }
 }

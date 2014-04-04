@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter.view;
+package com.tradehero.th.fragments.updatecenter;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -14,8 +14,8 @@ import com.tradehero.th.R;
  */
 public class TitleTabView extends RelativeLayout
 {
-    @InjectView(R.id.tab_tilte)TextView titleView;
-    @InjectView(R.id.tab_tilte_number)TextView numberView;
+    @InjectView(R.id.tab_tilte) TextView titleView;
+    @InjectView(R.id.tab_tilte_number) TextView numberView;
 
     public TitleTabView(Context context)
     {
@@ -41,7 +41,6 @@ public class TitleTabView extends RelativeLayout
     private void init()
     {
         ButterKnife.inject(this);
-
     }
 
     public void setTitleNumber(int number)

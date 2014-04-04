@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter;
+package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.view.LayoutInflater;

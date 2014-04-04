@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.updatecenter;
 
 import android.os.Bundle;
-import com.tradehero.th.fragments.updatecenter.view.TitleTabView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -13,8 +12,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import timber.log.Timber;
 
 /**
@@ -22,16 +19,7 @@ import timber.log.Timber;
  */
 public class UpdateCenterFragment extends DashboardFragment
 {
-
-
-
     public static final String KEY_PAGE = "page";
-
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -89,8 +77,8 @@ public class UpdateCenterFragment extends DashboardFragment
             args = new Bundle();
         }
 
-        MessageType[] types = MessageType.values();
-        for (MessageType tabTitle : types)
+        UpdateCenterTabType[] types = UpdateCenterTabType.values();
+        for (UpdateCenterTabType tabTitle : types)
         {
             args.putInt(KEY_PAGE, tabTitle.pageIndex);
             Fragment fragment =
@@ -164,5 +152,10 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             //Toast.makeText(ActionBarTabs.this, "Reselected!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
     }
 }
