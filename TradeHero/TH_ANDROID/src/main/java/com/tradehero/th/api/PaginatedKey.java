@@ -5,6 +5,8 @@ package com.tradehero.th.api;
  */
 public interface PaginatedKey
 {
+    static final String PAGE = ".page";
+
     int getPage();
     PaginatedKey next();
     PaginatedKey next(int pages);
