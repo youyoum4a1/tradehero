@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.DiscussionKey;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -18,5 +19,10 @@ public class SecurityDiscussionAdapter extends ArrayDTOAdapter<DiscussionKey, Se
     @Override protected void fineTune(int position, DiscussionKey dto, SecurityDiscussionItemView dtoView)
     {
         // nothing for now
+    }
+
+    public void appendMore(DiscussionKeyList discussionKeyList)
+    {
+
     }
 }
