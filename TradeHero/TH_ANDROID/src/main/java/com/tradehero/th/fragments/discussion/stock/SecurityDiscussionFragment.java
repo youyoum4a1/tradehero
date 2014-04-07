@@ -12,9 +12,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 /**
  * Created by thonguyen on 4/4/14.
  */
-public class StockDiscussion extends DashboardFragment
+public class SecurityDiscussionFragment extends DashboardFragment
 {
-    @InjectView(R.id.stock_discussion_view) StockDiscussionView stockDiscussionView;
+    @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

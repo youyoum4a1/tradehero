@@ -1,6 +1,7 @@
 package com.tradehero.th.ui;
 
-import com.tradehero.th.fragments.discussion.stock.StockDiscussion;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
@@ -42,6 +43,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 MessageItemView.class,
                 SendMessageFragment.class,
                 StockDiscussion.class,
+                SecurityDiscussionView.class,
+                SecurityDiscussionFragment.class,
         },
         complete = false,
         library = true

@@ -9,19 +9,22 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionListKey;
 import com.tradehero.th.api.discussion.PaginatedDiscussionListKey;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
  * Created by thonguyen on 4/4/14.
  */
-public class StockDiscussionView extends BetterViewAnimator
+public class SecurityDiscussionView extends BetterViewAnimator
 {
     @InjectView(android.R.id.list) AbsListView securityDiscussionList;
     @InjectView(android.R.id.empty) View emptyView;
@@ -33,18 +36,19 @@ public class StockDiscussionView extends BetterViewAnimator
     private AbsListView.OnScrollListener securityDiscussionListScrollListener;
     private PaginatedDiscussionListKey paginatedSecurityDiscussionListKey;
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> securityDiscussionFetchTask;
-    private boolean loading;
     private DiscussionListKey discussionListKey;
-    private int nextPageDelta;
     private SecurityDiscussionFetchListener securityDiscussionFetchListener;
 
+    private boolean loading;
+    private int nextPageDelta;
+
     //<editor-fold desc="Constructors">
-    public StockDiscussionView(Context context)
+    public SecurityDiscussionView(Context context)
     {
         super(context);
     }
 
-    public StockDiscussionView(Context context, AttributeSet attrs)
+    public SecurityDiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
@@ -55,6 +59,7 @@ public class StockDiscussionView extends BetterViewAnimator
         super.onFinishInflate();
 
         ButterKnife.inject(this);
+        DaggerUtils.inject(this);
 
         discussionListKey = new DiscussionListKey();
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
@@ -85,6 +90,7 @@ public class StockDiscussionView extends BetterViewAnimator
         detachSecurityDiscussionFetchTask();
 
         securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, false, securityDiscussionFetchListener);
+        securityDiscussionFetchTask.execute();
     }
 
     private void detachSecurityDiscussionFetchTask()
@@ -137,19 +143,50 @@ public class StockDiscussionView extends BetterViewAnimator
             this.shouldAppend = shouldAppend;
         }
 
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
         {
-            
+            onFinish();
+
+            if (discussionKeyList != null)
+            {
+                nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+                if (shouldAppend)
+                {
+                    securityDiscussionAdapter.appendMore(discussionKeyList);
+                }
+                else
+                {
+                    securityDiscussionAdapter.setItems(discussionKeyList);
+                    securityDiscussionAdapter.notifyDataSetChanged();
+                }
+            }
         }
 
         @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
+            onFinish();
 
+            nextPageDelta = 0;
+
+            THToast.show(new THException(error));
+        }
+
+        private void onFinish()
+        {
+            loading = false;
+
+            setDisplayedChildByLayoutId(securityDiscussionList.getId());
         }
     }
 
     private int calculateThreshold(int totalItemCount, int visibleItemCount)
     {
-        return 0;
+        if (visibleItemCount > 0)
+        {
+            int segmentCount = totalItemCount / visibleItemCount;
+            return 1 + (32 - Integer.numberOfLeadingZeros(segmentCount));
+        }
+        return 2;
     }
 }
