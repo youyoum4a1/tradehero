@@ -29,9 +29,9 @@ public class NotificationItemView
         extends LinearLayout
         implements DTOView<NotificationKey>
 {
-    @InjectView(R.id.notification_content) TextView notificationContent;
+    @InjectView(R.id.discussion_content) TextView notificationContent;
     @InjectView(R.id.notification_user_picture) ImageView notificationPicture;
-    @InjectView(R.id.notification_time) TextView notificationTime;
+    @InjectView(R.id.discussion_time) TextView notificationTime;
 
     @Inject NotificationCache notificationCache;
     @Inject PrettyTime prettyTime;

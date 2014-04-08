@@ -1,6 +1,7 @@
 package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
@@ -33,7 +34,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NotificationsCenterFragment.class,
 
                 SecurityDiscussionView.class,
-                SecurityDiscussionFragment.class
+                SecurityDiscussionFragment.class,
+                SecurityDiscussionItemView.class
         },
         complete = false,
         library = true
