@@ -2,12 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.GetDiscussionsKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import retrofit.Callback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -49,7 +48,7 @@ import retrofit.Callback;
         return middleCallback;
     }
 
-    public PaginatedDTO<DiscussionDTO> getDiscussions(GetDiscussionsKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getDiscussions(PaginatedDiscussionListKey discussionsKey)
     {
         return discussionService.getDiscussions(
                 discussionsKey.inReplyToType.description,
@@ -75,7 +74,7 @@ import retrofit.Callback;
                 discussionVoteKey.voteDirection.description,middleCallback);
     }
 
-    public DiscussionDTO share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    public DiscussionDTO share(DiscussionListKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return discussionService.share(
                 discussionKey.inReplyToType.description,
@@ -83,7 +82,7 @@ import retrofit.Callback;
                 timelineItemShareRequestDTO);
     }
 
-    public void share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<DiscussionDTO> callback)
+    public void share(DiscussionListKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<DiscussionDTO>(callback);
         discussionServiceAsync.share(

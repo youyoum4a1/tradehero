@@ -6,7 +6,7 @@ import com.tradehero.th.api.discussion.VoteDirection;
 /**
  * Created by xavier on 3/7/14.
  */
-public class DiscussionVoteKey extends DiscussionKey
+public class DiscussionVoteKey extends DiscussionListKey
 {
     public final VoteDirection voteDirection;
 
@@ -23,7 +23,7 @@ public class DiscussionVoteKey extends DiscussionKey
                 (voteDirection == null ? 0 : voteDirection.hashCode());
     }
 
-    @Override protected boolean equalFields(DiscussionKey other)
+    @Override protected boolean equalFields(DiscussionListKey other)
     {
         return super.equalFields(other) &&
                 (other instanceof DiscussionVoteKey) &&

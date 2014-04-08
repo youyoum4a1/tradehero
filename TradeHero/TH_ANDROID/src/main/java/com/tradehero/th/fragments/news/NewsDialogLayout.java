@@ -16,7 +16,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -58,7 +58,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private NewsItemDTO newsItemDTO;
     private boolean mIsTranslateTitle;
 
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
     @Inject Lazy<TranslationServiceWrapper> translationServiceWrapperLazy;
 
     @Inject @ForWeChat SocialSharer wechatSharer;
@@ -191,10 +191,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
             default:
                 break;
         }
-        DiscussionKey key = new DiscussionKey(DiscussionType.NEWS, newsItemDTO.id);
-        discussionServiceWrapper.get()
-                .share(key, new TimelineItemShareRequestDTO(socialNetworkEnum),
-                        createShareRequestCallback(socialNetworkEnum));
+        DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS,newsItemDTO.id);
+        discussionServiceWrapperLazy.get().share(key, new TimelineItemShareRequestDTO(socialNetworkEnum),createShareRequestCallback(socialNetworkEnum));
     }
 
     private void shareNewsToWeChat()

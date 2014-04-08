@@ -73,8 +73,8 @@ public class PaginatedNotificationListKey extends NotificationListKey
             generatedMap = new HashMap<>();
         }
 
-        generatedMap.put("page", page);
-        generatedMap.put("perPage", DEFAULT_PER_PAGE);
+        generatedMap.put(PaginatedKey.JSON_PAGE, page);
+        generatedMap.put(PaginatedKey.JSON_PERPAGE, DEFAULT_PER_PAGE);
         return generatedMap;
     }
 }
