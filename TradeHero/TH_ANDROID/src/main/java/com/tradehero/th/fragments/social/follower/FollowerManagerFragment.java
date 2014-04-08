@@ -96,6 +96,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
 
     public static final String KEY_PAGE = "key_page";
+    public static final String KEY_ID = "key_id";
 
     public static final String TAG = FollowerManagerFragment.class.getSimpleName();
 
@@ -144,10 +145,15 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         //setMessageLayoutShown(false);
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        saveSelectedTab();
+    }
+
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        saveSelectedTab();
         clearTabs();
     }
 
@@ -207,6 +213,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE,type.pageIndex);
+            args.putInt(KEY_ID,type.followerType.typeId);
             ActionBar.Tab tab = actionBar.newTab().setTabListener(
                     new MyTabListener(getSherlockActivity(),type.fragmentClass,type.toString(),args));
             tab.setTag(type.followerType.typeId);
@@ -392,6 +399,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         private FollowerManagerInfoFetcher infoFetcher;
 
         int page;
+        HeroType followerType;
 
         public FollowerManagerTabFragment()
         {
@@ -415,6 +423,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             super.onCreate(savedInstanceState);
             Bundle args = getArguments();
             this.page = args.getInt(KEY_PAGE);
+            this.followerType = HeroType.fromId(args.getInt(KEY_ID));
         }
 
         @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -477,10 +486,10 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             Timber.d("%s,FollowerManagerTabFragment onResume",TAG);
             this.followedId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWED_ID));
 
-            Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
-            int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
-
-            HeroType followerType = HeroType.fromId(tagId);
+            //May be null(getSelectedTab)
+            //Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
+            //int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
+            //HeroType followerType = HeroType.fromId(tagId);
             this.infoFetcher.fetch(this.followedId,followerType);
         }
 
