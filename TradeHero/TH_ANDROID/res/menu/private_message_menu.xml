@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/private_message_menu_elements"
+            android:actionLayout="@layout/menu_elements_private_message"
+            android:visible="true"
+            android:showAsAction="always"
+            android:enabled="false"
+            />
+
+</menu>
