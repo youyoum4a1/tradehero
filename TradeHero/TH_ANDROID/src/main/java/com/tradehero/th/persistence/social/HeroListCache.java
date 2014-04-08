@@ -99,15 +99,15 @@ import javax.inject.Singleton;
 
                 if (forAllHeros)
                 {
-                    heroIdExt.getPaied = heroDTO.paid;
+                    heroIdExt.getPaied = heroDTO.isFreeFollow;
                     heroIds.add(heroIdExt);
                 }
-                else if (forHerosGetPaied && heroDTO.paid)
+                else if (forHerosGetPaied && heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaied = true;
                     heroIds.add(heroIdExt);
                 }
-                else if (!forAllHeros && !forHerosGetPaied && !heroDTO.paid)
+                else if (!forAllHeros && !forHerosGetPaied && !heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaied = false;
                     heroIds.add(heroIdExt);
@@ -152,7 +152,7 @@ import javax.inject.Singleton;
             int totalCount = allHeros.size();
                 for(HeroDTO hero:allHeros)
                 {
-                    if (hero.paid)
+                    if (hero.isFreeFollow)
                     {
                         paidCount += 1;
                     }

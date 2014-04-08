@@ -14,7 +14,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -38,34 +37,16 @@ public class UpdateCenterFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
         addTabs();
         changeTabTitleNumber(0, 80);
     }
 
-
     @Override public void onDestroyView()
     {
+        clearTabs();
+
         super.onDestroyView();
-        clearTabs();
-    }
-
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        Timber.d("UpdateCenterFragment onCreateOptionsMenu");
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        Timber.d("UpdateCenterFragment onPrepareOptionsMenu");
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        clearTabs();
-        super.onDestroyOptionsMenu();
     }
 
     private void addTabs()
@@ -94,8 +75,6 @@ public class UpdateCenterFragment extends DashboardFragment
             setTabTitleNumber(tab, tabTitle.titleRes, 0);
             actionBar.addTab(tab);
         }
-
-        //Timber.d("%s,addTabs", TAG);
     }
 
     private void clearTabs()
@@ -121,6 +100,7 @@ public class UpdateCenterFragment extends DashboardFragment
         ActionBar.Tab tab = actionBar.getTabAt(page);
         TitleTabView tabView = (TitleTabView)tab.getCustomView();
         tabView.setTitleNumber(number);
+
     }
 
     private void setTabStyle(ActionBar.Tab tab)
@@ -131,7 +111,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
         tab.setCustomView(v);
         TitleTabView tabView =  (TitleTabView)tab.getCustomView();
-
     }
 
     TitleNumberCallback titleNumberCallback = new TitleNumberCallback()
@@ -144,7 +123,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
     public static interface TitleNumberCallback
     {
-
         void onTitleNumberChanged(int page, int number);
     }
 
@@ -170,6 +148,16 @@ public class UpdateCenterFragment extends DashboardFragment
                 ft.attach(mFragment);
             }
 
+        }
+
+        @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
+        {
+            ft.remove(mFragment);
+        }
+
+        @Override public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
+        {
+            //Toast.makeText(ActionBarTabs.this, "Reselected!", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -75,6 +75,8 @@ public class NotificationItemView
     {
         detachNotificationFetchTask();
 
+        resetView();
+
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -120,6 +122,7 @@ public class NotificationItemView
 
     private void resetNotificationProfilePicture()
     {
+        picasso.cancelRequest(notificationPicture);
         picasso.load(R.drawable.superman_facebook)
                 .transform(userPhotoTransformation)
                 .into(notificationPicture);

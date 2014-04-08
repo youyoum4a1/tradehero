@@ -168,7 +168,6 @@
         android:textSize="16sp"
         android:textColor="@color/red"
         />
-
     <TextView
         android:id="@+id/vprice_as_of"
         style="@style/TH.SmallValue"
@@ -182,41 +181,39 @@
         android:textColor="#4e4e4e"
         android:layout_marginTop="-4dp"/>
 
-    <Button
-        android:id="@+id/btn_add_trigger"
-        android:layout_width="155dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_below="@id/logo_layout"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="5dp"
+        android:orientation="horizontal"
+        android:id="@+id/buy_sell_action_buttons"
         android:layout_marginTop="5dp"
-        android:textSize="14sp"
-        android:text="@string/stock_alert_add_alert"
-        android:background="#72ffd36b"
-        android:textColor="@color/tab_scroll_color"
-        android:textStyle="bold"
-        />
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        >
+      <Button
+          android:id="@+id/btn_add_trigger"
+          style="@style/TH.Btn_BuySell_Action"
 
-    <Button
-        android:id="@+id/btn_add_watch_list"
-        android:layout_width="160dp"
-        android:layout_height="38dp"
-        android:textSize="14sp"
-        android:layout_below="@id/logo_layout"
-        android:layout_toRightOf="@id/btn_add_trigger"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="1dp"
-        android:text="@string/watchlist_add_title"
-        android:textColor="@color/tab_scroll_color"
-        android:textStyle="bold"
-        />
+          android:text="@string/stock_alert_add_alert"
+          android:background="@color/button_yellow"
+          />
+
+      <Button
+          android:id="@+id/btn_add_watch_list"
+          style="@style/TH.Btn_BuySell_Action"
+
+          android:text="@string/watchlist_add_title"
+          android:background="@color/gray_normal"
+          />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/belt"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/btn_add_watch_list"
+        android:layout_below="@id/buy_sell_action_buttons"
         >
 
       <TextView

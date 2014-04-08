@@ -10,6 +10,8 @@ import com.special.ResideMenu.ResideMenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 import static butterknife.ButterKnife.findById;
@@ -56,31 +58,35 @@ public class AppContainerImpl implements AppContainer
             }
         };
 
-        resideMenu.getMenuItems().clear();
-        for (DashboardTabType tabType: DashboardTabType.values())
+        List<View> menuItems = new ArrayList<>();
+        for (DashboardTabType tabType : DashboardTabType.values())
         {
-            View menuItem = createMenuItemFromTabType(activity, tabType);
-            menuItem.setTag(tabType);
-            resideMenu.addMenuItem(menuItem);
-            menuItem.setOnClickListener(menuItemClickListener);
+            if (tabType.show)
+            {
+                View menuItem = createMenuItemFromTabType(activity, tabType);
+                menuItem.setTag(tabType);
+                menuItem.setOnClickListener(menuItemClickListener);
+                menuItems.add(menuItem);
+            }
         }
+        resideMenu.setMenuItems(menuItems);
 
-        if (activity instanceof OnResideMenuItemClickListener) {
-            mOnResideMenuItemClickListener = ((OnResideMenuItemClickListener)activity);
+        if (activity instanceof OnResideMenuItemClickListener)
+        {
+            mOnResideMenuItemClickListener = ((OnResideMenuItemClickListener) activity);
         }
         return findById(activity, android.R.id.content);
     }
 
-
     private OnResideMenuItemClickListener mOnResideMenuItemClickListener;
-    public interface OnResideMenuItemClickListener {
+
+    public interface OnResideMenuItemClickListener
+    {
         void onResideMenuItemClick(DashboardTabType tabType);
     }
+
     /**
      * TODO this is a hack due to time constraint
-     * @param context
-     * @param tabType
-     * @return
      */
     private View createMenuItemFromTabType(Context context, DashboardTabType tabType)
     {
@@ -101,8 +107,6 @@ public class AppContainerImpl implements AppContainer
         {
             //mOnResideMenuItemClickListener.onResideMenuItemClick(tabType);
             resideMenu.closeMenu();
-
         }
-
     }
 }
