@@ -32,4 +32,15 @@ public enum WXMessageType
         return type;
     }
 
+    static WXMessageType fromType(int type)
+    {
+        for (WXMessageType wxType: values())
+        {
+            if (wxType.type == type)
+            {
+                return wxType;
+            }
+        }
+        return null;
+    }
 }
