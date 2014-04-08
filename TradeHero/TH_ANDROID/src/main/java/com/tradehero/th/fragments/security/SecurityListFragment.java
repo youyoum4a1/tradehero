@@ -143,7 +143,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override
     public void onStart() {
         super.onStart();
-        Timber.d("Wangliang TrendingFragment onStart");
     }
 
     @Override public void onStop()

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.follower;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,21 +93,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
     }
 
-    public static enum MessageType
-    {
-        MESSAGE_TYPE_BROADCAST(0),
-        MESSAGE_TYPE_WHISPER(1);
 
-        public final int typeId;
-        private MessageType(int typeId)
-        {
-            this.typeId = typeId;
-        }
-        //
-    }
-    public static final String KEY_MESSAGE_TYPE = "msg_type";
-
-    public static final String KEY_FOLLOER_TYPE = "follower_type";
 
     public static final String KEY_PAGE = "key_page";
 
@@ -138,7 +125,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("%s,onCreateView",TAG);
+        Timber.d("%s,onCreateView", TAG);
         View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
         ButterKnife.inject(this, view);
         addTabs();
@@ -148,7 +135,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        setMessageLayoutShown(false);
+        setMessageLayoutShown(true);
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -172,11 +159,38 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
     private void setMessageLayoutShown(boolean shown)
     {
+        if (shown)
+        {
+            broadcastView.setOnClickListener(this);
+            whisperView.setOnClickListener(this);
+        }
+        else
+        {
+            broadcastView.setOnClickListener(null);
+            whisperView.setOnClickListener(null);
+        }
+        whisperView.setVisibility(View.GONE);
         messageLayout.setVisibility(shown ? View.VISIBLE : View.GONE);
     }
 
+    private void addTabs2()
+    {
+        //FragmentTabHost mTabHost = new FragmentTabHost(getActivity());
+        //mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment1);
+        //
+        //mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("Simple"),
+        //        FragmentStackSupport.CountingFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("Contacts"),
+        //        LoaderCursorSupport.CursorLoaderListFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec("custom").setIndicator("Custom"),
+        //        LoaderCustomSupport.AppListFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
+        //        LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
+    }
     private void addTabs()
     {
+        //TODO NestedFragments needs ChildFragmentManager
+        //http://developer.android.com/about/versions/android-4.2.html#NestedFragments
         int savedSelectedId = selectedId;
         ActionBar.Tab selectedTab = null;
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -208,7 +222,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             actionBar.selectTab(selectedTab);
         }
 
-        Timber.d("%s,addTabs",TAG);
+        Timber.d("%s,addTabs", TAG);
     }
 
     private void changetTabTitle(int page, int number)
@@ -234,7 +248,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         changetTabTitle(1,number2);
         changetTabTitle(2,number3);
 
-        Timber.d("%s,changetTabTitle result:%d,%d,%d",TAG,number1,number2,number3);
+        Timber.d("%s,changetTabTitle result:%d,%d,%d", TAG, number1, number2, number3);
     }
 
     private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
@@ -265,7 +279,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             if (!isDetached())
             {
                 //remove the function to send message
-                setMessageLayoutShown(false);
+                //setMessageLayoutShown(false);
                 changetTabTitle(value.paidFollowerCount,value.freeFollowerCount,(value.paidFollowerCount+value.freeFollowerCount));
             }
         }
@@ -276,10 +290,10 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         switch (v.getId())
         {
             case R.id.send_message_whisper:
-                goToMessagePage(MessageType.MESSAGE_TYPE_WHISPER.typeId);
+                goToMessagePage(SendMessageFragment.MessageType.MESSAGE_TYPE_WHISPER.typeId);
                 break;
             case R.id.send_message_broadcast:
-                goToMessagePage(MessageType.MESSAGE_TYPE_BROADCAST.typeId);
+                goToMessagePage(SendMessageFragment.MessageType.MESSAGE_TYPE_BROADCAST.typeId);
                 break;
             default:
                 break;
@@ -297,9 +311,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
         Bundle args = new Bundle();
 
-        args.putInt(KEY_MESSAGE_TYPE, messageType);
-        args.putInt(KEY_FOLLOER_TYPE, followerType.typeId);
-        args.putInt(KEY_MESSAGE_TYPE, followedId.key);
+        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType);
+        args.putInt(SendMessageFragment.KEY_FOLLOER_TYPE, followerType.typeId);
 
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
@@ -362,6 +375,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         public FreeFollowerFragment()
         {
         }
+
+
     }
 
 
@@ -392,6 +407,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         {
             return false;
         }
+
         //</editor-fold>
 
         @Override public void onCreate(Bundle savedInstanceState)

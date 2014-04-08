@@ -1,6 +1,7 @@
 package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
@@ -34,7 +35,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NotificationsCenterFragment.class,
 
                 MessagesView.class,
-                MessageItemView.class
+                MessageItemView.class,
+                SendMessageFragment.class
         },
         complete = false,
         library = true

@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
- * Created by tradehero on 14-4-3.
+ * Created by wangliang on 14-4-3.
  */
 public class MessagesCenterFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener

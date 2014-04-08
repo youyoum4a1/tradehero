@@ -9,6 +9,7 @@ import com.tradehero.th.api.messages.MessageDTO;
 import com.tradehero.th.api.messages.MessageDetailDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.persistence.MessageListTimeline;
+import com.tradehero.th.persistence.social.HeroType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.QueryMap;
@@ -66,6 +69,12 @@ public class MessageServiceWrapper
     public MessageDetailDTO getMessageDetail(int msgId)
     {
         return messageService.getMessageDetail(msgId);
+    }
+
+
+    public void createMessage(String message,int userId,HeroType heroType, Callback<Response> callback)
+    {
+        //messageService.createMessage();
     }
 
     private void saveTimeline(long timeline)
