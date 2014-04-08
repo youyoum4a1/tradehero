@@ -9,7 +9,7 @@ import dagger.Module;
  */
 @Module(
         includes = {
-                THSamsungModule.class,
+                THIABModule.class,
         },
         injects = {
         },
