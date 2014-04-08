@@ -9,6 +9,7 @@ import android.view.View;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
@@ -73,7 +74,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     {
         Fragment fragment;
         Bundle args = new Bundle();
-        args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        args.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 
         if (false && securityCompactDTO instanceof WarrantDTO && position == 0)//hide Warrant Info temp
         {

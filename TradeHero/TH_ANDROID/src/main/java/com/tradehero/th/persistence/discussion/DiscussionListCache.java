@@ -2,11 +2,15 @@ package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKey;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -31,9 +35,28 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
         this.discussionCache = discussionCache;
     }
 
-    @Override protected DiscussionKeyList fetch(DiscussionListKey key) throws Throwable
+    @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        // TODO
-        return null;
+        PaginatedDTO<DiscussionDTO> paginatedDiscussionDTO =
+                discussionService.get().getDiscussions(
+                        discussionListKey.inReplyToType, discussionListKey.inReplyToId, discussionListKey.toMap());
+
+        return putInternal(paginatedDiscussionDTO);
+    }
+
+    private DiscussionKeyList putInternal(PaginatedDTO<DiscussionDTO> paginatedDiscussionDTO)
+    {
+        List<DiscussionDTO> data = paginatedDiscussionDTO.getData();
+
+        DiscussionKeyList discussionKeys = new DiscussionKeyList();
+
+        for (DiscussionDTO discussionDTO: data)
+        {
+            DiscussionKey discussionKey = new DiscussionKey(discussionDTO.id);
+
+            discussionCache.get().put(discussionKey, discussionDTO);
+            discussionKeys.add(discussionKey);
+        }
+        return discussionKeys;
     }
 }

@@ -16,7 +16,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -162,7 +162,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 break;
 
         }
-        DiscussionKey key = new DiscussionKey(DiscussionType.NEWS,newsItemDTO.id);
+        DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS,newsItemDTO.id);
         discussionServiceWrapperLazy.get().share(key, new TimelineItemShareRequestDTO(socialNetworkEnum),createShareRequestCallback(socialNetworkEnum));
     }
 

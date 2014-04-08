@@ -6,6 +6,8 @@ import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionKey;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import javax.inject.Inject;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -13,6 +15,7 @@ import com.tradehero.th.api.discussion.DiscussionKey;
 public class SecurityDiscussionItemView extends LinearLayout
     implements DTOView<DiscussionKey>
 {
+    @Inject DiscussionCache discussionCache;
     private DiscussionKey discussionKey;
 
     //<editor-fold desc="Constructors">
