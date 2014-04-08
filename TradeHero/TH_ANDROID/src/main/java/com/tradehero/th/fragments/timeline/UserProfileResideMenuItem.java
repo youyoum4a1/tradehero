@@ -2,9 +2,8 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,21 +17,22 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
-
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
-public class UserProfileResideMenuItem extends BetterViewAnimator implements DTOView<UserProfileDTO>
+public class UserProfileResideMenuItem extends LinearLayout
+        implements DTOView<UserProfileDTO>
 {
     @InjectView(R.id.user_profile_avatar) ImageView userProfileAvatar;
     @InjectView(R.id.user_profile_display_name) TextView userDisplayName;
+    @InjectView(R.id.user_profile_roi) TextView userProfileRoi;
+    @InjectView(R.id.user_profile_side_menu_view) BetterViewAnimator sideMenuProfileView;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -95,25 +95,36 @@ public class UserProfileResideMenuItem extends BetterViewAnimator implements DTO
 
     @Override public void display(UserProfileDTO dto)
     {
-        this.userProfileDTO = dto;
         linkWith(dto, true);
 
-        setDisplayedChildByLayoutId(R.id.user_profile_view);
+        sideMenuProfileView.setDisplayedChildByLayoutId(R.id.user_profile_view);
     }
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
+        this.userProfileDTO = userProfileDTO;
+
         if (andDisplay)
         {
-            picasso.get().load(userProfileDTO.picture)
-                    .transform(userPhotoTransformation)
-                    .into(userProfileAvatar);
+            if (userProfileDTO != null)
+            {
+                picasso.get().load(userProfileDTO.picture)
+                        .transform(userPhotoTransformation)
+                        .into(userProfileAvatar);
 
-            userDisplayName.setText(userProfileDTO.displayName);
-        }
-        else
-        {
-            resetView();
+                userDisplayName.setText(userProfileDTO.displayName);
+
+                THSignedNumber thRoiSinceInception = new THSignedNumber(
+                        THSignedNumber.TYPE_PERCENTAGE,
+                        userProfileDTO.portfolio.roiSinceInception * 100);
+
+                userProfileRoi.setText(thRoiSinceInception.toString());
+                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+            }
+            else
+            {
+                resetView();
+            }
         }
     }
 
