@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="timeline_monitor">Monitor</string>
-  <string name="timeline_trade">Trade</string>
-  <string name="timeline_share">Share</string>
-  <string name="timeline_enable_stock_alert">Enable Stock Alert</string>
-  <string name="timeline_view_graph">View Graph</string>
-  <string name="timeline_post_to_social_network">Successfully posted to %s</string>
-  <string name="timeline_link_account">Account is not linked, please go to Settings and link %s account</string>
+    <string name="timeline_menu_edit">Edit</string>
+
+    <string name="timeline_monitor">Monitor</string>
+    <string name="timeline_trade">Trade</string>
+    <string name="timeline_share">Share</string>
+    <string name="timeline_enable_stock_alert">Enable Stock Alert</string>
+    <string name="timeline_view_graph">View Graph</string>
+    <string name="timeline_post_to_social_network">Successfully posted to %s</string>
+    <string name="timeline_link_account">Account is not linked, please go to Settings and link %s account</string>
 
 </resources>
