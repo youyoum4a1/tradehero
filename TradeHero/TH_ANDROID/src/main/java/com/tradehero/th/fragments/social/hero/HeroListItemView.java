@@ -40,6 +40,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -203,7 +204,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     {
         if (title != null)
         {
-            title.setText(UserBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
+            title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
         }
     }
 

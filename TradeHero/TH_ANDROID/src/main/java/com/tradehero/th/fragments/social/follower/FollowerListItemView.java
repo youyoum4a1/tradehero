@@ -33,6 +33,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="Constructors">
     public FollowerListItemView(Context context)
@@ -153,7 +154,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     {
         if (title != null)
         {
-            title.setText(UserBaseDTOUtil.getLongDisplayName(getContext(), userFollowerDTO));
+            title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), userFollowerDTO));
         }
     }
 

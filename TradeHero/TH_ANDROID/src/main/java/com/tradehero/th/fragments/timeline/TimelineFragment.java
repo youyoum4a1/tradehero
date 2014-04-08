@@ -55,6 +55,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -338,7 +339,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         if (this.actionBar != null)
         {
-            this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            this.actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
 
         displayActionBarTitle();
@@ -356,7 +357,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             if (shownProfile != null)
             {
-                actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+                actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
             }
             else
             {

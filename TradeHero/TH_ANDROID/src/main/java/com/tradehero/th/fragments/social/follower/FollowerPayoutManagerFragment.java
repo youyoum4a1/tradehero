@@ -48,6 +48,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     private DTOCache.Listener<FollowerId, UserFollowerDTO> userFollowerListener;
     private DTOCache.GetOrFetchTask<FollowerId, UserFollowerDTO> userFollowerFetchTask;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -160,7 +161,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected String getDisplayName()
     {
-        return UserBaseDTOUtil.getLongDisplayName(getActivity(), userFollowerDTO);
+        return userBaseDTOUtil.getLongDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)
