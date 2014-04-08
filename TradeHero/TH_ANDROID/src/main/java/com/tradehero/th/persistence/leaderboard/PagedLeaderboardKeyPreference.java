@@ -10,8 +10,6 @@ import javax.inject.Inject;
  */
 public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
 {
-    public static final String TAG = PagedLeaderboardKeyPreference.class.getSimpleName();
-
     @Inject public PagedLeaderboardKeyPreference(SharedPreferences preference, String key, Set<String> defaultValue)
     {
         super(preference, key, defaultValue);

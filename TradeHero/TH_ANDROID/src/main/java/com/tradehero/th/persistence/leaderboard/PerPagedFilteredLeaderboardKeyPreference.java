@@ -10,8 +10,6 @@ import javax.inject.Inject;
  */
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference
 {
-    public static final String TAG = PerPagedFilteredLeaderboardKeyPreference.class.getSimpleName();
-
     @Inject public PerPagedFilteredLeaderboardKeyPreference(SharedPreferences preference, String key, Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
