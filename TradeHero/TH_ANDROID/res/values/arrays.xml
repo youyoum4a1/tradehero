@@ -4,11 +4,13 @@
     <item>Prod</item>
     <item>Dev</item>
     <item>ThoPC</item>
+    <item>XavPC</item>
   </string-array>
 
   <string-array name="server_values">
     <item>https://www.tradehero.mobi/api/</item>
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
     <item>http://truongtho.noip.me/api/</item>
+    <item>http://192.168.1.10:1857/api/</item>
   </string-array>
 </resources>
