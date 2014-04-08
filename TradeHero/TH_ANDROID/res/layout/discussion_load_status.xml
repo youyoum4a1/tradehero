@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <TextView
+      android:id="@+id/discussion_load_status"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing"
+      android:gravity="center_horizontal"
+      android:padding="5dp"
+      android:background="@drawable/discussion_status_background"
+      android:text="@string/discussion_loading"
+      tools:text="Status will be here"
+      />
+</FrameLayout>

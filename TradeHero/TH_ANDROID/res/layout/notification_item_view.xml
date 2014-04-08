@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants">
+
+  <ImageView
+      android:id="@+id/notification_user_picture"
+      android:layout_width="60dp"
+      android:layout_height="60dp"
+      android:background="@drawable/layout_oval_gray"
+      android:padding="1dp"
+      android:src="@drawable/avatar"
+      android:layout_gravity="center_vertical"
+      android:contentDescription="@null"
+      />
+
+  <RelativeLayout android:id="@+id/main_content_wrapper"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/timeline_list_item_background"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing"
+      android:layout_marginTop="@dimen/timeline_side_spacing"
+      android:padding="@dimen/timeline_item_padding"
+      >
+
+    <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/notification_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip"
+        android:textColorLink="@color/timeline_item_link"
+        android:textColor="@color/timeline_item"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        tools:text="Tho Nguyen has become the best trader of the world!"
+        />
+
+    <TextView
+        android:id="@+id/notification_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/text_gray_normal"
+        android:textSize="@dimen/timeline_item_date"
+        android:layout_below="@id/notification_content"
+        tools:text="A moment ago"
+        />
+  </RelativeLayout>
+</com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView>

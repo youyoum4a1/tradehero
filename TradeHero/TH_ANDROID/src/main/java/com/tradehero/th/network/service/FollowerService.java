@@ -16,6 +16,8 @@ public interface FollowerService
             @Path("userId") int userId)
         throws RetrofitError;
 
+
+
     @GET("/followersSummary/{userId}")
     void getFollowersSummary(
             @Path("userId") int userId,

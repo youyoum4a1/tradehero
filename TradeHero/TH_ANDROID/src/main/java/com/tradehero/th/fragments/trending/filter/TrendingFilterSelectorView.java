@@ -132,6 +132,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     public void setUpExchangeSpinner(List<ExchangeDTO> exchangeDTOs)
     {
+        Timber.d("Filter setUpExchangeSpinner");
         this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
         Drawable[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
         Spinner exchangeSelection = mExchangeSelection;
@@ -187,12 +188,14 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void handlePreviousClicked()
     {
+        Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener handlePreviousClicked");
         apply(trendingFilterTypeDTO.getPrevious());
         notifyListenerChanged();
     }
 
     private void handleNextClicked()
     {
+        Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener handleNextClicked");
         apply(trendingFilterTypeDTO.getNext());
         notifyListenerChanged();
     }
@@ -214,6 +217,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
         {
+            Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener onItemSelected");
             if (trendingFilterTypeDTO == null)
             {
                 trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();

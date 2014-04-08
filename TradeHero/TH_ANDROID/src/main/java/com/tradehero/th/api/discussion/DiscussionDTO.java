@@ -1,6 +1,5 @@
 package com.tradehero.th.api.discussion;
 
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 
 /**
@@ -8,8 +7,6 @@ import com.tradehero.th.api.users.UserBaseDTO;
  */
 public class DiscussionDTO extends AbstractDiscussionDTO
 {
-    public static final String TAG = DiscussionDTO.class.getSimpleName();
-
     public String type; //probably not needed - should always be `DiscussionTypeEnum.COMMENT`
 
     public UserBaseDTO user;

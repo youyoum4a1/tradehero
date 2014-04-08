@@ -16,8 +16,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
@@ -217,7 +217,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         return subTimelineAdapter.getLoaderId();
     }
 
-    public LoaderManager.LoaderCallbacks<List<TimelineItem>> getLoaderTimelineCallback()
+    public LoaderManager.LoaderCallbacks<List<TimelineItemDTOKey>> getLoaderTimelineCallback()
     {
         return subTimelineAdapter.getLoaderCallback();
     }
@@ -232,24 +232,24 @@ public class MainTimelineAdapter extends ArrayAdapter
         throw new IllegalArgumentException("Context has to be FragmentActivity");
     }
 
-    public LoaderDTOAdapter.ListLoaderCallback<TimelineItem> createTimelineLoaderCallback(final Context context, final UserBaseKey shownUserBaseKey)
+    public LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOKey> createTimelineLoaderCallback(final Context context, final UserBaseKey shownUserBaseKey)
     {
-        return new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        return new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOKey>()
         {
-            @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
+            @Override public void onLoadFinished(ListLoader<TimelineItemDTOKey> loader, List<TimelineItemDTOKey> data)
             {
                 notifyDataSetChanged();
                 notifyLoadFinished();
             }
 
-            @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
+            @Override public ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
             {
                 return createTimelineLoader(context, shownUserBaseKey);
             }
         };
     }
 
-    private ListLoader<TimelineItem> createTimelineLoader(Context context, UserBaseKey shownUserBaseKey)
+    private ListLoader<TimelineItemDTOKey> createTimelineLoader(Context context, UserBaseKey shownUserBaseKey)
     {
         TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);

@@ -9,6 +9,7 @@ public class SecurityId implements Comparable, DTOKey, DTO
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
+    private final static String BUNDLE_KEY_ID = SecurityId.class.getName() + ".id";
 
     public final String exchange;
     public final String securitySymbol;

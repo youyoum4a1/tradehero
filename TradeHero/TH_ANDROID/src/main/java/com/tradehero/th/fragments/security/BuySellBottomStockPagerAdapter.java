@@ -52,7 +52,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         }
         else if (securityCompactDTO instanceof WarrantDTO)
         {
-            return 3;//4 hide warrant info temp
+            return 3;//4 hide warrant info temp by alex
         }
         else
         {

@@ -30,6 +30,8 @@ import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import timber.log.Timber;
+
 import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
@@ -111,6 +113,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+        Timber.d("Wangliang TrendingFragment onActivityCreated");
         prepareSecurityLoader();
     }
 
@@ -118,7 +121,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-
+        //may encounter NullPointerException
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
@@ -136,6 +139,12 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             listViewScrollListener.deactivate();
         }
         super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Timber.d("Wangliang TrendingFragment onStart");
     }
 
     @Override public void onStop()
@@ -177,6 +186,9 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         super.onDestroy();
     }
 
+    /**
+     * Intent to load securities.
+     */
     protected void prepareSecurityLoader()
     {
         getActivity().getSupportLoaderManager().initLoader(getSecurityIdListLoaderId(), null, new SecurityListLoaderCallback());
@@ -253,6 +265,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public void raiseFlag()
         {
             super.raiseFlag();
+            Timber.d("Wangliang SecurityListFlagNearEndScrollListener loadNextPage");
             loadNextPage();
         }
 
@@ -328,6 +341,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
         {
+            Timber.d("Wangliang onCreateLoader");
             if (id == getSecurityIdListLoaderId())
             {
                 SecurityListPagedLoader loader = new SecurityListPagedLoader(getActivity());
@@ -340,6 +354,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
         {
+            Timber.d("Wangliang onLoadFinished");
             handleSecurityItemReceived(securityIds);
 
             if (listViewScrollListener != null)

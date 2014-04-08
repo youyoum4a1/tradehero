@@ -96,6 +96,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         super.onCreate(savedInstanceState);
 
+        Timber.d("Wangliang TrendingFragment TrendingFragment");
         // Saved instance takes precedence
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO))
         {
@@ -123,6 +124,7 @@ public class TrendingFragment extends SecurityListFragment
                 {
                     @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
                     {
+                        Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
                         linkWith(value, true);
                     }
 
@@ -136,6 +138,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        Timber.d("Wangliang TrendingFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
         return view;
@@ -219,6 +222,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroyView()
     {
+        detachExchangeListFetchTask();
         detachProviderListTask();
         detachExchangeListFetchTask();
         detachUserFetchTask();
@@ -259,6 +263,8 @@ public class TrendingFragment extends SecurityListFragment
         }
         exchangeListCacheFetchTask = null;
     }
+
+
 
     @Override public void onDestroy()
     {
@@ -309,6 +315,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
     {
+        Timber.d("Filter linkWith linkWith");
         if (filterSelectorView != null && exchangeDTOs != null)
         {
             // We keep only those included in Trending and order by desc / name
@@ -321,6 +328,7 @@ public class TrendingFragment extends SecurityListFragment
                 }
             }
             Collections.sort(exchangeDTOList, new ExchangeDTODescriptionNameComparator());
+
 
             filterSelectorView.setUpExchangeSpinner(exchangeDTOList);
             filterSelectorView.apply(trendingFilterTypeDTO);
@@ -476,6 +484,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         @Override public void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO)
         {
+            Timber.d("Filter onFilterTypeChanged");
             if (trendingFilterTypeDTO == null)
             {
                 Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");

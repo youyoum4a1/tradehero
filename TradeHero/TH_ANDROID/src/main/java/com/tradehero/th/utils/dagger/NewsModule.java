@@ -1,5 +1,8 @@
 package com.tradehero.th.utils.dagger;
 
+import com.tradehero.th.fragments.news.NewsDetailFullView;
+import com.tradehero.th.fragments.news.NewsDetailSummaryView;
+import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
 import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.persistence.news.yahoo.YahooNewsHeadlineCache;
 import dagger.Module;
@@ -11,6 +14,9 @@ import javax.inject.Singleton;
  */
 @Module(
         injects = {
+                NewsDetailSummaryView.class,
+                NewsDetailFullView.class,
+                NewsDiscussionListLoader.class
         },
         complete = false,
         library = true

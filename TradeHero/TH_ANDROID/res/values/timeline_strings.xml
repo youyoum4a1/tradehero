@@ -11,4 +11,7 @@
     <string name="timeline_post_to_social_network">Successfully posted to %s</string>
     <string name="timeline_link_account">Account is not linked, please go to Settings and link %s account</string>
 
+  <string name="news_like">Like</string>
+  <string name="news_comment">Comment</string>
+
 </resources>

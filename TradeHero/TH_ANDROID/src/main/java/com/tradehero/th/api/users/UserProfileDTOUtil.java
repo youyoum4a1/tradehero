@@ -13,8 +13,6 @@ import javax.inject.Inject;
  */
 public class UserProfileDTOUtil
 {
-    public static final String TAG = UserProfileDTOUtil.class.getSimpleName();
-
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 

@@ -6,8 +6,11 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.GetDiscussionsKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import retrofit.Callback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import retrofit.Callback;
 
 /**
  * Created by xavier on 3/7/14.
@@ -28,6 +31,24 @@ import javax.inject.Singleton;
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
     // TODO add methods based on DiscussionServiceAsync and MiddleCallback implementations
 
+    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionDTO discussionDTO, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
+        discussionServiceAsync.createDiscussion(discussionDTO, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<DiscussionDTO> voteCallBack(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
+        discussionServiceAsync.vote(
+                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToId,
+                discussionVoteKey.voteDirection.description,
+                middleCallback);
+        return middleCallback;
+    }
+
     public PaginatedDTO<DiscussionDTO> getDiscussions(GetDiscussionsKey discussionsKey)
     {
         return discussionService.getDiscussions(
@@ -45,11 +66,29 @@ import javax.inject.Singleton;
                 discussionVoteKey.voteDirection.description);
     }
 
+    public void vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback middleCallback =  new MiddleCallback(callback);
+        discussionServiceAsync.vote(
+                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToId,
+                discussionVoteKey.voteDirection.description,middleCallback);
+    }
+
     public DiscussionDTO share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return discussionService.share(
                 discussionKey.inReplyToType.description,
                 discussionKey.inReplyToId,
                 timelineItemShareRequestDTO);
+    }
+
+    public void share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<DiscussionDTO>(callback);
+        discussionServiceAsync.share(
+                discussionKey.inReplyToType.description,
+                discussionKey.inReplyToId,
+                timelineItemShareRequestDTO,middleCallback);
     }
 }

@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -118,17 +117,17 @@ public interface UserTimelineService
 
     // TODO does it really exist?
     //<editor-fold desc="Get Timeline Item">
-    @GET("/users/{userId}/timeline/{timelineItemId}")
-    TimelineItemDTO getTimelineItem(
-            @Path("userId") int userId,
-            @Path("timelineItemId") int timelineItemId)
-            throws RetrofitError;
+    //@GET("/users/{userId}/timeline/{timelineItemId}")
+    //TimelineItemDTO getTimelineItem(
+    //        @Path("userId") int userId,
+    //        @Path("timelineItemId") int timelineItemId)
+    //        throws RetrofitError;
 
-    @GET("/users/{userId}/timeline/{timelineItemId}")
-    void getTimelineItem(
-            @Path("userId") int userId,
-            @Path("timelineItemId") int timelineItemId,
-            Callback<TimelineItemDTO> callback);
+    //@GET("/users/{userId}/timeline/{timelineItemId}")
+    //void getTimelineItem(
+    //        @Path("userId") int userId,
+    //        @Path("timelineItemId") int timelineItemId,
+    //        Callback<TimelineItemDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
@@ -149,7 +148,7 @@ public interface UserTimelineService
 
     //<editor-fold desc="Delete Timeline Item">
     @DELETE("/users/{userId}/timeline/{timelineItemId}")
-    TimelineItemDTO deleteTimelineItem(
+    void deleteTimelineItem(
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId)
         throws RetrofitError;
@@ -158,6 +157,6 @@ public interface UserTimelineService
     void deleteTimelineItem(
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId,
-            Callback<TimelineItemDTO> callback);
+            Callback<Response> callback);
     //</editor-fold>
 }

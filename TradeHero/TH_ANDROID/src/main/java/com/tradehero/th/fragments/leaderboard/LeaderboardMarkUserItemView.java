@@ -15,7 +15,9 @@ import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -29,6 +31,7 @@ import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -158,6 +161,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFollowUser.setOnClickListener(this);
         }
+        if (lbmuProfilePicture != null)
+        {
+            lbmuProfilePicture.setOnClickListener(this);
+        }
+
     }
 
     @Override protected void onDetachedFromWindow()
@@ -180,6 +188,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setImageDrawable(null);
+        }
+        if (lbmuProfilePicture != null)
+        {
+            lbmuProfilePicture.setOnClickListener(null);
         }
 
         super.onDetachedFromWindow();
@@ -395,7 +407,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
                 openFollowUserDialog();
                 break;
+            case R.id.leaderboard_user_item_profile_picture:
+                handleUserIconClicked();
+                break;
+
         }
+    }
+
+    private void handleUserIconClicked(){
+        //OtherTimelineFragment.viewProfile((DashboardActivity) getContext(), null);
+        handleOpenProfileButtonClicked();
     }
 
     private void openFollowUserDialog()

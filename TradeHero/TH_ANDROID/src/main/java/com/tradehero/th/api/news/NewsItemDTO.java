@@ -10,7 +10,7 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:10 PM Copyright (c) TradeHero
  */
 public class NewsItemDTO extends AbstractDiscussionDTO
-    implements DTO
+        implements DTO
 {
     public String title;
     public String caption;
@@ -67,11 +67,17 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public List<Integer> getSecurityIds()
     {
-        return Collections.unmodifiableList(securityIds);
+        return securityIds != null ? Collections.unmodifiableList(securityIds) : null;
     }
 
     public void setSecurityIds(List<Integer> securityIds)
     {
         this.securityIds = securityIds;
+    }
+
+    //convenient method
+    public NewsItemDTOKey getNewsItemDTOKey()
+    {
+        return new NewsItemDTOKey(id);
     }
 }

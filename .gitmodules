@@ -7,3 +7,9 @@
 [submodule "StickyListHeaders"]
 	path = StickyListHeaders
 	url = git@github.com:nguyentruongtho/StickyListHeaders.git
+[submodule "picasso"]
+	path = picasso
+	url = git@github.com:xjwangliang/picasso.git
+[submodule "AndroidResideMenu"]
+	path = AndroidResideMenu
+	url = git@github.com:nguyentruongtho/AndroidResideMenu.git

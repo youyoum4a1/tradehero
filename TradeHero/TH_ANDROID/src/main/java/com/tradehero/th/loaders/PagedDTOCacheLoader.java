@@ -31,6 +31,7 @@ abstract public class PagedDTOCacheLoader<
     {
         super(context);
         DaggerUtils.inject(this);
+        Timber.d("Wangliang PagedDTOCacheLoader contructor queryKey %s",queryKey);
     }
 
     abstract protected DTOCache<DTOKeyType, DTOType> getCache();
@@ -39,6 +40,7 @@ abstract public class PagedDTOCacheLoader<
 
     public void setQueryKey(final DTOKeyType queryKey)
     {
+        Timber.d("Wangliang PagedDTOCacheLoader setQueryKey %s",queryKey);
         if (queryKey == null)
         {
             throw new NullPointerException("queryKey cannot be null");
@@ -92,6 +94,7 @@ abstract public class PagedDTOCacheLoader<
 
     @Override public DTOType loadInBackground()
     {
+        Timber.d("Wangliang loadInBackground queryKey %s ",queryKey);
         Timber.d("loadInBackground %s", this.queryKey);
         setQuerying(true);
         DTOType value = null;
@@ -120,6 +123,7 @@ abstract public class PagedDTOCacheLoader<
 
     public void loadNextPage()
     {
+        Timber.d("Wangliang  loadNextPage %s",queryKey);
         Timber.d("loadNextPage");
         if (this.queryKey != null && !isQuerying() && !hasNoMorePages())
         {
@@ -175,6 +179,11 @@ abstract public class PagedDTOCacheLoader<
         {
             Timber.d("Not started, not passing super.deliverResult");
         }
+    }
+
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
     }
 
     /**

@@ -2,33 +2,54 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.news.NewsHeadline;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.FontUtil;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by julien on 11/10/13
+ *
+ * modified by Wang Liang.
  */
-public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadline>
+public class NewsHeadlineView extends LinearLayout
+        implements DTOView<NewsItemDTO>, THDialog.OnDialogItemClickListener
 {
-    private static final String TAG = NewsHeadlineView.class.getSimpleName();
+    @InjectView(R.id.news_title_date) TextView dateTextView;
+    @InjectView(R.id.news_title_description) TextView descView;
+    @InjectView(R.id.news_action_button_comment) View actionCommentView;
+    @InjectView(R.id.news_title_title) TextView titleTextView;
+    @InjectView(R.id.news_item_layout_wrapper) View titleViewWrapper;
+    @InjectView(R.id.news_item_placeholder) View placeHolderView;
+    @InjectView(R.id.news_action_tv_more) View moreView;
+    @InjectView(R.id.news_action_tv_more) TextView more;
 
-    private TextView dateTextView;
-    private TextView titleTextView;
-    private NewsHeadline newsHeadline;
+    @Inject FontUtil fontUtil;
+
+    private NewsItemDTO newsHeadline;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
     {
-        this(context, null);
+        super(context);
     }
 
     public NewsHeadlineView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public NewsHeadlineView(Context context, AttributeSet attrs, int defStyle)
@@ -40,19 +61,65 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        fetchViews();
+        ButterKnife.inject(this);
+        DaggerUtils.inject(this);
+
+        initView();
     }
 
-    private void fetchViews()
+    private void initView()
     {
-        titleTextView = (TextView) findViewById(R.id.news_title_title);
-        dateTextView = (TextView) findViewById(R.id.news_title_date);
+        fontUtil.setTypeFace(more, FontUtil.FontType.AWESOME);
     }
 
-    @Override public void display(NewsHeadline dto)
+    @Override
+    public void onClick(int whichButton)
+    {
+        switch (whichButton)
+        {
+            case 0:
+                break;
+            case 1:
+                break;
+        }
+    }
+
+    /**
+     * show dialog including sharing and translation.
+     */
+    @OnClick(R.id.news_action_tv_more) void showShareDialog()
+    {
+        //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
+        ((NewsDialogLayout) contentView).setNewsData(newsHeadline, true);
+        THDialog.showUpDialog(getContext(), contentView, callback);
+    }
+
+    @Override
+    protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
+    @Override public void display(NewsItemDTO dto)
     {
         this.newsHeadline = dto;
         displayNews();
+    }
+
+    private String parseHost(String url)
+    {
+        try
+        {
+            String host = new URL(url).getHost();
+            return host;
+        }
+        catch (MalformedURLException e)
+        {
+            return null;
+        }
     }
 
     private void displayNews()
@@ -64,13 +131,29 @@ public class NewsHeadlineView extends LinearLayout implements DTOView<NewsHeadli
 
         if (titleTextView != null)
         {
-            titleTextView.setText(newsHeadline.getTitle());
+            titleTextView.setText(newsHeadline.title);
         }
 
-        if (dateTextView != null && newsHeadline.getDate() != null)
+        if (dateTextView != null && newsHeadline.createdAtUtc != null)
         {
             PrettyTime prettyTime = new PrettyTime();
-            dateTextView.setText(prettyTime.format(newsHeadline.getDate()));
+            StringBuilder sb = new StringBuilder();
+            String text = prettyTime.format(newsHeadline.createdAtUtc);
+            sb.append(text);
+            if (newsHeadline.url != null)
+            {
+                String source = parseHost(newsHeadline.url);
+                if (source != null)
+                {
+                    sb.append(" via ").append(source);
+                }
+            }
+            dateTextView.setText(sb.toString());
+        }
+
+        if (descView != null)
+        {
+            descView.setText(newsHeadline.description);
         }
     }
 }

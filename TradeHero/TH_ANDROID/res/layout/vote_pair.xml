@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge>
+  <com.tradehero.th.widget.VotePair
+      android:id="@+id/vote_pair"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_centerVertical="true"
+      >
+
+    <com.tradehero.th.widget.VoteView
+        style="@style/TH_VoteView"
+        android:id="@+id/timeline_action_button_vote_up"
+        android:drawableLeft="@drawable/icn_upvote"
+        android:text="0"
+        tools:text="10"
+        />
+
+    <com.tradehero.th.widget.VoteView
+        style="@style/TH_VoteView"
+        android:id="@+id/timeline_action_button_vote_down"
+        android:drawableLeft="@drawable/icn_downvote"
+        android:text="0"
+        tools:text="2"
+        />
+  </com.tradehero.th.widget.VotePair>
+</merge>

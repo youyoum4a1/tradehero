@@ -13,6 +13,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:background="@color/gray_3"
+      android:visibility="gone"
     >
 
     <TableRow

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <RelativeLayout
+      android:id="@+id/timeline_share_buttons"
+      android:background="@drawable/headline_action_buttons_background"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:baselineAligned="false"
+      android:gravity="center_vertical"
+      android:paddingLeft="@dimen/news_item_action_padding_l_r"
+      android:paddingRight="@dimen/news_item_action_padding_l_r"
+      >
+
+    <include layout="@layout/vote_pair"/>
+
+    <TextView
+        android:id="@+id/news_action_button_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/vote_pair"
+        android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
+        android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
+        android:drawableLeft="@drawable/icn_comment"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:shadowColor="@color/timeline_action_button_text_color_shadow"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="0"
+        tools:text="200"
+        />
+
+    <TextView
+        android:id="@+id/news_action_tv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/more_character"
+        android:textColor="@drawable/timeline_action_button_text_color_xml"
+        android:textStyle="bold"
+        android:visibility="visible"
+        android:paddingTop="@dimen/news_item_action_padding_t_b"
+        android:paddingBottom="@dimen/news_item_action_padding_t_b"
+        android:layout_alignParentRight="true"
+        />
+  </RelativeLayout>
+</merge>

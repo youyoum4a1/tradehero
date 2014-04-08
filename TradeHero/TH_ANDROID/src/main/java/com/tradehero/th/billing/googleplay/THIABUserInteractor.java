@@ -37,6 +37,7 @@ import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;

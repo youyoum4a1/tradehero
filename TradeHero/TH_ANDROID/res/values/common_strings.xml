@@ -27,11 +27,13 @@
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
-  <string name="dashboard_trending">Trending</string>
-  <string name="dashboard_community">Community</string>
+  <string name="dashboard_trending">Trade Center</string>
+  <string name="dashboard_community">Social Center</string>
   <string name="dashboard_home">Home</string>
   <string name="dashboard_portfolio">Portfolio</string>
   <string name="dashboard_store">Store</string>
+  <string name="dashboard_headline">Headline</string>
+  <string name="update_center">Notifications</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
