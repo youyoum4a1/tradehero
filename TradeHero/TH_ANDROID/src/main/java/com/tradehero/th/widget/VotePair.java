@@ -163,23 +163,28 @@ public class VotePair extends LinearLayout
     public void display(AbstractDiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
-        voteUp.setValue(discussionDTO.upvoteCount);
-        voteDown.setValue(discussionDTO.downvoteCount);
 
         resetVoting();
-        VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
-        Timber.d("voteDirection: %s", voteDirection.description);
-        switch (voteDirection)
+
+        if (discussionDTO != null)
         {
-            case DownVote:
-                voteDown.setChecked(true);
-                break;
-            case UpVote:
-                voteUp.setChecked(true);
-                break;
-            case Unvote:
-                // do nothing
-                break;
+            voteUp.setValue(discussionDTO.upvoteCount);
+            voteDown.setValue(discussionDTO.downvoteCount);
+
+            VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
+            Timber.d("voteDirection: %s", voteDirection.description);
+            switch (voteDirection)
+            {
+                case DownVote:
+                    voteDown.setChecked(true);
+                    break;
+                case UpVote:
+                    voteUp.setChecked(true);
+                    break;
+                case Unvote:
+                    // do nothing
+                    break;
+            }
         }
     }
 }
