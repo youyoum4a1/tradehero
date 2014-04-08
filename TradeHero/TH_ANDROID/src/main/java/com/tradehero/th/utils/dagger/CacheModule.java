@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
@@ -17,11 +19,13 @@ import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import dagger.Module;
 import dagger.Provides;
+import java.util.HashSet;
 import javax.inject.Singleton;
 
 /**
@@ -75,5 +79,10 @@ public class CacheModule
     @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(SharedPreferences preference)
     {
         return new IntPreference(preference, ListCacheMaxSize.class.getName(), 200);
+    }
+
+    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(SharedPreferences preference)
+    {
+        return new LongPreference(preference, MessageListTimeline.class.getName(), -1L);
     }
 }

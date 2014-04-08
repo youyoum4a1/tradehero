@@ -138,7 +138,6 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Timber.d("Wangliang TrendingFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
         return view;

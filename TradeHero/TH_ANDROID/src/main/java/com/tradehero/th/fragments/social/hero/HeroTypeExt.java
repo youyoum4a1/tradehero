@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
+import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.persistence.social.HeroType;
 
@@ -11,12 +12,14 @@ public class HeroTypeExt
     public final int titleRes;
     public final HeroType heroType;
     public final int pageIndex;
+    public final Class<? extends Fragment> fragmentClass;
 
-    public HeroTypeExt(int titleRes, HeroType followerType, int pageIndex)
+    public HeroTypeExt(int titleRes, HeroType followerType, int pageIndex,Class<? extends Fragment> fragmentClass)
     {
         this.titleRes = titleRes;
         this.heroType = followerType;
         this.pageIndex = pageIndex;
+        this.fragmentClass = fragmentClass;
     }
 
     public static HeroTypeExt[] getSortedList()
@@ -31,15 +34,17 @@ public class HeroTypeExt
             if (typeId == HeroType.PREMIUM.typeId)
             {
                 result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_premium,
-                        HeroType.PREMIUM, 0);
+                        HeroType.PREMIUM, 0, HeroManagerFragment.PrimiumHeroFragment.class);
             }
             else if (typeId == HeroType.FREE.typeId)
             {
-                result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_free, HeroType.FREE, 1);
+                result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_free, HeroType.FREE, 1,
+                        HeroManagerFragment.FreeHeroFragment.class);
             }
             else if (typeId == HeroType.ALL.typeId)
             {
-                result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_all, HeroType.ALL, 2);
+                result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_all, HeroType.ALL, 2,
+                        HeroManagerFragment.AllHeroFragment.class);
             }
         }
         return result;

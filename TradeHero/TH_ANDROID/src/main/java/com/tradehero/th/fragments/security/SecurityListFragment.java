@@ -113,7 +113,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        Timber.d("Wangliang TrendingFragment onActivityCreated");
         prepareSecurityLoader();
     }
 
@@ -265,7 +264,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public void raiseFlag()
         {
             super.raiseFlag();
-            Timber.d("Wangliang SecurityListFlagNearEndScrollListener loadNextPage");
             loadNextPage();
         }
 

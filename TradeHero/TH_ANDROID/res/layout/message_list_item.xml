@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.updatecenter.messages.MessageItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+
+    >
+
+  <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:id="@+id/message_item_icon"
+      tools:src="@drawable/ic_info"/>
+
+  <LinearLayout android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_item_title"
+        tools:text="Title:Hello world"
+        android:textSize="14sp"
+        />
+    <TextView
+        android:visibility="visible"
+        android:id="@+id/message_item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        tools:text="Three days ago"
+        android:textSize="9sp"
+        />
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.updatecenter.messages.MessageItemView>
+

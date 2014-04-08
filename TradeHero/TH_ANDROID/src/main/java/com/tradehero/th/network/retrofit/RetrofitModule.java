@@ -177,6 +177,12 @@ public class RetrofitModule
     {
         return adapter.create(NotificationService.class);
     }
+
+    @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
+    {
+        return adapter.create(MessageService.class);
+    }
+
 //    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
 //    {
 //        return adapter.create(DiscussionService.class);
