@@ -1,5 +1,7 @@
 package com.tradehero.common.utils;
 
+import retrofit.RetrofitError;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,5 +42,15 @@ public class IOUtils
             return buf;
         }
         return null;
+    }
+
+    public static String streamToString(InputStream stream) throws IOException
+    {
+        return new String(streamToBytes(stream), "UTF-8");
+    }
+
+    public static String errorToBodyString(RetrofitError error) throws IOException
+    {
+        return streamToString(error.getResponse().getBody().in());
     }
 }

@@ -1,13 +1,11 @@
 package com.tradehero.th.billing.samsung;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.common.billing.ProductDetailCache;
-import com.tradehero.common.billing.ProductIdentifierListCache;
-import com.tradehero.common.billing.ProductPurchaseCache;
+import android.content.SharedPreferences;
+import com.tradehero.common.billing.*;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
-import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
+import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingLogicHolder;
@@ -21,7 +19,9 @@ import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import dagger.Module;
 import dagger.Provides;
+
 import javax.inject.Singleton;
+import java.util.HashSet;
 
 /**
  * Created by xavier on 2/11/14.
@@ -49,7 +49,7 @@ import javax.inject.Singleton;
 )
 public class THSamsungModule
 {
-    public static final String TAG = THSamsungModule.class.getSimpleName();
+    public static final String PREF_PROCESSING_PURCHASES = "SAMSUNG_PROCESSING_PURCHASES";
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)
     {
@@ -119,5 +119,11 @@ public class THSamsungModule
     @Provides THUIBillingRequest provideUIBillingRequest(THUISamsungRequest request)
     {
         return request;
+    }
+
+    @Provides @Singleton @ProcessingPurchase
+    StringSetPreference provideProcessingPurchasePreference(SharedPreferences sharedPreferences)
+    {
+        return new StringSetPreference(sharedPreferences, PREF_PROCESSING_PURCHASES, new HashSet<String>());
     }
 }

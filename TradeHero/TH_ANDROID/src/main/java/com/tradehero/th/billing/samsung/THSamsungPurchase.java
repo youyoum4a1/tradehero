@@ -4,6 +4,7 @@ import com.sec.android.iap.lib.vo.InboxVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.th.api.billing.SamsungPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -78,4 +79,20 @@ public class THSamsungPurchase
         return new SamsungPurchaseReportDTO(this);
     }
 
+    public SamsungPurchaseInProcessDTO getPurchaseToSaveDTO()
+    {
+        return new SamsungPurchaseInProcessDTO(this);
+    }
+
+    public void populate(SamsungPurchaseInProcessDTO purchaseInProcessDTO)
+    {
+        if (!getPaymentId().equals(purchaseInProcessDTO.paymentId))
+        {
+            throw new IllegalArgumentException(String.format("Non-matching paymentId %s - %s", getPaymentId(), purchaseInProcessDTO.paymentId));
+        }
+        setPurchaseId(purchaseInProcessDTO.purchaseId);
+        setApplicablePortfolioId(purchaseInProcessDTO.applicablePortfolioId);
+        setUserToFollow(purchaseInProcessDTO.userToFollow);
+        setProductCode(purchaseInProcessDTO.productCode);
+    }
 }
