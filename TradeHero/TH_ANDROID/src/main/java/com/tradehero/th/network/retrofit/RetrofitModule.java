@@ -173,15 +173,15 @@ public class RetrofitModule
         return adapter.create(CompetitionService.class);
     }
 
-    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
-    {
-        return adapter.create(WeChatService.class);
-    }
-
 //    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
 //    {
 //        return adapter.create(DiscussionService.class);
 //    }
+
+    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
+    {
+        return adapter.create(WeChatService.class);
+    }
     //</editor-fold>
 
     @Provides @Singleton ObjectMapper provideObjectMapper()
