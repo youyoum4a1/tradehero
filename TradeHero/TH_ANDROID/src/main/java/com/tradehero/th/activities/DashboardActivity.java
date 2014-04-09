@@ -188,7 +188,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (currentUserProfile != null)
         {
-            if (currentUserProfile.isAdmin)
+            if (currentUserProfile.isAdmin || !Constants.RELEASE)
             {
                 menuInflater.inflate(R.menu.admin_menu, menu);
             }

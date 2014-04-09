@@ -209,6 +209,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         request.popIfInventoryFetchFailed = true;
         request.domainToPresent = domain;
         request.popIfPurchaseFailed = true;
+        request.popIfReportFailed = true;
         request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
         {
             @Override public void onError(int requestCode, BillingException billingException)

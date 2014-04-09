@@ -777,6 +777,10 @@ abstract public class BaseBillingLogicHolder<
         {
             purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
         }
+        else
+        {
+            Timber.d("No purchase finished listener for failed");
+        }
         unregisterPurchaseFinishedListener(requestCode);
     }
     //</editor-fold>

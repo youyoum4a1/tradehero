@@ -291,6 +291,7 @@ public class THSamsungBillingInteractor
             SamsungException exception,
             AlertDialog.OnClickListener restoreClickListener)
     {
+        Timber.d("popPurchaseFailed");
         AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception, restoreClickListener);
         if (dialog == null)
         {

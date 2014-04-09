@@ -882,16 +882,23 @@ abstract public class THBaseBillingInteractor<
         {
             if (billingRequest.purchaseFinishedListener != null)
             {
+                Timber.d("notify purchase Finished");
                 billingRequest.purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
+                Timber.d("notify default listener");
                 billingRequest.onDefaultErrorListener.onError(requestCode, billingException);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFailed)
         {
+            Timber.d("calling popAlert");
             popPurchaseFailed(requestCode, purchaseOrder, billingException, createRestoreClickListener(requestCode));
+        }
+        else
+        {
+            Timber.d("Not popping purchase failed");
         }
     }
 

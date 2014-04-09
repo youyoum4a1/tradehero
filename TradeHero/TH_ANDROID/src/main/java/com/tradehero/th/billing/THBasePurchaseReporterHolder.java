@@ -162,7 +162,7 @@ abstract public class THBasePurchaseReporterHolder<
         }
         else
         {
-            THLog.d(TAG, "handlePurchaseReportFailed No THIABPurchaseHandler for requestCode " + requestCode);
+            THLog.d(TAG, "handlePurchaseReportFailed No THBasePurchaseHandler for requestCode " + requestCode);
         }
     }
 
