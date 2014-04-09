@@ -51,6 +51,11 @@ abstract public class SamsungPurchase<
         return productCode;
     }
 
+    public void setProductCode(String productCode)
+    {
+        this.productCode = productCode;
+    }
+
     @Override public void setJsonString(String jsonString)
     {
         super.setJsonString(jsonString);

@@ -84,7 +84,6 @@ import retrofit.RetrofitError;
     }
 
     public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, PurchaseReportDTO purchaseReportDTO, Callback<UserProfileDTO>  callback)
-        throws RetrofitError
     {
         basicCheck(ownedPortfolioId);
         MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);

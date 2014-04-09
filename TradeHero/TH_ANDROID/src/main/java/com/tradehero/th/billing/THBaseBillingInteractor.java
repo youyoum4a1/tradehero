@@ -192,7 +192,15 @@ abstract public class THBaseBillingInteractor<
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        getBillingLogicHolder().onActivityResult(requestCode, resultCode, data);
+        THBillingLogicHolderType logicHolder = getBillingLogicHolder();
+        if(logicHolder != null)
+        {
+            logicHolder.onActivityResult(requestCode, resultCode, data);
+        }
+        else
+        {
+            Timber.e(new NullPointerException("Logic Holder was null when back with Intent data"), "");
+        }
     }
 
     //<editor-fold desc="Request Code Management">

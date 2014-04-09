@@ -14,7 +14,6 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:32 AM Copyright (c) TradeHero */
 @Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
-    public static final String TAG = LeaderboardDefListCache.class.getSimpleName();
     private static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<LeaderboardService> leaderboardService;

@@ -54,6 +54,7 @@ abstract public class BaseSamsungPurchaser<
     {
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
+            handlePurchaseFinished(createSamsungPurchase(purchaseVo));
             notifyPurchaseFinished(createSamsungPurchase(purchaseVo));
         }
         else
@@ -64,6 +65,11 @@ abstract public class BaseSamsungPurchaser<
 
     abstract protected SamsungPurchaseType createSamsungPurchase(PurchaseVo purchaseVo);
     abstract protected SamsungExceptionType createSamsungException(ErrorVo errorVo);
+
+    protected void handlePurchaseFinished(SamsungPurchaseType purchase)
+    {
+        // Nothing to do here
+    }
 
     protected void notifyPurchaseFinished(SamsungPurchaseType purchase)
     {

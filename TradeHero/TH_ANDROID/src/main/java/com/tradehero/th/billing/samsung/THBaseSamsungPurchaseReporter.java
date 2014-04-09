@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -11,7 +12,6 @@ import com.tradehero.th.billing.samsung.exception.SamsungMissingApplicablePortfo
 import com.tradehero.th.billing.samsung.exception.SamsungMissingCachedProductDetailException;
 import com.tradehero.th.billing.samsung.exception.SamsungPurchaseReportRetrofitException;
 import com.tradehero.th.billing.samsung.exception.SamsungUnhandledSKUDomainException;
-import com.tradehero.th.billing.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
@@ -22,11 +22,13 @@ import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.io.IOException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class THBaseSamsungPurchaseReporter
@@ -182,7 +184,17 @@ public class THBaseSamsungPurchaseReporter
 
     protected void handleCallbackFailed(RetrofitError error)
     {
-        Timber.e("Failed reporting to TradeHero server", error);
+        Timber.e(error, "Failed reporting to TradeHero server");
+        Timber.d("Is network error %s", error.isNetworkError());
+        Timber.d("url %s", error.getUrl());
+        try
+        {
+            Timber.d("body %s", IOUtils.errorToBodyString(error));
+        }
+        catch (IOException e)
+        {
+            Timber.e(e, "Failed to decode error body");
+        }
         notifyListenerReportFailed(new SamsungPurchaseReportRetrofitException(error));
     }
 

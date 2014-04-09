@@ -76,6 +76,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         }
         else
         {
+            handleFetched();
             notifyListenerFetched();
         }
     }
@@ -95,7 +96,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
             addToPurchases(fetchingGroupId, inboxList);
-            notifyListenerFetched();
+            fetchOneInRemainingItemGroups();
         }
         else
         {
@@ -126,6 +127,11 @@ abstract public class BaseSamsungPurchaseFetcher<
     @Override public void setPurchaseFetchedListener(OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener)
     {
         this.fetchListener = fetchListener;
+    }
+
+    protected void handleFetched()
+    {
+        // Nothing to do
     }
 
     protected void notifyListenerFetched()
