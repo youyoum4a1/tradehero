@@ -114,20 +114,21 @@ public class VotePair extends LinearLayout
                 discussionType,
                 discussionDTO.id,
                 voteDirection);
-        voteCallback = discussionServiceWrapper.get().voteCallBack(discussionVoteKey, new Callback<DiscussionDTO>()
-        {
-            @Override public void success(DiscussionDTO discussionDTO, Response response)
-            {
-                discussionDTO.populateVote(VotePair.this.discussionDTO);
-                // TODO update cached timeline item
-                Timber.d("Success");
-            }
+        voteCallback = discussionServiceWrapper.get().voteCallBack(discussionVoteKey,
+                new Callback<DiscussionDTO>()
+                {
+                    @Override public void success(DiscussionDTO discussionDTO, Response response)
+                    {
+                        discussionDTO.populateVote(VotePair.this.discussionDTO);
+                        // TODO update cached timeline item
+                        Timber.d("Success");
+                    }
 
-            @Override public void failure(RetrofitError error)
-            {
-                Timber.d("Failure");
-            }
-        });
+                    @Override public void failure(RetrofitError error)
+                    {
+                        Timber.d("Failure");
+                    }
+                });
     }
 
     private DiscussionType getDiscussionType()
@@ -156,8 +157,14 @@ public class VotePair extends LinearLayout
 
     private void resetVoting()
     {
-        voteUp.setChecked(false);
-        voteDown.setChecked(false);
+        if (voteUp != null)
+        {
+            voteUp.setChecked(false);
+        }
+        if (voteDown != null)
+        {
+            voteDown.setChecked(false);
+        }
     }
 
     public void display(AbstractDiscussionDTO discussionDTO)

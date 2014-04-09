@@ -43,7 +43,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 MessagesView.class,
                 MessageItemView.class,
                 SendMessageFragment.class,
-                StockDiscussion.class,
                 SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
                 SecurityDiscussionItemView.class
