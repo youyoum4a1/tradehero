@@ -62,6 +62,11 @@ public class NotificationsView extends BetterViewAnimator
         DaggerUtils.inject(this);
 
         notificationFetchListener = new NotificationFetchListener(true);
+
+        notificationListAdapter = new NotificationListAdapter(
+                getContext(),
+                LayoutInflater.from(getContext()),
+                R.layout.notification_item_view);
     }
 
     @Override protected void onAttachedToWindow()
@@ -71,7 +76,6 @@ public class NotificationsView extends BetterViewAnimator
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
 
-        notificationListAdapter = new NotificationListAdapter(getContext(), LayoutInflater.from(getContext()), R.layout.notification_item_view);
         notificationList.setAdapter(notificationListAdapter);
         notificationList.setEmptyView(emptyView);
 
@@ -137,7 +141,7 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    private class NotificationFetchListener implements DTOCache.Listener<NotificationListKey,NotificationKeyList>
+    private class NotificationFetchListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
     {
         private final boolean shouldAppend;
 

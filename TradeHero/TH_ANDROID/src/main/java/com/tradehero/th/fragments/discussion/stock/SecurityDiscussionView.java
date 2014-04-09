@@ -73,16 +73,16 @@ public class SecurityDiscussionView extends BetterViewAnimator
         securityCompactCacheListener = new SecurityCompactCacheListener();
         securityDiscussionFetchListener = new SecurityDiscussionFetchListener(true);
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
 
         securityDiscussionAdapter = new SecurityDiscussionAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.security_discussion_item);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
 
         securityDiscussionList.setEmptyView(emptyView);
         securityDiscussionList.setAdapter(securityDiscussionAdapter);
