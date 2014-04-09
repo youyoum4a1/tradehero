@@ -14,6 +14,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
+
+      <HorizontalScrollView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          >
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+          <LinearLayout
+              android:id="@+id/news_detail_reference_gv_container"
+              android:layout_width="600dp"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+            <GridView
+                android:id="@+id/news_detail_reference_gv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="10dp"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbars="horizontal"
+                />
+          </LinearLayout>
+        </FrameLayout>
+      </HorizontalScrollView>
       <TextView
           android:id="@+id/news_detail_desc"
           android:layout_marginLeft="10dp"
@@ -54,6 +82,7 @@
           />
 
       <TextView
+          android:id="@+id/news_view_on_web"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/news_view_on_web"
@@ -64,34 +93,6 @@
           android:paddingBottom="5dp"
           android:layout_marginLeft="10dp"
           android:layout_marginRight="10dp"/>
-
-      <HorizontalScrollView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="20dp"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          >
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-          <LinearLayout
-              android:id="@+id/news_detail_reference_gv_container"
-              android:layout_width="600dp"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal">
-
-            <GridView
-                android:id="@+id/news_detail_reference_gv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:horizontalSpacing="10dp"
-                android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:scrollbars="horizontal"
-                />
-          </LinearLayout>
-        </FrameLayout>
-      </HorizontalScrollView>
 
       <TextView
           android:layout_width="match_parent"

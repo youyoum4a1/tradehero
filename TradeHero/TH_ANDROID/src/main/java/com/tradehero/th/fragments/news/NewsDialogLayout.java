@@ -199,7 +199,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void shareNewsToWeChat()
     {
-        wechatSharer.share(getContext(), newsItemDTO.getNewsItemDTOKey());
+        wechatSharer.share(getContext(), newsItemDTO.getDiscussionKey());
     }
 
     private Callback<DiscussionDTO> createShareRequestCallback(

@@ -76,7 +76,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     }
 
     //convenient method
-    public NewsItemDTOKey getNewsItemDTOKey()
+    @Override public NewsItemDTOKey getDiscussionKey()
     {
         return new NewsItemDTOKey(id);
     }

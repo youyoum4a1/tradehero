@@ -26,7 +26,6 @@ import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
 import com.tradehero.th.loaders.ListLoader;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
@@ -60,7 +59,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_detail_comment_list) @Optional ListView mNewsDetailCommentList;
     @InjectView(R.id.news_detail_comment_empty) @Optional TextView mNewsDetailCommentEmpty;
 
-    private MiddleCallback<NewsItemDTO> newsServiceCallback;
     private DiscussionListAdapter discussionAdapter;
     private NewsItemDTOKey newsItemDTOKey;
     private int commentListWrapperDisplayedChildId;
@@ -119,8 +117,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         }
 
         DiscussionListAdapter adapter =
-                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(),
-                        loaderId, R.layout.news_discussion_comment_item);
+                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(), loaderId, R.layout.news_discussion_comment_item);
         adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
         {
             @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
@@ -156,10 +153,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     @Override public void onDestroy()
     {
-        if (newsServiceCallback != null)
-        {
-            newsServiceCallback.setPrimaryCallback(null);
-        }
         super.onDestroy();
     }
 
@@ -231,8 +224,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
     {
-        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value, boolean fromCache)
         {
             linkWith(value);
         }
