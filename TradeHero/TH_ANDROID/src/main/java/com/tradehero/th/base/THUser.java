@@ -245,7 +245,7 @@ public class THUser
 
     private static void checkNeedForUpgrade(THException error)
     {
-        if (error.getCode() == ExceptionCode.DoNotRunBellow)
+        if (error.getCode() == ExceptionCode.DoNotRunBelow)
         {
             final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
             alertDialogUtil.get().popWithOkCancelButton(
