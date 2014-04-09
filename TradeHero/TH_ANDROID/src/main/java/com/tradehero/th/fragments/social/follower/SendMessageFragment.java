@@ -23,12 +23,16 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import java.util.Date;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -38,40 +42,10 @@ import timber.log.Timber;
 /**
  * Created by tradehero on 14-4-1.
  */
-public class SendMessageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener,View.OnClickListener
+public class SendMessageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_MESSAGE_TYPE = "msg_type";
-
-    public static final String KEY_FOLLOER_TYPE = "follower_type";
-
-
-
-    public static enum MessageType
-    {
-        MESSAGE_TYPE_BROADCAST(0),
-        MESSAGE_TYPE_WHISPER(1);
-
-        public final int typeId;
-
-        private MessageType(int typeId)
-        {
-            this.typeId = typeId;
-        }
-
-        static MessageType fromId(int id)
-        {
-            MessageType[] values = MessageType.values();
-            for (MessageType type : values)
-            {
-                if (id == type.typeId)
-                {
-                    return type;
-                }
-            }
-            return null;
-        }
-        //
-    }
+    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
 
     public static enum MessageLifeTime
     {
@@ -99,7 +73,6 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                     return "Two hour";
                 case LIFETIME_1_DAY:
                     return "One day";
-
             }
             return null;
         }
@@ -107,16 +80,16 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         //
     }
 
-    private HeroType targetUser = HeroType.ALL;
-    private MessageType messageType = MessageType.MESSAGE_TYPE_BROADCAST;
+    private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
+    private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
 
-    @InjectView(R.id.message_input_edittext)EditText inputText;
-    @InjectView(R.id.message_spinner_lifetime)Spinner lifeTimeSpinner;
-    @InjectView(R.id.message_spinner_target_user)Spinner targetUserSpinner;
+    @InjectView(R.id.message_input_edittext) EditText inputText;
+    @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
+    @InjectView(R.id.message_spinner_target_user) Spinner targetUserSpinner;
 
-    @InjectView(R.id.message_type_wrapper)View messageTypeWrapperView;
-    @InjectView(R.id.message_type)TextView messageTypeView;
+    @InjectView(R.id.message_type_wrapper) View messageTypeWrapperView;
+    @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     //@Inject UserBaseKey user;
@@ -124,6 +97,21 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
 
     Dialog progressDialog;
     Dialog chooseDialog;
+    SendMessageDiscussionCallback sendMessageDiscussionCallback;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        int discussionTypeValue = args.getInt(SendMessageFragment.KEY_DISCUSSION_TYPE, DiscussionType.BROADCAST_MESSAGE.value);
+        this.discussionType = DiscussionType.fromValue(discussionTypeValue);
+
+        int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
+        this.messageType = MessageType.fromId(messageTypeInt);
+
+        sendMessageDiscussionCallback = new SendMessageDiscussionCallback();
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -147,23 +135,11 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        Bundle args = getArguments();
-        int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
-        this.messageType = MessageType.fromId(messageTypeInt);
-
-        int followerTypeInt = args.getInt(SendMessageFragment.KEY_FOLLOER_TYPE);
-        this.targetUser = HeroType.fromId(followerTypeInt);
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_broadcast, container, false);
-        ButterKnife.inject(this,v);
+        ButterKnife.inject(this, v);
         return v;
     }
 
@@ -172,15 +148,19 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         super.onViewCreated(view, savedInstanceState);
         //setSpinner();
         initView();
-
     }
 
     private void initView()
     {
         messageTypeWrapperView.setOnClickListener(this);
-        changeHeroType(targetUser);
+        changeHeroType(messageType);
     }
 
+    @Override public void onDestroy()
+    {
+        sendMessageDiscussionCallback = null;
+        super.onDestroy();
+    }
     //private void setSpinner()
     //{
     //    ArrayAdapter  lifeTimeAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, android.R.id.text1,MessageLifeTime.values());
@@ -190,14 +170,12 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
     //    targetUserSpinner.setAdapter(targetUserAdapter);
     // }
 
-    private void changeHeroType(HeroType heroType)
+    private void changeHeroType(MessageType messageType)
     {
-        this.targetUser = heroType;
-        this.messageTypeView.setText(heroType.toString());
-        Timber.d("changeHeroType:%s,messageType:%s",heroType,messageType);
-
+        this.messageType = messageType;
+        this.messageTypeView.setText(messageType.toString());
+        Timber.d("changeHeroType:%s, discussionType:%s", messageType, discussionType);
     }
-
 
     private void showHeroTypeDialog()
     {
@@ -206,7 +184,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         TextView headerView = new TextView(getActivity());
-        headerView.setPadding(0,20,0,20);
+        headerView.setPadding(0, 20, 0, 20);
         headerView.setGravity(Gravity.CENTER);
         headerView.setText("Choose follower to send message");//TODO
         headerView.setClickable(false);
@@ -215,16 +193,16 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text,HeroType.values());
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text, MessageType.values());
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-               Object o = parent.getAdapter().getItem(position);
-               Timber.d("onItemClick %d,object:%s", position,o);
-                changeHeroType((HeroType)o);
+                Object o = parent.getAdapter().getItem(position);
+                Timber.d("onItemClick %d, object:%s", position, o);
+                changeHeroType((MessageType) o);
                 dismissDialog(chooseDialog);
             }
         });
@@ -237,16 +215,25 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
 
     private void sendMessage()
     {
-
         String text = inputText.getText().toString();
         if (TextUtils.isEmpty(text))
         {
             THToast.show("The message cannot be empty");
             return;
         }
-        this.progressDialog = ProgressDialogUtil.show(getActivity(), "Waitting", "Sending message...");
-        messageServiceWrapper.get().createMessage(text,currentUserId.toUserBaseKey().key,targetUser,myCallback);
+        this.progressDialog = ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
+        // TODO not sure about this implementation yet
+        messageServiceWrapper.get().createMessage(createMessage(text), sendMessageDiscussionCallback);
+    }
+
+    private MessageHeaderDTO createMessage(String messageText)
+    {
+        MessageHeaderDTO messageHeaderDTO = new MessageHeaderDTO("unsure", "unsure", messageText, new Date());
+        messageHeaderDTO.senderUserId = currentUserId.toUserBaseKey().key;
+        messageHeaderDTO.discussionType = discussionType;
+        messageHeaderDTO.messageType = messageType;
+        return messageHeaderDTO;
     }
 
     private void dismissDialog(Dialog dialog)
@@ -258,12 +245,12 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                 dialog.dismiss();
                 dialog = null;
             }
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
 
         }
     }
-
 
     @Override public void onClick(View v)
     {
@@ -275,24 +262,20 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
 
     @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
-
     }
 
     @Override public void onNothingSelected(AdapterView<?> parent)
     {
-
     }
-    MyCallback myCallback = new MyCallback();
 
-    class MyCallback implements Callback<Response>{
-
-
+    class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
+    {
         @Override public void failure(RetrofitError error)
         {
             dismissDialog(progressDialog);
         }
 
-        @Override public void success(Response response, Response response2)
+        @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
         }

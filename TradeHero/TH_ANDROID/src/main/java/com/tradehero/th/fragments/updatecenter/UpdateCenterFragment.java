@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,12 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import timber.log.Timber;
 
@@ -24,18 +19,19 @@ import timber.log.Timber;
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 {
     public static final String KEY_PAGE = "page";
+    TitleNumberCallback titleNumberCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        titleNumberCallback = new TabTitleNumberCallback();
         Timber.d("onCreate");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
-        Timber.d("onCreateView");
+        View view = inflater.inflate(R.layout.update_center, container, false);
         return view;
     }
 
@@ -44,6 +40,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         super.onViewCreated(view, savedInstanceState);
 
         addTabs();
+        //TODO
         changeTabTitleNumber(0, 80);
     }
 
@@ -58,6 +55,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onDestroy()
     {
         super.onDestroy();
+        titleNumberCallback = null;
         Timber.d("onDestroy");
     }
 
@@ -118,7 +116,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 
     private void setTabStyle(ActionBar.Tab tab)
     {
-
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.message_tab_item,
                         (ViewGroup) getActivity().getWindow().getDecorView(), false);
@@ -127,13 +124,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         TitleTabView tabView = (TitleTabView) tab.getCustomView();
     }
 
-    TitleNumberCallback titleNumberCallback = new TitleNumberCallback()
-    {
+    class TabTitleNumberCallback implements TitleNumberCallback {
         @Override public void onTitleNumberChanged(int page, int number)
         {
             changeTabTitleNumber(page, number);
         }
-    };
+    }
+
 
     public static interface TitleNumberCallback
     {
@@ -142,7 +139,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 
     class MyTabListener extends TabListener
     {
-
         public MyTabListener(SherlockFragmentActivity activity,
                 Class<? extends Fragment> fragmentClass, String tag, Bundle args)
         {
@@ -165,6 +161,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
             }
         }
 
+        @Override public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
+        {
+        }
     }
 
     //@Override public boolean isTabBarVisible()

@@ -14,6 +14,11 @@ import retrofit.http.*;
  */
 public interface DiscussionServiceAsync
 {
+    @GET("/discussions/{commentId}")
+    void getComment(
+            @Path("commentId") int commentId,
+            Callback<DiscussionDTO> callback);
+
     @POST("/discussions")
     void createDiscussion(
             @Body DiscussionDTO discussionDTO,

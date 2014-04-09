@@ -13,11 +13,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.api.messages.MessageKeyList;
-import com.tradehero.th.api.messages.PagedTypeMessageKey;
+import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.persistence.message.MessageListCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -30,12 +30,13 @@ public class MessagesCenterFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener
 {
     public static final String TAG = "MessagesCenterFragment";
+    public static final int DEFAULT_PER_PAGE = 42;
 
-    @Inject Lazy<MessageListCache> messageListCache;
-    DTOCache.Listener<PagedTypeMessageKey, MessageKeyList> messagesFetchListenr;
-    DTOCache.GetOrFetchTask<PagedTypeMessageKey, MessageKeyList> fetchTask;
-    PagedTypeMessageKey pagedTypeMessageKey;
-    MessageKeyList alreadyFetched;
+    @Inject Lazy<MessageHeaderListCache> messageListCache;
+    DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
+    DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchTask;
+    MessageListKey messageListKey;
+    MessageHeaderIdList alreadyFetched;
 
     MessagesView messagesView;
 
@@ -64,7 +65,8 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         initListener();
-        if (alreadyFetched == null)
+        //if size of items already fetched is 0,then force to reload
+        if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
             fetchMessages();
             messagesView.showLoadingView();
@@ -92,9 +94,9 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        messagesFetchListenr = null;
+        messagesFetchListener = null;
         alreadyFetched = null;
-        pagedTypeMessageKey = null;
+        messageListKey = null;
 
         super.onDestroy();
         Timber.d("%s onDestroy", TAG);
@@ -102,7 +104,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-
     }
 
     private void initViews(View view)
@@ -114,18 +115,17 @@ public class MessagesCenterFragment extends DashboardFragment
         listView.setOnScrollListener(new OnScrollListener());
         listView.setOnItemClickListener(this);
 
-        if (pagedTypeMessageKey == null)
+        if (messageListKey == null)
         {
-            pagedTypeMessageKey = new PagedTypeMessageKey(0);
+            messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
     }
 
     private void initListener()
     {
-        Timber.d("%s onAttachedToWindow", TAG);
-        if (messagesFetchListenr == null)
+        if (messagesFetchListener == null)
         {
-            messagesFetchListenr = new MessageFetchListener();
+            messagesFetchListener = new MessageFetchListener();
         }
     }
 
@@ -136,18 +136,18 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             fetchTask =
                     messageListCache.get()
-                            .getOrFetch(pagedTypeMessageKey, false, messagesFetchListenr);
+                            .getOrFetch(messageListKey, false, messagesFetchListener);
         }
         fetchTask.execute();
     }
 
     private void loadNextMessages()
     {
-        if (pagedTypeMessageKey == null)
+        if (messageListKey == null)
         {
-            pagedTypeMessageKey = new PagedTypeMessageKey(0);
+            messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
-        pagedTypeMessageKey = pagedTypeMessageKey.next();
+        messageListKey = messageListKey.next();
         fetchMessages();
     }
 
@@ -160,7 +160,7 @@ public class MessagesCenterFragment extends DashboardFragment
         fetchTask = null;
     }
 
-    private void setListAdaper(MessageKeyList messageKeys)
+    private void setListAdaper(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
         ListAdapter adapter = listView.getAdapter();
@@ -174,32 +174,32 @@ public class MessagesCenterFragment extends DashboardFragment
         messageAdapter.appendMore(messageKeys);
     }
 
-    private void saveNewPage(MessageKeyList value)
+    private void saveNewPage(MessageHeaderIdList value)
     {
         if(alreadyFetched == null)
         {
-            alreadyFetched = new MessageKeyList();
+            alreadyFetched = new MessageHeaderIdList();
         }
         alreadyFetched.addAll(value);
     }
 
-    private void display(MessageKeyList value)
+    private void display(MessageHeaderIdList value)
     {
         setListAdaper(value);
         saveNewPage(value);
     }
 
-    class MessageFetchListener implements DTOCache.Listener<PagedTypeMessageKey, MessageKeyList>
+    class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
     {
-
         @Override
-        public void onDTOReceived(PagedTypeMessageKey key, MessageKeyList value, boolean fromCache)
+        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
         {
             display(value);
             messagesView.showListView();
+            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s",key,value);
         }
 
-        @Override public void onErrorThrown(PagedTypeMessageKey key, Throwable error)
+        @Override public void onErrorThrown(MessageListKey key, Throwable error)
         {
             messagesView.showErrorView();
         }

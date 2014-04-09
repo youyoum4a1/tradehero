@@ -1,44 +1,27 @@
 package com.tradehero.th.api.discussion.key;
 
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.discussion.DiscussionType;
+import android.os.Bundle;
+import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 /**
- * Created by xavier on 3/7/14.
+ * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 6:05 PM Copyright (c) TradeHero
  */
-public class DiscussionKey implements DTOKey
+public class DiscussionKey extends AbstractIntegerDTOKey
 {
-    public final DiscussionType inReplyToType;
-    public final int inReplyToId;
+    public static final String BUNDLE_KEY_KEY = DiscussionKey.class.getName() + ".key";
 
-    public DiscussionKey(DiscussionType inReplyToType, int inReplyToId)
+    public DiscussionKey(Integer key)
     {
-        this.inReplyToType = inReplyToType;
-        this.inReplyToId = inReplyToId;
+        super(key);
     }
 
-    @Override public int hashCode()
+    public DiscussionKey(Bundle args)
     {
-        return (inReplyToType == null ? 0 : inReplyToType.hashCode()) ^
-                Integer.valueOf(inReplyToId).hashCode();
+        super(args);
     }
 
-    @Override public boolean equals(Object other)
+    @Override public String getBundleKey()
     {
-        return other.getClass().equals(getClass()) && equals((DiscussionKey) other);
-    }
-
-    public boolean equals(DiscussionKey other)
-    {
-        return other.getClass().equals(getClass()) &&
-                equalFields(other);
-
-    }
-
-    protected boolean equalFields(DiscussionKey other)
-    {
-        return other != null &&
-                (inReplyToType == null ? other.inReplyToType == null : inReplyToType.equals(other.inReplyToType)) &&
-                inReplyToId == other.inReplyToId;
+        return BUNDLE_KEY_KEY;
     }
 }

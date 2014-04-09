@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.discussion.DiscussionListLoader;
+import com.tradehero.th.fragments.discussion.TimelineCommentListLoader;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -21,7 +22,9 @@ import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
+import com.tradehero.th.network.service.MessageService;
 import com.tradehero.th.network.service.NewsServiceSync;
+import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
@@ -31,11 +34,13 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.TranslationService;
+import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
+import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.network.service.*;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
 import dagger.Module;
@@ -52,12 +57,14 @@ import retrofit.converter.Converter;
 @Module(
         includes = {
                 RetrofitProtectedModule.class,
+                RetrofitStubModule.class,
         },
         injects = {
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 ProviderPageIntent.class,
                 DiscussionListLoader.class,
+                TimelineCommentListLoader.class,
 
                 VotePair.class
         },
@@ -72,11 +79,6 @@ public class RetrofitModule
     {
         return adapter.create(DiscussionService.class);
     }
-//
-//    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-//    {
-//        return adapter.create(DiscussionServiceAsync.class);
-//    }
 
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
@@ -187,6 +189,11 @@ public class RetrofitModule
 //    {
 //        return adapter.create(DiscussionService.class);
 //    }
+
+    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
+    {
+        return adapter.create(WeChatService.class);
+    }
     //</editor-fold>
 
     @Provides @Singleton ObjectMapper provideObjectMapper()
