@@ -4,8 +4,8 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.persistence.ListCacheMaxSize;
@@ -52,7 +52,7 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
 
         for (DiscussionDTO discussionDTO: data)
         {
-            DiscussionKey discussionKey = new DiscussionKey(discussionDTO.id);
+            DiscussionKey discussionKey = discussionDTO.getDiscussionKey();
 
             discussionCache.get().put(discussionKey, discussionDTO);
             discussionKeys.add(discussionKey);

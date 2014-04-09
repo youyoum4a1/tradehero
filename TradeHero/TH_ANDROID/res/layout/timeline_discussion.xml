@@ -3,14 +3,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <ListView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@android:id/list"
-      android:listSelector="@color/transparent"
-      android:divider="@color/transparent"
-      android:paddingBottom="@dimen/discussion_comment_box_height"
-      />
 
-  <include layout="@layout/timeline_discussion_comment_widget"/>
+  <include layout="@layout/discussion_view"/>
 </FrameLayout>

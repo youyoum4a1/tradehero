@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
@@ -14,7 +14,7 @@ import javax.inject.Singleton;
  * Created by thonguyen on 4/4/14.
  */
 @Singleton
-public class DiscussionCache extends StraightDTOCache<DiscussionKey, DiscussionDTO>
+public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {
     private final Lazy<DiscussionService> discussionService;
 
@@ -27,9 +27,9 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, DiscussionD
         this.discussionService = discussionService;
     }
 
-    @Override protected DiscussionDTO fetch(DiscussionKey key) throws Throwable
+    @Override protected AbstractDiscussionDTO fetch(DiscussionKey key) throws Throwable
     {
         // TODO
-        return null;
+        throw new IllegalAccessError("Not implemented");
     }
 }

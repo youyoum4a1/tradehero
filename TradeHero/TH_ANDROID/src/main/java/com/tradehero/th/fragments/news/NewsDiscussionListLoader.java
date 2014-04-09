@@ -12,6 +12,6 @@ public class NewsDiscussionListLoader extends DiscussionListLoader
 {
     public NewsDiscussionListLoader(Context context, NewsItemDTOKey newsItemDTOKey)
     {
-        super(context, DiscussionType.NEWS, newsItemDTOKey.key);
+        super(context, DiscussionType.NEWS, newsItemDTOKey.id);
     }
 }

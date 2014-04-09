@@ -281,7 +281,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
                 if (item instanceof TimelineItemDTOEnhanced)
                 {
-                    pushDiscussion(((TimelineItemDTOEnhanced) item).getTimelineKey());
+                    pushDiscussion(((TimelineItemDTOEnhanced) item).getDiscussionKey());
                 }
             }
         };
@@ -289,9 +289,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
-        Bundle bundle = new Bundle();
-
-        timelineItemDTOKey.putParameters(bundle);
+        Bundle bundle = timelineItemDTOKey.getArgs();
 
         getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }

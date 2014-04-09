@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -16,7 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.misc.exception.THException;
@@ -34,7 +33,9 @@ import timber.log.Timber;
  */
 public abstract class AbstractDiscussionFragment extends DashboardFragment
 {
-    @InjectView(R.id.timeline_discussion_comment) EditText comment;
+    @InjectView(R.id.post_comment_text) EditText comment;
+
+    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
     @InjectView(android.R.id.list) ListView discussionList;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
@@ -84,7 +85,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
 
     protected DiscussionKey getDiscussionKeyFromBundle(Bundle arguments)
     {
-        return new DiscussionKey(getArguments());
+        return DiscussionKeyFactory.fromBundle(getArguments());
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
@@ -104,7 +105,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
     protected DiscussionListAdapter createDiscussionListAdapter()
     {
         DiscussionListAdapter adapter = new DiscussionListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), discussionKey.key, R.layout.timeline_discussion_comment_item);
+                getActivity(), getActivity().getLayoutInflater(), discussionKey.id, R.layout.timeline_discussion_comment_item);
         adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
         {
             @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
@@ -125,18 +126,6 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
     }
 
     protected abstract ListLoader<DiscussionDTO> createDiscussionLoader();
-
-    @OnClick(R.id.timeline_discussion_comment_post) void postComment()
-    {
-        detachCommentSubmitMiddleCallback();
-        DiscussionDTO discussionDTO = new DiscussionDTO();
-        discussionDTO.text = comment.getText().toString();
-        discussionDTO.inReplyToType = DiscussionType.TIMELINE_ITEM;
-        discussionDTO.inReplyToId = discussionKey.key;
-
-        comment.setText(null);
-        discussionMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, new CommentSubmitCallback());
-    }
 
     private void detachCommentSubmitMiddleCallback()
     {

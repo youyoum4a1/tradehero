@@ -28,7 +28,7 @@ public class WeChatUtils implements SocialSharer
             Intent intent = new Intent(context, WXEntryActivity.class);
 
             intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, WXMessageType.News.getType());
-            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, discussionKey.key);
+            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, discussionKey.id);
             context.startActivity(intent);
         }
     }

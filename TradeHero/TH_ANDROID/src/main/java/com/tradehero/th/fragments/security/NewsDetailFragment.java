@@ -16,6 +16,8 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemDTOKey;
@@ -95,7 +97,11 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
         if (newsItemDTOKey == null)
         {
-            newsItemDTOKey = new NewsItemDTOKey(getArguments());
+            DiscussionKey discussionKey = DiscussionKeyFactory.fromBundle(getArguments());
+            if (discussionKey instanceof NewsItemDTOKey)
+            {
+                newsItemDTOKey = (NewsItemDTOKey) discussionKey;
+            }
         }
 
         linkWith(newsItemDTOKey);
@@ -113,7 +119,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         int loaderId = 0;
         if (newsItemDTOKey != null)
         {
-            loaderId = newsItemDTOKey.key;
+            loaderId = newsItemDTOKey.id;
         }
 
         DiscussionListAdapter adapter =
@@ -167,26 +173,30 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
     private void linkWith(NewsItemDTOKey newsItemDTOKey)
     {
-        NewsItemDTO cachedNews = newsCache.get(newsItemDTOKey);
-        linkWith(cachedNews);
-
-        detachNewsFetchTask();
-        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, true, newsCacheFetchListener);
-        newsFetchTask.execute();
-
-        // TODO have to remove this hack, please!
-        int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
-        if (bgRes != 0)
+        if (newsItemDTOKey != null)
         {
-            newsDetailSummaryView.setBackgroundResource(bgRes);
+            NewsItemDTO cachedNews = newsCache.get(newsItemDTOKey);
+
+            linkWith(cachedNews);
+
+            detachNewsFetchTask();
+            newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, true, newsCacheFetchListener);
+            newsFetchTask.execute();
+
+            // TODO have to remove this hack, please!
+            int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
+            if (bgRes != 0)
+            {
+                newsDetailSummaryView.setBackgroundResource(bgRes);
+            }
+
+            discussionAdapter = createDiscussionAdapter();
+            mNewsDetailCommentList.setAdapter(discussionAdapter);
+            mNewsDetailCommentList.setEmptyView(mNewsDetailCommentEmpty);
+
+            getActivity().getSupportLoaderManager()
+                    .initLoader(discussionAdapter.getLoaderId(), null, discussionAdapter.getLoaderCallback());
         }
-
-        discussionAdapter = createDiscussionAdapter();
-        mNewsDetailCommentList.setAdapter(discussionAdapter);
-        mNewsDetailCommentList.setEmptyView(mNewsDetailCommentEmpty);
-
-        getActivity().getSupportLoaderManager()
-                .initLoader(discussionAdapter.getLoaderId(), null, discussionAdapter.getLoaderCallback());
     }
 
     private void detachNewsFetchTask()

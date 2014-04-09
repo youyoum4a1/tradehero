@@ -47,7 +47,10 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        linkWith(new TimelineItemDTOKey(discussionKey), true);
+        if (discussionKey instanceof TimelineItemDTOKey)
+        {
+            linkWith((TimelineItemDTOKey) discussionKey, true);
+        }
 
         super.linkWith(discussionKey, andDisplay);
     }
@@ -59,11 +62,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         {
             timelineItemView.display(timelineItemDTOKey);
         }
-    }
-
-    @Override protected DiscussionKey getDiscussionKeyFromBundle(Bundle arguments)
-    {
-        return new TimelineItemDTOKey(arguments);
     }
 
     @Override protected ListLoader<DiscussionDTO> createDiscussionLoader()

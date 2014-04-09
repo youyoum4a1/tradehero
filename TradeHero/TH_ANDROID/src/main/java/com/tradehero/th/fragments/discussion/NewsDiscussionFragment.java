@@ -69,7 +69,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        linkWith(new NewsItemDTOKey(discussionKey), true);
+        if (discussionKey instanceof NewsItemDTOKey)
+        {
+            linkWith((NewsItemDTOKey) discussionKey, true);
+        }
 
         super.linkWith(discussionKey, andDisplay);
     }
@@ -89,11 +92,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         {
             discussionItemView.display(newsItemDTO);
         }
-    }
-
-    @Override protected DiscussionKey getDiscussionKeyFromBundle(Bundle arguments)
-    {
-        return new NewsItemDTOKey(super.getDiscussionKeyFromBundle(arguments));
     }
 
     @Override protected ListLoader<DiscussionDTO> createDiscussionLoader()

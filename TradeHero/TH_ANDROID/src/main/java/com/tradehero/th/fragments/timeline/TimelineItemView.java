@@ -155,7 +155,7 @@ public class TimelineItemView extends LinearLayout
 
     private void openTimelineDiscussion()
     {
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getTimelineKey().getArgs());
+        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getDiscussionKey().getArgs());
     }
 
     private void openOtherTimeline()

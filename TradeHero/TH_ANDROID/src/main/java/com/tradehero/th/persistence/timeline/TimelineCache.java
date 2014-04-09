@@ -7,8 +7,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Deprecated, should use DiscussionCache instead
+ *
  * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:20 AM Copyright (c) TradeHero
  */
+@Deprecated
 @Singleton
 public class TimelineCache extends StraightDTOCache<TimelineItemDTOKey, TimelineItemDTOEnhanced>
 {
