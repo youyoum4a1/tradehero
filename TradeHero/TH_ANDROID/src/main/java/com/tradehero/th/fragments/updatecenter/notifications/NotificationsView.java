@@ -18,9 +18,9 @@ import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -74,6 +74,8 @@ public class NotificationsView extends BetterViewAnimator
         notificationListAdapter = new NotificationListAdapter(getContext(), LayoutInflater.from(getContext()), R.layout.notification_item_view);
         notificationList.setAdapter(notificationListAdapter);
         notificationList.setEmptyView(emptyView);
+
+        // scroll event will activate fetch task automatically
         notificationList.setOnScrollListener(new NotificationListOnScrollListener());
     }
 
@@ -104,17 +106,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationFetchTask = null;
     }
 
-    private int calculateThreshold(int totalItemCount, int visibleItemCount)
-    {
-        if (visibleItemCount > 0)
-        {
-            int segmentCount = totalItemCount / visibleItemCount;
-            return 1 + (32 - Integer.numberOfLeadingZeros(segmentCount));
-        }
-        return 2;
-    }
-
-
     private class NotificationListOnScrollListener implements AbsListView.OnScrollListener
     {
         @Override public void onScrollStateChanged(AbsListView absListView, int scrollState)
@@ -125,8 +116,7 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
         {
             boolean shouldLoadMore =
-                    Math.abs(totalItemCount - firstVisibleItem) <= visibleItemCount * calculateThreshold(totalItemCount, visibleItemCount);
-            Timber.d("shouldLoadMore = %b, loading = %b", shouldLoadMore, loading);
+                    Math.abs(totalItemCount - firstVisibleItem) <= EndlessScrollingHelper.calculateThreshold(totalItemCount, visibleItemCount);
 
             if (shouldLoadMore && !loading)
             {

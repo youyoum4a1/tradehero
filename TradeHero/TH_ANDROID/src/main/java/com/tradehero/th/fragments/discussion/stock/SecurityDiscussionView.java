@@ -23,8 +23,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.EndlessScrollingHelper;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -142,8 +142,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
         {
             boolean shouldLoadMore =
-                    Math.abs(totalItemCount - firstVisibleItem) <= visibleItemCount * calculateThreshold(totalItemCount, visibleItemCount);
-            Timber.d("shouldLoadMore = %b, loading = %b", shouldLoadMore, loading);
+                    Math.abs(totalItemCount - firstVisibleItem) <= EndlessScrollingHelper.calculateThreshold(totalItemCount, visibleItemCount);
 
             if (discussionListKey != null && shouldLoadMore && !loading)
             {
@@ -161,16 +160,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
                 }
             }
         }
-    }
-
-    private int calculateThreshold(int totalItemCount, int visibleItemCount)
-    {
-        if (visibleItemCount > 0)
-        {
-            int segmentCount = totalItemCount / visibleItemCount;
-            return 1 + (32 - Integer.numberOfLeadingZeros(segmentCount));
-        }
-        return 2;
     }
 
     private class SecurityDiscussionFetchListener implements DTOCache.Listener<DiscussionListKey,DiscussionKeyList>
