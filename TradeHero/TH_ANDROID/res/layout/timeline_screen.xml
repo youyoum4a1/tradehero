@@ -60,7 +60,7 @@
           android:text="@string/follow"
           android:textSize="15sp"
           android:textColor="@color/white"
-          android:drawableLeft="@drawable/icn_actions_monitor"
+          android:drawableLeft="@drawable/icn_star_white"
           android:visibility="gone"/>
 
       <Button
@@ -72,10 +72,10 @@
           android:paddingRight="15dp"
           android:gravity="center"
           android:background="#6e96fa"
-          android:text="Message"
+          android:text="@string/message"
           android:textSize="15sp"
           android:textColor="@color/white"
-          android:drawableLeft="@drawable/settings_email_noti"
+          android:drawableLeft="@drawable/icn_message_white"
           android:visibility="gone"/>
 
     </LinearLayout>
