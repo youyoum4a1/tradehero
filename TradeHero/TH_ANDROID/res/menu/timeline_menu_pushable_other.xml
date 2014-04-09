@@ -3,19 +3,19 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item
-      android:id="@+id/btn_follow_this_user"
-      android:title="@string/follow"
-      android:actionLayout="@layout/menu_follow_button"
-      android:showAsAction="ifRoom"
-      android:visible="false"
-    />
+  <!--<item-->
+      <!--android:id="@+id/btn_follow_this_user"-->
+      <!--android:title="@string/follow"-->
+      <!--android:actionLayout="@layout/menu_follow_button"-->
+      <!--android:showAsAction="ifRoom"-->
+      <!--android:visible="false"-->
+    <!--/>-->
 
-  <item
-      android:id="@+id/ic_following"
-      android:title="@string/leaderboard_action_bar_following"
-      android:actionLayout="@layout/menu_followed_stamp"
-      android:showAsAction="always"
-    />
+  <!--<item-->
+      <!--android:id="@+id/ic_following"-->
+      <!--android:title="@string/leaderboard_action_bar_following"-->
+      <!--android:actionLayout="@layout/menu_followed_stamp"-->
+      <!--android:showAsAction="always"-->
+    <!--/>-->
 
 </menu>

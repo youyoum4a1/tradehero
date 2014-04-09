@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_follower">There was an error when fetching the follower information</string>
-
+  <string name="error_fetch_follower">There was an error when fetching the follower information
+  </string>
+  <string name="not_follow_title">Choose a package to follow</string>
+  <string name="not_follow_subtitle">FREE Follow</string>
+  <string name="not_follow_premium_subtitle">PREMIUM Follow</string>
+  <string name="free_follow_title">You are now following</string>
+  <string name="free_follow_content1">Upgrade to Premium follow for US$1.99/month and
+    get the following perks:
+  </string>
+  <string name="free_follow_content2">See hero\'s open positions\nSee hero\'s activity on your
+    timeline\nUnlimited private messageing\nReal-time push notification of hero\'s activity
+  </string>
+  <string name="free_follow_content3">See hero\'s open positions\nSee hero\'s activity on your
+    timeline\nLimited private messageing
+  </string>
+  <string name="continue_free_follow">Continue with\nFree Follow</string>
+  <string name="upgrade">Upgrade</string>
 </resources>

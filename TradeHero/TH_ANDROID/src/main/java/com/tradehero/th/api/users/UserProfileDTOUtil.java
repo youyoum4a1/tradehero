@@ -13,6 +13,10 @@ import javax.inject.Inject;
  */
 public class UserProfileDTOUtil
 {
+    public final static int IS_NOT_FOLLOWER = 0;
+    public final static int IS_FREE_FOLLOWER = 1;
+    public final static int IS_PREMIUM_FOLLOWER = 2;
+
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
