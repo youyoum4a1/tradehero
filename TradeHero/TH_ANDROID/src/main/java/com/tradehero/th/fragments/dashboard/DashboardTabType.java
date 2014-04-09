@@ -17,9 +17,9 @@ public enum DashboardTabType
     TIMELINE(R.layout.home_selector, R.string.empty, R.color.transparent, MeTimelineFragment.class),
     TRENDING(R.string.dashboard_trending, R.drawable.icn_menu_trending, TrendingFragment.class),
     COMMUNITY(R.string.dashboard_community, R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
-    PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class),
-    STORE(R.string.dashboard_store, R.drawable.icn_menu_store, StoreScreenFragment.class),
+    PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class, false),
     UPDATE_CENTER(R.string.update_center, R.drawable.superman_facebook, UpdateCenterFragment.class),
+    STORE(R.string.dashboard_store, R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.string.settings, R.drawable.icn_menu_settings, SettingsFragment.class);
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
@@ -27,20 +27,41 @@ public enum DashboardTabType
     public final int viewResId;
     public final int stringResId;
     public final int drawableResId;
+    public final boolean show;
 
     public final Class<? extends Fragment> fragmentClass;
 
-    private DashboardTabType(int viewResId, int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
+    private DashboardTabType(
+            int viewResId,
+            int stringResId,
+            int drawableResId,
+            Class<? extends Fragment> fragmentClass,
+            boolean show)
     {
         this.viewResId = viewResId;
         this.stringResId = stringResId;
         this.drawableResId = drawableResId;
+        this.show = show;
         this.fragmentClass = fragmentClass;
+    }
+
+    private DashboardTabType(
+            int viewResId,
+            int stringResId,
+            int drawableResId,
+            Class<? extends Fragment> fragmentClass)
+    {
+        this(viewResId, stringResId, drawableResId, fragmentClass, true);
+    }
+
+    private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass, boolean show)
+    {
+        this(DEFAULT_VIEW_LAYOUT_ID, stringResId, drawableResId, fragmentClass, show);
     }
 
     private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
     {
-        this(DEFAULT_VIEW_LAYOUT_ID, stringResId, drawableResId, fragmentClass);
+        this(DEFAULT_VIEW_LAYOUT_ID, stringResId, drawableResId, fragmentClass, true);
     }
     
     public boolean hasCustomView()

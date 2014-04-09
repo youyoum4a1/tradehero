@@ -70,7 +70,7 @@
 
   <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
-  <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;Free({0})}</string>
+  <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
 
   <string name="message_center_tab_message">Messages</string>
   <string name="message_center_tab_notification">Notifications</string>

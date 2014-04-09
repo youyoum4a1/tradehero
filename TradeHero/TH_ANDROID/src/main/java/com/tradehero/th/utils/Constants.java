@@ -33,6 +33,6 @@ public class Constants
     public static final String AUTHORIZATION = "Authorization";
 
     // Google PlayStore
-
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
+
 }

@@ -61,10 +61,13 @@ public class AppContainerImpl implements AppContainer
         List<View> menuItems = new ArrayList<>();
         for (DashboardTabType tabType : DashboardTabType.values())
         {
-            View menuItem = createMenuItemFromTabType(activity, tabType);
-            menuItem.setTag(tabType);
-            menuItem.setOnClickListener(menuItemClickListener);
-            menuItems.add(menuItem);
+            if (tabType.show)
+            {
+                View menuItem = createMenuItemFromTabType(activity, tabType);
+                menuItem.setTag(tabType);
+                menuItem.setOnClickListener(menuItemClickListener);
+                menuItems.add(menuItem);
+            }
         }
         resideMenu.setMenuItems(menuItems);
 

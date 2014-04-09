@@ -3,6 +3,7 @@ package com.tradehero.common.widget;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import timber.log.Timber;
 
 /**
  * It raises the flag when near the end.
@@ -68,32 +69,61 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
     {
         int lastVisiblePosition = view.getLastVisiblePosition();
         int height = view.getHeight();
-        try {
-            int childCount = view.getChildCount();
-            View child = view.getChildAt(childCount-1);
+        int childCount = view.getChildCount();
+        View child = view.getChildAt(childCount-1);
 
-            if(child != null && child.getBottom() >= height){
-                /**
-                 * Check that the scrolling has stopped, and that the last item is
-                 * visible.
-                 */
-//                if (state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && null != mOnLastItemVisibleListener && mLastItemVisible) {
-//                    mOnLastItemVisibleListener.onLastItemVisible();
-//                }
+        if (this.active && !this.nearEnd )
+        {
+            if (this.active && state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLastItemVisible) {
+                raiseFlag();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
     }
 
+    //mLastItemVisible = (totalItemCount > 0) && (firstVisibleItem + visibleItemCount >= totalItemCount - 1);
 
-
+    private boolean mLastItemVisible = false;
     @Override public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount)
     {
-        if (this.active && !this.nearEnd && (totalItemCount - visibleItemCount) <= (firstVisibleItem + this.visibleThreshold))
-        {
-            //THLog.d(TAG, "onScroll first: " + firstVisibleItem + ", visiCount: " + visibleItemCount + ", totalCount: " + totalItemCount);
-            raiseFlag();
+        if (totalItemCount > 0 && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1/*this.visibleThreshold*/)) {
+            mLastItemVisible = true;
+        } else {
+            mLastItemVisible = false;
         }
+
     }
+
+//    @Override public void onScrollStateChanged(final AbsListView view, final int state)
+//    {
+//        int lastVisiblePosition = view.getLastVisiblePosition();
+//        int height = view.getHeight();
+//        try {
+//            int childCount = view.getChildCount();
+//            View child = view.getChildAt(childCount-1);
+//
+//            if(child != null && child.getBottom() >= height){
+//                /**
+//                 * Check that the scrolling has stopped, and that the last item is
+//                 * visible.
+//                 */
+////                if (state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && null != mOnLastItemVisibleListener && mLastItemVisible) {
+////                    mOnLastItemVisibleListener.onLastItemVisible();
+////                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//
+//
+//    @Override public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount)
+//    {
+//        if (this.active && !this.nearEnd && (totalItemCount - visibleItemCount) <= (firstVisibleItem + this.visibleThreshold))
+//        {
+//            //THLog.d(TAG, "onScroll first: " + firstVisibleItem + ", visiCount: " + visibleItemCount + ", totalCount: " + totalItemCount);
+//            raiseFlag();
+//        }
+//    }
 }

@@ -7,6 +7,7 @@ public class NetworkConstants
 {
     public static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
     public static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/api/";
+    //public static final String TRADEHERO_PROD_ENDPOINT = "https://192.168.0.121/api";
     public static final String COMPETITION_PATH = "competitionpages/";
 
     public static final String TRANSLATION_REQ_TSCOPE = "http://api.microsofttranslator.com";

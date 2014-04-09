@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
@@ -26,6 +27,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.updatecenter.TabListener;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroType;
@@ -34,18 +36,22 @@ import java.text.MessageFormat;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
 public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
+    static final String KEY_PAGE = "KEY_PAGE";
+    static final String KEY_ID = "KEY_ID";
     /**
      * We are showing the heroes of this follower
      */
     public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
     /** categories of hero:premium,free,all */
     private HeroTypeExt[] heroTypes;
+    private int selectedId = -1;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,38 +74,39 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
 
     private void addTabs()
     {
-
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         //actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
+        ActionBar.Tab lastSavedTab = null;
+        int lastSelectedId = selectedId;
         HeroTypeExt[] types = heroTypes;
+        Bundle args = getArguments();
+        if (args == null)
+        {
+            args = new Bundle();
+        }
         for (HeroTypeExt type : types)
         {
-            HeroesTabContentFragment fragment = null;
-            switch (type.heroType)
-            {
-                case PREMIUM:
-                    fragment = new PrimiumHeroFragment(type.pageIndex, type.heroType);
-                    break;
-                case FREE:
-                    fragment = new FreeHeroFragment(type.pageIndex, type.heroType);
-                    break;
-                case ALL:
-                    fragment = new AllHeroFragment(type.pageIndex, type.heroType);
-                    break;
-                default:
-                    break;
-            }
-            fragment.setArguments(getArguments());
-            fragment.setOnHeroesLoadedListener(onHeroesLoadedListener);
-            //fragment.setOnFollowersLoadedListener(onFollowersLoadedListener);
-            //Action Bar Tab must have a Callback
+            args = new Bundle(args);
+            args.putInt(KEY_PAGE, type.pageIndex);
+            args.putInt(KEY_ID, type.heroType.typeId);
             ActionBar.Tab tab = actionBar.newTab().setTabListener(
-                    new TabListener(fragment));
+                    new MyTabListener(getSherlockActivity(),type.fragmentClass,type.toString(),args));
             tab.setTag(type.heroType.typeId);
             setTabTitle(tab, type.titleRes, 0);
             actionBar.addTab(tab);
+            if (type.heroType.typeId == lastSelectedId)
+            {
+                lastSavedTab = tab;
+            }
+
+        }
+        //actionBar.setSelectedNavigationItem();
+        Timber.d("lastSavedTab %s selectedId %d",lastSavedTab,selectedId);
+        if (lastSavedTab != null)
+        {
+            actionBar.selectTab(lastSavedTab);
         }
     }
 
@@ -108,6 +115,12 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.removeAllTabs();
+    }
+
+    private void saveSelectedTab()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        this.selectedId = (Integer)actionBar.getSelectedTab().getTag();
     }
 
     private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
@@ -153,7 +166,13 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     @Override public void onDestroyView()
     {
         super.onDestroyView();
+        saveSelectedTab();
         clearTabs();
+    }
+
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
     }
 
     OnHeroesLoadedListener onHeroesLoadedListener = new OnHeroesLoadedListener()
@@ -174,73 +193,39 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         void onHerosLoaded(int page, HeroIdExtWrapper value);
     }
 
-    /**
-     * Callback
-     */
-    private class TabListener implements ActionBar.TabListener
-    {
 
-        private Fragment mFragment;
-
-        public TabListener(Fragment fragment)
-        {
-            mFragment = fragment;
-        }
-
-        @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-
-            ft.add(R.id.fragment_content, mFragment, mFragment.getTag());
-        }
-
-        @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-            ft.remove(mFragment);
-        }
-
-        @Override public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-            //Toast.makeText(ActionBarTabs.this, "Reselected!", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public static class PrimiumHeroFragment extends HeroesTabContentFragment
     {
 
-        public PrimiumHeroFragment(int page, HeroType heroType)
+        public PrimiumHeroFragment()
         {
-            super(page, heroType);
         }
     }
 
     public static class FreeHeroFragment extends HeroesTabContentFragment
     {
 
-        public FreeHeroFragment(int page, HeroType heroType)
+        public FreeHeroFragment()
         {
-            super(page, heroType);
         }
     }
 
     public static class AllHeroFragment extends HeroesTabContentFragment
     {
 
-        public AllHeroFragment(int page, HeroType heroType)
+        public AllHeroFragment()
         {
-            super(page, heroType);
         }
     }
 
     public static class HeroesTabContentFragment extends BasePurchaseManagerFragment
     {
 
-        private int page;
         private HeroType heroType;
-
-        public HeroesTabContentFragment(int page, HeroType heroType)
+        private int page;
+        public HeroesTabContentFragment()
         {
-            this.page = page;
-            this.heroType = heroType;
         }
 
         private HeroManagerViewContainer viewContainer;
@@ -266,10 +251,21 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         }
         //</editor-fold>
 
+        @Override public void onCreate(Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            Bundle args = getArguments();
+            this.page = args.getInt(KEY_PAGE);
+            int heroTypeId = args.getInt(KEY_ID);
+            this.heroType = HeroType.fromId(heroTypeId);
+            Timber.d("onCreate page:%s,heroTypeId:%s,heroType:%s",page,heroTypeId,heroType);
+        }
+
         @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View view = inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
             initViews(view);
+            Timber.d("onCreateView page:%s",page);
             return view;
         }
 
@@ -352,12 +348,19 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             this.followerId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWER_ID));
             displayProgress(true);
 
+            Timber.d("fetch heros heroType:%s",getHeroType());
             this.infoFetcher.fetch(this.followerId, getHeroType());
+
         }
 
-        private HeroType getHeroType()
+        HeroType getHeroType()
         {
             return this.heroType;
+        }
+
+        void setHeroType(HeroType heroType)
+        {
+            this.heroType = heroType;
         }
 
         @Override public void onPause()
@@ -392,6 +395,13 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             }
             this.viewContainer = null;
             super.onDestroyView();
+            Timber.d("onDestroyView page:%s",page);
+        }
+
+        @Override public void onDestroy()
+        {
+            super.onDestroy();
+            Timber.d("onDestroy page:%s",page);
         }
 
         private void handleBuyMoreClicked()
@@ -601,6 +611,29 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             {
                 onHeroesLoadedListener.onHerosLoaded(page, value);
             }
+        }
+    }
+
+    class MyTabListener extends TabListener {
+
+        public MyTabListener(SherlockFragmentActivity activity,
+                Class<? extends Fragment> fragmentClass, String tag, Bundle args)
+        {
+            super(activity, fragmentClass, tag, args);
+        }
+
+        @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
+        {
+            if (mFragment == null)
+            {
+                mFragment = Fragment.instantiate(mActivity, mFragmentClass.getName(), mArgs);
+                HeroesTabContentFragment fragment = (HeroesTabContentFragment)mFragment;
+                fragment.setOnHeroesLoadedListener(onHeroesLoadedListener);
+                ft.add(R.id.fragment_content, mFragment, mTag);
+            }else {
+                super.onTabSelected(tab, ft);
+            }
+
         }
     }
 }

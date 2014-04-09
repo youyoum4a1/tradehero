@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.content.Context;
+import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -9,7 +10,7 @@ import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 1:14 PM Copyright (c) TradeHero */
 @Singleton
-public class LinkedInUtils
+public class LinkedInUtils implements SocialSharer
 {
     private final LinkedInAuthenticationProvider provider;
 
@@ -23,5 +24,10 @@ public class LinkedInUtils
     {
         provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
+    }
+
+    @Override public void share(Context context, DTOKey shareDtoKey)
+    {
+        // TODO
     }
 }

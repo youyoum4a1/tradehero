@@ -2,12 +2,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/timeline_popup_menu_monitor_add_to_watch_list"
+      android:id="@+id/timeline_action_add_to_watchlist"
       android:title="@null"
       />
 
   <item
-      android:id="@+id/timeline_popup_menu_monitor_enable_stock_alert"
+      android:id="@+id/timeline_action_add_alert"
       android:title="@string/timeline_enable_stock_alert"
       />
 

@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
  */
 public class DiscussionKey extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY_KEY = DiscussionKey.class.getName() + ".key";
+    public static final String BUNDLE_KEY_KEY = DiscussionKey.class.getName() + ".key";
 
     public DiscussionKey(Integer key)
     {

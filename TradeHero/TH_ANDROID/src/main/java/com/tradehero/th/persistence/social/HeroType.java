@@ -13,8 +13,22 @@ public enum HeroType
             this.typeId = id;
         }
 
+    @Override public String toString()
+    {
+        switch (this)
+        {
+            case PREMIUM:
+                return "Premium";
+            case FREE:
+                return "Free";
+            case ALL:
+                return "All";
 
-        public static HeroType fromId(int id)
+        }
+        return null;
+    }
+
+    public static HeroType fromId(int id)
         {
             HeroType[] arr = HeroType.values();
             for (HeroType type:arr)

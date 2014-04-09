@@ -11,7 +11,6 @@ import java.util.Map;
 public class PaginatedNotificationListKey extends NotificationListKey
     implements PaginatedKey
 {
-    private static final String PAGE = PaginatedNotificationListKey.class.getName() + ".page";
     private static final Integer DEFAULT_PER_PAGE = 42;
 
     private int page;
@@ -74,8 +73,8 @@ public class PaginatedNotificationListKey extends NotificationListKey
             generatedMap = new HashMap<>();
         }
 
-        generatedMap.put("page", page);
-        generatedMap.put("perPage", DEFAULT_PER_PAGE);
+        generatedMap.put(PaginatedKey.JSON_PAGE, page);
+        generatedMap.put(PaginatedKey.JSON_PERPAGE, DEFAULT_PER_PAGE);
         return generatedMap;
     }
 }

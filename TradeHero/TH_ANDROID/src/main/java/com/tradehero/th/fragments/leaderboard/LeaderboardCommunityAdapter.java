@@ -27,7 +27,7 @@ import timber.log.Timber;
  * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:48 PM Copyright (c) TradeHero
  */
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
-    implements StickyListHeadersAdapter
+        implements StickyListHeadersAdapter
 {
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
     private List<ProviderId> providerDTOs = new ArrayList<>();
@@ -57,13 +57,13 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     {
         Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap = new HashMap<>();
 
-        for (LeaderboardCommunityType type: LeaderboardCommunityType.values())
+        for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             if (type.getKey() != null)
             {
                 typeMap.put(type, leaderboardDefListCache.get().get(type.getKey()));
-                Timber.d("notifyDataSetChanged map:type %s,value:%s",type,leaderboardDefListCache.get().get(
-                        type.getKey()));
+                Timber.d("notifyDataSetChanged map: type %s, value: %s", type,
+                        leaderboardDefListCache.get().get(type.getKey()));
             }
             else
             {
@@ -80,26 +80,17 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     // hardcoded stuffs +__+
     private void putExtraItems(Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap)
     {
-        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
-        
-        if (skillAndFriend != null && skillAndFriend.size() < 3)
+        List<LeaderboardDefKey> heroAndFollower = typeMap.get(LeaderboardCommunityType.HeroAndFollower);
+        if (heroAndFollower != null && heroAndFollower.size() < 3)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
-
             //add an entry 'myheros'
             fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_HERO_ID;
             fakeDto.name = getContext().getString(R.string.leaderboard_community_heros);
-            //fakeDto.sortTypes = null;
 
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            skillAndFriend.add(0,fakeDto.getLeaderboardDefKey());
+            heroAndFollower.add(0, fakeDto.getLeaderboardDefKey());
 
             //add an entry 'followers'
             fakeDto = new LeaderboardDefDTO();
@@ -107,8 +98,18 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             fakeDto.name = getContext().getString(R.string.leaderboard_community_followers);
 
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            skillAndFriend.add(1,fakeDto.getLeaderboardDefKey());
-;
+            heroAndFollower.add(1, fakeDto.getLeaderboardDefKey());
+        }
+
+        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
+
+        if (skillAndFriend != null && skillAndFriend.size() < 3)
+        {
+            LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
+            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
+            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
+            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
         }
 
         List<LeaderboardDefKey> sectorAndExchange = typeMap.get(LeaderboardCommunityType.SectorAndExchange);
@@ -134,15 +135,15 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     @Override public int getCount()
     {
         int totalItems = 0;
-        for (LeaderboardCommunityType type: LeaderboardCommunityType.values())
+        for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             if (items.get(type) != null)
             {
                 totalItems += items.get(type).size();
-                Timber.d("getCount type %s,size:%s",type,items.get(type).size());
+                Timber.d("getCount type %s,size:%s", type, items.get(type).size());
             }
         }
-        Timber.d("getCount CompetitionCount %s",getCompetitionCount());
+        Timber.d("getCount CompetitionCount %s", getCompetitionCount());
         return getCompetitionCount() + totalItems;
     }
 
@@ -187,7 +188,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
         }
         position -= getCompetitionCount();
 
-        for (LeaderboardCommunityType type: LeaderboardCommunityType.values())
+        for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             if (items.get(type) != null)
             {
@@ -263,6 +264,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     public static enum LeaderboardCommunityType
     {
         Competition(null), // for competition
+        HeroAndFollower(null), // for managing heroes & followers
         SkillAndFriend(LeaderboardDefListKey.getMostSkilled()),
         TimeRestricted(LeaderboardDefListKey.getTimePeriod()),
         SectorAndExchange(null); // all fake :v
