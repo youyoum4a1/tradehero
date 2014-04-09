@@ -99,12 +99,22 @@ public class SecurityDiscussionView extends BetterViewAnimator
         super.onDetachedFromWindow();
     }
 
-    private void fetchSecurityDiscussion()
+    private void fetchNextPageIfNecessary()
     {
         detachSecurityDiscussionFetchTask();
 
-        securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, false, securityDiscussionFetchListener);
-        securityDiscussionFetchTask.execute();
+        if (paginatedSecurityDiscussionListKey == null)
+        {
+            paginatedSecurityDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 0);
+        }
+
+        if (nextPageDelta >= 0)
+        {
+            paginatedSecurityDiscussionListKey = paginatedSecurityDiscussionListKey.next(nextPageDelta);
+
+            securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, false, securityDiscussionFetchListener);
+            securityDiscussionFetchTask.execute();
+        }
     }
 
     private void detachSecurityDiscussionFetchTask()
@@ -147,17 +157,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
             if (discussionListKey != null && shouldLoadMore && !loading)
             {
                 loading = true;
-                if (paginatedSecurityDiscussionListKey == null)
-                {
-                    paginatedSecurityDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
-                }
 
-                if (nextPageDelta >= 0)
-                {
-                    paginatedSecurityDiscussionListKey = paginatedSecurityDiscussionListKey.next(nextPageDelta);
-
-                    fetchSecurityDiscussion();
-                }
+                fetchNextPageIfNecessary();
             }
         }
     }
@@ -213,7 +214,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
         @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO securityCompactDTO, boolean fromCache)
         {
             discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
-            fetchSecurityDiscussion();
+
+            fetchNextPageIfNecessary();
         }
 
         @Override public void onErrorThrown(SecurityId key, Throwable error)

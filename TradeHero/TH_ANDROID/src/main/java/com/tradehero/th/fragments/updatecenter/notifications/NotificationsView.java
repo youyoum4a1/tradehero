@@ -89,12 +89,22 @@ public class NotificationsView extends BetterViewAnimator
         super.onDetachedFromWindow();
     }
 
-    private void fetchNextNotificationPage()
+    private void fetchNextPageIfNecessary()
     {
         detachNotificationFetchTask();
 
-        notificationFetchTask = notificationListCache.get().getOrFetch(paginatedNotificationListKey, false, notificationFetchListener);
-        notificationFetchTask.execute();
+        if (paginatedNotificationListKey == null)
+        {
+            paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 0);
+        }
+
+        if (nextPageDelta >= 0)
+        {
+            paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
+
+            notificationFetchTask = notificationListCache.get().getOrFetch(paginatedNotificationListKey, false, notificationFetchListener);
+            notificationFetchTask.execute();
+        }
     }
 
     private void detachNotificationFetchTask()
@@ -121,17 +131,8 @@ public class NotificationsView extends BetterViewAnimator
             if (shouldLoadMore && !loading)
             {
                 loading = true;
-                if (paginatedNotificationListKey == null)
-                {
-                    paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
-                }
 
-                if (nextPageDelta >= 0)
-                {
-                    paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
-
-                    fetchNextNotificationPage();
-                }
+                fetchNextPageIfNecessary();
             }
         }
     }
