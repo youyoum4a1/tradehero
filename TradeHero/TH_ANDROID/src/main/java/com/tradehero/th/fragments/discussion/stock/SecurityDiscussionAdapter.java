@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.discussion.stock;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.AppendableArrayDTOAdapter;
-import com.tradehero.th.api.discussion.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 /**
  * Created by thonguyen on 4/4/14.

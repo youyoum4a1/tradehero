@@ -2,11 +2,8 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.messages.MessageDTO;
-import com.tradehero.th.api.messages.MessageKey;
-import com.tradehero.th.api.messages.MessageKeyList;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.key.MessageId;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import java.util.ArrayList;
@@ -21,27 +18,29 @@ import javax.inject.Singleton;
  * message item
  */
 @Singleton
-public class MessageItemCache extends StraightDTOCache<MessageKey, MessageDTO>
+public class MessageItemCache extends StraightDTOCache<MessageId, MessageDTO>
 {
     MessageServiceWrapper messageServiceWrapper;
 
     @Inject
-    public MessageItemCache(@SingleCacheMaxSize IntPreference maxSize,MessageServiceWrapper messageServiceWrapper)
+    public MessageItemCache(@SingleCacheMaxSize IntPreference maxSize, MessageServiceWrapper messageServiceWrapper)
     {
         super(maxSize.get());
         this.messageServiceWrapper = messageServiceWrapper;
     }
 
-    @Override protected MessageDTO fetch(MessageKey key) throws Throwable
+    // TODO implement a fetch on server side
+    @Override protected MessageDTO fetch(MessageId key) throws Throwable
     {
-        return null;
+        throw new IllegalArgumentException("This cache has no service to fetch");
     }
 
-    public List<MessageDTO> getMessages(Collection<MessageKey> list){
+    public List<MessageDTO> getMessages(Collection<MessageId> list)
+    {
         if (list != null)
         {
             List<MessageDTO> result = new ArrayList<>(list.size());
-            for(MessageKey key:list)
+            for (MessageId key : list)
             {
                 MessageDTO messageDTO = get(key);
                 result.add(messageDTO);

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,11 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import java.text.MessageFormat;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -30,7 +26,7 @@ public class UpdateCenterFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
+        View view = inflater.inflate(R.layout.update_center, container, false);
         return view;
     }
 
@@ -100,12 +96,10 @@ public class UpdateCenterFragment extends DashboardFragment
         ActionBar.Tab tab = actionBar.getTabAt(page);
         TitleTabView tabView = (TitleTabView)tab.getCustomView();
         tabView.setTitleNumber(number);
-
     }
 
     private void setTabStyle(ActionBar.Tab tab)
     {
-
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.message_tab_item, (ViewGroup)getActivity().getWindow().getDecorView(),false);
 
@@ -113,23 +107,13 @@ public class UpdateCenterFragment extends DashboardFragment
         TitleTabView tabView =  (TitleTabView)tab.getCustomView();
     }
 
-    TitleNumberCallback titleNumberCallback = new TitleNumberCallback()
-    {
-        @Override public void onTitleNumberChanged(int page, int number)
-        {
-            changeTabTitleNumber(page,number);
-        }
-    };
-
     public static interface TitleNumberCallback
     {
         void onTitleNumberChanged(int page, int number);
     }
 
-
     class MyTabListener extends TabListener
     {
-
         public MyTabListener(SherlockFragmentActivity activity,
                 Class<? extends Fragment> fragmentClass, String tag, Bundle args)
         {
@@ -147,12 +131,6 @@ public class UpdateCenterFragment extends DashboardFragment
             {
                 ft.attach(mFragment);
             }
-
-        }
-
-        @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-            ft.remove(mFragment);
         }
 
         @Override public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)

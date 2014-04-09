@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social.follower;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -34,13 +34,11 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates.
  */
 public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/ implements
         View.OnClickListener
 {
-
     public static class FollowerTypeExt
     {
         public final int titleRes;
@@ -48,7 +46,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         public final int pageIndex;
         public final Class<? extends Fragment> fragmentClass;
 
-        public FollowerTypeExt(int titleRes, HeroType followerType,int pageIndex,Class<? extends Fragment> fragmentClass)
+        public FollowerTypeExt(int titleRes, HeroType followerType, int pageIndex, Class<? extends Fragment> fragmentClass)
         {
             this.titleRes = titleRes;
             this.followerType = followerType;
@@ -62,25 +60,31 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             int len = arr.length;
             FollowerTypeExt[] result = new FollowerTypeExt[arr.length];
 
-            for(int i=0;i< len;i++){
+            for (int i = 0; i < len; i++)
+            {
                 int typeId = arr[i].typeId;
-                if (typeId== HeroType.PREMIUM.typeId){
+                if (typeId == HeroType.PREMIUM.typeId)
+                {
                     result[i] = new FollowerTypeExt(R.string.leaderboard_community_hero_premium,
-                            HeroType.PREMIUM,0,PrimiumFollowerFragment.class);
-                }else if (typeId== HeroType.FREE.typeId){
+                            HeroType.PREMIUM, 0, PrimiumFollowerFragment.class);
+                }
+                else if (typeId == HeroType.FREE.typeId)
+                {
                     result[i] = new FollowerTypeExt(R.string.leaderboard_community_hero_free,
-                            HeroType.FREE,1,FreeFollowerFragment.class);
-                }else if (typeId== HeroType.ALL.typeId){
+                            HeroType.FREE, 1, FreeFollowerFragment.class);
+                }
+                else if (typeId == HeroType.ALL.typeId)
+                {
                     result[i] = new FollowerTypeExt(R.string.leaderboard_community_hero_all,
-                            HeroType.ALL,2,AllFollowerFragment.class);
+                            HeroType.ALL, 2, AllFollowerFragment.class);
                 }
             }
             return result;
         }
 
-        public static FollowerTypeExt fromIndex(FollowerTypeExt[] arr,int pageIndex)
+        public static FollowerTypeExt fromIndex(FollowerTypeExt[] arr, int pageIndex)
         {
-            for (FollowerTypeExt type:arr)
+            for (FollowerTypeExt type : arr)
             {
                 if (type.pageIndex == pageIndex)
                 {
@@ -88,34 +92,28 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
                 }
             }
             return null;
-
         }
-
     }
 
-
-
-    public static final String KEY_PAGE = "key_page";
-    public static final String KEY_ID = "key_id";
-
-    public static final String TAG = FollowerManagerFragment.class.getSimpleName();
+    public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
+    public static final String KEY_ID = FollowerManagerFragment.class.getName() + ".keyId";
 
     public static final String BUNDLE_KEY_FOLLOWED_ID =
             FollowerManagerFragment.class.getName() + ".followedId";
 
-
-    /**parent layout of broadcastView and whisperView*/
+    /** parent layout of broadcastView and whisperView */
     @InjectView(R.id.send_message_layout) View messageLayout;
-    /**view to 'send broadcast'*/
+    /** view to 'send broadcast' */
     @InjectView(R.id.send_message_broadcast) View broadcastView;
-    /**view to 'send whisper'*/
+    /** view to 'send whisper' */
     @InjectView(R.id.send_message_whisper) View whisperView;
 
     private UserBaseKey followedId;
-    /**categories of follower:premium,free,all*/
+    /** categories of follower:premium,free,all */
     private FollowerTypeExt[] followerTypes;
 
     private int selectedId = -1;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -126,7 +124,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("%s,onCreateView", TAG);
+        Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
         ButterKnife.inject(this, view);
         addTabs();
@@ -193,6 +191,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         //mTabHost.addTab(mTabHost.newTabSpec("throttle").setIndicator("Throttle"),
         //        LoaderThrottleSupport.ThrottledLoaderListFragment.class, null);
     }
+
     private void addTabs()
     {
         //TODO NestedFragments needs ChildFragmentManager
@@ -209,13 +208,13 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         {
             args = new Bundle();
         }
-        for (FollowerTypeExt type:types)
+        for (FollowerTypeExt type : types)
         {
             args = new Bundle(args);
-            args.putInt(KEY_PAGE,type.pageIndex);
-            args.putInt(KEY_ID,type.followerType.typeId);
+            args.putInt(KEY_PAGE, type.pageIndex);
+            args.putInt(KEY_ID, type.followerType.typeId);
             ActionBar.Tab tab = actionBar.newTab().setTabListener(
-                    new MyTabListener(getSherlockActivity(),type.fragmentClass,type.toString(),args));
+                    new MyTabListener(getSherlockActivity(), type.fragmentClass, type.toString(), args));
             tab.setTag(type.followerType.typeId);
             setTabTitle(tab, type.titleRes, 0);
             actionBar.addTab(tab);
@@ -229,14 +228,14 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             actionBar.selectTab(selectedTab);
         }
 
-        Timber.d("%s,addTabs", TAG);
+        Timber.d("addTabs");
     }
 
     private void changetTabTitle(int page, int number)
     {
         int titleRes = 0;
         int len = followerTypes.length;
-        for (int i=0;i<len;i++)
+        for (int i = 0; i < len; i++)
         {
             if (followerTypes[i].pageIndex == page)
             {
@@ -249,13 +248,13 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         tab.setText(title);
     }
 
-    private void changetTabTitle(int number1,int number2,int number3)
+    private void changetTabTitle(int number1, int number2, int number3)
     {
-        changetTabTitle(0,number1);
-        changetTabTitle(1,number2);
-        changetTabTitle(2,number3);
+        changetTabTitle(0, number1);
+        changetTabTitle(1, number2);
+        changetTabTitle(2, number3);
 
-        Timber.d("%s,changetTabTitle result:%d,%d,%d", TAG, number1, number2, number3);
+        Timber.d("changetTabTitle result:%d,%d,%d", number1, number2, number3);
     }
 
     private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
@@ -268,7 +267,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     private void saveSelectedTab()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        this.selectedId = (Integer)actionBar.getSelectedTab().getTag();
+        this.selectedId = (Integer) actionBar.getSelectedTab().getTag();
     }
 
     private void clearTabs()
@@ -281,13 +280,13 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
     OnFollowersLoadedListener onFollowersLoadedListener = new OnFollowersLoadedListener()
     {
 
-        @Override public void onFollowerLoaded(int page,FollowerSummaryDTO value)
+        @Override public void onFollowerLoaded(int page, FollowerSummaryDTO value)
         {
             if (!isDetached())
             {
                 //remove the function to send message
                 //setMessageLayoutShown(false);
-                changetTabTitle(value.paidFollowerCount,value.freeFollowerCount,(value.paidFollowerCount+value.freeFollowerCount));
+                changetTabTitle(value.paidFollowerCount, value.freeFollowerCount, (value.paidFollowerCount + value.freeFollowerCount));
             }
         }
     };
@@ -297,29 +296,29 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         switch (v.getId())
         {
             case R.id.send_message_whisper:
-                goToMessagePage(SendMessageFragment.MessageType.MESSAGE_TYPE_WHISPER.typeId);
-                break;
+                throw new IllegalArgumentException("There is no whisper yet");
+
             case R.id.send_message_broadcast:
-                goToMessagePage(SendMessageFragment.MessageType.MESSAGE_TYPE_BROADCAST.typeId);
+                goToMessagePage(DiscussionType.BROADCAST_MESSAGE);
                 break;
             default:
                 break;
         }
     }
 
-    private void goToMessagePage(int messageType)
+    private void goToMessagePage(DiscussionType discussionType)
     {
         int index = getSherlockActivity().getSupportActionBar().getSelectedNavigationIndex();
-        Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
+        Integer tagId = (Integer) getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
         int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
-        Timber.d("goToMessagePage index:%d,tabIndex:%d",index,tabIndex);
+        Timber.d("goToMessagePage index:%d,tabIndex:%d", index, tabIndex);
 
         HeroType followerType = HeroType.fromId(tagId);
 
         Bundle args = new Bundle();
 
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType);
-        args.putInt(SendMessageFragment.KEY_FOLLOER_TYPE, followerType.typeId);
+        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, discussionType.value);
+        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, followerType.typeId);
 
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
@@ -327,7 +326,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
     public static interface OnFollowersLoadedListener
     {
-        void onFollowerLoaded(int page,FollowerSummaryDTO followerSummaryDTO);
+        void onFollowerLoaded(int page, FollowerSummaryDTO followerSummaryDTO);
     }
 
     /**
@@ -347,16 +346,15 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             if (mFragment == null)
             {
                 mFragment = Fragment.instantiate(mActivity, mFragmentClass.getName(), mArgs);
-                FollowerManagerTabFragment fragment = (FollowerManagerTabFragment)mFragment;
+                FollowerManagerTabFragment fragment = (FollowerManagerTabFragment) mFragment;
                 fragment.setOnFollowersLoadedListener(onFollowersLoadedListener);
                 ft.add(R.id.fragment_content, mFragment, mTag);
             }
             else
             {
-                super.onTabSelected(tab,ft);
+                super.onTabSelected(tab, ft);
             }
         }
-
     }
 
     public static class PrimiumFollowerFragment extends FollowerManagerTabFragment
@@ -375,17 +373,13 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         }
     }
 
-
     public static class FreeFollowerFragment extends FollowerManagerTabFragment
     {
 
         public FreeFollowerFragment()
         {
         }
-
-
     }
-
 
     public static class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     {
@@ -432,7 +426,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             View view =
                     inflater.inflate(R.layout.fragment_store_manage_followers, container, false);
             initViews(view);
-            Timber.d("%s,FollowerManagerTabFragment onCreateView",TAG);
+            Timber.d("FollowerManagerTabFragment onCreateView");
             return view;
         }
 
@@ -465,7 +459,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
                             {
                                 handleFollowerItemClicked(view, position, id);
                             }
-                        });
+                        }
+                );
                 this.viewContainer.followerList.setAdapter(followerListAdapter);
             }
         }
@@ -483,14 +478,14 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         @Override public void onResume()
         {
             super.onResume();
-            Timber.d("%s,FollowerManagerTabFragment onResume",TAG);
+            Timber.d("FollowerManagerTabFragment onResume");
             this.followedId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWED_ID));
 
             //May be null(getSelectedTab)
             //Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
             //int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
             //HeroType followerType = HeroType.fromId(tagId);
-            this.infoFetcher.fetch(this.followedId,followerType);
+            this.infoFetcher.fetch(this.followedId, followerType);
         }
 
         @Override public void onPause()
@@ -572,7 +567,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
                 }
                 else
                 {
-                    THLog.d(TAG, "handleFollowerItemClicked: FollowerDTO was null");
+                    Timber.d("handleFollowerItemClicked: FollowerDTO was null");
                 }
             }
             else
@@ -596,7 +591,7 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
             {
                 displayProgress(false);
                 THToast.show(R.string.error_fetch_follower);
-                Timber.e(TAG,"Failed to fetch FollowerSummary", error);
+                Timber.e("Failed to fetch FollowerSummary", error);
             }
         }
 
@@ -609,10 +604,10 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
         private void notifyFollowerLoaded(FollowerSummaryDTO value)
         {
-            Timber.d("%s,notifyFollowerLoaded for page:%d",TAG,page);
+            Timber.d("notifyFollowerLoaded for page:%d", page);
             if (onFollowersLoadedListener != null && !isDetached())
             {
-                onFollowersLoadedListener.onFollowerLoaded(page,value);
+                onFollowersLoadedListener.onFollowerLoaded(page, value);
             }
         }
     }

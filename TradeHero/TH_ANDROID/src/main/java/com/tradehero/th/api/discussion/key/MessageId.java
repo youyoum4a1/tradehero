@@ -1,4 +1,4 @@
-package com.tradehero.th.api.messages;
+package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
@@ -6,18 +6,18 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 /**
  * Created by wangliang on 14-4-4.
  */
-public class MessageKey extends AbstractIntegerDTOKey
+public class MessageId extends AbstractIntegerDTOKey
 {
 
-    private static final String BUNDLE_KEY_KEY = MessageKey.class.getName() + ".key";
+    private static final String BUNDLE_KEY_KEY = MessageId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public MessageKey(Integer key)
+    public MessageId(Integer key)
     {
         super(key);
     }
 
-    public MessageKey(Bundle args)
+    public MessageId(Bundle args)
     {
         super(args);
     }

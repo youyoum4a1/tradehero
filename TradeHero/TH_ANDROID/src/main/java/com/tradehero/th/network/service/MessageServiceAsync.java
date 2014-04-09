@@ -3,21 +3,25 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageDTO;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
-public interface MessageService
+/**
+ * Created by xavier2 on 2014/4/9.
+ */
+interface MessageServiceAsync
 {
     @GET("/messages")
-    PaginatedDTO<MessageDTO> getMessages(
+    void getMessages(
             @Query("page") int page,
-            @Query("perPage") int perPage);
-
-    // TODO can we have a single message GET function?
-    //@GET("/messages/{msgId}") MessageDetailDTO getMessageDetail(@Path("msgId") int msgId);
+            @Query("perPage") int perPage,
+            Callback<PaginatedDTO<MessageDTO>> callback);
 
     @POST("/messages")
-    DiscussionDTO createMessage(@Body MessageDTO form);
+    void createMessage(
+            @Body MessageDTO form,
+            Callback<DiscussionDTO> callback);
 }

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.news;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:10 PM Copyright (c) TradeHero
  */
 public class NewsItemDTO extends AbstractDiscussionDTO
-        implements DTO
 {
     public String title;
     public String caption;
@@ -23,8 +21,6 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     public String url;
 
     public NewsItemCategoryDTO category;
-
-    public String languageCode;
 
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.news;
 
 import android.os.Bundle;
-import com.tradehero.th.api.discussion.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 /**
  * Created by tho on 3/26/2014.

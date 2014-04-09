@@ -1,7 +1,7 @@
 package com.tradehero.th.api.timeline;
 
 import android.os.Bundle;
-import com.tradehero.th.api.discussion.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:22 AM Copyright (c) TradeHero

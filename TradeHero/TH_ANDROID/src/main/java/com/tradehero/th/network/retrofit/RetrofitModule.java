@@ -57,6 +57,7 @@ import retrofit.converter.Converter;
 @Module(
         includes = {
                 RetrofitProtectedModule.class,
+                RetrofitStubModule.class,
         },
         injects = {
                 SettingsTransactionHistoryFragment.class,
@@ -78,11 +79,6 @@ public class RetrofitModule
     {
         return adapter.create(DiscussionService.class);
     }
-//
-//    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-//    {
-//        return adapter.create(DiscussionServiceAsync.class);
-//    }
 
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {

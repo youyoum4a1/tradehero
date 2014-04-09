@@ -5,6 +5,8 @@ import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -14,9 +16,12 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
 {
     public int type;
     public Date userViewedAtUtc;
-    public Integer pushTypeId;
-
     private List<SecurityMediaDTO> medias;
+    public Integer pushTypeId;
+    public boolean useSysIcon;
+    public boolean renderSysStyle;
+    public String imageUrl;
+    public UserProfileDTO user;
 
     public List<SecurityMediaDTO> getMedias()
     {
@@ -39,7 +44,7 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
             }
 
             // we prefer the first security with photo
-            if (securityMediaDTO !=null && securityMediaDTO.url != null)
+            if (securityMediaDTO != null && securityMediaDTO.url != null)
             {
                 return securityMediaDTO;
             }

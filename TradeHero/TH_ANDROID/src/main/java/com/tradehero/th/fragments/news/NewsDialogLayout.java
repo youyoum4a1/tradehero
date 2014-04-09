@@ -248,7 +248,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                     Timber.d("serviceWrapper " + serviceWrapper);
                     //TODO zh enough ?
                     return translationServiceWrapperLazy.get()
-                            .translate(newsItemDTO.languageCode, "zh",
+                            .translate("en", "zh",
+                            //.translate(newsItemDTO.languageCode, "zh",
                                     mIsTranslateTitle ? newsItemDTO.title : newsItemDTO.text);
                 } catch (Exception e)
                 {

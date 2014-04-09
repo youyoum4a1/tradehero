@@ -11,8 +11,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.messages.MessageDTO;
-import com.tradehero.th.api.messages.MessageKey;
+import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.key.MessageId;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.message.MessageItemCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -22,10 +22,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 /**
  * Created by wangliang on 14-4-4.
  */
-public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
+public class MessageItemView extends LinearLayout implements DTOView<MessageId>
 {
-    static final String TAG = "MessageItemView";
-
     @Inject MessageItemCache messageItemCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
@@ -54,7 +52,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
         ButterKnife.inject(this);
     }
 
-    @Override public void display(MessageKey dto)
+    @Override public void display(MessageId dto)
     {
         this.messageDTO = messageItemCache.get(dto);
         displayData();
@@ -70,7 +68,9 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
             if (messageDTO.imageUrl != null)
             {
                 picasso.load(messageDTO.imageUrl).transform(userPhotoTransformation).into(iconView);
-            }else {
+            }
+            else
+            {
                 //TODO
                 //iconView.setImageResource();
             }
