@@ -20,13 +20,14 @@
   <TextView
       android:visibility="visible"
       android:id="@+id/tab_tilte_number"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="15dp"
+      android:layout_height="15dp"
       android:contentDescription="@null"
-      tools:text="3"
+      tools:text="33"
       android:layout_toRightOf="@+id/tab_tilte"
       android:layout_above="@+id/tab_tilte"
       android:layout_marginBottom="-5dp"
+      android:gravity="center"
       android:textSize="9sp"
       android:background="@drawable/red_circle"
 />

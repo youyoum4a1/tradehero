@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import timber.log.Timber;
 
 public class TabListener implements ActionBar.TabListener
 {
@@ -28,6 +29,7 @@ public class TabListener implements ActionBar.TabListener
         // from a previously saved state.  If so, deactivate it, because our
         // initial state is that a tab isn't shown.
         mFragment = activity.getSupportFragmentManager().findFragmentByTag(mTag);
+        Timber.d("TabListener tag:%s fragment:%s",mTag,mFragment);
         if (mFragment != null && !mFragment.isDetached())
         {
             FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();

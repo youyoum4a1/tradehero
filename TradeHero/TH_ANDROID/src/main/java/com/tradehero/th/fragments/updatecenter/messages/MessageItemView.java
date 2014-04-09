@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,7 +23,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 /**
  * Created by wangliang on 14-4-4.
  */
-public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
+public class MessageItemView extends RelativeLayout implements DTOView<MessageKey>
 {
     static final String TAG = "MessageItemView";
 
@@ -54,6 +55,18 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+        ButterKnife.reset(this);
+
+    }
+
     @Override public void display(MessageKey dto)
     {
         this.messageDTO = messageItemCache.get(dto);
@@ -71,9 +84,16 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageKey>
             {
                 picasso.load(messageDTO.imageUrl).transform(userPhotoTransformation).into(iconView);
             }else {
-                //TODO
-                //iconView.setImageResource();
+                setDefaultIcon();
             }
         }
+    }
+
+    private void setDefaultIcon()
+    {
+        picasso.cancelRequest(iconView);
+        picasso.load(R.drawable.superman_facebook)
+                .transform(userPhotoTransformation)
+                .into(iconView);
     }
 }

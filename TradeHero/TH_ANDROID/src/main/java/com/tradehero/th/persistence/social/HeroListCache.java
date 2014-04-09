@@ -145,24 +145,34 @@ import javax.inject.Singleton;
 
     private int[] computeFollowersTypeCount(List<HeroDTO> allHeros)
     {
+        int [] result = new int[2];
         if (allHeros != null)
         {
-            int [] result = new int[2];
+
             int paidCount = 0;
+            int notPaidCount = 0;
             int totalCount = allHeros.size();
                 for(HeroDTO hero:allHeros)
                 {
-                    if (hero.isFreeFollow)
+                    if(hero.active)
                     {
-                        paidCount += 1;
+                        if (!hero.isFreeFollow)
+                        {
+                            paidCount += 1;
+                        }
+                        else
+                        {
+                            notPaidCount+=1;
+                        }
                     }
+
+
                 }
 
             result[0] = paidCount;
-            result[1] = totalCount - paidCount;
-            return result;
+            result[1] = notPaidCount;
         }
-        return null;
+        return result;
 
     }
 

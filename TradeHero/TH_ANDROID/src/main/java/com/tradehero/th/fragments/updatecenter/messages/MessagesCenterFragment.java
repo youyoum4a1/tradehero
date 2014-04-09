@@ -176,6 +176,10 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void saveNewPage(MessageKeyList value)
     {
+        if(alreadyFetched == null)
+        {
+            alreadyFetched = new MessageKeyList();
+        }
         alreadyFetched.addAll(value);
     }
 

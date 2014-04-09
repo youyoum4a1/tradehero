@@ -57,7 +57,8 @@ public class MessageServiceWrapper
         timeline = (timeline == null) ? -1 : timeline;
         map.put("timeline", String.valueOf(timeline));
 
-        return messageService.getMessages(map);
+        //return messageService.getMessages(map);
+        return getFakeData(page);
     }
 
     public PaginatedDTO<MessageDTO> getMessages(Map<String, Object> options)

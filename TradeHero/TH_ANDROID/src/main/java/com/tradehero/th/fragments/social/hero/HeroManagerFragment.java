@@ -57,12 +57,14 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     {
         super.onCreate(savedInstanceState);
         heroTypes = HeroTypeExt.getSortedList();
+        Timber.d("onCreate");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
+        Timber.d("onCreateView");
         return view;
     }
 
@@ -168,11 +170,13 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         super.onDestroyView();
         saveSelectedTab();
         clearTabs();
+        Timber.d("onDestroyView");
     }
 
     @Override public void onDestroy()
     {
         super.onDestroy();
+        Timber.d("onDestroy");
     }
 
     OnHeroesLoadedListener onHeroesLoadedListener = new OnHeroesLoadedListener()
