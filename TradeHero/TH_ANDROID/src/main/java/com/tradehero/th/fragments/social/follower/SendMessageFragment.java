@@ -25,7 +25,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -227,13 +227,13 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         messageServiceWrapper.get().createMessage(createMessage(text), sendMessageDiscussionCallback);
     }
 
-    private MessageDTO createMessage(String messageText)
+    private MessageHeaderDTO createMessage(String messageText)
     {
-        MessageDTO messageDTO = new MessageDTO("unsure", "unsure", messageText, new Date());
-        messageDTO.senderUserId = currentUserId.toUserBaseKey().key;
-        messageDTO.discussionType = discussionType;
-        messageDTO.messageType = messageType;
-        return messageDTO;
+        MessageHeaderDTO messageHeaderDTO = new MessageHeaderDTO("unsure", "unsure", messageText, new Date());
+        messageHeaderDTO.senderUserId = currentUserId.toUserBaseKey().key;
+        messageHeaderDTO.discussionType = discussionType;
+        messageHeaderDTO.messageType = messageType;
+        return messageHeaderDTO;
     }
 
     private void dismissDialog(Dialog dialog)

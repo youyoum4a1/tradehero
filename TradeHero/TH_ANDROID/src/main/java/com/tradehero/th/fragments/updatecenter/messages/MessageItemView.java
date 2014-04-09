@@ -11,10 +11,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.MessageDTO;
-import com.tradehero.th.api.discussion.key.MessageId;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.message.MessageItemCache;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -22,9 +22,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 /**
  * Created by wangliang on 14-4-4.
  */
-public class MessageItemView extends LinearLayout implements DTOView<MessageId>
+public class MessageItemView extends LinearLayout implements DTOView<MessageHeaderId>
 {
-    @Inject MessageItemCache messageItemCache;
+    @Inject MessageHeaderCache messageHeaderCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
 
@@ -33,7 +33,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageId>
     @InjectView(R.id.message_item_title) TextView titleView;
     @InjectView(R.id.message_item_date) TextView dateView;
 
-    private MessageDTO messageDTO;
+    private MessageHeaderDTO messageHeaderDTO;
 
     public MessageItemView(Context context)
     {
@@ -52,22 +52,22 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageId>
         ButterKnife.inject(this);
     }
 
-    @Override public void display(MessageId dto)
+    @Override public void display(MessageHeaderId dto)
     {
-        this.messageDTO = messageItemCache.get(dto);
+        this.messageHeaderDTO = messageHeaderCache.get(dto);
         displayData();
     }
 
     private void displayData()
     {
-        if (messageDTO != null)
+        if (messageHeaderDTO != null)
         {
-            titleView.setText(messageDTO.title);
+            titleView.setText(messageHeaderDTO.title);
 
-            dateView.setText(prettyTime.format(messageDTO.createdAtUtc));
-            if (messageDTO.imageUrl != null)
+            dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
+            if (messageHeaderDTO.imageUrl != null)
             {
-                picasso.load(messageDTO.imageUrl).transform(userPhotoTransformation).into(iconView);
+                picasso.load(messageHeaderDTO.imageUrl).transform(userPhotoTransformation).into(iconView);
             }
             else
             {

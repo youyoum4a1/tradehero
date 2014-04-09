@@ -3,7 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageList;
@@ -38,12 +38,12 @@ public class MessageServiceWrapper
     }
 
     //<editor-fold desc="Get Messages">
-    public PaginatedDTO<MessageDTO> getMessages(MessageListKey messageListKey)
+    public PaginatedDTO<MessageHeaderDTO> getMessages(MessageListKey messageListKey)
     {
         return messageService.getMessages(messageListKey.page, messageListKey.perPage);
     }
 
-    public MiddleCallbackMessageList getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageDTO>> callback)
+    public MiddleCallbackMessageList getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
         MiddleCallbackMessageList middleCallback = new MiddleCallbackMessageList(callback);
         messageServiceAsync.getMessages(messageListKey.page, messageListKey.perPage, middleCallback);
@@ -52,12 +52,12 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Create Message">
-    public DiscussionDTO createMessage(MessageDTO form)
+    public DiscussionDTO createMessage(MessageHeaderDTO form)
     {
         return messageService.createMessage(form);
     }
 
-    public MiddleCallbackDiscussion createMessage(MessageDTO form, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion createMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
     {
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
         messageServiceAsync.createMessage(form, middleCallback);

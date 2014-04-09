@@ -2,17 +2,15 @@ package com.tradehero.th.api.discussion;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
-import com.tradehero.th.api.discussion.key.MessageId;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.Date;
 import java.util.Random;
 
-public class MessageDTO implements DTO, KeyGenerator
+public class MessageHeaderDTO implements DTO, KeyGenerator
 {
     private static final Random idGenerator = new Random();
 
-    // TODO ask for an id from server
-    public int id = idGenerator.nextInt(Integer.MAX_VALUE);
-
+    // must be set by client when creating new message
     public String title;
     public String subTitle;
     public String message;
@@ -22,26 +20,27 @@ public class MessageDTO implements DTO, KeyGenerator
     // set by API when return to client
     public int senderUserId;
     public Date createdAtUtc;
-    public Integer commentId;
+    public Integer id;  // is always a commentId, i.e. [comment].id
     public DiscussionType discussionType;
     public String imageUrl;
 
-    public MessageDTO()
+    public MessageHeaderDTO()
     {
         super();
     }
 
     @Deprecated
-    public MessageDTO(String title, String subTitle, String message, Date createdAtUtc)
+    public MessageHeaderDTO(String title, String subTitle, String message, Date createdAtUtc)
     {
+        this.id = idGenerator.nextInt(Integer.MAX_VALUE);
         this.title = title;
         this.subTitle = subTitle;
         this.message = message;
         this.createdAtUtc = createdAtUtc;
     }
 
-    @Override public MessageId getDTOKey()
+    @Override public MessageHeaderId getDTOKey()
     {
-        return new MessageId(id);
+        return new MessageHeaderId(id);
     }
 }

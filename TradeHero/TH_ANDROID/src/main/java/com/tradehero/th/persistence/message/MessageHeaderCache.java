@@ -2,8 +2,8 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.MessageDTO;
-import com.tradehero.th.api.discussion.key.MessageId;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import java.util.ArrayList;
@@ -18,32 +18,32 @@ import javax.inject.Singleton;
  * message item
  */
 @Singleton
-public class MessageItemCache extends StraightDTOCache<MessageId, MessageDTO>
+public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, MessageHeaderDTO>
 {
     MessageServiceWrapper messageServiceWrapper;
 
     @Inject
-    public MessageItemCache(@SingleCacheMaxSize IntPreference maxSize, MessageServiceWrapper messageServiceWrapper)
+    public MessageHeaderCache(@SingleCacheMaxSize IntPreference maxSize, MessageServiceWrapper messageServiceWrapper)
     {
         super(maxSize.get());
         this.messageServiceWrapper = messageServiceWrapper;
     }
 
     // TODO implement a fetch on server side
-    @Override protected MessageDTO fetch(MessageId key) throws Throwable
+    @Override protected MessageHeaderDTO fetch(MessageHeaderId key) throws Throwable
     {
         throw new IllegalArgumentException("This cache has no service to fetch");
     }
 
-    public List<MessageDTO> getMessages(Collection<MessageId> list)
+    public List<MessageHeaderDTO> getMessages(Collection<MessageHeaderId> list)
     {
         if (list != null)
         {
-            List<MessageDTO> result = new ArrayList<>(list.size());
-            for (MessageId key : list)
+            List<MessageHeaderDTO> result = new ArrayList<>(list.size());
+            for (MessageHeaderId key : list)
             {
-                MessageDTO messageDTO = get(key);
-                result.add(messageDTO);
+                MessageHeaderDTO messageHeaderDTO = get(key);
+                result.add(messageHeaderDTO);
             }
             return result;
         }

@@ -3,7 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.PaginationInfoDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,15 +21,15 @@ import timber.log.Timber;
         super();
     }
 
-    @Override public PaginatedDTO<MessageDTO> getMessages(int page, int perPage)
+    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(int page, int perPage)
     {
         Timber.d("Returning stub messages");
-        PaginatedDTO<MessageDTO> paginatedDTO = new PaginatedDTO<>();
-        List<MessageDTO> messsageDTOList = new ArrayList<>();
+        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        List<MessageHeaderDTO> messsageDTOList = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
         {
-            messsageDTOList.add(new MessageDTO("title-" + i + "-" + page, "subtitle-" + i, "text-" + i, date));
+            messsageDTOList.add(new MessageHeaderDTO("title-" + i + "-" + page, "subtitle-" + i, "text-" + i, date));
         }
 
         paginatedDTO.setData(messsageDTOList);
@@ -40,7 +40,7 @@ import timber.log.Timber;
         return paginatedDTO;
     }
 
-    @Override public DiscussionDTO createMessage(MessageDTO form)
+    @Override public DiscussionDTO createMessage(MessageHeaderDTO form)
     {
         throw new IllegalArgumentException("Implement it");
     }

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.discussion;
 
-import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Date;
@@ -27,7 +26,7 @@ public class AbstractDiscussionDTO extends ExtendedDTO
         target.voteDirection = voteDirection;
     }
 
-    public AbstractPrimitiveDTOKey getDiscussionKey()
+    public DiscussionKey getDiscussionKey()
     {
         return new DiscussionKey(id);
     }

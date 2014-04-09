@@ -64,7 +64,7 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
         return (UserProfileCompactDTO) get(UserProfileCompactDTO.TAG);
     }
 
-    @Override public AbstractPrimitiveDTOKey getDiscussionKey()
+    @Override public TimelineItemDTOKey getDiscussionKey()
     {
         return getTimelineKey();
     }

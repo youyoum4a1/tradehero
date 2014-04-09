@@ -17,6 +17,9 @@ import retrofit.http.QueryMap;
  */
 public interface DiscussionService
 {
+    @GET("/discussions/{commentId}")
+    DiscussionDTO getComment(@Path("commentId") int commentId);
+
     @GET("/discussions/{inReplyToType}/{inReplyToId}")
     PaginatedDTO<DiscussionDTO> getDiscussions(
             @Path("inReplyToType") String inReplyToType,

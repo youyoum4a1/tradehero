@@ -13,11 +13,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.MessageIdList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.persistence.message.MessageListCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -32,11 +32,11 @@ public class MessagesCenterFragment extends DashboardFragment
     public static final String TAG = "MessagesCenterFragment";
     public static final int DEFAULT_PER_PAGE = 42;
 
-    @Inject Lazy<MessageListCache> messageListCache;
-    DTOCache.Listener<MessageListKey, MessageIdList> messagesFetchListener;
-    DTOCache.GetOrFetchTask<MessageListKey, MessageIdList> fetchTask;
+    @Inject Lazy<MessageHeaderListCache> messageListCache;
+    DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
+    DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchTask;
     MessageListKey messageListKey;
-    MessageIdList alreadyFetched;
+    MessageHeaderIdList alreadyFetched;
 
     MessagesView messagesView;
 
@@ -44,7 +44,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         Timber.d("%s onCreate hasCode %d", TAG, this.hashCode());
-        alreadyFetched = new MessageIdList();
+        alreadyFetched = new MessageHeaderIdList();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -161,7 +161,7 @@ public class MessagesCenterFragment extends DashboardFragment
         fetchTask = null;
     }
 
-    private void setListAdaper(MessageIdList messageKeys)
+    private void setListAdaper(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
         ListAdapter adapter = listView.getAdapter();
@@ -175,21 +175,21 @@ public class MessagesCenterFragment extends DashboardFragment
         messageAdapter.appendMore(messageKeys);
     }
 
-    private void saveNewPage(MessageIdList value)
+    private void saveNewPage(MessageHeaderIdList value)
     {
         alreadyFetched.addAll(value);
     }
 
-    private void display(MessageIdList value)
+    private void display(MessageHeaderIdList value)
     {
         setListAdaper(value);
         saveNewPage(value);
     }
 
-    class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageIdList>
+    class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
-        public void onDTOReceived(MessageListKey key, MessageIdList value, boolean fromCache)
+        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
         {
             display(value);
             messagesView.showListView();

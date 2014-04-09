@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -18,10 +18,10 @@ interface MessageServiceAsync
     void getMessages(
             @Query("page") int page,
             @Query("perPage") int perPage,
-            Callback<PaginatedDTO<MessageDTO>> callback);
+            Callback<PaginatedDTO<MessageHeaderDTO>> callback);
 
     @POST("/messages")
     void createMessage(
-            @Body MessageDTO form,
+            @Body MessageHeaderDTO form,
             Callback<DiscussionDTO> callback);
 }

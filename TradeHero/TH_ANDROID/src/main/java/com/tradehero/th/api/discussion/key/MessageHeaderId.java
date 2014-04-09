@@ -6,18 +6,18 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 /**
  * Created by wangliang on 14-4-4.
  */
-public class MessageId extends AbstractIntegerDTOKey
+public class MessageHeaderId extends AbstractIntegerDTOKey
 {
 
-    private static final String BUNDLE_KEY_KEY = MessageId.class.getName() + ".key";
+    private static final String BUNDLE_KEY_KEY = MessageHeaderId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public MessageId(Integer key)
+    public MessageHeaderId(Integer key)
     {
         super(key);
     }
 
-    public MessageId(Bundle args)
+    public MessageHeaderId(Bundle args)
     {
         super(args);
     }

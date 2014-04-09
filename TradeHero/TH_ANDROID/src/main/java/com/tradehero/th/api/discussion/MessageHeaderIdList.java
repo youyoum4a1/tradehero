@@ -1,7 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
-import com.tradehero.th.api.discussion.key.MessageId;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.Collection;
 
 /**
@@ -9,19 +9,19 @@ import java.util.Collection;
  *
  * list of message id
  */
-public class MessageIdList extends DTOKeyIdList<MessageId>
+public class MessageHeaderIdList extends DTOKeyIdList<MessageHeaderId>
 {
-    public MessageIdList()
+    public MessageHeaderIdList()
     {
         super();
     }
 
-    public MessageIdList(int capacity)
+    public MessageHeaderIdList(int capacity)
     {
         super(capacity);
     }
 
-    public MessageIdList(Collection<? extends MessageId> collection)
+    public MessageHeaderIdList(Collection<? extends MessageHeaderId> collection)
     {
         super(collection);
     }

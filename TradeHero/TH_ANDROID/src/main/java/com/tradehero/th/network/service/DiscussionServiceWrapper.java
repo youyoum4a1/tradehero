@@ -2,10 +2,12 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,6 +31,20 @@ import retrofit.Callback;
 
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
     // TODO add methods based on DiscussionServiceAsync and MiddleCallback implementations
+
+    //<editor-fold desc="Get Comment">
+    public DiscussionDTO getComment(DiscussionKey discussionKey)
+    {
+        return discussionService.getComment(discussionKey.key);
+    }
+
+    public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        discussionServiceAsync.getComment(discussionKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
 
     public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionDTO discussionDTO, Callback<DiscussionDTO> callback)
     {
