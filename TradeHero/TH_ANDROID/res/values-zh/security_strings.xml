@@ -41,12 +41,12 @@
   <string name="security_close">Close</string>
 
   <!--share-->
-  <string name="need_install_wechat">Please install weChat</string>
-  <string name="need_update_wechat">Please update weChat to 4.2 or later</string>
-  <string name="share_to_wechat_timeline_news">I\'ve shared a news on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_create_discussion">I\'ve created a discussion on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_discussion">I\'ve shared a discussion on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_timeline">I\'ve shared my timeline on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_trade">I\'ve done a stock trade on tradehero, come and join us.</string>
-  <string name="share_success">Your share is success</string>
+  <string name="need_install_wechat">请安装微信</string>
+  <string name="need_update_wechat">请升级微信到4.2版本或更新</string>
+  <string name="share_to_wechat_timeline_news">我在股货英雄上分享了一条新闻，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_create_discussion">我在股货英雄上发起了一段讨论，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_discussion">我在股货英雄上分享了一段讨论，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧。</string>
+  <string name="share_to_wechat_timeline_trade">我在股货英雄上完成了一笔交易，快来加入吧。</string>
+
 </resources>

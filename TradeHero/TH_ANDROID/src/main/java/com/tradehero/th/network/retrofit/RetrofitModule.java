@@ -187,6 +187,11 @@ public class RetrofitModule
 //    {
 //        return adapter.create(DiscussionService.class);
 //    }
+
+    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
+    {
+        return adapter.create(WeChatService.class);
+    }
     //</editor-fold>
 
     @Provides @Singleton ObjectMapper provideObjectMapper()

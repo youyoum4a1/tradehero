@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge>
-  <RelativeLayout
+  <LinearLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/timeline_share_buttons"
@@ -20,7 +20,6 @@
         android:id="@+id/timeline_action_button_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/vote_pair"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
         android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:drawableLeft="@drawable/icn_comment"
@@ -36,16 +35,16 @@
 
     <TextView
         android:id="@+id/timeline_action_button_more"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
         android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:textColor="@drawable/timeline_action_button_text_color_xml"
         android:textStyle="bold"
         android:text="@string/more_character"
         tools:text="@string/more_character"
+        android:gravity="center_vertical|right"
         />
-  </RelativeLayout>
+  </LinearLayout>
 </merge>
