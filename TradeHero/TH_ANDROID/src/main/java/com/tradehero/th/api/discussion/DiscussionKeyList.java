@@ -9,6 +9,7 @@ import java.util.Collection;
  */
 public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
 {
+    //<editor-fold desc="Constructors">
     public DiscussionKeyList()
     {
         super();
@@ -23,4 +24,5 @@ public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
     {
         super(collection);
     }
+    //</editor-fold>
 }

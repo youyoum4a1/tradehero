@@ -1,6 +1,6 @@
 package com.tradehero.th.api.discussion.key;
 
-import com.tradehero.th.api.PaginatedKey;
+import com.tradehero.th.api.pagination.PaginatedKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
     }
 
     //<editor-fold desc="PaginatedKey">
-    @Override public int getPage()
+    @Override public Integer getPage()
     {
         return page;
     }

@@ -3,10 +3,13 @@ package com.tradehero.th.persistence.discussion;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.network.service.DiscussionService;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -16,20 +19,29 @@ import javax.inject.Singleton;
 @Singleton
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, DiscussionDTO>
 {
-    private final Lazy<DiscussionService> discussionService;
+    private final DiscussionServiceWrapper discussionServiceWrapper;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            Lazy<DiscussionService> discussionService)
+            DiscussionServiceWrapper discussionServiceWrapper)
     {
         super(maxSize.get());
 
-        this.discussionService = discussionService;
+        this.discussionServiceWrapper = discussionServiceWrapper;
     }
 
     @Override protected DiscussionDTO fetch(DiscussionKey key) throws Throwable
     {
-        // TODO
-        return null;
+        return discussionServiceWrapper.getComment(key);
+    }
+
+    public DiscussionDTOList put(List<DiscussionDTO> discussionList)
+    {
+        DiscussionDTOList previous = new DiscussionDTOList();
+        for (DiscussionDTO discussionDTO : discussionList)
+        {
+            previous.add(put(discussionDTO.getDiscussionKey(), discussionDTO));
+        }
+        return previous;
     }
 }
