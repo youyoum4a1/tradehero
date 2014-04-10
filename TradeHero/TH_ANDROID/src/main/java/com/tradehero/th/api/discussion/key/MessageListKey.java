@@ -97,6 +97,15 @@ public class MessageListKey implements Comparable<MessageListKey>, PagedDTOKey
         return page;
     }
 
+    public MessageListKey prev()
+    {
+        if (this.page <= FIRST_PAGE)
+        {
+            return null;
+        }
+        return new MessageListKey(this.page - 1, perPage);
+    }
+
     public MessageListKey next()
     {
         return new MessageListKey(this.page + 1, perPage);

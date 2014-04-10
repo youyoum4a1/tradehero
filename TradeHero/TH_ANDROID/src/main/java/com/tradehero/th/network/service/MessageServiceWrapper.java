@@ -6,7 +6,8 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
-import com.tradehero.th.models.discussion.MiddleCallbackMessageList;
+import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
+import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.persistence.MessageListTimeline;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,29 +34,6 @@ public class MessageServiceWrapper
         this.timelinePreference = timelinePreference;
     }
 
-//    public PaginatedDTO<MessageDTO> getMessages(int page, int perPage, long timeline)
-//    {
-//        Map<String, Object> map = new HashMap<String, Object>(3);
-//        map.put("page", String.valueOf(page));
-//        map.put("perPage", String.valueOf(perPage));
-//        map.put("timeline", String.valueOf(timeline));
-//        return messageService.getMessages(map);
-//    }
-//
-//    public PaginatedDTO<MessageDTO> getMessages(int page, int perPage)
-//    {
-//        Map<String, Object> map = new HashMap<String, Object>(3);
-//        map.put("page", String.valueOf(page));
-//        map.put("perPage", String.valueOf(perPage));
-//        Long timeline = timelinePreference.get();
-//        timeline = (timeline == null) ? -1 : timeline;
-//        map.put("timeline", String.valueOf(timeline));
-//
-//        //return messageService.getMessages(map);
-//        return getFakeData(page);
-//    }
-//
-//    public PaginatedDTO<MessageDTO> getMessages(Map<String, Object> options)
     private void saveTimeline(long timeline)
     {
         timelinePreference.set(timeline);
@@ -68,10 +46,24 @@ public class MessageServiceWrapper
         return messageService.getMessages(messageListKey.page, messageListKey.perPage);
     }
 
-    public MiddleCallbackMessageList getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallbackMessagePaginatedHeader getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
-        MiddleCallbackMessageList middleCallback = new MiddleCallbackMessageList(callback);
+        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
         messageServiceAsync.getMessages(messageListKey.page, messageListKey.perPage, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Message Header">
+    public MessageHeaderDTO getMessageHeader(int commentId)
+    {
+        return messageService.getMessageHeader(commentId);
+    }
+
+    public MiddleCallbackMessageHeader getMessageHeader(int commentId, Callback<MessageHeaderDTO> callback)
+    {
+        MiddleCallbackMessageHeader middleCallback = new MiddleCallbackMessageHeader(callback);
+        messageServiceAsync.getMessageHeader(commentId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

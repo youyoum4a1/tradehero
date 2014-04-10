@@ -42,6 +42,14 @@ public interface DiscussionService
     RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId);
+
+    @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
+    RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
+            @Path("inReplyToType") DiscussionType inReplyToType,
+            @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options);
 
     @POST("/discussions")
