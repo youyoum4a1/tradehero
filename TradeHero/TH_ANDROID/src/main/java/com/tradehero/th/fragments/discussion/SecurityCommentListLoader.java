@@ -11,6 +11,6 @@ public class SecurityCommentListLoader extends DiscussionListLoader
 {
     public SecurityCommentListLoader(Context context, NewsItemDTOKey newsItemDTOKey)
     {
-        super(context, DiscussionType.NEWS, newsItemDTOKey.key);
+        super(context, DiscussionType.NEWS, newsItemDTOKey.id);
     }
 }

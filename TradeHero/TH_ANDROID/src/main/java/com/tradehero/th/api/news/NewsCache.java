@@ -24,6 +24,6 @@ public class NewsCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
 
     @Override protected NewsItemDTO fetch(NewsItemDTOKey newsItemDTOKey) throws Throwable
     {
-        return newsServiceWrapper.get().getSecurityNewsDetail(newsItemDTOKey.key);
+        return newsServiceWrapper.get().getSecurityNewsDetail(newsItemDTOKey.id);
     }
 }

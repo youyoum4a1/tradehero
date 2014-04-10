@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.List;
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 /**
  * Created by xavier2 on 2014/4/10.
  */
-public class PrivateMessageBubbleAdapter extends ArrayAdapter<DiscussionDTO>
+public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussionDTO>
 {
     public static final int ITEM_TYPE_MINE = 1;
     public static final int ITEM_TYPE_OTHER = 2;
@@ -54,7 +55,7 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<DiscussionDTO>
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        DiscussionDTO discussionDTO = getItem(position);
+        AbstractDiscussionDTO discussionDTO = getItem(position);
         if (convertView == null)
         {
             convertView = mInflater.inflate(getLayoutResId(position), null);
@@ -63,7 +64,7 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<DiscussionDTO>
         return convertView;
     }
 
-    protected boolean iSentIt(DiscussionDTO discussionDTO)
+    protected boolean iSentIt(AbstractDiscussionDTO discussionDTO)
     {
         return discussionDTO != null && currentUserId.toUserBaseKey().key.equals(discussionDTO.userId);
     }

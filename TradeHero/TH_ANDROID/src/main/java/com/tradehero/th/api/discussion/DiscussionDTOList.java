@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by xavier2 on 2014/4/9.
  */
-public class DiscussionDTOList extends ArrayList<DiscussionDTO>
+public class DiscussionDTOList extends ArrayList<AbstractDiscussionDTO>
 {
     //<editor-fold desc="Constructors">
     public DiscussionDTOList(int i)
@@ -19,7 +19,7 @@ public class DiscussionDTOList extends ArrayList<DiscussionDTO>
         super();
     }
 
-    public DiscussionDTOList(Collection<? extends DiscussionDTO> discussionDTOs)
+    public DiscussionDTOList(Collection<? extends AbstractDiscussionDTO> discussionDTOs)
     {
         super(discussionDTOs);
     }
@@ -28,7 +28,7 @@ public class DiscussionDTOList extends ArrayList<DiscussionDTO>
     public DiscussionKeyList getKeys()
     {
         DiscussionKeyList keyList = new DiscussionKeyList();
-        for (DiscussionDTO discussionDTO : this)
+        for (AbstractDiscussionDTO discussionDTO : this)
         {
             keyList.add(discussionDTO.getDiscussionKey());
         }

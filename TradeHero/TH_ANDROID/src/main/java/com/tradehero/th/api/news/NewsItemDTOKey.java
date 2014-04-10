@@ -1,6 +1,6 @@
 package com.tradehero.th.api.news;
 
-import android.os.Bundle;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 /**
@@ -8,25 +8,10 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
  */
 public class NewsItemDTOKey extends DiscussionKey
 {
-    private static final String BUNDLE_KEY_KEY = NewsItemDTOKey.class.getName() + ".key";
+    private static DiscussionType TYPE = DiscussionType.NEWS;
 
-    public NewsItemDTOKey(Integer key)
+    public NewsItemDTOKey(Integer id)
     {
-        super(key);
-    }
-
-    public NewsItemDTOKey(Bundle args)
-    {
-        super(args);
-    }
-
-    public NewsItemDTOKey(DiscussionKey discussionKey)
-    {
-        super(discussionKey.key);
-    }
-
-    @Override public String getBundleKey()
-    {
-        return BUNDLE_KEY_KEY;
+        super(TYPE, id);
     }
 }

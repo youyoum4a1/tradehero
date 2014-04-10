@@ -1,6 +1,6 @@
 package com.tradehero.th.api.timeline;
 
-import android.os.Bundle;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 /**
@@ -8,25 +8,10 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
  */
 public class TimelineItemDTOKey extends DiscussionKey
 {
-    private static final String BUNDLE_KEY_KEY = TimelineItemDTOKey.class.getName() + ".key";
+    private static DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 
-    public TimelineItemDTOKey(Integer key)
+    public TimelineItemDTOKey(Integer id)
     {
-        super(key);
-    }
-
-    public TimelineItemDTOKey(Bundle args)
-    {
-        super(args);
-    }
-
-    public TimelineItemDTOKey(DiscussionKey discussionKey)
-    {
-        this(discussionKey.key);
-    }
-
-    @Override public String getBundleKey()
-    {
-        return BUNDLE_KEY_KEY;
+        super(TYPE, id);
     }
 }

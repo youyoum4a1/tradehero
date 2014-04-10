@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -47,14 +48,14 @@ public interface DiscussionServiceAsync
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     void vote(

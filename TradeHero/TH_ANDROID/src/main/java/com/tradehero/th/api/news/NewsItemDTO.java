@@ -31,6 +31,10 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public SecurityCompactDTO topReferencedSecurity;
 
+    public NewsItemDTO()
+    {
+    }
+
     public List<NewsItemMediaDTO> getTextEntities()
     {
         return Collections.unmodifiableList(textEntities);

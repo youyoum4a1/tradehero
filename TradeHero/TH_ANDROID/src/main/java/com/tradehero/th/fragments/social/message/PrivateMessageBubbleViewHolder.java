@@ -5,14 +5,14 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 
 public class PrivateMessageBubbleViewHolder
 {
     @InjectView(R.id.private_text_container) View textContainer;
     @InjectView(R.id.private_text) TextView text;
 
-    private DiscussionDTO discussionDTO;
+    private AbstractDiscussionDTO discussionDTO;
 
     public PrivateMessageBubbleViewHolder()
     {
@@ -24,7 +24,7 @@ public class PrivateMessageBubbleViewHolder
         ButterKnife.inject(this, view);
     }
 
-    public void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
+    public void linkWith(AbstractDiscussionDTO discussionDTO, boolean andDisplay)
     {
         this.discussionDTO = discussionDTO;
         if (andDisplay)

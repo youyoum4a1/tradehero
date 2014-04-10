@@ -4,10 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 
 public class PrivateMessageBubbleView extends RelativeLayout
-    implements DTOView<DiscussionDTO>
+    implements DTOView<AbstractDiscussionDTO>
 {
     PrivateMessageBubbleViewHolder viewHolder;
 
@@ -35,7 +35,7 @@ public class PrivateMessageBubbleView extends RelativeLayout
         viewHolder.initView(this);
     }
 
-    @Override public void display(DiscussionDTO dto)
+    @Override public void display(AbstractDiscussionDTO dto)
     {
         viewHolder.linkWith(dto, true);
     }

@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service.stub;
 
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -50,12 +51,12 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
+    @Override public RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getMessageThread(
             DiscussionType inReplyToType, int inReplyToId,
             Integer maxCount, Integer maxId, Integer minId)
     {
         maxCount = maxCount == null ? DEFAULT_MAX_COUNT : maxCount;
-        RangedDTO<DiscussionDTO, DiscussionDTOList> rangedDTO = new RangedDTO<>();
+        RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> rangedDTO = new RangedDTO<>();
         DiscussionDTOList data = new DiscussionDTOList();
         if (maxId != null)
         {
@@ -96,7 +97,7 @@ public class DiscussionServiceStub implements DiscussionService
         return minId;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
+    @Override public RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getMessageThread(
             DiscussionType inReplyToType,
             int inReplyToId,
             Map<String, Object> options)
