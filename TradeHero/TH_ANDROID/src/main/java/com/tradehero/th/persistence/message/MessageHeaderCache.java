@@ -3,12 +3,11 @@ package com.tradehero.th.persistence.message;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -35,11 +34,11 @@ public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, Messag
         throw new IllegalArgumentException("This cache has no service to fetch");
     }
 
-    public List<MessageHeaderDTO> getMessages(Collection<MessageHeaderId> list)
+    public MessageHeaderDTOList getMessages(Collection<MessageHeaderId> list)
     {
         if (list != null)
         {
-            List<MessageHeaderDTO> result = new ArrayList<>(list.size());
+            MessageHeaderDTOList result = new MessageHeaderDTOList(list.size());
             for (MessageHeaderId key : list)
             {
                 MessageHeaderDTO messageHeaderDTO = get(key);
