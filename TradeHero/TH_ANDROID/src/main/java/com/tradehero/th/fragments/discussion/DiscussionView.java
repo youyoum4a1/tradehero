@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
@@ -29,15 +33,20 @@ public class DiscussionView extends FrameLayout
     @InjectView(android.R.id.list) ListView discussionList;
     @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
 
-    @Inject DiscussionCache discussionCache;
+    private int listItemLayout;
+
+    @Inject DiscussionListCache discussionListCache;
 
     private TextView discussionStatus;
 
     private DiscussionKey discussionKey;
     private AbstractDiscussionDTO discussionDTO;
 
-    private DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> discussionFetchTaskListener;
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
+    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
+
+    private DiscussionListAdapter discussionAdapter;
+    private DiscussionListKey discussionListKey;
 
     //<editor-fold desc="Constructors">
     public DiscussionView(Context context)
@@ -48,11 +57,13 @@ public class DiscussionView extends FrameLayout
     public DiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init(attrs);
     }
 
     public DiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        init(attrs);
     }
     //</editor-fold>
 
@@ -66,6 +77,31 @@ public class DiscussionView extends FrameLayout
         DaggerUtils.inject(this);
 
         discussionFetchTaskListener = new DiscussionFetchListener();
+        discussionAdapter = new DiscussionListAdapter(
+                getContext(),
+                LayoutInflater.from(getContext()),
+                listItemLayout
+                );
+    }
+
+    private void init(AttributeSet attrs)
+    {
+        if (attrs != null)
+        {
+            TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
+            listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
+            styled.recycle();
+
+            ensureStyle();
+        }
+    }
+
+    private void ensureStyle()
+    {
+        if (listItemLayout == 0)
+        {
+            throw new IllegalStateException("listItemLayout should be set to a layout");
+        }
     }
 
     private void inflateDiscussionStatus()
@@ -103,18 +139,35 @@ public class DiscussionView extends FrameLayout
     {
         postCommentView.display(discussionKey);
 
-        detachDiscussionFetchTask();
-        discussionFetchTask = discussionCache.getOrFetch(discussionKey, false, discussionFetchTaskListener);
+        if (discussionKey != null)
+        {
+            this.discussionListKey = DiscussionKeyFactory.toListKey(discussionKey);
+
+            fetchDiscussionList();
+        }
 
         if (andDisplay)
         {
         }
     }
 
+    private void linkWith(DiscussionKeyList discussionKeyList, boolean andDisplay)
+    {
+        if (andDisplay)
+        {
+
+        }
+    }
 
     private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         this.discussionDTO = abstractDiscussionDTO;
+    }
+
+    private void fetchDiscussionList()
+    {
+        detachDiscussionFetchTask();
+        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, false, discussionFetchTaskListener);
     }
 
     private void detachDiscussionFetchTask()
@@ -127,14 +180,14 @@ public class DiscussionView extends FrameLayout
     }
 
 
-    private class DiscussionFetchListener implements DTOCache.Listener<DiscussionKey,AbstractDiscussionDTO>
+    private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
             THToast.show(new THException(error));
         }

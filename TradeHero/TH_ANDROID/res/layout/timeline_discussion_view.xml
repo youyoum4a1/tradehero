@@ -6,9 +6,11 @@
     android:layout_height="match_parent">
   <com.tradehero.th.fragments.discussion.DiscussionView
       xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       android:id="@+id/discussion_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      app:listItemLayout="@layout/timeline_discussion_comment_item"
       >
     <ListView
         android:layout_width="match_parent"

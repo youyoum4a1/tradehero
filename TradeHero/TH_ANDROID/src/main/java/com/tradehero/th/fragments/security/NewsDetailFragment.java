@@ -14,7 +14,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
@@ -31,7 +30,6 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
-import java.util.List;
 import javax.inject.Inject;
 
 /**
@@ -122,26 +120,27 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             loaderId = newsItemDTOKey.id;
         }
 
-        DiscussionListAdapter adapter =
-                new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(), loaderId, R.layout.news_discussion_comment_item);
-        adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
-        {
-            @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
-            {
-                mNewsCommentListWrapper.setDisplayedChildByLayoutId(R.id.news_detail_comment_list);
-                //if (discussionStatus != null)
-                //{
-                //    int statusResource = discussionListAdapter.getCount() != 0 ? R.string.discussion_loaded : R.string.discussion_empty;
-                //    discussionStatus.setText(getString(statusResource));
-                //}
-            }
-
-            @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)
-            {
-                return createNewsDiscussionLoader();
-            }
-        });
-        return adapter;
+        //DiscussionListAdapter adapter =
+        //        new DiscussionListAdapter(getActivity(), getActivity().getLayoutInflater(), loaderId, R.layout.news_discussion_comment_item);
+        //adapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<DiscussionDTO>()
+        //{
+        //    @Override protected void onLoadFinished(ListLoader<DiscussionDTO> loader, List<DiscussionDTO> data)
+        //    {
+        //        mNewsCommentListWrapper.setDisplayedChildByLayoutId(R.id.news_detail_comment_list);
+        //        //if (discussionStatus != null)
+        //        //{
+        //        //    int statusResource = discussionListAdapter.getCount() != 0 ? R.string.discussion_loaded : R.string.discussion_empty;
+        //        //    discussionStatus.setText(getString(statusResource));
+        //        //}
+        //    }
+        //
+        //    @Override protected ListLoader<DiscussionDTO> onCreateLoader(Bundle args)
+        //    {
+        //        return createNewsDiscussionLoader();
+        //    }
+        //});
+        //return adapter;
+        return null;
     }
 
     private ListLoader<DiscussionDTO> createNewsDiscussionLoader()
@@ -193,9 +192,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
             discussionAdapter = createDiscussionAdapter();
             mNewsDetailCommentList.setAdapter(discussionAdapter);
             mNewsDetailCommentList.setEmptyView(mNewsDetailCommentEmpty);
-
-            getActivity().getSupportLoaderManager()
-                    .initLoader(discussionAdapter.getLoaderId(), null, discussionAdapter.getLoaderCallback());
         }
     }
 
