@@ -29,16 +29,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        if (timelineItemView != null)
-        {
-            discussionList.addHeaderView(timelineItemView);
-        }
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);

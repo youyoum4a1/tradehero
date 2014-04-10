@@ -12,7 +12,7 @@ public class DiscussionKey implements DTOKey
     static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";
     static final String BUNDLE_KEY_ID = DiscussionKey.class.getName() + ".id";
 
-    private final DiscussionType type;
+    public final DiscussionType type;
     public final Integer id;
 
     protected DiscussionKey(DiscussionType type, Integer id)
