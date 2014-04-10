@@ -29,13 +29,19 @@ public class PushableTimelineFragment extends TimelineFragment
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    private MenuItem menuFollow;
-    private MenuItem followingStamp;
-    private TextView followButton;
+    //private MenuItem menuFollow;
+    //private MenuItem followingStamp;
+    //private TextView followButton;
 
     @Override protected void createUserInteractor()
     {
         userInteractor = new PushableTimelineTHIABUserInteractor();
+    }
+
+    @Override protected void initViews(View view)
+    {
+        super.initViews(view);
+        mIsOtherProfile = true;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -44,35 +50,36 @@ public class PushableTimelineFragment extends TimelineFragment
         this.actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         //super.onCreateOptionsMenu(menu, inflater);
-        menuFollow = menu.findItem(R.id.btn_follow_this_user);
-        followButton = (TextView) menuFollow.getActionView().findViewById(R.id.follow_button);
-        if (followButton != null)
-        {
-            followButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    localyticsSession.tagEvent(LocalyticsConstants.Proﬁle_Follow);
-                    handleInfoButtonPressed();
-                }
-            });
-        }
+        //menuFollow = menu.findItem(R.id.btn_follow_this_user);
+        //followButton = (TextView) menuFollow.getActionView().findViewById(R.id.follow_button);
+        //if (followButton != null)
+        //{
+        //    followButton.setOnClickListener(new View.OnClickListener()
+        //    {
+        //        @Override public void onClick(View v)
+        //        {
+        //            localyticsSession.tagEvent(LocalyticsConstants.Proﬁle_Follow);
+        //            handleInfoButtonPressed();
+        //        }
+        //    });
+        //}
 
-        followingStamp = menu.findItem(R.id.ic_following);
+        //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         Boolean isFollowing = isPurchaserFollowingUserShown();
-        if (menuFollow != null)
-        {
-            menuFollow.setVisible(isFollowing != null && !isFollowing);
-        }
-        if (followingStamp != null)
-        {
-            followingStamp.setVisible(isFollowing != null && isFollowing);
-        }
+        updateBottomButton();
+        //if (menuFollow != null)
+        //{
+        //    menuFollow.setVisible(isFollowing != null && !isFollowing);
+        //}
+        //if (followingStamp != null)
+        //{
+        //    followingStamp.setVisible(isFollowing != null && isFollowing);
+        //}
 
         MenuItem settingsButton = menu.findItem(R.id.menu_settings);
         if (settingsButton != null)
@@ -83,23 +90,23 @@ public class PushableTimelineFragment extends TimelineFragment
         super.onPrepareOptionsMenu(menu);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_follow_this_user:
-                handleInfoButtonPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    //@Override public boolean onOptionsItemSelected(MenuItem item)
+    //{
+    //    switch (item.getItemId())
+    //    {
+    //        case R.id.btn_follow_this_user:
+    //            handleInfoButtonPressed();
+    //            break;
+    //    }
+    //    return super.onOptionsItemSelected(item);
+    //}
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.menuFollow = null;
-        this.followingStamp = null;
-        super.onDestroyOptionsMenu();
-    }
+    //@Override public void onDestroyOptionsMenu()
+    //{
+    //    this.menuFollow = null;
+    //    this.followingStamp = null;
+    //    super.onDestroyOptionsMenu();
+    //}
 
     @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
@@ -107,7 +114,7 @@ public class PushableTimelineFragment extends TimelineFragment
         if (andDisplay)
         {
             displayActionBarTitle();
-            displayFollowButton();
+            //displayFollowButton();
         }
     }
 
@@ -136,10 +143,10 @@ public class PushableTimelineFragment extends TimelineFragment
         return null;
     }
 
-    public void displayFollowButton()
-    {
-        getActivity().supportInvalidateOptionsMenu();
-    }
+    //public void displayFollowButton()
+    //{
+    //    getActivity().supportInvalidateOptionsMenu();
+    //}
 
     private void handleInfoButtonPressed()
     {
@@ -171,13 +178,13 @@ public class PushableTimelineFragment extends TimelineFragment
         @Override protected void handleShowProductDetailsMilestoneComplete()
         {
             super.handleShowProductDetailsMilestoneComplete();
-            displayFollowButton();
+            //displayFollowButton();
         }
 
         @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            displayFollowButton();
+            //displayFollowButton();
         }
 
         @Override protected void createFollowCallback()
@@ -187,7 +194,7 @@ public class PushableTimelineFragment extends TimelineFragment
                 @Override public void success(UserProfileDTO userProfileDTO, Response response)
                 {
                     super.success(userProfileDTO, response);
-                    displayFollowButton();
+                    //displayFollowButton();
                 }
             };
         }

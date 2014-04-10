@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -36,6 +38,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,8 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements PortfolioRequestListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
+    public static final String BUNDLE_KEY_SHOW_USER_ID =
+            TimelineFragment.class.getName() + ".showUserId";
 
     public static enum TabType
     {
@@ -55,9 +59,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
+    @InjectView(R.id.follow_button) Button mFollowButton;
+    @InjectView(R.id.message_button) Button mSendMsgButton;
 
     private UserProfileView userProfileView;
 
@@ -76,8 +83,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private TimelineProfileClickListener profileButtonClickListener;
 
-    private int displayingProfileHeaderLayoutId;
     private boolean cancelRefreshingOnResume;
+    protected boolean mIsOtherProfile = false;
+    private int displayingProfileHeaderLayoutId;
+    private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     public TabType currentTab = TabType.TIMELINE;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -118,7 +127,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         switch (item.getItemId())
         {
             case R.id.menu_settings:
-                DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+                DashboardNavigator navigator =
+                        ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
                 navigator.pushFragment(SettingsFragment.class);
                 return true;
         }
@@ -133,9 +143,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(View v)
                 {
-                    userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.GONE);
+                    userProfileView.getChildAt(userProfileView.getDisplayedChild())
+                            .setVisibility(View.GONE);
                     userProfileView.showNext();
-                    userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.VISIBLE);
+                    userProfileView.getChildAt(userProfileView.getDisplayedChild())
+                            .setVisibility(View.VISIBLE);
                 }
             });
             userProfileView.setPortfolioRequestListener(this);
@@ -143,25 +155,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
 
         displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
-        displayablePortfolioFetchAssistant.setFetchedListener(new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-        {
-            @Override public void onFetched()
-            {
-                displayPortfolios();
-            }
-        });
+        displayablePortfolioFetchAssistant.setFetchedListener(
+                new DisplayablePortfolioFetchAssistant.OnFetchedListener()
+                {
+                    @Override public void onFetched()
+                    {
+                        displayPortfolios();
+                    }
+                });
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
-        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        UserBaseKey newUserBaseKey =
+                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         //create adapter and so on
         linkWith(newUserBaseKey, true);
 
         getActivity().getSupportLoaderManager().initLoader(
-                mainTimelineAdapter.getTimelineLoaderId(),                null,
+                mainTimelineAdapter.getTimelineLoaderId(), null,
                 mainTimelineAdapter.getLoaderTimelineCallback());
     }
 
@@ -257,11 +271,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (userBaseKey != null)
         {
             createUserProfileRetrievedMilestone();
-            userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneListener);
+            userProfileRetrievedMilestone.setOnCompleteListener(
+                    userProfileRetrievedMilestoneListener);
             userProfileRetrievedMilestone.launch();
 
             createPortfolioCompactListRetrievedMilestone();
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
+            portfolioCompactListRetrievedMilestone.setOnCompleteListener(
+                    portfolioCompactListRetrievedMilestoneListener);
             portfolioCompactListRetrievedMilestone.launch();
         }
 
@@ -275,7 +291,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         return new AdapterView.OnItemClickListener()
         {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Object item = parent.getItemAtPosition(position);
 
@@ -330,7 +347,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (timelineScreen != null)
         {
-            timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
+            timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view_container);
+            //timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
         }
         if (userProfileView != null)
         {
@@ -338,7 +356,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         if (this.actionBar != null)
         {
-            this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            this.actionBar.setTitle(
+                    UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
 
         displayActionBarTitle();
@@ -381,7 +400,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
         }
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
+        portfolioCompactListRetrievedMilestone =
+                new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
     }
     //</editor-fold>
 
@@ -391,7 +411,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item,
                 R.layout.user_profile_stat_view);
-                        //shownUserBaseKey.key, R.layout.timeline_item_view);
+        //shownUserBaseKey.key, R.layout.timeline_item_view);
         // TODO set the layouts
     }
 
@@ -399,13 +419,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         mainTimelineAdapter = createTimelineAdapter();
         mainTimelineAdapter.setProfileClickListener(profileButtonClickListener);
-        mainTimelineAdapter.setOnLoadFinishedListener(new MainTimelineAdapter.OnLoadFinishedListener()
-        {
-            @Override public void onLoadFinished()
-            {
-                TimelineFragment.this.onLoadFinished();
-            }
-        });
+        mainTimelineAdapter.setOnLoadFinishedListener(
+                new MainTimelineAdapter.OnLoadFinishedListener()
+                {
+                    @Override public void onLoadFinished()
+                    {
+                        TimelineFragment.this.onLoadFinished();
+                    }
+                });
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(mainTimelineAdapter);
         timelineListView.setOnLastItemVisibleListener(mainTimelineAdapter);
@@ -456,7 +477,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            pushPositionListFragment(portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
+            pushPositionListFragment(
+                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
         }
     }
 
@@ -469,8 +491,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                ownedPortfolioId.getArgs());
+        DashboardNavigator navigator =
+                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
     }
 
@@ -518,7 +542,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 @Override public void onFailed(Milestone milestone, Throwable throwable)
                 {
                     // We do not need to inform the player here
-                    Timber.e("Error fetching the list of portfolio for user: %d", shownUserBaseKey.key, throwable);
+                    Timber.e("Error fetching the list of portfolio for user: %d",
+                            shownUserBaseKey.key, throwable);
                 }
             };
     //</editor-fold>
@@ -542,6 +567,73 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             return displayablePortfolioFetchAssistant.getDisplayablePortfolios();
         }
         return null;
+    }
+
+    protected void updateBottomButton()
+    {
+        if (!mIsOtherProfile)
+        {
+            //Timber.d("lyl not other profile, return");
+            return;
+        }
+        mFollowType = getFollowType();
+        //Timber.d("lyl mFollowType=%d", mFollowType);
+        if (mFollowType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+        {
+            mFollowButton.setText(R.string.upgrade_to_premium);
+        }
+        else if (mFollowType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+        {
+            mFollowButton.setText(R.string.following_premium);
+        }
+        mFollowButton.setVisibility(View.VISIBLE);
+        mFollowButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                //Timber.d("lyl click follow");
+                alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                        mFollowType, shownUserBaseKey);
+            }
+        });
+        mSendMsgButton.setVisibility(View.VISIBLE);
+        mSendMsgButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                //Timber.d("lyl click msg");
+                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER)
+                {
+                    alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG, shownUserBaseKey);
+                }
+            }
+        });
+    }
+
+    /**
+     * Null means unsure.
+     */
+    protected int getFollowType()
+    {
+        if (userInteractor != null)
+        {
+            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+                if (purchaserKey != null)
+                {
+                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+                    if (purchaserProfile != null)
+                    {
+                        //Timber.d("lyl %s", purchaserProfile.toString());
+                        return purchaserProfile.getFollowType(shownUserBaseKey);
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

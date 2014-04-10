@@ -133,6 +133,7 @@ import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -321,7 +322,9 @@ import javax.inject.Singleton;
                         NewsHeadlineView.class,
                         NewsDetailFragment.class,
                         HeadlineFragment.class,
-                        HeadlineListLoader.class
+                        HeadlineListLoader.class,
+                        AlertDialogUtil.class,
+                        AlertDialogUtil.PushableTimelineTHIABUserInteractor.class,
                 },
         staticInjections =
                 {

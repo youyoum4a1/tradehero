@@ -26,6 +26,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -38,6 +39,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -61,6 +63,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
@@ -404,8 +407,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 break;
 
             case R.id.leaderboard_user_item_follow:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                openFollowUserDialog();
+                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
+                //openFollowUserDialog();
+                alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                        UserProfileDTOUtil.IS_NOT_FOLLOWER, leaderboardItem.getBaseKey());
                 break;
             case R.id.leaderboard_user_item_profile_picture:
                 handleUserIconClicked();

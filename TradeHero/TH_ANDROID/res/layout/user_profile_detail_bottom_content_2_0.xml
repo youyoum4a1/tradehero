@@ -47,14 +47,6 @@
 
     </LinearLayout>
 
-  </LinearLayout>
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      >
-
     <!--Trades-->
     <LinearLayout
         style="@style/UserProfile.ValueContainer"
@@ -68,24 +60,6 @@
 
       <TextView
           android:text="@string/user_profile_count_trades"
-          style="@style/UserProfile.Contained.Header"
-          />
-
-    </LinearLayout>
-
-    <!--Exchanges-->
-    <LinearLayout
-        style="@style/UserProfile.ValueContainer"
-        >
-
-      <TextView
-          android:id="@+id/user_profile_roi"
-          tools:text="65%"
-          style="@style/UserProfile.Contained.Value"
-          />
-
-      <TextView
-          android:text="@string/user_profile_roi_below"
           style="@style/UserProfile.Contained.Header"
           />
 
