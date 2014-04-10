@@ -163,7 +163,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID,
                     applicablePortfolio.getArgs());
         }
         pushFragment(HeroManagerFragment.class, bundle);
@@ -177,7 +177,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         if (applicablePortfolio != null)
         {
             bundle.putBundle(
-                    FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID,
                     applicablePortfolio.getArgs());
         }
         pushFragment(FollowerManagerFragment.class, bundle);
