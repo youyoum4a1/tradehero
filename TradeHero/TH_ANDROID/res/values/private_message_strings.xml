@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="private_message_message_hint">Message</string>
+    <string name="private_message_message_hint">Type a Message</string>
     <string name="private_message_btn_send">Send</string>
 
 </resources>

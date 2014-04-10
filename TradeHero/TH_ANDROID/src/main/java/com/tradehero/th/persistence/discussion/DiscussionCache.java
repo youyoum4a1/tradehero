@@ -44,4 +44,32 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, DiscussionD
         }
         return previous;
     }
+
+    public DiscussionDTOList get(List<DiscussionKey> discussionKeys)
+    {
+        if (discussionKeys == null)
+        {
+            return null;
+        }
+        DiscussionDTOList dtos = new DiscussionDTOList();
+        for (DiscussionKey discussionKey : discussionKeys)
+        {
+            dtos.add(get(discussionKey));
+        }
+        return dtos;
+    }
+
+    public DiscussionDTOList getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
+    {
+        if (discussionKeys == null)
+        {
+            return null;
+        }
+        DiscussionDTOList dtos = new DiscussionDTOList();
+        for (DiscussionKey discussionKey : discussionKeys)
+        {
+            dtos.add(getOrFetch(discussionKey));
+        }
+        return dtos;
+    }
 }

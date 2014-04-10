@@ -18,13 +18,19 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.UserProfileView;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import java.util.List;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -43,7 +49,13 @@ public class PrivateMessageFragment extends DashboardFragment
     private UserBaseKey correspondentId;
     private UserProfileDTO correspondentProfile;
 
+    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionListCache discussionListCache;
+    private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionListCacheListener;
+    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionListCacheTask;
+
     @InjectView(R.id.message_list_view) ListView messageListView;
+    PrivateMessageBubbleAdapter messageBubbleAdapter;
     @InjectView(R.id.button_send) View buttonSend;
     @InjectView(R.id.typing_message_content) EditText messageToSend;
 
@@ -51,11 +63,12 @@ public class PrivateMessageFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         correspondentId = new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+        userProfileCacheListener = new PrivateMessageFragmentUserProfileListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.timeline_screen, container, false);
+        View view = inflater.inflate(R.layout.fragment_private_message, container, false);
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
@@ -87,6 +100,7 @@ public class PrivateMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachUserProfileTask();
+        detachDiscussionListTask();
         // TODO detach messages tasks
         super.onDestroyView();
     }
@@ -100,11 +114,32 @@ public class PrivateMessageFragment extends DashboardFragment
         userProfileCacheTask = null;
     }
 
+    private void detachDiscussionListTask()
+    {
+        if (discussionListCacheTask != null)
+        {
+            discussionListCacheTask.setListener(null);
+        }
+        discussionListCacheTask = null;
+    }
+
+    @Override public void onDestroy()
+    {
+        userProfileCacheListener = null;
+        discussionListCacheListener = null;
+        super.onDestroy();
+    }
+
     private void fetchCorrespondentProfile()
     {
         detachUserProfileTask();
         userProfileCacheTask = userProfileCache.getOrFetch(correspondentId, userProfileCacheListener);
         userProfileCacheTask.execute();
+    }
+
+    private void fetchDiscussionList()
+    {
+        throw new IllegalArgumentException("TODO");
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -115,6 +150,11 @@ public class PrivateMessageFragment extends DashboardFragment
             displayCorrespondentImage();
             displayTitle();
         }
+    }
+
+    public void linkWith(DiscussionKeyList discussionKeys, boolean andDisplay)
+    {
+        messageBubbleAdapter.addAll(discussionCache.get(discussionKeys));
     }
 
     private void displayCorrespondentImage()
@@ -157,6 +197,19 @@ public class PrivateMessageFragment extends DashboardFragment
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            Timber.e(error, "");
+        }
+    }
+
+    protected class PrivateMessageFragmentDiscussionListListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
+    {
+        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
             Timber.e(error, "");
         }
