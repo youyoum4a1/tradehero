@@ -19,6 +19,7 @@ import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -45,8 +46,10 @@ public class DiscussionView extends FrameLayout
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
 
-    private DiscussionListAdapter discussionAdapter;
+    private DiscussionListAdapter discussionListAdapter;
     private DiscussionListKey discussionListKey;
+    private int nextPageDelta;
+    private PaginatedDiscussionListKey paginatedDiscussionListKey;
 
     //<editor-fold desc="Constructors">
     public DiscussionView(Context context)
@@ -77,11 +80,11 @@ public class DiscussionView extends FrameLayout
         DaggerUtils.inject(this);
 
         discussionFetchTaskListener = new DiscussionFetchListener();
-        discussionAdapter = new DiscussionListAdapter(
+        discussionListAdapter = new DiscussionListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 listItemLayout
-                );
+        );
     }
 
     private void init(AttributeSet attrs)
@@ -143,7 +146,7 @@ public class DiscussionView extends FrameLayout
         {
             this.discussionListKey = DiscussionKeyFactory.toListKey(discussionKey);
 
-            fetchDiscussionList();
+            fetchDiscussionListIfNecessary();
         }
 
         if (andDisplay)
@@ -153,9 +156,11 @@ public class DiscussionView extends FrameLayout
 
     private void linkWith(DiscussionKeyList discussionKeyList, boolean andDisplay)
     {
-        if (andDisplay)
+        if (discussionKeyList != null)
         {
+            nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
 
+            discussionListAdapter.appendMore(discussionKeyList);
         }
     }
 
@@ -164,10 +169,21 @@ public class DiscussionView extends FrameLayout
         this.discussionDTO = abstractDiscussionDTO;
     }
 
-    private void fetchDiscussionList()
+    private void fetchDiscussionListIfNecessary()
     {
         detachDiscussionFetchTask();
-        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, false, discussionFetchTaskListener);
+
+        if (paginatedDiscussionListKey == null)
+        {
+            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 0);
+        }
+
+        if (nextPageDelta >= 0)
+        {
+            paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
+
+            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, discussionFetchTaskListener);
+        }
     }
 
     private void detachDiscussionFetchTask()
