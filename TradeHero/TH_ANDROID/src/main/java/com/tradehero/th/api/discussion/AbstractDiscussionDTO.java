@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Date;
 
 /**
@@ -12,17 +13,21 @@ public class AbstractDiscussionDTO extends ExtendedDTO
     public Date createdAtUtc;
     public int userId;
     public String text;
-    public int voteCount;
-    public int voteDirection; //-1: down, 0: cancel, 1: up
     public int upvoteCount;
     public int downvoteCount;
+    public int voteDirection; //-1: down, 0: cancel, 1: up
     public int commentCount;
+    public String langCode;
 
     public void populateVote(AbstractDiscussionDTO target)
     {
-        target.voteCount = voteCount;
         target.upvoteCount = upvoteCount;
         target.downvoteCount = downvoteCount;
         target.voteDirection = voteDirection;
+    }
+
+    public DiscussionKey getDiscussionKey()
+    {
+        return new DiscussionKey(id);
     }
 }

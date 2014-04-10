@@ -8,6 +8,8 @@ public class HeroIdExtWrapper implements DTO
 {
     public HeroIdList heroIdList;
 
+    /**count of heros that I've paid money to follow them currently  */
     public int herosCountGetPaid;
+    /**count of heros that I've not paid money  follow them currently  */
     public int herosCountNotGetPaid;
 }

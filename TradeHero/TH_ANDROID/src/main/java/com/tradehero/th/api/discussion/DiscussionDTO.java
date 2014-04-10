@@ -15,6 +15,8 @@ public class DiscussionDTO extends AbstractDiscussionDTO
 
     public String url; // to post a link
 
+    public Integer sentToCount;         // only applicable to Messages
+
     // BEGIN: duplicated from buy/sell
     public Boolean publishToFb;
     public Boolean publishToLi;

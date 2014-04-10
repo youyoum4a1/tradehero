@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v4.content.pm.ActivityInfoCompat;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.fragments.news.HeadlineFragment;
 import com.tradehero.th.network.service.NewsServiceWrapper;

@@ -99,15 +99,15 @@ import javax.inject.Singleton;
 
                 if (forAllHeros)
                 {
-                    heroIdExt.getPaied = heroDTO.paid;
+                    heroIdExt.getPaied = heroDTO.isFreeFollow;
                     heroIds.add(heroIdExt);
                 }
-                else if (forHerosGetPaied && heroDTO.paid)
+                else if (forHerosGetPaied && heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaied = true;
                     heroIds.add(heroIdExt);
                 }
-                else if (!forAllHeros && !forHerosGetPaied && !heroDTO.paid)
+                else if (!forAllHeros && !forHerosGetPaied && !heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaied = false;
                     heroIds.add(heroIdExt);
@@ -145,24 +145,34 @@ import javax.inject.Singleton;
 
     private int[] computeFollowersTypeCount(List<HeroDTO> allHeros)
     {
+        int [] result = new int[2];
         if (allHeros != null)
         {
-            int [] result = new int[2];
+
             int paidCount = 0;
+            int notPaidCount = 0;
             int totalCount = allHeros.size();
                 for(HeroDTO hero:allHeros)
                 {
-                    if (hero.paid)
+                    if(hero.active)
                     {
-                        paidCount += 1;
+                        if (!hero.isFreeFollow)
+                        {
+                            paidCount += 1;
+                        }
+                        else
+                        {
+                            notPaidCount+=1;
+                        }
                     }
+
+
                 }
 
             result[0] = paidCount;
-            result[1] = totalCount - paidCount;
-            return result;
+            result[1] = notPaidCount;
         }
-        return null;
+        return result;
 
     }
 

@@ -9,6 +9,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
+import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -24,6 +25,7 @@ import javax.inject.Singleton;
 
                 DashboardActivity.class,
                 UserManager.class,
+                WXEntryActivity.class
         },
         staticInjections = {
                 DisplayablePortfolioUtil.class,

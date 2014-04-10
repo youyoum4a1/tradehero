@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -51,7 +51,7 @@ public class SecurityNewsCache extends StraightDTOCache<SecurityId, PaginatedDTO
         {
             for (NewsItemDTO news: newsList)
             {
-                newsCache.get().put(news.getNewsItemDTOKey(), news);
+                newsCache.get().put(news.getDiscussionKey(), news);
             }
         }
 

@@ -6,16 +6,18 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -43,26 +45,6 @@ public class DiscussionView extends LinearLayout
 
     @InjectView(R.id.vote_pair) VotePair votePair;
     @InjectView(R.id.timeline_action_button_more) TextView more;
-
-    @OnClick({
-            R.id.timeline_user_profile_name,
-            R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more,
-    })
-    public void onItemClicked(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                openOtherTimeline();
-                break;
-            case R.id.timeline_action_button_more:
-                //PopupMenu popUpMenu = createActionPopupMenu();
-                //popUpMenu.show();
-                break;
-        }
-    }
 
     @Inject CurrentUserId currentUserId;
     @Inject Provider<PrettyTime> prettyTime;
@@ -96,6 +78,12 @@ public class DiscussionView extends LinearLayout
         DaggerUtils.inject(this);
     }
 
+    @Override protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
     @Override public void display(DiscussionDTO dto)
     {
         this.discussionDTO = dto;
@@ -108,13 +96,49 @@ public class DiscussionView extends LinearLayout
             // user profile picture
             displayUserProfilePicture(discussionDTO.user);
 
-            // markup text
-            displayComment(discussionDTO);
+            display((AbstractDiscussionDTO) discussionDTO);
+        }
+    }
 
-            // timeline time
-            displayCommentTime(discussionDTO);
 
-            votePair.display(discussionDTO);
+    @OnClick({
+            R.id.timeline_user_profile_name,
+            R.id.timeline_user_profile_picture,
+            R.id.timeline_action_button_more
+    })
+    void onItemClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_user_profile_picture:
+            case R.id.timeline_user_profile_name:
+                openOtherTimeline();
+                break;
+            case R.id.timeline_action_button_more:
+                //PopupMenu popUpMenu = createActionPopupMenu();
+                //popUpMenu.show();
+                break;
+        }
+    }
+
+    @Optional @OnClick({
+            R.id.timeline_action_button_comment
+    })
+    void onCommentClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.timeline_action_button_comment:
+                openDiscussion();
+                break;
+        }
+    }
+
+    private void openDiscussion()
+    {
+        if (discussionDTO != null)
+        {
+            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
         }
     }
 
@@ -145,12 +169,12 @@ public class DiscussionView extends LinearLayout
                 .into(avatar);
     }
 
-    private void displayComment(DiscussionDTO item)
+    private void displayComment(AbstractDiscussionDTO item)
     {
         content.setText(item.text);
     }
 
-    private void displayCommentTime(DiscussionDTO item)
+    private void displayCommentTime(AbstractDiscussionDTO item)
     {
         time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
     }
@@ -175,5 +199,21 @@ public class DiscussionView extends LinearLayout
     private Navigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+    }
+
+    public void display(NewsItemDTO newsItemDTO)
+    {
+        display((AbstractDiscussionDTO) newsItemDTO);
+    }
+
+    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    {
+        // markup text
+        displayComment(abstractDiscussionDTO);
+
+        // timeline time
+        displayCommentTime(abstractDiscussionDTO);
+
+        votePair.display(abstractDiscussionDTO);
     }
 }

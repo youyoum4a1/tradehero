@@ -26,7 +26,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.discussion.TimelineDiscussion;
+import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -294,7 +294,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         timelineItemDTOKey.putParameters(bundle);
 
-        getNavigator().pushFragment(TimelineDiscussion.class, bundle);
+        getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)

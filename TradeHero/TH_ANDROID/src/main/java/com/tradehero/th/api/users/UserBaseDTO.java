@@ -20,7 +20,7 @@ public class UserBaseDTO extends ExtendedDTO
     public boolean isAdmin;
 
     //TODO fake data,may need to change
-    public boolean isFreeUser;
+    //public boolean isFreeUser;
 
     public UserBaseDTO()
     {

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.notification;
 
 import android.os.Bundle;
-import com.tradehero.th.api.PaginatedKey;
+import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +11,6 @@ import java.util.Map;
 public class PaginatedNotificationListKey extends NotificationListKey
     implements PaginatedKey
 {
-    private static final String PAGE = PaginatedNotificationListKey.class.getName() + ".page";
     private static final Integer DEFAULT_PER_PAGE = 42;
 
     private int page;
@@ -27,7 +26,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
     {
         super(args);
 
-        page = args.getInt(PAGE, 0);
+        page = args.getInt(BUNDLE_PAGE, 0);
     }
 
     public PaginatedNotificationListKey(NotificationListKey notificationListKey, int page)
@@ -41,7 +40,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
     @Override public void putParameters(Bundle args)
     {
         super.putParameters(args);
-        args.putInt(PAGE, page);
+        args.putInt(BUNDLE_PAGE, page);
     }
 
     @Override public boolean equals(Object other)
@@ -50,7 +49,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
     }
 
     //<editor-fold desc="PaginatedKey">
-    @Override public int getPage()
+    @Override public Integer getPage()
     {
         return page;
     }
@@ -74,8 +73,8 @@ public class PaginatedNotificationListKey extends NotificationListKey
             generatedMap = new HashMap<>();
         }
 
-        generatedMap.put("page", page);
-        generatedMap.put("perPage", DEFAULT_PER_PAGE);
+        generatedMap.put(PaginatedKey.JSON_PAGE, page);
+        generatedMap.put(PaginatedKey.JSON_PERPAGE, DEFAULT_PER_PAGE);
         return generatedMap;
     }
 }

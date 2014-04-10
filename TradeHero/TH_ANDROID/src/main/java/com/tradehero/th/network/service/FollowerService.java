@@ -11,27 +11,27 @@ import retrofit.http.Path;
 public interface FollowerService
 {
     //<editor-fold desc="Get Followers Summary">
-    @GET("/followersSummary/{userId}")
+    @GET("/followersSummary/all/{userId}")
     FollowerSummaryDTO getFollowersSummary(
             @Path("userId") int userId)
         throws RetrofitError;
 
 
 
-    @GET("/followersSummary/{userId}")
+    @GET("/followersSummary/all/{userId}")
     void getFollowersSummary(
             @Path("userId") int userId,
             Callback<FollowerSummaryDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    @GET("/followersSummary/{userId}/{followerId}")
+    @GET("/followersSummary/all/{userId}/{followerId}")
     UserFollowerDTO getFollowerSubscriptionDetail(
             @Path("userId") int userId,
             @Path("followerId") int followerId)
         throws RetrofitError;
 
-    @GET("/followersSummary/{userId}/{followerId}")
+    @GET("/followersSummary/all/{userId}/{followerId}")
     void getFollowerSubscriptionDetail(
             @Path("userId") int userId,
             @Path("followerId") int followerId,

@@ -12,7 +12,7 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
@@ -167,7 +167,7 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
         if (news != null)
         {
             int resId = adapter.getBackgroundRes(position);
-            NewsItemDTOKey newsItemDTOKey = news.getNewsItemDTOKey();
+            NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = newsItemDTOKey.getArgs();
             bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
             getNavigator().pushFragment(NewsDetailFragment.class, bundle);

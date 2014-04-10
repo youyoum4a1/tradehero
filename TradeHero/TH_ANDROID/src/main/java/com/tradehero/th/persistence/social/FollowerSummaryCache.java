@@ -118,7 +118,7 @@ import timber.log.Timber;
                 totalCount = followerDTOList.size();
                 for(UserFollowerDTO follower:followerDTOList)
                 {
-                    if (follower.paidFollower)
+                    if (follower.isFreeFollow)
                     {
                         paidCount += 1;
                     }
@@ -158,7 +158,7 @@ import timber.log.Timber;
 
         for(UserFollowerDTO follower:allFollowers)
         {
-            if (follower.paidFollower)
+            if (follower.isFreeFollow)
             {
                 paidFollowerSummaryDTO.userFollowers.add(follower);
             }else {

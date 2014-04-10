@@ -85,7 +85,8 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 }
                 else
                 {
-                    inactiveHeroes.add(heroDTO);
+                    //TODO remove
+                    //inactiveHeroes.add(heroDTO);
                 }
             }
             THLog.d(TAG, "setItems active " + activeHeroes.size() + ", inactive " + inactiveHeroes.size());
