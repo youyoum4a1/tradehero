@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
+import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
@@ -38,6 +39,7 @@ import javax.inject.Singleton;
                 OwnedPortfolioFetchAssistant.class,
                 SecurityAlertAssistant.class,
                 SettingsPayPalFragment.class,
+                SettingsAlipayFragment.class,
 
                 AlertListItemAdapter.class,
                 AlertItemView.class,

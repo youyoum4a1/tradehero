@@ -69,6 +69,12 @@
         android:title="@string/settings_primary_paypal"
         android:icon="@drawable/settings_paypal"
         />
+    <!--TODO icon for alipay setting-->
+    <Preference
+        android:key="@string/key_settings_primary_alipay"
+        android:title="@string/settings_primary_alipay"
+        android:icon="@drawable/settings_paypal"
+        />
 
     <Preference
         android:key="@string/key_settings_primary_transaction_history"
