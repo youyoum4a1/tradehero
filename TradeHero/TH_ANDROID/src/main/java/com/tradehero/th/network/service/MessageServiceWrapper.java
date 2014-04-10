@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
+import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.discussion.key.TypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -42,14 +44,57 @@ public class MessageServiceWrapper
     //<editor-fold desc="Get Messages">
     public PaginatedDTO<MessageHeaderDTO> getMessages(MessageListKey messageListKey)
     {
-        Timber.d("getMessages messageService:%s",messageService);
+        Timber.d("getMessages messageService:%s", messageService);
+        if (messageListKey instanceof TypedMessageListKey)
+        {
+            return getMessages((TypedMessageListKey) messageListKey);
+        }
         return messageService.getMessages(messageListKey.page, messageListKey.perPage);
+    }
+
+    public PaginatedDTO<MessageHeaderDTO> getMessages(TypedMessageListKey messageListKey)
+    {
+        if (messageListKey instanceof RecipientTypedMessageListKey)
+        {
+            return getMessages((RecipientTypedMessageListKey) messageListKey);
+        }
+        return messageService.getMessages(messageListKey.discussionType,
+                messageListKey.page, messageListKey.perPage, null);
+    }
+
+    public PaginatedDTO<MessageHeaderDTO> getMessages(RecipientTypedMessageListKey messageListKey)
+    {
+        return messageService.getMessages(messageListKey.discussionType,
+                messageListKey.page, messageListKey.perPage,
+                messageListKey.recipientId.key);
     }
 
     public MiddleCallbackMessagePaginatedHeader getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
+        if (messageListKey instanceof TypedMessageListKey)
+        {
+            return getMessages((TypedMessageListKey) messageListKey, callback);
+        }
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
         messageServiceAsync.getMessages(messageListKey.page, messageListKey.perPage, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallbackMessagePaginatedHeader getMessages(TypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    {
+        if (messageListKey instanceof RecipientTypedMessageListKey)
+        {
+            return getMessages((RecipientTypedMessageListKey) messageListKey, callback);
+        }
+        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
+        messageServiceAsync.getMessages(messageListKey.discussionType, messageListKey.page, messageListKey.perPage, null, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallbackMessagePaginatedHeader getMessages(RecipientTypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    {
+        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
+        messageServiceAsync.getMessages(messageListKey.discussionType, messageListKey.page, messageListKey.perPage, messageListKey.recipientId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
