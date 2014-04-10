@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -21,10 +23,24 @@ interface MessageServiceAsync
             @Query("perPage") int perPage,
             Callback<PaginatedDTO<MessageHeaderDTO>> callback);
 
+    // TODO implement this on server
+    @GET("/messages/{discussionType}")
+    void getMessages(
+            @Path("discussionType") DiscussionType discussionType,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            @Query("recipientId") Integer recipientId,
+            Callback<PaginatedDTO<MessageHeaderDTO>> callback);
+
     @GET("/messages/{commentId}")
     void getMessageHeader(
             @Path("commentId") int commentId,
             Callback<MessageHeaderDTO> callback);
+
+    @GET("/messages/{recipientUserId}/getFreeCount")
+    void getFreeCount(
+            @Path("recipientUserId") int recipientUserId,
+            Callback<MessageStatusDTO> callback);
 
     @POST("/messages")
     void createMessage(

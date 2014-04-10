@@ -4,8 +4,9 @@
   <string name="error_fetch_follower">There was an error when fetching the follower information
   </string>
   <string name="not_follow_title">Choose a package to follow</string>
-  <string name="not_follow_msg_title1">You must follow\n</string>
-  <string name="not_follow_msg_title2">\nto send private message, Choose a tier below:</string>
+  <string name="not_follow_msg_title">You must follow\n%1$s\nto privately send messages. Choose a
+    tier below:
+  </string>
   <string name="not_follow_subtitle">FREE Follow</string>
   <string name="not_follow_premium_subtitle">PREMIUM Follow</string>
   <string name="free_follow_title">You are now following</string>

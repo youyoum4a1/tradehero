@@ -593,7 +593,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                //Timber.d("lyl click follow");
                 alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                         mFollowType, shownUserBaseKey);
             }
@@ -603,7 +602,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                //Timber.d("lyl click msg");
                 if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                 {
                     alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
