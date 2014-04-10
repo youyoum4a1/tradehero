@@ -190,7 +190,7 @@ import javax.inject.Singleton;
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
+                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -245,6 +245,7 @@ import javax.inject.Singleton;
                         CacheHelper.class,
 
                         TimelineFragment.class,
+                        TimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         TimelineItemView.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
@@ -324,7 +325,6 @@ import javax.inject.Singleton;
                         HeadlineFragment.class,
                         HeadlineListLoader.class,
                         AlertDialogUtil.class,
-                        AlertDialogUtil.PushableTimelineTHIABUserInteractor.class,
                 },
         staticInjections =
                 {

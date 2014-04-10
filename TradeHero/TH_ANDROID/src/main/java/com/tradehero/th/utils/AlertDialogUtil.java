@@ -2,6 +2,7 @@ package com.tradehero.th.utils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
@@ -16,26 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.models.social.FollowRequestedListener;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use
@@ -45,12 +34,9 @@ public class AlertDialogUtil
 {
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
     AlertDialog mFollowDialog;
-    protected THIABUserInteractor userInteractor;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    ProgressDialog mProgressDialog;
 
     @Inject public AlertDialogUtil()
     {
@@ -204,7 +190,7 @@ public class AlertDialogUtil
     }
 
     public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType,
-            UserBaseKey shownUserBaseKey)
+            FollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -240,24 +226,22 @@ public class AlertDialogUtil
 
         if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
         {
-            initFreeFollowDialog(view, shownUserBaseKey);
+            initFreeFollowDialog(view, followRequestedListener);
         }
         else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                 || followType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
         {
-            initNotFollowDialog(view, shownUserBaseKey);
+            initNotFollowDialog(view, followRequestedListener);
         }
 
-        if (mFollowDialog != null)
-        {
-            mFollowDialog.dismiss();
-        }
+        dismissFollowDialog();
 
         mFollowDialog = builder.create();
         mFollowDialog.show();
     }
 
-    private void initNotFollowDialog(View view, final UserBaseKey shownUserBaseKey)
+    private void initNotFollowDialog(View view,
+            final FollowRequestedListener followRequestedListener)
     {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.free_follow_layout);
         linearLayout.setVisibility(View.GONE);
@@ -267,13 +251,8 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                detachFreeFollowMiddleCallback();
-                freeFollowMiddleCallback = userServiceWrapperLazy.get()
-                        .freeFollow(shownUserBaseKey, new FreeFollowCallback());
-                //if (mFollowDialog != null)
-                //{
-                //    mFollowDialog.dismiss();
-                //}
+                dismissFollowDialog();
+                followRequestedListener.freeFollowRequested();
             }
         });
 
@@ -282,50 +261,22 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                userInteractor = new PushableTimelineTHIABUserInteractor();
-                userInteractor.followHero(shownUserBaseKey);
-                if (mFollowDialog != null)
-                {
-                    mFollowDialog.dismiss();
-                }
+                dismissFollowDialog();
+                followRequestedListener.followRequested();
             }
         });
     }
 
-    private void detachFreeFollowMiddleCallback()
+    private void dismissFollowDialog()
     {
-        if (freeFollowMiddleCallback != null)
+        if (mFollowDialog != null)
         {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
-    }
-
-    private class FreeFollowCallback implements Callback<UserProfileDTO>
-    {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            // do nothing for now
-            //Timber.d("lyl %s", userProfileDTO.toString());
-            if (mFollowDialog != null)
-            {
-                mFollowDialog.dismiss();
-            }
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            //Timber.d("fail");
-            if (mFollowDialog != null)
-            {
-                mFollowDialog.dismiss();
-            }
+            mFollowDialog.dismiss();
         }
     }
 
-    private void initFreeFollowDialog(View view, final UserBaseKey shownUserBaseKey)
+    private void initFreeFollowDialog(View view,
+            final FollowRequestedListener followRequestedListener)
     {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.not_follow_layout);
         linearLayout.setVisibility(View.GONE);
@@ -338,10 +289,7 @@ public class AlertDialogUtil
                 @Override public void onClick(View view)
                 {
                     //Timber.d("still keep free");
-                    if (mFollowDialog != null)
-                    {
-                        mFollowDialog.dismiss();
-                    }
+                    dismissFollowDialog();
                 }
             });
         }
@@ -353,12 +301,8 @@ public class AlertDialogUtil
                 @Override public void onClick(View view)
                 {
                     //Timber.d("premium");
-                    userInteractor = new PushableTimelineTHIABUserInteractor();
-                    userInteractor.followHero(shownUserBaseKey);
-                    if (mFollowDialog != null)
-                    {
-                        mFollowDialog.dismiss();
-                    }
+                    dismissFollowDialog();
+                    followRequestedListener.followRequested();
                 }
             });
         }
@@ -389,39 +333,23 @@ public class AlertDialogUtil
         }
     }
 
-    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    public void showProgressDialog(Context context)
     {
-        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
-
-        public PushableTimelineTHIABUserInteractor()
+        if (mProgressDialog != null)
         {
-            super();
+            mProgressDialog.dismiss();
         }
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.show();
+    }
 
-        @Override protected void handleShowProductDetailsMilestoneComplete()
+    public void dismissProgressDialog()
+    {
+        if (mProgressDialog != null)
         {
-            super.handleShowProductDetailsMilestoneComplete();
-            //displayFollowButton();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
-                UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            //displayFollowButton();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(),
-                    userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    //displayFollowButton();
-                }
-            };
+            mProgressDialog.dismiss();
         }
     }
 }

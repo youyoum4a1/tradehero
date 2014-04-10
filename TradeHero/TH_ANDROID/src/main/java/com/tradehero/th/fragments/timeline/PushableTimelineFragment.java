@@ -33,10 +33,10 @@ public class PushableTimelineFragment extends TimelineFragment
     //private MenuItem followingStamp;
     //private TextView followButton;
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new PushableTimelineTHIABUserInteractor();
-    }
+    //@Override protected void createUserInteractor()
+    //{
+    //    userInteractor = new PushableTimelineTHIABUserInteractor();
+    //}
 
     @Override protected void initViews(View view)
     {
@@ -166,37 +166,37 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
-    {
-        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
-
-        public PushableTimelineTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-            //displayFollowButton();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            //displayFollowButton();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    //displayFollowButton();
-                }
-            };
-        }
-    }
+    //public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    //{
+    //    public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
+    //
+    //    public PushableTimelineTHIABUserInteractor()
+    //    {
+    //        super();
+    //    }
+    //
+    //    @Override protected void handleShowProductDetailsMilestoneComplete()
+    //    {
+    //        super.handleShowProductDetailsMilestoneComplete();
+    //        //displayFollowButton();
+    //    }
+    //
+    //    @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    //    {
+    //        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+    //        //displayFollowButton();
+    //    }
+    //
+    //    @Override protected void createFollowCallback()
+    //    {
+    //        this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+    //        {
+    //            @Override public void success(UserProfileDTO userProfileDTO, Response response)
+    //            {
+    //                super.success(userProfileDTO, response);
+    //                //displayFollowButton();
+    //            }
+    //        };
+    //    }
+    //}
 }
