@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroPayoutDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.fragments.social.hero.HeroPayoutListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class FollowerAndPayoutListItemAdapter extends BaseAdapter
@@ -61,14 +63,18 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 
     public int getPayoutRealCount()
     {
-        return (followerSummaryDTO == null || followerSummaryDTO.payoutSummary == null || followerSummaryDTO.payoutSummary.payouts == null) ?
-                0 :
-                followerSummaryDTO.payoutSummary.payouts.size();
+        return 0;
+        //TODO needn't to show payout
+        //return (followerSummaryDTO == null || followerSummaryDTO.payoutSummary == null || followerSummaryDTO.payoutSummary.payouts == null) ?
+        //        0 :
+        //        followerSummaryDTO.payoutSummary.payouts.size();
     }
 
     public int getPayoutVisibleCount()
     {
-        return Math.max (1, getPayoutRealCount());
+        return 0;
+        //TODO needn't to show payout
+        //return Math.max (1, getPayoutRealCount());
     }
 
     public int getFollowerRealCount()
@@ -85,6 +91,7 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 
     @Override public int getItemViewType(int position)
     {
+        //TODO needn't to show payout
         if (position <= 0)
         {
             return VIEW_TYPE_HEADER;
@@ -113,7 +120,10 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 
     @Override public int getCount()
     {
-        return 2 + getPayoutVisibleCount() + getFollowerVisibleCount();
+        Timber.d("PayoutVisibleCount %d,FollowerVisibleCount:%d",getPayoutVisibleCount(),getFollowerVisibleCount());
+        return  2 + getPayoutVisibleCount() + getFollowerVisibleCount();
+        //TODO needn't to show payout
+        //return 2 + getPayoutVisibleCount() + getFollowerVisibleCount();
     }
 
     @Override public long getItemId(int position)
@@ -183,6 +193,13 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
                 break;
 
             case VIEW_TYPE_HEADER:
+                if (true)
+                {
+                    TextView textView = new TextView(context);
+                    textView.setHeight(0);
+                    return textView;
+                }
+                //TODO do not show header
                 convertView = inflater.inflate(headerResId, parent, false);
 
                 int stringId = position == 0 ? R.string.manage_followers_payout_list_header : R.string.manage_followers_list_header;
