@@ -10,6 +10,9 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
+import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
@@ -39,6 +42,7 @@ public class MessagesCenterFragment extends DashboardFragment
     MessageHeaderIdList alreadyFetched;
 
     MessagesView messagesView;
+    SwipeListener swipeListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,13 +72,13 @@ public class MessagesCenterFragment extends DashboardFragment
         //if size of items already fetched is 0,then force to reload
         if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
-            fetchMessages();
             messagesView.showLoadingView();
+            fetchMessages();
         }
         else
         {
-            setListAdaper(alreadyFetched);
             messagesView.showListView();
+            setListAdaper(alreadyFetched);
         }
     }
 
@@ -88,6 +92,9 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onDestroyView();
         detachPreviousTask();
+        SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+        swipeListener = null;
+        swipeListView.setSwipeListViewListener(null);
         messagesView = null;
         Timber.d("%s onDestroyView", TAG);
     }
@@ -112,13 +119,17 @@ public class MessagesCenterFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         messagesView = (MessagesView) view;
         ListView listView = messagesView.getListView();
-        listView.setOnScrollListener(new OnScrollListener());
-        listView.setOnItemClickListener(this);
+        //listView.setOnScrollListener(new OnScrollListener());
+        //listView.setOnItemClickListener(this);
 
         if (messageListKey == null)
         {
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
+
+        SwipeListView swipeListView = (SwipeListView) listView;
+        swipeListener = new SwipeListener();
+        swipeListView.setSwipeListViewListener(swipeListener);
     }
 
     private void initListener()
@@ -167,16 +178,45 @@ public class MessagesCenterFragment extends DashboardFragment
         if (adapter == null)
         {
             adapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
-                    R.layout.message_list_item);
+                    R.layout.message_list_item_wrapper);
             listView.setAdapter(adapter);
         }
         MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
         messageAdapter.appendMore(messageKeys);
     }
 
+    private MessageListAdapter getListAdaper()
+    {
+        ListView listView = messagesView.getListView();
+        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
+        return messageAdapter;
+    }
+
+    class SwipeListener extends BaseSwipeListViewListener
+    {
+
+        @Override public void onClickBackView(int position)
+        {
+            SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            swipeListView.dismiss(position);
+        }
+
+        @Override public void onDismiss(int[] reverseSortedPositions)
+        {
+            MessageListAdapter adapter = getListAdaper();
+            if (adapter != null)
+            {
+                //adapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
+                //TODO
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+    }
+
     private void saveNewPage(MessageHeaderIdList value)
     {
-        if(alreadyFetched == null)
+        if (alreadyFetched == null)
         {
             alreadyFetched = new MessageHeaderIdList();
         }
@@ -196,7 +236,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
-            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s",key,value);
+            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
         }
 
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
@@ -207,6 +247,11 @@ public class MessagesCenterFragment extends DashboardFragment
 
     class OnScrollListener extends FlagNearEndScrollListener
     {
+        public OnScrollListener()
+        {
+            activate();
+        }
+
         @Override public void raiseFlag()
         {
             super.raiseFlag();

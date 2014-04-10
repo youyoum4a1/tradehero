@@ -40,6 +40,7 @@ public class MessagesView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        listView.setEmptyView(emptyView);
     }
 
     public void showErrorView()

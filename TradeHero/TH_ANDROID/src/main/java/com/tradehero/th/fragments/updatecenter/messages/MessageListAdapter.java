@@ -10,14 +10,14 @@ import java.util.List;
 /**
  * Created by wangliang on 3/4/14.
  */
-public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemView>
+public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper>
 {
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
     }
 
-    @Override protected void fineTune(int position, MessageHeaderId dto, MessageItemView dtoView)
+    @Override protected void fineTune(int position, MessageHeaderId dto, MessageItemViewWrapper dtoView)
     {
         // nothing for now
     }

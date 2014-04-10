@@ -30,4 +30,11 @@ interface MessageServiceAsync
     void createMessage(
             @Body MessageHeaderDTO form,
             Callback<DiscussionDTO> callback);
+
+
+    //TODO fake
+    @POST("/messages")
+    void deleteMessage(
+            @Body MessageHeaderDTO form,
+            Callback<DiscussionDTO> callback);
 }

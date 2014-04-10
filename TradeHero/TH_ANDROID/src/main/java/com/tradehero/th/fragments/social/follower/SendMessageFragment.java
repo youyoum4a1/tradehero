@@ -23,6 +23,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -221,7 +222,8 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
     }
 
-    private void sendMessage()
+    private void
+    sendMessage()
     {
         int count = getFollowerCount(messageType);
         if (count <=0 )
@@ -251,6 +253,10 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         return messageHeaderDTO;
     }
 
+    private void closeMe()
+    {
+        ((DashboardActivity) getActivity()).getDashboardNavigator().popFragment();
+    }
 
     /**
      * return how many followers whom you will send message to
@@ -324,11 +330,15 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         @Override public void failure(RetrofitError error)
         {
             dismissDialog(progressDialog);
+            THToast.show("Send message error!");
         }
 
         @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
+            THToast.show("Send message Successfully!");
+            //TODO close me?
+            //closeMe();
         }
     }
 }

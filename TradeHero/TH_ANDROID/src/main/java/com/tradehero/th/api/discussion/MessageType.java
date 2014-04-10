@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum MessageType
 {
@@ -37,18 +38,25 @@ public enum MessageType
         r[2] = BROADCAST_ALL_FOLLOWERS;
         return r;
     }
-        @Override public String toString()
+
+    @Override public String toString()
+    {
+        switch (this)
         {
-            switch (this)
-            {
-                case BROADCAST_PAID_FOLLOWERS:
-                    return "Premium";
-                case BROADCAST_FREE_FOLLOWERS:
-                    return "Free";
-                case BROADCAST_ALL_FOLLOWERS:
-                    return "All";
-            }
-            return null;
+            case BROADCAST_PAID_FOLLOWERS:
+                return "Premium";
+            case BROADCAST_FREE_FOLLOWERS:
+                return "Free";
+            case BROADCAST_ALL_FOLLOWERS:
+                return "All";
         }
+        return null;
+    }
+
+    @JsonValue
+    final int value()
+    {
+        return typeId;
+    }
 
 }
