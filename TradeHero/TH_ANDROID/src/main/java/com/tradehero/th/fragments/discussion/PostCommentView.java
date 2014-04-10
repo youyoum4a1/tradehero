@@ -88,13 +88,24 @@ public class PostCommentView extends RelativeLayout
     {
         detachSubmitCommentMiddleCallback();
 
-        if (discussionKey != null)
+        if (discussionKey != null && validate())
         {
             DiscussionDTO discussionDTO = buildCommentFormDTO(discussionKey);
 
             setPosting();
             postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, new CommentSubmitCallback());
         }
+    }
+
+    protected boolean validate()
+    {
+        String comment = commentText.getText().toString();
+        if (comment == null || comment.trim().isEmpty())
+        {
+            THToast.show(R.string.error_empty_comment);
+            return false;
+        }
+        return true;
     }
 
     protected DiscussionDTO buildCommentFormDTO(DiscussionKey discussionKey)
