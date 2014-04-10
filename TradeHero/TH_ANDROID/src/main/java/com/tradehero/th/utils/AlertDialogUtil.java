@@ -1,6 +1,5 @@
 package com.tradehero.th.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,9 +29,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.social.HeroKey;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -51,7 +47,6 @@ public class AlertDialogUtil
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
 
     AlertDialog mFollowDialog;
     protected THIABUserInteractor userInteractor;
@@ -232,16 +227,14 @@ public class AlertDialogUtil
         switch (followType)
         {
             case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
-                title.setText(
-                        context.getString(R.string.not_follow_msg_title1) + name.getText() + context
-                                .getString(R.string.not_follow_msg_title2));
+                title.setText(context.getString(R.string.not_follow_msg_title, name.getText()));
                 name.setVisibility(View.GONE);
                 break;
             case UserProfileDTOUtil.IS_NOT_FOLLOWER:
-                title.setText(R.string.free_follow_title);
+                title.setText(R.string.not_follow_title);
                 break;
             case UserProfileDTOUtil.IS_FREE_FOLLOWER:
-                title.setText(R.string.not_follow_title);
+                title.setText(R.string.free_follow_title);
                 break;
         }
 
@@ -274,7 +267,6 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                //Timber.d("lyl free follow");
                 detachFreeFollowMiddleCallback();
                 freeFollowMiddleCallback = userServiceWrapperLazy.get()
                         .freeFollow(shownUserBaseKey, new FreeFollowCallback());
@@ -290,7 +282,6 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                //Timber.d("lyl premium follow");
                 userInteractor = new PushableTimelineTHIABUserInteractor();
                 userInteractor.followHero(shownUserBaseKey);
                 if (mFollowDialog != null)
@@ -320,10 +311,7 @@ public class AlertDialogUtil
             {
                 mFollowDialog.dismiss();
             }
-            userProfileCacheLazy.get().invalidate(userProfileDTO.getBaseKey());//may useful
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            heroListCacheLazy.get()
-                    .invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         }
 
         @Override public void failure(RetrofitError retrofitError)
