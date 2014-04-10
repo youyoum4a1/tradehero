@@ -49,7 +49,9 @@ public class MessageServiceStub implements MessageService
             Integer perPage)
     {
         PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
-        paginatedDTO.setData(new ArrayList<MessageHeaderDTO>());
+        List<MessageHeaderDTO> data = new ArrayList<>();
+        data.add(getMessageHeader(2));
+        paginatedDTO.setData(data);
         return paginatedDTO;
     }
 

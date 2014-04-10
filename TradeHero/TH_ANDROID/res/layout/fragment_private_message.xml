@@ -36,6 +36,18 @@
 
   </RelativeLayout>
 
+  <TextView
+      android:id="@+id/private_message_empty"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:text="@string/private_message_empty_list_hint"
+      android:textSize="20sp"
+
+      android:visibility="gone"
+      />
+
   <ListView
       android:id="@+id/message_list_view"
       android:layout_width="match_parent"
