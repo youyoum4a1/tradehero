@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -603,13 +604,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             @Override public void onClick(View v)
             {
                 //Timber.d("lyl click msg");
-                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER)
+                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                 {
                     alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG, shownUserBaseKey);
                 }
+                else
+                {
+                    pushPrivateMessageFragment();
+                }
+
             }
         });
+    }
+
+    protected void pushPrivateMessageFragment()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY, shownUserBaseKey.getArgs());
+        getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
     /**

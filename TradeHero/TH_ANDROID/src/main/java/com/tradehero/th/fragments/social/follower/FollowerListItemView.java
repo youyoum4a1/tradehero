@@ -36,8 +36,6 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     @InjectView(R.id.follower_time) TextView followTime;
     @InjectView(R.id.hint_open_follower_info) ImageView country;
 
-
-
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
