@@ -34,17 +34,17 @@ public class HeroTypeExt
             if (typeId == HeroType.PREMIUM.typeId)
             {
                 result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_premium,
-                        HeroType.PREMIUM, 0, HeroManagerFragment.PrimiumHeroFragment.class);
+                        HeroType.PREMIUM, 0, PrimiumHeroFragment.class);
             }
             else if (typeId == HeroType.FREE.typeId)
             {
                 result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_free, HeroType.FREE, 1,
-                        HeroManagerFragment.FreeHeroFragment.class);
+                        FreeHeroFragment.class);
             }
             else if (typeId == HeroType.ALL.typeId)
             {
                 result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_all, HeroType.ALL, 2,
-                        HeroManagerFragment.AllHeroFragment.class);
+                        AllHeroFragment.class);
             }
         }
         return result;

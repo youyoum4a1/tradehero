@@ -13,6 +13,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.HeroKey;
 import java.util.List;
 import javax.inject.Inject;
@@ -230,6 +231,13 @@ import retrofit.RetrofitError;
     public void follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
         userService.follow(userBaseKey.key, callback);
+    }
+
+    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new MiddleCallback<>(callback);
+        userService.freeFollow(userBaseKey.key, callback);
+        return middleCallback;
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)

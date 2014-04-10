@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,13 +11,52 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use File | Settings | File Templates. */
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use
+ * File | Settings | File Templates.
+ */
 public class AlertDialogUtil
 {
+    @Inject protected Lazy<Picasso> picassoLazy;
+    @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
+
+    AlertDialog mFollowDialog;
+    protected THIABUserInteractor userInteractor;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+
     @Inject public AlertDialogUtil()
     {
         super();
@@ -33,12 +73,15 @@ public class AlertDialogUtil
         };
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
+    public AlertDialog popWithNegativeButton(final Context context, int titleResId,
+            int descriptionResId, int cancelResId)
     {
-        return popWithNegativeButton(context, titleResId, descriptionResId, cancelResId, createDefaultCancelListener());
+        return popWithNegativeButton(context, titleResId, descriptionResId, cancelResId,
+                createDefaultCancelListener());
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId,
+    public AlertDialog popWithNegativeButton(final Context context, int titleResId,
+            int descriptionResId, int cancelResId,
             DialogInterface.OnClickListener cancelListener)
     {
         return popWithNegativeButton(context,
@@ -48,12 +91,15 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
+    public AlertDialog popWithNegativeButton(final Context context, String titleRes,
+            String descriptionRes, String cancelRes)
     {
-        return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes, createDefaultCancelListener());
+        return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes,
+                createDefaultCancelListener());
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes,
+    public AlertDialog popWithNegativeButton(final Context context, String titleRes,
+            String descriptionRes, String cancelRes,
             DialogInterface.OnClickListener cancelListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -69,15 +115,18 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, int titleResId,
+            int descriptionResId, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, titleResId, descriptionResId, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
+    public AlertDialog popWithOkCancelButton(final Context context, int titleResId,
+            int descriptionResId, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener,
+            final DialogInterface.OnClickListener cancelClickListener)
     {
         return popWithOkCancelButton(context,
                 context.getString(titleResId),
@@ -88,15 +137,18 @@ public class AlertDialogUtil
                 cancelClickListener);
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, String title,
+            String description, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, title, description, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
+    public AlertDialog popWithOkCancelButton(final Context context, String title,
+            String description, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener,
+            final DialogInterface.OnClickListener cancelClickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -128,9 +180,10 @@ public class AlertDialogUtil
         });
 
         WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.dimAmount=0.95f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
+        lp.dimAmount = 0.95f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
         dialog.getWindow().setAttributes(lp);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow()
+                .setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         dialog.show();
         return dialog;
@@ -149,8 +202,238 @@ public class AlertDialogUtil
         {
             return popWithNegativeButton(context,
                     context.getString(R.string.alert_dialog_market_close_title),
-                    String.format(context.getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
+                    String.format(context.getString(R.string.alert_dialog_market_close_message),
+                            securityId.exchange, securityId.securitySymbol),
                     context.getString(R.string.alert_dialog_market_close_cancel));
+        }
+    }
+
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType,
+            UserBaseKey shownUserBaseKey)
+    {
+        if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+        {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.follow_dialog, null);
+        builder.setView(view);
+        builder.setCancelable(true);
+
+        ImageView avatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
+        loadUserPicture(avatar, userBaseDTO);
+
+        TextView name = (TextView) view.findViewById(R.id.user_name);
+        name.setText(userBaseDTO == null ? context.getString(R.string.loading_loading)
+                : userBaseDTO.displayName);
+
+        TextView title = (TextView) view.findViewById(R.id.title);
+        switch (followType)
+        {
+            case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
+                title.setText(
+                        context.getString(R.string.not_follow_msg_title1) + name.getText() + context
+                                .getString(R.string.not_follow_msg_title2));
+                name.setVisibility(View.GONE);
+                break;
+            case UserProfileDTOUtil.IS_NOT_FOLLOWER:
+                title.setText(R.string.free_follow_title);
+                break;
+            case UserProfileDTOUtil.IS_FREE_FOLLOWER:
+                title.setText(R.string.not_follow_title);
+                break;
+        }
+
+        if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+        {
+            initFreeFollowDialog(view, shownUserBaseKey);
+        }
+        else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER
+                || followType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
+        {
+            initNotFollowDialog(view, shownUserBaseKey);
+        }
+
+        if (mFollowDialog != null)
+        {
+            mFollowDialog.dismiss();
+        }
+
+        mFollowDialog = builder.create();
+        mFollowDialog.show();
+    }
+
+    private void initNotFollowDialog(View view, final UserBaseKey shownUserBaseKey)
+    {
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.free_follow_layout);
+        linearLayout.setVisibility(View.GONE);
+
+        LinearLayout freeFollow = (LinearLayout) view.findViewById(R.id.free_follow);
+        freeFollow.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                //Timber.d("lyl free follow");
+                detachFreeFollowMiddleCallback();
+                freeFollowMiddleCallback = userServiceWrapperLazy.get()
+                        .freeFollow(shownUserBaseKey, new FreeFollowCallback());
+                //if (mFollowDialog != null)
+                //{
+                //    mFollowDialog.dismiss();
+                //}
+            }
+        });
+
+        LinearLayout premiumFollow = (LinearLayout) view.findViewById(R.id.premium_follow);
+        premiumFollow.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                //Timber.d("lyl premium follow");
+                userInteractor = new PushableTimelineTHIABUserInteractor();
+                userInteractor.followHero(shownUserBaseKey);
+                if (mFollowDialog != null)
+                {
+                    mFollowDialog.dismiss();
+                }
+            }
+        });
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
+    }
+
+    private class FreeFollowCallback implements Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            // do nothing for now
+            //Timber.d("lyl %s", userProfileDTO.toString());
+            if (mFollowDialog != null)
+            {
+                mFollowDialog.dismiss();
+            }
+            userProfileCacheLazy.get().invalidate(userProfileDTO.getBaseKey());//may useful
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            heroListCacheLazy.get()
+                    .invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            //Timber.d("fail");
+            if (mFollowDialog != null)
+            {
+                mFollowDialog.dismiss();
+            }
+        }
+    }
+
+    private void initFreeFollowDialog(View view, final UserBaseKey shownUserBaseKey)
+    {
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.not_follow_layout);
+        linearLayout.setVisibility(View.GONE);
+
+        Button leftButton = (Button) view.findViewById(R.id.btn_free);
+        if (leftButton != null)
+        {
+            leftButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    //Timber.d("still keep free");
+                    if (mFollowDialog != null)
+                    {
+                        mFollowDialog.dismiss();
+                    }
+                }
+            });
+        }
+        Button rightButton = (Button) view.findViewById(R.id.btn_premium);
+        if (rightButton != null)
+        {
+            rightButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    //Timber.d("premium");
+                    userInteractor = new PushableTimelineTHIABUserInteractor();
+                    userInteractor.followHero(shownUserBaseKey);
+                    if (mFollowDialog != null)
+                    {
+                        mFollowDialog.dismiss();
+                    }
+                }
+            });
+        }
+    }
+
+    private void loadUserPicture(ImageView imageView, UserBaseDTO userBaseDTO)
+    {
+        if (imageView != null)
+        {
+            loadDefaultPicture(imageView);
+            if (userBaseDTO != null && userBaseDTO.picture != null)
+            {
+                picassoLazy.get().load(userBaseDTO.picture)
+                        .transform(peopleIconTransformationLazy.get())
+                        .placeholder(imageView.getDrawable())
+                        .into(imageView);
+            }
+        }
+    }
+
+    protected void loadDefaultPicture(ImageView imageView)
+    {
+        if (imageView != null)
+        {
+            picassoLazy.get().load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformationLazy.get())
+                    .into(imageView);
+        }
+    }
+
+    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    {
+        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
+
+        public PushableTimelineTHIABUserInteractor()
+        {
+            super();
+        }
+
+        @Override protected void handleShowProductDetailsMilestoneComplete()
+        {
+            super.handleShowProductDetailsMilestoneComplete();
+            //displayFollowButton();
+        }
+
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
+                UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            //displayFollowButton();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(),
+                    userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    //displayFollowButton();
+                }
+            };
         }
     }
 }
