@@ -20,6 +20,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -29,6 +30,9 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -47,6 +51,7 @@ public class AlertDialogUtil
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
 
     AlertDialog mFollowDialog;
     protected THIABUserInteractor userInteractor;
@@ -203,36 +208,49 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Activity activity, UserProfileDTO userProfileDTO, int followType,
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType,
             UserBaseKey shownUserBaseKey)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.follow_dialog, null);
         builder.setView(view);
         builder.setCancelable(true);
 
         ImageView avatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
-        loadUserPicture(avatar, userProfileDTO);
-
-        TextView title = (TextView) view.findViewById(R.id.title);
-        title.setText(followType == UserProfileDTOUtil.IS_FREE_FOLLOWER
-                ? R.string.free_follow_title
-                : R.string.not_follow_title);
+        loadUserPicture(avatar, userBaseDTO);
 
         TextView name = (TextView) view.findViewById(R.id.user_name);
-        name.setText(userProfileDTO == null ? activity.getString(R.string.loading_loading)
-                : userProfileDTO.displayName);
+        name.setText(userBaseDTO == null ? context.getString(R.string.loading_loading)
+                : userBaseDTO.displayName);
+
+        TextView title = (TextView) view.findViewById(R.id.title);
+        switch (followType)
+        {
+            case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
+                title.setText(
+                        context.getString(R.string.not_follow_msg_title1) + name.getText() + context
+                                .getString(R.string.not_follow_msg_title2));
+                name.setVisibility(View.GONE);
+                break;
+            case UserProfileDTOUtil.IS_NOT_FOLLOWER:
+                title.setText(R.string.free_follow_title);
+                break;
+            case UserProfileDTOUtil.IS_FREE_FOLLOWER:
+                title.setText(R.string.not_follow_title);
+                break;
+        }
 
         if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
         {
             initFreeFollowDialog(view, shownUserBaseKey);
         }
-        else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER)
+        else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER
+                || followType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
         {
             initNotFollowDialog(view, shownUserBaseKey);
         }
@@ -256,9 +274,10 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                Timber.d("lyl free follow");
+                //Timber.d("lyl free follow");
                 detachFreeFollowMiddleCallback();
-                freeFollowMiddleCallback = userServiceWrapperLazy.get().freeFollow(shownUserBaseKey, new FreeFollowCallback());
+                freeFollowMiddleCallback = userServiceWrapperLazy.get()
+                        .freeFollow(shownUserBaseKey, new FreeFollowCallback());
                 //if (mFollowDialog != null)
                 //{
                 //    mFollowDialog.dismiss();
@@ -271,7 +290,7 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View v)
             {
-                Timber.d("lyl premium follow");
+                //Timber.d("lyl premium follow");
                 userInteractor = new PushableTimelineTHIABUserInteractor();
                 userInteractor.followHero(shownUserBaseKey);
                 if (mFollowDialog != null)
@@ -301,8 +320,10 @@ public class AlertDialogUtil
             {
                 mFollowDialog.dismiss();
             }
-            userProfileCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
-
+            userProfileCacheLazy.get().invalidate(userProfileDTO.getBaseKey());//may useful
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            heroListCacheLazy.get()
+                    .invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -328,7 +349,7 @@ public class AlertDialogUtil
             {
                 @Override public void onClick(View view)
                 {
-                    //Timber.d("free");
+                    //Timber.d("still keep free");
                     if (mFollowDialog != null)
                     {
                         mFollowDialog.dismiss();
@@ -355,14 +376,14 @@ public class AlertDialogUtil
         }
     }
 
-    private void loadUserPicture(ImageView imageView, UserProfileDTO userProfileDTO)
+    private void loadUserPicture(ImageView imageView, UserBaseDTO userBaseDTO)
     {
         if (imageView != null)
         {
             loadDefaultPicture(imageView);
-            if (userProfileDTO != null && userProfileDTO.picture != null)
+            if (userBaseDTO != null && userBaseDTO.picture != null)
             {
-                picassoLazy.get().load(userProfileDTO.picture)
+                picassoLazy.get().load(userBaseDTO.picture)
                         .transform(peopleIconTransformationLazy.get())
                         .placeholder(imageView.getDrawable())
                         .into(imageView);

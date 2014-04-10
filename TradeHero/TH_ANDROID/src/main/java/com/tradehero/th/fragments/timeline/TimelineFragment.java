@@ -602,6 +602,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             @Override public void onClick(View v)
             {
                 //Timber.d("lyl click msg");
+                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER)
+                {
+                    alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG, shownUserBaseKey);
+                }
             }
         });
     }

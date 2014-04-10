@@ -29,7 +29,7 @@ public class PushableTimelineFragment extends TimelineFragment
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    private MenuItem menuFollow;
+    //private MenuItem menuFollow;
     //private MenuItem followingStamp;
     //private TextView followButton;
 
