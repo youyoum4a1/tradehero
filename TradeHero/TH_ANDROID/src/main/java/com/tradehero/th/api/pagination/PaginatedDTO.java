@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.tradehero.th.api.pagination;
 
 import com.tradehero.common.persistence.DTO;
 import java.util.Collections;

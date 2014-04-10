@@ -1,11 +1,10 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import com.tradehero.th.api.PaginatedDTO;
-import com.tradehero.th.api.PaginationDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.loaders.PaginatedLoader;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.utils.Constants;
@@ -88,7 +87,7 @@ public class DiscussionListLoader extends PaginatedLoader<DiscussionDTO>
             paginationDTO.perPage = Constants.TIMELINE_ITEM_PER_PAGE;
         }
 
-        currentPaginatedDiscussion = discussionService.getDiscussions(discussionType.description, timelineId, paginationDTO.page, paginationDTO.perPage);
+        currentPaginatedDiscussion = discussionService.getDiscussions(discussionType, timelineId, paginationDTO.page, paginationDTO.perPage);
 
         return currentPaginatedDiscussion;
     }

@@ -2,14 +2,14 @@ package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.network.service.DiscussionService;
+import com.tradehero.th.api.pagination.RangedDTO;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,43 +20,28 @@ import javax.inject.Singleton;
 @Singleton
 public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, DiscussionKeyList>
 {
-    private final Lazy<DiscussionCache> discussionCache;
-    private final Lazy<DiscussionService> discussionService;
+    private final DiscussionCache discussionCache;
+    private final DiscussionServiceWrapper discussionServiceWrapper;
 
     @Inject public DiscussionListCache(
             @ListCacheMaxSize IntPreference maxSize,
-            Lazy<DiscussionService> discussionService,
-            Lazy<DiscussionCache> discussionCache
-    )
+            DiscussionServiceWrapper discussionServiceWrapper,
+            DiscussionCache discussionCache)
     {
         super(maxSize.get());
 
-        this.discussionService = discussionService;
+        this.discussionServiceWrapper = discussionServiceWrapper;
         this.discussionCache = discussionCache;
     }
 
     @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        PaginatedDTO<DiscussionDTO> paginatedDiscussionDTO =
-                discussionService.get().getDiscussions(
-                        discussionListKey.inReplyToType, discussionListKey.inReplyToId, discussionListKey.toMap());
-
-        return putInternal(paginatedDiscussionDTO);
+        return putInternal(discussionServiceWrapper.getDiscussions(discussionListKey));
     }
 
-    private DiscussionKeyList putInternal(PaginatedDTO<DiscussionDTO> paginatedDiscussionDTO)
+    private DiscussionKeyList putInternal(RangedDTO<DiscussionDTO, DiscussionDTOList> rangedDTO)
     {
-        List<DiscussionDTO> data = paginatedDiscussionDTO.getData();
-
-        DiscussionKeyList discussionKeys = new DiscussionKeyList();
-
-        for (DiscussionDTO discussionDTO: data)
-        {
-            DiscussionKey discussionKey = new DiscussionKey(discussionDTO.id);
-
-            discussionCache.get().put(discussionKey, discussionDTO);
-            discussionKeys.add(discussionKey);
-        }
-        return discussionKeys;
+        discussionCache.put(rangedDTO.getData());
+        return rangedDTO.getDataModifiable().getKeys();
     }
 }

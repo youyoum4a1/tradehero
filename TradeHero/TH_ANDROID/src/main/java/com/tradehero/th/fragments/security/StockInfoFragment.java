@@ -15,7 +15,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;

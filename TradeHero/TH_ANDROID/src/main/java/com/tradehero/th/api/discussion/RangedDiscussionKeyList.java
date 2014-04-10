@@ -1,0 +1,29 @@
+package com.tradehero.th.api.discussion;
+
+import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.pagination.RangedDTO;
+import java.util.List;
+
+/**
+ * Created by xavier2 on 2014/4/9.
+ */
+public class RangedDiscussionKeyList extends RangedDTO<DiscussionKey, DiscussionKeyList>
+    implements DTO
+{
+    public RangedDiscussionKeyList(RangedDTO<DiscussionDTO, DiscussionDTOList> dtos)
+    {
+        setDataFrom(dtos.getData());
+        setSequenceDTO(dtos.getSequenceDTO());
+    }
+
+    public void setDataFrom(List<DiscussionDTO> data)
+    {
+        setData(new DiscussionDTOList(data));
+    }
+
+    public void setData(DiscussionDTOList data)
+    {
+        setData(data.getKeys());
+    }
+}

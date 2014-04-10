@@ -13,7 +13,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.HeadlineListLoader;

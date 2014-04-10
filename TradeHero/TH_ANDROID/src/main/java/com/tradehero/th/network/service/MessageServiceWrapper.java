@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageListKey;
