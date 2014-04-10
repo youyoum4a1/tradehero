@@ -13,7 +13,6 @@ import android.widget.Button;
 
 /**
  *
- * @author wangliang
  */
 public class CenterImageTextButton extends Button
 {
@@ -91,13 +90,13 @@ public class CenterImageTextButton extends Button
         {
             canvas.drawBitmap(image, (width - groupWidth) / 2, (height - imgHeight) / 2, null);
             canvas.drawText(mText, (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
-                    mTextSize - 2 + (height - mTextSize) / 2, mPaint);
+                    mTextSize - 5 + (height - mTextSize) / 2, mPaint);
         }
         else
         {
             canvas.drawBitmap(image, (width - groupWidth) / 2, (height - imgHeight) / 2, null);
             canvas.drawText(mText, (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
-                    mTextSize - 2 + (height - mTextSize) / 2, mPaint);
+                    mTextSize - 5 + (height - mTextSize) / 2, mPaint);
         }
     }
 }

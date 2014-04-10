@@ -27,9 +27,15 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.social.FollowerSummaryDTO;
+import com.tradehero.th.api.social.HeroIdExt;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.social.FollowerSummaryCache;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.Date;
@@ -95,6 +101,8 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
     //@Inject UserBaseKey user;
     @Inject CurrentUserId currentUserId;
 
+    @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
+
     Dialog progressDialog;
     Dialog chooseDialog;
     SendMessageDiscussionCallback sendMessageDiscussionCallback;
@@ -110,6 +118,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
         this.messageType = MessageType.fromId(messageTypeInt);
 
+        Timber.d("onCreate messageType:%s,discussionType:%s",messageType,discussionType);
         sendMessageDiscussionCallback = new SendMessageDiscussionCallback();
     }
 
@@ -128,7 +137,6 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
     {
         if (item.getItemId() == 100)
         {
-            THToast.show("Send Broadcast");
             sendMessage();
             return true;
         }
@@ -193,7 +201,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text, MessageType.values());
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text, MessageType.getShowingTypes());
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -215,6 +223,13 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
 
     private void sendMessage()
     {
+        int count = getFollowerCount(messageType);
+        if (count <=0 )
+        {
+            THToast.show("Sorry,you cannot send message because you don't have such type follower");
+            return;
+        }
+
         String text = inputText.getText().toString();
         if (TextUtils.isEmpty(text))
         {
@@ -236,6 +251,42 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         return messageHeaderDTO;
     }
 
+
+    /**
+     * return how many followers whom you will send message to
+     * @param messageType
+     * @return
+     */
+    private int getFollowerCount(MessageType messageType)
+    {
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        HeroType heroType = HeroType.ALL;
+
+        HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+        FollowerSummaryDTO followerSummaryDTO =  followerSummaryCache.get().get(heroKey);
+        if (followerSummaryDTO != null)
+        {
+            int result = 0;
+            switch (messageType)
+            {
+                case BROADCAST_FREE_FOLLOWERS:
+                    result = followerSummaryDTO.freeFollowerCount;
+                    break;
+                case BROADCAST_ALL_FOLLOWERS:
+                    result = followerSummaryDTO.freeFollowerCount + followerSummaryDTO.paidFollowerCount;
+                    break;
+                case BROADCAST_PAID_FOLLOWERS:
+                    result = followerSummaryDTO.paidFollowerCount;
+                    break;
+                default:
+                    throw new IllegalStateException("unknown messageType");
+
+            }
+            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d",messageType,followerSummaryDTO.paidFollowerCount,followerSummaryDTO.freeFollowerCount);
+            return result;
+        }
+        return 0;
+    }
     private void dismissDialog(Dialog dialog)
     {
         try
