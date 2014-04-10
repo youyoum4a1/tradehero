@@ -1,12 +1,12 @@
 package com.tradehero.th.persistence.news.yahoo;
 
+import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.persistence.news.NewsHeadlineCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import timber.log.Timber;
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
  * This class uses internally the SecurityCompactCache (see the fetch method implementation)
  */
-@Singleton public class YahooNewsHeadlineCache extends NewsHeadlineCache
+@Singleton public class YahooNewsHeadlineCache extends StraightDTOCache<SecurityId, NewsHeadlineList>
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
