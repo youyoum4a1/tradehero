@@ -12,12 +12,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.localytics.android.LocalyticsSession;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -26,18 +24,23 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -48,6 +51,7 @@ import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
@@ -61,6 +65,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
@@ -132,7 +140,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuOpenProfile.setOnClickListener(this);
         }
-        TextView lbmuOpenPositionsList = (TextView) findViewById(R.id.leaderboard_user_item_open_positions_list);
+        TextView lbmuOpenPositionsList =
+                (TextView) findViewById(R.id.leaderboard_user_item_open_positions_list);
         if (lbmuOpenPositionsList != null)
         {
             lbmuOpenPositionsList.setOnClickListener(this);
@@ -165,7 +174,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuProfilePicture.setOnClickListener(this);
         }
-
     }
 
     @Override protected void onDetachedFromWindow()
@@ -193,6 +201,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuProfilePicture.setOnClickListener(null);
         }
+
+        detachFreeFollowMiddleCallback();
 
         super.onDetachedFromWindow();
     }
@@ -271,7 +281,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
         if (lbmuFoF != null)
         {
-            lbmuFoF.setVisibility(leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOf_markupString) ? VISIBLE : GONE);
+            lbmuFoF.setVisibility(
+                    leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(
+                            leaderboardItem.friendOf_markupString) ? VISIBLE : GONE);
             lbmuFoF.setText(leaderboardItem.friendOf_markupString);
         }
 
@@ -297,38 +309,47 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         // display P&L
 
-        THSignedNumber formattedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy, false);
+        THSignedNumber formattedNumber =
+                new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
+                        false);
         lbmuPl.setText(formattedNumber.toString());
         String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
 
         // display period
-        SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        SimpleDateFormat sdf =
+                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
         String formattedEndPeriodUtc = sdf.format(leaderboardItem.periodEndUtc);
         String period = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.roiInPeriod * 100);
+        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                leaderboardItem.roiInPeriod * 100);
         lbmuRoi.setText(roi.toString());
         lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.roiAnnualizedInPeriod * 100);
+        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                leaderboardItem.roiAnnualizedInPeriod * 100);
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.getBenchmarkRoiInPeriod() * 100);
-        String benchmarkRoiInPeriodFormat = getContext().getString(R.string.leaderboard_benchmark_roi_format);
-        String benchmarkRoiInPeriod = String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
+        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                leaderboardItem.getBenchmarkRoiInPeriod() * 100);
+        String benchmarkRoiInPeriodFormat =
+                getContext().getString(R.string.leaderboard_benchmark_roi_format);
+        String benchmarkRoiInPeriod =
+                String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
         // sharpe ratio
         if (leaderboardItem.sharpeRatioInPeriod_vsSP500 != null)
         {
-            lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.sharpeRatioInPeriod_vsSP500, false).toString());
+            lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY,
+                    leaderboardItem.sharpeRatioInPeriod_vsSP500, false).toString());
         }
         else
         {
@@ -345,17 +366,23 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // number of trades
         String numberOfTradeFormat = getContext().getString(
-                leaderboardItem.getNumberOfTrades() > 1 ? R.string.leaderboard_number_of_trades_plural : R.string.leaderboard_number_of_trade);
-        String numberOfTrades = String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
+                leaderboardItem.getNumberOfTrades() > 1
+                        ? R.string.leaderboard_number_of_trades_plural
+                        : R.string.leaderboard_number_of_trade);
+        String numberOfTrades =
+                String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
         lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
 
         // Number of trades in Period
-        lbmuNumberTradesInPeriod.setText(String.format("%,d", leaderboardItem.numberOfTradesInPeriod));
+        lbmuNumberTradesInPeriod.setText(
+                String.format("%,d", leaderboardItem.numberOfTradesInPeriod));
 
         // average days held
-        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) leaderboardItem.avgHoldingPeriodMins / (60*24), 3));
+        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits(
+                (double) leaderboardItem.avgHoldingPeriodMins / (60 * 24), 3));
         String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
-        String digitsWinRatio = NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
+        String digitsWinRatio =
+                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
         String winRatio = String.format(winRatioFormat, digitsWinRatio);
         lbmuWinRatio.setText(digitsWinRatio + "%");
 
@@ -405,21 +432,61 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
             case R.id.leaderboard_user_item_follow:
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                openFollowUserDialog();
+                alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                        UserProfileDTOUtil.IS_NOT_FOLLOWER,
+                        new LeaderBoardFollowRequestedListener());
                 break;
             case R.id.leaderboard_user_item_profile_picture:
                 handleUserIconClicked();
                 break;
-
         }
     }
 
-    private void handleUserIconClicked(){
+    public class LeaderBoardFollowRequestedListener implements FollowRequestedListener
+    {
+        @Override public void freeFollowRequested()
+        {
+            freeFollow();
+        }
+
+        @Override public void followRequested()
+        {
+            follow();
+        }
+    }
+
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            //Timber.d("lyl success %s", userProfileDTO.toString());
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    private void handleUserIconClicked()
+    {
         //OtherTimelineFragment.viewProfile((DashboardActivity) getContext(), null);
         handleOpenProfileButtonClicked();
     }
 
-    private void openFollowUserDialog()
+    protected void freeFollow()
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getContext());
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get()
+                        .freeFollow(leaderboardItem.getBaseKey(), new FreeFollowCallback());
+    }
+
+    protected void follow()
     {
         THIABUserInteractor parentCopy = parentUserInteractor.get();
         if (ownUserInteractor == null && parentCopy != null)
@@ -444,25 +511,32 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         Bundle bundle = new Bundle();
         // to display time of value on start investment
-        SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        SimpleDateFormat sdf =
+                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
-        bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING, formattedStartPeriodUtc);
+        bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING,
+                formattedStartPeriodUtc);
 
         // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
-        LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get().get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
-        boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
-        bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);
+        LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get()
+                .get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+        boolean isTimeRestrictedLeaderboard =
+                leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
+        bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED,
+                isTimeRestrictedLeaderboard);
 
         if (leaderboardItem.lbmuId != -1)
         {
             // leaderboard mark user id, to get marking user information
-            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                    ownedPortfolioId.getArgs());
             bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
             getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
         }
         else
         {
-            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                    ownedPortfolioId.getArgs());
             getNavigator().pushFragment(PositionListFragment.class, bundle);
         }
     }
@@ -493,12 +567,15 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         @Override protected void createFollowCallback()
         {
-            followCallback = new LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
+            followCallback = new LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(
+                    heroListCache.get(), userProfileCache.get());
         }
 
-        protected class LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback extends UserInteractorFollowHeroCallback
+        protected class LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback
+                extends UserInteractorFollowHeroCallback
         {
-            public LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
+            public LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(
+                    HeroListCache heroListCache, UserProfileCache userProfileCache)
             {
                 super(heroListCache, userProfileCache);
             }
@@ -509,5 +586,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             }
         }
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
     }
 }

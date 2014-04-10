@@ -18,6 +18,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public String website;
 
     public List<Integer> heroIds;
+    public List<Integer> freeHeroIds;
+    public List<Integer> premiumHeroIds;
     public Integer followerCount;
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)
@@ -61,6 +63,38 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public boolean isFollowingUser(UserBaseDTO userBaseDTO)
     {
         return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
+    }
+
+    public int getFollowType(UserBaseKey userBaseKey)
+    {
+        return userBaseKey == null ? UserProfileDTOUtil.IS_NOT_FOLLOWER : getFollowType(userBaseKey.key);
+    }
+
+    public int getFollowType(UserBaseDTO userBaseDTO)
+    {
+        return userBaseDTO == null ? UserProfileDTOUtil.IS_NOT_FOLLOWER : getFollowType(userBaseDTO.id);
+    }
+
+    public int getFollowType(int userId)
+    {
+        if (this.heroIds != null)
+        {
+            if (this.freeHeroIds != null)
+            {
+                if (this.freeHeroIds.contains(userId))
+                {
+                    return UserProfileDTOUtil.IS_FREE_FOLLOWER;
+                }
+            }
+            if (this.premiumHeroIds != null)
+            {
+                if (this.premiumHeroIds.contains(userId))
+                {
+                    return UserProfileDTOUtil.IS_PREMIUM_FOLLOWER;
+                }
+            }
+        }
+        return UserProfileDTOUtil.IS_NOT_FOLLOWER;
     }
 
     public List<UserBaseKey> getHeroBaseKeys()
