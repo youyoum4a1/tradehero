@@ -1,15 +1,18 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
+import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
+import com.tradehero.th.models.discussion.MiddleCallbackMessageStatus;
 import com.tradehero.th.persistence.MessageListTimeline;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -109,6 +112,20 @@ public class MessageServiceWrapper
     {
         MiddleCallbackMessageHeader middleCallback = new MiddleCallbackMessageHeader(callback);
         messageServiceAsync.getMessageHeader(commentId, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Free Count">
+    public MessageStatusDTO getFreeCount(UserBaseKey userBaseKey)
+    {
+        return messageService.getFreeCount(userBaseKey.key);
+    }
+
+    public MiddleCallbackMessageStatus getFreeCount(UserBaseKey userBaseKey, Callback<MessageStatusDTO> callback)
+    {
+        MiddleCallbackMessageStatus middleCallback = new MiddleCallbackMessageStatus(callback);
+        messageServiceAsync.getFreeCount(userBaseKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

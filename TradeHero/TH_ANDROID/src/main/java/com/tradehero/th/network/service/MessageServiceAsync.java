@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -10,7 +11,6 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import sun.net.www.MessageHeader;
 
 /**
  * Created by xavier2 on 2014/4/9.
@@ -36,6 +36,11 @@ interface MessageServiceAsync
     void getMessageHeader(
             @Path("commentId") int commentId,
             Callback<MessageHeaderDTO> callback);
+
+    @GET("/messages/{recipientUserId}/getFreeCount")
+    void getFreeCount(
+            @Path("recipientUserId") int recipientUserId,
+            Callback<MessageStatusDTO> callback);
 
     @POST("/messages")
     void createMessage(
