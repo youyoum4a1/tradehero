@@ -8,9 +8,9 @@ import retrofit.Callback;
 /**
  * Created by xavier2 on 2014/4/9.
  */
-public class MiddleCallbackMessageList extends MiddleCallback<PaginatedDTO<MessageHeaderDTO>>
+public class MiddleCallbackMessagePaginatedHeader extends MiddleCallback<PaginatedDTO<MessageHeaderDTO>>
 {
-    public MiddleCallbackMessageList(Callback<PaginatedDTO<MessageHeaderDTO>> primaryCallback)
+    public MiddleCallbackMessagePaginatedHeader(Callback<PaginatedDTO<MessageHeaderDTO>> primaryCallback)
     {
         super(primaryCallback);
     }

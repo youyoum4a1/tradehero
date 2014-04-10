@@ -1,20 +1,22 @@
-package com.tradehero.th.network.service;
+package com.tradehero.th.network.service.stub;
 
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import retrofit.http.Path;
 import timber.log.Timber;
 
 /**
  * Created by xavier2 on 2014/4/9.
  */
-@Singleton public class MessageServiceStub implements MessageService
+public class MessageServiceStub implements MessageService
 {
     @Inject public MessageServiceStub()
     {
@@ -29,7 +31,7 @@ import timber.log.Timber;
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
         {
-            messsageDTOList.add(new MessageHeaderDTO("title-" + i + "-" + page, "subtitle-" + i, "text-" + i, date));
+            messsageDTOList.add(createMessageHeader(i, page, date));
         }
 
         paginatedDTO.setData(messsageDTOList);
@@ -38,6 +40,16 @@ import timber.log.Timber;
         paginatedDTO.setPagination(paginationInfoDTO);
 
         return paginatedDTO;
+    }
+
+    @Override public MessageHeaderDTO getMessageHeader(int commentId)
+    {
+        return createMessageHeader(commentId, null, new Date());
+    }
+
+    private MessageHeaderDTO createMessageHeader(int commentId, Integer page, Date date)
+    {
+        return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
     }
 
     @Override public DiscussionDTO createMessage(MessageHeaderDTO form)

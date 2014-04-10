@@ -8,7 +8,6 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
  */
 public class MessageHeaderId extends AbstractIntegerDTOKey
 {
-
     private static final String BUNDLE_KEY_KEY = MessageHeaderId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">

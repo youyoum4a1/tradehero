@@ -44,6 +44,15 @@ public interface DiscussionServiceAsync
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
+
+    @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
+    void getMessageThread(
+            @Path("inReplyToType") DiscussionType inReplyToType,
+            @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
             Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
 

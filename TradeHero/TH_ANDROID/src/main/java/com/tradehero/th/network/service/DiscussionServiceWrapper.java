@@ -89,7 +89,9 @@ import retrofit.Callback;
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
-                discussionsKey.toMap());
+                discussionsKey.maxCount,
+                discussionsKey.maxId,
+                discussionsKey.minId);
     }
 
     public MiddleCallbackRangedDiscussion getDiscussions(
@@ -111,7 +113,9 @@ import retrofit.Callback;
         discussionServiceAsync.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
-                discussionsKey.toMap(),
+                discussionsKey.maxCount,
+                discussionsKey.maxId,
+                discussionsKey.minId,
                 middleCallback);
         return middleCallback;
     }

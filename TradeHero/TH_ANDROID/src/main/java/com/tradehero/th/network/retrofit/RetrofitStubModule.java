@@ -1,7 +1,9 @@
 package com.tradehero.th.network.retrofit;
 
+import com.tradehero.th.network.service.DiscussionService;
+import com.tradehero.th.network.service.stub.DiscussionServiceStub;
 import com.tradehero.th.network.service.MessageService;
-import com.tradehero.th.network.service.MessageServiceStub;
+import com.tradehero.th.network.service.stub.MessageServiceStub;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -21,8 +23,13 @@ import javax.inject.Singleton;
 )
 public class RetrofitStubModule
 {
-    @Provides @Singleton MessageService provideDiscussionServiceSync(MessageServiceStub messageService)
+    @Provides @Singleton MessageService provideMessageServiceStub(MessageServiceStub messageService)
     {
         return messageService;
+    }
+
+    @Provides @Singleton DiscussionService provideDiscussionServiceStub(DiscussionServiceStub discussionService)
+    {
+        return discussionService;
     }
 }
