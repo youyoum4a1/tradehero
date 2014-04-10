@@ -25,7 +25,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     private Query query;
 
     @Inject UserTimelineService timelineService;
-    @Inject DiscussionCache timelineCache;
+    @Inject DiscussionCache discussionCache;
 
     @Override public List<TimelineItemDTOKey> request()
     {
@@ -52,7 +52,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
                 {
                     itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
                     TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
-                    timelineCache.put(timelineKey, itemDTO);
+                    discussionCache.put(timelineKey, itemDTO);
                     timelineItemDTOKeys.add(timelineKey);
 
                 }
