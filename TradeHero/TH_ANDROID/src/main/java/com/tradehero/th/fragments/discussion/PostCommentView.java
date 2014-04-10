@@ -2,16 +2,20 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -27,6 +31,8 @@ public class PostCommentView extends RelativeLayout
     implements DTOView<DiscussionKey>
 {
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
+    @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
+    @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
@@ -70,6 +76,8 @@ public class PostCommentView extends RelativeLayout
     {
         detachSubmitCommentMiddleCallback();
 
+        resetView();
+
         commentPostedListener = null;
 
         ButterKnife.reset(this);
@@ -82,14 +90,14 @@ public class PostCommentView extends RelativeLayout
 
         if (discussionKey != null)
         {
-            DiscussionDTO discussionDTO = buildCommentFormDTO();
+            DiscussionDTO discussionDTO = buildCommentFormDTO(discussionKey);
 
             setPosting();
             postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, new CommentSubmitCallback());
         }
     }
 
-    private DiscussionDTO buildCommentFormDTO()
+    protected DiscussionDTO buildCommentFormDTO(DiscussionKey discussionKey)
     {
         DiscussionDTO discussionDTO = new DiscussionDTO();
 
@@ -118,9 +126,36 @@ public class PostCommentView extends RelativeLayout
         commentText.setText(null);
     }
 
+    private void resetCommentAction()
+    {
+        commentActionWrapper.setDisplayedChildByLayoutId(commentSubmit.getId());
+    }
+
+    private void resetView()
+    {
+        resetCommentText();
+        resetCommentAction();
+    }
+
     @Override public void display(DiscussionKey discussionKey)
     {
         this.discussionKey = discussionKey;
+    }
+
+    protected void setPosting()
+    {
+        commentActionWrapper.setDisplayedChildByLayoutId(commentActionProcessing.getId());
+
+        commentSubmit.setEnabled(false);
+
+        resetCommentText();
+    }
+
+    protected void setPosted()
+    {
+        commentActionWrapper.setDisplayedChildByLayoutId(commentSubmit.getId());
+
+        commentSubmit.setEnabled(false);
     }
 
     private class CommentSubmitCallback implements Callback<DiscussionDTO>
@@ -139,23 +174,13 @@ public class PostCommentView extends RelativeLayout
         {
             setPosted();
 
+            THToast.show(new THException(retrofitError));
+
             if (commentPostedListener != null)
             {
                 commentPostedListener.failure();
             }
         }
-    }
-
-    protected void setPosting()
-    {
-        commentSubmit.setEnabled(false);
-
-        resetCommentText();
-    }
-
-    protected void setPosted()
-    {
-        commentSubmit.setEnabled(false);
     }
 
     public static interface CommentPostedListener

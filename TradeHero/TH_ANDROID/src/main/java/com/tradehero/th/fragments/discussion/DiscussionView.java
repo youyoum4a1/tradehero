@@ -108,7 +108,6 @@ public class DiscussionView extends FrameLayout
 
         if (andDisplay)
         {
-
         }
     }
 
