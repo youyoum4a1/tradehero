@@ -18,13 +18,12 @@ public interface MessageService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    // TODO implement this on server
-    @GET("/messages/{discussionType}")
+    @GET("/messages")
     PaginatedDTO<MessageHeaderDTO> getMessages(
-            @Path("discussionType") DiscussionType discussionType,
+            @Query("discussType") DiscussionType discussionType,
+            @Query("senderId") Integer senderId,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            @Query("recipientId") Integer recipientId);
+            @Query("perPage") Integer perPage);
 
     @GET("/messages/{commentId}")
     MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId);

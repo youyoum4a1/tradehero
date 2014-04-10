@@ -46,4 +46,18 @@ public class TypedMessageListKey extends MessageListKey
         return super.equalFields(other) &&
                 (this.discussionType == null ? other.discussionType == null : this.discussionType.equals(other.discussionType));
     }
+
+    @Override public TypedMessageListKey prev()
+    {
+        if (this.page <= FIRST_PAGE)
+        {
+            return null;
+        }
+        return new TypedMessageListKey(this.page - 1, perPage, discussionType);
+    }
+
+    @Override public TypedMessageListKey next()
+    {
+        return new TypedMessageListKey(page + 1, perPage, discussionType);
+    }
 }

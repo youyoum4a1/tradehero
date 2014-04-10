@@ -23,13 +23,12 @@ interface MessageServiceAsync
             @Query("perPage") int perPage,
             Callback<PaginatedDTO<MessageHeaderDTO>> callback);
 
-    // TODO implement this on server
-    @GET("/messages/{discussionType}")
+    @GET("/messages")
     void getMessages(
-            @Path("discussionType") DiscussionType discussionType,
+            @Query("discussType") DiscussionType discussionType,
+            @Query("senderId") Integer senderId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            @Query("recipientId") Integer recipientId,
             Callback<PaginatedDTO<MessageHeaderDTO>> callback);
 
     @GET("/messages/{commentId}")

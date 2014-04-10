@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -25,6 +24,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -35,10 +35,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import sun.net.www.MessageHeader;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -58,12 +55,13 @@ public class PrivateMessageFragment extends DashboardFragment
     private UserBaseKey correspondentId;
     private UserProfileDTO correspondentProfile;
 
-    private MessageListKey nextLoadingMessageKey;
+    private RecipientTypedMessageListKey nextLoadingMessageKey;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject MessageHeaderListCache messageHeaderListCache;
     private DTOCache.Listener<MessageListKey, MessageHeaderIdList> messageHeaderListCacheListener;
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> messageHeaderListCacheTask;
     private MessageHeaderDTOList loadedMessages;
+    private MessageHeaderDTO currentMessageHeader;
 
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionListCache discussionListCache;
@@ -82,7 +80,7 @@ public class PrivateMessageFragment extends DashboardFragment
         userProfileCacheListener = new PrivateMessageFragmentUserProfileListener();
         messageHeaderListCacheListener = new PrivateMessageFragmentMessageListListener();
         discussionListCacheListener = new PrivateMessageFragmentDiscussionListListener();
-        nextLoadingMessageKey = new MessageListKey(MessageListKey.FIRST_PAGE, 10);
+        nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
         loadedMessages = new MessageHeaderDTOList();
     }
 
@@ -115,6 +113,7 @@ public class PrivateMessageFragment extends DashboardFragment
     {
         super.onResume();
         fetchCorrespondentProfile();
+        fetchMessageList();
         //fetchDiscussionList();
     }
 
@@ -183,9 +182,8 @@ public class PrivateMessageFragment extends DashboardFragment
     private void fetchDiscussionList()
     {
         detachDiscussionListTask();
-        // TODO
-        //discussionListCacheTask = discussionListCache.getOrFetch(new DiscussionListKey(DiscussionType.PRIVATE_MESSAGE, null), discussionListCacheListener);
-        //discussionListCacheTask.execute();
+        discussionListCacheTask = discussionListCache.getOrFetch(new DiscussionListKey(DiscussionType.PRIVATE_MESSAGE, currentMessageHeader.id), discussionListCacheListener);
+        discussionListCacheTask.execute();
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -201,13 +199,24 @@ public class PrivateMessageFragment extends DashboardFragment
     public void linkWith(Collection<MessageHeaderDTO> messageHeaders, boolean andDisplay)
     {
         loadedMessages.addAll(messageHeaders);
+        if (messageHeaders.size() > 0)
+        {
+            linkWith(messageHeaders.iterator().next(), andDisplay);
+        }
+        // TODO When there is nothing to show
+    }
 
-        // TODO
+    public void linkWith(MessageHeaderDTO messageHeader, boolean andDisplay)
+    {
+        Timber.d("messageHeader %s", messageHeader);
+        this.currentMessageHeader = messageHeader;
+        fetchDiscussionList();
     }
 
     public void linkWith(DiscussionKeyList discussionKeys, boolean andDisplay)
     {
         messageBubbleAdapter.addAll(discussionCache.get(discussionKeys));
+        messageBubbleAdapter.notifyDataSetChanged();
     }
 
     private void displayCorrespondentImage()

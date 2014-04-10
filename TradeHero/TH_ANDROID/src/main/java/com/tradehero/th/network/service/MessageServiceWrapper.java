@@ -52,7 +52,9 @@ public class MessageServiceWrapper
         {
             return getMessages((TypedMessageListKey) messageListKey);
         }
-        return messageService.getMessages(messageListKey.page, messageListKey.perPage);
+        return messageService.getMessages(
+                messageListKey.page,
+                messageListKey.perPage);
     }
 
     public PaginatedDTO<MessageHeaderDTO> getMessages(TypedMessageListKey messageListKey)
@@ -61,15 +63,20 @@ public class MessageServiceWrapper
         {
             return getMessages((RecipientTypedMessageListKey) messageListKey);
         }
-        return messageService.getMessages(messageListKey.discussionType,
-                messageListKey.page, messageListKey.perPage, null);
+        return messageService.getMessages(
+                messageListKey.discussionType,
+                null,
+                messageListKey.page,
+                messageListKey.perPage);
     }
 
     public PaginatedDTO<MessageHeaderDTO> getMessages(RecipientTypedMessageListKey messageListKey)
     {
-        return messageService.getMessages(messageListKey.discussionType,
-                messageListKey.page, messageListKey.perPage,
-                messageListKey.recipientId.key);
+        return messageService.getMessages(
+                messageListKey.discussionType,
+                messageListKey.recipientId.key,
+                messageListKey.page,
+                messageListKey.perPage);
     }
 
     public MiddleCallbackMessagePaginatedHeader getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
@@ -79,7 +86,10 @@ public class MessageServiceWrapper
             return getMessages((TypedMessageListKey) messageListKey, callback);
         }
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(messageListKey.page, messageListKey.perPage, middleCallback);
+        messageServiceAsync.getMessages(
+                messageListKey.page,
+                messageListKey.perPage,
+                middleCallback);
         return middleCallback;
     }
 
@@ -90,14 +100,24 @@ public class MessageServiceWrapper
             return getMessages((RecipientTypedMessageListKey) messageListKey, callback);
         }
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(messageListKey.discussionType, messageListKey.page, messageListKey.perPage, null, middleCallback);
+        messageServiceAsync.getMessages(
+                messageListKey.discussionType,
+                null,
+                messageListKey.page,
+                messageListKey.perPage,
+                middleCallback);
         return middleCallback;
     }
 
     public MiddleCallbackMessagePaginatedHeader getMessages(RecipientTypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(messageListKey.discussionType, messageListKey.page, messageListKey.perPage, messageListKey.recipientId.key, middleCallback);
+        messageServiceAsync.getMessages(
+                messageListKey.discussionType,
+                messageListKey.recipientId.key,
+                messageListKey.page,
+                messageListKey.perPage,
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

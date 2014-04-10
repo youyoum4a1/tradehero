@@ -42,10 +42,15 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(DiscussionType discussionType, Integer page,
-            Integer perPage, Integer recipientId)
+    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(
+            DiscussionType discussionType,
+            Integer senderId,
+            Integer page,
+            Integer perPage)
     {
-        return null;
+        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        paginatedDTO.setData(new ArrayList<MessageHeaderDTO>());
+        return paginatedDTO;
     }
 
     @Override public MessageHeaderDTO getMessageHeader(int commentId)
