@@ -114,6 +114,10 @@ public class UserProfileResideMenuItem extends LinearLayout
 
                 userDisplayName.setText(userProfileDTO.displayName);
 
+                if (userProfileDTO.portfolio.roiSinceInception == null)
+                {
+                    userProfileDTO.portfolio.roiSinceInception = (Double)0.0;
+                }
                 THSignedNumber thRoiSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_PERCENTAGE,
                         userProfileDTO.portfolio.roiSinceInception * 100);
