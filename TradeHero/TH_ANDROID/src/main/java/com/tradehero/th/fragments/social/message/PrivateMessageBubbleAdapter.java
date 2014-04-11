@@ -28,18 +28,14 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public PrivateMessageBubbleAdapter(Context context, int textViewResourceId, List<DiscussionDTO> objects)
+    public PrivateMessageBubbleAdapter(Context context, List<DiscussionDTO> objects)
     {
-        super(context, textViewResourceId);
+        super(context, 0);
+        addAll(objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         DaggerUtils.inject(this);
     }
     //</editor-fold>
-
-    @Override public void addAll(Collection<? extends DiscussionDTO> collection)
-    {
-        super.addAll(collection);
-    }
 
     @Override public boolean hasStableIds()
     {

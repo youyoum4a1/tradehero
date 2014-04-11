@@ -5,4 +5,6 @@
   <string name="private_message_message_hint">Type a Message</string>
   <string name="private_message_btn_send">Send</string>
 
+  <string name="private_message_limited_count">%d messages left.\nUpgrade now for unlimited messaging!</string>
+
 </resources>
