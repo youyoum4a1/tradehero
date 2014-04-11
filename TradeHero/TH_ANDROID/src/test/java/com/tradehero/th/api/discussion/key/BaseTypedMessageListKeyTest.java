@@ -1,7 +1,6 @@
-package com.tradehero.th.api.discussion;
+package com.tradehero.th.api.discussion.key;
 
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.key.TypedMessageListKey;
+import com.tradehero.th.api.discussion.DiscussionType;
 
 /**
  * Created by xavier2 on 2014/4/11.

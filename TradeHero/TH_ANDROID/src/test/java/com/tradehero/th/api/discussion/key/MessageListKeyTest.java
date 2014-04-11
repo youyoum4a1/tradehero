@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion;
+package com.tradehero.th.api.discussion.key;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
