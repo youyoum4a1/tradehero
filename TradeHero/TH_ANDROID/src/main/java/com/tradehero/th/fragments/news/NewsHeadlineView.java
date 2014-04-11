@@ -28,6 +28,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
 {
     @InjectView(R.id.news_title_description) TextView newsDescription;
     @InjectView(R.id.news_title_title) TextView newsTitle;
+    @InjectView(R.id.news_source) TextView newsSource;
 
     private NewsItemDTO newsItemDTO;
 
@@ -121,7 +122,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
 
     private void displaySource()
     {
-        parseHost(newsItemDTO.url);
+        newsSource.setText(parseHost(newsItemDTO.url));
     }
 
     private void displayDescription()
