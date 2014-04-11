@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
-import com.tradehero.th.fragments.discussion.DiscussionListLoader;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -62,7 +61,6 @@ import retrofit.converter.Converter;
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 ProviderPageIntent.class,
-                DiscussionListLoader.class,
 
                 VotePair.class
         },

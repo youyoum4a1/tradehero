@@ -229,7 +229,6 @@ public class DiscussionView extends FrameLayout
     {
         @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
         {
-            Timber.d("Received: %d dtos", value.size());
             linkWith(value, true);
         }
 
