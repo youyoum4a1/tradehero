@@ -10,6 +10,8 @@ import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.network.service.DiscussionService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -47,7 +49,21 @@ public class DiscussionServiceStub implements DiscussionService
             int inReplyToId,
             Map<String, Object> options)
     {
-        return null;
+        PaginatedDTO<DiscussionDTO> paginatedDTO = new PaginatedDTO<>();
+
+        List<DiscussionDTO> discussionDTOs = new ArrayList<>();
+
+        for (int i = 0; i < 10; ++i)
+        {
+            DiscussionDTO discussionDTO = new DiscussionDTO();
+            discussionDTO.id = i;
+            discussionDTO.text = inReplyToType.description + ": " + i;
+            discussionDTOs.add(discussionDTO);
+        }
+
+        paginatedDTO.setData(discussionDTOs);
+
+        return paginatedDTO;
     }
 
     @Override public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(

@@ -175,7 +175,7 @@ public class DiscussionView extends FrameLayout
 
         if (paginatedDiscussionListKey == null)
         {
-            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 0);
+            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
         }
 
         if (nextPageDelta >= 0)

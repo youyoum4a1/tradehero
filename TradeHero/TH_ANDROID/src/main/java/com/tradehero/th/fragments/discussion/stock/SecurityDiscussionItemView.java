@@ -138,7 +138,10 @@ public class SecurityDiscussionItemView extends LinearLayout
 
     private void displayTime()
     {
-        discussionTime.setText(prettyTime.format(discussionDTO.createdAtUtc));
+        if (discussionDTO.createdAtUtc != null)
+        {
+            discussionTime.setText(prettyTime.format(discussionDTO.createdAtUtc));
+        }
     }
 
     private void resetTime()
