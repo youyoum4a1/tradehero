@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.discussion.MessageType;
 
 abstract public class MessageCreateFormDTO
@@ -16,5 +17,6 @@ abstract public class MessageCreateFormDTO
         this.message = message;
     }
 
+    @JsonProperty
     abstract public MessageType getMessageType();
 }
