@@ -20,20 +20,26 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -44,6 +50,9 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -62,6 +71,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -84,6 +95,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     private TimelineProfileClickListener profileButtonClickListener;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
 
     private boolean cancelRefreshingOnResume;
     protected boolean mIsOtherProfile = false;
@@ -218,6 +230,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         detachTimelineAdapter();
         detachTimelineListView();
+        detachFreeFollowMiddleCallback();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
         displayablePortfolioFetchAssistant = null;
@@ -255,6 +268,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnLastItemVisibleListener(null);
         }
         timelineListView = null;
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
     }
 
     @Override public void onDestroy()
@@ -592,7 +614,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             @Override public void onClick(View v)
             {
                 alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
-                        mFollowType, shownUserBaseKey);
+                        mFollowType, new TimelineFollowRequestedListener());
             }
         });
         mSendMsgButton.setVisibility(View.VISIBLE);
@@ -603,7 +625,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                 {
                     alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
-                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG, shownUserBaseKey);
+                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
+                            new TimelineFollowRequestedListener());
                 }
                 else
                 {
@@ -637,7 +660,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                     UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
                     if (purchaserProfile != null)
                     {
-                        //Timber.d("lyl %s", purchaserProfile.toString());
                         return purchaserProfile.getFollowType(shownUserBaseKey);
                     }
                 }
@@ -652,11 +674,92 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return false;
     }
 
-    public static void viewProfile(DashboardNavigatorActivity navigatorActivity,int userId) {
+    public static void viewProfile(DashboardNavigatorActivity navigatorActivity, int userId)
+    {
         Bundle bundle = new Bundle();
         DashboardNavigator navigator = navigatorActivity.getDashboardNavigator();
         bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
     //</editor-fold>
+
+    protected void freeFollow()
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getActivity());
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get().freeFollow(shownUserBaseKey, new FreeFollowCallback());
+    }
+
+    protected void follow()
+    {
+        userInteractor = new PushableTimelineTHIABUserInteractor();
+        userInteractor.followHero(shownUserBaseKey);
+    }
+
+    public class FreeFollowCallback implements Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            //Timber.d("lyl success %s", userProfileDTO.toString());
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            updateBottomButton();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    public class TimelineFollowRequestedListener implements FollowRequestedListener
+    {
+        @Override public void freeFollowRequested()
+        {
+            freeFollow();
+        }
+
+        @Override public void followRequested()
+        {
+            follow();
+        }
+    }
+
+    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    {
+        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
+
+        public PushableTimelineTHIABUserInteractor()
+        {
+            super();
+        }
+
+        @Override protected void handleShowProductDetailsMilestoneComplete()
+        {
+            super.handleShowProductDetailsMilestoneComplete();
+            updateBottomButton();
+        }
+
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
+                UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            updateBottomButton();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(),
+                    userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    updateBottomButton();
+                }
+            };
+        }
+    }
 }

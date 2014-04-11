@@ -4,11 +4,13 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.DiscussionService;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,12 @@ public class DiscussionServiceStub implements DiscussionService
 {
     public static final int DEFAULT_MAX_COUNT = 5;
 
-    @Inject public DiscussionServiceStub()
+    private CurrentUserId currentUserId;
+
+    @Inject public DiscussionServiceStub(CurrentUserId currentUserId)
     {
         super();
+        this.currentUserId = currentUserId;
     }
 
     @Override public DiscussionDTO getComment(int commentId)
@@ -32,6 +37,7 @@ public class DiscussionServiceStub implements DiscussionService
         DiscussionDTO discussionDTO = new DiscussionDTO();
         discussionDTO.id = commentId;
         discussionDTO.text = "discussion " + commentId;
+        discussionDTO.userId = (commentId % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
         return discussionDTO;
     }
 
@@ -57,7 +63,8 @@ public class DiscussionServiceStub implements DiscussionService
         {
             DiscussionDTO discussionDTO = new DiscussionDTO();
             discussionDTO.id = i;
-            discussionDTO.text = inReplyToType.description + ": " + i;
+            discussionDTO.text = inReplyToType.description + ": asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd " + i;
+            discussionDTO.userId = (i % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
             discussionDTOs.add(discussionDTO);
         }
 
@@ -120,7 +127,7 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    @Override public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
         return null;
     }

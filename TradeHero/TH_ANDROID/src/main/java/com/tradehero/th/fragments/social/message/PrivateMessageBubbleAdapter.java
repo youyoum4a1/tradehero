@@ -9,6 +9,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.utils.DaggerUtils;
+import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -17,8 +19,8 @@ import javax.inject.Inject;
  */
 public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussionDTO>
 {
-    public static final int ITEM_TYPE_MINE = 1;
-    public static final int ITEM_TYPE_OTHER = 2;
+    public static final int ITEM_TYPE_MINE = 0;
+    public static final int ITEM_TYPE_OTHER = 1;
     public static final int BUBBLE_LAYOUT_RES_ID_MINE = R.layout.private_message_bubble_mine;
     public static final int BUBBLE_LAYOUT_RES_ID_OTHER = R.layout.private_message_bubble_other;
 
@@ -26,10 +28,12 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public PrivateMessageBubbleAdapter(Context context, int textViewResourceId, List<DiscussionDTO> objects)
+    public PrivateMessageBubbleAdapter(Context context, List<DiscussionDTO> objects)
     {
-        super(context, textViewResourceId);
+        super(context, 0);
+        addAll(objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
@@ -38,9 +42,16 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
         return true;
     }
 
+    @Override public int getCount()
+    {
+        int count = super.getCount();
+        return count;
+    }
+
     @Override public long getItemId(int position)
     {
-        return getItem(position).id;
+        long id = getItem(position).id;
+        return id;
     }
 
     @Override public int getViewTypeCount()
@@ -50,7 +61,8 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
 
     @Override public int getItemViewType(int position)
     {
-        return iSentIt(getItem(position)) ? ITEM_TYPE_MINE : ITEM_TYPE_OTHER;
+        int viewType = iSentIt(getItem(position)) ? ITEM_TYPE_MINE : ITEM_TYPE_OTHER;
+        return viewType;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -71,7 +83,8 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
 
     protected int getLayoutResId(int position)
     {
-        switch (getItemViewType(position))
+        int itemType = getItemViewType(position);
+        switch (itemType)
         {
             case ITEM_TYPE_MINE:
                 return BUBBLE_LAYOUT_RES_ID_MINE;

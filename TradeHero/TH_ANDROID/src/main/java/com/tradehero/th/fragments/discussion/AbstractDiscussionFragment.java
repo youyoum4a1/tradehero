@@ -8,6 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import javax.inject.Inject;
 
 /**
  * Created by tho on 3/27/2014.
@@ -15,6 +16,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 public abstract class AbstractDiscussionFragment extends DashboardFragment
 {
     @InjectView(R.id.discussion_view) DiscussionView discussionView;
+
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     protected DiscussionKey discussionKey;
 
@@ -33,7 +36,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
 
         if (discussionKey == null)
         {
-            discussionKey = DiscussionKeyFactory.fromBundle(getArguments());
+            discussionKey = discussionKeyFactory.fromBundle(getArguments());
         }
         linkWith(discussionKey, true);
     }

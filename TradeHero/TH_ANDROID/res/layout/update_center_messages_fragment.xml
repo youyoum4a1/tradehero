@@ -2,23 +2,49 @@
 
 <com.tradehero.th.fragments.updatecenter.messages.MessagesView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:id="@+id/message_list_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-  <ListView
+
+  <com.fortysevendeg.android.swipelistview.SwipeListView
       android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:visibility="gone" />
+      android:clipToPadding="false"
+      swipe:swipeFrontView="@id/message_item_front"
+      swipe:swipeBackView="@id/message_item_back"
+      swipe:swipeCloseAllItemsWhenMoveList="false"
+      swipe:swipeMode="left"
+      swipe:swipeDrawableChecked="@drawable/ic_info"
+      app:swipeActionLeft="reveal"
+      app:swipeOffsetLeft="50dp"
+      swipe:swipeDrawableUnchecked="@drawable/ic_info"
+      swipe:swipeOpenOnLongPress="false"
+      />
+
+
+  <!--
+  android:listSelector="#00000000"
+  swipe:swipeOffsetLeft="250dp"-->
+
+
+  <!--<ListView-->
+      <!--android:id="@android:id/list"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--android:visibility="gone" />-->
 
   <TextView
       android:id="@android:id/empty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:text="empty" />
+      android:textStyle="italic"
+      android:text="No Message" />
 
   <TextView
       android:id="@+id/error"
@@ -27,7 +53,7 @@
       android:layout_gravity="center"
       android:gravity="center"
       android:layout_centerInParent="true"
-      android:text="Error"
+      android:text="Sorry,there is something wrong."
       android:visibility="gone"/>
 
   <ProgressBar

@@ -56,7 +56,7 @@
           android:paddingLeft="20dp"
           android:paddingRight="20dp"
           android:gravity="center"
-          android:background="#a0dc50"
+          android:background="@color/follow_button_green"
           android:text="@string/follow"
           android:textSize="15sp"
           android:textColor="@color/white"

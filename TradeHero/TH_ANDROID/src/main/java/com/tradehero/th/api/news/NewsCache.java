@@ -2,6 +2,7 @@ package com.tradehero.th.api.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import dagger.Lazy;

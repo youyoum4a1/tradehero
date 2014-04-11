@@ -98,7 +98,9 @@ public class DashboardNavigator extends Navigator
         }
 
         mTabHost.getTabWidget().setDividerDrawable(null);
-        mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
+
+        //mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
+        mTabHost.setCurrentTabByTag(activity.getString(DashboardTabType.TRENDING.stringResId));
 
         tabBarView = mTabHost.findViewById(android.R.id.tabhost);
 

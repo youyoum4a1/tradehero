@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -17,21 +18,29 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.MessageStatusCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -43,6 +52,7 @@ import javax.inject.Inject;
 public class PrivateMessageFragment extends DashboardFragment
 {
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
+    public static final int DEFAULT_MAX_COUNT = 10;
 
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Picasso picasso;
@@ -55,6 +65,11 @@ public class PrivateMessageFragment extends DashboardFragment
     private UserBaseKey correspondentId;
     private UserProfileDTO correspondentProfile;
 
+    @Inject MessageStatusCache messageStatusCache;
+    private DTOCache.Listener<UserBaseKey, MessageStatusDTO> messageStatusCacheListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, MessageStatusDTO> messageStatusCacheTask;
+    private MessageStatusDTO messageStatusDTO;
+
     private RecipientTypedMessageListKey nextLoadingMessageKey;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject MessageHeaderListCache messageHeaderListCache;
@@ -63,25 +78,36 @@ public class PrivateMessageFragment extends DashboardFragment
     private MessageHeaderDTOList loadedMessages;
     private MessageHeaderDTO currentMessageHeader;
 
+    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionListCache discussionListCache;
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionListCacheListener;
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionListCacheTask;
+    private RangedDiscussionListKey nextDiscussionListKey;
+    private DiscussionDTOList loadedDiscussions;
 
+    @InjectView(R.id.private_message_empty) TextView emptyHint;
     @InjectView(R.id.message_list_view) ListView messageListView;
     PrivateMessageBubbleAdapter messageBubbleAdapter;
-    @InjectView(R.id.button_send) View buttonSend;
-    @InjectView(R.id.typing_message_content) EditText messageToSend;
+    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
+    //@InjectView(R.id.button_send) View buttonSend;
+    @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
+    //@InjectView(R.id.typing_message_content) EditText messageToSend;
+    @InjectView(R.id.post_comment_text) EditText messageToSend;
+    @InjectView(R.id.private_message_status_container) View statusViewContainer;
+    @InjectView(R.id.private_message_status_text) TextView statusViewText;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         correspondentId = new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
         userProfileCacheListener = new PrivateMessageFragmentUserProfileListener();
+        messageStatusCacheListener = new PrivateMessageFragmentMessageStatusListener();
         messageHeaderListCacheListener = new PrivateMessageFragmentMessageListListener();
         discussionListCacheListener = new PrivateMessageFragmentDiscussionListListener();
         nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
         loadedMessages = new MessageHeaderDTOList();
+        loadedDiscussions = new DiscussionDTOList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -94,16 +120,19 @@ public class PrivateMessageFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-
+        postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
+        messageToSend.setHint(R.string.private_message_message_hint);
+        buttonSend.setText(R.string.private_message_btn_send);
+        swapAdapter();
+        display();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.private_message_menu, menu);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
-                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
-        );
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
@@ -113,15 +142,27 @@ public class PrivateMessageFragment extends DashboardFragment
     {
         super.onResume();
         fetchCorrespondentProfile();
+        fetchMessageStatus();
         fetchMessageList();
         //fetchDiscussionList();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setSubtitle(null);
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
     {
         detachUserProfileTask();
+        detachMessageStatusTask();
         detachMessageListTask();
         detachDiscussionListTask();
+
+        messageListView = null;
+        messageBubbleAdapter = null;
         super.onDestroyView();
     }
 
@@ -132,6 +173,15 @@ public class PrivateMessageFragment extends DashboardFragment
             userProfileCacheTask.setListener(null);
         }
         userProfileCacheTask = null;
+    }
+
+    private void detachMessageStatusTask()
+    {
+        if (messageStatusCacheTask != null)
+        {
+            messageStatusCacheTask.setListener(null);
+        }
+        messageStatusCacheTask = null;
     }
 
     private void detachMessageListTask()
@@ -155,6 +205,7 @@ public class PrivateMessageFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         userProfileCacheListener = null;
+        messageStatusCacheListener = null;
         messageHeaderListCacheListener = null;
         discussionListCacheListener = null;
         super.onDestroy();
@@ -162,13 +213,23 @@ public class PrivateMessageFragment extends DashboardFragment
 
     private void fetchCorrespondentProfile()
     {
+        Timber.d("fetchCorrespondentProfile");
         detachUserProfileTask();
         userProfileCacheTask = userProfileCache.getOrFetch(correspondentId, userProfileCacheListener);
         userProfileCacheTask.execute();
     }
 
+    private void fetchMessageStatus()
+    {
+        Timber.d("fetchMessageStatus");
+        detachMessageStatusTask();
+        messageStatusCacheTask = messageStatusCache.getOrFetch(correspondentId, messageStatusCacheListener);
+        messageStatusCacheTask.execute();
+    }
+
     private void fetchMessageList()
     {
+        Timber.d("fetchMessageList");
         detachMessageListTask();
         messageHeaderListCacheTask = messageHeaderListCache.getOrFetch(nextLoadingMessageKey, messageHeaderListCacheListener);
         messageHeaderListCacheTask.execute();
@@ -181,13 +242,15 @@ public class PrivateMessageFragment extends DashboardFragment
 
     private void fetchDiscussionList()
     {
+        Timber.d("fetchDiscussionList");
         detachDiscussionListTask();
-        discussionListCacheTask = discussionListCache.getOrFetch(new DiscussionListKey(DiscussionType.PRIVATE_MESSAGE, currentMessageHeader.id), discussionListCacheListener);
+        discussionListCacheTask = discussionListCache.getOrFetch(nextDiscussionListKey, discussionListCacheListener);
         discussionListCacheTask.execute();
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
+        Timber.d("userProfile %s", userProfileDTO);
         correspondentProfile = userProfileDTO;
         if (andDisplay)
         {
@@ -196,27 +259,75 @@ public class PrivateMessageFragment extends DashboardFragment
         }
     }
 
+    public void linkWith(MessageStatusDTO messageStatusDTO, boolean andDisplay)
+    {
+        this.messageStatusDTO = messageStatusDTO;
+        //TODO
+        if (andDisplay)
+        {
+            displayMessagingStatusContainer();
+            displayMessagingStatusText();
+        }
+    }
+
     public void linkWith(Collection<MessageHeaderDTO> messageHeaders, boolean andDisplay)
     {
+        Timber.d("messageHeaders size %d", messageHeaders.size());
         loadedMessages.addAll(messageHeaders);
         if (messageHeaders.size() > 0)
         {
             linkWith(messageHeaders.iterator().next(), andDisplay);
         }
-        // TODO When there is nothing to show
+        else
+        {
+            postCommentView.linkWith(MessageType.PRIVATE);
+        }
+        displayVisibilities();
     }
 
     public void linkWith(MessageHeaderDTO messageHeader, boolean andDisplay)
     {
         Timber.d("messageHeader %s", messageHeader);
         this.currentMessageHeader = messageHeader;
+
+        postCommentView.linkWith(discussionKeyFactory.create(messageHeader));
+
+        nextDiscussionListKey = new RangedDiscussionListKey(
+                DiscussionType.PRIVATE_MESSAGE,
+                currentMessageHeader.id,
+                DEFAULT_MAX_COUNT,
+                null,
+                0);
         fetchDiscussionList();
     }
 
     public void linkWith(DiscussionKeyList discussionKeys, boolean andDisplay)
     {
-        messageBubbleAdapter.addAll(discussionCache.get(discussionKeys));
-        messageBubbleAdapter.notifyDataSetChanged();
+        DiscussionDTOList additional = discussionCache.get(discussionKeys);
+        loadedDiscussions.addAll(additional);
+        swapAdapter();
+        // TODO identify the next nextDiscussionListKey
+    }
+
+    public void swapAdapter()
+    {
+        messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
+        messageListView.setAdapter(messageBubbleAdapter);
+    }
+
+    public void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+        loadedDiscussions.add(discussionDTO);
+        swapAdapter();
+    }
+
+    public void display()
+    {
+        displayCorrespondentImage();
+        displayTitle();
+        displayMessagingStatusContainer();
+        displayMessagingStatusText();
+        displayVisibilities();
     }
 
     private void displayCorrespondentImage()
@@ -247,6 +358,43 @@ public class PrivateMessageFragment extends DashboardFragment
         }
     }
 
+    private void displayMessagingStatusContainer()
+    {
+        if (statusViewContainer != null)
+        {
+            // TODO better test
+            statusViewContainer.setVisibility(messageStatusDTO == null || messageStatusDTO.privateFreeRemainingCount == null ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void displayMessagingStatusText()
+    {
+        if (statusViewText != null)
+        {
+            if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount != null)
+            {
+                statusViewText.setText(getResources().getString(R.string.private_message_limited_count, messageStatusDTO.privateFreeRemainingCount));
+            }
+        }
+    }
+
+    private void displayVisibilities()
+    {
+        showOnly(currentMessageHeader == null ? emptyHint : messageListView);
+    }
+
+    private void showOnly(View view)
+    {
+        if (messageListView != null)
+        {
+            messageListView.setVisibility(view == messageListView ? View.VISIBLE : View.GONE);
+        }
+        if (emptyHint != null)
+        {
+            emptyHint.setVisibility(view == emptyHint ? View.VISIBLE : View.GONE);
+        }
+    }
+
     @Override public boolean isTabBarVisible()
     {
         return false;
@@ -255,6 +403,19 @@ public class PrivateMessageFragment extends DashboardFragment
     protected class PrivateMessageFragmentUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            Timber.e(error, "");
+        }
+    }
+
+    protected class PrivateMessageFragmentMessageStatusListener implements DTOCache.Listener<UserBaseKey, MessageStatusDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, MessageStatusDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -289,6 +450,19 @@ public class PrivateMessageFragment extends DashboardFragment
         @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
             Timber.e(error, "");
+        }
+    }
+
+    protected class PrivateMessageFragmentCommentPostedListener implements PostCommentView.CommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            handleCommentPosted(discussionDTO);
+        }
+
+        @Override public void failure()
+        {
+            // Do something?
         }
     }
 }

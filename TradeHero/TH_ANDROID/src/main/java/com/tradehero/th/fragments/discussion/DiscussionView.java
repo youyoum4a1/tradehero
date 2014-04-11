@@ -39,6 +39,7 @@ public class DiscussionView extends FrameLayout
     private int topicLayout;
 
     @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private TextView discussionStatus;
     private DiscussionKey discussionKey;
@@ -162,11 +163,11 @@ public class DiscussionView extends FrameLayout
 
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        postCommentView.display(discussionKey);
+        postCommentView.linkWith(discussionKey);
 
         if (discussionKey != null)
         {
-            this.discussionListKey = DiscussionKeyFactory.toListKey(discussionKey);
+            this.discussionListKey = discussionKeyFactory.toListKey(discussionKey);
 
             fetchDiscussionListIfNecessary();
         }

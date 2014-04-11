@@ -7,6 +7,9 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
 
+/**
+ * Fragment for signing up
+ */
 public class SignUpFragment extends SignInOrUpFragment
 {
     @Inject LocalyticsSession localyticsSession;

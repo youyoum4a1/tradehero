@@ -82,6 +82,7 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleAdapter;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -189,7 +190,7 @@ import javax.inject.Singleton;
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
+                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -244,6 +245,7 @@ import javax.inject.Singleton;
                         CacheHelper.class,
 
                         TimelineFragment.class,
+                        TimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         TimelineItemView.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
@@ -322,8 +324,9 @@ import javax.inject.Singleton;
                         NewsDetailFragment.class,
 
                         PrivateMessageFragment.class,
+                        PrivateMessageBubbleAdapter.class,
+                        
                         AlertDialogUtil.class,
-                        AlertDialogUtil.PushableTimelineTHIABUserInteractor.class,
                 },
         staticInjections =
                 {

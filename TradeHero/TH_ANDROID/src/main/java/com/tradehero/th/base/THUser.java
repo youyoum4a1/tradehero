@@ -233,6 +233,9 @@ public class THUser
         authenticationProviders.put(provider.getAuthType(), provider);
     }
 
+    /**
+     * @param json json data is from social media
+     */
     public static void saveCredentialsToUserDefaults(JSONObject json)
     {
         if (credentials == null)

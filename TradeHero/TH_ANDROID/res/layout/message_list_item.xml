@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     android:orientation="horizontal"
     tools:background="@color/number_green"
-
+    android:id="@+id/message_item_front"
+    android:tag="message_item_front"
     >
 
 
@@ -23,7 +24,8 @@
 
   <RelativeLayout android:id="@+id/main_content_wrapper"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_gravity="center_vertical"
       android:background="@drawable/timeline_list_item_background"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_marginRight="@dimen/timeline_side_spacing"
@@ -43,6 +45,7 @@
         android:textSize="12sp"
         android:textStyle="normal"
         tools:text="Hello world!"
+       android:maxLines="2"
         />
 
     <TextView
@@ -54,6 +57,7 @@
         android:textSize="@dimen/timeline_item_date"
         android:layout_below="@id/message_item_title"
         tools:text="A moment ago"
+        android:maxLines="2"
         />
   </RelativeLayout>
 

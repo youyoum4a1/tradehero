@@ -25,10 +25,10 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
-import com.tradehero.th.api.social.HeroIdExt;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -38,7 +38,6 @@ import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import java.util.Date;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -97,6 +96,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
     @InjectView(R.id.message_type_wrapper) View messageTypeWrapperView;
     @InjectView(R.id.message_type) TextView messageTypeView;
 
+    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     //@Inject UserBaseKey user;
     @Inject CurrentUserId currentUserId;
@@ -118,7 +118,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
         this.messageType = MessageType.fromId(messageTypeInt);
 
-        Timber.d("onCreate messageType:%s,discussionType:%s",messageType,discussionType);
+        Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
         sendMessageDiscussionCallback = new SendMessageDiscussionCallback();
     }
 
@@ -194,7 +194,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         TextView headerView = new TextView(getActivity());
         headerView.setPadding(0, 20, 0, 20);
         headerView.setGravity(Gravity.CENTER);
-        headerView.setText("Choose follower to send message");//TODO
+        headerView.setText("Choose follower to send message"); //TODO
         headerView.setClickable(false);
         headerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.addHeaderView(headerView);
@@ -221,10 +221,11 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
     }
 
-    private void sendMessage()
+    private void
+    sendMessage()
     {
         int count = getFollowerCount(messageType);
-        if (count <=0 )
+        if (count <= 0)
         {
             THToast.show("Sorry,you cannot send message because you don't have such type follower");
             return;
@@ -239,31 +240,26 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         this.progressDialog = ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
         // TODO not sure about this implementation yet
-        messageServiceWrapper.get().createMessage(createMessage(text), sendMessageDiscussionCallback);
+        messageServiceWrapper.get().createMessage(createMessageForm(text), sendMessageDiscussionCallback);
     }
 
-    private MessageHeaderDTO createMessage(String messageText)
+    private MessageCreateFormDTO createMessageForm(String messageText)
     {
-        MessageHeaderDTO messageHeaderDTO = new MessageHeaderDTO("unsure", "unsure", messageText, new Date());
-        messageHeaderDTO.senderUserId = currentUserId.toUserBaseKey().key;
-        messageHeaderDTO.discussionType = discussionType;
-        messageHeaderDTO.messageType = messageType;
-        return messageHeaderDTO;
+        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        messageCreateFormDTO.message = messageText;
+        return messageCreateFormDTO;
     }
-
 
     /**
      * return how many followers whom you will send message to
-     * @param messageType
-     * @return
      */
     private int getFollowerCount(MessageType messageType)
     {
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         HeroType heroType = HeroType.ALL;
 
-        HeroKey heroKey = new HeroKey(userBaseKey,heroType);
-        FollowerSummaryDTO followerSummaryDTO =  followerSummaryCache.get().get(heroKey);
+        HeroKey heroKey = new HeroKey(userBaseKey, heroType);
+        FollowerSummaryDTO followerSummaryDTO = followerSummaryCache.get().get(heroKey);
         if (followerSummaryDTO != null)
         {
             int result = 0;
@@ -280,13 +276,13 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                     break;
                 default:
                     throw new IllegalStateException("unknown messageType");
-
             }
-            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d",messageType,followerSummaryDTO.paidFollowerCount,followerSummaryDTO.freeFollowerCount);
+            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d", messageType, followerSummaryDTO.paidFollowerCount, followerSummaryDTO.freeFollowerCount);
             return result;
         }
         return 0;
     }
+
     private void dismissDialog(Dialog dialog)
     {
         try
@@ -324,11 +320,15 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         @Override public void failure(RetrofitError error)
         {
             dismissDialog(progressDialog);
+            THToast.show("Send message error!");
         }
 
         @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
+            THToast.show("Send message Successfully!");
+            //TODO close me?
+            //closeMe();
         }
     }
 }

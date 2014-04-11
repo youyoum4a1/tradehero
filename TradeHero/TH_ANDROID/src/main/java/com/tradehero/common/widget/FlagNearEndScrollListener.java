@@ -72,12 +72,12 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
         int childCount = view.getChildCount();
         View child = view.getChildAt(childCount-1);
 
-        if (this.active && !this.nearEnd )
-        {
+        //if (this.active && !this.nearEnd )
+        //{
             if (this.active && state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLastItemVisible) {
                 raiseFlag();
             }
-        }
+        //}
 
     }
 

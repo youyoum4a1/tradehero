@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 
 /**

@@ -6,8 +6,8 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsCache;
-import com.tradehero.th.api.news.NewsItemDTOKey;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import dagger.Lazy;
@@ -56,7 +56,7 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
 
     public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)
     {
-        DiscussionDTOList previous = new DiscussionDTOList();
+        DiscussionDTOList<? super AbstractDiscussionDTO> previous = new DiscussionDTOList<>();
         for (AbstractDiscussionDTO discussionDTO : discussionList)
         {
             previous.add(put(discussionDTO.getDiscussionKey(), discussionDTO));
@@ -64,13 +64,13 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         return previous;
     }
 
-    public DiscussionDTOList get(List<DiscussionKey> discussionKeys)
+    public DiscussionDTOList<? super AbstractDiscussionDTO> get(List<DiscussionKey> discussionKeys)
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList dtos = new DiscussionDTOList();
+        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(get(discussionKey));
@@ -78,13 +78,13 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         return dtos;
     }
 
-    public DiscussionDTOList getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
+    public DiscussionDTOList<? super AbstractDiscussionDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList dtos = new DiscussionDTOList();
+        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(getOrFetch(discussionKey));

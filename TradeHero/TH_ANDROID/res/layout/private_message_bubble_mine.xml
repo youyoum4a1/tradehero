@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#adadef">
+    android:paddingLeft="48dp"
+    tools:background="#adadef">
 
   <LinearLayout
       android:id="@+id/private_text_container"

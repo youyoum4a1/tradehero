@@ -18,7 +18,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.network.service.NewsServiceWrapper;
@@ -39,6 +39,7 @@ public class NewsDetailFragment extends DashboardFragment
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject NewsCache newsCache;
     @Inject FontUtil fontUtil;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
@@ -90,7 +91,7 @@ public class NewsDetailFragment extends DashboardFragment
 
         if (newsItemDTOKey == null)
         {
-            DiscussionKey discussionKey = DiscussionKeyFactory.fromBundle(getArguments());
+            DiscussionKey discussionKey = discussionKeyFactory.fromBundle(getArguments());
             if (discussionKey instanceof NewsItemDTOKey)
             {
                 newsItemDTOKey = (NewsItemDTOKey) discussionKey;

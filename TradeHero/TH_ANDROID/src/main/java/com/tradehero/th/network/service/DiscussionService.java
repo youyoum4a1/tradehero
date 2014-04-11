@@ -4,6 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -54,7 +55,7 @@ public interface DiscussionService
 
     @POST("/discussions")
     DiscussionDTO createDiscussion(
-            @Body DiscussionDTO discussionDTO);
+            @Body DiscussionFormDTO discussionFormDTO);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     DiscussionDTO vote(

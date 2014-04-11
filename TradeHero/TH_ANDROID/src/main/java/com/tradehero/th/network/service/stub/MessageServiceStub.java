@@ -2,6 +2,7 @@ package com.tradehero.th.network.service.stub;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -49,7 +50,9 @@ public class MessageServiceStub implements MessageService
             Integer perPage)
     {
         PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
-        paginatedDTO.setData(new ArrayList<MessageHeaderDTO>());
+        List<MessageHeaderDTO> data = new ArrayList<>();
+        data.add(getMessageHeader(2));
+        paginatedDTO.setData(data);
         return paginatedDTO;
     }
 
@@ -63,7 +66,7 @@ public class MessageServiceStub implements MessageService
         return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
     }
 
-    @Override public MessageStatusDTO getFreeCount(int recipientUserId)
+    @Override public MessageStatusDTO getStatus(int recipientUserId)
     {
         MessageStatusDTO statusDTO = new MessageStatusDTO();
         statusDTO.recipientUserId = recipientUserId;
@@ -71,7 +74,7 @@ public class MessageServiceStub implements MessageService
         return statusDTO;
     }
 
-    @Override public DiscussionDTO createMessage(MessageHeaderDTO form)
+    @Override public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
         throw new IllegalArgumentException("Implement it");
     }

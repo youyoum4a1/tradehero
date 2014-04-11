@@ -8,6 +8,7 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tapstream.sdk.*;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -68,6 +69,11 @@ public class SplashActivity extends SherlockActivity
             {
                 initialisation();
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
             }
         };
         initialAsyncTask.execute();
@@ -130,6 +136,9 @@ public class SplashActivity extends SherlockActivity
         catch (RetrofitError retrofitError)
         {
             canLoad = false;
+            if(retrofitError.isNetworkError()) {
+                //THToast.show(R.string.network_error);
+            }
         }
         return canLoad;
     }

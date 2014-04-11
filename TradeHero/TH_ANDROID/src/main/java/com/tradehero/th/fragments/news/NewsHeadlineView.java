@@ -12,7 +12,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.utils.DaggerUtils;
 import java.net.MalformedURLException;

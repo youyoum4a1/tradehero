@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

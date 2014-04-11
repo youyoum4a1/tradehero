@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -139,7 +140,7 @@ public class MessageServiceWrapper
     //<editor-fold desc="Get Free Count">
     public MessageStatusDTO getFreeCount(UserBaseKey userBaseKey)
     {
-        return messageService.getFreeCount(userBaseKey.key);
+        return messageService.getStatus(userBaseKey.key);
     }
 
     public MiddleCallbackMessageStatus getFreeCount(UserBaseKey userBaseKey, Callback<MessageStatusDTO> callback)
@@ -151,15 +152,23 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Create Message">
-    public DiscussionDTO createMessage(MessageHeaderDTO form)
+    public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
         return messageService.createMessage(form);
     }
 
-    public MiddleCallbackDiscussion createMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
         messageServiceAsync.createMessage(form, middleCallback);
+        return middleCallback;
+    }
+
+    //TODO fake,not real
+    public MiddleCallbackDiscussion deleteMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        messageServiceAsync.deleteMessage(form, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
