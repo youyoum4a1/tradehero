@@ -113,6 +113,10 @@ public class PostCommentView extends RelativeLayout
             setPosting();
             postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, new CommentSubmitCallback());
         }
+        else
+        {
+            THToast.show(R.string.error_not_enough_information);
+        }
     }
 
     protected boolean validate()

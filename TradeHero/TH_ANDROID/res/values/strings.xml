@@ -31,4 +31,5 @@
   <string name="add_a_comment">Add a comment…</string>
   <string name="start_new_discussion">Start a New Discussion</string>
   <string name="error_empty_comment">Comment should not be empty</string>
+  <string name="error_not_enough_information">Not enough information, try again</string>
 </resources>
