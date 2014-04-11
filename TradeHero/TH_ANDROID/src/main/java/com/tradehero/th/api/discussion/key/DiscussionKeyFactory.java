@@ -2,6 +2,7 @@ package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import javax.inject.Inject;
@@ -39,6 +40,32 @@ public class DiscussionKeyFactory
         }
 
         throw new IllegalStateException("Invalid type of DiscussionType " + discussionType);
+    }
+
+    public DiscussionKey create(DiscussionType discussionType, int id)
+    {
+        switch (discussionType)
+        {
+            case COMMENT:
+                return new CommentKey(id);
+            case TIMELINE_ITEM:
+                return new TimelineItemDTOKey(id);
+            case NEWS:
+                return new NewsItemDTOKey(id);
+            case SECURITY:
+                return new SecurityDiscussionKey(id);
+            case PRIVATE_MESSAGE:
+                return new PrivateMessageKey(id);
+            case BROADCAST_MESSAGE:
+                return new BroadcastDiscussionKey(id);
+        }
+
+        throw new IllegalStateException("Invalid type of DiscussionType " + discussionType);
+    }
+
+    public DiscussionKey create(MessageHeaderDTO messageHeaderDTO)
+    {
+        return create(messageHeaderDTO.discussionType, messageHeaderDTO.id);
     }
 
     private void ensureKeys(Bundle bundle)
