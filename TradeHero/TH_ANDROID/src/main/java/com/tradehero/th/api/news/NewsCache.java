@@ -22,7 +22,7 @@ public class NewsCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
             Lazy<DiscussionCache> discussionCache
             )
     {
-        // Use discussionCache instead, wanted to set to 0, but it's not possible
+        // Use discussionCache instead, wanted to set the size to 0, but it's not possible
         super(1);
 
         this.newsServiceWrapper = newsServiceWrapper;
