@@ -5,6 +5,8 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import java.util.List;
@@ -28,12 +30,24 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         this.discussionServiceWrapper = discussionServiceWrapper;
     }
 
-    @Override protected AbstractDiscussionDTO fetch(DiscussionKey key) throws Throwable
+    @Override protected AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
     {
-        return discussionServiceWrapper.getComment(key);
+        if (discussionKey instanceof TimelineItemDTOKey)
+        {
+            // TODO
+        }
+        else if (discussionKey instanceof NewsItemDTOKey)
+        {
+            // TODO
+        }
+        else
+        {
+            return discussionServiceWrapper.getComment(discussionKey);
+        }
+        throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }
 
-    public DiscussionDTOList put(List<AbstractDiscussionDTO> discussionList)
+    public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)
     {
         DiscussionDTOList previous = new DiscussionDTOList();
         for (AbstractDiscussionDTO discussionDTO : discussionList)

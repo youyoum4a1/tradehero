@@ -1,19 +1,20 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import java.util.Map;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.*;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 /**
  * Created by xavier on 3/7/14.
@@ -48,14 +49,14 @@ public interface DiscussionServiceAsync
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
-            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
-            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     void vote(

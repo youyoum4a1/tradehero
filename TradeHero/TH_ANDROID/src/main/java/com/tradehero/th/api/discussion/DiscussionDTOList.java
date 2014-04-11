@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Created by xavier2 on 2014/4/9.
  */
-public class DiscussionDTOList extends ArrayList<AbstractDiscussionDTO>
+public class DiscussionDTOList<T extends AbstractDiscussionDTO> extends ArrayList<T>
 {
     //<editor-fold desc="Constructors">
     public DiscussionDTOList(int i)
@@ -19,7 +19,7 @@ public class DiscussionDTOList extends ArrayList<AbstractDiscussionDTO>
         super();
     }
 
-    public DiscussionDTOList(Collection<? extends AbstractDiscussionDTO> discussionDTOs)
+    public DiscussionDTOList(Collection<T> discussionDTOs)
     {
         super(discussionDTOs);
     }

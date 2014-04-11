@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -76,7 +75,16 @@ import retrofit.Callback;
                 discussionsKey.perPage);
     }
 
-    public RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getDiscussions(DiscussionListKey discussionsKey)
+    @Deprecated
+    public PaginatedDTO<DiscussionDTO> getPaginatedDiscussions(DiscussionListKey discussionsKey)
+    {
+        return discussionService.getDiscussions(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.toMap());
+    }
+
+    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(DiscussionListKey discussionsKey)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
@@ -85,7 +93,7 @@ import retrofit.Callback;
         throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
     }
 
-    public RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getDiscussions(RangedDiscussionListKey discussionsKey)
+    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(RangedDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
@@ -97,7 +105,7 @@ import retrofit.Callback;
 
     public MiddleCallbackRangedDiscussion getDiscussions(
             DiscussionListKey discussionsKey,
-            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback)
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
@@ -108,7 +116,7 @@ import retrofit.Callback;
 
     public MiddleCallbackRangedDiscussion getDiscussions(
             RangedDiscussionListKey discussionsKey,
-            Callback<RangedDTO<AbstractDiscussionDTO, DiscussionDTOList>> callback)
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
     {
         MiddleCallbackRangedDiscussion middleCallback = new MiddleCallbackRangedDiscussion(callback);
         discussionServiceAsync.getMessageThread(

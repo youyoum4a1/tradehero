@@ -183,6 +183,7 @@ public class DiscussionView extends FrameLayout
             paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
 
             discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, discussionFetchTaskListener);
+            discussionFetchTask.execute();
         }
     }
 

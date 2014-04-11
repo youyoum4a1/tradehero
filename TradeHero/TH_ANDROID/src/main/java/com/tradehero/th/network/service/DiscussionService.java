@@ -1,11 +1,10 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import java.util.Map;
@@ -40,7 +39,7 @@ public interface DiscussionService
             @QueryMap Map<String, Object> options);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getMessageThread(
+    RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Query("maxCount") Integer maxCount,
@@ -48,7 +47,7 @@ public interface DiscussionService
             @Query("minId") Integer minId);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    RangedDTO<AbstractDiscussionDTO, DiscussionDTOList> getMessageThread(
+    RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options);
