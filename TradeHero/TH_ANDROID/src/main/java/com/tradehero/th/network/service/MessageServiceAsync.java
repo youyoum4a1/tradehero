@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -36,13 +37,13 @@ interface MessageServiceAsync
             @Path("commentId") int commentId,
             Callback<MessageHeaderDTO> callback);
 
-    @GET("/messages/{recipientUserId}/getFreeCount")
+    @GET("/messages/{recipientUserId}/getStatus")
     void getFreeCount(
             @Path("recipientUserId") int recipientUserId,
             Callback<MessageStatusDTO> callback);
 
     @POST("/messages")
     void createMessage(
-            @Body MessageHeaderDTO form,
+            @Body MessageCreateFormDTO form,
             Callback<DiscussionDTO> callback);
 }

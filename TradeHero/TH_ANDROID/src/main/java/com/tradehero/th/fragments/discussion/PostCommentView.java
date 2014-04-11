@@ -113,7 +113,7 @@ public class PostCommentView extends RelativeLayout
         DiscussionDTO discussionDTO = new DiscussionDTO();
 
         discussionDTO.inReplyToId = discussionKey.id;
-        discussionDTO.inReplyToType = discussionKey.type;
+        discussionDTO.inReplyToType = discussionKey.getType();
         discussionDTO.text = commentText.getText().toString();
         return discussionDTO;
     }

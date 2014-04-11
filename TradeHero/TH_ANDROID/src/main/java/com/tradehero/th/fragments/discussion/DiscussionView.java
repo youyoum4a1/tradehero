@@ -37,6 +37,7 @@ public class DiscussionView extends FrameLayout
     private int listItemLayout;
 
     @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private TextView discussionStatus;
 
@@ -144,7 +145,7 @@ public class DiscussionView extends FrameLayout
 
         if (discussionKey != null)
         {
-            this.discussionListKey = DiscussionKeyFactory.toListKey(discussionKey);
+            this.discussionListKey = discussionKeyFactory.toListKey(discussionKey);
 
             fetchDiscussionListIfNecessary();
         }

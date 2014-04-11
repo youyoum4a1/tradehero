@@ -45,6 +45,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject NewsCache newsCache;
     @Inject FontUtil fontUtil;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
@@ -95,7 +96,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
 
         if (newsItemDTOKey == null)
         {
-            DiscussionKey discussionKey = DiscussionKeyFactory.fromBundle(getArguments());
+            DiscussionKey discussionKey = discussionKeyFactory.fromBundle(getArguments());
             if (discussionKey instanceof NewsItemDTOKey)
             {
                 newsItemDTOKey = (NewsItemDTOKey) discussionKey;

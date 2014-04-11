@@ -1,5 +1,6 @@
 package com.tradehero.th.api.news;
 
+import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 
@@ -12,6 +13,16 @@ public class NewsItemDTOKey extends DiscussionKey
 
     public NewsItemDTOKey(Integer id)
     {
-        super(TYPE, id);
+        super(id);
+    }
+
+    public NewsItemDTOKey(Bundle args)
+    {
+        super(args);
+    }
+
+    @Override public DiscussionType getType()
+    {
+        return TYPE;
     }
 }

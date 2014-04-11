@@ -38,7 +38,7 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
 
     @Override public boolean equalFields(TypedMessageListKey other)
     {
-        return super.equalFields(other) &&
+        return super.equalClass(other) &&
                 equalFields((RecipientTypedMessageListKey) other);
     }
 

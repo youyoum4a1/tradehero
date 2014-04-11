@@ -31,6 +31,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
     @InjectView(R.id.discussion_view) DiscussionView discussionView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private MiddleCallback<DiscussionDTO> discussionMiddleCallback;
     protected DiscussionKey discussionKey;
@@ -57,7 +58,7 @@ public abstract class AbstractDiscussionFragment extends DashboardFragment
 
         if (discussionKey == null)
         {
-            discussionKey = DiscussionKeyFactory.fromBundle(getArguments());
+            discussionKey = discussionKeyFactory.fromBundle(getArguments());
         }
 
         linkWith(discussionKey, true);

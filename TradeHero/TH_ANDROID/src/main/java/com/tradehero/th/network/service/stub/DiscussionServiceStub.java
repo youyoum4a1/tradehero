@@ -62,7 +62,8 @@ public class DiscussionServiceStub implements DiscussionService
         {
             DiscussionDTO discussionDTO = new DiscussionDTO();
             discussionDTO.id = i;
-            discussionDTO.text = inReplyToType.description + ": " + i;
+            discussionDTO.text = inReplyToType.description + ": asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd " + i;
+            discussionDTO.userId = (i % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
             discussionDTOs.add(discussionDTO);
         }
 
