@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:41 PM Copyright (c) TradeHero
  */
-public class AbstractDiscussionDTO extends ExtendedDTO
+public abstract class AbstractDiscussionDTO extends ExtendedDTO
 {
     public int id;
     public Date createdAtUtc;
@@ -26,8 +26,5 @@ public class AbstractDiscussionDTO extends ExtendedDTO
         target.voteDirection = voteDirection;
     }
 
-    public DiscussionKey getDiscussionKey()
-    {
-        return new DiscussionKey(id);
-    }
+    public abstract DiscussionKey getDiscussionKey();
 }

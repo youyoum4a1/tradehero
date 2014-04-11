@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.DiscussionView
+<com.tradehero.th.fragments.discussion.CommentView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -82,4 +82,4 @@
         />
   </RelativeLayout>
   <include layout="@layout/timeline_item_action_buttons_2_0"/>
-</com.tradehero.th.fragments.discussion.DiscussionView>
+</com.tradehero.th.fragments.discussion.CommentView>

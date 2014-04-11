@@ -60,6 +60,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Inject UserProfileCache userProfileCache;
     @Inject GetPositionsCache getPositionsCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
@@ -337,7 +338,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         // When this is another user
         if (!currentUserId.toUserBaseKey().equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
         {
-            return UserBaseDTOUtil.getFirstLastName(getContext(), displayablePortfolioDTOCopy.userBaseDTO);
+            return userBaseDTOUtil.getFirstLastName(getContext(), displayablePortfolioDTOCopy.userBaseDTO);
         }
 
         // When this is current user

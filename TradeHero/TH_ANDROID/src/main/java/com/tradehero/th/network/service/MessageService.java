@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -18,20 +19,20 @@ public interface MessageService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    // TODO implement this on server
-    @GET("/messages/{discussionType}")
+    @GET("/messages")
     PaginatedDTO<MessageHeaderDTO> getMessages(
-            @Path("discussionType") DiscussionType discussionType,
+            @Query("discussType") DiscussionType discussionType,
+            @Query("senderId") Integer senderId,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            @Query("recipientId") Integer recipientId);
+            @Query("perPage") Integer perPage);
 
     @GET("/messages/{commentId}")
     MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId);
 
-    @GET("/messages/{recipientUserId}/getFreeCount")
-    MessageStatusDTO getFreeCount(@Path("recipientUserId") int recipientUserId);
+    @GET("/messages/{recipientUserId}")
+    //@GET("/messages/status/{recipientUserId}") // Proper way to activate when deployed
+    MessageStatusDTO getStatus(@Path("recipientUserId") int recipientUserId);
 
     @POST("/messages")
-    DiscussionDTO createMessage(@Body MessageHeaderDTO form);
+    DiscussionDTO createMessage(@Body MessageCreateFormDTO form);
 }

@@ -3,12 +3,17 @@ package com.tradehero.th.api.users;
 import android.content.Context;
 import com.tradehero.th.R;
 
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 12/2/13 Time: 4:36 PM To change this template use File | Settings | File Templates. */
 public class UserBaseDTOUtil
 {
-    public static final String TAG = UserBaseDTOUtil.class.getSimpleName();
+    @Inject public UserBaseDTOUtil()
+    {
+        super();
+    }
 
-    public static String getLongDisplayName(Context context, UserBaseDTO userBaseDTO)
+    public String getLongDisplayName(Context context, UserBaseDTO userBaseDTO)
     {
         if (userBaseDTO != null)
         {
@@ -26,7 +31,7 @@ public class UserBaseDTOUtil
         return context.getString(R.string.na);
     }
 
-    public static String getFirstLastName(Context context, UserBaseDTO userBaseDTO)
+    public String getFirstLastName(Context context, UserBaseDTO userBaseDTO)
     {
         if (userBaseDTO != null)
         {

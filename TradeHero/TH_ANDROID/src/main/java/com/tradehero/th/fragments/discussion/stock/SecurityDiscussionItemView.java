@@ -44,8 +44,8 @@ public class SecurityDiscussionItemView extends LinearLayout
     private DiscussionKey discussionKey;
     private DiscussionDTO discussionDTO;
 
-    private DTOCache.Listener<DiscussionKey, DiscussionDTO> discussionFetchListener;
-    private DTOCache.GetOrFetchTask<DiscussionKey, DiscussionDTO> discussionFetchTask;
+    private DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> discussionFetchListener;
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
     private UserBaseDTO userBaseDTO;
 
     //<editor-fold desc="Constructors">
@@ -138,7 +138,10 @@ public class SecurityDiscussionItemView extends LinearLayout
 
     private void displayTime()
     {
-        discussionTime.setText(prettyTime.format(discussionDTO.createdAtUtc));
+        if (discussionDTO.createdAtUtc != null)
+        {
+            discussionTime.setText(prettyTime.format(discussionDTO.createdAtUtc));
+        }
     }
 
     private void resetTime()
@@ -224,9 +227,9 @@ public class SecurityDiscussionItemView extends LinearLayout
     }
 
 
-    private class SecurityDiscussionFetchListener implements DTOCache.Listener<DiscussionKey,DiscussionDTO>
+    private class SecurityDiscussionFetchListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, DiscussionDTO value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }

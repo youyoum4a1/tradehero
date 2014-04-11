@@ -35,6 +35,7 @@ import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -68,6 +69,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -320,7 +322,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
                 if (item instanceof TimelineItemDTOEnhanced)
                 {
-                    pushDiscussion(((TimelineItemDTOEnhanced) item).getTimelineKey());
+                    pushDiscussion(((TimelineItemDTOEnhanced) item).getDiscussionKey());
                 }
             }
         };
@@ -328,9 +330,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
-        Bundle bundle = new Bundle();
-
-        timelineItemDTOKey.putParameters(bundle);
+        Bundle bundle = timelineItemDTOKey.getArgs();
 
         getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
@@ -379,7 +379,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (this.actionBar != null)
         {
             this.actionBar.setTitle(
-                    UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+                    userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
 
         displayActionBarTitle();
@@ -397,7 +397,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             if (shownProfile != null)
             {
-                actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+                actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
             }
             else
             {
@@ -622,14 +622,26 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER)
+                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                 {
                     alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
                             new TimelineFollowRequestedListener());
                 }
+                else
+                {
+                    pushPrivateMessageFragment();
+                }
+
             }
         });
+    }
+
+    protected void pushPrivateMessageFragment()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY, shownUserBaseKey.getArgs());
+        getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
     /**

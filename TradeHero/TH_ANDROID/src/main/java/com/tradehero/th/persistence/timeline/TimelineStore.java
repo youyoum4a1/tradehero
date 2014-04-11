@@ -9,6 +9,7 @@ import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     private Query query;
 
     @Inject UserTimelineService timelineService;
-    @Inject TimelineCache timelineCache;
+    @Inject DiscussionCache discussionCache;
 
     @Override public List<TimelineItemDTOKey> request()
     {
@@ -50,8 +51,8 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
                 for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
                 {
                     itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
-                    TimelineItemDTOKey timelineKey = itemDTO.getTimelineKey();
-                    timelineCache.put(timelineKey, itemDTO);
+                    TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
+                    discussionCache.put(timelineKey, itemDTO);
                     timelineItemDTOKeys.add(timelineKey);
 
                 }

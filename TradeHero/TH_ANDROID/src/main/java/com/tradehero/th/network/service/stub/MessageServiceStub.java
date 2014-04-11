@@ -2,6 +2,7 @@ package com.tradehero.th.network.service.stub;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -42,10 +43,17 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(DiscussionType discussionType, Integer page,
-            Integer perPage, Integer recipientId)
+    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(
+            DiscussionType discussionType,
+            Integer senderId,
+            Integer page,
+            Integer perPage)
     {
-        return null;
+        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        List<MessageHeaderDTO> data = new ArrayList<>();
+        data.add(getMessageHeader(2));
+        paginatedDTO.setData(data);
+        return paginatedDTO;
     }
 
     @Override public MessageHeaderDTO getMessageHeader(int commentId)
@@ -58,7 +66,7 @@ public class MessageServiceStub implements MessageService
         return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
     }
 
-    @Override public MessageStatusDTO getFreeCount(int recipientUserId)
+    @Override public MessageStatusDTO getStatus(int recipientUserId)
     {
         MessageStatusDTO statusDTO = new MessageStatusDTO();
         statusDTO.recipientUserId = recipientUserId;
@@ -66,7 +74,7 @@ public class MessageServiceStub implements MessageService
         return statusDTO;
     }
 
-    @Override public DiscussionDTO createMessage(MessageHeaderDTO form)
+    @Override public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
         throw new IllegalArgumentException("Implement it");
     }

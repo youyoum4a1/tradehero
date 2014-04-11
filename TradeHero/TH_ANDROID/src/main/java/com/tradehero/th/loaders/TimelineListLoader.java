@@ -66,7 +66,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         }
 
         upperItemId = null;
-        lowerItemId = firstVisible.key;
+        lowerItemId = firstVisible.id;
         forceLoad();
     }
 
@@ -75,7 +75,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         resetQuery();
         if (startItem != null)
         {
-            upperItemId = startItem.key;
+            upperItemId = startItem.id;
         }
         forceLoad();
     }

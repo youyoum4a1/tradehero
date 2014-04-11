@@ -37,4 +37,8 @@
   <color name="invite_friend_button_color">#1376FB</color>
   <color name="button_yellow">#72ffd36b</color>
   <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
+
+  <color name="follow_button_green">#a0dc50</color>
+  <color name="follow_button_green_overlay">#eea0dc50</color>
+
 </resources>
