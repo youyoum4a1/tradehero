@@ -26,6 +26,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
@@ -275,6 +276,10 @@ public class PrivateMessageFragment extends DashboardFragment
         {
             linkWith(messageHeaders.iterator().next(), andDisplay);
         }
+        else
+        {
+            postCommentView.linkWith(MessageType.PRIVATE);
+        }
         displayVisibilities();
     }
 
@@ -282,6 +287,7 @@ public class PrivateMessageFragment extends DashboardFragment
     {
         Timber.d("messageHeader %s", messageHeader);
         this.currentMessageHeader = messageHeader;
+        // TODO postCommentView.linkWith discussionKey
         nextDiscussionListKey = new RangedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
                 currentMessageHeader.id,
