@@ -6,6 +6,7 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
@@ -205,5 +206,13 @@ interface UserServiceAsync
     void getHeroes(
             @Path("userId") int userId,
             Callback<List<HeroDTO>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Relations">
+    //@GET("/users/{userId}/MessageController/getAllowableRecipients")
+    @GET("/users/{userId}/relations")
+    void getRelations(
+            @Path("userId") int userId,
+            Callback<List<UserBaseDTO>> callback);
     //</editor-fold>
 }

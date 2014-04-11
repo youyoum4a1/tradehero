@@ -16,6 +16,23 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import android.widget.ImageButton;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.localytics.android.LocalyticsSession;
+import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.base.BaseFragment;
+import java.util.ArrayList;
+import java.util.List;
+import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.utils.LocalyticsConstants;
+import java.util.Arrays;
+import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -31,6 +48,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     private FragmentTabHost mTabHost;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    private MenuItem mMenuFollow;
+    private ImageButton mNewMsgButton;
+
+    @Inject LocalyticsSession localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -71,6 +92,29 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
             fetchUserProfileTask.setListener(null);
         }
         fetchUserProfileTask = null;
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.notification_center_menu, menu);
+        mMenuFollow = menu.findItem(R.id.btn_new_message);
+        mNewMsgButton =
+                (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);
+        if (mNewMsgButton != null)
+        {
+            mNewMsgButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    Timber.d("lyl click new message");
+                    localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
+                            .pushFragment(AllRelationsFragment.class);
+                }
+            });
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onDestroyView()

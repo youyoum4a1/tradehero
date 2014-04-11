@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -289,8 +290,13 @@ import retrofit.RetrofitError;
             case ALL:
                 userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
         }
-
-
     }
     //</editor-fold>
+
+    public MiddleCallback<List<UserBaseDTO>> getRelations(UserBaseKey userBaseKey, Callback<List<UserBaseDTO>> callback)
+    {
+        MiddleCallback<List<UserBaseDTO>> middleCallback = new MiddleCallback<>(callback);
+        userServiceAsync.getRelations(userBaseKey.key, callback);
+        return middleCallback;
+    }
 }
