@@ -14,6 +14,8 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -36,6 +38,7 @@ public class PostCommentView extends RelativeLayout
     @InjectView(R.id.post_comment_text) EditText commentText;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
+    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
 
     private DiscussionKey discussionKey;
 
@@ -90,10 +93,10 @@ public class PostCommentView extends RelativeLayout
 
         if (discussionKey != null && validate())
         {
-            DiscussionDTO discussionDTO = buildCommentFormDTO(discussionKey);
+            DiscussionFormDTO discussionFormDTO = buildCommentFormDTO(discussionKey);
 
             setPosting();
-            postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionDTO, new CommentSubmitCallback());
+            postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new CommentSubmitCallback());
         }
     }
 
@@ -108,14 +111,13 @@ public class PostCommentView extends RelativeLayout
         return true;
     }
 
-    protected DiscussionDTO buildCommentFormDTO(DiscussionKey discussionKey)
+    protected DiscussionFormDTO buildCommentFormDTO(DiscussionKey discussionKey)
     {
-        DiscussionDTO discussionDTO = new DiscussionDTO();
+        DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionKey.getType());
 
-        discussionDTO.inReplyToId = discussionKey.id;
-        discussionDTO.inReplyToType = discussionKey.getType();
-        discussionDTO.text = commentText.getText().toString();
-        return discussionDTO;
+        discussionFormDTO.inReplyToId = discussionKey.id;
+        discussionFormDTO.text = commentText.getText().toString();
+        return discussionFormDTO;
     }
 
     public void setCommentPostedListener(CommentPostedListener listener)

@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.timeline;
 
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.List;

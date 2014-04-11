@@ -1,4 +1,4 @@
-package com.tradehero.th.api.news;
+package com.tradehero.th.api.news.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;

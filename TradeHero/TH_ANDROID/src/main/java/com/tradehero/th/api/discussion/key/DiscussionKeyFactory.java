@@ -2,8 +2,8 @@ package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.news.NewsItemDTOKey;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import javax.inject.Inject;
 
 /**
@@ -31,14 +31,14 @@ public class DiscussionKeyFactory
             case NEWS:
                 return new NewsItemDTOKey(bundle);
             case SECURITY:
-                throw new RuntimeException("Not implemented for security type");
+                return new SecurityDiscussionKey(bundle);
             case PRIVATE_MESSAGE:
                 return new PrivateMessageKey(bundle);
             case BROADCAST_MESSAGE:
-                throw new RuntimeException("Not implemented for broadcast type");
+                return new BroadcastDiscussionKey(bundle);
         }
 
-        throw new IllegalStateException("Invalid type of DiscussionType");
+        throw new IllegalStateException("Invalid type of DiscussionType " + discussionType);
     }
 
     private void ensureKeys(Bundle bundle)

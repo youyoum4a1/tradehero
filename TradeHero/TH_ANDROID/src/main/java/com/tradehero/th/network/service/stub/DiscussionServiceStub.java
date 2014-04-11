@@ -4,6 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
@@ -126,7 +127,7 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    @Override public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
         return null;
     }

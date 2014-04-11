@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -51,15 +52,15 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Create Discussion">
-    public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
-        return discussionService.createDiscussion(discussionDTO);
+        return discussionService.createDiscussion(discussionFormDTO);
     }
 
-    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionDTO discussionDTO, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionFormDTO discussionFormDTO, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
-        discussionServiceAsync.createDiscussion(discussionDTO, middleCallback);
+        discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

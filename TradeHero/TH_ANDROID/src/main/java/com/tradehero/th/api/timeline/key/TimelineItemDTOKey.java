@@ -1,4 +1,4 @@
-package com.tradehero.th.api.timeline;
+package com.tradehero.th.api.timeline.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;

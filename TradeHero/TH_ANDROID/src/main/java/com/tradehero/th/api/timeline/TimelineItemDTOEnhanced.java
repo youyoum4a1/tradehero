@@ -3,6 +3,7 @@ package com.tradehero.th.api.timeline;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.Collections;

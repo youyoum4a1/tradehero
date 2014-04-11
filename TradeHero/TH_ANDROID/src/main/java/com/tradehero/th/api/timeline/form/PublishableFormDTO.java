@@ -1,4 +1,4 @@
-package com.tradehero.th.api.timeline;
+package com.tradehero.th.api.timeline.form;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +25,12 @@ public class PublishableFormDTO
 
     public boolean isPublic;
 
-    public String tradeComment;
-
     public PublishableFormDTO()
     {
     }
 
     public PublishableFormDTO(Boolean publishToFb, Boolean publishToTw, Boolean publishToLi, String geo_alt, String geo_lat, String geo_long,
-            boolean aPublic, String tradeComment)
+            boolean aPublic)
     {
         this.publishToFb = publishToFb;
         this.publishToTw = publishToTw;
@@ -41,7 +39,6 @@ public class PublishableFormDTO
         this.geo_lat = geo_lat;
         this.geo_long = geo_long;
         isPublic = aPublic;
-        this.tradeComment = tradeComment;
     }
 
     public Map<String, String> toStringMap()
@@ -72,10 +69,7 @@ public class PublishableFormDTO
             map.put(POST_KEY_GEO_LONG, geo_long);
         }
         map.put(POST_KEY_IS_PUBLIC, isPublic ? "1" : "0");
-        if (tradeComment != null)
-        {
-            map.put(POST_KEY_TRADE_COMMENT, tradeComment);
-        }
+
         return map;
     }
 
@@ -89,7 +83,6 @@ public class PublishableFormDTO
                 ", geo_lat='" + geo_lat + '\'' +
                 ", geo_long='" + geo_long + '\'' +
                 ", isPublic=" + isPublic +
-                ", tradeComment='" + tradeComment + '\'' +
                 '}';
     }
 }
