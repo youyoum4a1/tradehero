@@ -202,12 +202,7 @@
       <version>2.2.1-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.wechat</groupId>
-      <artifactId>wechatlib</artifactId>
-      <version>1.0</version>
-      <systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>
-    </dependency>
+
 
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
@@ -316,6 +311,14 @@
           <artifactId>xpp3</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.wechat</groupId>
+      <artifactId>wechatlib</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>
     </dependency>
 
     <dependency>
