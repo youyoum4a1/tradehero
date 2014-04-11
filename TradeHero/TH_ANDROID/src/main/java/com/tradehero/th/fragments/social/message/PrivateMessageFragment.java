@@ -27,6 +27,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
@@ -77,6 +78,7 @@ public class PrivateMessageFragment extends DashboardFragment
     private MessageHeaderDTOList loadedMessages;
     private MessageHeaderDTO currentMessageHeader;
 
+    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionListCache discussionListCache;
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionListCacheListener;
@@ -287,7 +289,9 @@ public class PrivateMessageFragment extends DashboardFragment
     {
         Timber.d("messageHeader %s", messageHeader);
         this.currentMessageHeader = messageHeader;
-        // TODO postCommentView.linkWith discussionKey
+
+        postCommentView.linkWith(discussionKeyFactory.create(messageHeader));
+
         nextDiscussionListKey = new RangedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
                 currentMessageHeader.id,
