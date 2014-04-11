@@ -9,6 +9,8 @@ import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
+import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
+import com.tradehero.th.auth.weibo.WeiboAppAuthData;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.WeChatUtils;
@@ -39,6 +41,14 @@ public class SocialNetworkModule
     public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";
     //public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";//test
 
+    private static final String WEIBO_APP_ID = "551229853";
+    private static final String WEIBO_REDIRECT_URL = "http://www.tradehero.mobi";
+    private static final String WEIBO_SCOPE =
+            "email,direct_messages_read,direct_messages_write,"
+                    + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
+                    + "follow_app_official_microblog," + "invitation_write";
+
+
     @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
@@ -60,6 +70,16 @@ public class SocialNetworkModule
     @Provides @Singleton @FacebookAppId String provideFacebookAppId()
     {
         return FACEBOOK_APP_ID;
+    }
+
+    @Provides @Singleton @ForWeiboAppAuthData
+    WeiboAppAuthData provideWeiboAppId()
+    {
+        WeiboAppAuthData data = new WeiboAppAuthData();
+        data.appId = WEIBO_APP_ID;
+        data.redirectUrl = WEIBO_REDIRECT_URL;
+        data.scope = WEIBO_SCOPE;
+        return data;
     }
 
     @Provides @Singleton @FacebookPermissions Collection<String> provideFacebookPermissions()

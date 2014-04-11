@@ -3,6 +3,7 @@ package com.tradehero.th.api.form;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
+import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,6 +56,10 @@ public class UserFormFactory
         {
             return new EmailUserFormDTO();
         }
+        if(type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE)) {
+            return new WeiboUserFormDTO();
+        }
+
         return new UserFormDTO();
     }
 
@@ -105,6 +110,9 @@ public class UserFormFactory
         {
             ((TwitterUserFormDTO)userFormDTO).twitter_access_token = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
             ((TwitterUserFormDTO)userFormDTO).twitter_access_token_secret = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
+        }else if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
+        {
+            ((WeiboUserFormDTO)userFormDTO).weibo_access_token = json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);
         }
     }
 }

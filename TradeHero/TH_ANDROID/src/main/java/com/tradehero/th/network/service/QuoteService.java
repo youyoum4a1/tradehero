@@ -24,7 +24,7 @@ public interface QuoteService
     //</editor-fold>
 
     //<editor-fold desc="Get Raw Quote">
-    @GET("/securities/{exchange}/{securitySymbol}/quote")
+        @GET("/securities/{exchange}/{securitySymbol}/quote")
     void getRawQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
