@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.TimelineItemDTOKey;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
-import com.tradehero.th.loaders.ListLoader;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:48 AM Copyright (c) TradeHero
@@ -52,11 +50,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         {
             timelineItemView.display(timelineItemDTOKey);
         }
-    }
-
-    @Override protected ListLoader<DiscussionDTO> createDiscussionLoader()
-    {
-        return new TimelineCommentListLoader(getActivity(), timelineItemDTOKey);
     }
 
     @Override public boolean isTabBarVisible()

@@ -17,11 +17,7 @@
       android:background="@drawable/news_item_bg"
       >
 
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_marginRight="10dp"-->
-
-    <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        >
+    <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content">
       <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
           android:id="@+id/news_item_placeholder"
           android:scaleType="centerCrop"
@@ -39,14 +35,14 @@
             android:id="@+id/news_title_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Google to be bought by private equity"
             android:textStyle="bold"
             android:textSize="17sp"
             android:singleLine="true"
+            tools:text="Google to be bought by private equity"
             />
 
         <TextView
-            android:id="@+id/news_title_date"
+            android:id="@+id/discussion_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="A big one"
@@ -65,22 +61,18 @@
             android:textColor="#444"
             android:maxLines="4"
             />
+        <TextView
+            android:id="@+id/discussion_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
       </LinearLayout>
     </FrameLayout>
-
-    <!--<View android:layout_width="match_parent" android:layout_height="1px"-->
-    <!--android:background="#ddd"-->
-    <!--/>-->
-
 
     <include layout="@layout/news_item_action_buttons"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-
         />
-
-    <!--android:background="@drawable/timeline_action_buttons_background"-->
   </LinearLayout>
-
-
 </com.tradehero.th.fragments.news.NewsHeadlineView>

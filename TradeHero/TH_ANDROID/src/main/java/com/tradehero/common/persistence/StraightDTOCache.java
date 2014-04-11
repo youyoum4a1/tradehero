@@ -13,7 +13,7 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         super();
         this.lruCache = new THLruCache<>(maxSize);
     }
-    
+
     @Override public DTOType get(DTOKeyType key)
     {
         if (key == null)

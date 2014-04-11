@@ -64,10 +64,10 @@ public class TimelineItemView extends LinearLayout
         implements DTOView<TimelineItemDTOKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
-    @InjectView(R.id.timeline_item_content) TextView content;
+    @InjectView(R.id.discussion_content) TextView content;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
-    @InjectView(R.id.timeline_time) TextView time;
+    @InjectView(R.id.discussion_time) TextView time;
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @InjectView(R.id.timeline_action_button_comment) TextView comment;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.tradehero.th.fragments.news;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsCache;
@@ -22,11 +21,6 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemDTOKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
-import com.tradehero.th.fragments.news.NewsDetailFullView;
-import com.tradehero.th.fragments.news.NewsDetailSummaryView;
-import com.tradehero.th.fragments.news.NewsDialogLayout;
-import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
-import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.utils.FontUtil;
 import com.tradehero.th.widget.VotePair;
@@ -35,7 +29,7 @@ import javax.inject.Inject;
 /**
  * Created by Alex & Liang on 14-3-10.
  */
-public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfoFragment*/
+public class NewsDetailFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
             NewsDetailFragment.class.getName() + ".title_bg";
@@ -60,6 +54,7 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
     @InjectView(R.id.news_detail_comment_empty) @Optional TextView mNewsDetailCommentEmpty;
 
     private DiscussionListAdapter discussionAdapter;
+
     private NewsItemDTOKey newsItemDTOKey;
     private int commentListWrapperDisplayedChildId;
     private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
@@ -141,11 +136,6 @@ public class NewsDetailFragment extends DashboardFragment /*AbstractSecurityInfo
         //});
         //return adapter;
         return null;
-    }
-
-    private ListLoader<DiscussionDTO> createNewsDiscussionLoader()
-    {
-        return new NewsDiscussionListLoader(getActivity(), newsItemDTOKey);
     }
 
     @Override public void onDestroyView()

@@ -36,21 +36,22 @@ public class DiscussionView extends FrameLayout
     @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
 
     private int listItemLayout;
+    private int topicLayout;
 
     @Inject DiscussionListCache discussionListCache;
 
     private TextView discussionStatus;
-
     private DiscussionKey discussionKey;
+
     private AbstractDiscussionDTO discussionDTO;
-
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
 
+    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
     private DiscussionListAdapter discussionListAdapter;
     private DiscussionListKey discussionListKey;
     private int nextPageDelta;
     private PaginatedDiscussionListKey paginatedDiscussionListKey;
+    private View topicView;
 
     //<editor-fold desc="Constructors">
     public DiscussionView(Context context)
@@ -76,6 +77,8 @@ public class DiscussionView extends FrameLayout
         super.onFinishInflate();
 
         ButterKnife.inject(this);
+
+        inflateDiscussionTopic();
         inflateDiscussionStatus();
 
         DaggerUtils.inject(this);
@@ -94,6 +97,7 @@ public class DiscussionView extends FrameLayout
         {
             TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
             listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
+            topicLayout = styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0);
             styled.recycle();
 
             ensureStyle();
@@ -105,6 +109,19 @@ public class DiscussionView extends FrameLayout
         if (listItemLayout == 0)
         {
             throw new IllegalStateException("listItemLayout should be set to a layout");
+        }
+    }
+
+    private void inflateDiscussionTopic()
+    {
+        if (topicLayout != 0)
+        {
+            topicView = LayoutInflater.from(getContext()).inflate(topicLayout, null);
+
+            if (topicView != null)
+            {
+                discussionList.addHeaderView(topicView);
+            }
         }
     }
 
@@ -156,6 +173,11 @@ public class DiscussionView extends FrameLayout
 
         if (andDisplay)
         {
+            if (topicView instanceof DTOView)
+            {
+                // TODO check type
+                ((DTOView<DiscussionKey>) topicView).display(discussionKey);
+            }
         }
     }
 

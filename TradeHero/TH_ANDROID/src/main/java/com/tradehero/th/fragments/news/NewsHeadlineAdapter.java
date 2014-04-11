@@ -6,19 +6,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.news.NewsHeadline;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-
-import java.util.*;
+import com.tradehero.th.api.news.NewsItemDTOKey;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by julien on 11/10/13 <p/> Map a Yahoo News object to a NewsHeadlineView.
  */
-public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadlineView>
+public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineView>
 {
     private final static String TAG = NewsHeadlineAdapter.class.getSimpleName();
 
@@ -36,7 +34,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadli
     public NewsHeadlineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
-        setItems(new ArrayList<NewsItemDTO>());
+        setItems(new ArrayList<NewsItemDTOKey>());
         loadBackground();
     }
 
@@ -80,14 +78,14 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadli
     }
 
     @Override
-    public void addItems(List<NewsItemDTO> data)
+    public void addItems(List<NewsItemDTOKey> data)
     {
         super.addItems(data);
         setBackgroundsArray();
     }
 
     @Override
-    public void addItems(NewsItemDTO[] items)
+    public void addItems(NewsItemDTOKey[] items)
     {
         super.addItems(items);
         setBackgroundsArray();
@@ -122,14 +120,14 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadli
     }
 
     @Override
-    public void addItem(NewsItemDTO item)
+    public void addItem(NewsItemDTOKey item)
     {
         super.addItem(item);
         setBackgroundsArray();
     }
 
     @Override
-    public void setItems(List<NewsItemDTO> items)
+    public void setItems(List<NewsItemDTOKey> items)
     {
         super.setItems(items);
         setBackgroundsArray();
@@ -143,7 +141,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTO, NewsHeadli
     }
 
     @Override
-    protected void fineTune(final int position, NewsItemDTO dto, final NewsHeadlineView dtoView)
+    protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineView dtoView)
     {
         View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
         if (backgroundsArr[position] != null)

@@ -183,7 +183,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.onDestroyView();
     }
 
-    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
     {
         return securityCompactCache;
     }
