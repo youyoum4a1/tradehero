@@ -1,6 +1,8 @@
 package com.tradehero.th.ui;
 
 import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.special.ResideMenu.ResideMenu;
@@ -8,6 +10,8 @@ import com.special.ResideMenu.ResideMenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 import static butterknife.ButterKnife.findById;
@@ -30,6 +34,7 @@ public class AppContainerImpl implements AppContainer
 
     @Override public ViewGroup get(final Activity activity)
     {
+        //activity.setContentView(R.layout.residemenu_main);
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
@@ -53,22 +58,54 @@ public class AppContainerImpl implements AppContainer
             }
         };
 
-        resideMenu.getMenuItems().clear();
-        for (DashboardTabType tabType: DashboardTabType.values())
+        List<View> menuItems = new ArrayList<>();
+        for (DashboardTabType tabType : DashboardTabType.values())
         {
-            ResideMenuItem menuItem = new ResideMenuItem(activity, tabType.drawableResId, tabType.stringResId);
-            menuItem.setTag(tabType);
-            resideMenu.addMenuItem(menuItem);
-            menuItem.setOnClickListener(menuItemClickListener);
+            if (tabType.show)
+            {
+                View menuItem = createMenuItemFromTabType(activity, tabType);
+                menuItem.setTag(tabType);
+                menuItem.setOnClickListener(menuItemClickListener);
+                menuItems.add(menuItem);
+            }
         }
+        resideMenu.setMenuItems(menuItems);
 
+        if (activity instanceof OnResideMenuItemClickListener)
+        {
+            mOnResideMenuItemClickListener = ((OnResideMenuItemClickListener) activity);
+        }
         return findById(activity, android.R.id.content);
+    }
+
+    private OnResideMenuItemClickListener mOnResideMenuItemClickListener;
+
+    public interface OnResideMenuItemClickListener
+    {
+        void onResideMenuItemClick(DashboardTabType tabType);
+    }
+
+    /**
+     * TODO this is a hack due to time constraint
+     */
+    private View createMenuItemFromTabType(Context context, DashboardTabType tabType)
+    {
+        if (tabType.hasCustomView())
+        {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            return inflater.inflate(tabType.viewResId, null);
+        }
+        else
+        {
+            return new ResideMenuItem(context, tabType.drawableResId, tabType.stringResId);
+        }
     }
 
     private class ResideMenuItemClickListener implements View.OnClickListener
     {
         @Override public void onClick(View v)
         {
+            //mOnResideMenuItemClickListener.onResideMenuItemClick(tabType);
             resideMenu.closeMenu();
         }
     }

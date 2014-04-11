@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 
@@ -101,6 +102,11 @@ public class Navigator
             backStackName = fragmentClass.getName();
         }
 
+        Fragment old = manager.findFragmentById(R.id.main_fragment);
+        Fragment old2 =  manager.findFragmentByTag("TH-tab:"+ DashboardTabType.TRENDING.ordinal());
+
+
+        Timber.d("pushFragment target:%s,old:%s,old2:%s", fragmentClass, old, old2);
         FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
         ft.addToBackStack(backStackName);
         ft.commit();

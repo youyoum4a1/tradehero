@@ -2,11 +2,14 @@ package com.tradehero.th.fragments.social.hero;
 
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.api.social.HeroDTOList;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.social.HeroCache;
+import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -25,11 +28,11 @@ public class HeroManagerInfoFetcher
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, HeroIdList> heroListFetchTask;
+    private DTOCache.Listener<HeroKey, HeroIdExtWrapper> heroListListener;
+    private DTOCache.GetOrFetchTask<HeroKey, HeroIdExtWrapper> heroListFetchTask;
 
     public HeroManagerInfoFetcher(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
-            DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener)
+            DTOCache.Listener<HeroKey, HeroIdExtWrapper> heroListListener)
     {
         super();
         this.userProfileListener = userProfileListener;
@@ -64,15 +67,15 @@ public class HeroManagerInfoFetcher
         this.userProfileListener = userProfileListener;
     }
 
-    public void setHeroListListener(DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener)
+    public void setHeroListListener(DTOCache.Listener<HeroKey, HeroIdExtWrapper> heroListListener)
     {
         this.heroListListener = heroListListener;
     }
 
-    public void fetch(UserBaseKey userBaseKey)
+    public void fetch(UserBaseKey userBaseKey,HeroType heroType)
     {
         fetchUserProfile(userBaseKey);
-        fetchHeroes(userBaseKey);
+        fetchHeroes(userBaseKey,heroType);
     }
 
     public void fetchUserProfile(UserBaseKey userBaseKey)
@@ -85,15 +88,17 @@ public class HeroManagerInfoFetcher
         this.userProfileFetchTask.execute();
     }
 
-    public void fetchHeroes(UserBaseKey userBaseKey)
+    public void fetchHeroes(UserBaseKey userBaseKey,HeroType heroType)
     {
-        HeroIdList heroIds = heroListCache.get().get(userBaseKey);
+        HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
+        HeroIdList heroIds = (heroIdExtWrapper != null)?heroIdExtWrapper.heroIdList:null;
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
         if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
             if (this.heroListListener != null)
             {
-                this.heroListListener.onDTOReceived(userBaseKey, heroIds, true);
+                this.heroListListener.onDTOReceived(heroKey, heroIdExtWrapper, true);
             }
         }
         else
@@ -102,7 +107,7 @@ public class HeroManagerInfoFetcher
             {
                 heroListFetchTask.setListener(null);
             }
-            heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
+            heroListFetchTask = heroListCache.get().getOrFetch(heroKey, heroListListener);
             heroListFetchTask.execute();
         }
     }

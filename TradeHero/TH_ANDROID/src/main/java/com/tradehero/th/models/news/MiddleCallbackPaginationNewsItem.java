@@ -1,6 +1,6 @@
 package com.tradehero.th.models.news;
 
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import retrofit.Callback;

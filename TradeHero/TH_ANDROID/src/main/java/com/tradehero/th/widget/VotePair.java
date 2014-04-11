@@ -114,20 +114,21 @@ public class VotePair extends LinearLayout
                 discussionType,
                 discussionDTO.id,
                 voteDirection);
-        voteCallback = discussionServiceWrapper.get().voteCallBack(discussionVoteKey, new Callback<DiscussionDTO>()
-        {
-            @Override public void success(DiscussionDTO discussionDTO, Response response)
-            {
-                discussionDTO.populateVote(VotePair.this.discussionDTO);
-                // TODO update cached timeline item
-                Timber.d("Success");
-            }
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey,
+                new Callback<DiscussionDTO>()
+                {
+                    @Override public void success(DiscussionDTO discussionDTO, Response response)
+                    {
+                        discussionDTO.populateVote(VotePair.this.discussionDTO);
+                        // TODO update cached timeline item
+                        Timber.d("Success");
+                    }
 
-            @Override public void failure(RetrofitError error)
-            {
-                Timber.d("Failure");
-            }
-        });
+                    @Override public void failure(RetrofitError error)
+                    {
+                        Timber.d("Failure");
+                    }
+                });
     }
 
     private DiscussionType getDiscussionType()
@@ -156,30 +157,41 @@ public class VotePair extends LinearLayout
 
     private void resetVoting()
     {
-        voteUp.setChecked(false);
-        voteDown.setChecked(false);
+        if (voteUp != null)
+        {
+            voteUp.setChecked(false);
+        }
+        if (voteDown != null)
+        {
+            voteDown.setChecked(false);
+        }
     }
 
     public void display(AbstractDiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
-        voteUp.setValue(discussionDTO.upvoteCount);
-        voteDown.setValue(discussionDTO.downvoteCount);
 
         resetVoting();
-        VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
-        Timber.d("voteDirection: %s", voteDirection.description);
-        switch (voteDirection)
+
+        if (discussionDTO != null)
         {
-            case DownVote:
-                voteDown.setChecked(true);
-                break;
-            case UpVote:
-                voteUp.setChecked(true);
-                break;
-            case Unvote:
-                // do nothing
-                break;
+            voteUp.setValue(discussionDTO.upvoteCount);
+            voteDown.setValue(discussionDTO.downvoteCount);
+
+            VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
+            Timber.d("voteDirection: %s", voteDirection.description);
+            switch (voteDirection)
+            {
+                case DownVote:
+                    voteDown.setChecked(true);
+                    break;
+                case UpVote:
+                    voteUp.setChecked(true);
+                    break;
+                case Unvote:
+                    // do nothing
+                    break;
+            }
         }
     }
 }

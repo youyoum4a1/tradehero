@@ -18,6 +18,7 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     public static final String LINKEDIN_AUTH_TYPE = "TH-LinkedIn";
     public static final String WEIBO_AUTH_TYPE = "TH-Weibo";
     public static final String TRADEHERO_AUTH_TYPE = "Basic";
+    public static final String WECHAT_AUTH_TYPE = "TH-Wehat";
 
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;

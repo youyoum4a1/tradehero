@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -12,6 +13,8 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.social.HeroKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -230,6 +233,13 @@ import retrofit.RetrofitError;
         userService.follow(userBaseKey.key, callback);
     }
 
+    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new MiddleCallback<>(callback);
+        userService.freeFollow(userBaseKey.key, callback);
+        return middleCallback;
+    }
+
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
     {
         return userService.follow(userBaseKey.key, purchaseDTO);
@@ -250,6 +260,37 @@ import retrofit.RetrofitError;
     public void unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
         userService.unfollow(userBaseKey.key, callback);
+    }
+
+    public List<HeroDTO> getHeroes(HeroKey followerKey)
+    {
+        switch (followerKey.heroType)
+        {
+            case PREMIUM:
+                return userService.getHeroes(followerKey.userBaseKey.key);
+            case FREE:
+                return userService.getHeroes(followerKey.userBaseKey.key);
+            case ALL:
+                return userService.getHeroes(followerKey.userBaseKey.key);
+        }
+        return null;
+
+
+    }
+
+    public void getHeroes(HeroKey followerKey,Callback<List<HeroDTO>> callback)
+    {
+        switch (followerKey.heroType)
+        {
+            case PREMIUM:
+                userServiceAsync.getHeroes(followerKey.userBaseKey.key,callback);
+            case FREE:
+                userServiceAsync.getHeroes(followerKey.userBaseKey.key, callback);
+            case ALL:
+                userServiceAsync.getHeroes(followerKey.userBaseKey.key, callback);
+        }
+
+
     }
     //</editor-fold>
 }

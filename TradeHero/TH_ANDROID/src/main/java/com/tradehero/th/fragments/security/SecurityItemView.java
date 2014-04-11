@@ -144,7 +144,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public static boolean isUrlOk(String url)
     {
-        //Log.d(TAG, "LruMemFileCache url:" +url);
         return (url != null) && (!url.isEmpty());
     }
 

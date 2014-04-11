@@ -11,7 +11,9 @@ public enum DiscussionType
     COMMENT(1, "comment"),
     TIMELINE_ITEM(2, "timelineitem"),
     SECURITY(3, "security"),
-    NEWS(4, "news");
+    NEWS(4, "news"),
+    PRIVATE_MESSAGE(5, "private-message"),
+    BROADCAST_MESSAGE(6, "broadcast-message");
 
     public final int value;
     public final String description;

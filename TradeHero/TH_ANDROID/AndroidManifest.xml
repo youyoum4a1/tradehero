@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionCode="17"
-    android:versionName="1.6.1"
+    android:versionName="2.1.0"
     android:installLocation="auto">
 
   <uses-sdk
@@ -103,12 +103,18 @@
         android:name=".activities.StockChartActivity"
         android:screenOrientation="landscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
       <activity
               android:name=".activities.WeiboAuthAcitivity"
               android:windowSoftInputMode="adjustResize"
               android:screenOrientation="portrait"
               />
+    <activity
+        android:name=".wxapi.WXEntryActivity"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Translucent"
+        android:launchMode="singleInstance"
+        android:exported="true"/>
+
     <meta-data
         android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 

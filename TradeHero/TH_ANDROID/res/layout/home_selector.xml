@@ -1,29 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<com.tradehero.th.fragments.timeline.UserProfileResideMenuItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
+    android:orientation="vertical"
+    tools:background="@color/red"
     >
+
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/user_profile_side_menu_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <RelativeLayout
+        android:id="@+id/user_profile_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        >
+      <ImageView
+          android:id="@+id/user_profile_avatar"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:contentDescription="@null"
+          android:layout_gravity="center_vertical"
+          android:background="@drawable/layout_oval"
+          android:padding="0.5dp"
+          tools:background="@color/number_green"
+          />
+
+      <TextView
+          android:id="@+id/user_profile_display_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/user_profile_avatar"
+          android:textSize="16sp"
+          android:paddingLeft="5sp"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          android:shadowColor="@color/black"
+          android:shadowDy="1"
+          android:shadowRadius="1"
+          android:singleLine="true"
+          android:ellipsize="end"
+          tools:text="Tho Nguyen Truong"
+          />
+
+      <TextView
+          android:id="@+id/user_profile_title_roi_anchor"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/user_profile_avatar"
+          android:layout_below="@id/user_profile_display_name"
+          android:text="@string/user_profile_roi"
+          android:textColor="@color/white"
+          android:paddingLeft="5sp"
+          />
+
+      <TextView
+          android:id="@+id/user_profile_roi"
+          android:layout_toRightOf="@id/user_profile_title_roi_anchor"
+          android:layout_below="@id/user_profile_display_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          android:paddingLeft="5sp"
+          />
+
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/expand"
+          android:contentDescription="@null"/>
+    </RelativeLayout>
+
+  </com.tradehero.common.widget.BetterViewAnimator>
 
   <View
       android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:background="@color/tab_color"
-      android:layout_gravity="bottom"
-    />
-  <ImageView
-      android:id="@android:id/icon"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingBottom="3dp"
-      android:paddingTop="3dp"
-      android:layout_gravity="bottom"
-      android:visibility="gone"
-      tools:background="@color/red"
-      tools:visibility="visible"
-      android:contentDescription="@null"
+      android:layout_height="1dp"
+      android:layout_marginTop="20dp"
+      android:background="@color/white"
       />
-</FrameLayout>
+</com.tradehero.th.fragments.timeline.UserProfileResideMenuItem>

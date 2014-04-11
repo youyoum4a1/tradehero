@@ -31,6 +31,10 @@ import javax.inject.Singleton;
         {
             return R.drawable.buy_alerts_5;
         }
+        else if (count <= 7)
+        {
+            return R.drawable.alerts_7;
+        }
         else if (count >= IABConstants.ALERT_PLAN_UNLIMITED)
         {
             return R.drawable.buy_alerts_infinite;

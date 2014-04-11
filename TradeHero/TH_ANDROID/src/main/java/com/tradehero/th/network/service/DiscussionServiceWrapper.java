@@ -1,13 +1,18 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.GetDiscussionsKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
+import com.tradehero.th.models.discussion.MiddleCallbackRangedDiscussion;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import retrofit.Callback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -31,64 +36,133 @@ import retrofit.Callback;
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
     // TODO add methods based on DiscussionServiceAsync and MiddleCallback implementations
 
+    //<editor-fold desc="Get Comment">
+    public DiscussionDTO getComment(DiscussionKey discussionKey)
+    {
+        return discussionService.getComment(discussionKey.key);
+    }
+
+    public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
+    {
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        discussionServiceAsync.getComment(discussionKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Create Discussion">
+    public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    {
+        return discussionService.createDiscussion(discussionDTO);
+    }
+
     public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionDTO discussionDTO, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
         discussionServiceAsync.createDiscussion(discussionDTO, middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
-    public MiddleCallback<DiscussionDTO> voteCallBack(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
-    {
-        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
-        discussionServiceAsync.vote(
-                discussionVoteKey.inReplyToType.description,
-                discussionVoteKey.inReplyToId,
-                discussionVoteKey.voteDirection.description,
-                middleCallback);
-        return middleCallback;
-    }
-
-    public PaginatedDTO<DiscussionDTO> getDiscussions(GetDiscussionsKey discussionsKey)
+    //<editor-fold desc="Get Discussions">
+    @Deprecated
+    public PaginatedDTO<DiscussionDTO> getDiscussions(PaginatedDiscussionListKey discussionsKey)
     {
         return discussionService.getDiscussions(
-                discussionsKey.inReplyToType.description,
+                discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
                 discussionsKey.page,
                 discussionsKey.perPage);
     }
 
+    public RangedDTO<DiscussionDTO, DiscussionDTOList> getDiscussions(DiscussionListKey discussionsKey)
+    {
+        if (discussionsKey instanceof RangedDiscussionListKey)
+        {
+            return getDiscussions((RangedDiscussionListKey) discussionsKey);
+        }
+        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
+    }
+
+    public RangedDTO<DiscussionDTO, DiscussionDTOList> getDiscussions(RangedDiscussionListKey discussionsKey)
+    {
+        return discussionService.getMessageThread(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.maxCount,
+                discussionsKey.maxId,
+                discussionsKey.minId);
+    }
+
+    public MiddleCallbackRangedDiscussion getDiscussions(
+            DiscussionListKey discussionsKey,
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback)
+    {
+        if (discussionsKey instanceof RangedDiscussionListKey)
+        {
+            return getDiscussions((RangedDiscussionListKey) discussionsKey, callback);
+        }
+        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
+    }
+
+    public MiddleCallbackRangedDiscussion getDiscussions(
+            RangedDiscussionListKey discussionsKey,
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback)
+    {
+        MiddleCallbackRangedDiscussion middleCallback = new MiddleCallbackRangedDiscussion(callback);
+        discussionServiceAsync.getMessageThread(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.maxCount,
+                discussionsKey.maxId,
+                discussionsKey.minId,
+                middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Vote">
     public DiscussionDTO vote(DiscussionVoteKey discussionVoteKey)
     {
         return discussionService.vote(
-                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
-                discussionVoteKey.voteDirection.description);
+                discussionVoteKey.voteDirection);
     }
 
-    public void vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallback middleCallback =  new MiddleCallback(callback);
+        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(callback);
         discussionServiceAsync.vote(
-                discussionVoteKey.inReplyToType.description,
+                discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
-                discussionVoteKey.voteDirection.description,middleCallback);
+                discussionVoteKey.voteDirection,
+                middleCallback);
+        return middleCallback;
     }
+    //</editor-fold>
 
-    public DiscussionDTO share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    //<editor-fold desc="Share">
+    public DiscussionDTO share(DiscussionListKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return discussionService.share(
-                discussionKey.inReplyToType.description,
+                discussionKey.inReplyToType,
                 discussionKey.inReplyToId,
                 timelineItemShareRequestDTO);
     }
 
-    public void share(DiscussionKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion share(
+            DiscussionListKey discussionKey,
+            TimelineItemShareRequestDTO timelineItemShareRequestDTO,
+            Callback<DiscussionDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<DiscussionDTO>(callback);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
         discussionServiceAsync.share(
-                discussionKey.inReplyToType.description,
+                discussionKey.inReplyToType,
                 discussionKey.inReplyToId,
-                timelineItemShareRequestDTO,middleCallback);
+                timelineItemShareRequestDTO,
+                middleCallback);
+        return middleCallback;
     }
+    //</editor-fold>
 }

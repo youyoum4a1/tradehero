@@ -242,7 +242,10 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onResume();
 
         Bundle args = getArguments();
-        linkWith(new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+        if (args.containsKey(BUNDLE_KEY_SECURITY_ID_BUNDLE))
+        {
+            linkWith(new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+        }
     }
 
     @Override public void onDestroyView()

@@ -1,15 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.PaginatedDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.models.news.MiddleCallbackPaginationNewsItem;
-import com.tradehero.th.models.translation.TokenData;
-import com.tradehero.th.models.translation.TranslationResult;
-import com.tradehero.th.network.NetworkConstants;
-import com.tradehero.th.utils.Constants;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import com.tradehero.th.models.translation.TokenData;
 import com.tradehero.th.models.translation.TranslationResult;
 import com.tradehero.th.network.NetworkConstants;

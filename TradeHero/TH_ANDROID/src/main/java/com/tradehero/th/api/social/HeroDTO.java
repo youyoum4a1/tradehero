@@ -13,6 +13,9 @@ public class HeroDTO extends UserProfileCompactDTO
     public Date stoppedFollowingOn;
     public boolean active;
 
+    //TODO whether I've paid money to follow this hero
+    public boolean isFreeFollow;
+
     public HeroId getHeroId(UserBaseKey followerId)
     {
         return new HeroId(id, followerId.key);

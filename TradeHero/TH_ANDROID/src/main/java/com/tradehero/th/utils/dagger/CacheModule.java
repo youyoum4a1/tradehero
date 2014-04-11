@@ -4,23 +4,29 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
-import com.tradehero.th.fragments.discussion.TimelineDiscussion;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
+import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import dagger.Module;
 import dagger.Provides;
+import java.util.HashSet;
 import javax.inject.Singleton;
 
 /**
@@ -45,7 +51,9 @@ import javax.inject.Singleton;
                 ExtraTileAdapter.class,
                 ProviderTileView.class,
 
-                TimelineDiscussion.class,
+                UserProfileResideMenuItem.class,
+                TimelineDiscussionFragment.class,
+                NewsDiscussionFragment.class,
         },
         complete = false,
         library = true
@@ -73,5 +81,10 @@ public class CacheModule
     @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(SharedPreferences preference)
     {
         return new IntPreference(preference, ListCacheMaxSize.class.getName(), 200);
+    }
+
+    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(SharedPreferences preference)
+    {
+        return new LongPreference(preference, MessageListTimeline.class.getName(), -1L);
     }
 }

@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.PaginatedDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
