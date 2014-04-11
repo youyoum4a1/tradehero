@@ -141,7 +141,7 @@ public class DiscussionView extends FrameLayout
 
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        postCommentView.display(discussionKey);
+        postCommentView.linkWith(discussionKey);
 
         if (discussionKey != null)
         {

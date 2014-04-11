@@ -12,14 +12,17 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
+import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -30,19 +33,21 @@ import retrofit.client.Response;
  * Created by thonguyen on 9/4/14.
  */
 public class PostCommentView extends RelativeLayout
-    implements DTOView<DiscussionKey>
 {
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
-    @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
-
-    private DiscussionKey discussionKey;
-
     private MiddleCallback<DiscussionDTO> postCommentMiddleCallback;
+
+    @Inject MessageServiceWrapper messageServiceWrapper;
+    private MessageType messageType = null;
+    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
+
+    @Inject DiscussionServiceWrapper discussionServiceWrapper;
+    private DiscussionKey discussionKey = null;
+    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     private CommentPostedListener commentPostedListener;
 
     //<editor-fold desc="Constructors">
@@ -87,16 +92,26 @@ public class PostCommentView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    @OnClick(R.id.post_comment_action_submit) void postComment()
+    @OnClick(R.id.post_comment_action_submit)
+    void postComment()
     {
         detachSubmitCommentMiddleCallback();
 
-        if (discussionKey != null && validate())
+        if (!validate())
         {
-            DiscussionFormDTO discussionFormDTO = buildCommentFormDTO(discussionKey);
-
+            THToast.show(R.string.error_empty_comment);
+        }
+        else if (discussionKey != null)
+        {
+            DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
             setPosting();
             postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new CommentSubmitCallback());
+        }
+        else if (messageType != null)
+        {
+            MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
+            setPosting();
+            postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, new CommentSubmitCallback());
         }
     }
 
@@ -105,16 +120,21 @@ public class PostCommentView extends RelativeLayout
         String comment = commentText.getText().toString();
         if (comment == null || comment.trim().isEmpty())
         {
-            THToast.show(R.string.error_empty_comment);
             return false;
         }
         return true;
     }
 
-    protected DiscussionFormDTO buildCommentFormDTO(DiscussionKey discussionKey)
+    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    {
+        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        messageCreateFormDTO.message = commentText.getText().toString();
+        return messageCreateFormDTO;
+    }
+
+    protected DiscussionFormDTO buildCommentFormDTO()
     {
         DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionKey.getType());
-
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
         return discussionFormDTO;
@@ -150,9 +170,14 @@ public class PostCommentView extends RelativeLayout
         resetCommentAction();
     }
 
-    @Override public void display(DiscussionKey discussionKey)
+    public void linkWith(DiscussionKey discussionKey)
     {
         this.discussionKey = discussionKey;
+    }
+
+    public void linkWith(MessageType messageType)
+    {
+        this.messageType = messageType;
     }
 
     protected void setPosting()
