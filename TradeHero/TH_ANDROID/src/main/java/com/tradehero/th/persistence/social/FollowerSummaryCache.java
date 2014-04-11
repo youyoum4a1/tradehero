@@ -111,22 +111,27 @@ import timber.log.Timber;
         if (data != null)
         {
             int paidCount = 0;
-            int totalCount = 0;
+            int freeCount = 0;
             List<UserFollowerDTO> followerDTOList = data.userFollowers;
             if (followerDTOList != null)
             {
-                totalCount = followerDTOList.size();
+                //totalCount = followerDTOList.size();
                 for(UserFollowerDTO follower:followerDTOList)
                 {
-                    if (follower.isFreeFollow)
+                    if (!follower.isFreeFollow)
                     {
                         paidCount += 1;
                     }
+                    else
+                    {
+                        freeCount += 1;
+                    }
+
                 }
 
             }
             data.paidFollowerCount = paidCount;
-            data.freeFollowerCount = totalCount - paidCount;
+            data.freeFollowerCount = freeCount;
 
         }
     }
@@ -158,7 +163,7 @@ import timber.log.Timber;
 
         for(UserFollowerDTO follower:allFollowers)
         {
-            if (follower.isFreeFollow)
+            if (!follower.isFreeFollow)
             {
                 paidFollowerSummaryDTO.userFollowers.add(follower);
             }else {

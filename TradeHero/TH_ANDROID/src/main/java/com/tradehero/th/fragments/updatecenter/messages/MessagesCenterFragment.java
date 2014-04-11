@@ -111,6 +111,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
+        Timber.d("onItemClick %d",position);
     }
 
     private void initViews(View view)
@@ -119,8 +120,8 @@ public class MessagesCenterFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         messagesView = (MessagesView) view;
         ListView listView = messagesView.getListView();
-        //listView.setOnScrollListener(new OnScrollListener());
-        //listView.setOnItemClickListener(this);
+        listView.setOnScrollListener(new OnScrollListener());
+        listView.setOnItemClickListener(this);
 
         if (messageListKey == null)
         {
@@ -197,12 +198,15 @@ public class MessagesCenterFragment extends DashboardFragment
 
         @Override public void onClickBackView(int position)
         {
+            Timber.d("SwipeListener onClickBackView");
             SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
             swipeListView.dismiss(position);
+
         }
 
         @Override public void onDismiss(int[] reverseSortedPositions)
         {
+            Timber.d("SwipeListener onDismiss");
             MessageListAdapter adapter = getListAdaper();
             if (adapter != null)
             {
@@ -212,6 +216,11 @@ public class MessagesCenterFragment extends DashboardFragment
             }
         }
 
+    }
+
+    private void removeMessage(int position)
+    {
+        //messageListCache.get().get()
     }
 
     private void saveNewPage(MessageHeaderIdList value)

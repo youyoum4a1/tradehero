@@ -14,6 +14,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 12/16/13.
@@ -96,6 +97,7 @@ public class HeroManagerInfoFetcher
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
         if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
+            Timber.d("fetchHeroes get the result and return %d ",heroIds.size());
             if (this.heroListListener != null)
             {
                 this.heroListListener.onDTOReceived(heroKey, heroIdExtWrapper, true);
@@ -103,6 +105,7 @@ public class HeroManagerInfoFetcher
         }
         else
         {
+            Timber.d("fetchHeroes try to fetch");
             if (heroListFetchTask != null)
             {
                 heroListFetchTask.setListener(null);

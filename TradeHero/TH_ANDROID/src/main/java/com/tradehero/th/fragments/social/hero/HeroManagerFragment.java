@@ -55,6 +55,31 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         addTabs();
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        Timber.d("onStart");
+    }
+
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        Timber.d("onResume");
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        Timber.d("onPause");
+    }
+
+    @Override public void onStop()
+    {
+        super.onStop();
+        Timber.d("onStop");
+    }
+
     private void addTabs()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -158,6 +183,12 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     {
         super.onDestroy();
         Timber.d("onDestroy");
+    }
+
+    @Override public void onDetach()
+    {
+        super.onDetach();
+        Timber.d("onDetach");
     }
 
     OnHeroesLoadedListener onHeroesLoadedListener = new OnHeroesLoadedListener()
