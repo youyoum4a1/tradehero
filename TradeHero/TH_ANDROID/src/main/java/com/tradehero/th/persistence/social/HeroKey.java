@@ -3,50 +3,42 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/**
- * Created by tradehero on 14-4-1.
- */
 public class HeroKey implements DTOKey
 {
-    public UserBaseKey userBaseKey;
-
+    public UserBaseKey followerKey;
     public HeroType heroType;
 
-
-    public HeroKey(UserBaseKey userBaseKey, HeroType followerType)
+    public HeroKey(UserBaseKey followerKey, HeroType followerType)
     {
-        this.userBaseKey = userBaseKey;
+        this.followerKey = followerKey;
         this.heroType = followerType;
     }
 
-
-    @Override
-    public boolean equals(Object o)
+    @Override public boolean equals(Object other)
     {
-        if (this == o) return true;
-        if (!(o instanceof HeroKey)) return false;
-
-        HeroKey that = (HeroKey) o;
-
-        if (heroType != that.heroType) return false;
-        if (userBaseKey != null ? !userBaseKey.equals(that.userBaseKey) : that.userBaseKey != null)
+        if (this == other)
+        {
+            return true;
+        }
+        if (!(other instanceof HeroKey))
         {
             return false;
         }
 
-        return true;
+        HeroKey that = (HeroKey) other;
+
+        return (heroType == that.heroType) &&
+                (followerKey == null ? that.followerKey == null : followerKey.equals(that.followerKey));
     }
 
-    @Override
-    public int hashCode()
+    @Override public int hashCode()
     {
-        int result = userBaseKey != null ? userBaseKey.hashCode() : 0;
-        result = 31 * result + (heroType != null ? heroType.hashCode() : 0);
-        return result;
+        return (followerKey == null ? 0 : followerKey.hashCode()) ^
+                (heroType == null ? 0 : heroType.hashCode());
     }
 
     @Override public String toString()
     {
-       return String.format("UserBaseKey %s,HeroType%s",userBaseKey,heroType);
+        return String.format("HeroKey %s, HeroType%s", followerKey, heroType);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:18 AM Copyright (c) TradeHero */
@@ -28,12 +30,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
     {
-        this(context, null);
+        super(context);
     }
 
     public MarkdownTextView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public MarkdownTextView(Context context, AttributeSet attrs, int defStyle)
@@ -41,6 +43,25 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        DaggerUtils.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        setMovementMethod(null);
+        super.onDetachedFromWindow();
+    }
 
     @Override public void setText(CharSequence text, BufferType type)
     {

@@ -10,30 +10,26 @@ import retrofit.http.Path;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 9:24 PM To change this template use File | Settings | File Templates. */
 public interface FollowerService
 {
-    //<editor-fold desc="Get Followers Summary">
-    @GET("/followersSummary/all/{userId}")
-    FollowerSummaryDTO getFollowersSummary(
-            @Path("userId") int userId)
-        throws RetrofitError;
+    //<editor-fold desc="Get All Followers Summary">
+    @GET("/followersSummary/all/{heroId}")
+    FollowerSummaryDTO getAllFollowersSummary(
+            @Path("heroId") int heroId);
 
-
-
-    @GET("/followersSummary/all/{userId}")
-    void getFollowersSummary(
-            @Path("userId") int userId,
+    @GET("/followersSummary/all/{heroId}")
+    void getAllFollowersSummary(
+            @Path("heroId") int heroId,
             Callback<FollowerSummaryDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    @GET("/followersSummary/all/{userId}/{followerId}")
+    @GET("/followersSummary/all/{heroId}/{followerId}")
     UserFollowerDTO getFollowerSubscriptionDetail(
-            @Path("userId") int userId,
-            @Path("followerId") int followerId)
-        throws RetrofitError;
+            @Path("heroId") int heroId,
+            @Path("followerId") int followerId);
 
-    @GET("/followersSummary/all/{userId}/{followerId}")
+    @GET("/followersSummary/all/{heroId}/{followerId}")
     void getFollowerSubscriptionDetail(
-            @Path("userId") int userId,
+            @Path("heroId") int heroId,
             @Path("followerId") int followerId,
             Callback<UserFollowerDTO> callback);
     //</editor-fold>

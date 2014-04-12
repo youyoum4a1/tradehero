@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.discussion.DiscussionView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/discussion_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:listItemLayout="@layout/timeline_discussion_comment_item"
+    app:topicLayout="@layout/news_detail_view_header"
+    >
+  <ListView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@android:id/list"
+      android:listSelector="@color/transparent"
+      android:divider="@color/transparent"
+      android:paddingBottom="@dimen/discussion_comment_box_height"
+      />
+
+  <include layout="@layout/post_comment_widget"/>
+</com.tradehero.th.fragments.discussion.DiscussionView>

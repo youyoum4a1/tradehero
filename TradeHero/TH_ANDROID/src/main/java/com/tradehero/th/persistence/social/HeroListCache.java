@@ -1,16 +1,12 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroId;
 import com.tradehero.th.api.social.HeroIdExt;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
-import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +52,7 @@ import javax.inject.Singleton;
             return super.get(key);
         }
         else {
-            HeroIdExtWrapper allHeros = get(new HeroKey(key.userBaseKey,HeroType.ALL));
+            HeroIdExtWrapper allHeros = get(new HeroKey(key.followerKey,HeroType.ALL));
             if (allHeros != null && allHeros.heroIdList != null)
             {
                 Map<HeroType,HeroIdList> herosMap = splitHeros(allHeros.heroIdList);
@@ -95,7 +91,7 @@ import javax.inject.Singleton;
             for (HeroDTO heroDTO : fleshedValues)
             {
                 //THLog.d(TAG, heroDTO.toString());
-                heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.userBaseKey));
+                heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.followerKey));
 
                 if (forAllHeros)
                 {
@@ -129,7 +125,7 @@ import javax.inject.Singleton;
                 put(key, AllHeroIdExtWrapper);
             }else
             {
-                key = new HeroKey(key.userBaseKey,HeroType.ALL);
+                key = new HeroKey(key.followerKey,HeroType.ALL);
                 //cache all heros
                 put(key, AllHeroIdExtWrapper);
             }

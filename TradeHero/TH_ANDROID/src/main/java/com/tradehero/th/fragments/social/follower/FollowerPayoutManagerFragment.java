@@ -14,7 +14,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;

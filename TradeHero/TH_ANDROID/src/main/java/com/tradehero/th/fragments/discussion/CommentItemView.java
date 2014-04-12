@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -14,57 +13,46 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 5:47 PM Copyright (c) TradeHero
  */
-public class CommentView extends LinearLayout
-        implements DTOView<DiscussionDTO>
+public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
-    @InjectView(R.id.timeline_item_content) TextView content;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
-    @InjectView(R.id.timeline_time) TextView time;
 
-    @InjectView(R.id.vote_pair) VotePair votePair;
-    @InjectView(R.id.timeline_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) TextView more;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Provider<PrettyTime> prettyTime;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
     private DiscussionDTO discussionDTO;
 
     //<editor-fold desc="Constructors">
-    public CommentView(Context context)
+    public CommentItemView(Context context)
     {
         super(context);
     }
 
-    public CommentView(Context context, AttributeSet attrs)
+    public CommentItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public CommentView(Context context, AttributeSet attrs, int defStyle)
+    public CommentItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -84,27 +72,45 @@ public class CommentView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(DiscussionDTO dto)
+    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        this.discussionDTO = dto;
+        super.linkWith(abstractDiscussionDTO, andDisplay);
 
-        if (discussionDTO != null)
+        if (abstractDiscussionDTO instanceof DiscussionDTO)
+        {
+            linkWith((DiscussionDTO) abstractDiscussionDTO, andDisplay);
+        }
+    }
+
+    private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
+    {
+        this.discussionDTO = discussionDTO;
+
+        linkWith(discussionDTO.user, true);
+
+        display(discussionDTO);
+    }
+
+    private void display(DiscussionDTO discussionDTO)
+    {
+    }
+
+    private void linkWith(UserBaseDTO user, boolean andDisplay)
+    {
+        if (andDisplay && user != null)
         {
             // username
             displayUsername(discussionDTO.user);
 
             // user profile picture
             displayUserProfilePicture(discussionDTO.user);
-
-            display((AbstractDiscussionDTO) discussionDTO);
         }
     }
-
 
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more
+            R.id.discussion_action_button_more
     })
     void onItemClicked(View view)
     {
@@ -114,7 +120,7 @@ public class CommentView extends LinearLayout
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
-            case R.id.timeline_action_button_more:
+            case R.id.discussion_action_button_more:
                 //PopupMenu popUpMenu = createActionPopupMenu();
                 //popUpMenu.show();
                 break;
@@ -122,13 +128,13 @@ public class CommentView extends LinearLayout
     }
 
     @Optional @OnClick({
-            R.id.timeline_action_button_comment
+            R.id.discussion_action_button_comment_count
     })
     void onCommentClicked(View view)
     {
         switch (view.getId())
         {
-            case R.id.timeline_action_button_comment:
+            case R.id.discussion_action_button_comment_count:
                 openDiscussion();
                 break;
         }
@@ -169,16 +175,6 @@ public class CommentView extends LinearLayout
                 .into(avatar);
     }
 
-    private void displayComment(AbstractDiscussionDTO item)
-    {
-        content.setText(item.text);
-    }
-
-    private void displayCommentTime(AbstractDiscussionDTO item)
-    {
-        time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
-    }
-
     private void openOtherTimeline()
     {
         if (discussionDTO != null)
@@ -194,26 +190,5 @@ public class CommentView extends LinearLayout
                 }
             }
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-
-    public void display(NewsItemDTO newsItemDTO)
-    {
-        display((AbstractDiscussionDTO) newsItemDTO);
-    }
-
-    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
-    {
-        // markup text
-        displayComment(abstractDiscussionDTO);
-
-        // timeline time
-        displayCommentTime(abstractDiscussionDTO);
-
-        votePair.display(abstractDiscussionDTO);
     }
 }

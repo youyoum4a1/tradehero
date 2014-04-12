@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
-import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
 import dagger.Module;
 
 /**
@@ -12,7 +11,6 @@ import dagger.Module;
         injects = {
                 NewsDetailSummaryView.class,
                 NewsDetailFullView.class,
-                NewsDiscussionListLoader.class
         },
         complete = false,
         library = true

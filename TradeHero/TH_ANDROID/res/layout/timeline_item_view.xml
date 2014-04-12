@@ -75,7 +75,7 @@
           />
 
       <TextView
-          android:id="@+id/timeline_time"
+          android:id="@+id/discussion_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
@@ -89,7 +89,7 @@
     </RelativeLayout>
 
     <com.tradehero.th.widget.MarkdownTextView
-        android:id="@+id/timeline_item_content"
+        android:id="@+id/discussion_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/timeline_item_top_right"
@@ -104,7 +104,6 @@
         />
   </RelativeLayout>
 
-  <!--<include layout="@layout/timeline_item_action_buttons"/>-->
-  <include layout="@layout/timeline_item_action_buttons_2_0"/>
+  <include layout="@layout/discussion_action_buttons"/>
 
 </com.tradehero.th.fragments.timeline.TimelineItemView>

@@ -139,7 +139,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserId.get());
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

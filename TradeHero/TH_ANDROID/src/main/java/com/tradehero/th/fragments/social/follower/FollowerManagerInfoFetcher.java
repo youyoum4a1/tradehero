@@ -17,18 +17,23 @@ public class FollowerManagerInfoFetcher
 {
     public static final String TAG = FollowerManagerInfoFetcher.class.getSimpleName();
 
-    @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
-    private DTOCache.GetOrFetchTask<HeroKey, FollowerSummaryDTO> followerSummaryFetchTask;
-    private final DTOCache.Listener<HeroKey, FollowerSummaryDTO> followerSummaryListener;
+    @Inject protected FollowerSummaryCache followerSummaryCache;
+    private DTOCache.GetOrFetchTask<UserBaseKey, FollowerSummaryDTO> followerSummaryFetchTask;
+    private final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
 
-    public FollowerManagerInfoFetcher(final DTOCache.Listener<HeroKey, FollowerSummaryDTO> followerSummaryListener)
+    public FollowerManagerInfoFetcher(final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
     {
         super();
         this.followerSummaryListener = followerSummaryListener;
         DaggerUtils.inject(this);
     }
 
-    public void onPause()
+    public void onDestroyView()
+    {
+        detachFetchTask();
+    }
+
+    protected void detachFetchTask()
     {
         if (this.followerSummaryFetchTask != null)
         {
@@ -37,14 +42,10 @@ public class FollowerManagerInfoFetcher
         this.followerSummaryFetchTask = null;
     }
 
-    public void fetch(final UserBaseKey followedId,HeroType followerType)
+    public void fetch(final UserBaseKey heroId)
     {
-        if (this.followerSummaryFetchTask != null)
-        {
-            this.followerSummaryFetchTask.setListener(null);
-        }
-        HeroKey followerKey = new HeroKey(followedId,followerType);
-        this.followerSummaryFetchTask = this.followerSummaryCache.get().getOrFetch(followerKey, this.followerSummaryListener);
+        detachFetchTask();
+        this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, this.followerSummaryListener);
         this.followerSummaryFetchTask.execute();
     }
 }

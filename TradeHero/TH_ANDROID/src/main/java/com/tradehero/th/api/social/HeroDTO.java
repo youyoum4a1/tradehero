@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.api.social.key.HeroId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;

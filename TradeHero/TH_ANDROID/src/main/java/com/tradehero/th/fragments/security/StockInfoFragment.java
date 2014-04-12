@@ -15,10 +15,11 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -31,6 +32,8 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 10:46 AM To change this template use File | Settings | File Templates. */
@@ -355,7 +358,17 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (newsHeadlineAdapter != null && newsHeadlineList !=null)
         {
-            newsHeadlineAdapter.setItems(newsHeadlineList.getData());
+            List<NewsItemDTO> data = newsHeadlineList.getData();
+            List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
+
+            if (data != null)
+            {
+                for (NewsItemDTO newsItemDTO: data)
+                {
+                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
+                }
+            }
+            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
         }
     }
 

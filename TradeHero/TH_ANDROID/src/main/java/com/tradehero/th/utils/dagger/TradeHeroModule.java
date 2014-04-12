@@ -42,8 +42,8 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.news.HeadlineFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
@@ -55,8 +55,6 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.fragments.security.NewsDetailFragment;
-import com.tradehero.th.fragments.security.NewsTitleListFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -75,7 +73,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
-import com.tradehero.th.fragments.social.follower.PrimiumFollowerFragment;
+import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -107,7 +105,6 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.HeadlineListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -196,7 +193,7 @@ import javax.inject.Singleton;
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
-                        NewsTitleListFragment.class,
+                        NewsHeadlineFragment.class,
                         ChartFragment.class,
                         StockInfoValueFragment.class,
                         WarrantInfoValueFragment.class,
@@ -226,7 +223,7 @@ import javax.inject.Singleton;
                         HeroListItemView.class,
                         FollowerManagerFragment.class,
                         AllFollowerFragment.class,
-                        PrimiumFollowerFragment.class,
+                        PremiumFollowerFragment.class,
                         FreeFollowerFragment.class,
                         FollowerManagerInfoFetcher.class,
                         FollowerPayoutManagerFragment.class,
@@ -323,9 +320,6 @@ import javax.inject.Singleton;
                         //binding
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
-                        NewsDetailFragment.class,
-                        HeadlineFragment.class,
-                        HeadlineListLoader.class,
 
                         PrivateMessageFragment.class,
                         PrivateMessageBubbleAdapter.class,

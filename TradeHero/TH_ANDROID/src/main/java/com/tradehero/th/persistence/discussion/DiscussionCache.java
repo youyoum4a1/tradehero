@@ -5,10 +5,12 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,14 +22,19 @@ import javax.inject.Singleton;
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
+    private final Lazy<NewsCache> newsCache;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
+            Lazy<NewsCache> newsCache,
             DiscussionServiceWrapper discussionServiceWrapper)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
+
+        // very hacky, but server hacks it first :(
+        this.newsCache = newsCache;
     }
 
     @Override protected AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
@@ -38,7 +45,7 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            // TODO
+            return newsCache.get().getOrFetch((NewsItemDTOKey) discussionKey);
         }
         else
         {

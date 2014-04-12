@@ -14,7 +14,7 @@
     <include layout="@layout/vote_pair"/>
 
     <TextView
-        android:id="@+id/timeline_action_button_more"
+        android:id="@+id/discussion_action_button_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/comment_action_buttons_horizontal_padding"

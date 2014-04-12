@@ -4,42 +4,34 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FontUtil;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by julien on 11/10/13
  *
  * modified by Wang Liang.
  */
-public class NewsHeadlineView extends LinearLayout
-        implements DTOView<NewsItemDTO>, THDialog.OnDialogItemClickListener
+public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
+        implements THDialog.OnDialogItemClickListener
 {
-    @InjectView(R.id.news_title_date) TextView dateTextView;
-    @InjectView(R.id.news_title_description) TextView descView;
-    @InjectView(R.id.news_action_button_comment) View actionCommentView;
-    @InjectView(R.id.news_title_title) TextView titleTextView;
-    @InjectView(R.id.news_item_layout_wrapper) View titleViewWrapper;
-    @InjectView(R.id.news_item_placeholder) View placeHolderView;
-    @InjectView(R.id.news_action_tv_more) View moreView;
-    @InjectView(R.id.news_action_tv_more) TextView more;
+    @InjectView(R.id.news_title_description) TextView newsDescription;
+    @InjectView(R.id.news_title_title) TextView newsTitle;
+    @InjectView(R.id.news_source) TextView newsSource;
 
-    @Inject FontUtil fontUtil;
-
-    private NewsItemDTO newsHeadline;
+    private NewsItemDTO newsItemDTO;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -61,16 +53,20 @@ public class NewsHeadlineView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+
+        ButterKnife.inject((NewsHeadlineView) this, this);
         DaggerUtils.inject(this);
-
-        initView();
     }
 
-    private void initView()
+    @Override
+    protected void onDetachedFromWindow()
     {
-        fontUtil.setTypeFace(more, FontUtil.FontType.AWESOME);
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
     }
+
+    //<editor-fold desc="Related to share dialog">
+    // TODO
 
     @Override
     public void onClick(int whichButton)
@@ -87,73 +83,107 @@ public class NewsHeadlineView extends LinearLayout
     /**
      * show dialog including sharing and translation.
      */
-    @OnClick(R.id.news_action_tv_more) void showShareDialog()
+    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsHeadline, true);
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, true);
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
+    //</editor-fold>
 
-    @Override
-    protected void onDetachedFromWindow()
+    /**
+     * TODO this event should be handled by DiscussionActionButtonsView,
+     */
+    @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
     {
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
+        if (discussionKey != null)
+        {
+            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionKey.getArgs());
+        }
     }
 
-    @Override public void display(NewsItemDTO dto)
+    @Override public void display(NewsItemDTOKey discussionKey)
     {
-        this.newsHeadline = dto;
-        displayNews();
+        super.display(discussionKey);
+    }
+
+    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    {
+        super.linkWith(abstractDiscussionDTO, andDisplay);
+
+        if (abstractDiscussionDTO instanceof NewsItemDTO)
+        {
+            linkWith((NewsItemDTO) abstractDiscussionDTO, andDisplay);
+        }
+    }
+
+    protected void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
+    {
+        this.newsItemDTO = newsItemDTO;
+
+        if (andDisplay)
+        {
+            if (newsItemDTO != null)
+            {
+                displayTitle();
+                displayDescription();
+                displaySource();
+            }
+            else
+            {
+                resetViews();
+            }
+        }
+    }
+
+    private void resetViews()
+    {
+        resetTitle();
+        resetDescription();
+        resetSource();
+    }
+
+    private void displaySource()
+    {
+        newsSource.setText(parseHost(newsItemDTO.url));
+    }
+
+    private void resetSource()
+    {
+        newsSource.setText(null);
+    }
+
+    private void displayDescription()
+    {
+        newsDescription.setText(newsItemDTO.description);
+    }
+
+    private void resetDescription()
+    {
+        newsDescription.setText(null);
+    }
+
+    private void displayTitle()
+    {
+        newsTitle.setText(newsItemDTO.title);
+    }
+
+    private void resetTitle()
+    {
+        newsTitle.setText(null);
     }
 
     private String parseHost(String url)
     {
         try
         {
-            String host = new URL(url).getHost();
-            return host;
+            return new URL(url).getHost();
         }
         catch (MalformedURLException e)
         {
             return null;
-        }
-    }
-
-    private void displayNews()
-    {
-        if (newsHeadline == null)
-        {
-            return;
-        }
-
-        if (titleTextView != null)
-        {
-            titleTextView.setText(newsHeadline.title);
-        }
-
-        if (dateTextView != null && newsHeadline.createdAtUtc != null)
-        {
-            PrettyTime prettyTime = new PrettyTime();
-            StringBuilder sb = new StringBuilder();
-            String text = prettyTime.format(newsHeadline.createdAtUtc);
-            sb.append(text);
-            if (newsHeadline.url != null)
-            {
-                String source = parseHost(newsHeadline.url);
-                if (source != null)
-                {
-                    sb.append(" via ").append(source);
-                }
-            }
-            dateTextView.setText(sb.toString());
-        }
-
-        if (descView != null)
-        {
-            descView.setText(newsHeadline.description);
         }
     }
 }
