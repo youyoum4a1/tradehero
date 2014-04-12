@@ -232,16 +232,13 @@ public class MessagesCenterFragment extends DashboardFragment
             messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
             listView.setAdapter(messageListAdapter);
         }
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        messageAdapter.setMessageOnClickListener(this);
-        messageAdapter.appendMore(messageKeys);
+        messageListAdapter.setMessageOnClickListener(this);
+        messageListAdapter.appendMore(messageKeys);
     }
 
     private MessageListAdapter getListAdapter()
     {
-        ListView listView = messagesView.getListView();
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        return messageAdapter;
+        return messageListAdapter;
     }
 
     class SwipeListener extends BaseSwipeListViewListener
