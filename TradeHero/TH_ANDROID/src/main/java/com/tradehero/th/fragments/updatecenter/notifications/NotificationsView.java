@@ -99,7 +99,7 @@ public class NotificationsView extends BetterViewAnimator
 
         if (paginatedNotificationListKey == null)
         {
-            paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 0);
+            paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
         }
 
         if (nextPageDelta >= 0)
