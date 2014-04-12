@@ -281,8 +281,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
-            changeTitleNumber(value.size());
-            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
         }
 
         @Override public void onErrorThrown(MessageListKey key, Throwable error)

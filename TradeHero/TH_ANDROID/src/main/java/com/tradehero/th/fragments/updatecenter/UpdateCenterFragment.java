@@ -6,11 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import java.util.ArrayList;
-import java.util.List;
-import timber.log.Timber;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import javax.inject.Inject;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -20,12 +25,18 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 {
     public static final String KEY_PAGE = "page";
 
+    @Inject UserProfileCache userProfileCache;
+    @Inject CurrentUserId currentUserId;
+
     private FragmentTabHost mTabHost;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Timber.d("onCreate");
+
+        fetchUserProfileListener = new FetchUserProfileListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -36,24 +47,47 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+    }
 
-        //addTabs();
-        //TODO
-        changeTabTitleNumber(UpdateCenterTabType.Messages, 80);
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        fetchUserProfile();
+    }
+
+    private void fetchUserProfile()
+    {
+        detachUserProfileTask();
+
+        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, fetchUserProfileListener);
+        fetchUserProfileTask.execute();
+    }
+
+    private void detachUserProfileTask()
+    {
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.setListener(null);
+        }
+        fetchUserProfileTask = null;
     }
 
     @Override public void onDestroyView()
     {
+        // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
         //clearTabs();
 
+        detachUserProfileTask();
+
         super.onDestroyView();
-        Timber.d("onDestroyView");
     }
 
     @Override public void onDestroy()
     {
+        fetchUserProfileListener = null;
+
         super.onDestroy();
-        Timber.d("onDestroy");
     }
 
     private View addTabs()
@@ -94,5 +128,28 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
     {
         changeTabTitleNumber(tabType, number);
+    }
+
+
+    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        if (andDisplay)
+        {
+            changeTabTitleNumber(UpdateCenterTabType.Messages, userProfileDTO.unreadMessageThreadsCount);
+            changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
+        }
     }
 }
