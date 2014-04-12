@@ -60,7 +60,7 @@ public class AbstractDiscussionFragment extends DashboardFragment
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        if (andDisplay)
+        if (andDisplay && discussionView != null)
         {
             discussionView.display(discussionKey);
         }

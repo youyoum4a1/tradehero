@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +19,16 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationKeyList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.notification.NotificationListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
@@ -45,6 +52,8 @@ public class NotificationsView extends BetterViewAnimator
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
+    @Inject UserProfileCache userProfileCache;
+    @Inject CurrentUserId currentUserId;
 
     private PaginatedNotificationListKey paginatedNotificationListKey;
     private boolean loading;
@@ -305,6 +314,7 @@ public class NotificationsView extends BetterViewAnimator
                 {
                     notificationDTO.unread = false;
                     notificationCache.get().put(notificationKey, notificationDTO);
+                    updateUnreadStatusInUserProfileCache();
                 }
                 middleCallbackMap.remove(pushId);
                 callbackMap.remove(pushId);
@@ -315,5 +325,23 @@ public class NotificationsView extends BetterViewAnimator
         {
             Timber.d("Report failure for notification: %d", pushId);
         }
+    }
+
+    private void updateUnreadStatusInUserProfileCache()
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        --userProfileDTO.unreadNotificationsCount;
+        userProfileCache.put(userBaseKey, userProfileDTO);
+
+        requestUpdateTabCounter();
+    }
+
+    private void requestUpdateTabCounter()
+    {
+        // TODO remove this hack after refactor messagecenterfragment
+        Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(requestUpdateIntent);
     }
 }

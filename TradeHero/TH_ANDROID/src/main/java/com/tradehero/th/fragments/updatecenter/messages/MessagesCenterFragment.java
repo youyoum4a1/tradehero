@@ -237,8 +237,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             listView.setAdapter(messageListAdapter);
         }
-        listView.setAdapter(messageListAdapter);
-
         MessageListAdapter adapter =  (MessageListAdapter)listView.getAdapter();
         adapter.setMessageOnClickListener(this);
         adapter.appendMore(messageKeys);
@@ -246,9 +244,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private MessageListAdapter getListAdapter()
     {
-        ListView listView = messagesView.getListView();
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        return messageAdapter;
+        return messageListAdapter;
     }
 
     class SwipeListener extends BaseSwipeListViewListener
