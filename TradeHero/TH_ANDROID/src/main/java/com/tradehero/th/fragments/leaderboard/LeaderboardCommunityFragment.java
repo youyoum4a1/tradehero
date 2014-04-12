@@ -278,7 +278,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(getString(R.string.leaderboard_community_leaderboards));
+        actionBar.setTitle(getString(R.string.dashboard_community));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

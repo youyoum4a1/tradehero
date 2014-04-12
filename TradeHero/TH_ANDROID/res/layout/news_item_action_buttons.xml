@@ -31,6 +31,7 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:layout_gravity="center_vertical"
+        android:drawablePadding="10dp"
         android:text="0"
         tools:text="200"
         />

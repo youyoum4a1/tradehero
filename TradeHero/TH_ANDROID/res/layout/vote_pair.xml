@@ -15,6 +15,7 @@
         style="@style/TH_VoteView"
         android:id="@+id/timeline_action_button_vote_up"
         android:drawableLeft="@drawable/icn_upvote"
+        android:drawablePadding="10dp"
         android:text="0"
         tools:text="10"
         />
@@ -24,6 +25,7 @@
         android:id="@+id/timeline_action_button_vote_down"
         android:drawableLeft="@drawable/icn_downvote"
         android:text="0"
+        android:drawablePadding="10dp"
         tools:text="2"
         />
   </com.tradehero.th.widget.VotePair>

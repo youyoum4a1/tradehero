@@ -3,18 +3,22 @@ package com.tradehero.th.fragments.discussion.stock;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
@@ -106,6 +110,15 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         Bundle args = new Bundle();
         args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
         getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
+    }
+
+    //TODO very bad way
+    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
+    {
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
+        ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id, discussionDTO.text, discussionDTO.getDiscussionKey(), true);
+        THDialog.showUpDialog(getContext(), contentView, callback);
     }
 
     private void linkWith(UserBaseDTO user, boolean andDisplay)

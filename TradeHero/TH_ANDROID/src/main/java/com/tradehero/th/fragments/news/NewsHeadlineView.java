@@ -25,7 +25,7 @@ import java.net.URL;
  *
  * modified by Wang Liang.
  */
-public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
+public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
 {
     @InjectView(R.id.news_title_description) TextView newsDescription;
@@ -85,9 +85,12 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, true);
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO.title, newsItemDTO.description,
+                newsItemDTO.langCode, newsItemDTO.id, newsItemDTO.text,
+                newsItemDTO.getDiscussionKey(), true);
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
     //</editor-fold>
@@ -100,7 +103,8 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         if (discussionKey != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
+                    discussionKey.getArgs());
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
@@ -110,7 +114,8 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         super.display(discussionKey);
     }
 
-    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    @Override
+    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
 
@@ -181,8 +186,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         try
         {
             return new URL(url).getHost();
-        }
-        catch (MalformedURLException e)
+        } catch (MalformedURLException e)
         {
             return null;
         }

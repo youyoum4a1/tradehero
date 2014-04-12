@@ -26,7 +26,8 @@ import javax.inject.Inject;
  */
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
-    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDiscussionFragment.class.getName() + ".title_bg";
+    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
+            NewsDiscussionFragment.class.getName() + ".title_bg";
 
     private NewsItemDTO mDetailNewsItemDTO;
 
@@ -43,7 +44,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_discussion, container, false);
         return view;
@@ -155,7 +157,9 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         View contentView = LayoutInflater.from(getSherlockActivity())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO, false);
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO.title,
+                mDetailNewsItemDTO.description, mDetailNewsItemDTO.langCode, mDetailNewsItemDTO.id,
+                mDetailNewsItemDTO.text, mDetailNewsItemDTO.getDiscussionKey(), false);
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
     //</editor-fold>
@@ -168,7 +172,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
     {
-        @Override public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }

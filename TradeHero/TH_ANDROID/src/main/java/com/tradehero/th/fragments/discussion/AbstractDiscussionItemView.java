@@ -85,7 +85,8 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     {
         detachFetchDiscussionTask();
 
-        discussionFetchTask = discussionCache.getOrFetch(discussionKey, false, discussionFetchListener);
+        discussionFetchTask =
+                discussionCache.getOrFetch(discussionKey, false, discussionFetchListener);
         discussionFetchTask.execute();
     }
 
@@ -122,20 +123,25 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
 
     private void displayContent(AbstractDiscussionDTO item)
     {
-        content.setText(item.text);
+        if (content != null)
+        {
+            content.setText(item.text);
+        }
     }
 
     private void displayTime(AbstractDiscussionDTO abstractDiscussionDTO)
     {
-        if (abstractDiscussionDTO.createdAtUtc != null)
+        if (abstractDiscussionDTO.createdAtUtc != null && time != null)
         {
             time.setText(prettyTime.get().formatUnrounded(abstractDiscussionDTO.createdAtUtc));
         }
     }
 
-    private class DiscussionFetchListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+    private class DiscussionFetchListener
+            implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }

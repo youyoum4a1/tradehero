@@ -16,6 +16,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -55,8 +56,15 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private THDialog.DialogInterface dialogCallback;
 
-    private NewsItemDTO newsItemDTO;
+    //private NewsItemDTO newsItemDTO;
     private boolean mIsTranslateTitle;
+
+    private int id;
+    private String title;
+    private String description;
+    private String langCode;
+    private String text;
+    private DiscussionKey discussionKey;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
     @Inject Lazy<TranslationServiceWrapper> translationServiceWrapperLazy;
@@ -82,7 +90,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     {
         this.titleSwitcher = (ViewSwitcher) findViewById(R.id.news_action_share_switcher);
         this.newsTitleView = (TextView) titleSwitcher.findViewById(R.id.news_action_share_title);
-        this.newsSubTitleView = (TextView) titleSwitcher.findViewById(R.id.news_action_share_subtitle);
+        this.newsSubTitleView =
+                (TextView) titleSwitcher.findViewById(R.id.news_action_share_subtitle);
         this.shareTitleView = (TextView) titleSwitcher.findViewById(R.id.news_action_share_title2);
 
         this.backView = findViewById(R.id.news_action_back);
@@ -132,19 +141,20 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void setNewsTitle()
     {
-        if (newsItemDTO != null)
+        //if (newsItemDTO != null)
+        //{
+        newsTitleView.setText(title);
+        //newsTitleView.setText(newsItemDTO.title);
+        if (!TextUtils.isEmpty(description))
         {
-            newsTitleView.setText(newsItemDTO.title);
-            if (!TextUtils.isEmpty(newsItemDTO.description))
-            {
-                newsSubTitleView.setText(newsItemDTO.description);
-                //subTitleView.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                newsSubTitleView.setVisibility(View.GONE);
-            }
+            newsSubTitleView.setText(description);
+            //subTitleView.setVisibility(View.VISIBLE);
         }
+        else
+        {
+            newsSubTitleView.setVisibility(View.GONE);
+        }
+        //}
     }
 
     private void setShareTitle()
@@ -191,13 +201,15 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
             default:
                 break;
         }
-        DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS,newsItemDTO.id);
-        discussionServiceWrapperLazy.get().share(key, new TimelineItemShareRequestDTO(socialNetworkEnum),createShareRequestCallback(socialNetworkEnum));
+        DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS, id);
+        discussionServiceWrapperLazy.get().share(key,
+                new TimelineItemShareRequestDTO(socialNetworkEnum),
+                createShareRequestCallback(socialNetworkEnum));
     }
 
     private void shareNewsToWeChat()
     {
-        wechatSharer.share(getContext(), newsItemDTO.getDiscussionKey());
+        wechatSharer.share(getContext(), discussionKey);
     }
 
     private Callback<DiscussionDTO> createShareRequestCallback(
@@ -248,8 +260,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                     Timber.d("serviceWrapper " + serviceWrapper);
                     //TODO zh enough ?
                     return translationServiceWrapperLazy.get()
-                            .translate(newsItemDTO.langCode, "zh",
-                                    mIsTranslateTitle ? newsItemDTO.title : newsItemDTO.text);
+                            .translate(langCode, "zh",
+                                    mIsTranslateTitle ? title : text);
                 } catch (Exception e)
                 {
                     Timber.e(e, "Translation Error");
@@ -345,9 +357,22 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         this.dialogCallback = listener;
     }
 
-    public void setNewsData(NewsItemDTO data, boolean isTranslateTitle)
+    //public void setNewsData(NewsItemDTO data, boolean isTranslateTitle)
+    //{
+    //    this.newsItemDTO = data;
+    //    setNewsTitle();
+    //    mIsTranslateTitle = isTranslateTitle;
+    //}
+
+    public void setNewsData(String title, String description, String langCode, int id, String text,
+            DiscussionKey discussionKey, boolean isTranslateTitle)
     {
-        this.newsItemDTO = data;
+        this.title = title;
+        this.description = description;
+        this.langCode = langCode;
+        this.id = id;
+        this.text = text;
+        this.discussionKey = discussionKey;
         setNewsTitle();
         mIsTranslateTitle = isTranslateTitle;
     }

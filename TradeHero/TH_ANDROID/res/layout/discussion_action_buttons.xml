@@ -29,6 +29,7 @@
         android:shadowColor="@color/timeline_action_button_text_color_shadow"
         android:shadowDy="1"
         android:shadowRadius="1"
+        android:drawablePadding="10dp"
         android:text="0"
         tools:text="200"
         />
