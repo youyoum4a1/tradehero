@@ -5,7 +5,8 @@
   <string name="alipay_stock_alerts_subject">Trade Hero Stock Alerts</string>
   <string name="alipay_reset_portfolio_subject">Trade Hero Reset Portfolio</string>
   <string name="alipay_cancel">You have canceled this payment</string>
-  <string name="alipay_success">This payment is success finished, please check your account and there is small delay in our server</string>
+  <string name="alipay_success">This payment is success finished, please check your account</string>
+  <string name="alipay_not_sure">This payment is success finished, please check your account and there is small delay in our server</string>
   <array name="alipay_virtual_dollars_array">
     <item>10 000 virtual dollars (¥6.00)</item>
     <item>50 000 virtual dollars (¥18.00)</item>

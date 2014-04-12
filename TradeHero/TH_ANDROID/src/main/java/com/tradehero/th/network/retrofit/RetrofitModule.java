@@ -3,6 +3,7 @@ package com.tradehero.th.network.retrofit;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.billing.alipay.service.AlipayService;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
@@ -190,6 +191,11 @@ public class RetrofitModule
     @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
     {
         return adapter.create(WeChatService.class);
+    }
+
+    @Provides @Singleton AlipayService provideAlipayService(RestAdapter adapter)
+    {
+        return adapter.create(AlipayService.class);
     }
     //</editor-fold>
 

@@ -288,7 +288,6 @@ public class AlertDialogUtil
             {
                 @Override public void onClick(View view)
                 {
-                    //Timber.d("still keep free");
                     dismissFollowDialog();
                 }
             });
@@ -300,7 +299,6 @@ public class AlertDialogUtil
             {
                 @Override public void onClick(View view)
                 {
-                    //Timber.d("premium");
                     dismissFollowDialog();
                     followRequestedListener.followRequested();
                 }
