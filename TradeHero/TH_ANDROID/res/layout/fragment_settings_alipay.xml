@@ -21,6 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left" />
 
+            <!--android:inputType="textEmailAddress"-->
+            <!--app:invalidDrawableRight="@drawable/warning_red"-->
         <com.tradehero.th.widget.ServerValidatedEmailText
             android:id="@+id/settings_alipay_email_text"
             android:hint="@string/settings_alipay_hint"
@@ -28,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dip"
             android:layout_gravity="left|bottom"
-            android:inputType="textEmailAddress"
             android:imeOptions="actionNext"
             style="@style/TradeHero.Authentication.EditText"
 
@@ -36,7 +37,6 @@
             app:invalidDrawable="@drawable/accounts_glyph_email_error"
             app:validDrawable="@drawable/accounts_glyph_email_ok"
             android:drawableRight="@drawable/accounts_glyph_transparent_default"
-            app:invalidDrawableRight="@drawable/warning_red"
             app:validDrawableRight="@drawable/tick_green"
 
             app:minSize="1"

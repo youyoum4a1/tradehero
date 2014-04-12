@@ -150,7 +150,6 @@ public class SettingsAlipayFragment extends DashboardFragment
                     progressDialog.hide();
                     Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                     navigator.popFragment();
-                    Timber.d("lyl update=%b", updateAlipayEmailDTO.updated);
                 }
             }
 
@@ -161,7 +160,6 @@ public class SettingsAlipayFragment extends DashboardFragment
                 {
                     THToast.show(ex.getMessage());
                     progressDialog.hide();
-                    Timber.d("lyl fail %s", ex.getMessage());
                 }
             }
         };
@@ -187,7 +185,6 @@ public class SettingsAlipayFragment extends DashboardFragment
                 if (!isDetached())
                 {
                     alipayAccountText.setText(value.alipayAccount);
-                    Timber.d("lyl %s", value.toString());
                 }
             }
 
@@ -196,7 +193,6 @@ public class SettingsAlipayFragment extends DashboardFragment
                 if (!isDetached())
                 {
                     THToast.show(getString(R.string.error_fetch_your_user_profile));
-                    Timber.e("lyl Error fetching the user profile %s", key, error);
                 }
             }
         };
