@@ -1,8 +1,5 @@
 package com.tradehero.th.fragments.billing;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +11,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -37,7 +33,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
     public static boolean alreadyNotifiedNeedCreateAccount = false;
-    public static int mAlipayType = 0;
 
     @Inject CurrentUserId currentUserId;
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
@@ -163,8 +158,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID,
-                    applicablePortfolio.getArgs());
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
         }
         pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -176,9 +170,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(
-                    FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID,
-                    applicablePortfolio.getArgs());
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
         }
         pushFragment(FollowerManagerFragment.class, bundle);
     }
