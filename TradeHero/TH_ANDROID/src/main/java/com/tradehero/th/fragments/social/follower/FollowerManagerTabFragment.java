@@ -12,13 +12,12 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -114,19 +113,13 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onResume();
         Timber.d("FollowerManagerTabFragment onResume");
         this.followedId = new UserBaseKey(
-                getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID));
+                getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
         //May be null(getSelectedTab)
         //Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
         //int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
         //HeroType followerType = HeroType.fromId(tagId);
-        this.infoFetcher.fetch(this.followedId, followerType);
-    }
-
-    @Override public void onPause()
-    {
-        this.infoFetcher.onPause();
-        super.onPause();
+        this.infoFetcher.fetch(this.followedId);
     }
 
     @Override public void onDestroyView()
@@ -137,6 +130,10 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
         this.viewContainer = null;
         this.followerListAdapter = null;
+        if (this.infoFetcher != null)
+        {
+            this.infoFetcher.onDestroyView();
+        }
         this.infoFetcher = null;
         super.onDestroyView();
     }
@@ -192,11 +189,11 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                     (UserFollowerDTO) followerListAdapter.getItem(position);
             if (followerDTO != null)
             {
-                FollowerId followerId =
-                        new FollowerId(getApplicablePortfolioId().userId, followerDTO.id);
+                FollowerHeroRelationId followerHeroRelationId =
+                        new FollowerHeroRelationId(getApplicablePortfolioId().userId, followerDTO.id);
                 Bundle args = new Bundle();
                 args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
-                        followerId.getArgs());
+                        followerHeroRelationId.getArgs());
                 ((DashboardActivity) getActivity()).getDashboardNavigator()
                         .pushFragment(FollowerPayoutManagerFragment.class, args);
             }
@@ -212,17 +209,17 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     }
 
     private class FollowerManagerFollowerSummaryListener
-            implements DTOCache.Listener<HeroKey, FollowerSummaryDTO>
+            implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(HeroKey key, FollowerSummaryDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
         {
             displayProgress(false);
             display(value);
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(HeroKey key, Throwable error)
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_follower);

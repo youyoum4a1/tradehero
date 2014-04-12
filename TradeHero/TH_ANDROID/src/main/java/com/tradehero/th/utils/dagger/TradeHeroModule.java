@@ -55,7 +55,6 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.fragments.news.NewsDetailFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -74,7 +73,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
-import com.tradehero.th.fragments.social.follower.PrimiumFollowerFragment;
+import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -224,7 +223,7 @@ import javax.inject.Singleton;
                         HeroListItemView.class,
                         FollowerManagerFragment.class,
                         AllFollowerFragment.class,
-                        PrimiumFollowerFragment.class,
+                        PremiumFollowerFragment.class,
                         FreeFollowerFragment.class,
                         FollowerManagerInfoFetcher.class,
                         FollowerPayoutManagerFragment.class,
@@ -321,7 +320,6 @@ import javax.inject.Singleton;
                         //binding
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
-                        NewsDetailFragment.class,
 
                         PrivateMessageFragment.class,
                         PrivateMessageBubbleAdapter.class,

@@ -12,7 +12,7 @@ import retrofit.http.Path;
  */
 public interface WeChatService
 {
-    @POST("/user/{userId}/trackshare")
+    @POST("/users/{userId}/trackshare")
     void trackShare(
             @Path("userId") int userId,
             @Body TrackShareFormDTO trackShareFormDTO,

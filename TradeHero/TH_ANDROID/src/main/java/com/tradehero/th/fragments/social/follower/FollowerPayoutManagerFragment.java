@@ -14,7 +14,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -40,14 +40,14 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private FollowerPaymentListView followerPaymentListView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
-    private FollowerId followerId;
+    private FollowerHeroRelationId followerHeroRelationId;
     private UserFollowerDTO userFollowerDTO;
 
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
-    private DTOCache.Listener<FollowerId, UserFollowerDTO> userFollowerListener;
-    private DTOCache.GetOrFetchTask<FollowerId, UserFollowerDTO> userFollowerFetchTask;
+    private DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
+    private DTOCache.GetOrFetchTask<FollowerHeroRelationId, UserFollowerDTO> userFollowerFetchTask;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
@@ -103,7 +103,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        followerId = new FollowerId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
+        followerHeroRelationId = new FollowerHeroRelationId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
         fetchFollowerSummary();
     }
 
@@ -128,7 +128,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchFollowerSummary()
     {
-        UserFollowerDTO followerDTO = userFollowerCache.get().get(followerId);
+        UserFollowerDTO followerDTO = userFollowerCache.get().get(followerHeroRelationId);
         if (followerDTO != null)
         {
             display(followerDTO);
@@ -137,14 +137,14 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         {
             if (userFollowerListener == null)
             {
-                userFollowerListener = new DTOCache.Listener<FollowerId, UserFollowerDTO>()
+                userFollowerListener = new DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO>()
                 {
-                    @Override public void onDTOReceived(FollowerId key, UserFollowerDTO value, boolean fromCache)
+                    @Override public void onDTOReceived(FollowerHeroRelationId key, UserFollowerDTO value, boolean fromCache)
                     {
                         display(value);
                     }
 
-                    @Override public void onErrorThrown(FollowerId key, Throwable error)
+                    @Override public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
                     {
                         THToast.show("There was an error fetching your follower information");
                     }
@@ -154,7 +154,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             {
                 userFollowerFetchTask.setListener(null);
             }
-            userFollowerFetchTask = userFollowerCache.get().getOrFetch(followerId, userFollowerListener);
+            userFollowerFetchTask = userFollowerCache.get().getOrFetch(followerHeroRelationId, userFollowerListener);
             userFollowerFetchTask.execute();
         }
     }

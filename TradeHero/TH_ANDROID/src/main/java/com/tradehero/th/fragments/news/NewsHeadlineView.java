@@ -14,6 +14,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +29,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
 {
     @InjectView(R.id.news_title_description) TextView newsDescription;
     @InjectView(R.id.news_title_title) TextView newsTitle;
+    @InjectView(R.id.news_source) TextView newsSource;
 
     private NewsItemDTO newsItemDTO;
 
@@ -64,6 +66,8 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     }
 
     //<editor-fold desc="Related to share dialog">
+    // TODO
+
     @Override
     public void onClick(int whichButton)
     {
@@ -79,7 +83,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     /**
      * show dialog including sharing and translation.
      */
-    @OnClick(R.id.news_action_tv_more) void showShareDialog()
+    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
@@ -88,6 +92,17 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
     //</editor-fold>
+
+    /**
+     * TODO this event should be handled by DiscussionActionButtonsView,
+     */
+    @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
+    {
+        if (discussionKey != null)
+        {
+            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionKey.getArgs());
+        }
+    }
 
     @Override public void display(NewsItemDTOKey discussionKey)
     {
@@ -116,28 +131,48 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
                 displayDescription();
                 displaySource();
             }
+            else
+            {
+                resetViews();
+            }
         }
+    }
+
+    private void resetViews()
+    {
+        resetTitle();
+        resetDescription();
+        resetSource();
     }
 
     private void displaySource()
     {
-        parseHost(newsItemDTO.url);
+        newsSource.setText(parseHost(newsItemDTO.url));
+    }
+
+    private void resetSource()
+    {
+        newsSource.setText(null);
     }
 
     private void displayDescription()
     {
-        if (newsDescription != null)
-        {
-            newsDescription.setText(newsItemDTO.description);
-        }
+        newsDescription.setText(newsItemDTO.description);
+    }
+
+    private void resetDescription()
+    {
+        newsDescription.setText(null);
     }
 
     private void displayTitle()
     {
-        if (newsTitle != null)
-        {
-            newsTitle.setText(newsItemDTO.title);
-        }
+        newsTitle.setText(newsItemDTO.title);
+    }
+
+    private void resetTitle()
+    {
+        newsTitle.setText(null);
     }
 
     private String parseHost(String url)

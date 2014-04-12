@@ -1,16 +1,11 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroId;
 import com.tradehero.th.api.social.HeroIdExt;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
-import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,22 +15,23 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
 @Singleton public class HeroListCache extends StraightDTOCache<HeroKey, HeroIdExtWrapper>
 {
-    public static final String TAG = HeroListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected Lazy<UserServiceWrapper> userService;
-    @Inject protected Lazy<HeroCache> heroCache;
+    protected UserServiceWrapper userServiceWrapper;
+    protected HeroCache heroCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public HeroListCache()
+    @Inject public HeroListCache(UserServiceWrapper userServiceWrapper, HeroCache heroCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.userServiceWrapper = userServiceWrapper;
+        this.heroCache = heroCache;
     }
     //</editor-fold>
 
     @Override protected HeroIdExtWrapper fetch(HeroKey key) throws Throwable
     {
-        List<HeroDTO> allHeros = userService.get().getHeroes(key);
+        List<HeroDTO> allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);
     }
 
@@ -55,11 +51,12 @@ import javax.inject.Singleton;
         {
             return super.get(key);
         }
-        else {
-            HeroIdExtWrapper allHeros = get(new HeroKey(key.userBaseKey,HeroType.ALL));
+        else
+        {
+            HeroIdExtWrapper allHeros = get(new HeroKey(key.followerKey, HeroType.ALL));
             if (allHeros != null && allHeros.heroIdList != null)
             {
-                Map<HeroType,HeroIdList> herosMap = splitHeros(allHeros.heroIdList);
+                Map<HeroType, HeroIdList> herosMap = splitHeros(allHeros.heroIdList);
                 if (herosMap != null)
                 {
                     HeroIdList heroIdList = herosMap.get(key.heroType);
@@ -72,9 +69,8 @@ import javax.inject.Singleton;
                 }
             }
 
-           return null;
+            return null;
         }
-
     }
 
     protected HeroIdExtWrapper putInternal(HeroKey key, List<HeroDTO> fleshedValues)
@@ -90,33 +86,33 @@ import javax.inject.Singleton;
             heroIds = new HeroIdList();
             allHeroIds = new HeroIdList();
             HeroIdExt heroIdExt;
-            boolean forHerosGetPaied = (key.heroType == HeroType.PREMIUM);
+            boolean forHerosGetPaid = (key.heroType == HeroType.PREMIUM);
             boolean forAllHeros = (key.heroType == HeroType.ALL);
             for (HeroDTO heroDTO : fleshedValues)
             {
                 //THLog.d(TAG, heroDTO.toString());
-                heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.userBaseKey));
+                heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.followerKey));
 
                 if (forAllHeros)
                 {
-                    heroIdExt.getPaied = heroDTO.isFreeFollow;
+                    heroIdExt.getPaid = heroDTO.isFreeFollow;
                     heroIds.add(heroIdExt);
                 }
-                else if (forHerosGetPaied && heroDTO.isFreeFollow)
+                else if (forHerosGetPaid && heroDTO.isFreeFollow)
                 {
-                    heroIdExt.getPaied = true;
+                    heroIdExt.getPaid = true;
                     heroIds.add(heroIdExt);
                 }
-                else if (!forAllHeros && !forHerosGetPaied && !heroDTO.isFreeFollow)
+                else if (!forAllHeros && !forHerosGetPaid && !heroDTO.isFreeFollow)
                 {
-                    heroIdExt.getPaied = false;
+                    heroIdExt.getPaid = false;
                     heroIds.add(heroIdExt);
                 }
                 allHeroIds.add(heroIdExt);
-                heroCache.get().put(heroIdExt, heroDTO);
+                heroCache.put(heroIdExt, heroDTO);
             }
 
-            int[]result  = computeFollowersTypeCount(fleshedValues);
+            int[] result = computeFollowersTypeCount(fleshedValues);
             AllHeroIdExtWrapper.herosCountGetPaid = result[0];
             AllHeroIdExtWrapper.herosCountNotGetPaid = result[1];
             AllHeroIdExtWrapper.heroIdList = allHeroIds;
@@ -127,72 +123,68 @@ import javax.inject.Singleton;
             if (forAllHeros)
             {
                 put(key, AllHeroIdExtWrapper);
-            }else
+            }
+            else
             {
-                key = new HeroKey(key.userBaseKey,HeroType.ALL);
+                key = new HeroKey(key.followerKey, HeroType.ALL);
                 //cache all heros
                 put(key, AllHeroIdExtWrapper);
             }
-
         }
 
         //but just return needed heros
         return neededHeroIdExtWrapper;
     }
 
-
     ////////////////////
 
     private int[] computeFollowersTypeCount(List<HeroDTO> allHeros)
     {
-        int [] result = new int[2];
+        int[] result = new int[2];
         if (allHeros != null)
         {
 
             int paidCount = 0;
             int notPaidCount = 0;
             int totalCount = allHeros.size();
-                for(HeroDTO hero:allHeros)
+            for (HeroDTO hero : allHeros)
+            {
+                if (hero.active)
                 {
-                    if(hero.active)
+                    if (!hero.isFreeFollow)
                     {
-                        if (!hero.isFreeFollow)
-                        {
-                            paidCount += 1;
-                        }
-                        else
-                        {
-                            notPaidCount+=1;
-                        }
+                        paidCount += 1;
                     }
-
-
+                    else
+                    {
+                        notPaidCount += 1;
+                    }
                 }
+            }
 
             result[0] = paidCount;
             result[1] = notPaidCount;
         }
         return result;
-
     }
 
-    private Map<HeroType,HeroIdList> splitHeros(HeroIdList allHeroIdList)
+    private Map<HeroType, HeroIdList> splitHeros(HeroIdList allHeroIdList)
     {
         if (allHeroIdList == null)
         {
             return null;
         }
-        Map<HeroType,HeroIdList> map = new HashMap<>();
+        Map<HeroType, HeroIdList> map = new HashMap<>();
         HeroIdList herosGetPaid = new HeroIdList();
         HeroIdList herosNotGetPaid = new HeroIdList();
-        map.put(HeroType.PREMIUM,herosGetPaid);
-        map.put(HeroType.FREE,herosNotGetPaid);
+        map.put(HeroType.PREMIUM, herosGetPaid);
+        map.put(HeroType.FREE, herosNotGetPaid);
 
         int size = allHeroIdList.size();
-        for(int i=0;i<size;i++)
+        for (int i = 0; i < size; i++)
         {
-            HeroIdExt heroIdExt = (HeroIdExt)allHeroIdList.get(i);
-            if (heroIdExt.getPaied)
+            HeroIdExt heroIdExt = (HeroIdExt) allHeroIdList.get(i);
+            if (heroIdExt.getPaid)
             {
                 herosGetPaid.add(heroIdExt);
             }
@@ -203,5 +195,4 @@ import javax.inject.Singleton;
         }
         return map;
     }
-
 }

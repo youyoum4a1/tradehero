@@ -19,6 +19,7 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -178,8 +179,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
             int resId = adapter.getBackgroundRes(position);
             NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = newsItemDTOKey.getArgs();
-            bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            getNavigator().pushFragment(NewsDetailFragment.class, bundle);
+            bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+            getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }
 

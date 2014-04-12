@@ -19,10 +19,10 @@ public interface MessageService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    @GET("/messages")
+    @GET("/messages/{discussionType}/{senderId}")
     PaginatedDTO<MessageHeaderDTO> getMessages(
-            @Query("discussType") DiscussionType discussionType,
-            @Query("senderId") Integer senderId,
+            @Path("discussionType") String discussionType,
+            @Path("senderId") Integer senderId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 

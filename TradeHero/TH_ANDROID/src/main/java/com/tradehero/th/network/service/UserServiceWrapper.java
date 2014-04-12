@@ -262,32 +262,32 @@ import retrofit.RetrofitError;
         userService.unfollow(userBaseKey.key, callback);
     }
 
-    public List<HeroDTO> getHeroes(HeroKey followerKey)
+    public List<HeroDTO> getHeroes(HeroKey heroKey)
     {
-        switch (followerKey.heroType)
+        switch (heroKey.heroType)
         {
             case PREMIUM:
-                return userService.getHeroes(followerKey.userBaseKey.key);
+                return userService.getHeroes(heroKey.followerKey.key);
             case FREE:
-                return userService.getHeroes(followerKey.userBaseKey.key);
+                return userService.getHeroes(heroKey.followerKey.key);
             case ALL:
-                return userService.getHeroes(followerKey.userBaseKey.key);
+                return userService.getHeroes(heroKey.followerKey.key);
         }
         return null;
 
 
     }
 
-    public void getHeroes(HeroKey followerKey,Callback<List<HeroDTO>> callback)
+    public void getHeroes(HeroKey heroKey,Callback<List<HeroDTO>> callback)
     {
-        switch (followerKey.heroType)
+        switch (heroKey.heroType)
         {
             case PREMIUM:
-                userServiceAsync.getHeroes(followerKey.userBaseKey.key,callback);
+                userServiceAsync.getHeroes(heroKey.followerKey.key,callback);
             case FREE:
-                userServiceAsync.getHeroes(followerKey.userBaseKey.key, callback);
+                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
             case ALL:
-                userServiceAsync.getHeroes(followerKey.userBaseKey.key, callback);
+                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
         }
 
 

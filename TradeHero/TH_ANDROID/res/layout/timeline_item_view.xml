@@ -104,7 +104,6 @@
         />
   </RelativeLayout>
 
-  <!--<include layout="@layout/timeline_item_action_buttons"/>-->
-  <include layout="@layout/timeline_item_action_buttons_2_0"/>
+  <include layout="@layout/discussion_action_buttons"/>
 
 </com.tradehero.th.fragments.timeline.TimelineItemView>
