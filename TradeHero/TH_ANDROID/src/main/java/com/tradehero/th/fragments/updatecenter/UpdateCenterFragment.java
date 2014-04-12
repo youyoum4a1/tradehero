@@ -1,6 +1,11 @@
 package com.tradehero.th.fragments.updatecenter;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,9 +50,12 @@ import timber.log.Timber;
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
     public static final String KEY_PAGE = "page";
+    static final int FRAGEMENT_LAYOUT_ID = 10000;
+    public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
+    @Inject LocalyticsSession localyticsSession;
 
     private FragmentTabHost mTabHost;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
@@ -55,13 +63,14 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private MenuItem mMenuFollow;
     private ImageButton mNewMsgButton;
 
-    @Inject LocalyticsSession localyticsSession;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         fetchUserProfileListener = new FetchUserProfileListener();
+        initBroadcastReceiver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -79,6 +88,17 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         super.onResume();
 
         fetchUserProfile();
+
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(broadcastReceiver, new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(getActivity())
+                .unregisterReceiver(broadcastReceiver);
     }
 
     private void fetchUserProfile()
@@ -101,8 +121,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(R.string.update_center_title);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
@@ -123,7 +142,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void showPopup(View v) {
+    private void showPopup(View v)
+    {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         popup.inflate(R.menu.notification_new_message_menu);
         popup.setOnMenuItemClickListener(this);
@@ -131,8 +151,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     }
 
     @Override
-    public boolean onMenuItemClick(android.view.MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onMenuItemClick(android.view.MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case R.id.menu_private:
                 localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
@@ -176,7 +198,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), 11111);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGEMENT_LAYOUT_ID);
+        //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         Bundle args = getArguments();
         if (args == null)
@@ -206,6 +229,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         tabView.setTitleNumber(number);
+        //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
 
     @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
@@ -213,8 +237,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         changeTabTitleNumber(tabType, number);
     }
 
-
-    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
@@ -234,5 +257,22 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
             changeTabTitleNumber(UpdateCenterTabType.Messages, userProfileDTO.unreadMessageThreadsCount);
             changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }
+    }
+
+    private void initBroadcastReceiver()
+    {
+        broadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+
+                if (userProfileDTO !=
+                        null)
+                {
+                    linkWith(userProfileDTO, true);
+                }
+            }
+        };
     }
 }

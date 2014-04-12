@@ -1,6 +1,7 @@
 package com.tradehero.th.api.social;
 
 import com.tradehero.common.persistence.DTO;
+import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 9:22 PM To change this template use File | Settings | File Templates. */
@@ -32,6 +33,25 @@ public class FollowerSummaryDTO implements DTO
         return count;
     }
 
+    public FollowerSummaryDTO getPaidFollowerSummaryDTO()
+    {
+        if (userFollowers == null)
+        {
+            return null;
+        }
+        FollowerSummaryDTO followerSummaryDTO =  new FollowerSummaryDTO();
+        followerSummaryDTO.userFollowers = new ArrayList<>();
+
+        for (UserFollowerDTO userFollowerDTO : userFollowers)
+        {
+            if (!userFollowerDTO.isFreeFollow)
+            {
+                followerSummaryDTO.userFollowers.add(userFollowerDTO);
+            }
+        }
+        return followerSummaryDTO;
+    }
+
     public int getFreeFollowerCount()
     {
         if (userFollowers == null)
@@ -48,6 +68,27 @@ public class FollowerSummaryDTO implements DTO
         }
         return count;
     }
+
+    public FollowerSummaryDTO getFreeFollowerSummaryDTO()
+    {
+        if (userFollowers == null)
+        {
+            return null;
+        }
+        FollowerSummaryDTO followerSummaryDTO =  new FollowerSummaryDTO();
+        followerSummaryDTO.userFollowers = new ArrayList<>();
+
+        for (UserFollowerDTO userFollowerDTO : userFollowers)
+        {
+            if (userFollowerDTO.isFreeFollow)
+            {
+                followerSummaryDTO.userFollowers.add(userFollowerDTO);
+            }
+        }
+        return followerSummaryDTO;
+    }
+
+
 
     @Override public String toString()
     {

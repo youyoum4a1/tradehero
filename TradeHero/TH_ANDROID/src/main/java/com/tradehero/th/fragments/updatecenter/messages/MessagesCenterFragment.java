@@ -1,48 +1,66 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
-import com.fortysevendeg.android.swipelistview.SwipeListViewTouchListener;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.MetaHelper;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
  * Created by wangliang on 14-4-3.
  */
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener
+        implements AdapterView.OnItemClickListener,MessageListAdapter.MessageOnClickListener
 {
     public static final String TAG = "MessagesCenterFragment";
     public static final int DEFAULT_PER_PAGE = 42;
 
     @Inject Lazy<MessageHeaderListCache> messageListCache;
+    @Inject Lazy<MessageHeaderCache> messageHeaderCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+    @Inject UserProfileCache userProfileCache;
+
     DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
     DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchTask;
     MessageListKey messageListKey;
@@ -51,9 +69,15 @@ public class MessagesCenterFragment extends DashboardFragment
     MessagesView messagesView;
     SwipeListener swipeListener;
 
+    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    private Map<Integer, Callback<Response>> callbackMap;
+
     private UpdateCenterTabType tabType;
 
-    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+    @Inject Lazy<MessageEraser> messageEraser;
+
+    private boolean isFirst = true;
+    private MessageListAdapter messageListAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -63,6 +87,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
         tabType = UpdateCenterTabType.fromOrdinal(tabTypeOrdinal);
         Timber.d("%s onCreate hasCode %d", TAG, this.hashCode());
+
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -83,18 +108,22 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+
         initListener();
         //if size of items already fetched is 0,then force to reload
         if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
             messagesView.showLoadingView();
-            fetchMessages();
+            getOrfetchMessages();
         }
         else
         {
             messagesView.showListView();
             setListAdaper(alreadyFetched);
         }
+
+
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -129,6 +158,11 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onItemClick %d", position);
     }
 
+    @Override public void onMessageClick(int position, int type)
+    {
+        Timber.d("onMessageClick position:%d,type:%d", position,type);
+    }
+
     private void initViews(View view)
     {
         DaggerUtils.inject(this);
@@ -157,7 +191,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void fetchMessages()
+    private void getOrfetchMessages()
     {
         detachPreviousTask();
         if (fetchTask == null)
@@ -169,6 +203,14 @@ public class MessagesCenterFragment extends DashboardFragment
         fetchTask.execute();
     }
 
+    /**
+     * TODO how to fetch latest messages
+     */
+    private void fetchMessages()
+    {
+
+    }
+
     private void loadNextMessages()
     {
         if (messageListKey == null)
@@ -176,7 +218,7 @@ public class MessagesCenterFragment extends DashboardFragment
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
         messageListKey = messageListKey.next();
-        fetchMessages();
+        getOrfetchMessages();
     }
 
     private void detachPreviousTask()
@@ -191,22 +233,24 @@ public class MessagesCenterFragment extends DashboardFragment
     private void setListAdaper(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
-        ListAdapter adapter = listView.getAdapter();
-        if (adapter == null)
+
+        if (messageListAdapter == null)
         {
-            adapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
-                    R.layout.message_list_item_wrapper);
-            listView.setAdapter(adapter);
+            messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
+
         }
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        messageAdapter.appendMore(messageKeys);
+        if (listView.getAdapter() == null)
+        {
+            listView.setAdapter(messageListAdapter);
+        }
+        MessageListAdapter adapter =  (MessageListAdapter)listView.getAdapter();
+        adapter.setMessageOnClickListener(this);
+        adapter.appendMore(messageKeys);
     }
 
     private MessageListAdapter getListAdapter()
     {
-        ListView listView = messagesView.getListView();
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        return messageAdapter;
+        return messageListAdapter;
     }
 
     class SwipeListener extends BaseSwipeListViewListener
@@ -221,33 +265,52 @@ public class MessagesCenterFragment extends DashboardFragment
             swipeListView.closeOpenedItems();
         }
 
+        @Override public void onClickFrontView(int position)
+        {
+            super.onClickFrontView(position);
+            Timber.d("SwipeListener onClickFrontView %s", position);
+        }
+
         @Override public void onDismiss(int[] reverseSortedPositions)
         {
             Timber.d("SwipeListener onDismiss %s", Arrays.toString(reverseSortedPositions));
             final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
             for (int position : reverseSortedPositions)
             {
-                removeMessage(position);
-                swipeListView.closeAnimate(position);
+                removeMessageIfNecessary(position);
+                //swipeListView.closeAnimate(position);
             }
         }
     }
 
-    private void removeMessage(int position)
+    private void removeMessageIfNecessary(int position)
     {
-        //messageListCache.get().get()
         MessageListAdapter adapter = getListAdapter();
-        adapter.markDeleted(position);
-
-        ListView listView = messagesView.getListView();
-        //listView.setAdapter(adapter);
-        removeMessageSync();
+        MessageHeaderId messageHeaderId = adapter.getItem(position);
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+        Integer messageId = messageHeaderDTO.id;
+        Integer senderUserId = messageHeaderDTO.senderUserId;
+        Integer recipientUserId = messageHeaderDTO.recipientUserId;
+        int myId = currentUserId.toUserBaseKey().key;
+        Timber.d("messageId:%d,senderUserId:%d,recipientUserId:%d,myId:%d",messageId,senderUserId,recipientUserId,myId);
+        if (senderUserId != null && senderUserId == myId)
+        {
+            THToast.show("You cannot delete the message you sent");
+            return;
+        }
+        messageHeaderId = adapter.markDeleted(position);
+        removeMessageSync(messageHeaderId);
     }
 
-    private void removeMessageSync()
+    /**
+     *
+     * @param messageHeaderId
+     */
+    private void removeMessageSync(MessageHeaderId messageHeaderId)
     {
-        //messageServiceWrapper.get().deleteMessage()
+        messageEraser.get().deleteMessage(messageHeaderId);
     }
+
 
     private void saveNewPage(MessageHeaderIdList value)
     {
@@ -281,6 +344,13 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
+            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
+            //TODO how to invalidate the old data ..
+            if (isFirst)
+            {
+
+            }
+            isFirst = false;
         }
 
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
@@ -289,55 +359,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void fixSwipe(SwipeListView swipeListView)
-    {
-        MySwipeListViewTouchListener mySwipeListViewTouchListener =
-                new MySwipeListViewTouchListener(swipeListView, R.id.message_item_front, R.id.message_item_back);
-        mySwipeListViewTouchListener.setRightOffset(0);
-        mySwipeListViewTouchListener.setLeftOffset((float) (MetaHelper.getScreensize(getActivity())[1] - 120));
-        mySwipeListViewTouchListener.setSwipeClosesAllItemsWhenListMoves(true);
-        mySwipeListViewTouchListener.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
-        mySwipeListViewTouchListener.setSwipeOpenOnLongPress(false);
-        mySwipeListViewTouchListener.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
-        mySwipeListViewTouchListener.setSwipeDrawableChecked(R.drawable.ic_info);
-        mySwipeListViewTouchListener.setSwipeDrawableUnchecked(R.drawable.ic_info);
 
-        swipeListView.setOnTouchListener(mySwipeListViewTouchListener);
-        swipeListView.setOnScrollListener(mySwipeListViewTouchListener.makeScrollListener());
-    }
-
-    class MySwipeListViewTouchListener extends SwipeListViewTouchListener
-    {
-
-        /**
-         * Constructor
-         *
-         * @param swipeListView SwipeListView
-         * @param swipeFrontView front view Identifier
-         * @param swipeBackView back view Identifier
-         */
-        public MySwipeListViewTouchListener(
-                SwipeListView swipeListView, int swipeFrontView, int swipeBackView)
-        {
-            super(swipeListView, swipeFrontView, swipeBackView);
-        }
-
-        @Override public AbsListView.OnScrollListener makeScrollListener()
-        {
-            AbsListView.OnScrollListener originalOnScrollListener = super.makeScrollListener();
-            return new OnScrollListener(originalOnScrollListener);
-        }
-
-        @Override public void setSwipeDrawableChecked(int swipeDrawableChecked)
-        {
-            super.setSwipeDrawableChecked(swipeDrawableChecked);
-        }
-
-        @Override public void setSwipeDrawableUnchecked(int swipeDrawableUnchecked)
-        {
-            super.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
-        }
-    }
 
     class OnScrollListener extends FlagNearEndScrollListener
     {
@@ -349,13 +371,14 @@ public class MessagesCenterFragment extends DashboardFragment
             this.onScrollListener = onScrollListener;
         }
 
-        @Override public void onScroll(AbsListView view, int firstVisibleItem,
-                int visibleItemCount, int totalItemCount)
+        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
         {
             if (onScrollListener != null)
             {
                 onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
+            updateReadStatus(firstVisibleItem, visibleItemCount);
+
             super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
 
@@ -378,5 +401,131 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        initCallbackMap();
+    }
+
+    @Override public void onDetach()
+    {
+        super.onDetach();
+
+        messageListAdapter = null;
+
+        unsetMiddleCallback();
+    }
+
+    private void initCallbackMap()
+    {
+        callbackMap = new HashMap<>();
+        middleCallbackMap = new HashMap<>();
+    }
+
+    private void unsetMiddleCallback()
+    {
+        for (MiddleCallback<Response> middleCallback: middleCallbackMap.values())
+        {
+            middleCallback.setPrimaryCallback(null);
+        }
+
+        callbackMap.clear();
+        middleCallbackMap.clear();
+    }
+
+
+    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
+    {
+        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
+        {
+            MessageHeaderId messageHeaderId = messageListAdapter.getItem(i);
+            if (messageHeaderId != null)
+            {
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+
+                if (messageHeaderDTO != null && messageHeaderDTO.unread)
+                {
+                    reportMessageRead(messageHeaderDTO.id);
+                }
+            }
+        }
+    }
+
+    private void reportMessageRead(int pushId)
+    {
+        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
+        if (middleCallback == null)
+        {
+            middleCallback = messageServiceWrapper.get().readMessage(pushId, getCallback(pushId));
+            middleCallbackMap.put(pushId, middleCallback);
+        }
+    }
+
+    private Callback<Response> getCallback(int pushId)
+    {
+        Callback<Response> callback = callbackMap.get(pushId);
+        if (callback == null)
+        {
+            callback = new MessageMarkAsReadCallback(pushId);
+        }
+        return callback;
+    }
+
+    private class MessageMarkAsReadCallback implements Callback<Response>
+    {
+        private final int messageId;
+        public MessageMarkAsReadCallback(int messageId)
+        {
+            this.messageId = messageId;
+        }
+
+        @Override public void success(Response response, Response response2)
+        {
+            if (response.getStatus() == 200)
+            {
+                Timber.d("Message %d is reported as read");
+                // TODO update title
+
+                // mark it as read in the cache
+                MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
+                MessageHeaderDTO notificationDTO = messageHeaderCache.get().get(messageHeaderId);
+                if (notificationDTO != null && notificationDTO.unread)
+                {
+                    notificationDTO.unread = false;
+                    messageHeaderCache.get().put(messageHeaderId, notificationDTO);
+
+                    updateUnreadStatusInUserProfileCache();
+                }
+                middleCallbackMap.remove(messageId);
+                callbackMap.remove(messageId);
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            Timber.d("Report failure for Message: %d", messageId);
+        }
+    }
+
+
+    private void updateUnreadStatusInUserProfileCache()
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        --userProfileDTO.unreadNotificationsCount;
+        userProfileCache.put(userBaseKey, userProfileDTO);
+
+        requestUpdateTabCounter();
+    }
+
+    private void requestUpdateTabCounter()
+    {
+        // TODO remove this hack after refactor messagecenterfragment
+        Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(requestUpdateIntent);
     }
 }

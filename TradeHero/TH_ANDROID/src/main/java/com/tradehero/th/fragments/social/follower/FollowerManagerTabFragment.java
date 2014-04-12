@@ -18,6 +18,7 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -215,7 +216,18 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
         {
             displayProgress(false);
-            display(value);
+            if (followerType == HeroType.FREE){
+                display(value.getFreeFollowerSummaryDTO());
+            }
+            else if (followerType == HeroType.PREMIUM)
+            {
+                display(value.getPaidFollowerSummaryDTO());
+            }
+            else
+            {
+                display(value);
+            }
+
             notifyFollowerLoaded(value);
         }
 
@@ -227,20 +239,14 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
     }
 
-    FollowerManagerFragment.OnFollowersLoadedListener onFollowersLoadedListener;
-
-    public void setOnFollowersLoadedListener(
-            FollowerManagerFragment.OnFollowersLoadedListener listener)
-    {
-        this.onFollowersLoadedListener = listener;
-    }
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
         Timber.d("notifyFollowerLoaded for page:%d", page);
-        if (onFollowersLoadedListener != null && !isDetached())
+        OnFollowersLoadedListener loadedListener = FragmentUtils.getParent(this,OnFollowersLoadedListener.class);
+        if (loadedListener != null && !isDetached())
         {
-            onFollowersLoadedListener.onFollowerLoaded(page, value);
+            loadedListener.onFollowerLoaded(page, value);
         }
     }
 

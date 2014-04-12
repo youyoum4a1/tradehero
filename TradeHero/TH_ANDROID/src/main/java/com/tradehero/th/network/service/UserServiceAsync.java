@@ -13,6 +13,8 @@ import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
@@ -148,6 +150,14 @@ interface UserServiceAsync
             @Path("userId") int userId,
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
             Callback<UpdatePayPalEmailDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Alipay Email">
+    @POST("/users/{userId}/updateAlipayAccount")
+    void updateAlipayAccount(
+            @Path("userId") int userId,
+            @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+            Callback<UpdateAlipayAccountDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Delete User">

@@ -41,6 +41,16 @@ public class UserProfileView extends BetterViewAnimator
         ButterKnife.inject(this);
     }
 
+    public void setHeroClickListener(UserProfileDetailView.OnHeroClickListener onHeroClickListener)
+    {
+        if(userProfileDetailView != null)
+        {
+            userProfileDetailView.setOnHeroClickListener(onHeroClickListener);
+        }
+
+    }
+
+
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();

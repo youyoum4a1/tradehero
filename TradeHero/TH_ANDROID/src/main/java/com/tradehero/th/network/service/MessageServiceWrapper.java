@@ -166,13 +166,7 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    //TODO fake,not real
-    public MiddleCallbackDiscussion deleteMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
-    {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
-        messageServiceAsync.deleteMessage(form, middleCallback);
-        return middleCallback;
-    }
+
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">

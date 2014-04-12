@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.updatecenter.messages.MessageItemView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     >
 
+  <EditText
+      android:id="@+id/search_field"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/edit_text_holo_light"
+      android:imeOptions="actionSearch"
+      android:inputType="text"
+      android:textColor="@color/white"
+      android:layout_centerVertical="true"
+      android:hint="@string/trending_search_stock_hint"
+      android:textColorHint="@color/light_grey"
+      android:layout_marginRight="@dimen/abs__action_bar_default_height"
+      >
 
+    <requestFocus/>
 
-</com.tradehero.th.fragments.updatecenter.messages.MessageItemView>
+  </EditText>
+
+</RelativeLayout>

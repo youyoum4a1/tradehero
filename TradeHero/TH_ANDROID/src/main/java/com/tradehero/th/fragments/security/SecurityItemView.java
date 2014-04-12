@@ -18,6 +18,7 @@ import butterknife.Optional;
 import com.squareup.picasso.CallbackExt;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -735,8 +736,16 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             int originalWidth = bmp.getWidth();
             int originalHeight = bmp.getHeight();
             View parent = (View)target.getParent();
-            float scaleX = parent.getWidth() / (float)originalWidth;
-            float scaleY = parent.getHeight() / (float)originalHeight;
+            int parentWidth = 0;
+            int parentHeight = 0;
+            //parentWidth may be 0?
+            if ((parentWidth = parent.getWidth()) <= 0 || (parentHeight = parent.getHeight()) <= 0)
+            {
+                parentWidth = MetaHelper.getScreensize(getContext())[0];
+                parentHeight = Math.round(getResources().getDimension(R.dimen.security_item_height));
+            }
+            float scaleX = parentWidth / (float)originalWidth;
+            float scaleY = parentHeight / (float)originalHeight;
             float scale = Math.max(scaleX, scaleY);
 
             Bitmap transformResult = reszieBackgroundBitmap(parent.getWidth(), parent.getHeight(), bmp, 0,false);

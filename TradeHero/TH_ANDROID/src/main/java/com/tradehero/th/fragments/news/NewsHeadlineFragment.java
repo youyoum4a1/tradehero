@@ -62,7 +62,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
 
     private void initViews(View view)
     {
-        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
+        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(),
+                R.layout.news_headline_item_view);
 
         showLoadingNews();
         if (listView != null)
@@ -70,12 +71,13 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
                     Object o = adapterView.getItemAtPosition(position);
-                    if (o instanceof NewsItemDTO)
+                    if (o instanceof NewsItemDTOKey)
                     {
-                        handleNewsClicked(position, (NewsItemDTO) o);
+                        handleNewsClicked(position, (NewsItemDTOKey) o);
                     }
                 }
             });
@@ -161,7 +163,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
 
             if (data != null)
             {
-                for (NewsItemDTO newsItemDTO: data)
+                for (NewsItemDTO newsItemDTO : data)
                 {
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
@@ -172,15 +174,15 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         }
     }
 
-    protected void handleNewsClicked(int position, NewsItemDTO news)
+    protected void handleNewsClicked(int position, NewsItemDTOKey news)
     {
         if (news != null)
         {
             int resId = adapter.getBackgroundRes(position);
-            NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = new Bundle();
             bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
+                    news.getArgs());
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }

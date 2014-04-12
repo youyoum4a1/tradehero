@@ -10,6 +10,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
@@ -38,6 +39,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 UpdateCenterFragment.class,
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
+                UpdateCenterResideMenuItem.class,
 
                 MessagesView.class,
                 MessageItemView.class,
@@ -49,7 +51,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 SecurityDiscussionCommentFragment.class,
 
                 DiscussionView.class,
-                PostCommentView.class
+                PostCommentView.class,
         },
         complete = false,
         library = true

@@ -412,7 +412,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             setListShown(true);
             display(heroCache.get().get(value.heroIdList));
             notifyHeroesLoaded(value);
-            Timber.d("onDTOReceived key:%s,value:%s",key,value);
+            Timber.d("onDTOReceived key:%s,value:%s", key, value);
         }
 
         @Override public void onErrorThrown(HeroKey key, Throwable error)

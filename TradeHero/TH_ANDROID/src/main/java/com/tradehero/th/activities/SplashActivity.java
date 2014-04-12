@@ -20,7 +20,7 @@ import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
-import com.tradehero.th.utils.TabStreamEvents;
+import com.tradehero.th.utils.TapStreamEvents;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
@@ -41,7 +41,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject @SessionToken StringPreference currentSessionToken;
     @Inject Lazy<LocalyticsSession> localyticsSession;
-    @Inject Lazy<Tapstream> tabStream;
+    @Inject Lazy<Tapstream> tapStream;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -83,7 +83,7 @@ public class SplashActivity extends SherlockActivity
             VersionUtils.logScreenMeasurements(this);
         }
 
-        tabStream.get().fireEvent(new Event(TabStreamEvents.APP_OPENED, false));
+        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()

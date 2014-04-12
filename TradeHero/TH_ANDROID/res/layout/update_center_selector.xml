@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:paddingTop="30dp"
+    tools:background="@color/red"
+    >
+  <ImageView
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:scaleType="centerCrop"
+      android:id="@+id/iv_icon"
+      android:src="@drawable/icn_menu_messages"
+      android:contentDescription="@null"
+      tools:background="@android:color/red"
+      android:layout_gravity="center_vertical"
+      />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textColor="@android:color/white"
+      android:textSize="18sp"
+      android:layout_marginLeft="10dp"
+      android:layout_gravity="center_vertical"
+      android:id="@+id/tv_title"
+      android:text="@string/update_center_title"
+      tools:text="Community"
+      />
+
+  <TextView
+      android:id="@+id/tab_title_number"
+      android:layout_width="15dp"
+      android:layout_height="15dp"
+      android:gravity="center_vertical|right"
+      android:visibility="visible"
+      android:textSize="9sp"
+      android:background="@drawable/red_circle"
+      tools:text="33"
+      />
+</com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem>

@@ -54,7 +54,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s",language);
         if (isChineseLocale) {
-            //showViewForChinese();
+            showViewForChinese();
         }
     }
 
@@ -62,7 +62,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         View root = getView();
         root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
         root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
-        root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.GONE);
+        root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
     }
 

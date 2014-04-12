@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -106,6 +107,7 @@ import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
+import com.tradehero.th.fragments.updatecenter.messages.MessageEraser;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -328,6 +330,7 @@ import javax.inject.Singleton;
                         //binding
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
+                        AbstractDiscussionItemView.class,
 
                         PrivateMessageFragment.class,
                         PrivateDiscussionView.class,
@@ -337,6 +340,7 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleOtherView.class,
                         
                         AlertDialogUtil.class,
+                        MessageEraser.class
                 },
         staticInjections =
                 {
