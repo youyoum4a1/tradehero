@@ -37,7 +37,7 @@ interface MessageServiceAsync
             @Path("commentId") int commentId,
             Callback<MessageHeaderDTO> callback);
 
-    @GET("/messages/{recipientUserId}/getStatus")
+    @GET("/messages/status/{recipientUserId}")
     void getFreeCount(
             @Path("recipientUserId") int recipientUserId,
             Callback<MessageStatusDTO> callback);

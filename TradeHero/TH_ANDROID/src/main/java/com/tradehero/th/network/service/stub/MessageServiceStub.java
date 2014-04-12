@@ -51,7 +51,7 @@ public class MessageServiceStub implements MessageService
     {
         PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
         List<MessageHeaderDTO> data = new ArrayList<>();
-        data.add(getMessageHeader(2));
+        data.add(createMessageHeaderNeerajToOscarAguilar());
         paginatedDTO.setData(data);
         return paginatedDTO;
     }
@@ -59,6 +59,18 @@ public class MessageServiceStub implements MessageService
     @Override public MessageHeaderDTO getMessageHeader(int commentId)
     {
         return createMessageHeader(commentId, null, new Date());
+    }
+
+    private MessageHeaderDTO createMessageHeaderNeerajToOscarAguilar()
+    {
+        MessageHeaderDTO messageHeader = new MessageHeaderDTO();
+        messageHeader.id = 1192391;
+        messageHeader.discussionType = DiscussionType.PRIVATE_MESSAGE;
+        messageHeader.message = "doom";
+        messageHeader.senderUserId = 239284;
+        messageHeader.recipientUserId = 106711;
+        //messageHeader.createdAtUtc = new Date("2014-04-11T12:33:50");
+        return messageHeader;
     }
 
     private MessageHeaderDTO createMessageHeader(int commentId, Integer page, Date date)

@@ -32,6 +32,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -54,6 +55,7 @@ public class PrivateMessageFragment extends DashboardFragment
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
     public static final int DEFAULT_MAX_COUNT = 10;
 
+    @Inject CurrentUserId currentUserId;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
@@ -105,7 +107,8 @@ public class PrivateMessageFragment extends DashboardFragment
         messageStatusCacheListener = new PrivateMessageFragmentMessageStatusListener();
         messageHeaderListCacheListener = new PrivateMessageFragmentMessageListListener();
         discussionListCacheListener = new PrivateMessageFragmentDiscussionListListener();
-        nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
+        //nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
+        nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, currentUserId.toUserBaseKey());
         loadedMessages = new MessageHeaderDTOList();
         loadedDiscussions = new DiscussionDTOList();
     }
@@ -134,6 +137,7 @@ public class PrivateMessageFragment extends DashboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
+        displayTitle();
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -144,7 +148,6 @@ public class PrivateMessageFragment extends DashboardFragment
         fetchCorrespondentProfile();
         fetchMessageStatus();
         fetchMessageList();
-        //fetchDiscussionList();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -256,6 +259,7 @@ public class PrivateMessageFragment extends DashboardFragment
         {
             displayCorrespondentImage();
             displayTitle();
+            getSherlockActivity().invalidateOptionsMenu();
         }
     }
 
@@ -354,7 +358,13 @@ public class PrivateMessageFragment extends DashboardFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
         {
-            actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile));
+            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+            Timber.d("Display title " + title);
+            actionBar.setTitle(title);
+        }
+        else
+        {
+            actionBar.setTitle(R.string.loading_loading);
         }
     }
 
