@@ -15,12 +15,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
@@ -35,6 +37,7 @@ public class DiscussionView extends FrameLayout
     private int topicLayout;
 
     @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
     protected TextView discussionStatus;
@@ -221,6 +224,17 @@ public class DiscussionView extends FrameLayout
         }
     }
 
+    protected void addDiscussion(DiscussionDTO newDiscussion)
+    {
+        DiscussionKey newDiscussionKey = newDiscussion.getDiscussionKey();
+        discussionCache.put(newDiscussionKey, newDiscussion);
+        if (discussionListAdapter != null)
+        {
+            discussionListAdapter.addItem(newDiscussionKey);
+            discussionListAdapter.notifyDataSetChanged();
+        }
+    }
+
     protected void setLoading()
     {
         if (discussionStatus != null)
@@ -245,7 +259,6 @@ public class DiscussionView extends FrameLayout
         }
         discussionFetchTask = null;
     }
-
 
     private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
     {
