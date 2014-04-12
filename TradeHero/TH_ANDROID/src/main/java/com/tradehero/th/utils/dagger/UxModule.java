@@ -28,8 +28,8 @@ import javax.inject.Singleton;
 )
 public class UxModule
 {
-    private static final String TABSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
-    private static final String TABSTREAM_APP_NAME = "tradehero";
+    private static final String TAPSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
+    private static final String TAPSTREAM_APP_NAME = "tradehero";
 
     // localytics
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(Context context)
@@ -37,15 +37,14 @@ public class UxModule
         return new LocalyticsSession(context);
     }
 
-    // tabstream
-
-    @Provides @Singleton Tapstream provideTabStream(Application app, Config config)
+    // tapstream
+    @Provides @Singleton Tapstream provideTapStream(Application app, Config config)
     {
-        Tapstream.create(app, TABSTREAM_APP_NAME, TABSTREAM_KEY, config);
+        Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
         return Tapstream.getInstance();
     }
 
-    @Provides @Singleton Config provideTabStreamConfig()
+    @Provides @Singleton Config provideTapStreamConfig()
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice

@@ -21,6 +21,7 @@ public class LocalyticsConstants
     public static final String Authentication_Twitter = "SignUp/Twitter"; // User tap on sign up via Twitter
     public static final String SignUp_Back = "SignUp/Back"; // User press back button on sign
     public static final String Settings_PayPal = "Settings/PayPal";
+    public static final String Settings_Alipay = "Settings/Alipay";
     public static final String Settings_FAQ = "Settings/FAQ";
     public static final String Settings_TransactionHistory = "Settings/TransactionHistory";
     public static final String Referrals_Settings = "Referrals_Settings";

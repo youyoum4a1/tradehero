@@ -28,6 +28,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public PortfolioDTO portfolio;
 
     public String paypalEmailAddress;
+    public String alipayAccount;
 
     public boolean pushNotificationsEnabled;
     public boolean emailNotificationsEnabled;

@@ -10,9 +10,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.HeroKey;
@@ -23,8 +26,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
- * Repurposes queries
- * Created by xavier on 12/12/13.
+ * Repurposes queries Created by xavier on 12/12/13.
  */
 @Singleton public class UserServiceWrapper
 {
@@ -108,9 +110,11 @@ import retrofit.RetrofitError;
         );
     }
 
-    public MiddleCallbackUpdateUserProfile updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallbackUpdateUserProfile updateProfile(UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
+        MiddleCallbackUpdateUserProfile middleCallback =
+                new MiddleCallbackUpdateUserProfile(callback);
         userServiceAsync.updateProfile(
                 userBaseKey.key,
                 userFormDTO.deviceToken,
@@ -210,16 +214,34 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
+            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
     }
 
-    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO, Callback<UpdatePayPalEmailDTO> callback)
+    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey,
+            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
+            Callback<UpdatePayPalEmailDTO> callback)
     {
-        MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail = new MiddleCallbackUpdatePayPalEmail(callback);
-        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO, middleCallbackUpdatePayPalEmail);
-        return middleCallbackUpdatePayPalEmail;
+        MiddleCallbackUpdatePayPalEmail
+                middleCallbackUpdatePayPalAccount = new MiddleCallbackUpdatePayPalEmail(callback);
+        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO,
+                middleCallbackUpdatePayPalAccount);
+        return middleCallbackUpdatePayPalAccount;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Alipay account">
+    public MiddleCallbackUpdateAlipayAccount updateAlipayAccount(UserBaseKey userBaseKey,
+            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+            Callback<UpdateAlipayAccountDTO> callback)
+    {
+        MiddleCallbackUpdateAlipayAccount
+                middleCallbackUpdateAlipayAccount = new MiddleCallbackUpdateAlipayAccount(callback);
+        userServiceAsync.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO,
+                middleCallbackUpdateAlipayAccount);
+        return middleCallbackUpdateAlipayAccount;
     }
     //</editor-fold>
 
@@ -246,7 +268,8 @@ import retrofit.RetrofitError;
         return userService.follow(userBaseKey.key, purchaseDTO);
     }
 
-    public void follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public void follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback)
     {
         userService.follow(userBaseKey.key, purchaseDTO, callback);
     }
