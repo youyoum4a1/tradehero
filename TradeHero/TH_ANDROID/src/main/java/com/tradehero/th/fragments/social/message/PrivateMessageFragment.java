@@ -36,7 +36,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -50,7 +50,7 @@ import timber.log.Timber;
 
 import javax.inject.Inject;
 
-public class PrivateMessageFragment extends DashboardFragment
+public class PrivateMessageFragment extends AbstractDiscussionFragment
 {
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
     public static final int DEFAULT_MAX_COUNT = 10;
@@ -115,10 +115,13 @@ public class PrivateMessageFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_private_message, container, false);
-        ButterKnife.inject(this, view);
+        return inflater.inflate(R.layout.fragment_private_message, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        return view;
     }
 
     private void initViews(View view)
