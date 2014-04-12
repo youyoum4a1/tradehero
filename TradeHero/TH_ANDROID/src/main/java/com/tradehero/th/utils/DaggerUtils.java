@@ -8,6 +8,7 @@ import com.tradehero.th.models.graphics.TransformationModule;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import dagger.ObjectGraph;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class DaggerUtils
 
         if (!Constants.RELEASE)
         {
-            List<Object> listModules = Arrays.asList(modules);
+            List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
             listModules.add(new DebugModule());
             return listModules.toArray();
         }
