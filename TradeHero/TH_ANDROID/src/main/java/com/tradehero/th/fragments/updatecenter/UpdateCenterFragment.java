@@ -21,7 +21,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     public static final String KEY_PAGE = "page";
 
     private FragmentTabHost mTabHost;
-    private List<TabHost.TabSpec> tabSpecList;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -40,7 +39,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 
         //addTabs();
         //TODO
-        changeTabTitleNumber(0, 80);
+        changeTabTitleNumber(UpdateCenterTabType.Messages, 80);
     }
 
     @Override public void onDestroyView()
@@ -67,36 +66,33 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         {
             args = new Bundle();
         }
+
         UpdateCenterTabType[] types = UpdateCenterTabType.values();
-        tabSpecList = new ArrayList<>(types.length);
         for (UpdateCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE, tabTitle.pageIndex);
 
             TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
-                    .inflate(R.layout.message_tab_item,
-                            mTabHost.getTabWidget(), false);
-            String title = String.format(getSherlockActivity().getString(tabTitle.titleRes), 0);
+                    .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
+            String title = getString(tabTitle.titleRes, 0);
             tabView.setTitle(title);
 
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
-            tabSpecList.add(tabSpec);
-            mTabHost.addTab(tabSpec,
-                    tabTitle.tabClass, args);
+            mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
 
         return mTabHost;
     }
 
-    private void changeTabTitleNumber(int page, int number)
+    private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
     {
-        TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(page);
+        TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         tabView.setTitleNumber(number);
     }
 
-    @Override public void onTitleNumberChanged(int page, int number)
+    @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
     {
-        changeTabTitleNumber(page, number);
+        changeTabTitleNumber(tabType, number);
     }
 }

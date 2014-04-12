@@ -15,8 +15,8 @@ import timber.log.Timber;
  */
 public class TitleTabView extends RelativeLayout
 {
-    @InjectView(R.id.tab_tilte) TextView titleView;
-    @InjectView(R.id.tab_tilte_number) TextView numberView;
+    @InjectView(R.id.tab_title) TextView titleView;
+    @InjectView(R.id.tab_title_number) TextView numberView;
 
     public TitleTabView(Context context)
     {
@@ -48,7 +48,7 @@ public class TitleTabView extends RelativeLayout
     {
         if (number > 1)
         {
-            numberView.setText(String.valueOf(number));
+            numberView.setText("" + number);
             numberView.setVisibility(View.VISIBLE);
         }
         else
@@ -61,6 +61,5 @@ public class TitleTabView extends RelativeLayout
     public void setTitle(String title)
     {
         titleView.setText(title);
-        Timber.d("TitleTabView setTitle %s",title);
     }
 }

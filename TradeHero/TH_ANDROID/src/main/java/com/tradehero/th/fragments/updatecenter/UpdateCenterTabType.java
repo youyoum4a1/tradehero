@@ -13,17 +13,25 @@ public enum UpdateCenterTabType
     Messages(R.string.message_center_tab_message, 0, 0, MessagesCenterFragment.class),
     Notifications(R.string.message_center_tab_notification, 0, 0, NotificationsCenterFragment.class);
 
-    public final int id;
     public final int titleRes;
     public final int pageIndex;
     public final Class<? extends Fragment> tabClass;
 
     private UpdateCenterTabType(int titleRes, int pageIndex, int id, Class<? extends Fragment> tabClass)
     {
-        this.id = id;
         this.titleRes = titleRes;
         this.pageIndex = pageIndex;
         this.tabClass = tabClass;
+    }
+
+    public static UpdateCenterTabType fromOrdinal(int tabTypeOrdinal)
+    {
+        if (values().length > tabTypeOrdinal)
+        {
+            return values()[tabTypeOrdinal];
+        }
+
+        return null;
     }
 }
 
