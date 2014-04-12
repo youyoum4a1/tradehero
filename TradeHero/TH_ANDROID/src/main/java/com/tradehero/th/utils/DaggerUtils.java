@@ -23,6 +23,7 @@ public class DaggerUtils
                         new com.tradehero.th.fragments.competition.CompetitionModule(),
                         new com.tradehero.th.filter.FilterModule(),
                         new com.tradehero.th.models.graphics.TransformationModule(),
+                        new com.tradehero.th.DebugModule(),
                 };
     }
 

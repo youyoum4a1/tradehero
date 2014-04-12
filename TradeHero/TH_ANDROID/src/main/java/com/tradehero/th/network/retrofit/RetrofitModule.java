@@ -55,7 +55,6 @@ import retrofit.converter.Converter;
 @Module(
         includes = {
                 RetrofitProtectedModule.class,
-                RetrofitStubModule.class,
         },
         injects = {
                 SettingsTransactionHistoryFragment.class,
