@@ -12,7 +12,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.social.key.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -189,11 +189,11 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                     (UserFollowerDTO) followerListAdapter.getItem(position);
             if (followerDTO != null)
             {
-                FollowerId followerId =
-                        new FollowerId(getApplicablePortfolioId().userId, followerDTO.id);
+                FollowerHeroRelationId followerHeroRelationId =
+                        new FollowerHeroRelationId(getApplicablePortfolioId().userId, followerDTO.id);
                 Bundle args = new Bundle();
                 args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
-                        followerId.getArgs());
+                        followerHeroRelationId.getArgs());
                 ((DashboardActivity) getActivity()).getDashboardNavigator()
                         .pushFragment(FollowerPayoutManagerFragment.class, args);
             }

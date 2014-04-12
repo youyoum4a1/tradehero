@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.social.key.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.social.HeroKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -36,30 +35,30 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerId followerId)
+    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId)
     {
-        basicCheck(followerId);
-        return this.followerService.getFollowerSubscriptionDetail(followerId.heroId, followerId.followerId);
+        basicCheck(followerHeroRelationId);
+        return this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
     }
 
-    public void getFollowerSubscriptionDetail(FollowerId followerId, Callback<UserFollowerDTO> callback)
+    public void getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId, Callback<UserFollowerDTO> callback)
     {
-        basicCheck(followerId);
-        this.followerService.getFollowerSubscriptionDetail(followerId.heroId, followerId.followerId, callback);
+        basicCheck(followerHeroRelationId);
+        this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId, callback);
     }
     //</editor-fold>
 
-    private void basicCheck(FollowerId followerId)
+    private void basicCheck(FollowerHeroRelationId followerHeroRelationId)
     {
-        if (followerId == null)
+        if (followerHeroRelationId == null)
         {
             throw new NullPointerException("followerId cannot be null");
         }
-        if (followerId.followerId == null)
+        if (followerHeroRelationId.followerId == null)
         {
             throw new NullPointerException("followerId.followerId cannot be null");
         }
-        if (followerId.heroId == null)
+        if (followerHeroRelationId.heroId == null)
         {
             throw new NullPointerException("followerId.heroId cannot be null");
         }
