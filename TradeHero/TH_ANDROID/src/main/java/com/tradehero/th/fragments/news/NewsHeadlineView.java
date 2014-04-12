@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +101,9 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     {
         if (discussionKey != null)
         {
-            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionKey.getArgs());
+            Bundle args = new Bundle();
+            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+            getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
 
