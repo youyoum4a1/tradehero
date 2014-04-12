@@ -8,7 +8,7 @@ import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.loaders.ListLoader;
 
@@ -29,16 +29,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        if (timelineItemView != null)
-        {
-            discussionList.addHeaderView(timelineItemView);
-        }
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -47,7 +37,10 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        linkWith(new TimelineItemDTOKey(discussionKey), true);
+        if (discussionKey instanceof TimelineItemDTOKey)
+        {
+            linkWith((TimelineItemDTOKey) discussionKey, true);
+        }
 
         super.linkWith(discussionKey, andDisplay);
     }
@@ -59,11 +52,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         {
             timelineItemView.display(timelineItemDTOKey);
         }
-    }
-
-    @Override protected DiscussionKey getDiscussionKeyFromBundle(Bundle arguments)
-    {
-        return new TimelineItemDTOKey(arguments);
     }
 
     @Override protected ListLoader<DiscussionDTO> createDiscussionLoader()

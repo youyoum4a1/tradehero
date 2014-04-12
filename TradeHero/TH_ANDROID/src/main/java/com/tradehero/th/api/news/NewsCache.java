@@ -2,6 +2,7 @@ package com.tradehero.th.api.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import dagger.Lazy;
@@ -24,6 +25,6 @@ public class NewsCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
 
     @Override protected NewsItemDTO fetch(NewsItemDTOKey newsItemDTOKey) throws Throwable
     {
-        return newsServiceWrapper.get().getSecurityNewsDetail(newsItemDTOKey.key);
+        return newsServiceWrapper.get().getSecurityNewsDetail(newsItemDTOKey.id);
     }
 }

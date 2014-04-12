@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -39,27 +40,27 @@ import retrofit.Callback;
     //<editor-fold desc="Get Comment">
     public DiscussionDTO getComment(DiscussionKey discussionKey)
     {
-        return discussionService.getComment(discussionKey.key);
+        return discussionService.getComment(discussionKey.id);
     }
 
     public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
     {
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
-        discussionServiceAsync.getComment(discussionKey.key, middleCallback);
+        discussionServiceAsync.getComment(discussionKey.id, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Create Discussion">
-    public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
-        return discussionService.createDiscussion(discussionDTO);
+        return discussionService.createDiscussion(discussionFormDTO);
     }
 
-    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionDTO discussionDTO, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionFormDTO discussionFormDTO, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallback<>(callback);
-        discussionServiceAsync.createDiscussion(discussionDTO, middleCallback);
+        discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -75,7 +76,16 @@ import retrofit.Callback;
                 discussionsKey.perPage);
     }
 
-    public RangedDTO<DiscussionDTO, DiscussionDTOList> getDiscussions(DiscussionListKey discussionsKey)
+    @Deprecated
+    public PaginatedDTO<DiscussionDTO> getPaginatedDiscussions(DiscussionListKey discussionsKey)
+    {
+        return discussionService.getDiscussions(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.toMap());
+    }
+
+    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(DiscussionListKey discussionsKey)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
@@ -84,7 +94,7 @@ import retrofit.Callback;
         throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
     }
 
-    public RangedDTO<DiscussionDTO, DiscussionDTOList> getDiscussions(RangedDiscussionListKey discussionsKey)
+    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(RangedDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
@@ -96,7 +106,7 @@ import retrofit.Callback;
 
     public MiddleCallbackRangedDiscussion getDiscussions(
             DiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback)
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
@@ -107,7 +117,7 @@ import retrofit.Callback;
 
     public MiddleCallbackRangedDiscussion getDiscussions(
             RangedDiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback)
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
     {
         MiddleCallbackRangedDiscussion middleCallback = new MiddleCallbackRangedDiscussion(callback);
         discussionServiceAsync.getMessageThread(

@@ -12,7 +12,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsDiscussionListLoader;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.misc.exception.THException;
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
     @Inject NewsCache newsCache;
-    private DiscussionView discussionItemView;
+    private CommentView discussionItemView;
     private NewsItemDTOKey newsItemDTOKey;
     private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
@@ -32,22 +32,12 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_discussion, container, false);
-        discussionItemView = (DiscussionView) inflater.inflate(R.layout.news_discussion_comment_item, null);
+        discussionItemView = (CommentView) inflater.inflate(R.layout.news_discussion_comment_item, null);
 
         ButterKnife.inject(this, view);
 
         newsFetchListener = new NewsFetchListener();
         return view;
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        if (discussionItemView != null)
-        {
-            discussionList.addHeaderView(discussionItemView);
-        }
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onDestroyView()
@@ -69,7 +59,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        linkWith(new NewsItemDTOKey(discussionKey), true);
+        if (discussionKey instanceof NewsItemDTOKey)
+        {
+            linkWith((NewsItemDTOKey) discussionKey, true);
+        }
 
         super.linkWith(discussionKey, andDisplay);
     }
@@ -89,11 +82,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         {
             discussionItemView.display(newsItemDTO);
         }
-    }
-
-    @Override protected DiscussionKey getDiscussionKeyFromBundle(Bundle arguments)
-    {
-        return new NewsItemDTOKey(super.getDiscussionKeyFromBundle(arguments));
     }
 
     @Override protected ListLoader<DiscussionDTO> createDiscussionLoader()

@@ -38,7 +38,7 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
 
     @Override public boolean equalFields(TypedMessageListKey other)
     {
-        return super.equalFields(other) &&
+        return super.equalClass(other) &&
                 equalFields((RecipientTypedMessageListKey) other);
     }
 
@@ -46,5 +46,19 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
     {
         return super.equalFields(other) &&
                 (this.recipientId == null ? other.recipientId == null : this.recipientId.equals(other.recipientId));
+    }
+
+    @Override public RecipientTypedMessageListKey prev()
+    {
+        if (this.page <= FIRST_PAGE)
+        {
+            return null;
+        }
+        return new RecipientTypedMessageListKey(this.page - 1, perPage, discussionType, recipientId);
+    }
+
+    @Override public RecipientTypedMessageListKey next()
+    {
+        return new RecipientTypedMessageListKey(this.page + 1, perPage, discussionType, recipientId);
     }
 }

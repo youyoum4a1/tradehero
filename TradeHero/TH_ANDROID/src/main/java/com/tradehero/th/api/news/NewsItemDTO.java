@@ -1,6 +1,7 @@
 package com.tradehero.th.api.news;
 
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,10 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     public String message;
 
     public SecurityCompactDTO topReferencedSecurity;
+
+    public NewsItemDTO()
+    {
+    }
 
     public List<NewsItemMediaDTO> getTextEntities()
     {

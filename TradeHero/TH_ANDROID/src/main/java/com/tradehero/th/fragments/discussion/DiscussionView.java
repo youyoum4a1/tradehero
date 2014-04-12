@@ -1,57 +1,56 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.VotePair;
-import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
- * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 5:47 PM Copyright (c) TradeHero
+ * Created by thonguyen on 10/4/14.
  */
-public class DiscussionView extends LinearLayout
-        implements DTOView<DiscussionDTO>
+public class DiscussionView extends FrameLayout
+    implements DTOView<DiscussionKey>
 {
-    @InjectView(R.id.timeline_user_profile_name) TextView username;
-    @InjectView(R.id.timeline_item_content) TextView content;
-    @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
-    @InjectView(R.id.timeline_time) TextView time;
+    @InjectView(android.R.id.list) ListView discussionList;
+    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
 
-    @InjectView(R.id.vote_pair) VotePair votePair;
-    @InjectView(R.id.timeline_action_button_more) TextView more;
+    private int listItemLayout;
 
-    @Inject CurrentUserId currentUserId;
-    @Inject Provider<PrettyTime> prettyTime;
-    @Inject Lazy<Picasso> picasso;
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
-    private DiscussionDTO discussionDTO;
+    private TextView discussionStatus;
+
+    private DiscussionKey discussionKey;
+    private AbstractDiscussionDTO discussionDTO;
+
+    private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
+    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
+
+    private DiscussionListAdapter discussionListAdapter;
+    private DiscussionListKey discussionListKey;
+    private int nextPageDelta;
+    private PaginatedDiscussionListKey paginatedDiscussionListKey;
 
     //<editor-fold desc="Constructors">
     public DiscussionView(Context context)
@@ -62,11 +61,13 @@ public class DiscussionView extends LinearLayout
     public DiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init(attrs);
     }
 
     public DiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        init(attrs);
     }
     //</editor-fold>
 
@@ -75,145 +76,138 @@ public class DiscussionView extends LinearLayout
         super.onFinishInflate();
 
         ButterKnife.inject(this);
+        inflateDiscussionStatus();
+
         DaggerUtils.inject(this);
+
+        discussionFetchTaskListener = new DiscussionFetchListener();
+        discussionListAdapter = new DiscussionListAdapter(
+                getContext(),
+                LayoutInflater.from(getContext()),
+                listItemLayout
+        );
+    }
+
+    private void init(AttributeSet attrs)
+    {
+        if (attrs != null)
+        {
+            TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
+            listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
+            styled.recycle();
+
+            ensureStyle();
+        }
+    }
+
+    private void ensureStyle()
+    {
+        if (listItemLayout == 0)
+        {
+            throw new IllegalStateException("listItemLayout should be set to a layout");
+        }
+    }
+
+    private void inflateDiscussionStatus()
+    {
+        View commentListStatusView = LayoutInflater.from(getContext()).inflate(R.layout.discussion_load_status, null);
+
+        if (commentListStatusView != null)
+        {
+            discussionStatus = (TextView) commentListStatusView.findViewById(R.id.discussion_load_status);
+            discussionList.addHeaderView(commentListStatusView);
+        }
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        detachDiscussionFetchTask();
+
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(DiscussionDTO dto)
+    @Override public void display(DiscussionKey discussionKey)
     {
-        this.discussionDTO = dto;
+        this.discussionKey = discussionKey;
 
-        if (discussionDTO != null)
+        linkWith(discussionKey, true);
+    }
+
+    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    {
+        postCommentView.linkWith(discussionKey);
+
+        if (discussionKey != null)
         {
-            // username
-            displayUsername(discussionDTO.user);
+            this.discussionListKey = discussionKeyFactory.toListKey(discussionKey);
 
-            // user profile picture
-            displayUserProfilePicture(discussionDTO.user);
+            fetchDiscussionListIfNecessary();
+        }
 
-            display((AbstractDiscussionDTO) discussionDTO);
+        if (andDisplay)
+        {
         }
     }
 
-
-    @OnClick({
-            R.id.timeline_user_profile_name,
-            R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more
-    })
-    void onItemClicked(View view)
+    private void linkWith(DiscussionKeyList discussionKeyList, boolean andDisplay)
     {
-        switch (view.getId())
+        if (discussionKeyList != null)
         {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                openOtherTimeline();
-                break;
-            case R.id.timeline_action_button_more:
-                //PopupMenu popUpMenu = createActionPopupMenu();
-                //popUpMenu.show();
-                break;
+            nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+            discussionListAdapter.appendMore(discussionKeyList);
         }
     }
 
-    @Optional @OnClick({
-            R.id.timeline_action_button_comment
-    })
-    void onCommentClicked(View view)
+    private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        switch (view.getId())
+        this.discussionDTO = abstractDiscussionDTO;
+    }
+
+    private void fetchDiscussionListIfNecessary()
+    {
+        detachDiscussionFetchTask();
+
+        if (paginatedDiscussionListKey == null)
         {
-            case R.id.timeline_action_button_comment:
-                openDiscussion();
-                break;
+            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
+        }
+
+        if (nextPageDelta >= 0)
+        {
+            paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
+
+            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, discussionFetchTaskListener);
+            discussionFetchTask.execute();
         }
     }
 
-    private void openDiscussion()
+    private void detachDiscussionFetchTask()
     {
-        if (discussionDTO != null)
+        if (discussionFetchTask != null)
         {
-            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
+            discussionFetchTask.setListener(null);
         }
-    }
-
-    private void displayUsername(UserBaseDTO user)
-    {
-        username.setText(user.displayName);
+        discussionFetchTask = null;
     }
 
 
-    private void displayUserProfilePicture(UserBaseDTO user)
+    private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
     {
-        if (user.picture != null)
+        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
         {
-            displayDefaultUserProfilePicture();
-            picasso.get()
-                    .load(user.picture)
-                    .transform(peopleIconTransformation)
-                    .placeholder(avatar.getDrawable())
-                    .into(avatar);
+            linkWith(value, true);
         }
-    }
 
-    private void displayDefaultUserProfilePicture()
-    {
-        picasso.get()
-                .load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(avatar);
-    }
-
-    private void displayComment(AbstractDiscussionDTO item)
-    {
-        content.setText(item.text);
-    }
-
-    private void displayCommentTime(AbstractDiscussionDTO item)
-    {
-        time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
-    }
-
-    private void openOtherTimeline()
-    {
-        if (discussionDTO != null)
+        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
-            UserBaseDTO user = discussionDTO.user;
-            if (user != null)
-            {
-                if (currentUserId.get() != user.id)
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
-                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                }
-            }
+            THToast.show(new THException(error));
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-
-    public void display(NewsItemDTO newsItemDTO)
-    {
-        display((AbstractDiscussionDTO) newsItemDTO);
-    }
-
-    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
-    {
-        // markup text
-        displayComment(abstractDiscussionDTO);
-
-        // timeline time
-        displayCommentTime(abstractDiscussionDTO);
-
-        votePair.display(abstractDiscussionDTO);
     }
 }

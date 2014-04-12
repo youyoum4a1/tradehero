@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.loaders.TimelineListLoader;
 
 public class SubTimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, TimelineItemView, TimelineListLoader>

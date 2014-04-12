@@ -43,4 +43,20 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     {
         return new MessageHeaderId(id);
     }
+
+    @Override public String toString()
+    {
+        return "MessageHeaderDTO{" +
+                "title='" + title + '\'' +
+                ", subTitle='" + subTitle + '\'' +
+                ", message='" + message + '\'' +
+                ", messageType=" + messageType +
+                ", recipientUserId=" + recipientUserId +
+                ", senderUserId=" + senderUserId +
+                ", createdAtUtc=" + createdAtUtc +
+                ", id=" + id +
+                ", discussionType=" + discussionType +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }

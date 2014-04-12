@@ -4,12 +4,16 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.DiscussionService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -20,9 +24,12 @@ public class DiscussionServiceStub implements DiscussionService
 {
     public static final int DEFAULT_MAX_COUNT = 5;
 
-    @Inject public DiscussionServiceStub()
+    private CurrentUserId currentUserId;
+
+    @Inject public DiscussionServiceStub(CurrentUserId currentUserId)
     {
         super();
+        this.currentUserId = currentUserId;
     }
 
     @Override public DiscussionDTO getComment(int commentId)
@@ -30,6 +37,7 @@ public class DiscussionServiceStub implements DiscussionService
         DiscussionDTO discussionDTO = new DiscussionDTO();
         discussionDTO.id = commentId;
         discussionDTO.text = "discussion " + commentId;
+        discussionDTO.userId = (commentId % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
         return discussionDTO;
     }
 
@@ -47,15 +55,30 @@ public class DiscussionServiceStub implements DiscussionService
             int inReplyToId,
             Map<String, Object> options)
     {
-        return null;
+        PaginatedDTO<DiscussionDTO> paginatedDTO = new PaginatedDTO<>();
+
+        List<DiscussionDTO> discussionDTOs = new ArrayList<>();
+
+        for (int i = 0; i < 10; ++i)
+        {
+            DiscussionDTO discussionDTO = new DiscussionDTO();
+            discussionDTO.id = i;
+            discussionDTO.text = inReplyToType.description + ": asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd " + i;
+            discussionDTO.userId = (i % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
+            discussionDTOs.add(discussionDTO);
+        }
+
+        paginatedDTO.setData(discussionDTOs);
+
+        return paginatedDTO;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
+    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
             DiscussionType inReplyToType, int inReplyToId,
             Integer maxCount, Integer maxId, Integer minId)
     {
         maxCount = maxCount == null ? DEFAULT_MAX_COUNT : maxCount;
-        RangedDTO<DiscussionDTO, DiscussionDTOList> rangedDTO = new RangedDTO<>();
+        RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> rangedDTO = new RangedDTO<>();
         DiscussionDTOList data = new DiscussionDTOList();
         if (maxId != null)
         {
@@ -96,7 +119,7 @@ public class DiscussionServiceStub implements DiscussionService
         return minId;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList> getMessageThread(
+    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
             DiscussionType inReplyToType,
             int inReplyToId,
             Map<String, Object> options)
@@ -104,7 +127,7 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public DiscussionDTO createDiscussion(DiscussionDTO discussionDTO)
+    @Override public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
         return null;
     }

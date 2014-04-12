@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.news.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.discussion.DiscussionListLoader;
 
 /**
@@ -12,6 +12,6 @@ public class NewsDiscussionListLoader extends DiscussionListLoader
 {
     public NewsDiscussionListLoader(Context context, NewsItemDTOKey newsItemDTOKey)
     {
-        super(context, DiscussionType.NEWS, newsItemDTOKey.key);
+        super(context, DiscussionType.NEWS, newsItemDTOKey.id);
     }
 }

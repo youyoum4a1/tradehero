@@ -23,11 +23,12 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -45,7 +46,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.persistence.timeline.TimelineCache;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -116,7 +117,7 @@ public class TimelineItemView extends LinearLayout
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<UserTimelineService> userTimelineService;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    @Inject Lazy<TimelineCache> timelineCache;
+    @Inject Lazy<DiscussionCache> discussionCache;
     @Inject LocalyticsSession localyticsSession;
 
     private TimelineItemDTOEnhanced timelineItemDTO;
@@ -155,7 +156,7 @@ public class TimelineItemView extends LinearLayout
 
     private void openTimelineDiscussion()
     {
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getTimelineKey().getArgs());
+        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getDiscussionKey().getArgs());
     }
 
     private void openOtherTimeline()
@@ -570,8 +571,12 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    @Override public void display(TimelineItemDTOKey dtoKey)
+    @Override public void display(TimelineItemDTOKey timelineItemDTOKey)
     {
-        linkWith(timelineCache.get().get(dtoKey));
+        AbstractDiscussionDTO timelineItemDTO = discussionCache.get().get(timelineItemDTOKey);
+        if (timelineItemDTO instanceof TimelineItemDTOEnhanced)
+        {
+            linkWith((TimelineItemDTOEnhanced) timelineItemDTO);
+        }
     }
 }

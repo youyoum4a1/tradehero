@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+  <com.tradehero.th.fragments.discussion.PostCommentView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/discussion_comment_box_height"
+      android:id="@+id/discussion_comment_widget"
+      android:layout_alignParentBottom="true"
+      android:layout_gravity="bottom"
+      android:background="@drawable/timeline_discussion_edit_widget_background"
+      >
+
+    <com.tradehero.common.widget.BetterViewAnimator
+        android:id="@+id/post_comment_action_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        >
+
+      <TextView
+          android:id="@+id/post_comment_action_submit"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="@string/timeline_discussion_post"
+          />
+
+      <ProgressBar
+          android:id="@+id/post_comment_action_processing"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+
+    </com.tradehero.common.widget.BetterViewAnimator>
+
+    <EditText
+        android:id="@+id/post_comment_text"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/post_comment_action_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/timeline_discussion_comment_box_hint"
+        />
+
+  </com.tradehero.th.fragments.discussion.PostCommentView>
+
+</merge>

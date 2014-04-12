@@ -83,6 +83,8 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleAdapter;
+import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
@@ -324,6 +326,10 @@ import javax.inject.Singleton;
                         NewsDetailFragment.class,
                         HeadlineFragment.class,
                         HeadlineListLoader.class,
+
+                        PrivateMessageFragment.class,
+                        PrivateMessageBubbleAdapter.class,
+                        
                         AlertDialogUtil.class,
                 },
         staticInjections =

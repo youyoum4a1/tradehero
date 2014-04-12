@@ -36,7 +36,6 @@ public class DiscussionListKey
     {
         return other.getClass().equals(getClass()) &&
                 equalFields(other);
-
     }
 
     protected boolean equalFields(DiscussionListKey other)

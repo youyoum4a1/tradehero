@@ -105,7 +105,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
         if (paginatedSecurityDiscussionListKey == null)
         {
-            paginatedSecurityDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 0);
+            paginatedSecurityDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
         }
 
         if (nextPageDelta >= 0)

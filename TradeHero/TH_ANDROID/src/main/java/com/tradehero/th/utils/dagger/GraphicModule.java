@@ -3,9 +3,8 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
-import com.tradehero.common.cache.MyImageDownloader;
 import com.tradehero.th.fragments.alert.AlertItemView;
-import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.CommentView;
 import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
 import com.tradehero.th.fragments.trending.ResetPortfolioTileView;
@@ -28,7 +27,7 @@ import java.io.File;
                 EarnCreditTileView.class,
                 ExtraCashTileView.class,
 
-                DiscussionView.class
+                CommentView.class
         },
         complete = false,
         library = true // TODO remove

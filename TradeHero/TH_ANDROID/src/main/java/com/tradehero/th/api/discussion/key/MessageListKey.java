@@ -71,9 +71,14 @@ public class MessageListKey implements Comparable<MessageListKey>, PagedDTOKey
 
     public boolean equals(MessageListKey other)
     {
-        return other != null &&
-                other.getClass().equals(getClass()) &&
+        return equalClass(other) &&
                 equalFields(other);
+    }
+
+    public boolean equalClass(MessageListKey other)
+    {
+        return other != null &&
+                other.getClass().equals(getClass());
     }
 
     public boolean equalFields(MessageListKey other)

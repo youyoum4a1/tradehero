@@ -1,18 +1,21 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.DiscussionDTOList;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import java.util.Map;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.*;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 /**
  * Created by xavier on 3/7/14.
@@ -24,12 +27,6 @@ public interface DiscussionServiceAsync
             @Path("commentId") int commentId,
             Callback<DiscussionDTO> callback);
 
-    @POST("/discussions")
-    void createDiscussion(
-            @Body DiscussionDTO discussionDTO,
-            Callback<DiscussionDTO> callback);
-    // TODO add methods async based on DiscussionService
-
     @Deprecated // Use getMessageThread
     @GET("/discussions/")
     void getDiscussions(
@@ -38,7 +35,6 @@ public interface DiscussionServiceAsync
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<DiscussionDTO>> callback); // = 42
-    // TODO add methods async based on DiscussionService
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
@@ -47,14 +43,19 @@ public interface DiscussionServiceAsync
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList>> callback);
+            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
+
+    @POST("/discussions")
+    void createDiscussion(
+            @Body DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback);
 
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     void vote(

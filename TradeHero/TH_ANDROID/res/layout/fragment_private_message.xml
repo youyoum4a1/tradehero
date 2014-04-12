@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <include
+      layout="@layout/post_comment_widget"
+      />
+
+  <TextView
+      android:id="@+id/private_message_empty"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="48dp"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:text="@string/private_message_empty_list_hint"
+      android:textSize="20sp"
+
+      android:visibility="gone"
+      />
+
+  <ListView
+      android:id="@+id/message_list_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/discussion_comment_widget"
+      android:paddingBottom="8dp"
+      android:paddingTop="48dp"
+      android:clipToPadding="false"
+      android:dividerHeight="4dp"
+      tools:background="#ffdddd">
+
+  </ListView>
+
+  <RelativeLayout
+      android:id="@+id/private_message_status_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:padding="8dp"
+      android:background="@color/follow_button_green_overlay">
+
+    <ImageView
+        android:id="@+id/private_icn_white_star"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/icn_star_white"
+        />
+
+    <TextView
+        android:id="@+id/private_message_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/private_icn_white_star"
+        android:layout_centerHorizontal="true"
+        tools:text="0 messages left.\nUpgrade now for unlimited messaging!"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        />
+
+  </RelativeLayout>
+
+</RelativeLayout>

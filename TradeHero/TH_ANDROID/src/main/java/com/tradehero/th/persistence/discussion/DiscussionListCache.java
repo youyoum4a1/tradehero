@@ -2,11 +2,12 @@ package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
@@ -36,12 +37,28 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
 
     @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        return putInternal(discussionServiceWrapper.getDiscussions(discussionListKey));
+        //return putInternal(discussionServiceWrapper.getDiscussions(discussionListKey));
+        return putInternal(discussionServiceWrapper.getPaginatedDiscussions(discussionListKey));
     }
 
-    private DiscussionKeyList putInternal(RangedDTO<DiscussionDTO, DiscussionDTOList> rangedDTO)
+    private DiscussionKeyList putInternal(RangedDTO<AbstractDiscussionDTO, DiscussionDTOList<AbstractDiscussionDTO>> rangedDTO)
     {
         discussionCache.put(rangedDTO.getData());
         return rangedDTO.getDataModifiable().getKeys();
+    }
+
+    private DiscussionKeyList putInternal(PaginatedDTO<DiscussionDTO> paginatedDTO)
+    {
+        List<DiscussionDTO> data = paginatedDTO.getData();
+
+        discussionCache.put(data);
+
+        DiscussionKeyList discussionKeyList = new DiscussionKeyList();
+        for (AbstractDiscussionDTO abstractDiscussionDTO: data)
+        {
+            discussionKeyList.add(abstractDiscussionDTO.getDiscussionKey());
+        }
+
+        return discussionKeyList;
     }
 }

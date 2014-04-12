@@ -11,15 +11,15 @@ import java.util.List;
 public class RangedDiscussionKeyList extends RangedDTO<DiscussionKey, DiscussionKeyList>
     implements DTO
 {
-    public RangedDiscussionKeyList(RangedDTO<DiscussionDTO, DiscussionDTOList> dtos)
+    public RangedDiscussionKeyList(RangedDTO<AbstractDiscussionDTO, DiscussionDTOList<AbstractDiscussionDTO>> dtos)
     {
         setDataFrom(dtos.getData());
         setSequenceDTO(dtos.getSequenceDTO());
     }
 
-    public void setDataFrom(List<DiscussionDTO> data)
+    public void setDataFrom(List<AbstractDiscussionDTO> data)
     {
-        setData(new DiscussionDTOList(data));
+        setData(new DiscussionDTOList<>(data));
     }
 
     public void setData(DiscussionDTOList data)

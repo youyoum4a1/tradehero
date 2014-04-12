@@ -17,7 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;

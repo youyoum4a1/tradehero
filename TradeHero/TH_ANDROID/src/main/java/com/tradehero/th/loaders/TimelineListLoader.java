@@ -2,7 +2,7 @@ package com.tradehero.th.loaders;
 
 import android.content.Context;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.th.api.timeline.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
@@ -66,7 +66,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         }
 
         upperItemId = null;
-        lowerItemId = firstVisible.key;
+        lowerItemId = firstVisible.id;
         forceLoad();
     }
 
@@ -75,7 +75,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         resetQuery();
         if (startItem != null)
         {
-            upperItemId = startItem.key;
+            upperItemId = startItem.id;
         }
         forceLoad();
     }

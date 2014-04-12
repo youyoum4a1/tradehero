@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.MessageServiceWrapper;
@@ -16,10 +17,10 @@ import javax.inject.Singleton;
     private MessageServiceWrapper messageServiceWrapper;
 
     @Inject public MessageStatusCache(
-            @SingleCacheMaxSize int maxSize,
+            @SingleCacheMaxSize IntPreference maxSize,
             MessageServiceWrapper messageServiceWrapper)
     {
-        super(maxSize);
+        super(maxSize.get());
         this.messageServiceWrapper = messageServiceWrapper;
     }
 

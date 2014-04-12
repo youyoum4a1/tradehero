@@ -20,7 +20,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -37,11 +36,10 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     @InjectView(R.id.follower_time) TextView followTime;
     @InjectView(R.id.hint_open_follower_info) ImageView country;
 
-
-
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
@@ -208,7 +206,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     {
         if (title != null)
         {
-            title.setText(UserBaseDTOUtil.getLongDisplayName(getContext(), userFollowerDTO));
+            title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), userFollowerDTO));
         }
     }
 
