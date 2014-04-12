@@ -42,6 +42,9 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public int unreadCount;
     public int alertCount;
 
+    public int unreadMessageThreadsCount;
+    public int unreadNotificationsCount;
+
     public int tradesSharedCount_FB;
 
     public List<UserAlertPlanDTO> userAlertPlans;
