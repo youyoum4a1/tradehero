@@ -349,8 +349,7 @@ public class MessagesCenterFragment extends DashboardFragment
             this.onScrollListener = onScrollListener;
         }
 
-        @Override public void onScroll(AbsListView view, int firstVisibleItem,
-                int visibleItemCount, int totalItemCount)
+        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
         {
             if (onScrollListener != null)
             {

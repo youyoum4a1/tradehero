@@ -27,6 +27,8 @@ public class NotificationCache extends StraightDTOCache<NotificationKey, Notific
 
     @Override protected NotificationDTO fetch(NotificationKey key) throws Throwable
     {
-        return notificationService.get().getNotificationDetail(key.key);
+        NotificationDTO notificationDTO = notificationService.get().getNotificationDetail(key.key);
+        notificationDTO.unread = true;
+        return notificationDTO;
     }
 }
