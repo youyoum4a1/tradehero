@@ -20,7 +20,7 @@ public class AbstractDiscussionFragment extends DashboardFragment
 {
     public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
-    @InjectView(R.id.discussion_view) DiscussionView discussionView;
+    @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
@@ -50,7 +50,7 @@ public class AbstractDiscussionFragment extends DashboardFragment
     {
         super.onResume();
 
-        if (discussionKey == null)
+        if (discussionKey == null && getArguments().containsKey(DISCUSSION_KEY_BUNDLE_KEY))
         {
             discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
