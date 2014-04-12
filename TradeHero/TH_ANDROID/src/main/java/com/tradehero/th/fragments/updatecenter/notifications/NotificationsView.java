@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
@@ -315,8 +318,6 @@ public class NotificationsView extends BetterViewAnimator
                 }
                 middleCallbackMap.remove(pushId);
                 callbackMap.remove(pushId);
-
-
             }
         }
 
@@ -333,5 +334,14 @@ public class NotificationsView extends BetterViewAnimator
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         --userProfileDTO.unreadNotificationsCount;
         userProfileCache.put(userBaseKey, userProfileDTO);
+
+        requestUpdateTabCounter();
+    }
+
+    private void requestUpdateTabCounter()
+    {
+        // TODO remove this hack after refactor messagecenterfragment
+        Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(requestUpdateIntent);
     }
 }
