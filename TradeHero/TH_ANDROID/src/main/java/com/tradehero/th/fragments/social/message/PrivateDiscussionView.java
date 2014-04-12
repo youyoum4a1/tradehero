@@ -4,14 +4,15 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.PostCommentView;
+import timber.log.Timber;
 
-/**
- * Created by xavier2 on 2014/4/12.
- */
 public class PrivateDiscussionView extends DiscussionView
 {
     protected MessageType messageType;
@@ -42,6 +43,30 @@ public class PrivateDiscussionView extends DiscussionView
                 R.layout.private_message_bubble_other);
     }
 
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        setLoaded();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(new PrivateDiscussionViewCommentPostedListener());
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(null);
+        }
+        super.onDetachedFromWindow();
+    }
+
     @Override protected void setLoading()
     {
         super.setLoading();
@@ -67,6 +92,21 @@ public class PrivateDiscussionView extends DiscussionView
         if (postCommentView != null)
         {
             postCommentView.linkWith(messageType);
+        }
+    }
+
+    protected class PrivateDiscussionViewCommentPostedListener implements PostCommentView.CommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            Timber.d("success %s", discussionDTO);
+            addDiscussion(discussionDTO);
+        }
+
+        @Override public void failure(Exception exception)
+        {
+            // TODO better error
+            THToast.show(R.string.error_unknown);
         }
     }
 }

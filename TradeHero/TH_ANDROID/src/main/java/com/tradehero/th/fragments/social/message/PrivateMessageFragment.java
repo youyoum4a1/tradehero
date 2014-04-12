@@ -6,9 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -92,7 +90,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     @InjectView(R.id.private_message_empty) TextView emptyHint;
     //@InjectView(R.id.message_list_view) ListView messageListView;
     PrivateMessageBubbleAdapter messageBubbleAdapter;
-    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
+    //@InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
     //@InjectView(R.id.button_send) View buttonSend;
     @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
     //@InjectView(R.id.typing_message_content) EditText messageToSend;
@@ -127,11 +125,15 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     private void initViews(View view)
     {
-        postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
+        //postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         swapAdapter();
         display();
+        if (discussionView instanceof PrivateDiscussionView)
+        {
+            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -286,9 +288,10 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         {
             linkWith(messageHeaders.iterator().next(), andDisplay);
         }
-        else
+        else if (discussionView instanceof PrivateDiscussionView)
         {
-            postCommentView.linkWith(MessageType.PRIVATE);
+            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+            //postCommentView.linkWith(MessageType.PRIVATE);
         }
         displayVisibilities();
     }
@@ -301,7 +304,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         DiscussionKey discussionKey = discussionKeyFactory.create(messageHeader);
         discussionView.display(discussionKey);
 
-        postCommentView.linkWith(discussionKey); // TODO remove
+        //postCommentView.linkWith(discussionKey); // TODO remove
 
         nextDiscussionListKey = new RangedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
@@ -477,7 +480,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
             handleCommentPosted(discussionDTO);
         }
 
-        @Override public void failure()
+        @Override public void failure(Exception exception)
         {
             // Do something?
         }
