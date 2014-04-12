@@ -29,12 +29,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         Timber.d("onCreate");
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //View view = inflater.inflate(R.layout.update_center, container, false);
         return addTabs();
-        //return view;
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -60,12 +57,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         Timber.d("onDestroy");
     }
 
-
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), 11111);
-        //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         Bundle args = getArguments();
         if (args == null)
@@ -96,7 +91,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 
     private void changeTabTitleNumber(int page, int number)
     {
-        TitleTabView tabView = (TitleTabView)mTabHost.getTabWidget().getChildAt(page);
+        TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(page);
         tabView.setTitleNumber(number);
     }
 
@@ -104,9 +99,4 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     {
         changeTabTitleNumber(page, number);
     }
-
-    //@Override public boolean isTabBarVisible()
-    //{
-    //    return false;
-    //}
 }

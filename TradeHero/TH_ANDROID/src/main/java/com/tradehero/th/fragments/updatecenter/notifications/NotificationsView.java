@@ -61,17 +61,31 @@ public class NotificationsView extends BetterViewAnimator
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        notificationFetchListener = new NotificationFetchListener(true);
+        createNotificationFetchListener();
 
+        createNotificationAdapterListener();
+    }
+
+    private void createNotificationAdapterListener()
+    {
         notificationListAdapter = new NotificationListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.notification_item_view);
     }
 
+    private void createNotificationFetchListener()
+    {
+        notificationFetchListener = new NotificationFetchListener(true);
+    }
+
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+
+        createNotificationFetchListener();
+
+        createNotificationAdapterListener();
 
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
@@ -86,6 +100,12 @@ public class NotificationsView extends BetterViewAnimator
     @Override protected void onDetachedFromWindow()
     {
         detachNotificationFetchTask();
+
+        notificationFetchListener = null;
+
+        notificationListAdapter = null;
+
+        notificationList.setAdapter(null);
 
         notificationList.setOnScrollListener(null);
 
