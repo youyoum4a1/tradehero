@@ -54,9 +54,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        ButterKnife.inject((NewsHeadlineView) this, this);
-        DaggerUtils.inject(this);
+        ButterKnife.inject(this);
     }
 
     @Override

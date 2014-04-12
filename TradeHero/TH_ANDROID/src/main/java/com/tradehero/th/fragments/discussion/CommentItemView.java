@@ -61,9 +61,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()

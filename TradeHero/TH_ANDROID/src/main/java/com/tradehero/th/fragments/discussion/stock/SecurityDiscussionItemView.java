@@ -55,9 +55,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()

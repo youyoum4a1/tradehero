@@ -141,7 +141,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     private void init()
     {
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     private void openTimelineDiscussion()
