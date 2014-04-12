@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 
@@ -13,6 +14,8 @@ import com.tradehero.th.fragments.discussion.DiscussionView;
  */
 public class PrivateDiscussionView extends DiscussionView
 {
+    protected MessageType messageType;
+
     //<editor-fold desc="Constructors">
     public PrivateDiscussionView(Context context)
     {
@@ -54,6 +57,16 @@ public class PrivateDiscussionView extends DiscussionView
         if (discussionStatus != null)
         {
             discussionStatus.setVisibility(View.GONE);
+        }
+    }
+
+    public void setMessageType(MessageType messageType)
+    {
+        this.messageType = messageType;
+
+        if (postCommentView != null)
+        {
+            postCommentView.linkWith(messageType);
         }
     }
 }
