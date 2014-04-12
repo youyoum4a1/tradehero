@@ -338,8 +338,8 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
-            changeTitleNumber(value.size());
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
+            //TODO how to invalidate the old data ..
             if (isFirst)
             {
 
@@ -471,7 +471,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private class MessageMarkAsReadCallback implements Callback<Response>
     {
         private final int messageId;
-
         public MessageMarkAsReadCallback(int messageId)
         {
             this.messageId = messageId;

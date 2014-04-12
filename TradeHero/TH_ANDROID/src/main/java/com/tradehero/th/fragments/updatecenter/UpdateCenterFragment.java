@@ -229,6 +229,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         tabView.setTitleNumber(number);
+        //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
 
     @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
@@ -266,7 +267,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
             {
                 UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
 
-                if (userProfileDTO != null)
+                if (userProfileDTO !=
+                        null)
                 {
                     linkWith(userProfileDTO, true);
                 }
