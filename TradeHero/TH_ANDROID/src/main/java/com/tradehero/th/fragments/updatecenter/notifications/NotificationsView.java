@@ -63,12 +63,12 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        createNotificationAdapterListener();
+        notificationListAdapter = createNotificationAdapterListener();
     }
 
-    private void createNotificationAdapterListener()
+    private NotificationListAdapter createNotificationAdapterListener()
     {
-        notificationListAdapter = new NotificationListAdapter(
+        return new NotificationListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.notification_item_view);
@@ -84,8 +84,6 @@ public class NotificationsView extends BetterViewAnimator
         super.onAttachedToWindow();
 
         createNotificationFetchListener();
-
-        createNotificationAdapterListener();
 
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
