@@ -28,7 +28,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         //THLog.d(TAG, "getView " + position);
-        convertView = conditionalInflate(convertView, viewGroup);
+        convertView = conditionalInflate(position, convertView, viewGroup);
 
         V dtoView = (V) convertView;
         T dto = (T) getItem(position);
@@ -37,7 +37,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
         return convertView;
     }
 
-    protected View conditionalInflate(View convertView, ViewGroup viewGroup)
+    protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
     {
         if (convertView == null)
         {

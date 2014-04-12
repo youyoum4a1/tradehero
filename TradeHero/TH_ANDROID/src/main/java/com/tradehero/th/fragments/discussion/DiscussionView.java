@@ -37,7 +37,7 @@ public class DiscussionView extends FrameLayout
     @Inject DiscussionListCache discussionListCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
-    private TextView discussionStatus;
+    protected TextView discussionStatus;
     private DiscussionKey discussionKey;
 
     private AbstractDiscussionDTO discussionDTO;
@@ -86,7 +86,7 @@ public class DiscussionView extends FrameLayout
 
     protected DiscussionListAdapter createDiscussionListAdapter()
     {
-        return  new DiscussionListAdapter(
+        return new DiscussionListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 listItemLayout);
@@ -221,7 +221,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void setLoading()
+    protected void setLoading()
     {
         if (discussionStatus != null)
         {
@@ -229,7 +229,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void setLoaded()
+    protected void setLoaded()
     {
         if (discussionStatus != null)
         {

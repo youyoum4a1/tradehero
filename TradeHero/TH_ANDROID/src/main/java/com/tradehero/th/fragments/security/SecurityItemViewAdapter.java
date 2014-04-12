@@ -61,7 +61,7 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        convertView = conditionalInflate(convertView, viewGroup);
+        convertView = conditionalInflate(position, convertView, viewGroup);
 
         SecurityItemView dtoView = (SecurityItemView) convertView;
         SecurityCompactDTOType dto = (SecurityCompactDTOType) getItem(position);

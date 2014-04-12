@@ -134,13 +134,6 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     }
 
     @Override
-    protected View conditionalInflate(View convertView, ViewGroup viewGroup)
-    {
-        View view = super.conditionalInflate(convertView, viewGroup);
-        return view;
-    }
-
-    @Override
     protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineView dtoView)
     {
         View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
