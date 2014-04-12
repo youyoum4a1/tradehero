@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion;
 
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -27,9 +28,16 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     public boolean isPublic;
     // END: duplicated from buy/sell
 
+    //<editor-fold desc="Constructors">
     public DiscussionDTO()
     {
     }
+
+    public <ExtendedDTOType extends ExtendedDTO> DiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
 
     @Override public DiscussionKey getDiscussionKey()
     {

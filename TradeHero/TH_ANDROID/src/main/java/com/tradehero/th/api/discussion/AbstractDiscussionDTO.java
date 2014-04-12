@@ -19,10 +19,17 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     public int commentCount;
     public String langCode;
 
+    //<editor-fold desc="Constructors">
     public AbstractDiscussionDTO()
     {
         super();
     }
+
+    public <ExtendedDTOType extends ExtendedDTO> AbstractDiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
 
     public void populateVote(AbstractDiscussionDTO target)
     {
