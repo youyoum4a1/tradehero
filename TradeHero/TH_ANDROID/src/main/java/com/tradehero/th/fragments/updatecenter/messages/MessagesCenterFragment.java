@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -13,16 +15,21 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
+import com.fortysevendeg.android.swipelistview.SwipeListViewTouchListener;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.Arrays;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -43,6 +50,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     MessagesView messagesView;
     SwipeListener swipeListener;
+
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -120,17 +129,21 @@ public class MessagesCenterFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         messagesView = (MessagesView) view;
         ListView listView = messagesView.getListView();
-        listView.setOnScrollListener(new OnScrollListener());
+        listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemClickListener(this);
+
 
         if (messageListKey == null)
         {
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
 
+
         SwipeListView swipeListView = (SwipeListView) listView;
+        //fixSwipe(swipeListView);
         swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);
+
     }
 
     private void initListener()
@@ -196,24 +209,34 @@ public class MessagesCenterFragment extends DashboardFragment
     class SwipeListener extends BaseSwipeListViewListener
     {
 
-        @Override public void onClickBackView(int position)
+        @Override public void onClickBackView(final int position)
         {
-            Timber.d("SwipeListener onClickBackView");
-            SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            Timber.d("SwipeListener onClickBackView %s",position);
+            final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            //TODO it's quite difficult to use
             swipeListView.dismiss(position);
-
-        }
+            swipeListView.closeOpenedItems();
+           // long time = getResources().getInteger(android.R.integer.config_shortAnimTime);
+           // new Handler().postDelayed(new Runnable()
+           // {
+           //     @Override public void run()
+           //     {
+           //         //swipeListView.closeOpenedItems();
+           //
+           //     }
+           //},time);
+            }
 
         @Override public void onDismiss(int[] reverseSortedPositions)
         {
-            Timber.d("SwipeListener onDismiss");
-            MessageListAdapter adapter = getListAdaper();
-            if (adapter != null)
-            {
-                //adapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
-                //TODO
-                adapter.notifyDataSetChanged();
+            Timber.d("SwipeListener onDismiss %s", Arrays.toString(reverseSortedPositions));
+            final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            for (int position : reverseSortedPositions) {
+                removeMessage(position);
+                swipeListView.closeAnimate(position);
             }
+
+
         }
 
     }
@@ -221,6 +244,18 @@ public class MessagesCenterFragment extends DashboardFragment
     private void removeMessage(int position)
     {
         //messageListCache.get().get()
+        MessageListAdapter adapter = getListAdaper();
+        adapter.markDeleted(position);
+
+        ListView listView = messagesView.getListView();
+        //listView.setAdapter(adapter);
+        removeMessageSync();
+
+    }
+
+    private void removeMessageSync()
+    {
+        //messageServiceWrapper.get().deleteMessage()
     }
 
     private void saveNewPage(MessageHeaderIdList value)
@@ -231,6 +266,8 @@ public class MessagesCenterFragment extends DashboardFragment
         }
         alreadyFetched.addAll(value);
     }
+
+
 
     private void display(MessageHeaderIdList value)
     {
@@ -254,11 +291,99 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
+    private void fixSwipe(SwipeListView swipeListView){
+
+        //touchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
+        //touchListener = new SwipeListViewTouchListener(this, swipeFrontView, swipeBackView);
+        //if (swipeAnimationTime > 0) {
+        //    touchListener.setAnimationTime(swipeAnimationTime);
+        //}
+        //touchListener.setRightOffset(swipeOffsetRight);
+        //touchListener.setLeftOffset(swipeOffsetLeft);
+        //touchListener.setSwipeActionLeft(swipeActionLeft);
+        //touchListener.setSwipeActionRight(swipeActionRight);
+        //touchListener.setSwipeMode(swipeMode);
+        //touchListener.setSwipeClosesAllItemsWhenListMoves(swipeCloseAllItemsWhenMoveList);
+        //touchListener.setSwipeOpenOnLongPress(swipeOpenOnLongPress);
+        //touchListener.setSwipeDrawableChecked(swipeDrawableChecked);
+        //touchListener.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
+        //setOnTouchListener(touchListener);
+        //setOnScrollListener(touchListener.makeScrollListener());
+
+        MySwipeListViewTouchListener mySwipeListViewTouchListener = new MySwipeListViewTouchListener(swipeListView,R.id.message_item_front,R.id.message_item_back);
+        mySwipeListViewTouchListener.setRightOffset(0);
+        mySwipeListViewTouchListener.setLeftOffset((float)(MetaHelper.getScreensize(getActivity())[1] - 120));
+        mySwipeListViewTouchListener.setSwipeClosesAllItemsWhenListMoves(true);
+        mySwipeListViewTouchListener.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
+        mySwipeListViewTouchListener.setSwipeOpenOnLongPress(false);
+        mySwipeListViewTouchListener.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
+        mySwipeListViewTouchListener.setSwipeDrawableChecked(R.drawable.ic_info);
+        mySwipeListViewTouchListener.setSwipeDrawableUnchecked(R.drawable.ic_info);
+
+        swipeListView.setOnTouchListener(mySwipeListViewTouchListener);
+        swipeListView.setOnScrollListener(mySwipeListViewTouchListener.makeScrollListener());
+    }
+
+    class MySwipeListViewTouchListener extends SwipeListViewTouchListener {
+
+        /**
+         * Constructor
+         *
+         * @param swipeListView SwipeListView
+         * @param swipeFrontView front view Identifier
+         * @param swipeBackView back view Identifier
+         */
+        public MySwipeListViewTouchListener(
+                SwipeListView swipeListView, int swipeFrontView, int swipeBackView)
+        {
+            super(swipeListView, swipeFrontView, swipeBackView);
+        }
+
+        @Override public AbsListView.OnScrollListener makeScrollListener()
+        {
+            AbsListView.OnScrollListener originalOnScrollListener = super.makeScrollListener();
+            return new OnScrollListener(originalOnScrollListener);
+        }
+
+        @Override public void setSwipeDrawableChecked(int swipeDrawableChecked)
+        {
+            super.setSwipeDrawableChecked(swipeDrawableChecked);
+        }
+
+        @Override public void setSwipeDrawableUnchecked(int swipeDrawableUnchecked)
+        {
+            super.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
+        }
+    }
+
     class OnScrollListener extends FlagNearEndScrollListener
     {
-        public OnScrollListener()
+        AbsListView.OnScrollListener onScrollListener;
+        public OnScrollListener(AbsListView.OnScrollListener onScrollListener)
         {
             activate();
+            this.onScrollListener = onScrollListener;
+        }
+
+        @Override public void onScroll(AbsListView view, int firstVisibleItem,
+                int visibleItemCount, int totalItemCount)
+        {
+            if (onScrollListener != null)
+            {
+                onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
+            super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        }
+
+        @Override public void onScrollStateChanged(AbsListView view, int state)
+        {
+            if (onScrollListener != null)
+            {
+                onScrollListener.onScrollStateChanged(view, state);
+            }
+            super.onScrollStateChanged(view, state);
+
         }
 
         @Override public void raiseFlag()
