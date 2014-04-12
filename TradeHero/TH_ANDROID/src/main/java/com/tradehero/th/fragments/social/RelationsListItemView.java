@@ -90,13 +90,11 @@ public class RelationsListItemView extends RelativeLayout
 
     public void display(UserBaseDTO userBaseDTO)
     {
-        Timber.d("lyl 1 display");
         linkWith(userBaseDTO, true);
     }
 
     public void linkWith(UserBaseDTO userBaseDTO, boolean andDisplay)
     {
-        Timber.d("lyl 2 linkWith %s", userBaseDTO.toString());
         this.userBaseDTO = userBaseDTO;
         if (andDisplay)
         {
@@ -108,7 +106,6 @@ public class RelationsListItemView extends RelativeLayout
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        Timber.d("lyl display");
         displayPicture();
         displayTitle();
     }

@@ -100,7 +100,12 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(R.string.update_center_title);
         inflater.inflate(R.menu.notification_center_menu, menu);
+
         mMenuFollow = menu.findItem(R.id.btn_new_message);
         mNewMsgButton =
                 (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);

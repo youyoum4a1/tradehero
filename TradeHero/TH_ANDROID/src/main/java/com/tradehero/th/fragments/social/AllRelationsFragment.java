@@ -53,12 +53,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        downloadRelations();
-    }
-
     public void downloadRelations()
     {
         alertDialogUtilLazy.get().showProgressDialog(getActivity());
@@ -78,7 +72,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Timber.d("lyl onItemClick position=%d", position);
         pushPrivateMessageFragment(position);
     }
 
@@ -94,7 +87,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         @Override public void success(UserRelationsDTO list, Response response)
         {
-            Timber.d("lyl success list.size=%d", list.data.size());
             mRelationsList = list.data;
             alertDialogUtilLazy.get().dismissProgressDialog();
             mRelationsListItemAdapter.setItems(list.data);
@@ -138,6 +130,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+        downloadRelations();
     }
 
     @Override public void onPause()
