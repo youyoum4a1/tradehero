@@ -29,7 +29,7 @@ public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>
 {
     @InjectView(android.R.id.list) ListView discussionList;
-    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
+    @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
 
     private int listItemLayout;
     private int topicLayout;
