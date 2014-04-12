@@ -19,6 +19,7 @@
         android:visibility="gone"
         android:divider="@null"
         android:fadeScrollbars="true"
+        android:layout_marginBottom="50dp"
         />
     <ProgressBar
         android:id="@+id/list_news_headline_progressbar"
