@@ -6,7 +6,9 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -48,4 +50,14 @@ interface MessageServiceAsync
     void deleteMessage(
             @Body MessageHeaderDTO form,
             Callback<DiscussionDTO> callback);
+
+    @DELETE("/messages/{commentId}")
+    void deleteMessage(
+            @Path("commentId") int commentId,
+            Callback<Response> callback);
+
+    @POST("/messages/read/{commentId}")
+    void readMessage(
+            @Path("commentId") int commentId,
+            Callback<Response> callback);
 }

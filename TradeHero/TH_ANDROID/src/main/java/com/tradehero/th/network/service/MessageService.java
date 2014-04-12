@@ -1,12 +1,13 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -35,4 +36,10 @@ public interface MessageService
 
     @POST("/messages")
     DiscussionDTO createMessage(@Body MessageCreateFormDTO form);
+
+    @DELETE("/messages/{commentId}")
+    Response deleteMessage(@Path("commentId") int commentId);
+
+    @POST("/messages/read/{commentId}")
+    Response readMessage(@Path("commentId") int commentId);
 }
