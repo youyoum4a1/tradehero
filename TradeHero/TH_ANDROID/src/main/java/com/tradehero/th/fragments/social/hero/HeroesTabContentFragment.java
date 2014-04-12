@@ -21,6 +21,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroCache;
@@ -411,6 +412,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             setListShown(true);
             display(heroCache.get().get(value.heroIdList));
             notifyHeroesLoaded(value);
+            Timber.d("onDTOReceived key:%s,value:%s",key,value);
         }
 
         @Override public void onErrorThrown(HeroKey key, Throwable error)
@@ -430,19 +432,15 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         }
     }
 
-    HeroManagerFragment.OnHeroesLoadedListener onHeroesLoadedListener;
-
-    public void setOnHeroesLoadedListener(
-            HeroManagerFragment.OnHeroesLoadedListener onHeroesLoadedListener)
-    {
-        this.onHeroesLoadedListener = onHeroesLoadedListener;
-    }
 
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {
-        if (onHeroesLoadedListener != null && !isDetached())
+
+        OnHeroesLoadedListener listener = FragmentUtils.getParent(this,OnHeroesLoadedListener.class);
+        Timber.d("OnHeroesLoadedListener listener:%s",listener);
+        if (listener != null && !isDetached())
         {
-            onHeroesLoadedListener.onHerosLoaded(page, value);
+            listener.onHerosLoaded(page, value);
         }
     }
 }

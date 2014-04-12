@@ -2,24 +2,25 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.tradehero.th.R;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.updatecenter.TabListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
  * use File | Settings | File Templates.
  */
-public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/
+public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/ implements OnHeroesLoadedListener
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
@@ -34,6 +35,9 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     private HeroTypeExt[] heroTypes;
     private int selectedId = -1;
 
+    FragmentTabHost mTabHost;
+    List<TabHost.TabSpec> tabSpecList;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -44,15 +48,15 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
+        //View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
         Timber.d("onCreateView");
-        return view;
+        return addTabs();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        addTabs();
+        //addTabs();
     }
 
     @Override public void onStart()
@@ -80,15 +84,18 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         Timber.d("onStop");
     }
 
-    private void addTabs()
+
+
+    private View addTabs()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        //actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+        mTabHost = new FragmentTabHost(getActivity());
+        mTabHost.setup(getActivity(), getChildFragmentManager(), 11110);
+        mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         ActionBar.Tab lastSavedTab = null;
         int lastSelectedId = selectedId;
         HeroTypeExt[] types = heroTypes;
+        tabSpecList = new ArrayList<>(types.length);
         Bundle args = getArguments();
         if (args == null)
         {
@@ -99,43 +106,39 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             args = new Bundle(args);
             args.putInt(KEY_PAGE, type.pageIndex);
             args.putInt(KEY_ID, type.heroType.typeId);
-            ActionBar.Tab tab = actionBar.newTab().setTabListener(
-                    new MyTabListener(getSherlockActivity(), type.fragmentClass, type.toString(),
-                            args));
-            tab.setTag(type.heroType.typeId);
-            setTabTitle(tab, type.titleRes, 0);
-            actionBar.addTab(tab);
+
+            String title = MessageFormat.format(getSherlockActivity().getString(type.titleRes), 0);
+
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+            tabSpecList.add(tabSpec);
+            mTabHost.addTab(tabSpec,
+                    type.fragmentClass, args);
+
             if (type.heroType.typeId == lastSelectedId)
             {
-                lastSavedTab = tab;
             }
         }
         //actionBar.setSelectedNavigationItem();
         Timber.d("lastSavedTab %s selectedId %d", lastSavedTab, selectedId);
         if (lastSavedTab != null)
         {
-            actionBar.selectTab(lastSavedTab);
         }
+
+        return mTabHost;
+
     }
 
-    private void clearTabs()
+    class MyOnTouchListener implements TabHost.OnTabChangeListener
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.removeAllTabs();
-    }
 
-    private void saveSelectedTab()
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        this.selectedId = (Integer) actionBar.getSelectedTab().getTag();
-    }
-
-    private void setTabTitle(ActionBar.Tab tab, int titleRes, int number)
-    {
-        String title;
-        title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
-        tab.setText(title);
+        @Override public void onTabChanged(String tabId)
+        {
+            Timber.d("onTabChanged tabId:%s",tabId);
+            //getChildFragmentManager().executePendingTransactions();
+            Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
+            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
+            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
+        }
     }
 
     /**
@@ -143,25 +146,15 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
      */
     private void changeTabTitle(int page, int number)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        ActionBar.Tab tab = actionBar.getTabAt(page);
+        TabHost.TabSpec tabSpec = tabSpecList.get(page);
+        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes,page);
+        int titleRes = heroTypeExt.titleRes;
+        String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
+        tabSpec.setIndicator(title);
 
-        int titleRes = 0;
-        switch (page)
-        {
-            case 0:
-                titleRes = R.string.leaderboard_community_hero_premium;
-                break;
-            case 1:
-                titleRes = R.string.leaderboard_community_hero_free;
-                break;
-            case 2:
-                titleRes = R.string.leaderboard_community_hero_all;
-                break;
-        }
-        String title = "";
-        title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
-        tab.setText(title);
+        TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
+        tv.setText(title);
+
     }
 
     private void changeTabTitle(int number1, int number2, int number3)
@@ -174,8 +167,8 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        saveSelectedTab();
-        clearTabs();
+        //saveSelectedTab();
+        //clearTabs();
         Timber.d("onDestroyView");
     }
 
@@ -191,46 +184,13 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         Timber.d("onDetach");
     }
 
-    OnHeroesLoadedListener onHeroesLoadedListener = new OnHeroesLoadedListener()
+    @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
     {
-        @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
+        if (!isDetached())
         {
-            if (!isDetached())
-            {
-                changeTabTitle(0, value.herosCountGetPaid);
-                changeTabTitle(1, value.herosCountNotGetPaid);
-                changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
-            }
-        }
-    };
-
-    public static interface OnHeroesLoadedListener
-    {
-        void onHerosLoaded(int page, HeroIdExtWrapper value);
-    }
-
-    class MyTabListener extends TabListener
-    {
-
-        public MyTabListener(SherlockFragmentActivity activity,
-                Class<? extends Fragment> fragmentClass, String tag, Bundle args)
-        {
-            super(activity, fragmentClass, tag, args);
-        }
-
-        @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-            if (mFragment == null)
-            {
-                mFragment = Fragment.instantiate(mActivity, mFragmentClass.getName(), mArgs);
-                HeroesTabContentFragment fragment = (HeroesTabContentFragment) mFragment;
-                fragment.setOnHeroesLoadedListener(onHeroesLoadedListener);
-                ft.add(R.id.fragment_content, mFragment, mTag);
-            }
-            else
-            {
-                super.onTabSelected(tab, ft);
-            }
+            changeTabTitle(0, value.herosCountGetPaid);
+            changeTabTitle(1, value.herosCountNotGetPaid);
+            changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
         }
     }
 }
