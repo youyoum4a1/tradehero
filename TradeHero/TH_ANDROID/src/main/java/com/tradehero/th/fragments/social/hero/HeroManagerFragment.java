@@ -26,6 +26,7 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
 
     static final String KEY_PAGE = "KEY_PAGE";
     static final String KEY_ID = "KEY_ID";
+    static final int FRAGMENT_LAYOUT_ID = 9999;
     /**
      * We are showing the heroes of this follower
      */
@@ -48,7 +49,6 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        //View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
         Timber.d("onCreateView");
         return addTabs();
     }
@@ -56,7 +56,6 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        //addTabs();
     }
 
     @Override public void onStart()
@@ -89,7 +88,7 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), 11110);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         ActionBar.Tab lastSavedTab = null;
@@ -113,15 +112,6 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
             tabSpecList.add(tabSpec);
             mTabHost.addTab(tabSpec,
                     type.fragmentClass, args);
-
-            if (type.heroType.typeId == lastSelectedId)
-            {
-            }
-        }
-        //actionBar.setSelectedNavigationItem();
-        Timber.d("lastSavedTab %s selectedId %d", lastSavedTab, selectedId);
-        if (lastSavedTab != null)
-        {
         }
 
         return mTabHost;

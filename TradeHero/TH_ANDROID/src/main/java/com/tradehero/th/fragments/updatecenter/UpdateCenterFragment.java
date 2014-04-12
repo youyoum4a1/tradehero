@@ -19,6 +19,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         implements OnTitleNumberChangeListener
 {
     public static final String KEY_PAGE = "page";
+    static final int FRAGEMENT_LAYOUT_ID = 10000;
 
     private FragmentTabHost mTabHost;
     private List<TabHost.TabSpec> tabSpecList;
@@ -64,7 +65,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), 11111);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGEMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         Bundle args = getArguments();

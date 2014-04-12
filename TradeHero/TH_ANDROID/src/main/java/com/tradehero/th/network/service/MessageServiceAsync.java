@@ -48,9 +48,8 @@ interface MessageServiceAsync
             Callback<DiscussionDTO> callback);
 
 
-    //TODO fake
-    @POST("/messages")
+    @POST("/messages/delete/{commentId}")
     void deleteMessage(
-            @Body MessageHeaderDTO form,
+            @Path("commentId") int commentId,
             Callback<DiscussionDTO> callback);
 }

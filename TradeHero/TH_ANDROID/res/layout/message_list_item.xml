@@ -11,6 +11,8 @@
     android:background="@color/timeline_background_color"
     >
 
+  <!--android:id="@+id/message_item_front"-->
+  <!--android:tag="message_item_front"-->
   <ImageView
       android:id="@+id/message_item_icon"
       android:layout_width="60dp"

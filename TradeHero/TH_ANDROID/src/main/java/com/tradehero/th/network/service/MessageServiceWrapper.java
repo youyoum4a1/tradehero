@@ -165,10 +165,10 @@ public class MessageServiceWrapper
     }
 
     //TODO fake,not real
-    public MiddleCallbackDiscussion deleteMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion deleteMessage(int commentId, Callback<DiscussionDTO> callback)
     {
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
-        messageServiceAsync.deleteMessage(form, middleCallback);
+        messageServiceAsync.deleteMessage(commentId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

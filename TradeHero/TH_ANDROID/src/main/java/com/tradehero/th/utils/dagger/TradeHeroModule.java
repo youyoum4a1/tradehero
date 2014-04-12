@@ -100,6 +100,7 @@ import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
+import com.tradehero.th.fragments.updatecenter.messages.MessageEraser;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -325,6 +326,7 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleAdapter.class,
                         
                         AlertDialogUtil.class,
+                        MessageEraser.class
                 },
         staticInjections =
                 {

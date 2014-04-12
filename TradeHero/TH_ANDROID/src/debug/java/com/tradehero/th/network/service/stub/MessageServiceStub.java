@@ -63,7 +63,8 @@ public class MessageServiceStub implements MessageService
 
     private MessageHeaderDTO createMessageHeader(int commentId, Integer page, Date date)
     {
-        return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
+        MessageHeaderDTO m = new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
+        return m;
     }
 
     @Override public MessageStatusDTO getStatus(int recipientUserId)

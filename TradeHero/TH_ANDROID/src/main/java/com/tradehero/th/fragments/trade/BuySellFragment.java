@@ -288,7 +288,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getChildFragmentManager());
         }
         if (mBottomViewPager != null)
         {

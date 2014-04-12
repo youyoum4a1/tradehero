@@ -3,6 +3,7 @@ package com.tradehero.th.models.social.follower;
 import com.tradehero.th.persistence.social.HeroType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.inject.Inject;
 
 public class HeroTypeResourceDTOFactory
@@ -27,9 +28,10 @@ public class HeroTypeResourceDTOFactory
         }
     }
 
-    public HashMap<Integer, HeroTypeResourceDTO> getMapByHeroTypeId()
+    public Map<Integer, HeroTypeResourceDTO> getMapByHeroTypeId()
     {
-        HashMap<Integer, HeroTypeResourceDTO> map = new HashMap<>();
+        //The order of HashMap is unsure,so use TreeMap
+        TreeMap<Integer, HeroTypeResourceDTO> map = new TreeMap<>();
         for (HeroType heroType : HeroType.values())
         {
             map.put(heroType.typeId, create(heroType));
