@@ -203,11 +203,9 @@ public class NotificationsView extends BetterViewAnimator
         for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
         {
             Object o = notificationListAdapter.getItem(i);
-            Timber.d("%s", o);
             if (o instanceof NotificationKey)
             {
                 NotificationKey notificationKey = (NotificationKey) o;
-                Timber.d("NotificationKey: %d", notificationKey.key);
                 NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
 
                 if (notificationDTO != null && notificationDTO.unread)

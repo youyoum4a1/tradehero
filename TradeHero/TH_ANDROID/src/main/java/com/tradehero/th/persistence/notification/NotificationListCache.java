@@ -50,6 +50,7 @@ public class NotificationListCache extends StraightDTOCache<NotificationListKey,
             NotificationKey notificationDTOKey = notificationDTO.getDTOKey();
             notificationKeyList.add(notificationDTOKey);
 
+            //notificationDTO.unread = true;
             notificationCache.get().put(notificationDTOKey, notificationDTO);
         }
 
