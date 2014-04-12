@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -274,8 +275,6 @@ import retrofit.RetrofitError;
                 return userService.getHeroes(heroKey.followerKey.key);
         }
         return null;
-
-
     }
 
     public void getHeroes(HeroKey heroKey,Callback<List<HeroDTO>> callback)
@@ -289,8 +288,13 @@ import retrofit.RetrofitError;
             case ALL:
                 userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
         }
-
-
     }
     //</editor-fold>
+
+    public MiddleCallback<UserRelationsDTO> getRelations(Callback<UserRelationsDTO> callback)
+    {
+        MiddleCallback<UserRelationsDTO> middleCallback = new MiddleCallback<>(callback);
+        userServiceAsync.getRelations(callback);
+        return middleCallback;
+    }
 }
