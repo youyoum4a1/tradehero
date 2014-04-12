@@ -148,7 +148,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void openTimelineDiscussion()
     {
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, timelineItemDTO.getDiscussionKey().getArgs());
+        if (discussionKey != null)
+        {
+            getNavigator().pushFragment(TimelineDiscussionFragment.class, discussionKey.getArgs());
+        }
     }
 
     private void openOtherTimeline()

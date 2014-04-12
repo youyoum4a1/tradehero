@@ -102,7 +102,6 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         }
     }
 
-
     private void display(AbstractDiscussionDTO abstractDiscussionDTO)
     {
         // markup text

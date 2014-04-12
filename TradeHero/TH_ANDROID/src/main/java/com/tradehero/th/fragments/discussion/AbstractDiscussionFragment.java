@@ -13,13 +13,13 @@ import javax.inject.Inject;
 /**
  * Created by tho on 3/27/2014.
  */
-public abstract class AbstractDiscussionFragment extends DashboardFragment
+public class AbstractDiscussionFragment extends DashboardFragment
 {
     @InjectView(R.id.discussion_view) DiscussionView discussionView;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
-    protected DiscussionKey discussionKey;
+    private DiscussionKey discussionKey;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

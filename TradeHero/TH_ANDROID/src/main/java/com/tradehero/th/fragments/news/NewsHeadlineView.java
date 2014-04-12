@@ -117,7 +117,18 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
                 displayDescription();
                 displaySource();
             }
+            else
+            {
+                resetViews();
+            }
         }
+    }
+
+    private void resetViews()
+    {
+        resetTitle();
+        resetDescription();
+        resetSource();
     }
 
     private void displaySource()
@@ -125,20 +136,29 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         newsSource.setText(parseHost(newsItemDTO.url));
     }
 
+    private void resetSource()
+    {
+        newsSource.setText(null);
+    }
+
     private void displayDescription()
     {
-        if (newsDescription != null)
-        {
-            newsDescription.setText(newsItemDTO.description);
-        }
+        newsDescription.setText(newsItemDTO.description);
+    }
+
+    private void resetDescription()
+    {
+        newsDescription.setText(null);
     }
 
     private void displayTitle()
     {
-        if (newsTitle != null)
-        {
-            newsTitle.setText(newsItemDTO.title);
-        }
+        newsTitle.setText(newsItemDTO.title);
+    }
+
+    private void resetTitle()
+    {
+        newsTitle.setText(null);
     }
 
     private String parseHost(String url)

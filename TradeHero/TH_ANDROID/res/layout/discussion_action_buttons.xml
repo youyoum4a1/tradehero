@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge>
-  <LinearLayout
+  <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/timeline_share_buttons"
@@ -43,8 +43,7 @@
         android:textColor="@drawable/timeline_action_button_text_color_xml"
         android:textStyle="bold"
         android:text="@string/more_character"
-        tools:text="@string/more_character"
         android:gravity="center_vertical|right"
         />
-  </LinearLayout>
+  </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>
 </merge>
