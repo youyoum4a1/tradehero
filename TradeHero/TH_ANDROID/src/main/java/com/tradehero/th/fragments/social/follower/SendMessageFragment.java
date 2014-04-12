@@ -47,10 +47,13 @@ import timber.log.Timber;
 /**
  * Created by tradehero on 14-4-1.
  */
-public class SendMessageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener
+public class SendMessageFragment extends BaseFragment
+        implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
+    public static final String KEY_DISCUSSION_TYPE =
+            SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE =
+            SendMessageFragment.class.getName() + ".messageType";
 
     public static enum MessageLifeTime
     {
@@ -112,7 +115,8 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
-        int discussionTypeValue = args.getInt(SendMessageFragment.KEY_DISCUSSION_TYPE, DiscussionType.BROADCAST_MESSAGE.value);
+        int discussionTypeValue = args.getInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
+                DiscussionType.BROADCAST_MESSAGE.value);
         this.discussionType = DiscussionType.fromValue(discussionTypeValue);
 
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
@@ -201,7 +205,9 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text, MessageType.getShowingTypes());
+        ArrayAdapter arrayAdapter =
+                new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text,
+                        MessageType.getShowingTypes());
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -237,15 +243,18 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
             THToast.show("The message cannot be empty");
             return;
         }
-        this.progressDialog = ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
+        this.progressDialog =
+                ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
         // TODO not sure about this implementation yet
-        messageServiceWrapper.get().createMessage(createMessageForm(text), sendMessageDiscussionCallback);
+        messageServiceWrapper.get()
+                .createMessage(createMessageForm(text), sendMessageDiscussionCallback);
     }
 
     private MessageCreateFormDTO createMessageForm(String messageText)
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        MessageCreateFormDTO messageCreateFormDTO =
+                messageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = messageText;
         return messageCreateFormDTO;
     }
@@ -255,7 +264,8 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
      */
     private int getFollowerCount(MessageType messageType)
     {
-        FollowerSummaryDTO followerSummaryDTO = followerSummaryCache.get().get(currentUserId.toUserBaseKey());
+        FollowerSummaryDTO followerSummaryDTO =
+                followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
         {
             int result = 0;
@@ -265,7 +275,8 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                     result = followerSummaryDTO.getFreeFollowerCount();
                     break;
                 case BROADCAST_ALL_FOLLOWERS:
-                    result = followerSummaryDTO.getFreeFollowerCount() + followerSummaryDTO.getPaidFollowerCount();
+                    result = followerSummaryDTO.getFreeFollowerCount()
+                            + followerSummaryDTO.getPaidFollowerCount();
                     break;
                 case BROADCAST_PAID_FOLLOWERS:
                     result = followerSummaryDTO.getPaidFollowerCount();
@@ -273,7 +284,9 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                 default:
                     throw new IllegalStateException("unknown messageType");
             }
-            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d", messageType, followerSummaryDTO.getPaidFollowerCount(), followerSummaryDTO.getFreeFollowerCount());
+            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d", messageType,
+                    followerSummaryDTO.getPaidFollowerCount(),
+                    followerSummaryDTO.getFreeFollowerCount());
             return result;
         }
         return 0;
@@ -288,8 +301,7 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
                 dialog.dismiss();
                 dialog = null;
             }
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
 
         }

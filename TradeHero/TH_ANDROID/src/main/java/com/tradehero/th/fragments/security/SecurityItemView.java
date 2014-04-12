@@ -757,7 +757,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             Bitmap background = backgroundTransformation.transform(transformResult);
 
             Bitmap retVal =  mergeBitmaps(background, logo, false,parent.getWidth(),parent.getHeight());
-            if(true || callback.isTest()){
+            if(true || callback.isTest())
+            {
                 Log.i("onOriginalBitmapLoaded", String.format("original:%s,%s;scale:%s;scaled:%s,%s;transformed:%s,%s;parent:%s,%s",
                         originalWidth, originalHeight,
                         scale,

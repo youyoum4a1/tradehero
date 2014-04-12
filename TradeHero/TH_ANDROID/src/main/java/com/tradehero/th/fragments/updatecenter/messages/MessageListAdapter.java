@@ -90,10 +90,29 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         {
             if (!messageHeaderId.markDeleted)
             {
-                itemCopied.add(messageHeaderId);
+                if (!checkExist(messageHeaderId.key))
+                {
+                    itemCopied.add(messageHeaderId);
+                }
             }
         }
         super.setItems(itemCopied);
+    }
+
+    private boolean checkExist(int messageId)
+    {
+        if (items == null)
+        {
+            return false;
+        }
+        for (MessageHeaderId id:items)
+        {
+            if (messageId == id.key)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public MessageHeaderId markDeleted(int position){

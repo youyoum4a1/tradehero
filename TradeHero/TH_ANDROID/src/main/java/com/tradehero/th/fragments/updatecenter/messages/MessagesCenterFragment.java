@@ -114,11 +114,13 @@ public class MessagesCenterFragment extends DashboardFragment
         //if size of items already fetched is 0,then force to reload
         if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
+            Timber.d("onViewCreated fetch again");
             messagesView.showLoadingView();
             getOrfetchMessages();
-        }
+        }dis
         else
         {
+            Timber.d("onViewCreated don't have to fetch again");
             messagesView.showListView();
             setListAdaper(alreadyFetched);
         }
@@ -131,15 +133,16 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onSaveInstanceState(outState);
         Timber.d("%s onSaveInstanceState", TAG);
     }
-
+d
     @Override public void onDestroyView()
     {
         super.onDestroyView();
         detachPreviousTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
-        swipeListener = null;
         swipeListView.setSwipeListViewListener(null);
+        swipeListener = null;
         messagesView = null;
+        messageListAdapter = null;
         Timber.d("%s onDestroyView", TAG);
     }
 
@@ -160,7 +163,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onMessageClick(int position, int type)
     {
-        Timber.d("onMessageClick position:%d,type:%d", position,type);
+        Timber.d("onMessageClick position:%d,type:%d", position, type);
     }
 
     private void initViews(View view)
@@ -229,6 +232,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
         fetchTask = null;
     }
+
 
     private void setListAdaper(MessageHeaderIdList messageKeys)
     {
@@ -311,7 +315,6 @@ public class MessagesCenterFragment extends DashboardFragment
         messageEraser.get().deleteMessage(messageHeaderId);
     }
 
-
     private void saveNewPage(MessageHeaderIdList value)
     {
         if (alreadyFetched == null)
@@ -359,8 +362,6 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-
-
     class OnScrollListener extends FlagNearEndScrollListener
     {
         AbsListView.OnScrollListener onScrollListener;
@@ -376,7 +377,8 @@ public class MessagesCenterFragment extends DashboardFragment
             if (onScrollListener != null)
             {
                 onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
+            } 
+            Timber.d("onScroll called");
             updateReadStatus(firstVisibleItem, visibleItemCount);
 
             super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
@@ -414,8 +416,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onDetach();
 
-        messageListAdapter = null;
-
         unsetMiddleCallback();
     }
 
@@ -435,7 +435,6 @@ public class MessagesCenterFragment extends DashboardFragment
         callbackMap.clear();
         middleCallbackMap.clear();
     }
-
 
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
     {
@@ -509,7 +508,6 @@ public class MessagesCenterFragment extends DashboardFragment
             Timber.d("Report failure for Message: %d", messageId);
         }
     }
-
 
     private void updateUnreadStatusInUserProfileCache()
     {
