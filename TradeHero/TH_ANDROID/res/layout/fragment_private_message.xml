@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.DiscussionView
+<com.tradehero.th.fragments.social.message.PrivateDiscussionView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -71,4 +71,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.discussion.DiscussionView>
+</com.tradehero.th.fragments.social.message.PrivateDiscussionView>
