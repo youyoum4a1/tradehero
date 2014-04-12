@@ -12,6 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.widget.VotePair;
@@ -138,4 +140,11 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
             THToast.show(new THException(error));
         }
     }
+
+    //<editor-fold desc="Navigation">
+    protected DashboardNavigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+    }
+    //</editor-fold>
 }

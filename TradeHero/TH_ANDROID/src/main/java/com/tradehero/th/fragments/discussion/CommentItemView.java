@@ -18,8 +18,6 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -35,7 +33,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
 
-    @InjectView(R.id.timeline_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) TextView more;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<Picasso> picasso;
@@ -112,7 +110,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
-            R.id.timeline_action_button_more
+            R.id.discussion_action_button_more
     })
     void onItemClicked(View view)
     {
@@ -122,7 +120,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
-            case R.id.timeline_action_button_more:
+            case R.id.discussion_action_button_more:
                 //PopupMenu popUpMenu = createActionPopupMenu();
                 //popUpMenu.show();
                 break;
@@ -130,13 +128,13 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     }
 
     @Optional @OnClick({
-            R.id.timeline_action_button_comment
+            R.id.discussion_action_button_comment_count
     })
     void onCommentClicked(View view)
     {
         switch (view.getId())
         {
-            case R.id.timeline_action_button_comment:
+            case R.id.discussion_action_button_comment_count:
                 openDiscussion();
                 break;
         }
@@ -192,10 +190,5 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
                 }
             }
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 }

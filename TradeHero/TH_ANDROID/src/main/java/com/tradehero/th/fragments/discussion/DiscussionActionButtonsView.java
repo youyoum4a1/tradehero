@@ -14,8 +14,8 @@ import com.tradehero.th.R;
  */
 public class DiscussionActionButtonsView extends LinearLayout
 {
-    @InjectView(R.id.timeline_action_button_comment) TextView comment;
-    @InjectView(R.id.timeline_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_comment_count) TextView comment;
+    @InjectView(R.id.discussion_action_button_more) TextView more;
 
     //<editor-fold desc="Constructors">
     public DiscussionActionButtonsView(Context context)

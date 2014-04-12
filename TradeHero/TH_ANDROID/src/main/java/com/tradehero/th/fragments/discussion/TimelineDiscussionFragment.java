@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import com.tradehero.th.R;
 
 /**
@@ -15,13 +14,11 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_discussion, container, false);
-        ButterKnife.inject(this, view);
         return view;
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
         super.onDestroyView();
     }
 

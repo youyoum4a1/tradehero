@@ -55,7 +55,6 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.fragments.news.NewsDetailFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -321,7 +320,6 @@ import javax.inject.Singleton;
                         //binding
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
-                        NewsDetailFragment.class,
 
                         PrivateMessageFragment.class,
                         PrivateMessageBubbleAdapter.class,

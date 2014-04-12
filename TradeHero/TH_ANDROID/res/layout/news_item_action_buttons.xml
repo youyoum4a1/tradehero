@@ -4,8 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
-  <LinearLayout
-      android:id="@+id/timeline_share_buttons"
+  <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
+      android:id="@+id/discussion_share_buttons"
       android:background="@drawable/headline_action_buttons_background"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
     <include layout="@layout/vote_pair"/>
 
     <TextView
-        android:id="@+id/news_action_button_comment"
+        android:id="@+id/discussion_action_button_comment_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
@@ -36,7 +36,7 @@
         />
 
     <TextView
-        android:id="@+id/news_action_tv_more"
+        android:id="@+id/discussion_action_button_more"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -49,5 +49,5 @@
         android:paddingTop="@dimen/news_item_action_padding_t_b"
         android:paddingBottom="@dimen/news_item_action_padding_t_b"
         />
-  </LinearLayout>
+  </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>
 </merge>

@@ -1,5 +1,8 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.os.Bundle;
+import android.view.View;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -20,6 +23,18 @@ public class AbstractDiscussionFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        ButterKnife.inject(this, view);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

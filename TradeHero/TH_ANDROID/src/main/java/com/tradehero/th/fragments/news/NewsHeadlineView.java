@@ -14,6 +14,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,6 +66,8 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     }
 
     //<editor-fold desc="Related to share dialog">
+    // TODO
+
     @Override
     public void onClick(int whichButton)
     {
@@ -80,7 +83,7 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
     /**
      * show dialog including sharing and translation.
      */
-    @OnClick(R.id.news_action_tv_more) void showShareDialog()
+    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
@@ -89,6 +92,17 @@ public class  NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
     //</editor-fold>
+
+    /**
+     * TODO this event should be handled by DiscussionActionButtonsView,
+     */
+    @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
+    {
+        if (discussionKey != null)
+        {
+            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionKey.getArgs());
+        }
+    }
 
     @Override public void display(NewsItemDTOKey discussionKey)
     {

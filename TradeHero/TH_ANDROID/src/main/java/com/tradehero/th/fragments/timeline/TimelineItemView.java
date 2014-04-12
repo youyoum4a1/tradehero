@@ -29,9 +29,7 @@ import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -64,15 +62,15 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
-    @InjectView(R.id.timeline_action_button_comment) TextView comment;
-    @InjectView(R.id.timeline_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_comment_count) TextView comment;
+    @InjectView(R.id.discussion_action_button_more) TextView more;
 
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
             R.id.timeline_vendor_picture,
-            R.id.timeline_action_button_comment,
-            R.id.timeline_action_button_more,
+            R.id.discussion_action_button_comment_count,
+            R.id.discussion_action_button_more,
     })
     public void onItemClicked(View view)
     {
@@ -82,7 +80,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
-            case R.id.timeline_action_button_comment:
+            case R.id.discussion_action_button_comment_count:
                 openTimelineDiscussion();
                 break;
             case R.id.timeline_vendor_picture:
@@ -95,7 +93,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_action_button_monitor_wrapper:
                 createAndShowMonitorPopupMenu();
                 break;
-            case R.id.timeline_action_button_more:
+            case R.id.discussion_action_button_more:
                 PopupMenu popUpMenu = createActionPopupMenu();
                 popUpMenu.show();
                 break;
@@ -538,12 +536,4 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         return new SecurityId(timelineItemDTO.getFlavorSecurityForDisplay().exchange, timelineItemDTO.getFlavorSecurityForDisplay().symbol);
     }
     //</editor-fold>
-
-    //<editor-fold desc="Navigation">
-    private DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-    //</editor-fold>
-
 }

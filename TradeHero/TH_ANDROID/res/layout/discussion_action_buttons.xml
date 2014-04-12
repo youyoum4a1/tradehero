@@ -4,7 +4,7 @@
   <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      android:id="@+id/timeline_share_buttons"
+      android:id="@+id/discussion_share_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
@@ -17,7 +17,7 @@
     <include layout="@layout/vote_pair"/>
 
     <TextView
-        android:id="@+id/timeline_action_button_comment"
+        android:id="@+id/discussion_action_button_comment_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding"
@@ -34,7 +34,7 @@
         />
 
     <TextView
-        android:id="@+id/timeline_action_button_more"
+        android:id="@+id/discussion_action_button_more"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
