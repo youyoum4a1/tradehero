@@ -2,14 +2,12 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -22,20 +20,20 @@ import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
@@ -51,7 +49,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LocalyticsConstants;
-import com.tradehero.th.widget.VotePair;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -60,19 +57,15 @@ import retrofit.Callback;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
-public class TimelineItemView extends LinearLayout
-        implements DTOView<TimelineItemDTOKey>
+public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
-    @InjectView(R.id.discussion_content) TextView content;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
-    @InjectView(R.id.discussion_time) TextView time;
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     @InjectView(R.id.timeline_action_button_comment) TextView comment;
     @InjectView(R.id.timeline_action_button_more) TextView more;
-    @InjectView(R.id.vote_pair) VotePair votePair;
 
     @OnClick({
             R.id.timeline_user_profile_name,
@@ -150,7 +143,6 @@ public class TimelineItemView extends LinearLayout
     private void init()
     {
         ButterKnife.inject(this);
-        DaggerUtils.inject(content);
         DaggerUtils.inject(this);
     }
 
@@ -176,15 +168,6 @@ public class TimelineItemView extends LinearLayout
         }
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        if (content != null)
-        {
-            content.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-    }
-
     @Override protected void onDetachedFromWindow()
     {
         if (monitorPopupMenu != null)
@@ -205,7 +188,17 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    public void linkWith(TimelineItemDTOEnhanced timelineItemDTO)
+    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    {
+        super.linkWith(abstractDiscussionDTO, andDisplay);
+
+        if (abstractDiscussionDTO instanceof TimelineItemDTOEnhanced)
+        {
+            linkWith((TimelineItemDTOEnhanced) abstractDiscussionDTO, true);
+        }
+    }
+
+    private void linkWith(TimelineItemDTOEnhanced timelineItemDTO, boolean andDisplay)
     {
         this.timelineItemDTO = timelineItemDTO;
         if (this.timelineItemDTO == null)
@@ -225,21 +218,10 @@ public class TimelineItemView extends LinearLayout
         // user profile picture
         displayUserProfilePicture(user);
 
-        // markup text
-        displayMarkupText(this.timelineItemDTO);
-
-        // timeline time
-        displayTimelineTime(this.timelineItemDTO);
-
         // vendor logo
         displayVendorLogo(this.timelineItemDTO);
 
         displayWatchlistIndicator();
-
-        if (votePair != null)
-        {
-            votePair.display(this.timelineItemDTO);
-        }
 
         updateActionButtons();
     }
@@ -275,16 +257,6 @@ public class TimelineItemView extends LinearLayout
                 .load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(avatar);
-    }
-
-    private void displayMarkupText(TimelineItemDTOEnhanced item)
-    {
-        content.setText(item.text);
-    }
-
-    private void displayTimelineTime(TimelineItemDTOEnhanced item)
-    {
-        time.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
     }
 
     private void displayVendorLogo(TimelineItemDTOEnhanced item)
@@ -571,12 +543,4 @@ public class TimelineItemView extends LinearLayout
     }
     //</editor-fold>
 
-    @Override public void display(TimelineItemDTOKey timelineItemDTOKey)
-    {
-        AbstractDiscussionDTO timelineItemDTO = discussionCache.get().get(timelineItemDTOKey);
-        if (timelineItemDTO instanceof TimelineItemDTOEnhanced)
-        {
-            linkWith((TimelineItemDTOEnhanced) timelineItemDTO);
-        }
-    }
 }
