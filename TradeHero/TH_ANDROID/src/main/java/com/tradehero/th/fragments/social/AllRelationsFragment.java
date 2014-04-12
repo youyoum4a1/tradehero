@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
@@ -39,7 +38,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.relations_list) ListView mRelationsListView;
 
-    @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
@@ -65,7 +63,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         alertDialogUtilLazy.get().showProgressDialog(getActivity());
         detachRelationsMiddleCallback();
         relationsMiddleCallback = userServiceWrapperLazy.get()
-                .getRelations(currentUserId.toUserBaseKey(), new RelationsCallback());
+                .getRelations(new RelationsCallback());
     }
 
     private void detachRelationsMiddleCallback()

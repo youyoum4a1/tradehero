@@ -293,10 +293,10 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    public MiddleCallback<List<UserBaseDTO>> getRelations(UserBaseKey userBaseKey, Callback<List<UserBaseDTO>> callback)
+    public MiddleCallback<List<UserBaseDTO>> getRelations(Callback<List<UserBaseDTO>> callback)
     {
         MiddleCallback<List<UserBaseDTO>> middleCallback = new MiddleCallback<>(callback);
-        userServiceAsync.getRelations(userBaseKey.key, callback);
+        userServiceAsync.getRelations(callback);
         return middleCallback;
     }
 }
