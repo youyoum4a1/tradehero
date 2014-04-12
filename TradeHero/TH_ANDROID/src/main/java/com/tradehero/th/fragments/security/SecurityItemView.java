@@ -6,10 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -471,7 +469,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadDefaultImage()
     {
-        //Log.d(TAG, "LruMemFileCache " +TAG+ "  loadDefaultImage");
         if (stockLogo != null)
         {
             stockLogo.setVisibility(View.VISIBLE);

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
@@ -104,7 +105,9 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
     {
-        getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, discussionKey.getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+        getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 
     private void linkWith(UserBaseDTO user, boolean andDisplay)

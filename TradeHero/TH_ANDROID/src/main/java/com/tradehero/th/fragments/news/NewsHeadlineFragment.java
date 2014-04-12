@@ -178,8 +178,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         {
             int resId = adapter.getBackgroundRes(position);
             NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
-            Bundle bundle = newsItemDTOKey.getArgs();
+            Bundle bundle = new Bundle();
             bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }

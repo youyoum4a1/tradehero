@@ -148,7 +148,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     {
         if (discussionKey != null)
         {
-            getNavigator().pushFragment(TimelineDiscussionFragment.class, discussionKey.getArgs());
+            Bundle args = new Bundle();
+            args.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+            getNavigator().pushFragment(TimelineDiscussionFragment.class, args);
         }
     }
 

@@ -144,7 +144,9 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     {
         if (discussionDTO != null)
         {
-            getNavigator().pushFragment(NewsDiscussionFragment.class, discussionDTO.getDiscussionKey().getArgs());
+            Bundle args = new Bundle();
+            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionDTO.getDiscussionKey().getArgs());
+            getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
 

@@ -44,7 +44,7 @@ public class MessageServiceStub implements MessageService
     }
 
     @Override public PaginatedDTO<MessageHeaderDTO> getMessages(
-            DiscussionType discussionType,
+            String discussionType,
             Integer senderId,
             Integer page,
             Integer perPage)

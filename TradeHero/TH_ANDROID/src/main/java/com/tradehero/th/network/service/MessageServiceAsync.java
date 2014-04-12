@@ -24,10 +24,10 @@ interface MessageServiceAsync
             @Query("perPage") int perPage,
             Callback<PaginatedDTO<MessageHeaderDTO>> callback);
 
-    @GET("/messages")
+    @GET("/messages/{discussionType}/{senderId}")
     void getMessages(
-            @Query("discussType") DiscussionType discussionType,
-            @Query("senderId") Integer senderId,
+            @Path("discussionType") String discussionType,
+            @Path("senderId") Integer senderId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<MessageHeaderDTO>> callback);

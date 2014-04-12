@@ -13,13 +13,17 @@ public class PaginatedNotificationListKey extends NotificationListKey
 {
     private static final Integer DEFAULT_PER_PAGE = 42;
 
-    private int page;
+    private final Integer perPage;
+    private final int page;
 
     //<editor-fold desc="Constructors">
 
     public PaginatedNotificationListKey(Integer key)
     {
         super(key);
+
+        page = 0;
+        perPage = DEFAULT_PER_PAGE;
     }
 
     public PaginatedNotificationListKey(Bundle args)
@@ -27,6 +31,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
         super(args);
 
         page = args.getInt(BUNDLE_PAGE, 0);
+        perPage = args.getInt(BUNDLE_PERPAGE, DEFAULT_PER_PAGE);
     }
 
     public PaginatedNotificationListKey(NotificationListKey notificationListKey, int page)
@@ -34,18 +39,27 @@ public class PaginatedNotificationListKey extends NotificationListKey
         super(notificationListKey.getArgs());
 
         this.page = page;
+        this.perPage = DEFAULT_PER_PAGE;
     }
     //</editor-fold>
 
     @Override public void putParameters(Bundle args)
     {
         super.putParameters(args);
+
         args.putInt(BUNDLE_PAGE, page);
+        args.putInt(BUNDLE_PERPAGE, perPage);
     }
 
     @Override public boolean equals(Object other)
     {
-        return super.equals(other) && ((PaginatedNotificationListKey) other).page == page;
+        return super.equals(other) && equalsField(other);
+    }
+
+    private boolean equalsField(Object other)
+    {
+        PaginatedNotificationListKey pagedOther = ((PaginatedNotificationListKey) other);
+        return pagedOther.page == page && pagedOther.perPage == perPage;
     }
 
     //<editor-fold desc="PaginatedKey">

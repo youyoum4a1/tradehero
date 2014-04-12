@@ -18,6 +18,8 @@ import javax.inject.Inject;
  */
 public class AbstractDiscussionFragment extends DashboardFragment
 {
+    public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
+
     @InjectView(R.id.discussion_view) DiscussionView discussionView;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
@@ -42,7 +44,6 @@ public class AbstractDiscussionFragment extends DashboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        actionBar.setTitle(R.string.discussion);
     }
 
     @Override public void onResume()
@@ -51,13 +52,14 @@ public class AbstractDiscussionFragment extends DashboardFragment
 
         if (discussionKey == null)
         {
-            discussionKey = discussionKeyFactory.fromBundle(getArguments());
+            discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
         linkWith(discussionKey, true);
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
+        this.discussionKey = discussionKey;
         if (andDisplay)
         {
             discussionView.display(discussionKey);
