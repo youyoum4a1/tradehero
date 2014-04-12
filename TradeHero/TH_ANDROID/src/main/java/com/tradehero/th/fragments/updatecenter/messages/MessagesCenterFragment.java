@@ -24,6 +24,8 @@ import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.social.FragmentUtils;
+import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
@@ -51,11 +53,14 @@ public class MessagesCenterFragment extends DashboardFragment
     MessagesView messagesView;
     SwipeListener swipeListener;
 
+    private int page;
+
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        page = getArguments().getInt(UpdateCenterFragment.KEY_PAGE);
         Timber.d("%s onCreate hasCode %d", TAG, this.hashCode());
     }
 
@@ -216,15 +221,6 @@ public class MessagesCenterFragment extends DashboardFragment
             //TODO it's quite difficult to use
             swipeListView.dismiss(position);
             swipeListView.closeOpenedItems();
-           // long time = getResources().getInteger(android.R.integer.config_shortAnimTime);
-           // new Handler().postDelayed(new Runnable()
-           // {
-           //     @Override public void run()
-           //     {
-           //         //swipeListView.closeOpenedItems();
-           //
-           //     }
-           //},time);
             }
 
         @Override public void onDismiss(int[] reverseSortedPositions)
@@ -267,6 +263,16 @@ public class MessagesCenterFragment extends DashboardFragment
         alreadyFetched.addAll(value);
     }
 
+    private void chanageTitleNumer(int number)
+    {
+        OnTitleNumberChangeListener listener =
+                FragmentUtils.getParent(this, OnTitleNumberChangeListener.class);
+        if (listener != null && !isDetached())
+        {
+            listener.onTitleNumberChanged(page,number);
+        }
+
+    }
 
 
     private void display(MessageHeaderIdList value)
@@ -282,6 +288,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
+            chanageTitleNumer(value.size());
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
         }
 
@@ -292,24 +299,6 @@ public class MessagesCenterFragment extends DashboardFragment
     }
 
     private void fixSwipe(SwipeListView swipeListView){
-
-        //touchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
-        //touchListener = new SwipeListViewTouchListener(this, swipeFrontView, swipeBackView);
-        //if (swipeAnimationTime > 0) {
-        //    touchListener.setAnimationTime(swipeAnimationTime);
-        //}
-        //touchListener.setRightOffset(swipeOffsetRight);
-        //touchListener.setLeftOffset(swipeOffsetLeft);
-        //touchListener.setSwipeActionLeft(swipeActionLeft);
-        //touchListener.setSwipeActionRight(swipeActionRight);
-        //touchListener.setSwipeMode(swipeMode);
-        //touchListener.setSwipeClosesAllItemsWhenListMoves(swipeCloseAllItemsWhenMoveList);
-        //touchListener.setSwipeOpenOnLongPress(swipeOpenOnLongPress);
-        //touchListener.setSwipeDrawableChecked(swipeDrawableChecked);
-        //touchListener.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
-        //setOnTouchListener(touchListener);
-        //setOnScrollListener(touchListener.makeScrollListener());
-
         MySwipeListViewTouchListener mySwipeListViewTouchListener = new MySwipeListViewTouchListener(swipeListView,R.id.message_item_front,R.id.message_item_back);
         mySwipeListViewTouchListener.setRightOffset(0);
         mySwipeListViewTouchListener.setLeftOffset((float)(MetaHelper.getScreensize(getActivity())[1] - 120));
@@ -356,6 +345,8 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
+
+
     class OnScrollListener extends FlagNearEndScrollListener
     {
         AbsListView.OnScrollListener onScrollListener;
@@ -391,14 +382,12 @@ public class MessagesCenterFragment extends DashboardFragment
             super.raiseFlag();
             loadNextMessages();
         }
+
+
+
     }
 
-    private UpdateCenterFragment.TitleNumberCallback callback;
 
-    public void setTitleNumberCallback(UpdateCenterFragment.TitleNumberCallback callback)
-    {
-        this.callback = callback;
-    }
 
     @Override public boolean isTabBarVisible()
     {

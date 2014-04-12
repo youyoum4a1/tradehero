@@ -35,6 +35,9 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     private HeroTypeExt[] heroTypes;
     private int selectedId = -1;
 
+    FragmentTabHost mTabHost;
+    List<TabHost.TabSpec> tabSpecList;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,7 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
     {
         //View view = inflater.inflate(R.layout.fragment_store_manage_heroes_2, container, false);
         Timber.d("onCreateView");
-        return addTabs2();
+        return addTabs();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -81,10 +84,9 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         Timber.d("onStop");
     }
 
-    FragmentTabHost mTabHost;
-    List<TabHost.TabSpec> tabSpecList;
 
-    private View addTabs2()
+
+    private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), 11110);
