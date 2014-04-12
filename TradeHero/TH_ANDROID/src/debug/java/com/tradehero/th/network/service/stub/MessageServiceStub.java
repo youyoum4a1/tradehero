@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.client.Response;
+import retrofit.http.Path;
 import timber.log.Timber;
 
 /**
@@ -77,5 +79,15 @@ public class MessageServiceStub implements MessageService
     @Override public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
         throw new IllegalArgumentException("Implement it");
+    }
+
+    @Override public Response deleteMessage(@Path("commentId") int commentId)
+    {
+        return null;
+    }
+
+    @Override public Response readMessage(@Path("commentId") int commentId)
+    {
+        return null;
     }
 }
