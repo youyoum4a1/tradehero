@@ -25,9 +25,6 @@ import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/**
- * Created by thonguyen on 10/4/14.
- */
 public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>
 {
@@ -40,7 +37,7 @@ public class DiscussionView extends FrameLayout
     @Inject DiscussionListCache discussionListCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
-    private TextView discussionStatus;
+    protected TextView discussionStatus;
     private DiscussionKey discussionKey;
 
     private AbstractDiscussionDTO discussionDTO;
@@ -84,11 +81,15 @@ public class DiscussionView extends FrameLayout
         DaggerUtils.inject(this);
 
         discussionFetchTaskListener = new DiscussionFetchListener();
-        discussionListAdapter = new DiscussionListAdapter(
+        discussionListAdapter = createDiscussionListAdapter();
+    }
+
+    protected DiscussionListAdapter createDiscussionListAdapter()
+    {
+        return new DiscussionListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
-                listItemLayout
-        );
+                listItemLayout);
     }
 
     private void init(AttributeSet attrs)
@@ -139,14 +140,14 @@ public class DiscussionView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
+        discussionFetchTaskListener = new DiscussionFetchListener();
         discussionList.setAdapter(discussionListAdapter);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachDiscussionFetchTask();
-
+        discussionFetchTaskListener = null;
         discussionList.setAdapter(null);
 
         ButterKnife.reset(this);
@@ -220,7 +221,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void setLoading()
+    protected void setLoading()
     {
         if (discussionStatus != null)
         {
@@ -228,7 +229,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void setLoaded()
+    protected void setLoaded()
     {
         if (discussionStatus != null)
         {

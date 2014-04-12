@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.fortysevendeg.android.swipelistview.SwipeListViewTouchListener;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
@@ -26,6 +27,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
@@ -56,7 +58,7 @@ public class MessagesCenterFragment extends DashboardFragment
     MessagesView messagesView;
     SwipeListener swipeListener;
 
-    private int page;
+    private UpdateCenterTabType tabType;
 
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<MessageEraser> messageEraser;
@@ -66,7 +68,10 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        page = getArguments().getInt(UpdateCenterFragment.KEY_PAGE);
+
+        int tabTypeOrdinal = getArguments().getInt(UpdateCenterFragment.KEY_PAGE);
+
+        tabType = UpdateCenterTabType.fromOrdinal(tabTypeOrdinal);
         Timber.d("%s onCreate hasCode %d", TAG, this.hashCode());
 
     }
@@ -226,7 +231,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messageAdapter.appendMore(messageKeys);
     }
 
-    private MessageListAdapter getListAdaper()
+    private MessageListAdapter getListAdapter()
     {
         ListView listView = messagesView.getListView();
         MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
@@ -265,7 +270,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageIfNecessary(int position)
     {
-        MessageListAdapter adapter = getListAdaper();
+        MessageListAdapter adapter = getListAdapter();
         MessageHeaderId messageHeaderId = adapter.getItem(position);
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
         Integer messageId = messageHeaderDTO.id;
@@ -292,8 +297,6 @@ public class MessagesCenterFragment extends DashboardFragment
     }
 
 
-
-
     private void saveNewPage(MessageHeaderIdList value)
     {
         if (alreadyFetched == null)
@@ -303,13 +306,13 @@ public class MessagesCenterFragment extends DashboardFragment
         alreadyFetched.addAll(value);
     }
 
-    private void chanageTitleNumer(int number)
+    private void changeTitleNumber(int number)
     {
         OnTitleNumberChangeListener listener =
                 FragmentUtils.getParent(this, OnTitleNumberChangeListener.class);
         if (listener != null && !isDetached())
         {
-            listener.onTitleNumberChanged(page, number);
+            listener.onTitleNumberChanged(tabType, number);
         }
     }
 
@@ -326,7 +329,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             display(value);
             messagesView.showListView();
-            chanageTitleNumer(value.size());
+            changeTitleNumber(value.size());
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
             if (isFirst)
             {
@@ -341,57 +344,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    //private void fixSwipe(SwipeListView swipeListView)
-    //{
-    //    MySwipeListViewTouchListener mySwipeListViewTouchListener =
-    //            new MySwipeListViewTouchListener(swipeListView, R.id.message_item_front,
-    //                    R.id.message_item_back);
-    //    mySwipeListViewTouchListener.setRightOffset(0);
-    //    mySwipeListViewTouchListener.setLeftOffset(
-    //            (float) (MetaHelper.getScreensize(getActivity())[1] - 120));
-    //    mySwipeListViewTouchListener.setSwipeClosesAllItemsWhenListMoves(true);
-    //    mySwipeListViewTouchListener.setSwipeActionLeft(SwipeListView.SWIPE_ACTION_REVEAL);
-    //    mySwipeListViewTouchListener.setSwipeOpenOnLongPress(false);
-    //    mySwipeListViewTouchListener.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
-    //    mySwipeListViewTouchListener.setSwipeDrawableChecked(R.drawable.ic_info);
-    //    mySwipeListViewTouchListener.setSwipeDrawableUnchecked(R.drawable.ic_info);
-    //
-    //    swipeListView.setOnTouchListener(mySwipeListViewTouchListener);
-    //    swipeListView.setOnScrollListener(mySwipeListViewTouchListener.makeScrollListener());
-    //}
-    //
-    //class MySwipeListViewTouchListener extends SwipeListViewTouchListener
-    //{
-    //
-    //    /**
-    //     * Constructor
-    //     *
-    //     * @param swipeListView SwipeListView
-    //     * @param swipeFrontView front view Identifier
-    //     * @param swipeBackView back view Identifier
-    //     */
-    //    public MySwipeListViewTouchListener(
-    //            SwipeListView swipeListView, int swipeFrontView, int swipeBackView)
-    //    {
-    //        super(swipeListView, swipeFrontView, swipeBackView);
-    //    }
-    //
-    //    @Override public AbsListView.OnScrollListener makeScrollListener()
-    //    {
-    //        AbsListView.OnScrollListener originalOnScrollListener = super.makeScrollListener();
-    //        return new OnScrollListener(originalOnScrollListener);
-    //    }
-    //
-    //    @Override public void setSwipeDrawableChecked(int swipeDrawableChecked)
-    //    {
-    //        super.setSwipeDrawableChecked(swipeDrawableChecked);
-    //    }
-    //
-    //    @Override public void setSwipeDrawableUnchecked(int swipeDrawableUnchecked)
-    //    {
-    //        super.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
-    //    }
-    //}
+
 
     class OnScrollListener extends FlagNearEndScrollListener
     {
@@ -403,8 +356,7 @@ public class MessagesCenterFragment extends DashboardFragment
             this.onScrollListener = onScrollListener;
         }
 
-        @Override public void onScroll(AbsListView view, int firstVisibleItem,
-                int visibleItemCount, int totalItemCount)
+        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
         {
             if (onScrollListener != null)
             {

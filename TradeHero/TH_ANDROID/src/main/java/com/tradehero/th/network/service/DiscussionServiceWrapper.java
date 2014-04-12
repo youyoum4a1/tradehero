@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -18,20 +19,22 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
-/**
- * Created by xavier on 3/7/14.
- */
 @Singleton public class DiscussionServiceWrapper
 {
     public static final String TAG = DiscussionServiceWrapper.class.getSimpleName();
 
     private final DiscussionService discussionService;
     private final DiscussionServiceAsync discussionServiceAsync;
+    private final DiscussionDTOFactory discussionDTOFactory;
 
-    @Inject public DiscussionServiceWrapper(DiscussionService discussionService, DiscussionServiceAsync discussionServiceAsync)
+    @Inject public DiscussionServiceWrapper(
+            DiscussionService discussionService,
+            DiscussionServiceAsync discussionServiceAsync,
+            DiscussionDTOFactory discussionDTOFactory)
     {
         this.discussionService = discussionService;
         this.discussionServiceAsync = discussionServiceAsync;
+        this.discussionDTOFactory = discussionDTOFactory;
     }
 
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
@@ -40,12 +43,12 @@ import retrofit.Callback;
     //<editor-fold desc="Get Comment">
     public DiscussionDTO getComment(DiscussionKey discussionKey)
     {
-        return discussionService.getComment(discussionKey.id);
+        return discussionDTOFactory.createChildClass(discussionService.getComment(discussionKey.id));
     }
 
     public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
         discussionServiceAsync.getComment(discussionKey.id, middleCallback);
         return middleCallback;
     }
@@ -142,7 +145,7 @@ import retrofit.Callback;
 
     public MiddleCallbackDiscussion vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(callback);
+        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(callback, discussionDTOFactory);
         discussionServiceAsync.vote(
                 discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
@@ -166,7 +169,7 @@ import retrofit.Callback;
             TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
         discussionServiceAsync.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,

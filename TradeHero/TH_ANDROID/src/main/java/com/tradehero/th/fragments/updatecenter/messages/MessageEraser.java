@@ -30,7 +30,7 @@ public class MessageEraser
         messageServiceWrapper.get().deleteMessage(messageHeaderId.key,new MessageCallback(messageHeaderId));
     }
 
-    class MessageCallback implements Callback<DiscussionDTO>{
+    class MessageCallback implements Callback<Response>{
 
         private MessageHeaderId messageHeaderId;
 
@@ -39,7 +39,7 @@ public class MessageEraser
             this.messageHeaderId = messageHeaderId;
         }
 
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void success(Response discussionDTO, Response response)
         {
             messageHeaderId.markDeleted = true;
             Timber.d("Delete message %s success",messageHeaderId);

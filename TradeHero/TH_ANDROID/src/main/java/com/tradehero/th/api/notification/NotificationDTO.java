@@ -23,6 +23,7 @@ public class NotificationDTO implements DTO, KeyGenerator
     public NotificationStockAlertDTO stockAlert;
     public Integer providerId;
     public Integer pushTypeId;
+    public boolean unread;
 
     @Override public NotificationKey getDTOKey()
     {

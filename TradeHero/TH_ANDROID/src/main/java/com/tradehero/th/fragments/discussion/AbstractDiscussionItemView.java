@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -16,19 +16,17 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created by thonguyen on 10/4/14.
- */
 public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearLayout
         implements DTOView<T>
 {
     @InjectView(R.id.discussion_content) TextView content;
-    @InjectView(R.id.vote_pair) VotePair votePair;
+    @InjectView(R.id.vote_pair) @Optional VotePair votePair;
     @InjectView(R.id.discussion_time) TextView time;
 
     @Inject DiscussionCache discussionCache;
@@ -59,9 +57,7 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        ButterKnife.inject((AbstractDiscussionItemView) this, this);
-
+        DaggerUtils.inject(this);
         discussionFetchListener = new DiscussionFetchListener();
     }
 
@@ -118,7 +114,10 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         // timeline time
         displayTime(abstractDiscussionDTO);
 
-        votePair.display(abstractDiscussionDTO);
+        if (votePair != null)
+        {
+            votePair.display(abstractDiscussionDTO);
+        }
     }
 
     private void displayContent(AbstractDiscussionDTO item)
