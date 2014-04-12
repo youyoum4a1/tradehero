@@ -18,7 +18,13 @@
       android:background="@color/button_blue">
 
     <TextView
-        android:id="@+id/private_text"
+        android:id="@+id/discussion_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/discussion_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"

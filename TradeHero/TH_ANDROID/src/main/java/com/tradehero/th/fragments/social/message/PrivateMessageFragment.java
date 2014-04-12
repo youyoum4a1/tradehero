@@ -27,6 +27,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
@@ -89,7 +90,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     private DiscussionDTOList loadedDiscussions;
 
     @InjectView(R.id.private_message_empty) TextView emptyHint;
-    @InjectView(R.id.message_list_view) ListView messageListView;
+    //@InjectView(R.id.message_list_view) ListView messageListView;
     PrivateMessageBubbleAdapter messageBubbleAdapter;
     @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
     //@InjectView(R.id.button_send) View buttonSend;
@@ -167,7 +168,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         detachMessageListTask();
         detachDiscussionListTask();
 
-        messageListView = null;
+        //messageListView = null;
         messageBubbleAdapter = null;
         super.onDestroyView();
     }
@@ -297,7 +298,10 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         Timber.d("messageHeader %s", messageHeader);
         this.currentMessageHeader = messageHeader;
 
-        postCommentView.linkWith(discussionKeyFactory.create(messageHeader));
+        DiscussionKey discussionKey = discussionKeyFactory.create(messageHeader);
+        discussionView.display(discussionKey);
+
+        postCommentView.linkWith(discussionKey); // TODO remove
 
         nextDiscussionListKey = new RangedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
@@ -318,8 +322,8 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     public void swapAdapter()
     {
-        messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
-        messageListView.setAdapter(messageBubbleAdapter);
+        //messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
+        //messageListView.setAdapter(messageBubbleAdapter);
     }
 
     public void handleCommentPosted(DiscussionDTO discussionDTO)
@@ -393,15 +397,15 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     private void displayVisibilities()
     {
-        showOnly(currentMessageHeader == null ? emptyHint : messageListView);
+        //showOnly(currentMessageHeader == null ? emptyHint : messageListView);
     }
 
     private void showOnly(View view)
     {
-        if (messageListView != null)
-        {
-            messageListView.setVisibility(view == messageListView ? View.VISIBLE : View.GONE);
-        }
+        //if (messageListView != null)
+        //{
+        //    messageListView.setVisibility(view == messageListView ? View.VISIBLE : View.GONE);
+        //}
         if (emptyHint != null)
         {
             emptyHint.setVisibility(view == emptyHint ? View.VISIBLE : View.GONE);

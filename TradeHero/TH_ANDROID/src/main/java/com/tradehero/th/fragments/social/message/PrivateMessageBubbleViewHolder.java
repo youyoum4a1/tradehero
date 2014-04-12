@@ -10,7 +10,8 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 public class PrivateMessageBubbleViewHolder
 {
     @InjectView(R.id.private_text_container) View textContainer;
-    @InjectView(R.id.private_text) TextView text;
+    //@InjectView(R.id.private_text)
+    TextView text;
 
     private AbstractDiscussionDTO discussionDTO;
 

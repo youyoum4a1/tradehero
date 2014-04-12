@@ -82,6 +82,8 @@ import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleAdapter;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -323,6 +325,8 @@ import javax.inject.Singleton;
 
                         PrivateMessageFragment.class,
                         PrivateMessageBubbleAdapter.class,
+                        PrivateMessageBubbleMineView.class,
+                        PrivateMessageBubbleOtherView.class,
                         
                         AlertDialogUtil.class,
                 },
