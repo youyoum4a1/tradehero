@@ -1,33 +1,28 @@
 package com.tradehero.th.persistence.social;
 
-@Deprecated // TODO replace occurences with MessageType
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum HeroType
 {
-    PREMIUM(0),
-    FREE(1),
-    ALL(2);
+    PREMIUM(0, "Premium"),
+    FREE(1, "Free"),
+    ALL(2, "All");
 
     public final int typeId;
+    public final String description;
 
-    private HeroType(int id)
+    private HeroType(int id, String description)
     {
         this.typeId = id;
+        this.description = description;
     }
 
     @Override public String toString()
     {
-        switch (this)
-        {
-            case PREMIUM:
-                return "Premium";
-            case FREE:
-                return "Free";
-            case ALL:
-                return "All";
-        }
-        return null;
+        return description;
     }
 
+    @JsonCreator
     public static HeroType fromId(int id)
     {
         HeroType[] arr = HeroType.values();
@@ -41,4 +36,17 @@ public enum HeroType
         return null;
     }
 
+    @JsonCreator
+    public static HeroType fromDescription(String description)
+    {
+        HeroType[] arr = HeroType.values();
+        for (HeroType type : arr)
+        {
+            if (type.description == description)
+            {
+                return type;
+            }
+        }
+        return null;
+    }
 }

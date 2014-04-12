@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
-import com.tradehero.th.api.social.HeroId;
+import com.tradehero.th.api.social.key.HeroId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;

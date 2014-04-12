@@ -1,4 +1,4 @@
-package com.tradehero.th.api.social;
+package com.tradehero.th.api.social.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
@@ -6,29 +6,29 @@ import com.tradehero.common.persistence.DTOKey;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class FollowerId implements Comparable, DTOKey
 {
-    public final static String BUNDLE_KEY_FOLLOWED_ID = FollowerId.class.getName() + ".followedId";
+    public final static String BUNDLE_KEY_FOLLOWED_ID = FollowerId.class.getName() + ".heroId";
     public final static String BUNDLE_KEY_FOLLOWER_ID = FollowerId.class.getName() + ".followerId";
 
-    public final Integer followedId;
+    public final Integer heroId;
     public final Integer followerId;
 
     //<editor-fold desc="Constructors">
-    public FollowerId(final Integer followedId, final Integer followerId)
+    public FollowerId(final Integer heroId, final Integer followerId)
     {
-        this.followedId = followedId;
+        this.heroId = heroId;
         this.followerId = followerId;
     }
 
     public FollowerId(Bundle args)
     {
-        this.followedId = args.containsKey(BUNDLE_KEY_FOLLOWED_ID) ? args.getInt(BUNDLE_KEY_FOLLOWED_ID) : null;
+        this.heroId = args.containsKey(BUNDLE_KEY_FOLLOWED_ID) ? args.getInt(BUNDLE_KEY_FOLLOWED_ID) : null;
         this.followerId = args.containsKey(BUNDLE_KEY_FOLLOWER_ID) ? args.getInt(BUNDLE_KEY_FOLLOWER_ID) : null;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return (followedId == null ? 0 : followedId.hashCode()) ^
+        return (heroId == null ? 0 : heroId.hashCode()) ^
                 (followerId == null ? 0 : followerId.hashCode());
     }
 
@@ -40,7 +40,7 @@ public class FollowerId implements Comparable, DTOKey
     public boolean equals(FollowerId other)
     {
         return (other != null) &&
-                (followedId == null ? other.followedId == null : followedId.equals(other.followedId)) &&
+                (heroId == null ? other.heroId == null : heroId.equals(other.heroId)) &&
                 (followerId == null ? other.followerId == null : followerId.equals(other.followerId));
     }
 
@@ -71,7 +71,7 @@ public class FollowerId implements Comparable, DTOKey
         }
 
         // TODO looks dangerous
-        int followedIdComp = followedId.compareTo(other.followedId);
+        int followedIdComp = heroId.compareTo(other.heroId);
         if (followedIdComp != 0)
         {
             return followedIdComp;
@@ -82,7 +82,7 @@ public class FollowerId implements Comparable, DTOKey
 
     public boolean isValid()
     {
-        return followedId != null && followerId != null;
+        return heroId != null && followerId != null;
     }
 
     public static boolean isValid(Bundle args)
@@ -94,7 +94,7 @@ public class FollowerId implements Comparable, DTOKey
 
     private void putParameters(Bundle args)
     {
-        args.putInt(BUNDLE_KEY_FOLLOWED_ID, followedId);
+        args.putInt(BUNDLE_KEY_FOLLOWED_ID, heroId);
         args.putInt(BUNDLE_KEY_FOLLOWER_ID, followerId);
     }
 
@@ -107,6 +107,6 @@ public class FollowerId implements Comparable, DTOKey
 
     @Override public String toString()
     {
-        return String.format("[followedId=%s; followerId=%s]", followedId, followerId);
+        return String.format("[heroId=%s; followerId=%s]", heroId, followerId);
     }
 }

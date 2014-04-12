@@ -33,8 +33,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -255,29 +255,25 @@ public class SendMessageFragment extends BaseFragment implements AdapterView.OnI
      */
     private int getFollowerCount(MessageType messageType)
     {
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        HeroType heroType = HeroType.ALL;
-
-        HeroKey heroKey = new HeroKey(userBaseKey, heroType);
-        FollowerSummaryDTO followerSummaryDTO = followerSummaryCache.get().get(heroKey);
+        FollowerSummaryDTO followerSummaryDTO = followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
         {
             int result = 0;
             switch (messageType)
             {
                 case BROADCAST_FREE_FOLLOWERS:
-                    result = followerSummaryDTO.freeFollowerCount;
+                    result = followerSummaryDTO.getFreeFollowerCount();
                     break;
                 case BROADCAST_ALL_FOLLOWERS:
-                    result = followerSummaryDTO.freeFollowerCount + followerSummaryDTO.paidFollowerCount;
+                    result = followerSummaryDTO.getFreeFollowerCount() + followerSummaryDTO.getPaidFollowerCount();
                     break;
                 case BROADCAST_PAID_FOLLOWERS:
-                    result = followerSummaryDTO.paidFollowerCount;
+                    result = followerSummaryDTO.getPaidFollowerCount();
                     break;
                 default:
                     throw new IllegalStateException("unknown messageType");
             }
-            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d", messageType, followerSummaryDTO.paidFollowerCount, followerSummaryDTO.freeFollowerCount);
+            Timber.d("getFollowerCount %s,paidFollowerCount:%d,freeFollowerCount:%d", messageType, followerSummaryDTO.getPaidFollowerCount(), followerSummaryDTO.getFreeFollowerCount());
             return result;
         }
         return 0;

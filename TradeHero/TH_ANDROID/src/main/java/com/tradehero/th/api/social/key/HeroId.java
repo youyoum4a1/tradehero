@@ -1,4 +1,4 @@
-package com.tradehero.th.api.social;
+package com.tradehero.th.api.social.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;

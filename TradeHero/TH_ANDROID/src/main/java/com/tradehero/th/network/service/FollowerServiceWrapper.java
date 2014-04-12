@@ -1,13 +1,13 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.social.HeroKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 
 /**
  * Repurposes requests
@@ -23,6 +23,32 @@ import retrofit.RetrofitError;
         this.followerService = followerService;
     }
 
+    //<editor-fold desc="Get All Followers Summary">
+    public FollowerSummaryDTO getAllFollowersSummary(UserBaseKey heroId)
+    {
+        return followerService.getAllFollowersSummary(heroId.key);
+    }
+
+    public void getAllFollowersSummary(UserBaseKey heroId, Callback<FollowerSummaryDTO> callback)
+    {
+        followerService.getAllFollowersSummary(heroId.key, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Follower Subscription Detail">
+    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerId followerId)
+    {
+        basicCheck(followerId);
+        return this.followerService.getFollowerSubscriptionDetail(followerId.heroId, followerId.followerId);
+    }
+
+    public void getFollowerSubscriptionDetail(FollowerId followerId, Callback<UserFollowerDTO> callback)
+    {
+        basicCheck(followerId);
+        this.followerService.getFollowerSubscriptionDetail(followerId.heroId, followerId.followerId, callback);
+    }
+    //</editor-fold>
+
     private void basicCheck(FollowerId followerId)
     {
         if (followerId == null)
@@ -33,69 +59,9 @@ import retrofit.RetrofitError;
         {
             throw new NullPointerException("followerId.followerId cannot be null");
         }
-        if (followerId.followedId == null)
+        if (followerId.heroId == null)
         {
-            throw new NullPointerException("followerId.followedId cannot be null");
+            throw new NullPointerException("followerId.heroId cannot be null");
         }
     }
-
-    //<editor-fold desc="Get Follower Subscription Detail">
-    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerId followerId)
-            throws RetrofitError
-    {
-        basicCheck(followerId);
-        return this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId);
-    }
-
-    public void getFollowerSubscriptionDetail(FollowerId followerId, Callback<UserFollowerDTO> callback)
-    {
-        basicCheck(followerId);
-        this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId, callback);
-    }
-
-
-    public void getFollowersSummary(HeroKey followerKey, Callback<FollowerSummaryDTO> callback)
-    {
-        //basicCheck(followerId);
-        switch (followerKey.heroType)
-        {
-            case PREMIUM:
-                //TODO use real data
-                this.followerService.getFollowersSummary(followerKey.userBaseKey.key, callback);
-                break;
-            case FREE:
-                //TODO use real data
-                this.followerService.getFollowersSummary(followerKey.userBaseKey.key, callback);
-                break;
-            case ALL:
-                this.followerService.getFollowersSummary(followerKey.userBaseKey.key, callback);
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    public FollowerSummaryDTO getFollowersSummary(HeroKey followerKey)
-    {
-        //basicCheck(followerId);
-        switch (followerKey.heroType)
-        {
-            case PREMIUM:
-                //TODO use real data
-                return this.followerService.getFollowersSummary(followerKey.userBaseKey.key);
-            case FREE:
-                //TODO use real data
-                return  this.followerService.getFollowersSummary(followerKey.userBaseKey.key);
-            case ALL:
-                return this.followerService.getFollowersSummary(followerKey.userBaseKey.key);
-            default:
-                break;
-
-        }
-        return null;
-
-
-    }
-    //</editor-fold>
 }

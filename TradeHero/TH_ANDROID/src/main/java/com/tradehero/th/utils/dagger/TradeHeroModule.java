@@ -73,7 +73,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
-import com.tradehero.th.fragments.social.follower.PrimiumFollowerFragment;
+import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -223,7 +223,7 @@ import javax.inject.Singleton;
                         HeroListItemView.class,
                         FollowerManagerFragment.class,
                         AllFollowerFragment.class,
-                        PrimiumFollowerFragment.class,
+                        PremiumFollowerFragment.class,
                         FreeFollowerFragment.class,
                         FollowerManagerInfoFetcher.class,
                         FollowerPayoutManagerFragment.class,
