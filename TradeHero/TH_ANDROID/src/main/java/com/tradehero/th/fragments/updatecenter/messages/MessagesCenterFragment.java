@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,8 @@ import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
@@ -30,6 +34,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.Arrays;
@@ -54,6 +59,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderCache> messageHeaderCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+    @Inject UserProfileCache userProfileCache;
 
     DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
     DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchTask;
@@ -491,6 +497,8 @@ public class MessagesCenterFragment extends DashboardFragment
                 {
                     notificationDTO.unread = false;
                     messageHeaderCache.get().put(messageHeaderId, notificationDTO);
+
+                    updateUnreadStatusInUserProfileCache();
                 }
                 middleCallbackMap.remove(messageId);
                 callbackMap.remove(messageId);
@@ -501,5 +509,24 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             Timber.d("Report failure for Message: %d", messageId);
         }
+    }
+
+
+    private void updateUnreadStatusInUserProfileCache()
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        --userProfileDTO.unreadNotificationsCount;
+        userProfileCache.put(userBaseKey, userProfileDTO);
+
+        requestUpdateTabCounter();
+    }
+
+    private void requestUpdateTabCounter()
+    {
+        // TODO remove this hack after refactor messagecenterfragment
+        Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(requestUpdateIntent);
     }
 }
