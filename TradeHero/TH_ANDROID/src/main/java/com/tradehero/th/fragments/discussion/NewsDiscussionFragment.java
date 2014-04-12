@@ -105,7 +105,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         if (bgRes != 0)
         {
-            newsDetailSummaryView.setBackgroundResource(bgRes);
+            newsDetailSummaryView.setBackground(bgRes);
         }
     }
 

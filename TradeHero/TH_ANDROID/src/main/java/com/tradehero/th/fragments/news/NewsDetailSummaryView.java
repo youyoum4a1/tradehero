@@ -72,4 +72,9 @@ public class NewsDetailSummaryView extends FrameLayout
             mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
         }
     }
+
+    public void setBackground(int resId)
+    {
+        mNewsDetailTitlePlaceholder.setBackgroundResource(resId);
+    }
 }
