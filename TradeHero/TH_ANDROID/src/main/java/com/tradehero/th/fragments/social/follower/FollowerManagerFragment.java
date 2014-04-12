@@ -207,12 +207,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
 
     private void goToMessagePage(DiscussionType discussionType)
     {
-        int index = getSherlockActivity().getSupportActionBar().getSelectedNavigationIndex();
-        Integer tagId =
-                (Integer) getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
-        int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
-
-        HeroType followerType = HeroType.fromId(tagId);
+        int page = mTabHost.getCurrentTab();
+        HeroType followerType = HeroType.fromId(page);
 
         Bundle args = new Bundle();
 
@@ -234,8 +230,8 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         }
 
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
-        Timber.d("goToMessagePage index:%d,tabIndex:%d,followerType:%s,discussionType:%s", index,
-                tabIndex, followerType, discussionType);
+        Timber.d("goToMessagePage index:%d,tabIndex:%d,followerType:%s,discussionType:%s", page,
+                page, followerType, discussionType);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
     }

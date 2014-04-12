@@ -32,6 +32,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     @InjectView(R.id.message_item_icon) ImageView iconView;
     @InjectView(R.id.message_item_title) TextView titleView;
     @InjectView(R.id.message_item_date) TextView dateView;
+    @InjectView(R.id.message_item_content) TextView contentView;
 
     private MessageHeaderDTO messageHeaderDTO;
 
@@ -75,7 +76,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         if (messageHeaderDTO != null)
         {
             titleView.setText(messageHeaderDTO.title);
-
+            contentView.setText(messageHeaderDTO.message);
             dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
             if (messageHeaderDTO.imageUrl != null)
             {

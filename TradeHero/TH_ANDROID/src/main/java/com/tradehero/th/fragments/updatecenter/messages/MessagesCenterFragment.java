@@ -227,14 +227,21 @@ public class MessagesCenterFragment extends DashboardFragment
     private void setListAdaper(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
+
         if (messageListAdapter == null)
         {
             messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
+
+        }
+        if (listView.getAdapter() == null)
+        {
             listView.setAdapter(messageListAdapter);
         }
-        MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
-        messageAdapter.setMessageOnClickListener(this);
-        messageAdapter.appendMore(messageKeys);
+        listView.setAdapter(messageListAdapter);
+
+        MessageListAdapter adapter =  (MessageListAdapter)listView.getAdapter();
+        adapter.setMessageOnClickListener(this);
+        adapter.appendMore(messageKeys);
     }
 
     private MessageListAdapter getListAdapter()

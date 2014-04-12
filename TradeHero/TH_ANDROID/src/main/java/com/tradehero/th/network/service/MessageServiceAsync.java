@@ -9,6 +9,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -49,7 +50,7 @@ interface MessageServiceAsync
             Callback<DiscussionDTO> callback);
 
 
-    @POST("/messages/delete/{commentId}")
+    @DELETE("/messages/{commentId}")
     void deleteMessage(
             @Path("commentId") int commentId,
             Callback<Response> callback);

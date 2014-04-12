@@ -34,6 +34,8 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -56,7 +58,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements PortfolioRequestListener
+        implements PortfolioRequestListener,UserProfileDetailView.OnHeroClickListener
 {
     public static final String BUNDLE_KEY_SHOW_USER_ID =
             TimelineFragment.class.getName() + ".showUserId";
@@ -120,9 +122,44 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
+        userProfileView.setHeroClickListener(this);
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
+    }
+
+    @Override public void onHeroClick()
+    {
+        pushHeroFragment();
+    }
+
+    @Override public void onFollowerClick()
+    {
+        pushFollowerFragment();
+    }
+
+    protected void pushHeroFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+    }
+
+    protected void pushFollowerFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
