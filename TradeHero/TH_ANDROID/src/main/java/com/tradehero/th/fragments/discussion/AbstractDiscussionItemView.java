@@ -65,10 +65,16 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         discussionFetchListener = new DiscussionFetchListener();
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        discussionFetchListener = new DiscussionFetchListener();
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         detachFetchDiscussionTask();
-
+        discussionFetchListener = null;
         super.onDetachedFromWindow();
     }
 
