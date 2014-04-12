@@ -17,6 +17,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -24,11 +25,15 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.utils.LocalyticsConstants;
 import java.util.Arrays;
 import javax.inject.Inject;
@@ -37,8 +42,7 @@ import timber.log.Timber;
 /**
  * Created by thonguyen on 3/4/14.
  */
-public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
-        implements OnTitleNumberChangeListener
+public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
     public static final String KEY_PAGE = "page";
 
@@ -106,15 +110,45 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
             {
                 @Override public void onClick(View v)
                 {
-                    Timber.d("lyl click new message");
-                    localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
-                            .pushFragment(AllRelationsFragment.class);
+                    showPopup(v);
                 }
             });
         }
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.inflate(R.menu.notification_new_message_menu);
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_private:
+                localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
+                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
+                        .pushFragment(AllRelationsFragment.class);
+                return true;
+            case R.id.menu_broadcast:
+                jumpToSendBroadcastMessage();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void jumpToSendBroadcastMessage()
+    {
+        localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Broadcast);
+        Bundle args = new Bundle();
+        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, DiscussionType.BROADCAST_MESSAGE.value);
+        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
+                SendMessageFragment.class, args);
     }
 
     @Override public void onDestroyView()

@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -33,7 +34,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 {
 
     List<UserBaseDTO> mRelationsList;
-    private MiddleCallback<List<UserBaseDTO>> relationsMiddleCallback;
+    private MiddleCallback<UserRelationsDTO> relationsMiddleCallback;
     private RelationsListItemAdapter mRelationsListItemAdapter;
 
     @InjectView(R.id.relations_list) ListView mRelationsListView;
@@ -89,14 +90,14 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
-    public class RelationsCallback implements Callback<List<UserBaseDTO>>
+    public class RelationsCallback implements Callback<UserRelationsDTO>
     {
-        @Override public void success(List<UserBaseDTO> list, Response response)
+        @Override public void success(UserRelationsDTO list, Response response)
         {
-            Timber.d("lyl success list.size=%d", list.size());
-            mRelationsList = list;
+            Timber.d("lyl success list.size=%d", list.data.size());
+            mRelationsList = list.data;
             alertDialogUtilLazy.get().dismissProgressDialog();
-            mRelationsListItemAdapter.setItems(list);
+            mRelationsListItemAdapter.setItems(list.data);
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 

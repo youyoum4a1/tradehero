@@ -6,8 +6,8 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
@@ -17,7 +17,6 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -209,8 +208,8 @@ interface UserServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get Relations">
-    @GET("/messages/allowableRecipients")
+    @GET("/messages/getAllowableRecipients")
     void getRelations(
-            Callback<List<UserBaseDTO>> callback);
+            Callback<UserRelationsDTO> callback);
     //</editor-fold>
 }

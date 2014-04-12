@@ -4,10 +4,10 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -275,8 +275,6 @@ import retrofit.RetrofitError;
                 return userService.getHeroes(heroKey.followerKey.key);
         }
         return null;
-
-
     }
 
     public void getHeroes(HeroKey heroKey,Callback<List<HeroDTO>> callback)
@@ -293,9 +291,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    public MiddleCallback<List<UserBaseDTO>> getRelations(Callback<List<UserBaseDTO>> callback)
+    public MiddleCallback<UserRelationsDTO> getRelations(Callback<UserRelationsDTO> callback)
     {
-        MiddleCallback<List<UserBaseDTO>> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallback<UserRelationsDTO> middleCallback = new MiddleCallback<>(callback);
         userServiceAsync.getRelations(callback);
         return middleCallback;
     }

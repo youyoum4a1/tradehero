@@ -72,6 +72,7 @@ public class LocalyticsConstants
     public static final String Proﬁle_Tab_Timeline = "Proﬁle/Tab/Timeline";//
     public static final String Proﬁle_Follow = "Proﬁle/Follow";//
     public static final String Notification_New_Message = "Notification/NewMessgae";//
+    public static final String Notification_New_Broadcast = "Notification/NewBroadcast";//
     public static final String Proﬁle_Tab_Portfolios = "Proﬁle/Tab/Portfolios";// Portfolios tab is shown on user
     public static final String Proﬁle_Tab_Stats = "Proﬁle/Tab/Stats";// Stats tab
     public static final String Monitor_Show = "Monitor/Show";// source
