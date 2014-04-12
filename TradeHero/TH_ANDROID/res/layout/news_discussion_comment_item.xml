@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.CommentView
+<com.tradehero.th.fragments.discussion.CommentItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -54,7 +54,7 @@
           />
 
       <TextView
-          android:id="@+id/timeline_time"
+          android:id="@+id/discussion_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
@@ -67,7 +67,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/timeline_item_content"
+        android:id="@+id/discussion_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/timeline_item_top_right"
@@ -81,5 +81,5 @@
         android:textStyle="normal"
         />
   </RelativeLayout>
-  <include layout="@layout/timeline_item_action_buttons_2_0"/>
-</com.tradehero.th.fragments.discussion.CommentView>
+  <include layout="@layout/discussion_action_buttons"/>
+</com.tradehero.th.fragments.discussion.CommentItemView>

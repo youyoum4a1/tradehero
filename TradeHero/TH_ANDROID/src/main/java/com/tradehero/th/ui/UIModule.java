@@ -2,6 +2,7 @@ package com.tradehero.th.ui;
 
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
@@ -45,6 +46,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
                 SecurityDiscussionItemView.class,
+                SecurityDiscussionCommentFragment.class,
 
                 DiscussionView.class,
                 PostCommentView.class

@@ -1,19 +1,20 @@
-package com.tradehero.th.fragments.discussion;
+package com.tradehero.th.fragments.discussion.stock;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 
 /**
- * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:48 AM Copyright (c) TradeHero
+ * Created by thonguyen on 12/4/14.
  */
-public class TimelineDiscussionFragment extends AbstractDiscussionFragment
+public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.timeline_discussion, container, false);
+        View view = inflater.inflate(R.layout.security_discussion_comment, container, false);
         return view;
     }
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.tradehero.th.fragments.news;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,34 +11,37 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.LiveDTOCache;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.network.service.NewsServiceWrapper;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
  * Created by julien on 10/10/13 Display a ListView of News object for a given SecurityId - It uses
  * the NewsHeadlineCache to get or fetch the news from an abstract provider as needed. In case the
- * news are not in the cache, the download is done in the background using the `fetchTask`
+ * news are not in the cache, the download is done in the background using the `fetchNewsTask`
  * AsyncTask. The task is cancelled when the fragment is paused.
  */
-public class NewsTitleListFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
+public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
 {
     @Inject SecurityNewsCache newsTitleCache;
-    @Inject NewsServiceWrapper newsServiceWrapper;
 
+    @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
-    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchNewsTask;
     private NewsHeadlineAdapter adapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -81,68 +84,64 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
 
     private void showNewsList()
     {
-        listView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
     }
 
     private void showLoadingNews()
     {
-        listView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
     }
 
     @Override public void onDestroyView()
     {
         detachFetchTask();
+
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
         }
         listView = null;
         adapter = null;
+
         super.onDestroyView();
     }
 
-    @Override LiveDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>> getInfoCache()
+    @Override protected LiveDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>> getInfoCache()
     {
         return newsTitleCache;
     }
 
-    protected void detachFetchTask()
-    {
-        if (fetchTask != null)
-        {
-            fetchTask.setListener(null);
-        }
-        fetchTask = null;
-    }
-
-    @Override
-    public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
+
         if (this.securityId != null)
         {
-            //NewsHeadlineList news = newsTitleCache.get(this.securityId);
-            PaginatedDTO<NewsItemDTO> news = newsTitleCache.get(this.securityId);
-            if (news == null)
-            {
-                //force fetch - we know the value is not in cache
-                detachFetchTask();
-                this.fetchTask = newsTitleCache.getOrFetch(this.securityId, true, this);
-                this.fetchTask.execute();
-            }
-            else
-            {   //already cached
-                linkWith(news, andDisplay);
-                showNewsList();
-            }
+            fetchSecurityNews();
         }
+    }
+
+    protected void detachFetchTask()
+    {
+        if (fetchNewsTask != null)
+        {
+            fetchNewsTask.setListener(null);
+        }
+        fetchNewsTask = null;
+    }
+
+    private void fetchSecurityNews()
+    {
+        detachFetchTask();
+
+        fetchNewsTask = newsTitleCache.getOrFetch(securityId, true, this);
+        fetchNewsTask.execute();
     }
 
     @Override public void display()
     {
         displayNewsListView();
+
         showNewsList();
     }
 
@@ -157,7 +156,18 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
     {
         if (!isDetached() && adapter != null)
         {
-            adapter.setItems(value.getData());
+            List<NewsItemDTO> data = value.getData();
+            List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
+
+            if (data != null)
+            {
+                for (NewsItemDTO newsItemDTO: data)
+                {
+                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
+                }
+            }
+
+            adapter.setItems(newsItemDTOKeyList);
             adapter.notifyDataSetChanged();
         }
     }
@@ -169,8 +179,8 @@ public class NewsTitleListFragment extends AbstractSecurityInfoFragment<Paginate
             int resId = adapter.getBackgroundRes(position);
             NewsItemDTOKey newsItemDTOKey = news.getDiscussionKey();
             Bundle bundle = newsItemDTOKey.getArgs();
-            bundle.putInt(NewsDetailFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            getNavigator().pushFragment(NewsDetailFragment.class, bundle);
+            bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+            getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }
 

@@ -23,13 +23,13 @@ import javax.inject.Singleton;
 )
 public class RetrofitStubModule
 {
-    //@Provides @Singleton MessageService provideMessageServiceStub(MessageServiceStub messageService)
-    //{
-    //    return messageService;
-    //}
+    @Provides @Singleton MessageService provideMessageServiceStub(MessageServiceStub messageService)
+    {
+        return messageService;
+    }
 
-    //@Provides @Singleton DiscussionService provideDiscussionServiceStub(DiscussionServiceStub discussionService)
-    //{
-    //    return discussionService;
-    //}
+    @Provides @Singleton DiscussionService provideDiscussionServiceStub(DiscussionServiceStub discussionService)
+    {
+        return discussionService;
+    }
 }

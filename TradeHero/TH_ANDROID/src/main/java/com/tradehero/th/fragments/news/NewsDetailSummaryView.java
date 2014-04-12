@@ -48,6 +48,7 @@ public class NewsDetailSummaryView extends FrameLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
     }

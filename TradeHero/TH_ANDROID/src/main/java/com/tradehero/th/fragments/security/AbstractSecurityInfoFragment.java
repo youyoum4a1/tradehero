@@ -26,7 +26,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         }
     }
 
-    abstract DTOCache<SecurityId, InfoType> getInfoCache();
+    abstract protected DTOCache<SecurityId, InfoType> getInfoCache();
 
     /**
      * Called in onResume.
@@ -60,5 +60,5 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         }
     }
 
-    abstract void display();
+    abstract public void display();
 }
