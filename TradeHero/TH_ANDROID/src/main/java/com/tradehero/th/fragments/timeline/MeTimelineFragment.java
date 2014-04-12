@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
@@ -43,6 +45,19 @@ public class MeTimelineFragment extends TimelineFragment
     {
         inflater.inflate(R.menu.timeline_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_edit:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
+                getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override protected void createUserProfileRetrievedMilestone()
