@@ -1,12 +1,11 @@
 package com.tradehero.th.network.service.stub;
 
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,14 +29,14 @@ public class MessageServiceStub implements MessageService
     {
         Timber.d("Returning stub messages");
         PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
-        List<MessageHeaderDTO> messsageDTOList = new ArrayList<>();
+        List<MessageHeaderDTO> messageDTOList = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
         {
-            messsageDTOList.add(createMessageHeader(i, page, date));
+            messageDTOList.add(createMessageHeader(i, page, date));
         }
 
-        paginatedDTO.setData(messsageDTOList);
+        paginatedDTO.setData(messageDTOList);
 
         PaginationInfoDTO paginationInfoDTO = new PaginationInfoDTO();
         paginatedDTO.setPagination(paginationInfoDTO);
@@ -65,8 +64,7 @@ public class MessageServiceStub implements MessageService
 
     private MessageHeaderDTO createMessageHeader(int commentId, Integer page, Date date)
     {
-        MessageHeaderDTO m = new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date);
-        return m;
+        return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date, true);
     }
 
     @Override public MessageStatusDTO getStatus(int recipientUserId)

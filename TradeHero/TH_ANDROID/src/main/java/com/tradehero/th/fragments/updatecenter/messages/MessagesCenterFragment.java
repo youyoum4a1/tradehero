@@ -6,14 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
-import com.fortysevendeg.android.swipelistview.SwipeListViewTouchListener;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
@@ -28,13 +26,19 @@ import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -49,6 +53,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageHeaderCache> messageHeaderCache;
     @Inject CurrentUserId currentUserId;
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
     DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
     DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchTask;
@@ -58,12 +63,15 @@ public class MessagesCenterFragment extends DashboardFragment
     MessagesView messagesView;
     SwipeListener swipeListener;
 
+    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    private Map<Integer, Callback<Response>> callbackMap;
+
     private UpdateCenterTabType tabType;
 
-    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<MessageEraser> messageEraser;
 
     private boolean isFirst = true;
+    private MessageListAdapter messageListAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -219,12 +227,10 @@ public class MessagesCenterFragment extends DashboardFragment
     private void setListAdaper(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
-        ListAdapter adapter = listView.getAdapter();
-        if (adapter == null)
+        if (messageListAdapter == null)
         {
-            adapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
-                    R.layout.message_list_item_wrapper);
-            listView.setAdapter(adapter);
+            messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
+            listView.setAdapter(messageListAdapter);
         }
         MessageListAdapter messageAdapter = (MessageListAdapter) listView.getAdapter();
         messageAdapter.setMessageOnClickListener(this);
@@ -362,6 +368,8 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
+            updateReadStatus(firstVisibleItem, visibleItemCount);
+
             super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
 
@@ -384,5 +392,111 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        initCallbackMap();
+    }
+
+    @Override public void onDetach()
+    {
+        super.onDetach();
+
+        messageListAdapter = null;
+
+        unsetMiddleCallback();
+    }
+
+    private void initCallbackMap()
+    {
+        callbackMap = new HashMap<>();
+        middleCallbackMap = new HashMap<>();
+    }
+
+    private void unsetMiddleCallback()
+    {
+        for (MiddleCallback<Response> middleCallback: middleCallbackMap.values())
+        {
+            middleCallback.setPrimaryCallback(null);
+        }
+
+        callbackMap.clear();
+        middleCallbackMap.clear();
+    }
+
+
+    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
+    {
+        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
+        {
+            MessageHeaderId messageHeaderId = messageListAdapter.getItem(i);
+            if (messageHeaderId != null)
+            {
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+
+                if (messageHeaderDTO != null && messageHeaderDTO.unread)
+                {
+                    reportMessageRead(messageHeaderDTO.id);
+                }
+            }
+        }
+    }
+
+    private void reportMessageRead(int pushId)
+    {
+        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
+        if (middleCallback == null)
+        {
+            middleCallback = messageServiceWrapper.get().readMessage(pushId, getCallback(pushId));
+            middleCallbackMap.put(pushId, middleCallback);
+        }
+    }
+
+    private Callback<Response> getCallback(int pushId)
+    {
+        Callback<Response> callback = callbackMap.get(pushId);
+        if (callback == null)
+        {
+            callback = new MessageMarkAsReadCallback(pushId);
+        }
+        return callback;
+    }
+
+    private class MessageMarkAsReadCallback implements Callback<Response>
+    {
+        private final int messageId;
+
+        public MessageMarkAsReadCallback(int messageId)
+        {
+            this.messageId = messageId;
+        }
+
+        @Override public void success(Response response, Response response2)
+        {
+            if (response.getStatus() == 200)
+            {
+                Timber.d("Message %d is reported as read");
+                // TODO update title
+
+                // mark it as read in the cache
+                MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
+                MessageHeaderDTO notificationDTO = messageHeaderCache.get().get(messageHeaderId);
+                if (notificationDTO != null && notificationDTO.unread)
+                {
+                    notificationDTO.unread = false;
+                    messageHeaderCache.get().put(messageHeaderId, notificationDTO);
+                }
+                middleCallbackMap.remove(messageId);
+                callbackMap.remove(messageId);
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            Timber.d("Report failure for Message: %d", messageId);
+        }
     }
 }

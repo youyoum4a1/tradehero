@@ -33,11 +33,18 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     @Deprecated
     public MessageHeaderDTO(String title, String subTitle, String message, Date createdAtUtc)
     {
+        this(title, subTitle, message, createdAtUtc, false);
+    }
+
+    @Deprecated
+    public MessageHeaderDTO(String title, String subTitle, String message, Date createdAtUtc, boolean unread)
+    {
         this.id = idGenerator.nextInt(Integer.MAX_VALUE);
         this.title = title;
         this.subTitle = subTitle;
         this.message = message;
         this.createdAtUtc = createdAtUtc;
+        this.unread = unread;
     }
 
     @Override public MessageHeaderId getDTOKey()
