@@ -24,7 +24,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 10/4/14.
@@ -190,6 +189,11 @@ public class DiscussionView extends FrameLayout
 
             discussionListAdapter.appendMore(discussionKeyList);
         }
+
+        if (andDisplay)
+        {
+            discussionStatus.setText(R.string.discussion_loaded);
+        }
     }
 
     private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
@@ -210,8 +214,25 @@ public class DiscussionView extends FrameLayout
         {
             paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
 
+            setLoading();
             discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, discussionFetchTaskListener);
             discussionFetchTask.execute();
+        }
+    }
+
+    private void setLoading()
+    {
+        if (discussionStatus != null)
+        {
+            discussionStatus.setText(R.string.discussion_loading);
+        }
+    }
+
+    private void setLoaded()
+    {
+        if (discussionStatus != null)
+        {
+            discussionStatus.setText(R.string.discussion_loaded);
         }
     }
 
@@ -229,12 +250,21 @@ public class DiscussionView extends FrameLayout
     {
         @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
         {
+            onFinish();
+
             linkWith(value, true);
         }
 
         @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
+            onFinish();
+
             THToast.show(new THException(error));
+        }
+
+        private void onFinish()
+        {
+            setLoaded();
         }
     }
 }
