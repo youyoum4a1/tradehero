@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<com.tradehero.th.fragments.social.message.PrivateDiscussionView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/discussion_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-  <include
-      layout="@layout/post_comment_widget"
-      />
+    android:layout_height="match_parent"
+    app:listItemLayout="@layout/private_message_bubble_mine"
+    app:topicLayout="@layout/private_message_list_header">
 
   <TextView
       android:id="@+id/private_message_empty"
@@ -25,17 +25,20 @@
       />
 
   <ListView
-      android:id="@+id/message_list_view"
+      android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_above="@+id/discussion_comment_widget"
-      android:paddingBottom="8dp"
+      android:listSelector="@color/transparent"
+      android:divider="@color/transparent"
       android:paddingTop="48dp"
+      android:paddingBottom="@dimen/discussion_comment_box_height"
       android:clipToPadding="false"
-      android:dividerHeight="4dp"
-      tools:background="#ffdddd">
+      android:layout_above="@+id/discussion_comment_widget"
+      />
 
-  </ListView>
+  <include
+      layout="@layout/post_comment_widget"
+      />
 
   <RelativeLayout
       android:id="@+id/private_message_status_container"
@@ -68,4 +71,4 @@
 
   </RelativeLayout>
 
-</RelativeLayout>
+</com.tradehero.th.fragments.social.message.PrivateDiscussionView>

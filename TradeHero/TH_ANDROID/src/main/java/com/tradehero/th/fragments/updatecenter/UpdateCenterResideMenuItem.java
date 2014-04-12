@@ -3,8 +3,12 @@ package com.tradehero.th.fragments.updatecenter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -21,8 +25,10 @@ import javax.inject.Inject;
 public class UpdateCenterResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
 {
-    @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
+    @InjectView(R.id.tab_title_number) TextView unreadMessageCount;
 
     private UserProfileDTO userProfileDTO;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
@@ -49,6 +55,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     {
         super.onFinishInflate();
 
+        ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
         userProfileListener = new UserProfileFetchListener();
@@ -91,10 +98,10 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
-        if (userProfileDTO != null)
+        if (userProfileDTO != null && andDisplay)
         {
             int totalUnreadItem = userProfileDTO.unreadNotificationsCount + userProfileDTO.unreadMessageThreadsCount;
-
+            unreadMessageCount.setText("" + totalUnreadItem);
         }
     }
 

@@ -6,9 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -27,15 +25,17 @@ import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -49,11 +49,12 @@ import timber.log.Timber;
 
 import javax.inject.Inject;
 
-public class PrivateMessageFragment extends DashboardFragment
+public class PrivateMessageFragment extends AbstractDiscussionFragment
 {
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
     public static final int DEFAULT_MAX_COUNT = 10;
 
+    @Inject CurrentUserId currentUserId;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
@@ -87,9 +88,9 @@ public class PrivateMessageFragment extends DashboardFragment
     private DiscussionDTOList loadedDiscussions;
 
     @InjectView(R.id.private_message_empty) TextView emptyHint;
-    @InjectView(R.id.message_list_view) ListView messageListView;
+    //@InjectView(R.id.message_list_view) ListView messageListView;
     PrivateMessageBubbleAdapter messageBubbleAdapter;
-    @InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
+    //@InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
     //@InjectView(R.id.button_send) View buttonSend;
     @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
     //@InjectView(R.id.typing_message_content) EditText messageToSend;
@@ -105,26 +106,34 @@ public class PrivateMessageFragment extends DashboardFragment
         messageStatusCacheListener = new PrivateMessageFragmentMessageStatusListener();
         messageHeaderListCacheListener = new PrivateMessageFragmentMessageListListener();
         discussionListCacheListener = new PrivateMessageFragmentDiscussionListListener();
-        nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
+        //nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, correspondentId);
+        nextLoadingMessageKey = new RecipientTypedMessageListKey(MessageListKey.FIRST_PAGE, 10, DiscussionType.PRIVATE_MESSAGE, currentUserId.toUserBaseKey());
         loadedMessages = new MessageHeaderDTOList();
         loadedDiscussions = new DiscussionDTOList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_private_message, container, false);
-        ButterKnife.inject(this, view);
+        return inflater.inflate(R.layout.fragment_private_message, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        return view;
     }
 
     private void initViews(View view)
     {
-        postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
+        //postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         swapAdapter();
         display();
+        if (discussionView instanceof PrivateDiscussionView)
+        {
+            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -134,6 +143,7 @@ public class PrivateMessageFragment extends DashboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
+        displayTitle();
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -144,7 +154,6 @@ public class PrivateMessageFragment extends DashboardFragment
         fetchCorrespondentProfile();
         fetchMessageStatus();
         fetchMessageList();
-        //fetchDiscussionList();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -161,7 +170,7 @@ public class PrivateMessageFragment extends DashboardFragment
         detachMessageListTask();
         detachDiscussionListTask();
 
-        messageListView = null;
+        //messageListView = null;
         messageBubbleAdapter = null;
         super.onDestroyView();
     }
@@ -256,6 +265,7 @@ public class PrivateMessageFragment extends DashboardFragment
         {
             displayCorrespondentImage();
             displayTitle();
+            getSherlockActivity().invalidateOptionsMenu();
         }
     }
 
@@ -278,9 +288,10 @@ public class PrivateMessageFragment extends DashboardFragment
         {
             linkWith(messageHeaders.iterator().next(), andDisplay);
         }
-        else
+        else if (discussionView instanceof PrivateDiscussionView)
         {
-            postCommentView.linkWith(MessageType.PRIVATE);
+            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+            //postCommentView.linkWith(MessageType.PRIVATE);
         }
         displayVisibilities();
     }
@@ -290,7 +301,10 @@ public class PrivateMessageFragment extends DashboardFragment
         Timber.d("messageHeader %s", messageHeader);
         this.currentMessageHeader = messageHeader;
 
-        postCommentView.linkWith(discussionKeyFactory.create(messageHeader));
+        DiscussionKey discussionKey = discussionKeyFactory.create(messageHeader);
+        discussionView.display(discussionKey);
+
+        //postCommentView.linkWith(discussionKey); // TODO remove
 
         nextDiscussionListKey = new RangedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
@@ -311,8 +325,8 @@ public class PrivateMessageFragment extends DashboardFragment
 
     public void swapAdapter()
     {
-        messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
-        messageListView.setAdapter(messageBubbleAdapter);
+        //messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
+        //messageListView.setAdapter(messageBubbleAdapter);
     }
 
     public void handleCommentPosted(DiscussionDTO discussionDTO)
@@ -354,7 +368,13 @@ public class PrivateMessageFragment extends DashboardFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
         {
-            actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile));
+            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+            Timber.d("Display title " + title);
+            actionBar.setTitle(title);
+        }
+        else
+        {
+            actionBar.setTitle(R.string.loading_loading);
         }
     }
 
@@ -380,15 +400,15 @@ public class PrivateMessageFragment extends DashboardFragment
 
     private void displayVisibilities()
     {
-        showOnly(currentMessageHeader == null ? emptyHint : messageListView);
+        //showOnly(currentMessageHeader == null ? emptyHint : messageListView);
     }
 
     private void showOnly(View view)
     {
-        if (messageListView != null)
-        {
-            messageListView.setVisibility(view == messageListView ? View.VISIBLE : View.GONE);
-        }
+        //if (messageListView != null)
+        //{
+        //    messageListView.setVisibility(view == messageListView ? View.VISIBLE : View.GONE);
+        //}
         if (emptyHint != null)
         {
             emptyHint.setVisibility(view == emptyHint ? View.VISIBLE : View.GONE);

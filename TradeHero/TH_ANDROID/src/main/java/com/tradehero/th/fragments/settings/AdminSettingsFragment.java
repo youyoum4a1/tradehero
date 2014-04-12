@@ -28,9 +28,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        addPreferencesFromResource(R.xml.admin_settings);
-
         DaggerUtils.inject(this);
+        addPreferencesFromResource(R.xml.admin_settings);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

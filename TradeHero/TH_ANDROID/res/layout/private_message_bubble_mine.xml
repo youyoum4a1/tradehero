@@ -7,23 +7,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="48dp"
-    tools:background="#adadef">
+    android:paddingRight="8dp"
+    tools:background="#ededff">
 
-  <LinearLayout
-      android:id="@+id/private_text_container"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:padding="4dp"
-      android:background="@color/button_blue">
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/private_text"
+        android:id="@+id/discussion_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        tools:text="Hey."/>
+        android:layout_centerHorizontal="true"
+        tools:text="moments ago"
+        android:textSize="12sp"
+        android:textColor="@color/gray_1"
+        />
 
-  </LinearLayout>
+    <LinearLayout
+        android:id="@+id/private_text_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discussion_time"
+        android:layout_alignParentRight="true"
+        android:padding="16dp"
+        android:background="@color/button_blue">
+
+      <TextView
+          android:id="@+id/discussion_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/white"
+          tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
 
 </com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView>

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.Collection;
@@ -17,7 +18,7 @@ import javax.inject.Inject;
 /**
  * Created by xavier2 on 2014/4/10.
  */
-public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussionDTO>
+public class PrivateMessageBubbleAdapter extends ArrayAdapter<PrivateDiscussionDTO>
 {
     public static final int ITEM_TYPE_MINE = 0;
     public static final int ITEM_TYPE_OTHER = 1;
@@ -28,7 +29,7 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public PrivateMessageBubbleAdapter(Context context, List<DiscussionDTO> objects)
+    public PrivateMessageBubbleAdapter(Context context, List<PrivateDiscussionDTO> objects)
     {
         super(context, 0);
         addAll(objects);
@@ -67,7 +68,7 @@ public class PrivateMessageBubbleAdapter extends ArrayAdapter<AbstractDiscussion
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        AbstractDiscussionDTO discussionDTO = getItem(position);
+        PrivateDiscussionDTO discussionDTO = getItem(position);
         if (convertView == null)
         {
             convertView = mInflater.inflate(getLayoutResId(position), null);

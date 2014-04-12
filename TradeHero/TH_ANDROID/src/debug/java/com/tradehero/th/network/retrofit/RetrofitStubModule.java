@@ -27,7 +27,7 @@ public class RetrofitStubModule
     //{
     //    return messageService;
     //}
-    //
+
     //@Provides @Singleton DiscussionService provideDiscussionServiceStub(DiscussionServiceStub discussionService)
     //{
     //    return discussionService;
