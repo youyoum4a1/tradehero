@@ -19,6 +19,7 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -44,6 +45,7 @@ public class PostCommentView extends RelativeLayout
     @Inject MessageServiceWrapper messageServiceWrapper;
     private MessageType messageType = null;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
+    @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     private DiscussionKey discussionKey = null;
@@ -187,17 +189,23 @@ public class PostCommentView extends RelativeLayout
     protected void setPosting()
     {
         commentActionWrapper.setDisplayedChildByLayoutId(commentActionProcessing.getId());
-
         commentSubmit.setEnabled(false);
-
         resetCommentText();
     }
 
     protected void setPosted()
     {
         commentActionWrapper.setDisplayedChildByLayoutId(commentSubmit.getId());
+        commentSubmit.setEnabled(true);
+    }
 
-        commentSubmit.setEnabled(false);
+    // HACK
+    protected void fixHackDiscussion(DiscussionDTO discussionDTO)
+    {
+        if (discussionDTO != null && discussionDTO.userId <= 0)
+        {
+            discussionDTO.userId = currentUserId.toUserBaseKey().key;
+        }
     }
 
     private class CommentSubmitCallback implements Callback<DiscussionDTO>
@@ -205,7 +213,7 @@ public class PostCommentView extends RelativeLayout
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
             setPosted();
-
+            fixHackDiscussion(discussionDTO);
             if (commentPostedListener != null)
             {
                 commentPostedListener.success(discussionDTO);
@@ -215,12 +223,10 @@ public class PostCommentView extends RelativeLayout
         @Override public void failure(RetrofitError retrofitError)
         {
             setPosted();
-
             THToast.show(new THException(retrofitError));
-
             if (commentPostedListener != null)
             {
-                commentPostedListener.failure();
+                commentPostedListener.failure(retrofitError);
             }
         }
     }
@@ -229,6 +235,6 @@ public class PostCommentView extends RelativeLayout
     {
         void success(DiscussionDTO discussionDTO);
 
-        void failure();
+        void failure(Exception exception);
     }
 }

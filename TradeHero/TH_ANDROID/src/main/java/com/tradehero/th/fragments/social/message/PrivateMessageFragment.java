@@ -460,7 +460,7 @@ public class PrivateMessageFragment extends DashboardFragment
             handleCommentPosted(discussionDTO);
         }
 
-        @Override public void failure()
+        @Override public void failure(Exception exception)
         {
             // Do something?
         }

@@ -30,8 +30,7 @@ public interface MessageService
     @GET("/messages/{commentId}")
     MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId);
 
-    @GET("/messages/{recipientUserId}")
-    //@GET("/messages/status/{recipientUserId}") // Proper way to activate when deployed
+    @GET("/messages/status/{recipientUserId}")
     MessageStatusDTO getStatus(@Path("recipientUserId") int recipientUserId);
 
     @POST("/messages")
