@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +27,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderId>
 {
     @InjectView(R.id.message_item_front) MessageItemView messageItemView;
-    @InjectView(R.id.message_item_back) LinearLayout messageItemBackView;
+    @InjectView(R.id.message_item_back) View messageItemBackView;
 
     public MessageItemViewWrapper(Context context)
     {

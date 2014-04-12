@@ -95,15 +95,15 @@ import javax.inject.Singleton;
 
                 if (forAllHeros)
                 {
-                    heroIdExt.getPaid = heroDTO.isFreeFollow;
+                    heroIdExt.getPaid = !heroDTO.isFreeFollow;
                     heroIds.add(heroIdExt);
                 }
-                else if (forHerosGetPaid && heroDTO.isFreeFollow)
+                else if (forHerosGetPaid && !heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaid = true;
                     heroIds.add(heroIdExt);
                 }
-                else if (!forAllHeros && !forHerosGetPaid && !heroDTO.isFreeFollow)
+                else if (!forAllHeros && !forHerosGetPaid && heroDTO.isFreeFollow)
                 {
                     heroIdExt.getPaid = false;
                     heroIds.add(heroIdExt);

@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -13,9 +12,6 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/**
- * Created by xavier2 on 2014/4/9.
- */
 interface MessageServiceAsync
 {
     @GET("/messages")
@@ -46,7 +42,6 @@ interface MessageServiceAsync
     void createMessage(
             @Body MessageCreateFormDTO form,
             Callback<DiscussionDTO> callback);
-
 
     //TODO fake
     @POST("/messages")

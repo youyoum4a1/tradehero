@@ -54,7 +54,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s",language);
         if (isChineseLocale) {
-            showViewForChinese();
+            //showViewForChinese();
         }
     }
 

@@ -890,6 +890,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 adapter.linkWith(providerId);
                 adapter.linkWith(securityCompactDTO);
+                //adaper of new versioned ViewPager must call notifyDataSetChanged when data changes
+                adapter.notifyDataSetChanged();
 
                 ViewPager viewPager = mBottomViewPager;
                 if (viewPager != null)

@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
+import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
@@ -20,19 +21,18 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 3/4/14.
- */
 @Singleton
 public class MessageServiceWrapper
 {
     private MessageService messageService;
     private MessageServiceAsync messageServiceAsync;
+    private DiscussionDTOFactory discussionDTOFactory;
     LongPreference timelinePreference;
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
+            DiscussionDTOFactory discussionDTOFactory,
             @MessageListTimeline LongPreference timelinePreference)
     {
         this.messageService = messageService;
@@ -159,7 +159,7 @@ public class MessageServiceWrapper
 
     public MiddleCallbackDiscussion createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }
@@ -167,7 +167,7 @@ public class MessageServiceWrapper
     //TODO fake,not real
     public MiddleCallbackDiscussion deleteMessage(MessageHeaderDTO form, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
         messageServiceAsync.deleteMessage(form, middleCallback);
         return middleCallback;
     }

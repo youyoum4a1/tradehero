@@ -8,8 +8,8 @@
     tools:background="@color/number_green"
     android:id="@+id/message_item_front"
     android:tag="message_item_front"
+    android:background="@color/timeline_background_color"
     >
-
 
   <ImageView
       android:id="@+id/message_item_icon"
