@@ -19,6 +19,11 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     public int commentCount;
     public String langCode;
 
+    public AbstractDiscussionDTO()
+    {
+        super();
+    }
+
     public void populateVote(AbstractDiscussionDTO target)
     {
         target.upvoteCount = upvoteCount;
