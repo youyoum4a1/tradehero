@@ -156,7 +156,14 @@ public class NotificationsView extends BetterViewAnimator
 
                 fetchNextPageIfNecessary();
             }
+
+            updateReadStatus(firstVisibleItem, visibleItemCount);
         }
+    }
+
+    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
+    {
+
     }
 
     private class NotificationFetchListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>

@@ -38,10 +38,11 @@ public class SocialNetworkModule
     private static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     private static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
     private static final String FACEBOOK_APP_ID = "431745923529834";
-    public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";
+    public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";//release
     //public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";//test
 
-    private static final String WEIBO_APP_ID = "551229853";
+    private static final String WEIBO_APP_ID = "280704663";//release
+    //private static final String WEIBO_APP_ID = "551229853";//test
     private static final String WEIBO_REDIRECT_URL = "http://www.tradehero.mobi";
     private static final String WEIBO_SCOPE =
             "email,direct_messages_read,direct_messages_write,"

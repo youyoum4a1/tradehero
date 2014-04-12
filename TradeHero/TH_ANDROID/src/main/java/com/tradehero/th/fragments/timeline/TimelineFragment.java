@@ -595,11 +595,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (!mIsOtherProfile)
         {
-            //Timber.d("lyl not other profile, return");
             return;
         }
         mFollowType = getFollowType();
-        //Timber.d("lyl mFollowType=%d", mFollowType);
         if (mFollowType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
         {
             mFollowButton.setText(R.string.upgrade_to_premium);
@@ -701,7 +699,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            //Timber.d("lyl success %s", userProfileDTO.toString());
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();

@@ -459,7 +459,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            //Timber.d("lyl success %s", userProfileDTO.toString());
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
         }

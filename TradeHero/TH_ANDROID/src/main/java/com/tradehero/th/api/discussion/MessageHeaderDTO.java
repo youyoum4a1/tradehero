@@ -23,6 +23,7 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     public Integer id;  // is always a commentId, i.e. [comment].id
     public DiscussionType discussionType;
     public String imageUrl;
+    public boolean unread;
 
     public MessageHeaderDTO()
     {

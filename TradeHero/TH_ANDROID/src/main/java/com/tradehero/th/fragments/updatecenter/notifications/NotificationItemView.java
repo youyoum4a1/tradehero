@@ -71,12 +71,20 @@ public class NotificationItemView
         notificationFetchListener = new NotificationFetchListener();
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        notificationFetchListener = new NotificationFetchListener();
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         detachNotificationFetchTask();
 
         resetView();
 
+        notificationFetchListener = null;
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
