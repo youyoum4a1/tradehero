@@ -147,9 +147,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-//import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
-//import com.tradehero.th.fragments.trade.view.TradeQuantityView;
-
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         includes = {
@@ -190,13 +187,9 @@ import javax.inject.Singleton;
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
                         BuySellFragment.BuySellAsyncTask.class,
-                        //BuySellConfirmFragment.class,
-                        //BuySellConfirmFragment.BuySellAsyncTask.class,
-                        //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -333,13 +326,11 @@ import javax.inject.Singleton;
 
                         PrivateMessageFragment.class,
                         PrivateDiscussionView.class,
-                        //PrivateMessageBubbleAdapter.class,
                         PrivateDiscussionListAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
                         
                         AlertDialogUtil.class,
-                        MessageEraser.class,
                         //alipay
                         AlipayActivity.class,
                 },

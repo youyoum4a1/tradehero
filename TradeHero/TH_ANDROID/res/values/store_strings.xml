@@ -20,6 +20,7 @@
   <string name="store_billing_error_loading_window_title">Oh!</string>
   <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load properly.</string>
   <string name="store_billing_error_loading_act">Reload Please</string>
+  <string name="store_billing_error_buy_alerts">You can not buy alerts plan which you already have</string>
 
   <string name="store_billing_loading_window_title">Loading&#8230;</string>
   <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>

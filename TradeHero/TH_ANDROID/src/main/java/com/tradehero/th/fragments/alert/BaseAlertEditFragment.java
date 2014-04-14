@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -173,7 +174,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         securityCompactCallback = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
         {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
+            @Override
+            public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
             {
                 hideDialog();
                 linkWith(value, true);
@@ -195,7 +197,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         };
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
         initViews(view);
@@ -212,7 +215,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
         getSherlockActivity().getActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+                ActionBar.DISPLAY_HOME_AS_UP
+                        | ActionBar.DISPLAY_SHOW_HOME
+                        | ActionBar.DISPLAY_SHOW_TITLE);
         displayActionBarTitle();
     }
 
@@ -269,27 +274,36 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         this.securityId = securityId;
 
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
+                R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
+        securityCompactCacheFetchTask =
+                securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
         securityCompactCacheFetchTask.execute();
     }
 
     protected AlertFormDTO getFormDTO()
     {
-        if (targetPriceToggle == null || targetPercentageChangeToggle == null || securityCompactDTO == null || securityCompactDTO.lastPrice == null)
+        if (targetPriceToggle == null
+                || targetPercentageChangeToggle == null
+                || securityCompactDTO == null
+                || securityCompactDTO.lastPrice == null)
         {
             Timber.d("securityCompact %s", securityCompactDTO);
             return null;
         }
 
         AlertFormDTO alertFormDTO = new AlertFormDTO();
-        alertFormDTO.active = targetPriceToggle.isChecked() || targetPercentageChangeToggle.isChecked();
+        alertFormDTO.active =
+                targetPriceToggle.isChecked() || targetPercentageChangeToggle.isChecked();
         if (alertFormDTO.active)
         {
             alertFormDTO.securityId = securityCompactDTO.id;
-            alertFormDTO.targetPrice = targetPriceToggle.isChecked() ? getSeekingTargetPrice() : securityCompactDTO.lastPrice;
-            alertFormDTO.priceMovement = targetPercentageChangeToggle.isChecked() ? getSeekingMovementPercentage() / 100.0 : null;
+            alertFormDTO.targetPrice = targetPriceToggle.isChecked() ? getSeekingTargetPrice()
+                    : securityCompactDTO.lastPrice;
+            alertFormDTO.priceMovement = targetPercentageChangeToggle.isChecked() ?
+                    getSeekingMovementPercentage()
+                            / 100.0 : null;
 
             if (targetPriceToggle.isChecked())
             {
@@ -302,11 +316,16 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected void conditionalSaveAlert()
     {
         AlertFormDTO alertFormDTO = getFormDTO();
+        AlertSlotDTO alertSlots = securityAlertCountingHelper.getAlertSlots(
+                currentUserId.toUserBaseKey());
+        Timber.d("all=%d userd=%d free=%d", alertSlots.totalAlertSlots,
+                alertSlots.usedAlertSlots, alertSlots.freeAlertSlots);
         if (alertFormDTO == null)
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
-        else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
+        else if (securityAlertCountingHelper.getAlertSlots(
+                currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             userInteractor.conditionalPopBuyStockAlerts(new Runnable()
             {
@@ -331,7 +350,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
         {
-            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading,
+                    R.string.alert_dialog_please_wait);
             progressDialog.show();
             progressDialog.setCanceledOnTouchOutside(true);
             saveAlertProper(alertFormDTO);
@@ -411,12 +431,14 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return; // TODO better than that
         }
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+        THSignedNumber thTargetPrice =
+                new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
         targetPrice.setText(thTargetPrice.toString());
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
-            targetPriceSeekBar.setProgress((int) (50.0 * alertDTO.targetPrice / securityCompactDTO.lastPrice));
+            targetPriceSeekBar.setProgress(
+                    (int) (50.0 * alertDTO.targetPrice / securityCompactDTO.lastPrice));
         }
         updateTargetPriceChangeValues(targetPriceToggle.isChecked());
     }
@@ -449,7 +471,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             }
             else if (alertDTO.activeUntilDate != null)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.stock_alert_price_info_as_of_date_format));
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        getString(R.string.stock_alert_price_info_as_of_date_format));
                 activeUntil.setText(sdf.format(alertDTO.activeUntilDate));
             }
             else
@@ -467,13 +490,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            THSignedNumber thTargetPrice =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
+            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                    alertDTO.priceMovement * 100);
             targetPrice.setText(thPriceMovement.toString(0));
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
@@ -482,13 +507,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected Spanned getFormattedTargetPriceChange(String targetPriceString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.stock_alert_target_price_change_format), targetPriceString));
+                String.format(getString(R.string.stock_alert_target_price_change_format),
+                        targetPriceString));
     }
 
     protected Spanned getFormattedPercentageChange(String percentageString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.stock_alert_percentage_change_format), percentageString));
+                String.format(getString(R.string.stock_alert_percentage_change_format),
+                        percentageString));
     }
 
     protected void displayCurrentPrice()
@@ -514,8 +541,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.stock_alert_price_info_as_of_date_format));
-                asOfDate.setText(getString(R.string.stock_alert_price_info_as_of_date, sdf.format(securityCompactDTO.lastPriceDateAndTimeUtc)));
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        getString(R.string.stock_alert_price_info_as_of_date_format));
+                asOfDate.setText(getString(R.string.stock_alert_price_info_as_of_date,
+                        sdf.format(securityCompactDTO.lastPriceDateAndTimeUtc)));
             }
             else
             {
@@ -590,8 +619,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void updatePercentageChangeValues(boolean isChecked)
     {
-        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), true);
-        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
+        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                (double) getSeekingMovementPercentage(), true);
+        percentageChange.setText(
+                getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
@@ -601,7 +632,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                     false,
                     securityCompactDTO.currencyDisplay
             );
-            percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(isChecked ? thPercentageChangePriceValue.toString() : "-"));
+            percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(
+                    isChecked ? thPercentageChangePriceValue.toString() : "-"));
         }
 
         percentageSeekBar.setEnabled(targetPercentageChangeToggle.isChecked());
@@ -613,7 +645,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return 0;
         }
-        return securityCompactDTO.lastPrice * ( 1 + ((double) getSeekingMovementPercentage()) / 100 );
+        return securityCompactDTO.lastPrice * (1 + ((double) getSeekingMovementPercentage()) / 100);
     }
 
     protected int getSeekingMovementPercentage()
@@ -625,10 +657,12 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         return percentageSeekBar.getProgress() - 50;
     }
 
-    protected Spanned getFormattedPercentageChangeTargetValue(String percentageChangeTargetValueString)
+    protected Spanned getFormattedPercentageChangeTargetValue(
+            String percentageChangeTargetValueString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.stock_alert_percentage_change_target_value_format), percentageChangeTargetValueString));
+                String.format(getString(R.string.stock_alert_percentage_change_target_value_format),
+                        percentageChangeTargetValueString));
     }
     //endregion
 
@@ -649,8 +683,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         Double seekingTargetPrice = getSeekingTargetPrice();
         if (seekingTargetPrice != null)
         {
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, false);
-            targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
+            THSignedNumber thSignedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, false);
+            targetPriceChange.setText(getFormattedTargetPriceChange(
+                    handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
         }
     }
@@ -661,7 +697,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return null;
         }
-        return (securityCompactDTO.lastPrice * 2) * targetPriceSeekBar.getProgress() / targetPriceSeekBar.getMax();
+        return (securityCompactDTO.lastPrice * 2) * targetPriceSeekBar.getProgress()
+                / targetPriceSeekBar.getMax();
     }
     //endregion
 

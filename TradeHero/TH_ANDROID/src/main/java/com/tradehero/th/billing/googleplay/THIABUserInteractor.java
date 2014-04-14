@@ -37,11 +37,13 @@ import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.fragments.billing.StoreSKUDetailView;
 import com.tradehero.th.fragments.billing.googleplay.THSKUDetailsAdapter;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
+import com.tradehero.th.models.alert.AlertSlotDTO;
+import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -95,6 +97,8 @@ public class THIABUserInteractor
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
 
     protected THIABPurchaseRestorer purchaseRestorer;
     protected
@@ -464,16 +468,55 @@ public class THIABUserInteractor
                         {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                final int position = which;
-                                Intent intent =
-                                        new Intent(currentActivityHolder.getCurrentActivity(),
-                                                AlipayActivity.class);
-                                intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
-                                intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, position);
-                                currentActivityHolder.getCurrentActivity().startActivity(intent);
+                                if (checkAlertsPlan(which, type1))
+                                {
+                                    Intent intent =
+                                            new Intent(currentActivityHolder.getCurrentActivity(),
+                                                    AlipayActivity.class);
+                                    intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
+                                    intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, which);
+                                    currentActivityHolder.getCurrentActivity().startActivity(intent);
+                                }
                             }
                         });
         builder.create().show();
+    }
+    //TODO refactor
+    private boolean checkAlertsPlan(int which, int type1)
+    {
+        if (type1 != StoreItemAdapter.POSITION_BUY_STOCK_ALERTS)
+        {
+            return true;
+        }
+        AlertSlotDTO alertSlots =
+                securityAlertCountingHelperLazy.get().getAlertSlots(
+                        currentUserId.toUserBaseKey());
+            switch (which)
+            {
+                case 0:
+                    if (alertSlots.totalAlertSlots >= 2)
+                    {
+                        alertDialogUtilLazy.get()
+                                .showDefaultDialog(
+                                        currentActivityHolder.getCurrentContext(),
+                                        R.string.store_billing_error_buy_alerts);
+                        return false;
+                    }
+                    break;
+                case 1:
+                    if (alertSlots.totalAlertSlots >= 5)
+                    {
+                        alertDialogUtilLazy.get()
+                                .showDefaultDialog(
+                                        currentActivityHolder.getCurrentContext(),
+                                        R.string.store_billing_error_buy_alerts);
+                        return false;
+                    }
+                    break;
+                case 2:
+                    break;
+            }
+        return true;
     }
 
     public void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
@@ -528,7 +571,14 @@ public class THIABUserInteractor
 
     public void conditionalPopBuyStockAlerts(Runnable runOnPurchaseComplete)
     {
-        if (popErrorConditional() == null)
+        //TODO need jump to alipay
+        String language = Locale.getDefault().getLanguage();
+        Timber.d("lyl language=%s", language);
+        if ("zh".equals(language) || true)
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_STOCK_ALERTS);
+        }
+        else if (popErrorConditional() == null)
         {
             popBuyStockAlerts(runOnPurchaseComplete);
         }
