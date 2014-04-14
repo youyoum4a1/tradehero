@@ -26,6 +26,6 @@ import javax.inject.Singleton;
 
     @Override protected MessageStatusDTO fetch(UserBaseKey key) throws Throwable
     {
-        return messageServiceWrapper.getFreeCount(key);
+        return messageServiceWrapper.getStatus(key);
     }
 }

@@ -40,7 +40,7 @@ interface MessageServiceAsync
             Callback<MessageHeaderDTO> callback);
 
     @GET("/messages/status/{recipientUserId}")
-    void getFreeCount(
+    void getStatus(
             @Path("recipientUserId") int recipientUserId,
             Callback<MessageStatusDTO> callback);
 
