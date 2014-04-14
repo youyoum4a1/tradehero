@@ -16,6 +16,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.LocalyticsConstants;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/20/13 Time: 3:35 PM Copyright (c) TradeHero */
 public class MeTimelineFragment extends TimelineFragment
@@ -23,6 +24,12 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        Timber.d("MeTimelineFragment onCreate");
+    }
 
     @Override public void onResume()
     {

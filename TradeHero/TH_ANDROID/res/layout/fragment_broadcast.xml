@@ -19,7 +19,8 @@
         android:text="Sending to:"
         android:gravity="center_vertical|right"
         android:layout_weight="1"
-        android:layout_width="0dp"/>
+        android:layout_width="0dp"
+        android:paddingRight="3dp"/>
 
     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -33,11 +34,14 @@
           android:layout_width="wrap_content"
           tools:text="Free User"
           android:textColor="@android:color/holo_blue_dark"
+          android:minWidth="70dp"
 
           />
 
-      <ImageView android:layout_width="20dp" android:layout_height="20dp"
-          android:src="@android:drawable/ic_media_play"/>
+      <TextView android:layout_width="20dp" android:layout_height="20dp"
+          android:text="@string/arrow_prefix_negative"
+          android:gravity="center"
+          android:textColor="@android:color/holo_blue_dark"/>
     </LinearLayout>
     <!--<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"-->
     <!--android:src="@android:drawable/ic_media_pause"/>-->

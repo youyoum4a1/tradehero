@@ -9,6 +9,9 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -17,6 +20,7 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
@@ -30,7 +34,7 @@ import timber.log.Timber;
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
  * use File | Settings | File Templates.
  */
-public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/
+public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
     public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
@@ -62,6 +66,18 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
         super.onCreate(savedInstanceState);
         this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
         this.followerTypes = heroTypeResourceDTOFactory.getMapByHeroTypeId();
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
+
+        actionBar.setTitle("Followers");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -234,6 +250,11 @@ public class FollowerManagerFragment extends BaseFragment /*BasePurchaseManagerF
                 page, followerType, discussionType);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////////

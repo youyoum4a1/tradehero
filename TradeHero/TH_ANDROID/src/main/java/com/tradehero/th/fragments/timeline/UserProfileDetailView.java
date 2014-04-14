@@ -48,8 +48,15 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
 
     private void initClickEvent()
     {
-        userProfileDetailViewHolder.followersCount.setOnClickListener(this);
-        userProfileDetailViewHolder.heroesCount.setOnClickListener(this);
+        if(userProfileDetailViewHolder.followersCount != null)
+        {
+            userProfileDetailViewHolder.followersCount.setOnClickListener(this);
+        }
+
+        if (userProfileDetailViewHolder.heroesCount != null)
+        {
+            userProfileDetailViewHolder.heroesCount.setOnClickListener(this);
+        }
     }
 
     @Override public void onClick(View v)

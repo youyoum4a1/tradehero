@@ -9,8 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +24,7 @@ import timber.log.Timber;
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
  * use File | Settings | File Templates.
  */
-public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragment*/ implements OnHeroesLoadedListener
+public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/ implements OnHeroesLoadedListener
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
@@ -45,6 +49,29 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
         heroTypes = HeroTypeExt.getSortedList();
         Timber.d("onCreate");
     }
+
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle("Heros");
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -116,6 +143,11 @@ public class HeroManagerFragment extends BaseFragment /*BasePurchaseManagerFragm
 
         return mTabHost;
 
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
     }
 
     class MyOnTouchListener implements TabHost.OnTabChangeListener

@@ -32,6 +32,7 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
@@ -45,15 +46,17 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
- * Created by tradehero on 14-4-1.
+ * Created by wangliang on 14-4-1.
  */
-public class SendMessageFragment extends BaseFragment
+public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
     public static final String KEY_DISCUSSION_TYPE =
             SendMessageFragment.class.getName() + ".discussionType";
     public static final String KEY_MESSAGE_TYPE =
             SendMessageFragment.class.getName() + ".messageType";
+
+
 
     public static enum MessageLifeTime
     {
@@ -95,20 +98,17 @@ public class SendMessageFragment extends BaseFragment
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
     @InjectView(R.id.message_spinner_target_user) Spinner targetUserSpinner;
-
     @InjectView(R.id.message_type_wrapper) View messageTypeWrapperView;
     @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    //@Inject UserBaseKey user;
     @Inject CurrentUserId currentUserId;
+    @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
 
-    @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
-
-    Dialog progressDialog;
-    Dialog chooseDialog;
-    SendMessageDiscussionCallback sendMessageDiscussionCallback;
+    private Dialog progressDialog;
+    private Dialog chooseDialog;
+    private SendMessageDiscussionCallback sendMessageDiscussionCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -144,6 +144,7 @@ public class SendMessageFragment extends BaseFragment
             sendMessage();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -158,7 +159,6 @@ public class SendMessageFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        //setSpinner();
         initView();
     }
 
@@ -173,14 +173,6 @@ public class SendMessageFragment extends BaseFragment
         sendMessageDiscussionCallback = null;
         super.onDestroy();
     }
-    //private void setSpinner()
-    //{
-    //    ArrayAdapter  lifeTimeAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, android.R.id.text1,MessageLifeTime.values());
-    //    lifeTimeSpinner.setAdapter(lifeTimeAdapter);
-    //    lifeTimeSpinner.setOnItemSelectedListener(this);
-    //    ArrayAdapter  targetUserAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item,android.R.id.text1,HeroType.values());
-    //    targetUserSpinner.setAdapter(targetUserAdapter);
-    // }
 
     private void changeHeroType(MessageType messageType)
     {
@@ -227,8 +219,7 @@ public class SendMessageFragment extends BaseFragment
         this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
     }
 
-    private void
-    sendMessage()
+    private void sendMessage()
     {
         int count = getFollowerCount(messageType);
         if (count <= 0)
@@ -338,5 +329,11 @@ public class SendMessageFragment extends BaseFragment
             //TODO close me?
             //closeMe();
         }
+    }
+
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
     }
 }
