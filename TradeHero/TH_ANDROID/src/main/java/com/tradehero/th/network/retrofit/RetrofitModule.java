@@ -1,10 +1,10 @@
 package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
+import android.net.http.HttpResponseCache;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.HttpResponseCache;
 import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
+import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -232,7 +233,7 @@ public class RetrofitModule
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(
-            Client client,
+            FriendlyUrlConnectionClient client,
             Converter converter,
             RetrofitSynchronousErrorHandler errorHandler)
     {
@@ -253,24 +254,24 @@ public class RetrofitModule
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
-    @Provides Client provideOkClient(Context context)
-    {
-        File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
-
-        HttpResponseCache httpResponseCache = null;
-        try
-        {
-            httpResponseCache = new HttpResponseCache(httpCacheDirectory, 10 * 1024);
-        } catch (IOException e)
-        {
-            Timber.e("Could not create http cache", e);
-        }
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setResponseCache(httpResponseCache);
-        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
-        return new OkClient(okHttpClient);
-    }
+    //@Provides Client provideOkClient(Context context)
+    //{
+    //    File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
+    //
+    //    HttpResponseCache httpResponseCache = null;
+    //    try
+    //    {
+    //        httpResponseCache = new HttpResponseCache(httpCacheDirectory, 10 * 1024);
+    //    } catch (IOException e)
+    //    {
+    //        Timber.e("Could not create http cache", e);
+    //    }
+    //
+    //    OkHttpClient okHttpClient = new OkHttpClient();
+    //    okHttpClient.setResponseCache(httpResponseCache);
+    //    okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
+    //    return new OkClient(okHttpClient);
+    //}
 
     @Provides @Singleton
     TranslationTokenService provideTranslationTokenService(RestAdapter.Builder builder)
