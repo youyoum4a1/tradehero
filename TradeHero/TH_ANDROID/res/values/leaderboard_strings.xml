@@ -50,29 +50,11 @@
   <string name="leaderboard_community_followers">Followers</string>
   <string name="leaderboard_community_heros">Heros</string>
 
-  <!--<plurals name="leaderboard_community_hero_free">-->
-    <!--<item quantity="zero">Free</item>-->
-    <!--<item quantity="one">Free(%d)</item>-->
-  <!--</plurals>-->
-
-  <!--<plurals name="leaderboard_community_hero_premium">-->
-    <!--<item quantity="zero">Premium</item>-->
-    <!--<item quantity="one">Premium(%d)</item>-->
-    <!--<item quantity="other">Premium(%d)</item>-->
-  <!--</plurals>-->
-
-  <!--<plurals name="leaderboard_community_hero_all">-->
-    <!--<item quantity="zero">All</item>-->
-    <!--<item quantity="other">All(%d)</item>-->
-  <!--</plurals>-->
-
-
-
   <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
 
-  <string name="message_center_tab_message">Messages</string>
+  <string name="message_center_tab_message">Private Messages</string>
   <string name="message_center_tab_notification">Notifications</string>
   <string name="message_center_sending_to">Sending to:</string>
   <string name="update_center_title">Inbox</string>

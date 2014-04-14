@@ -10,7 +10,7 @@ public class MessageHeaderId extends AbstractIntegerDTOKey
 {
     private static final String BUNDLE_KEY_KEY = MessageHeaderId.class.getName() + ".key";
 
-    public boolean markDeleted = false;
+    //public boolean markDeleted = false;
 
     //<editor-fold desc="Constructors">
     public MessageHeaderId(Integer key)

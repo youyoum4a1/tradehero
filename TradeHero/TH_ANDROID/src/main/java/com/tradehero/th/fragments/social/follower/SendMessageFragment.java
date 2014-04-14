@@ -34,6 +34,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
@@ -103,6 +104,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     private Dialog progressDialog;
     private Dialog chooseDialog;
@@ -126,13 +128,14 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle("Broadcast Message");
 
         MenuItem menuItem = menu.add(0, 100, 0, "Send");
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -290,10 +293,16 @@ public class SendMessageFragment extends DashboardFragment
                 dialog.dismiss();
                 dialog = null;
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
 
         }
+    }
+
+    private void invalidateMessageCache()
+    {
+        messageListCache.get().invalidateAll();
     }
 
     @Override public void onClick(View v)
@@ -323,6 +332,7 @@ public class SendMessageFragment extends DashboardFragment
         @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
+            invalidateMessageCache();
             THToast.show("Send message Successfully!");
             //TODO close me?
             //closeMe();

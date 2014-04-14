@@ -84,7 +84,6 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
      */
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
-        //THDialog.showUpDialog(getContext(),null, new String[]{"Translation","Share"},null,this,null);
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;

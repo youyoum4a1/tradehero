@@ -9,7 +9,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wangliang on 3/4/14.
@@ -27,6 +29,7 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
     }
 
     private MessageOnClickListener messageOnClickListener;
+    private Set<Integer> markedDeletedIds = new HashSet<>();
 
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -68,8 +71,6 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         this.messageOnClickListener = messageOnClickListener;
     }
 
-
-
     @Override protected void fineTune(int position, MessageHeaderId dto, MessageItemViewWrapper dtoView)
     {
         // nothing for now
@@ -77,23 +78,45 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     public void appendMore(List<MessageHeaderId> newItems)
     {
+        if (newItems == null)
+        {
+            return;
+        }
         List<MessageHeaderId> itemCopied = items != null ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
-        itemCopied.addAll(newItems);
+        for (MessageHeaderId messageHeaderId : newItems)
+        {
+            if (!checkExist(messageHeaderId.key))
+            {
+                itemCopied.add(messageHeaderId);
+            }
+        }
         setItems(itemCopied);
         notifyDataSetChanged();
     }
 
-    @Override public void setItems(List<MessageHeaderId> newItems)
+    //@Override public void setItems(List<MessageHeaderId> newItems)
+    //{
+    //    List<MessageHeaderId> itemCopied =
+    //            (items != null) ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
+    //    for (MessageHeaderId messageHeaderId : newItems)
+    //    {
+    //        if (!checkExist(messageHeaderId.key))
+    //        {
+    //            itemCopied.add(messageHeaderId);
+    //        }
+    //    }
+    //    super.setItems(itemCopied);
+    //}
+
+    private void filter()
     {
-        List<MessageHeaderId> itemCopied = new ArrayList<>(newItems.size());
-        for(MessageHeaderId messageHeaderId:newItems)
+        List<MessageHeaderId> itemCopied = new ArrayList<MessageHeaderId>();
+        for(MessageHeaderId messageHeaderId:items)
         {
-            if (!messageHeaderId.markDeleted)
+            if (!markedDeletedIds.contains(messageHeaderId.key))
             {
-                if (!checkExist(messageHeaderId.key))
-                {
-                    itemCopied.add(messageHeaderId);
-                }
+                itemCopied.add(messageHeaderId);
+
             }
         }
         super.setItems(itemCopied);
@@ -117,8 +140,8 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     public MessageHeaderId markDeleted(int position){
         MessageHeaderId messageHeaderId =  getItem(position);
-        messageHeaderId.markDeleted = true;
-        setItems(items);
+        markedDeletedIds.add(messageHeaderId.key);
+        filter();
         notifyDataSetChanged();
         return messageHeaderId;
     }

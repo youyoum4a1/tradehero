@@ -65,18 +65,15 @@ public class MessagesCenterFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
     private MessageListKey messageListKey;
     private MessageHeaderIdList alreadyFetched;
-
     private MessagesView messagesView;
     private SwipeListener swipeListener;
-
     private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
     private Map<Integer, Callback<Response>> callbackMap;
-
     private UpdateCenterTabType tabType;
-
     private boolean isFirst = true;
     private MessageListAdapter messageListAdapter;
     private MiddleCallback<Response> messageDeletionMiddleCallback;
+    private boolean hasMorePage = true;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -122,11 +119,6 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        Timber.d("%s onSaveInstanceState", TAG);
-    }
 
     @Override public void onDestroyView()
     {
@@ -151,11 +143,23 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("%s onDestroy", TAG);
     }
 
+    /**
+     * item of listview is clicked
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Timber.d("onItemClick %d", position);
     }
 
+    /**
+     * subview of item view is clicked.
+     * @param position
+     * @param type
+     */
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
@@ -169,16 +173,17 @@ public class MessagesCenterFragment extends DashboardFragment
         ListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemClickListener(this);
+        SwipeListView swipeListView = (SwipeListView) listView;
+
+        swipeListener = new SwipeListener();
+        swipeListView.setSwipeListViewListener(swipeListener);
 
         if (messageListKey == null)
         {
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
 
-        SwipeListView swipeListView = (SwipeListView) listView;
-        //fixSwipe(swipeListView);
-        swipeListener = new SwipeListener();
-        swipeListView.setSwipeListViewListener(swipeListener);
+
     }
 
     private void initListener()
@@ -194,9 +199,7 @@ public class MessagesCenterFragment extends DashboardFragment
         detachPreviousTask();
         if (fetchMessageTask == null)
         {
-            fetchMessageTask =
-                    messageListCache.get()
-                            .getOrFetch(messageListKey, false, messagesFetchListener);
+            fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, false, messagesFetchListener);
         }
         fetchMessageTask.execute();
     }
@@ -305,7 +308,7 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     private void removeMessageSync(MessageHeaderId messageHeaderId)
     {
-        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(messageHeaderId.key, new MessageDeletionCallback());
+        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(messageHeaderId.key, messageListCache.get(),new MessageDeletionCallback());
     }
 
     private void saveNewPage(MessageHeaderIdList value)
@@ -338,19 +341,20 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override
         public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
         {
+            if (value.size() == 0)
+            {
+                hasMorePage = false;
+            }
             display(value);
             messagesView.showListView();
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
             //TODO how to invalidate the old data ..
-            if (isFirst)
-            {
-
-            }
             isFirst = false;
         }
 
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
         {
+            hasMorePage = true;
             messagesView.showErrorView();
         }
     }
@@ -388,8 +392,11 @@ public class MessagesCenterFragment extends DashboardFragment
 
         @Override public void raiseFlag()
         {
-            super.raiseFlag();
-            loadNextMessages();
+            Timber.d("raiseFlag");
+            if (hasMorePage)
+            {
+                loadNextMessages();
+            }
         }
     }
 
