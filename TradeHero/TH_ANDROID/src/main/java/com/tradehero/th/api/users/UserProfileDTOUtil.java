@@ -13,7 +13,10 @@ import javax.inject.Inject;
  */
 public class UserProfileDTOUtil
 {
-    public static final String TAG = UserProfileDTOUtil.class.getSimpleName();
+    public final static int IS_NOT_FOLLOWER_WANT_MSG = -1;
+    public final static int IS_NOT_FOLLOWER = 0;
+    public final static int IS_FREE_FOLLOWER = 1;
+    public final static int IS_PREMIUM_FOLLOWER = 2;
 
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;

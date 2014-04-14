@@ -2,10 +2,13 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.TabHost;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -36,139 +39,108 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
-public class HeroManagerFragment extends BasePurchaseManagerFragment
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
+ * use File | Settings | File Templates.
+ */
+public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseManagerFragment implements OnHeroesLoadedListener
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
+    static final String KEY_PAGE = "KEY_PAGE";
+    static final String KEY_ID = "KEY_ID";
+    static final int FRAGMENT_LAYOUT_ID = 9999;
     /**
      * We are showing the heroes of this follower
      */
-    public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
-
-    private HeroManagerViewContainer viewContainer;
-
-    private HeroListItemAdapter heroListAdapter;
-    private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
-    private HeroListMostSkilledClickedListener heroListMostSkilledClickedListener;
-
-    // The user whose heroes we are listing
-    private UserBaseKey followerId;
-    private UserProfileDTO userProfileDTO;
-    private List<HeroDTO> heroDTOs;
-
-    @Inject protected Lazy<HeroCache> heroCache;
-    private HeroManagerInfoFetcher infoFetcher;
+    public static final String BUNDLE_KEY_FOLLOWER_ID =
+            HeroManagerFragment.class.getName() + ".followerId";
+    /** categories of hero:premium,free,all */
+    private HeroTypeExt[] heroTypes;
+    private int selectedId = -1;
 
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
         return new HeroManagerUserFollowedListener();
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
+    FragmentTabHost mTabHost;
+    List<TabHost.TabSpec> tabSpecList;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
-        initViews(view);
-        return view;
+        super.onCreate(savedInstanceState);
+        heroTypes = HeroTypeExt.getSortedList();
+        Timber.d("onCreate");
     }
 
-    @Override protected void initViews(View view)
-    {
-        this.viewContainer = new HeroManagerViewContainer(view);
-        if (this.viewContainer.btnBuyMore != null)
-        {
-            this.viewContainer.btnBuyMore.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleBuyMoreClicked();
-                }
-            });
-        }
-
-        this.heroStatusButtonClickedListener = new HeroListItemView.OnHeroStatusButtonClickedListener()
-        {
-            @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
-            {
-                handleHeroStatusButtonClicked(heroDTO);
-            }
-        };
-        this.heroListMostSkilledClickedListener = new HeroListMostSkilledClickedListener();
-        this.heroListAdapter = new HeroListItemAdapter(
-                getActivity(),
-                getActivity().getLayoutInflater(),
-                R.layout.hero_list_item_empty_placeholder,
-                R.layout.hero_list_item,
-                R.layout.hero_list_header,
-                R.layout.hero_list_header);
-        this.heroListAdapter.setHeroStatusButtonClickedListener(this.heroStatusButtonClickedListener);
-        this.heroListAdapter.setMostSkilledClicked(this.heroListMostSkilledClickedListener);
-        if (this.viewContainer.heroListView != null)
-        {
-            this.viewContainer.heroListView.setAdapter(this.heroListAdapter);
-            this.viewContainer.heroListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    handleHeroClicked(parent, view, position, id);
-                }
-            });
-        }
-
-        this.infoFetcher = new HeroManagerInfoFetcher(new HeroManagerUserProfileCacheListener(), new HeroManagerHeroListCacheListener());
-    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_HOME_AS_UP);
-        actionBar.setTitle(R.string.manage_heroes_title);
         super.onCreateOptionsMenu(menu, inflater);
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle("Heros");
     }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        Timber.d("onCreateView");
+        return addTabs();
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        Timber.d("onStart");
+    }
+
 
     @Override public void onResume()
     {
         super.onResume();
-        this.followerId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWER_ID));
-        displayProgress(true);
-        this.infoFetcher.fetch(this.followerId);
+        Timber.d("onResume");
     }
 
     @Override public void onPause()
     {
-        this.infoFetcher.onPause();
         super.onPause();
+        Timber.d("onPause");
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
-        if (this.infoFetcher != null)
-        {
-            this.infoFetcher.onDestroyView();
-        }
-        this.infoFetcher = null;
-
-        this.heroStatusButtonClickedListener = null;
-        if (this.heroListAdapter != null)
-        {
-            this.heroListAdapter.setHeroStatusButtonClickedListener(null);
-            this.heroListAdapter.setMostSkilledClicked(null);
-        }
-        this.heroListAdapter = null;
-        if (this.viewContainer.heroListView != null)
-        {
-            this.viewContainer.heroListView.setOnItemClickListener(null);
-        }
-        this.viewContainer = null;
-        super.onDestroyView();
+        super.onStop();
+        Timber.d("onStop");
     }
 
     private void handleBuyMoreClicked()
@@ -183,7 +155,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
-                display(updatedUserPortfolio);
+                //display(updatedUserPortfolio);
             }
 
             @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
@@ -194,155 +166,108 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return request;
     }
 
-    private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
-    {
-        handleHeroStatusChangeRequired(heroDTO);
-    }
 
-    private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
+    private View addTabs()
     {
-        pushTimelineFragment(((HeroDTO) parent.getItemAtPosition(position)).getBaseKey());
-    }
+        mTabHost = new FragmentTabHost(getActivity());
+        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
-    private void handleHeroStatusChangeRequired(final HeroDTO clickedHeroDTO)
-    {
-        if (!clickedHeroDTO.active)
+        ActionBar.Tab lastSavedTab = null;
+        int lastSelectedId = selectedId;
+        HeroTypeExt[] types = heroTypes;
+        tabSpecList = new ArrayList<>(types.length);
+        Bundle args = getArguments();
+        if (args == null)
         {
-            heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-            {
-                @Override public void onClick(DialogInterface dialog, int which)
-                {
-                    followUser(clickedHeroDTO.getBaseKey());
-                }
-            });
+            args = new Bundle();
         }
-        else
+        for (HeroTypeExt type : types)
         {
-            heroAlertDialogUtil.popAlertUnfollowHero(getActivity(), new DialogInterface.OnClickListener()
-            {
-                @Override public void onClick(DialogInterface dialog, int which)
-                {
-                    unfollowUser(clickedHeroDTO.getBaseKey());
-                }
-            });
+            args = new Bundle(args);
+            args.putInt(KEY_PAGE, type.pageIndex);
+            args.putInt(KEY_ID, type.heroType.typeId);
+
+            String title = MessageFormat.format(getSherlockActivity().getString(type.titleRes), 0);
+
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+            tabSpecList.add(tabSpec);
+            mTabHost.addTab(tabSpec,
+                    type.fragmentClass, args);
         }
+
+        return mTabHost;
+
     }
 
-    private void pushTimelineFragment(UserBaseKey userBaseKey)
+    @Override public boolean isTabBarVisible()
     {
-        Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        return false;
     }
 
-    private void handleGoMostSkilled()
+    class MyOnTouchListener implements TabHost.OnTabChangeListener
     {
-        // TODO this feels HACKy
-        ((DashboardActivity) getActivity()).getDashboardNavigator().popFragment();
 
-        // TODO make it go to most skilled
-        ((DashboardActivity) getActivity()).getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
-    }
-
-    public void display(UserProfileDTO userProfileDTO)
-    {
-        linkWith(userProfileDTO, true);
-    }
-
-    private void display(List<HeroDTO> heroDTOs)
-    {
-        linkWith(heroDTOs, true);
-    }
-
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
-        this.userProfileDTO = userProfileDTO;
-        if (andDisplay)
+        @Override public void onTabChanged(String tabId)
         {
-            viewContainer.displayFollowCount(userProfileDTO);
-            viewContainer.displayCoinStack(userProfileDTO);
+            Timber.d("onTabChanged tabId:%s",tabId);
+            //getChildFragmentManager().executePendingTransactions();
+            Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
+            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
+            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
         }
     }
 
-    public void linkWith(List<HeroDTO> heroDTOs, boolean andDisplay)
+    /**
+     * change the number of tab
+     */
+    private void changeTabTitle(int page, int number)
     {
-        this.heroDTOs = heroDTOs;
-        heroListAdapter.setItems(this.heroDTOs);
-        if (andDisplay)
-        {
-            displayHeroList();
-        }
+        TabHost.TabSpec tabSpec = tabSpecList.get(page);
+        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes,page);
+        int titleRes = heroTypeExt.titleRes;
+        String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
+        tabSpec.setIndicator(title);
+
+        TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
+        tv.setText(title);
+
     }
 
-    //<editor-fold desc="Display methods">
-    public void display()
+    private void changeTabTitle(int number1, int number2, int number3)
     {
-        viewContainer.displayFollowCount(userProfileDTO);
-        viewContainer.displayCoinStack(userProfileDTO);
-        displayHeroList();
+        changeTabTitle(0, number1);
+        changeTabTitle(1, number2);
+        changeTabTitle(2, number3);
     }
 
-    public void displayHeroList()
+    @Override public void onDestroyView()
     {
-        if (heroListAdapter != null)
-        {
-            heroListAdapter.notifyDataSetChanged();
-        }
+        super.onDestroyView();
+        //saveSelectedTab();
+        //clearTabs();
+        Timber.d("onDestroyView");
     }
 
-    public void displayProgress(boolean running)
+    @Override public void onDestroy()
     {
-        if (viewContainer.progressBar != null)
-        {
-            viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        }
-    }
-    //</editor-fold>
-
-    public void handleFollowSuccess(UserProfileDTO userProfileDTO)
-    {
-        linkWith(userProfileDTO, true);
-        infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId, true);
+        super.onDestroy();
+        Timber.d("onDestroy");
     }
 
-    private class HeroManagerUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    @Override public void onDetach()
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-        {
-            if (key.equals(HeroManagerFragment.this.followerId))
-            {
-                display(value);
-            }
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            THLog.e(TAG, "Could not fetch user profile", error);
-            THToast.show(R.string.error_fetch_user_profile);
-        }
+        super.onDetach();
+        Timber.d("onDetach");
     }
 
-    private class HeroManagerHeroListCacheListener implements DTOCache.Listener<UserBaseKey, HeroIdList>
+    @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdList value, boolean fromCache)
+        if (!isDetached())
         {
-            displayProgress(false);
-            display(heroCache.get().get(value));
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            displayProgress(false);
-            THLog.e(TAG, "Could not fetch heroes", error);
-            THToast.show(R.string.error_fetch_hero);
-        }
-    }
-
-    private class HeroListMostSkilledClickedListener implements View.OnClickListener
-    {
-        @Override public void onClick(View view)
-        {
-            handleGoMostSkilled();
+            changeTabTitle(0, value.herosCountGetPaid);
+            changeTabTitle(1, value.herosCountNotGetPaid);
+            changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
         }
     }
 
@@ -355,3 +280,5 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         }
     }
 }
+
+

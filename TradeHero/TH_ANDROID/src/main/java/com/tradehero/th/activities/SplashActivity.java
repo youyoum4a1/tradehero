@@ -24,6 +24,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
+import com.tradehero.th.utils.LocalyticsConstants;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
@@ -45,7 +46,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject @SessionToken StringPreference currentSessionToken;
     @Inject Lazy<LocalyticsSession> localyticsSession;
-    @Inject Lazy<Tapstream> tabStream;
+    @Inject Lazy<Tapstream> tapStream;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,6 +80,11 @@ public class SplashActivity extends SherlockActivity
                 initialisation();
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
         };
         initialAsyncTask.execute();
 
@@ -91,6 +97,8 @@ public class SplashActivity extends SherlockActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
+
+        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
@@ -144,6 +152,9 @@ public class SplashActivity extends SherlockActivity
         catch (RetrofitError retrofitError)
         {
             canLoad = false;
+            if(retrofitError.isNetworkError()) {
+                //THToast.show(R.string.network_error);
+            }
         }
         return canLoad;
     }

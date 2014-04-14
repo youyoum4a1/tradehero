@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.persistence.PersistableResource;
 import dagger.Lazy;
@@ -17,12 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Given a PersistableResource, this class will take support loading/storing it's data or requesting fresh data, as appropriate. */
 @Singleton public class DatabaseCache
 {
-    private static final String TAG = DatabaseCache.class.getName();
-
     @Inject Lazy<CacheHelper> helperProvider;
 
     /**
@@ -90,8 +88,7 @@ import javax.inject.Singleton;
             List<E> items = loadFromDB(helper, persistableResource);
             if (items != null)
             {
-                Log.d(TAG, "CACHE HIT: Found " + items.size() + " items for "
-                        + persistableResource);
+                Timber.d("CACHE HIT: Found %d, items for %s",  items.size(), persistableResource);
                 return items;
             }
             return requestAndStore(helper, persistableResource);

@@ -28,13 +28,15 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
 
     private final int heroEmptyPlaceholderResId;
     private final int headerActiveResId;
+
     private final int headerInactiveResId;
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
     private WeakReference<HeroListItemView.OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
     private WeakReference<View.OnClickListener> mostSkilledClicked = new WeakReference<>(null);
 
-    public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId, int headerInactiveResId)
+    public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
+            int headerInactiveResId)
     {
         super(context, inflater, heroLayoutResId);
         this.heroEmptyPlaceholderResId = heroEmptyPlaceholderResId;
@@ -75,7 +77,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         {
             activeHeroes = new ArrayList<>();
             inactiveHeroes = new ArrayList<>();
-            for (HeroDTO heroDTO: items)
+            for (HeroDTO heroDTO : items)
             {
                 if (heroDTO.active)
                 {
@@ -83,7 +85,8 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 }
                 else
                 {
-                    inactiveHeroes.add(heroDTO);
+                    //TODO remove
+                    //inactiveHeroes.add(heroDTO);
                 }
             }
             THLog.d(TAG, "setItems active " + activeHeroes.size() + ", inactive " + inactiveHeroes.size());

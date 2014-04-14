@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.updatecenter.messages.MessagesView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:id="@+id/message_list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <!--com.fortysevendeg.android.swipelistview.SwipeListView
+  swipe:swipeFrontView="@id/message_item_front"
+  -->
+  <com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
+      android:id="@android:id/list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      swipe:swipeFrontView="@id/message_item_front"
+      swipe:swipeBackView="@id/message_item_back"
+      swipe:swipeCloseAllItemsWhenMoveList="true"
+      swipe:swipeMode="left"
+      swipe:swipeDrawableChecked="@drawable/ic_info"
+      app:swipeOffsetLeft="250dp"
+      swipe:swipeDrawableUnchecked="@drawable/ic_info"
+      android:listSelector="#00000000"
+      />
+
+  <!--app:swipeActionLeft="reveal"
+  swipe:swipeOpenOnLongPress="true"
+  -->
+  <!--
+  android:listSelector="#00000000"
+  swipe:swipeOffsetLeft="250dp"-->
+
+
+  <!--<ListView-->
+      <!--android:id="@android:id/list"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--android:visibility="gone" />-->
+
+  <TextView
+      android:id="@android:id/empty"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:textStyle="italic"
+      android:text="No Message" />
+
+  <TextView
+      android:id="@+id/error"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:layout_centerInParent="true"
+      android:text="Sorry,there is something wrong."
+      android:visibility="gone"/>
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:visibility="gone"/>
+
+</com.tradehero.th.fragments.updatecenter.messages.MessagesView>

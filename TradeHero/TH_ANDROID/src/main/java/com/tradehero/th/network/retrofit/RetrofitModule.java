@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpResponseCache;
 import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -17,10 +19,13 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
+import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
+import com.tradehero.th.network.service.MessageService;
 import com.tradehero.th.network.service.NewsServiceSync;
+import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
@@ -30,12 +35,16 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.TranslationService;
+import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
+import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
+import com.tradehero.th.widget.VotePair;
 import dagger.Module;
 import dagger.Provides;
 import java.io.File;
@@ -59,19 +68,33 @@ import timber.log.Timber;
         injects = {
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
+                SettingsAlipayFragment.class,
                 ProviderPageIntent.class,
+
+                VotePair.class
         },
         complete = false,
         library = true
 )
 public class RetrofitModule
 {
+
     //<editor-fold desc="API Services">
+    @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionService.class);
+    }
+
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceSync.class);
     }
-    
+//
+//    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
+//    {
+//        return adapter.create(NewsServiceAsync.class);
+//    }
+
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserService.class);
@@ -156,6 +179,26 @@ public class RetrofitModule
     {
         return adapter.create(CompetitionService.class);
     }
+
+    @Provides @Singleton NotificationService provideNotificationService(RestAdapter adapter)
+    {
+        return adapter.create(NotificationService.class);
+    }
+
+    @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
+    {
+        return adapter.create(MessageService.class);
+    }
+
+//    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
+//    {
+//        return adapter.create(DiscussionService.class);
+//    }
+
+    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
+    {
+        return adapter.create(WeChatService.class);
+    }
     //</editor-fold>
 
     @Provides @Singleton ObjectMapper provideObjectMapper()
@@ -218,8 +261,7 @@ public class RetrofitModule
         try
         {
             httpResponseCache = new HttpResponseCache(httpCacheDirectory, 10 * 1024);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Timber.e("Could not create http cache", e);
         }
@@ -228,5 +270,20 @@ public class RetrofitModule
         okHttpClient.setResponseCache(httpResponseCache);
         okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
         return new OkClient(okHttpClient);
+    }
+
+    @Provides @Singleton
+    TranslationTokenService provideTranslationTokenService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_REQ_TOKEN_ENDPOINT)
+                .build().create(TranslationTokenService.class);
+    }
+
+    @Provides @Singleton
+    TranslationService provideTranslationService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationService.class);
     }
 }

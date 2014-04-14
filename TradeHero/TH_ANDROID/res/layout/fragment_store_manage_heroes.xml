@@ -12,17 +12,17 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:paddingTop="48dp"
       android:clipToPadding="false"
       android:background="@null"
       />
-
+  <!--android:paddingTop="48dp"-->
   <RelativeLayout
       android:id="@+id/manage_heroes_header"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:background="@color/gray_3"
+      android:visibility="gone"
       >
 
     <ImageButton
@@ -82,10 +82,16 @@
   </RelativeLayout>
 
   <ProgressBar
-      android:id="@android:id/empty"
+      android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
+      />
+
+  <include
+      android:id="@android:id/empty"
+      layout="@layout/hero_list_item_empty_placeholder"
+      android:visibility="invisible"
       />
 
 </RelativeLayout>

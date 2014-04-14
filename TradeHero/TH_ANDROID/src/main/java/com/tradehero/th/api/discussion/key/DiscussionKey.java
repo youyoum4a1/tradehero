@@ -1,44 +1,68 @@
 package com.tradehero.th.api.discussion.key;
 
+import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 
 /**
- * Created by xavier on 3/7/14.
+ * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 6:05 PM Copyright (c) TradeHero
  */
-public class DiscussionKey implements DTOKey
+abstract public class DiscussionKey implements DTOKey
 {
-    public final DiscussionType inReplyToType;
-    public final int inReplyToId;
+    static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";
+    static final String BUNDLE_KEY_ID = DiscussionKey.class.getName() + ".id";
 
-    public DiscussionKey(DiscussionType inReplyToType, int inReplyToId)
+    public final Integer id;
+
+    protected DiscussionKey(Integer id)
     {
-        this.inReplyToType = inReplyToType;
-        this.inReplyToId = inReplyToId;
+        this.id = id;
+    }
+
+    protected DiscussionKey(Bundle args)
+    {
+        if (!args.containsKey(DiscussionKey.BUNDLE_KEY_ID))
+        {
+            throw new IllegalStateException("Discussion bundle should contain id of the discussion");
+        }
+        this.id = args.getInt(BUNDLE_KEY_ID);
+    }
+
+    abstract public DiscussionType getType();
+
+    public Bundle getArgs()
+    {
+        Bundle bundle = new Bundle();
+        putParameters(bundle);
+        return bundle;
+    }
+
+    protected void putParameters(Bundle args)
+    {
+        args.putString(BUNDLE_KEY_TYPE, getType().description);
+        args.putInt(BUNDLE_KEY_ID, id);
     }
 
     @Override public int hashCode()
     {
-        return (inReplyToType == null ? 0 : inReplyToType.hashCode()) ^
-                Integer.valueOf(inReplyToId).hashCode();
+        DiscussionType type = getType();
+        return (type == null ? 0 : type.hashCode()) ^
+                (id == null ? 0 : id.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        return other.getClass().equals(getClass()) && equals((DiscussionKey) other);
+        return equalClass(other) && equalFields((DiscussionKey) other);
     }
 
-    public boolean equals(DiscussionKey other)
+    public boolean equalClass(Object other)
     {
-        return other.getClass().equals(getClass()) &&
-                equalFields(other);
-
+        return other != null && getClass().equals(other.getClass());
     }
 
-    protected boolean equalFields(DiscussionKey other)
+    public boolean equalFields(DiscussionKey other)
     {
         return other != null &&
-                (inReplyToType == null ? other.inReplyToType == null : inReplyToType.equals(other.inReplyToType)) &&
-                inReplyToId == other.inReplyToId;
+                (id == null ? other.id == null : id.equals(other.id));
     }
 }

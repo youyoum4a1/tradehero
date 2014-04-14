@@ -3,6 +3,10 @@
 <com.tradehero.th.fragments.trending.SurveyTileView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/todo_trending_security_item_height"
+    android:paddingBottom="@dimen/security_tile_bg_padding_r_b"
+    android:paddingLeft="@dimen/security_tile_bg_padding_t_l"
+    android:paddingRight="@dimen/security_tile_bg_padding_r_b"
+    android:paddingTop="@dimen/security_tile_bg_padding_t_l"
     >
 
 </com.tradehero.th.fragments.trending.SurveyTileView>

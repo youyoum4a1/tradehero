@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.network.service.FollowerServiceWrapper;
 import dagger.Lazy;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
-@Singleton public class UserFollowerCache extends StraightDTOCache<FollowerId, UserFollowerDTO>
+@Singleton public class UserFollowerCache extends StraightDTOCache<FollowerHeroRelationId, UserFollowerDTO>
 {
     public static final String TAG = UserFollowerCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
@@ -25,20 +25,20 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected UserFollowerDTO fetch(FollowerId key) throws Throwable
+    @Override protected UserFollowerDTO fetch(FollowerHeroRelationId key) throws Throwable
     {
         return this.followerServiceWrapper.get().getFollowerSubscriptionDetail(key);
     }
 
-    public List<UserFollowerDTO> getOrFetch(List<FollowerId> followerIds) throws Throwable
+    public List<UserFollowerDTO> getOrFetch(List<FollowerHeroRelationId> followerHeroRelationIds) throws Throwable
     {
-        if (followerIds == null)
+        if (followerHeroRelationIds == null)
         {
             return null;
         }
 
         List<UserFollowerDTO> followerSummaryDTOs = new ArrayList<>();
-        for (FollowerId baseKey: followerIds)
+        for (FollowerHeroRelationId baseKey: followerHeroRelationIds)
         {
             followerSummaryDTOs.add(getOrFetch(baseKey, false));
         }

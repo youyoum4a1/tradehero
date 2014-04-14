@@ -105,7 +105,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.onDestroyView();
     }
 
-    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
     {
         return securityCompactCache;
     }

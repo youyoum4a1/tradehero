@@ -189,7 +189,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
         }
         pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -197,11 +197,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserId.get());
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
         }
         pushFragment(FollowerManagerFragment.class, bundle);
     }

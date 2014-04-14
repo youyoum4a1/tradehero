@@ -240,6 +240,18 @@ public interface UserService
             @Path("userId") int userId)
         throws RetrofitError;
 
+    // TODO use UserServiceWrapper and UserServiceAsync
+    @Deprecated
+    @POST("/users/{userId}/follow")
+    void follow(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
+
+    @POST("/users/{userId}/follow/free")
+    void freeFollow(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
+
     @POST("/users/{userId}/follow")
     UserProfileDTO follow(
             @Path("userId") int userId,

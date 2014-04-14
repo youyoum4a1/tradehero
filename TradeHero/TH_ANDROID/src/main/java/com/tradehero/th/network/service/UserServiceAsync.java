@@ -7,11 +7,14 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
@@ -149,6 +152,14 @@ interface UserServiceAsync
             Callback<UpdatePayPalEmailDTO> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Update Alipay Email">
+    @POST("/users/{userId}/updateAlipayAccount")
+    void updateAlipayAccount(
+            @Path("userId") int userId,
+            @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+            Callback<UpdateAlipayAccountDTO> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Delete User">
     @DELETE("/users/{userId}")
     void deleteUser(
@@ -204,5 +215,11 @@ interface UserServiceAsync
     void getHeroes(
             @Path("userId") int userId,
             Callback<List<HeroDTO>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Relations">
+    @GET("/users/allowablerecipients")
+    void getRelations(
+            Callback<UserRelationsDTO> callback);
     //</editor-fold>
 }

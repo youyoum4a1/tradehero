@@ -1,6 +1,9 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import timber.log.Timber;
 
 /**
  * Created by xavier on 3/7/14.
@@ -10,7 +13,9 @@ public enum DiscussionType
     COMMENT(1, "comment"),
     TIMELINE_ITEM(2, "timelineitem"),
     SECURITY(3, "security"),
-    NEWS(4, "news");
+    NEWS(4, "news"),
+    PRIVATE_MESSAGE(5, "private-message"),
+    BROADCAST_MESSAGE(6, "broadcast-message");
 
     public final int value;
     public final String description;
@@ -43,5 +48,16 @@ public enum DiscussionType
             }
         }
         throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
+    }
+
+    @JsonValue
+    final String value()
+    {
+        return description;
+    }
+
+    @Override public String toString()
+    {
+        return description;
     }
 }

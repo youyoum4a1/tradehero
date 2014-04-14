@@ -6,8 +6,8 @@
     android:id="@+id/community_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/leaderboard_bottom_padding"
     >
+
 
   <ProgressBar
       android:id="@android:id/progress"
@@ -23,6 +23,15 @@
       android:layout_marginTop="@dimen/leaderboard_separator_height_negated"
       app:hasStickyHeaders="false"
       />
+
+  <TextView
+      android:id="@+id/error"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:text="Sorry,there is something wrong.Click to try again"
+      />
+
 
 </com.tradehero.common.widget.BetterViewAnimator>
 

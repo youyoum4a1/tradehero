@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
@@ -41,10 +42,14 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsHeadlineFragment;
+import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -56,7 +61,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.fragments.security.NewsTitleListFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -69,20 +73,33 @@ import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
+import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.RelationsListItemView;
+import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
+import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
+import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
+import com.tradehero.th.fragments.social.hero.AllHeroFragment;
+import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
+import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
+import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
+import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
+import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
+import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
 import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
-import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -90,7 +107,6 @@ import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
-import com.tradehero.th.fragments.trade.view.TradeQuantityView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -129,12 +145,17 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
+import com.tradehero.th.ui.UIModule;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
+
+//import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
+//import com.tradehero.th.fragments.trade.view.TradeQuantityView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
@@ -178,15 +199,17 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
-                        BuySellConfirmFragment.class,
-                        BuySellConfirmFragment.BuySellAsyncTask.class,
-                        TradeQuantityView.class,
+                        //BuySellConfirmFragment.class,
+                        //BuySellConfirmFragment.BuySellAsyncTask.class,
+                        //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
+                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
+                        SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
-                        NewsTitleListFragment.class,
+                        NewsHeadlineFragment.class,
                         ChartFragment.class,
                         StockInfoValueFragment.class,
                         WarrantInfoValueFragment.class,
@@ -219,6 +242,9 @@ import javax.inject.Singleton;
                         HeroManagerFragment.class,
                         HeroListItemView.class,
                         FollowerManagerFragment.class,
+                        AllFollowerFragment.class,
+                        PremiumFollowerFragment.class,
+                        FreeFollowerFragment.class,
                         FollowerManagerInfoFetcher.class,
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
@@ -238,6 +264,7 @@ import javax.inject.Singleton;
                         CacheHelper.class,
 
                         TimelineFragment.class,
+                        TimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         TimelineItemView.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
@@ -279,6 +306,15 @@ import javax.inject.Singleton;
                         UserProfileRetrievedMilestone.class,
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
+                        THIABUserInteractor.class,
+                        HeroesTabContentFragment.class,
+                        HeroesTabContentFragment.HeroManagerTHIABUserInteractor.class,
+                        PrimiumHeroFragment.class,
+                        FreeHeroFragment.class,
+                        AllHeroFragment.class,
+                        HeroManagerInfoFetcher.class,
+                        AllRelationsFragment.class,
+                        RelationsListItemView.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
@@ -300,6 +336,20 @@ import javax.inject.Singleton;
 
                         UserFriendDTOView.class,
                         FriendListLoader.class,
+
+                        //binding
+                        NewsDialogLayout.class,
+                        NewsHeadlineView.class,
+                        AbstractDiscussionItemView.class,
+
+                        PrivateMessageFragment.class,
+                        PrivateDiscussionView.class,
+                        //PrivateMessageBubbleAdapter.class,
+                        PrivateDiscussionListAdapter.class,
+                        PrivateMessageBubbleMineView.class,
+                        PrivateMessageBubbleOtherView.class,
+                        
+                        AlertDialogUtil.class,
                 },
         staticInjections =
                 {

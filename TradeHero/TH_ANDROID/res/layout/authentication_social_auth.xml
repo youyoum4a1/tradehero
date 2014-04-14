@@ -28,6 +28,7 @@
       android:textStyle="bold"
       style="@style/TradeHero.ButtonTextShadow"/>
 
+
   <Button
       android:id="@+id/btn_linkedin_signin"
       android:layout_width="match_parent"
@@ -38,5 +39,21 @@
       android:textColor="@color/white"
       android:textSize="30sp"
       android:textStyle="bold"
-      style="@style/TradeHero.ButtonTextShadow"/>
+      style="@style/TradeHero.ButtonTextShadow"
+
+          />
+
+    <Button
+            android:id="@+id/btn_weibo_signin"
+            android:layout_width="match_parent"
+            android:layout_height="78dip"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_background_social_twitter"
+            android:text="@string/sina_weibo"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            style="?android:attr/buttonBarButtonStyle"
+            />
+    <!--android:drawableLeft="@drawable/weibo_logo_64_64"-->
 </LinearLayout>
