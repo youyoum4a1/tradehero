@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
+import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
@@ -163,6 +164,33 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
+        pushPrivateMessageFragment(position);
+    }
+
+    protected void pushPrivateMessageFragment(int position)
+    {
+        MessageListAdapter messageListAdapter = getListAdapter();
+        MessageHeaderId messageHeaderId = messageListAdapter.getItem(position);
+
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+        Integer messageId = messageHeaderDTO.id;
+        Integer senderUserId = messageHeaderDTO.senderUserId;
+        Integer recipientUserId = messageHeaderDTO.recipientUserId;
+        int myId = currentUserId.toUserBaseKey().key;
+        Timber.d("messageId:%d,senderUserId:%d,recipientUserId:%d,myId:%d", messageId, senderUserId, recipientUserId, myId);
+        int targerUserId;
+        if (senderUserId != null && senderUserId == myId)
+        {
+            targerUserId = recipientUserId;
+        }
+        else
+        {
+            targerUserId = senderUserId;
+        }
+
+        Bundle args = new Bundle();
+        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY, new UserBaseKey(targerUserId).getArgs());
+        getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)
@@ -238,6 +266,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (messageListAdapter == null)
         {
             messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
+            messageListAdapter.initMarkDeletedIds(messageListCache.get().getDeletedMessageIds());
         }
         if (listView.getAdapter() == null)
         {
@@ -298,7 +327,7 @@ public class MessagesCenterFragment extends DashboardFragment
             THToast.show("You cannot delete the message you sent");
             return;
         }
-        messageHeaderId = adapter.markDeleted(position);
+        adapter.markDeleted(messageHeaderId.key,true);
         removeMessageSync(messageHeaderId);
     }
 
@@ -308,7 +337,7 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     private void removeMessageSync(MessageHeaderId messageHeaderId)
     {
-        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(messageHeaderId.key, messageListCache.get(),new MessageDeletionCallback());
+        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(messageHeaderId.key, messageListCache.get(),new MessageDeletionCallback(messageHeaderId.key));
     }
 
     private void saveNewPage(MessageHeaderIdList value)
@@ -355,7 +384,16 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
         {
             hasMorePage = true;
-            messagesView.showErrorView();
+            if(getListAdapter() != null && getListAdapter().getCount() > 0)
+            {
+                //do nothing
+            }
+            else
+            {
+                messagesView.showErrorView();
+            }
+
+
         }
     }
 
@@ -453,6 +491,10 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
     {
+        if (messageListAdapter == null)
+        {
+            return;
+        }
         for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
         {
             MessageHeaderId messageHeaderId = messageListAdapter.getItem(i);
@@ -545,14 +587,34 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<Response>
     {
+        int messageId;
+        MessageDeletionCallback(int messageId)
+        {
+            this.messageId = messageId;
+        }
         @Override public void success(Response response, Response response2)
         {
             // mark message as deleted
+            if (getListAdapter() != null)
+            {
+                if (alreadyFetched != null)
+                {
+                    alreadyFetched.remove(messageId);
+                }
+                //MessageListAdapter adapter = getListAdapter();
+
+            }
         }
 
         @Override public void failure(RetrofitError error)
         {
             Timber.e("Message is deleted unsuccessfully", error);
+            if (getListAdapter() != null)
+            {
+                //MessageListAdapter adapter = getListAdapter();
+                //adapter.markDeleted(messageId,false);
+
+            }
         }
     }
 }

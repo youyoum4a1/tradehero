@@ -8,10 +8,13 @@ import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.inject.Inject;
 
 /**
  * Created by wangliang on 3/4/14.
@@ -28,12 +31,32 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
     private MessageOnClickListener messageOnClickListener;
-    private Set<Integer> markedDeletedIds = new HashSet<>();
+    private Set<Integer> markedDeletedIds;
+
+
 
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
+
+    }
+
+    public void initMarkDeletedIds(Collection<Integer> ids)
+    {
+        if (markedDeletedIds == null)
+        {
+            markedDeletedIds = new HashSet<>();
+        }
+        if (ids == null)
+        {
+            return;
+        }
+        markedDeletedIds.addAll(ids);
     }
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
@@ -66,14 +89,25 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     }
 
-    public void setMessageOnClickListener(MessageOnClickListener messageOnClickListener)
-    {
-        this.messageOnClickListener = messageOnClickListener;
-    }
-
     @Override protected void fineTune(int position, MessageHeaderId dto, MessageItemViewWrapper dtoView)
     {
         // nothing for now
+    }
+
+    @Override public int getCount()
+    {
+        return super.getCount();
+    }
+
+    @Override public MessageHeaderId getItem(int i)
+    {
+        Object o = super.getItem(i);
+        if (o != null)
+        {
+            MessageHeaderId msgId =  ((MessageHeaderId)o);
+            return msgId;
+        }
+        return null;
     }
 
     public void appendMore(List<MessageHeaderId> newItems)
@@ -82,6 +116,7 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         {
             return;
         }
+        newItems = filter(newItems);
         List<MessageHeaderId> itemCopied = items != null ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
         for (MessageHeaderId messageHeaderId : newItems)
         {
@@ -93,20 +128,6 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         setItems(itemCopied);
         notifyDataSetChanged();
     }
-
-    //@Override public void setItems(List<MessageHeaderId> newItems)
-    //{
-    //    List<MessageHeaderId> itemCopied =
-    //            (items != null) ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
-    //    for (MessageHeaderId messageHeaderId : newItems)
-    //    {
-    //        if (!checkExist(messageHeaderId.key))
-    //        {
-    //            itemCopied.add(messageHeaderId);
-    //        }
-    //    }
-    //    super.setItems(itemCopied);
-    //}
 
     private void filter()
     {
@@ -120,6 +141,21 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
             }
         }
         super.setItems(itemCopied);
+    }
+
+    private List<MessageHeaderId> filter(List<MessageHeaderId> messageHeaderIds)
+    {
+        List<MessageHeaderId> itemCopied = new ArrayList<MessageHeaderId>();
+        for(MessageHeaderId messageHeaderId:messageHeaderIds)
+        {
+            if (!markedDeletedIds.contains(messageHeaderId.key))
+            {
+                itemCopied.add(messageHeaderId);
+
+            }
+        }
+        return itemCopied;
+
     }
 
     private boolean checkExist(int messageId)
@@ -138,28 +174,22 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         return false;
     }
 
-    public MessageHeaderId markDeleted(int position){
-        MessageHeaderId messageHeaderId =  getItem(position);
-        markedDeletedIds.add(messageHeaderId.key);
+    public void markDeleted(int messageId,boolean marlDeleted){
+        if (marlDeleted)
+        {
+            markedDeletedIds.add(messageId);
+        }
+        else
+        {
+            markedDeletedIds.remove(messageId);
+        }
         filter();
         notifyDataSetChanged();
-        return messageHeaderId;
     }
 
-
-    @Override public int getCount()
+    public void setMessageOnClickListener(MessageOnClickListener messageOnClickListener)
     {
-        return super.getCount();
+        this.messageOnClickListener = messageOnClickListener;
     }
 
-    @Override public MessageHeaderId getItem(int i)
-    {
-        Object o = super.getItem(i);
-        if (o != null)
-        {
-            MessageHeaderId msgId =  ((MessageHeaderId)o);
-            return msgId;
-        }
-        return null;
-    }
 }

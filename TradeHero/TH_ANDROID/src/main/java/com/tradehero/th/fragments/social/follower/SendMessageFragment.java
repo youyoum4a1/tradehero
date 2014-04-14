@@ -33,7 +33,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;

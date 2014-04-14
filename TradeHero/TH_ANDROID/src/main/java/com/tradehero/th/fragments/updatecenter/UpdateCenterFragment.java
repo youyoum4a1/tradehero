@@ -173,7 +173,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
-        //clearTabs();
+        clearTabs();
 
         detachUserProfileTask();
 
@@ -215,6 +215,16 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         }
 
         return mTabHost;
+    }
+
+    private void clearTabs()
+    {
+        if (mTabHost != null)
+        {
+            mTabHost.clearAllTabs();
+            mTabHost = null;
+        }
+
     }
 
     private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
@@ -259,8 +269,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
             {
                 UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
 
-                if (userProfileDTO !=
-                        null)
+                if (userProfileDTO != null)
                 {
                     linkWith(userProfileDTO, true);
                 }
