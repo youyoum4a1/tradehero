@@ -36,7 +36,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
@@ -470,19 +469,6 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
             Timber.e(error, "");
-        }
-    }
-
-    protected class PrivateMessageFragmentCommentPostedListener implements PostCommentView.CommentPostedListener
-    {
-        @Override public void success(DiscussionDTO discussionDTO)
-        {
-            handleCommentPosted(discussionDTO);
-        }
-
-        @Override public void failure(Exception exception)
-        {
-            // Do something?
         }
     }
 }

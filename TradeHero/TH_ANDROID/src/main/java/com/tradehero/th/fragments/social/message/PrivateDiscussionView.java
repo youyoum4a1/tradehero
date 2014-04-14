@@ -49,24 +49,6 @@ public class PrivateDiscussionView extends DiscussionView
         setLoaded();
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        if (postCommentView != null)
-        {
-            postCommentView.setCommentPostedListener(new PrivateDiscussionViewCommentPostedListener());
-        }
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        if (postCommentView != null)
-        {
-            postCommentView.setCommentPostedListener(null);
-        }
-        super.onDetachedFromWindow();
-    }
-
     @Override protected void setLoading()
     {
         super.setLoading();
@@ -92,21 +74,6 @@ public class PrivateDiscussionView extends DiscussionView
         if (postCommentView != null)
         {
             postCommentView.linkWith(messageType);
-        }
-    }
-
-    protected class PrivateDiscussionViewCommentPostedListener implements PostCommentView.CommentPostedListener
-    {
-        @Override public void success(DiscussionDTO discussionDTO)
-        {
-            Timber.d("success %s", discussionDTO);
-            addDiscussion(discussionDTO);
-        }
-
-        @Override public void failure(Exception exception)
-        {
-            // TODO better error
-            THToast.show(R.string.error_unknown);
         }
     }
 }

@@ -26,6 +26,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>
@@ -145,13 +146,15 @@ public class DiscussionView extends FrameLayout
         super.onAttachedToWindow();
         discussionFetchTaskListener = new DiscussionFetchListener();
         discussionList.setAdapter(discussionListAdapter);
+        postCommentView.setCommentPostedListener(new DiscussionViewCommentPostedListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachDiscussionFetchTask();
-        discussionFetchTaskListener = null;
+        postCommentView.setCommentPostedListener(null);
         discussionList.setAdapter(null);
+        discussionFetchTaskListener = null;
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -279,6 +282,19 @@ public class DiscussionView extends FrameLayout
         private void onFinish()
         {
             setLoaded();
+        }
+    }
+
+    protected class DiscussionViewCommentPostedListener implements PostCommentView.CommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            addDiscussion(discussionDTO);
+        }
+
+        @Override public void failure(Exception exception)
+        {
+            THToast.show(R.string.error_unknown);
         }
     }
 }
