@@ -96,9 +96,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_action_button_share_wrapper:
                 createAndShowSharePopupMenu();
                 break;
-            case R.id.timeline_action_button_monitor_wrapper:
-                createAndShowMonitorPopupMenu();
-                break;
             case R.id.discussion_action_button_more:
                 PopupMenu popUpMenu = createActionPopupMenu();
                 popUpMenu.show();
@@ -121,7 +118,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private TimelineItemDTOEnhanced timelineItemDTO;
     private PopupMenu sharePopupMenu;
-    private PopupMenu monitorPopupMenu;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -180,11 +176,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     @Override protected void onDetachedFromWindow()
     {
-        if (monitorPopupMenu != null)
-        {
-            monitorPopupMenu.setOnMenuItemClickListener(null);
-        }
-
         displayDefaultUserProfilePicture();
 
         ButterKnife.reset(this);
@@ -328,17 +319,22 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     openStockAlertEditor();
                     return true;
 
-                case R.id.timeline_popup_menu_monitor_view_graph:
+                case R.id.timeline_popup_menu_buy_sell:
                 {
-                    openStockInfo();
+                    openSecurityProfile();
                     return true;
                 }
+
                 case R.id.timeline_action_button_share:
                 {
                     PopupMenu popupMenu = createSharePopupMenu();
                     popupMenu.show();
                     return true;
                 }
+
+                case R.id.timeline_action_comment:
+                    openTimelineDiscussion();
+                    break;
             }
             return false;
         }
@@ -480,10 +476,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_action_button_share_wrapper:
                 createAndShowSharePopupMenu();
                 break;
-
-            case R.id.timeline_action_button_monitor_wrapper:
-                createAndShowMonitorPopupMenu();
-                break;
         }
     }
 
@@ -508,31 +500,16 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     }
 
     //<editor-fold desc="Popup dialog">
-    private void createAndShowMonitorPopupMenu()
-    {
-        if (monitorPopupMenu == null)
-        {
-            monitorPopupMenu = createMonitorPopupMenu();
-        }
-        updateMonitorMenuView(monitorPopupMenu.getMenu());
-        monitorPopupMenu.show();
-    }
-
-    private PopupMenu createMonitorPopupMenu()
-    {
-        //PopupMenu popupMenu = new PopupMenu(getContext(), monitorActionButton);
-        //MenuInflater menuInflater = popupMenu.getMenuInflater();
-        //menuInflater.inflate(R.menu.timeline_monitor_popup_menu, popupMenu.getMenu());
-        //popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
-        //return popupMenu;
-        return null;
-    }
-
     private PopupMenu createActionPopupMenu()
     {
         PopupMenu popupMenu = new PopupMenu(getContext(), more);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.timeline_action_popup_menu, popupMenu.getMenu());
+
+        if (timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null)
+        {
+            menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
+        }
+        menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
         return popupMenu;
     }

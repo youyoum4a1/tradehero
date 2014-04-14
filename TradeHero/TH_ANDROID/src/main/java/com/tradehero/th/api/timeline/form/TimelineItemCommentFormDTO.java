@@ -14,7 +14,6 @@ public class TimelineItemCommentFormDTO extends DiscussionFormDTO
         super();
     }
 
-    @JsonProperty
     @Override public DiscussionType getInReplyToType()
     {
         return TYPE;

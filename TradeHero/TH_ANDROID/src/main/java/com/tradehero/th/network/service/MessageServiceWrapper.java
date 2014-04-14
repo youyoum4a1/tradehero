@@ -15,11 +15,14 @@ import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageStatus;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.MessageListTimeline;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.discussion.MessageStatusCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -32,6 +35,7 @@ public class MessageServiceWrapper
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
     private Lazy<MessageStatusCache> messageStatusCache;
+
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
@@ -179,9 +183,22 @@ public class MessageServiceWrapper
         return messageService.deleteMessage(commentId);
     }
 
-    public MiddleCallback<Response> deleteMessage(int commentId, Callback<Response> callback)
+    public MiddleCallback<Response> deleteMessage(final int commentId, final MessageHeaderListCache messageHeaderListCache, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallback<Response> middleCallback = new MiddleCallback<Response>(callback)
+        {
+            @Override public void success(Response response, Response response2)
+            {
+                super.success(response, response2);
+                Timber.d("Delete message success :%d",commentId);
+                messageHeaderListCache.markMessageDeleted(commentId);
+            }
+
+            @Override public void failure(RetrofitError error)
+            {
+                super.failure(error);
+            }
+        };
         messageServiceAsync.deleteMessage(commentId, middleCallback);
         return middleCallback;
     }
