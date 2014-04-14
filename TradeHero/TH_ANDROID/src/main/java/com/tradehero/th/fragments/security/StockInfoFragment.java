@@ -94,7 +94,7 @@ public class StockInfoFragment extends DashboardFragment
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
         if (topViewPagerAdapter == null)
         {
-            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), getFragmentManager());
+            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), getChildFragmentManager());
         }
         if (topPager != null)
         {
