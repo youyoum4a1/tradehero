@@ -12,7 +12,7 @@
       />
 
   <item
-      android:id="@+id/timeline_popup_menu_monitor_view_graph"
+      android:id="@+id/timeline_popup_menu_buy_sell"
       android:title="@string/buy_sell"
       />
 </menu>
