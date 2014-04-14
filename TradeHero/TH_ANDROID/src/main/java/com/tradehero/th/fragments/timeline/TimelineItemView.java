@@ -315,12 +315,17 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     openStockInfo();
                     return true;
                 }
+
                 case R.id.timeline_action_button_share:
                 {
                     PopupMenu popupMenu = createSharePopupMenu();
                     popupMenu.show();
                     return true;
                 }
+
+                case R.id.timeline_action_comment:
+                    openTimelineDiscussion();
+                    break;
             }
             return false;
         }
