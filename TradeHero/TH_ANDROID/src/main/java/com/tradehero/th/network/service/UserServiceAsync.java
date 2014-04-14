@@ -218,7 +218,7 @@ interface UserServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get Relations">
-    @GET("/messages/allowableRecipients")
+    @GET("/users/allowablerecipients")
     void getRelations(
             Callback<UserRelationsDTO> callback);
     //</editor-fold>

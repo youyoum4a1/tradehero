@@ -117,7 +117,7 @@ public class MessagesCenterFragment extends DashboardFragment
             Timber.d("onViewCreated fetch again");
             messagesView.showLoadingView();
             getOrfetchMessages();
-        }dis
+        }
         else
         {
             Timber.d("onViewCreated don't have to fetch again");
@@ -133,7 +133,7 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onSaveInstanceState(outState);
         Timber.d("%s onSaveInstanceState", TAG);
     }
-d
+
     @Override public void onDestroyView()
     {
         super.onDestroyView();
