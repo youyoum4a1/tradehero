@@ -208,7 +208,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             PerPagedFilteredLeaderboardKey newLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
-            Timber.d("" + newLeaderboardKey.equals(currentLeaderboardKey));
+            Timber.d("%s", newLeaderboardKey.equals(currentLeaderboardKey));
 
             if (!newLeaderboardKey.equals(currentLeaderboardKey))
             {
@@ -265,6 +265,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     public void initialLoad()
     {
+        Timber.d("initialLoad %s", currentLeaderboardKey);
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
         //invalidateCachedItemView();

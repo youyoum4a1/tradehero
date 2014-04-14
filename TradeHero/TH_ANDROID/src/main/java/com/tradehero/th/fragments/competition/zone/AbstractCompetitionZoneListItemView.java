@@ -33,7 +33,7 @@ abstract public class AbstractCompetitionZoneListItemView extends RelativeLayout
 
     public void display(CompetitionZoneDTO competitionZoneDTO)
     {
-        Timber.d("display");
+        Timber.d("display %s", competitionZoneDTO);
         linkWith(competitionZoneDTO, true);
     }
 

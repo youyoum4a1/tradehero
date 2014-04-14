@@ -29,7 +29,8 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -253,7 +254,8 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
-                        CompetitionLeaderboardMarkUserListFragment.class,
+                        CompetitionLeaderboardMarkUserListClosedFragment.class,
+                        CompetitionLeaderboardMarkUserListOnGoingFragment.class,
                         LeaderboardFilterFragment.class,
 
                         WebViewFragment.class,

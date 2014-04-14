@@ -12,6 +12,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
@@ -29,9 +30,8 @@ import timber.log.Timber;
 /**
  * Created by xavier on 1/23/14.
  */
-public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
+abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
-    public static final String TAG = CompetitionLeaderboardMarkUserListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
     public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
 
@@ -40,15 +40,14 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
     @Inject CompetitionCache competitionCache;
     @Inject ProviderUtil providerUtil;
 
-    protected CompetitionLeaderboardTimedHeader headerView;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
 
     protected CompetitionDTO competitionDTO;
-    private THIntentPassedListener webViewTHIntentPassedListener;
-    private WebViewFragment webViewFragment;
-    private CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
+    protected THIntentPassedListener webViewTHIntentPassedListener;
+    protected WebViewFragment webViewFragment;
+    protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -66,6 +65,11 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
     }
 
+    @Override protected PerPagedLeaderboardKey getInitialLeaderboardKey()
+    {
+        return new PerPagedLeaderboardKey(leaderboardId, null, null);
+    }
+
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
@@ -74,20 +78,6 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         {
             filterMenu.setVisible(false);
         }
-    }
-
-    @Override protected int getHeaderViewResId()
-    {
-        return R.layout.leaderboard_listview_header_competition;
-    }
-
-    @Override protected void initHeaderView(View headerView)
-    {
-        super.initHeaderView(headerView);
-        this.headerView = (CompetitionLeaderboardTimedHeader) headerView;
-        this.headerView.setCompetitionDTO(competitionDTO);
-        this.headerView.setProviderSpecificResourcesDTO(providerSpecificResourcesDTO);
-        this.headerView.linkWith(providerDTO, true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -149,16 +139,15 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         this.webViewFragment = null;
     }
 
-    @Override public void onDestroyView()
-    {
-        this.headerView = null;
-        super.onDestroyView();
-    }
-
     @Override public void onDestroy()
     {
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
+    }
+
+    @Override protected void saveCurrentFilterKey()
+    {
+        // Do nothing
     }
 
     private void pushWizardElement()
@@ -171,7 +160,20 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
-    private class CompetitionLeaderboardListWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener
+    @Override protected void displayFilterIcon(MenuItem filterIcon)
+    {
+        if (filterIcon != null)
+        {
+            filterIcon.setVisible(false);
+        }
+    }
+
+    @Override protected void pushFilterFragmentIn()
+    {
+        // Do nothing
+    }
+
+    protected class CompetitionLeaderboardListWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener
     {
         public CompetitionLeaderboardListWebViewTHIntentPassedListener()
         {
