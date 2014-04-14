@@ -56,8 +56,6 @@ public class SendMessageFragment extends DashboardFragment
     public static final String KEY_MESSAGE_TYPE =
             SendMessageFragment.class.getName() + ".messageType";
 
-
-
     public static enum MessageLifeTime
     {
         LIFETIME_FOREVER(0),
@@ -330,7 +328,6 @@ public class SendMessageFragment extends DashboardFragment
             //closeMe();
         }
     }
-
 
     @Override public boolean isTabBarVisible()
     {
