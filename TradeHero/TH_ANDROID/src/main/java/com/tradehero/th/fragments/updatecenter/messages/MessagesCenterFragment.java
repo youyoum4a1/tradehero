@@ -60,7 +60,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
-    @Inject Lazy<MessageEraser> messageEraser;
 
     private DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
@@ -77,6 +76,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private boolean isFirst = true;
     private MessageListAdapter messageListAdapter;
+    private MiddleCallback<Response> messageDeletionMiddleCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -305,7 +305,7 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     private void removeMessageSync(MessageHeaderId messageHeaderId)
     {
-        messageEraser.get().deleteMessage(messageHeaderId);
+        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(messageHeaderId.key, new MessageDeletionCallback());
     }
 
     private void saveNewPage(MessageHeaderIdList value)
@@ -420,6 +420,21 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void unsetMiddleCallback()
     {
+        unsetDeletionMiddleCallback();
+        unsetMarkAsReadMiddleCallbacks();
+    }
+
+    private void unsetDeletionMiddleCallback()
+    {
+        if (messageDeletionMiddleCallback != null)
+        {
+            messageDeletionMiddleCallback.setPrimaryCallback(null);
+        }
+        messageDeletionMiddleCallback = null;
+    }
+
+    private void unsetMarkAsReadMiddleCallbacks()
+    {
         for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
         {
             middleCallback.setPrimaryCallback(null);
@@ -519,5 +534,18 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO remove this hack after refactor messagecenterfragment
         Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(requestUpdateIntent);
+    }
+
+    private class MessageDeletionCallback implements Callback<Response>
+    {
+        @Override public void success(Response response, Response response2)
+        {
+            // mark message as deleted
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            Timber.e("Message is deleted unsuccessfully", error);
+        }
     }
 }

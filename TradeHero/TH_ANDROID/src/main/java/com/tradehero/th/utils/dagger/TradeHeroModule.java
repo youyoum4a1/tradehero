@@ -86,7 +86,6 @@ import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleAdapter;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
@@ -107,7 +106,6 @@ import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
-import com.tradehero.th.fragments.updatecenter.messages.MessageEraser;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -340,7 +338,6 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleOtherView.class,
                         
                         AlertDialogUtil.class,
-                        MessageEraser.class
                 },
         staticInjections =
                 {
