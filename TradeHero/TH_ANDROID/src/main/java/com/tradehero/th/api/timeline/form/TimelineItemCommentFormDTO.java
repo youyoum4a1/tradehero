@@ -1,5 +1,6 @@
 package com.tradehero.th.api.timeline.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 
@@ -13,6 +14,7 @@ public class TimelineItemCommentFormDTO extends DiscussionFormDTO
         super();
     }
 
+    @JsonProperty
     @Override public DiscussionType getInReplyToType()
     {
         return TYPE;
