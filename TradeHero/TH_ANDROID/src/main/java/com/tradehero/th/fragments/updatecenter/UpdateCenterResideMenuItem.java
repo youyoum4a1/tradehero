@@ -102,6 +102,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
         {
             int totalUnreadItem = userProfileDTO.unreadNotificationsCount + userProfileDTO.unreadMessageThreadsCount;
             unreadMessageCount.setText("" + totalUnreadItem);
+            unreadMessageCount.setVisibility(VISIBLE);
         }
     }
 
