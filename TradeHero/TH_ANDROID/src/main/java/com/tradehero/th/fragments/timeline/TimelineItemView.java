@@ -310,9 +310,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     openStockAlertEditor();
                     return true;
 
-                case R.id.timeline_popup_menu_monitor_view_graph:
+                case R.id.timeline_popup_menu_buy_sell:
                 {
-                    openStockInfo();
+                    openSecurityProfile();
                     return true;
                 }
 
