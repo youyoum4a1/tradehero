@@ -30,13 +30,9 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -56,41 +52,6 @@ public class SendMessageFragment extends DashboardFragment
     public static final String KEY_MESSAGE_TYPE =
             SendMessageFragment.class.getName() + ".messageType";
 
-
-
-    public static enum MessageLifeTime
-    {
-        LIFETIME_FOREVER(0),
-        LIFETIME_1_HOUR(1),
-        LIFETIME_2_HOURS(2),
-        LIFETIME_1_DAY(3);
-
-        public final int id;
-
-        private MessageLifeTime(int id)
-        {
-            this.id = id;
-        }
-
-        @Override public String toString()
-        {
-            switch (this)
-            {
-                case LIFETIME_FOREVER:
-                    return "Forever";
-                case LIFETIME_1_HOUR:
-                    return "One hour";
-                case LIFETIME_2_HOURS:
-                    return "Two hour";
-                case LIFETIME_1_DAY:
-                    return "One day";
-            }
-            return null;
-        }
-
-        //
-    }
-
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
@@ -101,9 +62,9 @@ public class SendMessageFragment extends DashboardFragment
     @InjectView(R.id.message_type_wrapper) View messageTypeWrapperView;
     @InjectView(R.id.message_type) TextView messageTypeView;
 
+    @Inject CurrentUserId currentUserId;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject CurrentUserId currentUserId;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
 
     private Dialog progressDialog;
@@ -314,7 +275,7 @@ public class SendMessageFragment extends DashboardFragment
     {
     }
 
-    class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
+    private class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
     {
         @Override public void failure(RetrofitError error)
         {
