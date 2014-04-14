@@ -24,25 +24,17 @@ import javax.inject.Inject;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.base.BaseFragment;
-import java.util.ArrayList;
-import java.util.List;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.utils.LocalyticsConstants;
-import java.util.Arrays;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -50,7 +42,7 @@ import timber.log.Timber;
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
     public static final String KEY_PAGE = "page";
-    static final int FRAGEMENT_LAYOUT_ID = 10000;
+    static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
     @Inject UserProfileCache userProfileCache;
@@ -198,7 +190,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGEMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
 
         Bundle args = getArguments();
