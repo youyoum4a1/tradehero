@@ -97,7 +97,7 @@ public class VotePair extends LinearLayout
                 {
                     voteUp.setChecked(false);
                 }
-                updateVoting(voteDown.isChecked() ? VoteDirection.UnVote : VoteDirection.DownVote);
+                updateVoting(voteDown.isChecked() ? VoteDirection.DownVote : VoteDirection.UnVote);
                 break;
         }
     }
