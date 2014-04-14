@@ -117,6 +117,7 @@ public class AlipayActivity extends Activity
             if (resultStatus.contains(ALIPAY_ERROR_CODE_CANCELED_BY_USER))
             {
                 THToast.show(R.string.alipay_cancel);
+                finish();
             }
             else if (resultStatus.contains(ALIPAY_ERROR_CODE_SUCCESS))
             {

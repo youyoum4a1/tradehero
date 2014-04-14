@@ -25,6 +25,7 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -99,6 +100,7 @@ public class THIABUserInteractor
     @Inject LocalyticsSession localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
+    @Inject Lazy<CurrentUserId> currentUserIdLazy;
 
     protected THIABPurchaseRestorer purchaseRestorer;
     protected
@@ -475,12 +477,14 @@ public class THIABUserInteractor
                                                     AlipayActivity.class);
                                     intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
                                     intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, which);
-                                    currentActivityHolder.getCurrentActivity().startActivity(intent);
+                                    currentActivityHolder.getCurrentActivity()
+                                            .startActivity(intent);
                                 }
                             }
                         });
         builder.create().show();
     }
+
     //TODO refactor
     private boolean checkAlertsPlan(int which, int type1)
     {
@@ -491,31 +495,31 @@ public class THIABUserInteractor
         AlertSlotDTO alertSlots =
                 securityAlertCountingHelperLazy.get().getAlertSlots(
                         currentUserId.toUserBaseKey());
-            switch (which)
-            {
-                case 0:
-                    if (alertSlots.totalAlertSlots >= 2)
-                    {
-                        alertDialogUtilLazy.get()
-                                .showDefaultDialog(
-                                        currentActivityHolder.getCurrentContext(),
-                                        R.string.store_billing_error_buy_alerts);
-                        return false;
-                    }
-                    break;
-                case 1:
-                    if (alertSlots.totalAlertSlots >= 5)
-                    {
-                        alertDialogUtilLazy.get()
-                                .showDefaultDialog(
-                                        currentActivityHolder.getCurrentContext(),
-                                        R.string.store_billing_error_buy_alerts);
-                        return false;
-                    }
-                    break;
-                case 2:
-                    break;
-            }
+        switch (which)
+        {
+            case 0:
+                if (alertSlots.totalAlertSlots >= 2)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 1:
+                if (alertSlots.totalAlertSlots >= 5)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 2:
+                break;
+        }
         return true;
     }
 
@@ -757,6 +761,10 @@ public class THIABUserInteractor
     {
         if (userProfileDTO == null)
         {
+            userProfileDTO = userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
+        }
+        if (userProfileDTO == null)
+        {
             waitForSkuDetailsMilestoneComplete(new Runnable()
             {
                 @Override public void run()
@@ -767,6 +775,13 @@ public class THIABUserInteractor
         }
         else if (userProfileDTO.ccBalance == 0)
         {
+            String language = Locale.getDefault().getLanguage();
+            Timber.d("lyl language=%s", language);
+            if ("zh".equals(language) || true)
+            {
+                alipayPopBuy(StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS);
+                return;
+            }
             waitForSkuDetailsMilestoneComplete(new Runnable()
             {
                 @Override public void run()

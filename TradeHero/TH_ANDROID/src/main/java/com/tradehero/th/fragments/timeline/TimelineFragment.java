@@ -21,6 +21,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -75,6 +76,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<CurrentUserId> currentUserIdLazy;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -684,21 +686,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
      */
     protected int getFollowType()
     {
-        if (userInteractor != null)
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
-                if (purchaserKey != null)
-                {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
-                    if (purchaserProfile != null)
-                    {
-                        return purchaserProfile.getFollowType(shownUserBaseKey);
-                    }
-                }
-            }
+            return userProfileDTO.getFollowType(shownUserBaseKey);
         }
         return 0;
     }
@@ -773,6 +764,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override protected void handleShowProductDetailsMilestoneComplete()
         {
             super.handleShowProductDetailsMilestoneComplete();
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }
 
@@ -780,6 +773,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 UserProfileDTO updatedUserProfile)
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }
 
@@ -791,6 +786,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 @Override public void success(UserProfileDTO userProfileDTO, Response response)
                 {
                     super.success(userProfileDTO, response);
+                    userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+                    alertDialogUtilLazy.get().dismissProgressDialog();
                     updateBottomButton();
                 }
             };
