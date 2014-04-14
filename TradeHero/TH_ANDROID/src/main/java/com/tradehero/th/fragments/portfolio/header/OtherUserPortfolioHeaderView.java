@@ -27,6 +27,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import retrofit.RetrofitError;

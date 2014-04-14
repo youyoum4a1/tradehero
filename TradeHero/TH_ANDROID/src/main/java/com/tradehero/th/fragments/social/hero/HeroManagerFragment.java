@@ -1,9 +1,8 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.r11.app.FragmentTabHost;
+import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,38 +13,19 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.social.HeroCache;
-import dagger.Lazy;
 import java.util.List;
-import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List;
 import timber.log.Timber;
 
 /**
@@ -83,7 +63,6 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
         Timber.d("onCreate");
     }
 
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -113,34 +92,8 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
         return addTabs();
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    @Override protected void initViews(View view)
     {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        Timber.d("onStart");
-    }
-
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Timber.d("onResume");
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-        Timber.d("onPause");
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-        Timber.d("onStop");
     }
 
     private void handleBuyMoreClicked()
@@ -165,7 +118,6 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
         };
         return request;
     }
-
 
     private View addTabs()
     {
@@ -197,7 +149,6 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
         }
 
         return mTabHost;
-
     }
 
     @Override public boolean isTabBarVisible()
@@ -207,7 +158,6 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
 
     class MyOnTouchListener implements TabHost.OnTabChangeListener
     {
-
         @Override public void onTabChanged(String tabId)
         {
             Timber.d("onTabChanged tabId:%s",tabId);
@@ -269,6 +219,11 @@ public class HeroManagerFragment extends /**DashboardFragment*/ BasePurchaseMana
             changeTabTitle(1, value.herosCountNotGetPaid);
             changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
         }
+    }
+
+    private void handleFollowSuccess(UserProfileDTO currentUserProfileDTO)
+    {
+        // TODO
     }
 
     protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener

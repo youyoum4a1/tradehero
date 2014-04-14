@@ -264,7 +264,6 @@ import javax.inject.Singleton;
                         CacheHelper.class,
 
                         TimelineFragment.class,
-                        TimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         TimelineItemView.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
@@ -306,9 +305,7 @@ import javax.inject.Singleton;
                         UserProfileRetrievedMilestone.class,
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
-                        THIABUserInteractor.class,
                         HeroesTabContentFragment.class,
-                        HeroesTabContentFragment.HeroManagerTHIABUserInteractor.class,
                         PrimiumHeroFragment.class,
                         FreeHeroFragment.class,
                         AllHeroFragment.class,

@@ -152,6 +152,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
@@ -1708,7 +1709,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override protected void onPreExecute()
         {
-            transactionDialog = ProgressDialogUtil.show(BuySellFragment.this.getActivity(),
+            transactionDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
                    R.string.processing, R.string.alert_dialog_please_wait);
             super.onPreExecute();
         }

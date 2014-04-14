@@ -22,6 +22,7 @@ import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;

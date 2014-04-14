@@ -105,6 +105,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     private Dialog progressDialog;
     private Dialog chooseDialog;
@@ -235,7 +236,7 @@ public class SendMessageFragment extends DashboardFragment
             return;
         }
         this.progressDialog =
-                ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
+                progressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
         // TODO not sure about this implementation yet
         messageServiceWrapper.get()

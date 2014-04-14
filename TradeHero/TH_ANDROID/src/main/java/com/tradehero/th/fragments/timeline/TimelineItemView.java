@@ -450,15 +450,15 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         getNavigator().pushFragment(SettingsFragment.class);
     }
 
-    @Override public void onClick(View view)
+    public void onClick(View view)
     {
         switch (view.getId())
         {
             case R.id.timeline_user_profile_picture:
             case R.id.timeline_user_profile_name:
-                if (currentTimelineItem != null)
+                if (timelineItemDTO != null)
                 {
-                    UserProfileCompactDTO user = currentTimelineItem.getUser();
+                    UserProfileCompactDTO user = timelineItemDTO.getUser();
                     if (user != null)
                     {
                         if (currentUserId.get() != user.id)
@@ -472,7 +472,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 break;
             case R.id.timeline_vendor_picture:
             case R.id.timeline_action_button_trade_wrapper:
-                if (currentTimelineItem != null)
+                if (timelineItemDTO != null)
                 {
                     openSecurityProfile();
                 }
