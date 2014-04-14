@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by WangLiang on 14-4-4.
@@ -42,6 +43,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
     @Override public MessageHeaderIdList get(MessageListKey key)
     {
         MessageHeaderIdList messageHeaderIds = super.get(key);
+        Timber.d("get message original:%s", messageHeaderIds);
         if (messageHeaderIds != null && deletedMessageIds != null && deletedMessageIds.size() > 0)
         {
             MessageHeaderIdList filteredMessageHeaderIdList = new MessageHeaderIdList();
@@ -53,6 +55,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
                 }
 
             }
+            Timber.d("get message filteredMessageHeaderIdList:%s", filteredMessageHeaderIdList);
             return filteredMessageHeaderIdList;
         }
         return messageHeaderIds;
@@ -95,7 +98,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
             deletedMessageIds = new HashSet<>();
         }
         deletedMessageIds.add(messageId);
-
+        Timber.d("markMessageDeleted deletedMessageIds:%s", deletedMessageIds);
     }
 
     /**

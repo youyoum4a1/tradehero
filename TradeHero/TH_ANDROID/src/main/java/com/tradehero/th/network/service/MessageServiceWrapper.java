@@ -184,6 +184,7 @@ public class MessageServiceWrapper
             @Override public void success(Response response, Response response2)
             {
                 super.success(response, response2);
+                Timber.d("Delete message success :%d",commentId);
                 messageHeaderListCache.markMessageDeleted(commentId);
             }
 
