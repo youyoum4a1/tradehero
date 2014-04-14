@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum VoteDirection
 {
     DownVote(-1, "down"),
-    Unvote(0, "cancel"),
+    UnVote(0, "cancel"),
     UpVote(1, "up");
 
     public final int value;
@@ -46,6 +46,12 @@ public enum VoteDirection
     }
 
     @JsonValue public String getDescription()
+    {
+        return description;
+    }
+
+    // For serialize in path with @Path annotation (retrofit)
+    @Override public String toString()
     {
         return description;
     }

@@ -90,14 +90,14 @@ public class VotePair extends LinearLayout
                 {
                     voteDown.setChecked(false);
                 }
-                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.Unvote);
+                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.UnVote);
                 break;
             case R.id.timeline_action_button_vote_down:
                 if (voteDown.isChecked())
                 {
                     voteUp.setChecked(false);
                 }
-                updateVoting(voteUp.isChecked() ? VoteDirection.DownVote : VoteDirection.Unvote);
+                updateVoting(voteDown.isChecked() ? VoteDirection.DownVote : VoteDirection.UnVote);
                 break;
         }
     }
@@ -188,7 +188,7 @@ public class VotePair extends LinearLayout
                 case UpVote:
                     voteUp.setChecked(true);
                     break;
-                case Unvote:
+                case UnVote:
                     // do nothing
                     break;
             }

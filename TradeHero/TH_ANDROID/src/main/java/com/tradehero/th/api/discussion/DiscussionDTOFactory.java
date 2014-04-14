@@ -11,7 +11,7 @@ public class DiscussionDTOFactory
 
     public DiscussionDTO createChildClass(DiscussionDTO unidentified)
     {
-        if (unidentified != null)
+        if (unidentified != null && unidentified.inReplyToType != null)
         {
             switch (unidentified.inReplyToType)
             {

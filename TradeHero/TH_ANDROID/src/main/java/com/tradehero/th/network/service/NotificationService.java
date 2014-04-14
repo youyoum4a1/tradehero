@@ -5,6 +5,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import java.util.Map;
 import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.QueryMap;
 
@@ -19,6 +20,6 @@ public interface NotificationService
     @GET("/notifications/{pushId}")
     NotificationDTO getNotificationDetail(@Path("pushId") int pushId);
 
-    @GET("/notifications/read/{readPushId}")
+    @POST("/notifications/read/{readPushId}")
     Response markAsRead(@Path("readPushId") int readPushId);
 }

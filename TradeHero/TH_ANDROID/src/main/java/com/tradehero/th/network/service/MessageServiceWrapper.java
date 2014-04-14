@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
@@ -18,6 +17,8 @@ import com.tradehero.th.models.discussion.MiddleCallbackMessageStatus;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.discussion.MessageStatusCache;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -31,22 +32,21 @@ public class MessageServiceWrapper
     private MessageService messageService;
     private MessageServiceAsync messageServiceAsync;
     private DiscussionDTOFactory discussionDTOFactory;
-    LongPreference timelinePreference;
+
+    // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
+    private Lazy<MessageStatusCache> messageStatusCache;
 
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
-            @MessageListTimeline LongPreference timelinePreference)
+            DiscussionDTOFactory discussionDTOFactory,
+            Lazy<MessageStatusCache> messageStatusCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
-        this.timelinePreference = timelinePreference;
-    }
-
-    private void saveTimeline(long timeline)
-    {
-        timelinePreference.set(timeline);
+        this.discussionDTOFactory = discussionDTOFactory;
+        this.messageStatusCache = messageStatusCache;
     }
 
     //<editor-fold desc="Get Messages">
@@ -141,16 +141,17 @@ public class MessageServiceWrapper
     }
     //</editor-fold>
 
-    //<editor-fold desc="Get Free Count">
-    public MessageStatusDTO getFreeCount(UserBaseKey userBaseKey)
+    //<editor-fold desc="Get Message Status">
+    public MessageStatusDTO getStatus(UserBaseKey recipient)
     {
-        return messageService.getStatus(userBaseKey.key);
+        return messageService.getStatus(recipient.key);
     }
 
-    public MiddleCallbackMessageStatus getFreeCount(UserBaseKey userBaseKey, Callback<MessageStatusDTO> callback)
+    public MiddleCallbackMessageStatus getStatus(UserBaseKey recipient,
+            Callback<MessageStatusDTO> callback)
     {
         MiddleCallbackMessageStatus middleCallback = new MiddleCallbackMessageStatus(callback);
-        messageServiceAsync.getFreeCount(userBaseKey.key, middleCallback);
+        messageServiceAsync.getStatus(recipient.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -158,12 +159,17 @@ public class MessageServiceWrapper
     //<editor-fold desc="Create Message">
     public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
-        return messageService.createMessage(form);
+        DiscussionDTO discussionDTO = messageService.createMessage(form);
+        if (discussionDTO != null)
+        {
+            messageStatusCache.get().invalidate(new UserBaseKey(discussionDTO.userId));
+        }
+        return discussionDTO;
     }
 
     public MiddleCallbackDiscussion createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache.get());
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }
