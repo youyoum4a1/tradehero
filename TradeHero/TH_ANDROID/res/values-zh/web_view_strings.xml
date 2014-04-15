@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="webview_back">返回</string>
+  <string name="webview_forward">向前</string>
+
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="timeline_menu_edit">Edit</string>
+  <string name="timeline_monitor">Monitor</string>
+  <string name="timeline_trade">交易</string>
+  <string name="timeline_share">分享</string>
+  <string name="timeline_enable_stock_alert">开启</string>
+  <string name="timeline_view_graph">查看图谱</string>
+  <string name="timeline_post_to_social_network">成功发布至 %s</string>
+  <string name="timeline_link_account">账号尚未关联, 请至设置并且关联账号 %s</string>
+
+  <string name="news_like">赞</string>
+  <string name="news_comment">评论</string>
+
+</resources>

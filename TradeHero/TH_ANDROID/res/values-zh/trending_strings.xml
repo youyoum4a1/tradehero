@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- What's Trending -->
+  <string name="trending_header">What\'s Trending</string>
+  <string name="trending_search_stock_hint">选择并搜索 →</string>
+  <string name="trending_search_empty_result">请输入信息搜索</string>
+  <string name="trending_search_no_people_found">找不到相关人员</string>
+  <string name="trending_search_no_stock_found">找不到相关股票</string>
+  <string name="trending_search_mode">搜索模式</string>
+
+  <!-- What's Trending filters -->
+  <string name="trending_filter_basic_title">热门证劵</string>
+  <string name="trending_filter_basic_description">股货英雄中的热门证劵</string>
+  <string name="trending_filter_volume_title">异常交易量</string>
+  <string name="trending_filter_volume_description">前日交易量 &gt; 平均日交易量</string>
+  <string name="trending_filter_price_title">价格行为</string>
+  <string name="trending_filter_price_description">前日收盘 &gt; 50 天移动平均线</string>
+  <string name="trending_filter_all_title">全部证劵</string>
+  <string name="trending_filter_all_description"> </string>
+  <string name="trending_filter_exchange_all">全部</string>
+  <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
+
+</resources>

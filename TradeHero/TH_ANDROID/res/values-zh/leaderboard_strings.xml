@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="leaderboard_community_by_exchange">根据交易所</string>
+  <string name="leaderboard_community_by_sector">根据行业类别</string>
+  <string name="leaderboard_community_friends">朋友</string>
+  <string name="leaderboard_community_leaderboards">英雄榜</string>
+  <string name="leaderboard_community_exchange">交易所</string>
+  <string name="leaderboard_community_sector">行业</string>
+  <string name="leaderboard_user_roi">投资回报率</string>
+  <string name="leaderboard_user_hero_quotient">英雄系数</string>
+  <string name="leaderboard_sort_followers">粉丝</string>
+  <string name="leaderboard_sort_comments">评论</string>
+  <string name="leaderboard_user_sharpe_ratio">夏普比率</string>
+  <string name="leaderboard_positions_count"># 持仓</string>
+  <string name="leaderboard_number_trades_in_period_title">在一定时间内的交易数</string>
+  <string name="leaderboard_win_ratio_title">胜率</string>
+  <string name="leaderboard_avg_days_held">平均日持有数</string>
+  <string name="leaderboard_followers_count"># 粉丝</string>
+  <string name="leaderboard_comments_count"># 评论</string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
+  <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
+  <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
+  <string name="leaderboard_action_bar_help">帮助</string>
+  <string name="leaderboard_sort">Sort</string>
+  <string name="leaderboard_p_n_l"><![CDATA[P&L]]></string>
+  <string name="leaderboard_benchmark_roi">投资回报率基准</string>
+  <string name="leaderboard_action_bar_follow">关注</string>
+  <string name="leaderboard_action_bar_following">关注中</string>
+  <string name="leaderboard_profile">个人资料</string>
+  <string name="leaderboard_positions">持仓</string>
+  <string name="leaderboard_win_ratio">(胜率: <b>%s</b>%%)</string>
+  <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
+  <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
+  <string name="leaderboard_number_of_trade">(%s 交易)</string>
+  <string name="leaderboard_number_of_trades_plural">(%s 交易)</string>
+  <string name="leaderboard_period">周期</string>
+  <string name="leaderboard_not_ranked">未排名</string>
+  <string name="leaderboard_show_friends_only">只显示朋友</string>
+  <string name="leaderboard_show_friends_of_friends">查看朋友的朋友</string>
+  <string name="leaderboard_keep_friends_close">Keep your friends close …</string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… and your Heroes closer! Success is all the sweeter when your friends are around to
+    share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
+  </string>
+  <string name="leaderboard_connect_accounts">连接账号…</string>
+  <string name="leaderboard_follow">@string/follow</string>
+
+  <string name="error_fetch_leaderboard_def_list_key">获取英雄榜定义列表出现错误</string>
+  <string name="leaderboard_community_followers">Followers</string>
+  <string name="leaderboard_community_heros">Heros</string>
+
+  <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
+  <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
+  <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
+
+  <string name="message_center_tab_message">Private Messages</string>
+  <string name="message_center_tab_notification">Notifications</string>
+  <string name="message_center_sending_to">Sending to:</string>
+  <string name="update_center_title">Inbox</string>
+  <string name="message_center_new_message_title">New Message</string>
+  <string name="message_center_private_message_menu">Private Message</string>
+  <string name="message_center_broadcast_message_menu">Broadcast Message</string>
+</resources>
