@@ -1,7 +1,7 @@
 package com.tradehero.th.api.news;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +10,6 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:10 PM Copyright (c) TradeHero
  */
 public class NewsItemDTO extends AbstractDiscussionDTO
-    implements DTO
 {
     public String title;
     public String caption;
@@ -24,8 +23,6 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public NewsItemCategoryDTO category;
 
-    public String languageCode;
-
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> categories; // Header:Referenced Calais Entities
@@ -34,6 +31,10 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     public String message;
 
     public SecurityCompactDTO topReferencedSecurity;
+
+    public NewsItemDTO()
+    {
+    }
 
     public List<NewsItemMediaDTO> getTextEntities()
     {
@@ -67,11 +68,17 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public List<Integer> getSecurityIds()
     {
-        return Collections.unmodifiableList(securityIds);
+        return securityIds != null ? Collections.unmodifiableList(securityIds) : null;
     }
 
     public void setSecurityIds(List<Integer> securityIds)
     {
         this.securityIds = securityIds;
+    }
+
+    //convenient method
+    @Override public NewsItemDTOKey getDiscussionKey()
+    {
+        return new NewsItemDTOKey(id);
     }
 }

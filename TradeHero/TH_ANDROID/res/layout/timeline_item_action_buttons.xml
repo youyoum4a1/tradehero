@@ -2,7 +2,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
   <LinearLayout
-      android:id="@+id/timeline_share_buttons"
+      android:id="@+id/discussion_share_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"

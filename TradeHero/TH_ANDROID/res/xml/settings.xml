@@ -71,6 +71,11 @@
         />
 
     <Preference
+        android:key="@string/key_settings_primary_alipay"
+        android:title="@string/settings_primary_alipay"
+        android:icon="@drawable/mini_logo"/>
+
+    <Preference
         android:key="@string/key_settings_primary_transaction_history"
         android:title="@string/settings_primary_transaction_history"
         android:icon="@drawable/settings_trans_history"

@@ -9,7 +9,10 @@ import android.view.View;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
@@ -57,7 +60,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         }
         else if (securityCompactDTO instanceof WarrantDTO)
         {
-            return 4;
+            return 3;//4 hide warrant info temp by alex
         }
         else
         {
@@ -77,16 +80,16 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     {
         Fragment fragment;
         Bundle args = new Bundle();
-        args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        args.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 
-        if (securityCompactDTO instanceof WarrantDTO && position == 0)
+        if (false && securityCompactDTO instanceof WarrantDTO && position == 0)//hide Warrant Info temp
         {
             fragment = new WarrantInfoValueFragment();
             populateForWarrantInfoFragment(args);
         }
         else
         {
-            if (securityCompactDTO instanceof WarrantDTO)
+            if (false && securityCompactDTO instanceof WarrantDTO)//hide warrant info temp
             {
                 position--;
             }
@@ -98,10 +101,10 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
                     populateForChartFragment(args);
                     break;
                 case 1:
-                    fragment = new StockInfoValueFragment();
+                    fragment = new SecurityDiscussionFragment();
                     break;
                 case 2:
-                    fragment = new NewsTitleListFragment();
+                    fragment = new NewsHeadlineFragment();
                     break;
 
                 default:
@@ -125,7 +128,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForChartFragment(Bundle args)
     {
-        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
+        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
         args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
     }
 

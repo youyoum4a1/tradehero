@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.timeline;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 11:35 AM Copyright (c) TradeHero */
-public class TimelineListView extends PullToRefreshListView
+public class TimelineListView extends PullToRefreshStickyListHeadersListView
 {
     //<editor-fold desc="Constructors">
     public TimelineListView(Context context)
@@ -24,9 +24,9 @@ public class TimelineListView extends PullToRefreshListView
         super(context, mode);
     }
 
-    public TimelineListView(Context context, Mode mode, AnimationStyle style)
+    public TimelineListView(Context context, Mode mode, AnimationStyle animStyle)
     {
-        super(context, mode, style);
+        super(context, mode, animStyle);
     }
     //</editor-fold>
 

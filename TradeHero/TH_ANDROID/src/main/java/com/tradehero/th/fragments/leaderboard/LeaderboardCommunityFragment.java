@@ -49,7 +49,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
-    implements WithTutorial
+    implements WithTutorial,View.OnClickListener
 {
     private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
@@ -150,6 +150,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
             @Override public void onErrorThrown(ProviderListKey key, Throwable error)
             {
+                handleFailToReceiveLeaderboardDefKeyList();
                 THToast.show(getString(R.string.error_fetch_provider_info_list));
                 Timber.e("Failed retrieving the list of competition providers", error);
             }
@@ -277,7 +278,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(getString(R.string.leaderboard_community_leaderboards));
+        actionBar.setTitle(getString(R.string.dashboard_community));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -360,6 +361,37 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
         leaderboardDefListAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * TODO to show user detail of the error
+     */
+    private void handleFailToReceiveLeaderboardDefKeyList()
+    {
+        communityScreen.setDisplayedChildByLayoutId(R.id.error);
+        View displayedChild = communityScreen.getChildAt(communityScreen.getDisplayedChild());
+        displayedChild.setOnClickListener(this);
+    }
+
+    private void reloadData()
+    {
+        // prepare adapter for this screen
+        prepareAdapters();
+
+        // get the data
+        detachProviderListFetchTask();
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
+        providerListFetchTask.execute();
+    }
+
+    @Override public void onClick(View v)
+    {
+        if (v.getId() == R.id.error)
+        {
+            //if error view is click it means to reload the data
+            communityScreen.setDisplayedChildByLayoutId(R.id.progress);
+            reloadData();
+        }
     }
 
     //<editor-fold desc="Navigation">

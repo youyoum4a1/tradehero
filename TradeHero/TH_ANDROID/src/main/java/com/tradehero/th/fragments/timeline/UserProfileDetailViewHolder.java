@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -23,15 +24,15 @@ import javax.inject.Inject;
  */
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    @InjectView(R.id.profile_screen_user_detail_top) protected View profileTop;
-    @InjectView(R.id.user_profile_first_last_name) protected TextView firstLastName;
-    @InjectView(R.id.txt_member_since) protected TextView memberSince;
-    @InjectView(R.id.txt_profile_tradeprofit) protected TextView profitFromTrades;
-    @InjectView(R.id.txt_total_wealth) protected TextView totalWealth;
-    @InjectView(R.id.txt_additional_cash) protected TextView additionalCash;
-    @InjectView(R.id.txt_cash_on_hand) protected TextView cashOnHand;
-    @InjectView(R.id.user_profile_trade_count) protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count) protected TextView exchangesCount;
+    @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
+    @InjectView(R.id.user_profile_first_last_name) @Optional protected TextView firstLastName;
+    @InjectView(R.id.txt_member_since) @Optional protected TextView memberSince;
+    @InjectView(R.id.txt_profile_tradeprofit) @Optional protected TextView profitFromTrades;
+    @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
+    @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
+    @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
+    @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
+    @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     private Target topBackgroundTarget;
@@ -88,20 +89,28 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                         profileTop.getHeight() > 0 &&
                         topBackgroundTarget != null)
                 {
-                    picasso
-                            .load(userProfileDTO.picture)
-                                    .transform(peopleBackgroundTransformation)
-                            //.transform(new GrayscaleTransformation())
-                            //.transform(new FastBlurTransformation(30))
-                            //.transform(new GradientTransformation(
-                            //        context.getResources().getColor(R.color.profile_view_gradient_top),
-                            //        context.getResources().getColor(R.color.profile_view_gradient_bottom)))
-                            .resize(profileTop.getWidth(),
-                                    profileTop.getHeight())
-                            .centerCrop()
-                            .into(topBackgroundTarget);
+                    if (userProfileDTO.picture == null)
+                    {
+                        picasso.load(R.drawable.superman_facebook)
+                                .transform(peopleBackgroundTransformation)
+                                .resize(profileTop.getWidth(), profileTop.getHeight())
+                                .centerCrop()
+                                .into(topBackgroundTarget);
+                    }
+                    else
+                    {
+                        picasso.load(userProfileDTO.picture)
+                                .transform(peopleBackgroundTransformation)
+                                        //.transform(new GrayscaleTransformation())
+                                        //.transform(new FastBlurTransformation(30))
+                                        //.transform(new GradientTransformation(
+                                        //        context.getResources().getColor(R.color.profile_view_gradient_top),
+                                        //        context.getResources().getColor(R.color.profile_view_gradient_bottom)))
+                                .resize(profileTop.getWidth(), profileTop.getHeight())
+                                .centerCrop()
+                                .into(topBackgroundTarget);
+                    }
                 }
-
             }
         };
         if (profileTop != null)
@@ -118,7 +127,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             {
                 firstLastName.setText(context.getString(
                         R.string.user_profile_first_last_name_display,
-                        userProfileDTO.firstName != null ? userProfileDTO.firstName: "",
+                        userProfileDTO.firstName != null ? userProfileDTO.firstName : "",
                         userProfileDTO.lastName != null ? userProfileDTO.lastName : ""));
             }
             else
@@ -162,12 +171,24 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                         SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
                         THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitFromTrades.setText(thPlSinceInception.toString());
-                profitFromTrades.setTextColor(context.getResources().getColor(thPlSinceInception.getColor()));
+                profitFromTrades.setTextColor(
+                        context.getResources().getColor(thPlSinceInception.getColor()));
+                if (profitValue != null)
+                {
+                    profitValue.setText(thPlSinceInception.toString());
+                    profitValue.setTextColor(
+                            context.getResources().getColor(thPlSinceInception.getColor()));
+                }
             }
             else
             {
                 profitFromTrades.setText(R.string.na);
                 profitFromTrades.setTextColor(context.getResources().getColor(R.color.black));
+                if (profitValue != null)
+                {
+                    profitValue.setText(R.string.na);
+                    profitValue.setTextColor(context.getResources().getColor(R.color.black));
+                }
             }
         }
     }
@@ -178,7 +199,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY, userProfileDTO.portfolio.totalValue, false);
+                THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY,
+                        userProfileDTO.portfolio.totalValue, false);
                 totalWealth.setText(thTotalWealth.toString());
             }
             else
@@ -194,7 +216,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thAdditionalCash = new THSignedNumber(THSignedNumber.TYPE_MONEY, userProfileDTO.portfolio.getTotalExtraCash(), false);
+                THSignedNumber thAdditionalCash = new THSignedNumber(THSignedNumber.TYPE_MONEY,
+                        userProfileDTO.portfolio.getTotalExtraCash(), false);
                 additionalCash.setText(thAdditionalCash.toString());
             }
             else
@@ -210,7 +233,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY, userProfileDTO.portfolio.cashBalance, false);
+                THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY,
+                        userProfileDTO.portfolio.cashBalance, false);
                 cashOnHand.setText(thCashOnHand.toString());
             }
             else
@@ -252,7 +276,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     public void setVisibility(int visibility)
     {
-        if (visibility == View.VISIBLE && displayTopViewBackgroundRunnable != null && profileTop != null)
+        if (visibility == View.VISIBLE
+                && displayTopViewBackgroundRunnable != null
+                && profileTop != null)
         {
             profileTop.post(displayTopViewBackgroundRunnable);
         }
@@ -264,7 +290,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (profileTop != null)
             {
-                profileTop.setBackgroundDrawable(new BitmapDrawable(context.getResources(), bitmap));
+                profileTop.setBackgroundDrawable(
+                        new BitmapDrawable(context.getResources(), bitmap));
                 // only available since API level 16
                 // profileTop.setBackground(new BitmapDrawable(getResources(), bitmap));
             }
@@ -272,12 +299,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
         @Override public void onBitmapFailed(Drawable errorDrawable)
         {
-
         }
 
         @Override public void onPrepareLoad(Drawable placeHolderDrawable)
         {
-
         }
     }
 }

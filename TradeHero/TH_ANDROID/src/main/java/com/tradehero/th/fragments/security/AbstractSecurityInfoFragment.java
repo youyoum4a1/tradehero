@@ -13,8 +13,6 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends SherlockFragment
         implements DTOCache.Listener<SecurityId, InfoType>
 {
-    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractSecurityInfoFragment.class.getName() + ".securityId";
-
     protected SecurityId securityId;
     protected InfoType value;
 
@@ -24,12 +22,17 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+            linkWith(new SecurityId(getArguments().getBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
         }
     }
 
-    abstract DTOCache<SecurityId, InfoType> getInfoCache();
+    abstract protected DTOCache<SecurityId, InfoType> getInfoCache();
 
+    /**
+     * Called in onResume.
+     * @param securityId
+     * @param andDisplay
+     */
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
@@ -57,5 +60,5 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         }
     }
 
-    abstract void display();
+    abstract public void display();
 }

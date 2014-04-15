@@ -14,9 +14,10 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:40 PM Copyright (c) TradeHero
  */
 public abstract class LoaderDTOAdapter<
-        DTOType,
-        DTOViewType extends DTOView<DTOType>,
-        LoaderType extends ListLoader<DTOType>> extends DTOAdapter<DTOType, DTOViewType>
+            DTOType,
+            DTOViewType extends DTOView<DTOType>,
+            LoaderType extends ListLoader<DTOType>>
+        extends DTOAdapter<DTOType, DTOViewType>
 {
     private int loaderId;
     private ListLoaderCallback<DTOType> callback;
@@ -97,12 +98,12 @@ public abstract class LoaderDTOAdapter<
 
         @Override public final void onLoaderReset(Loader<List<DTOType>> loader)
         {
-            throw new IllegalAccessError("This method should not be call!");
+            throw new IllegalAccessError("This method should not be called!");
         }
 
         @Override public final void onLoadFinished(Loader<List<DTOType>> loader, List<DTOType> data)
         {
-            throw new IllegalAccessError("This method should not be call");
+            throw new IllegalAccessError("This method should not be called");
         }
 
         protected abstract void onLoadFinished(ListLoader<DTOType> loader, List<DTOType> data);

@@ -21,6 +21,7 @@ public class LocalyticsConstants
     public static final String Authentication_Twitter = "SignUp/Twitter"; // User tap on sign up via Twitter
     public static final String SignUp_Back = "SignUp/Back"; // User press back button on sign
     public static final String Settings_PayPal = "Settings/PayPal";
+    public static final String Settings_Alipay = "Settings/Alipay";
     public static final String Settings_FAQ = "Settings/FAQ";
     public static final String Settings_TransactionHistory = "Settings/TransactionHistory";
     public static final String Referrals_Settings = "Referrals_Settings";
@@ -72,6 +73,8 @@ public class LocalyticsConstants
     public static final String Security_Tab_Info = "Security/Tab/Info";// symbol self.security.q
     public static final String Proﬁle_Tab_Timeline = "Proﬁle/Tab/Timeline";//
     public static final String Proﬁle_Follow = "Proﬁle/Follow";//
+    public static final String Notification_New_Message = "Notification/NewMessgae";//
+    public static final String Notification_New_Broadcast = "Notification/NewBroadcast";//
     public static final String Proﬁle_Tab_Portfolios = "Proﬁle/Tab/Portfolios";// Portfolios tab is shown on user
     public static final String Proﬁle_Tab_Stats = "Proﬁle/Tab/Stats";// Stats tab
     public static final String Monitor_Show = "Monitor/Show";// source

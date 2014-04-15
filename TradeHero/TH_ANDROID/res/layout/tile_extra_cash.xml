@@ -3,6 +3,12 @@
 <com.tradehero.th.fragments.trending.ExtraCashTileView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/todo_trending_security_item_height"
+
+    android:bottom="@dimen/security_tile_bg_padding_r_b"
+    android:left="@dimen/security_tile_bg_padding_t_l"
+    android:right="@dimen/security_tile_bg_padding_r_b"
+    android:top="@dimen/security_tile_bg_padding_t_l"
+
     >
 
 </com.tradehero.th.fragments.trending.ExtraCashTileView>

@@ -1,11 +1,12 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
+import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 
 /**
  * Repurposes requests
@@ -21,34 +22,45 @@ import retrofit.RetrofitError;
         this.followerService = followerService;
     }
 
-    private void basicCheck(FollowerId followerId)
+    //<editor-fold desc="Get All Followers Summary">
+    public FollowerSummaryDTO getAllFollowersSummary(UserBaseKey heroId)
     {
-        if (followerId == null)
+        return followerService.getAllFollowersSummary(heroId.key);
+    }
+
+    public void getAllFollowersSummary(UserBaseKey heroId, Callback<FollowerSummaryDTO> callback)
+    {
+        followerService.getAllFollowersSummary(heroId.key, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Follower Subscription Detail">
+    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId)
+    {
+        basicCheck(followerHeroRelationId);
+        return this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
+    }
+
+    public void getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId, Callback<UserFollowerDTO> callback)
+    {
+        basicCheck(followerHeroRelationId);
+        this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId, callback);
+    }
+    //</editor-fold>
+
+    private void basicCheck(FollowerHeroRelationId followerHeroRelationId)
+    {
+        if (followerHeroRelationId == null)
         {
             throw new NullPointerException("followerId cannot be null");
         }
-        if (followerId.followerId == null)
+        if (followerHeroRelationId.followerId == null)
         {
             throw new NullPointerException("followerId.followerId cannot be null");
         }
-        if (followerId.followedId == null)
+        if (followerHeroRelationId.heroId == null)
         {
-            throw new NullPointerException("followerId.followedId cannot be null");
+            throw new NullPointerException("followerId.heroId cannot be null");
         }
     }
-
-    //<editor-fold desc="Get Follower Subscription Detail">
-    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerId followerId)
-            throws RetrofitError
-    {
-        basicCheck(followerId);
-        return this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId);
-    }
-
-    public void getFollowerSubscriptionDetail(FollowerId followerId, Callback<UserFollowerDTO> callback)
-    {
-        basicCheck(followerId);
-        this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId, callback);
-    }
-    //</editor-fold>
 }

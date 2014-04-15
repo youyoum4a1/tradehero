@@ -33,6 +33,7 @@ import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
+import com.tradehero.th.utils.*;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
@@ -107,9 +109,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     /** map view and the next fragment, which is appears when click on that view */
     private void setupViewFragmentMapping()
     {
+        //two buttons in WelcomeFragment
         mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
+        //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
+        //button in SignUpFragment
         mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
     }
 
@@ -140,6 +145,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
+        weiboUtils.get().authorizeCallBack(requestCode,resultCode,data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
     }
 
@@ -155,7 +161,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 return;
             }
         }
-
+        //TODO maybe shouldn't clear user information here
         THUser.clearCurrentUser();
         switch (view.getId())
         {
@@ -178,6 +184,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
             case R.id.btn_linkedin_signin:
                 authenticateWithLinkedIn();
+                break;
+            case R.id.btn_weibo_signin:
+                authenticateWithWeibo();
                 break;
 
             case R.id.txt_term_of_service_signin:
@@ -237,6 +246,17 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     }
 
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
+
+    /**
+     * Chinese
+     */
+    private void authenticateWithWeibo()
+    {
+        //localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
+        weiboUtils.get().logIn(this, new SocialAuthenticationCallback("Weibo"));
+    }
+
     private void authenticateWithLinkedIn()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
@@ -403,4 +423,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         }
 
     }
+
+
 }

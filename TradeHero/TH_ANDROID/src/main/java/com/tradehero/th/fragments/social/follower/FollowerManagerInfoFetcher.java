@@ -3,7 +3,9 @@ package com.tradehero.th.fragments.social.follower;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -15,7 +17,7 @@ public class FollowerManagerInfoFetcher
 {
     public static final String TAG = FollowerManagerInfoFetcher.class.getSimpleName();
 
-    @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject protected FollowerSummaryCache followerSummaryCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, FollowerSummaryDTO> followerSummaryFetchTask;
     private final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
 
@@ -26,7 +28,12 @@ public class FollowerManagerInfoFetcher
         DaggerUtils.inject(this);
     }
 
-    public void onPause()
+    public void onDestroyView()
+    {
+        detachFetchTask();
+    }
+
+    protected void detachFetchTask()
     {
         if (this.followerSummaryFetchTask != null)
         {
@@ -35,13 +42,10 @@ public class FollowerManagerInfoFetcher
         this.followerSummaryFetchTask = null;
     }
 
-    public void fetch(final UserBaseKey followedId)
+    public void fetch(final UserBaseKey heroId)
     {
-        if (this.followerSummaryFetchTask != null)
-        {
-            this.followerSummaryFetchTask.setListener(null);
-        }
-        this.followerSummaryFetchTask = this.followerSummaryCache.get().getOrFetch(followedId, this.followerSummaryListener);
+        detachFetchTask();
+        this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, this.followerSummaryListener);
         this.followerSummaryFetchTask.execute();
     }
 }

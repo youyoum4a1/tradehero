@@ -28,9 +28,17 @@
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
   <color name="follow_button_background">#1376FB</color>
+  <color name="follow_button_background_pressed">#ff0d6cfb</color>
+  <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
   <color name="actionbar_menu_text_color">@color/white</color>
   <color name="leaderboard_user_item_text_color">#4C566B</color>
   <color name="invite_friend_button_color">#1376FB</color>
+  <color name="button_yellow">#72ffd36b</color>
+  <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
+
+  <color name="follow_button_green">#a0dc50</color>
+  <color name="follow_button_green_overlay">#eea0dc50</color>
+
 </resources>

@@ -130,7 +130,7 @@ public class THUser
             // input error, unable to parse as json data
             return;
         }
-        Timber.d("APID: %s", PushManager.shared().getAPID());
+        Timber.d("APID: %s,authenticationMode :%s", PushManager.shared().getAPID(),authenticationMode);
         userFormDTO.deviceToken = PushManager.shared().getAPID();
 
         if (authenticationMode == null)
@@ -141,12 +141,14 @@ public class THUser
         switch (authenticationMode)
         {
             case SignUpWithEmail:
+                Timber.d("SignUpWithEmail Auth Header "+authenticator.getAuthHeader());
                 userServiceWrapper.get().signUpWithEmail(
                         authenticator.getAuthHeader(),
                         userFormDTO,
                         createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignUp:
+                Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
                 userService.get().signUp(
                         authenticator.getAuthHeader(),
                         userFormDTO,
@@ -279,6 +281,9 @@ public class THUser
         authenticationProviders.put(provider.getAuthType(), provider);
     }
 
+    /**
+     * @param json json data is from social media
+     */
     public static void saveCredentialsToUserDefaults(JSONObject json)
     {
         if (credentials == null)

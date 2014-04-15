@@ -13,7 +13,9 @@ import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
 /**
@@ -151,7 +153,11 @@ abstract public class THBaseBillingLogicHolder<
         if (updatedUserPortfolio != null)
         {
             userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
-            heroListCache.invalidate(updatedUserPortfolio.getBaseKey());
+
+            // TODO nicer
+            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.ALL));
+            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.FREE));
+            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.PREMIUM));
         }
         notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
