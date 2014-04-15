@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.message;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 
 public class PrivatePostCommentView extends PostCommentView
@@ -26,6 +27,12 @@ public class PrivatePostCommentView extends PostCommentView
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        linkWith(MessageType.PRIVATE);
+    }
 
     @Override protected void onDetachedFromWindow()
     {

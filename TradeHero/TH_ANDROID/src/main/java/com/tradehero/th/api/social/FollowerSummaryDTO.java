@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 9:22 PM To change this template use File | Settings | File Templates. */
 public class FollowerSummaryDTO implements DTO
 {
     public List<UserFollowerDTO> userFollowers;

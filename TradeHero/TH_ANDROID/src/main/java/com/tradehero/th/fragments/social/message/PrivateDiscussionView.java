@@ -104,7 +104,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     private void setMessageStatusOnPostCommentView()
     {
-        if (postCommentView != null && postCommentView instanceof PrivatePostCommentView)
+        if (postCommentView != null)
         {
             ((PrivatePostCommentView) postCommentView).setMessageStatusDTO(messageStatusDTO);
         }
@@ -112,7 +112,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     private void setMessageNotAllowedListenerOnPostCommentView(PrivatePostCommentView.OnMessageNotAllowedToSendListener listener)
     {
-        if (postCommentView != null && postCommentView instanceof PrivatePostCommentView)
+        if (postCommentView != null)
         {
             ((PrivatePostCommentView) postCommentView).setMessageNotAllowedToSendListener(listener);
         }

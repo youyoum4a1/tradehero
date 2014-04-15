@@ -36,8 +36,10 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.discussion.MessageStatusCache;
@@ -88,7 +90,6 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     @InjectView(R.id.private_message_empty) TextView emptyHint;
     //@InjectView(R.id.message_list_view) ListView messageListView;
-    PrivateMessageBubbleAdapter messageBubbleAdapter;
     //@InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
     //@InjectView(R.id.button_send) View buttonSend;
     @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
@@ -111,6 +112,11 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         loadedDiscussions = new DiscussionDTOList();
     }
 
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new PrivateMessageFragmentUserFollowedListener();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
@@ -127,21 +133,19 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         //postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
-        swapAdapter();
         display();
-        if (discussionView instanceof PrivateDiscussionView)
-        {
-            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
-            ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(new PrivateMessageFragmentOnMessageNotAllowedToSendListener());
-            ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
-        }
+        ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+        ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(new PrivateMessageFragmentOnMessageNotAllowedToSendListener());
+        ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.private_message_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
         displayTitle();
@@ -171,8 +175,6 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         detachMessageListTask();
         detachDiscussionListTask();
 
-        //messageListView = null;
-        messageBubbleAdapter = null;
         super.onDestroyView();
     }
 
@@ -231,9 +233,14 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     private void fetchMessageStatus()
     {
+        fetchMessageStatus(false);
+    }
+
+    private void fetchMessageStatus(boolean force)
+    {
         Timber.d("fetchMessageStatus");
         detachMessageStatusTask();
-        messageStatusCacheTask = messageStatusCache.getOrFetch(correspondentId, messageStatusCacheListener);
+        messageStatusCacheTask = messageStatusCache.getOrFetch(correspondentId, force, messageStatusCacheListener);
         messageStatusCacheTask.execute();
     }
 
@@ -324,20 +331,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     {
         DiscussionDTOList additional = discussionCache.get(discussionKeys);
         loadedDiscussions.addAll(additional);
-        swapAdapter();
         // TODO identify the next nextDiscussionListKey
-    }
-
-    public void swapAdapter()
-    {
-        //messageBubbleAdapter = new PrivateMessageBubbleAdapter(getSherlockActivity(), loadedDiscussions);
-        //messageListView.setAdapter(messageBubbleAdapter);
-    }
-
-    public void handleCommentPosted(DiscussionDTO discussionDTO)
-    {
-        loadedDiscussions.add(discussionDTO);
-        swapAdapter();
     }
 
     public void display()
@@ -388,7 +382,9 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         if (statusViewContainer != null)
         {
             // TODO better test
-            statusViewContainer.setVisibility(messageStatusDTO == null || messageStatusDTO.privateFreeRemainingCount == null ? View.GONE : View.VISIBLE);
+            statusViewContainer.setVisibility(
+                    messageStatusDTO == null || messageStatusDTO.privateFreeRemainingCount == null
+                            ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -422,8 +418,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
     protected void showPaidFollow()
     {
-        THToast.show("Temp / need paid follow");
-        // TODO use new model of show FollowCredits
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
     }
 
     @Override public boolean isTabBarVisible()
@@ -490,6 +485,21 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         @Override public void onMessageNotAllowedToSend()
         {
             showPaidFollow();
+        }
+    }
+
+    protected class PrivateMessageFragmentUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            fetchMessageStatus(true);
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            super.onUserFollowFailed(userFollowed, error);
         }
     }
 }
