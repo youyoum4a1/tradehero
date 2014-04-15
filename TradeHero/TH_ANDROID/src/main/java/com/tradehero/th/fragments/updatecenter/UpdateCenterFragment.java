@@ -306,6 +306,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     private Fragment getCurrentFragment()
     {
+        if(mTabHost == null)
+        {
+            return null;
+        }
         String tag = mTabHost.getCurrentTabTag();
         android.support.v4.app.FragmentManager fm = getChildFragmentManager();
         Fragment fragment = fm.findFragmentByTag(tag);
