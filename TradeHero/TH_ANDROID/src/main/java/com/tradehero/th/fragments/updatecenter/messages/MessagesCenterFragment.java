@@ -89,6 +89,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+
         Timber.d("%s onCreateOptionsMenu", TAG);
     }
 
@@ -376,7 +377,7 @@ public class MessagesCenterFragment extends DashboardFragment
             }
             display(value);
             messagesView.showListView();
-            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s", key, value);
+            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,fromCache);
             //TODO how to invalidate the old data ..
             isFirst = false;
         }
@@ -386,14 +387,12 @@ public class MessagesCenterFragment extends DashboardFragment
             hasMorePage = true;
             if(getListAdapter() != null && getListAdapter().getCount() > 0)
             {
-                //do nothing
+                //when already fetch the data,do not show error view
             }
             else
             {
                 messagesView.showErrorView();
             }
-
-
         }
     }
 
@@ -447,6 +446,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onResume();
 
+        Timber.d("onResume");
         initCallbackMap();
     }
 

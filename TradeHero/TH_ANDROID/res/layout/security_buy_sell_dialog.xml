@@ -255,6 +255,19 @@
         />
 
     <ToggleButton
+        android:id="@+id/btn_wechat"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginLeft="8dp"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:background="@drawable/ic_wechat"
+        android:checked="false"
+        android:textOff=""
+        android:textOn=""
+        />
+
+    <ToggleButton
         android:id="@+id/btn_location"
         android:layout_width="28dp"
         android:layout_height="28dp"

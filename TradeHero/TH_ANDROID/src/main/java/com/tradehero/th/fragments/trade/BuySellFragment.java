@@ -79,9 +79,13 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.wxapi.WXMessageType;
 import com.viewpagerindicator.PageIndicator;
+import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -125,6 +129,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     ToggleButton mBtnShareFacebook;
     ToggleButton mBtnShareTwitter;
     ToggleButton mBtnShareLinkedIn;
+    ToggleButton mBtnShareWeChat;
     ToggleButton mBtnLocation;
     ToggleButton mBtnSharePublic;
     Button mConfirmButton;
@@ -135,6 +140,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private boolean publishToFb = false;
     private boolean publishToTw = false;
     private boolean publishToLi = false;
+    private boolean publishToWe = false;
     private boolean shareLocation = false;
     private boolean sharePublic = false;
 
@@ -156,6 +162,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     @Inject Picasso picasso;
+    @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
 
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
@@ -1542,6 +1549,21 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override public void onClick(View view)
             {
                 publishToLi = !publishToLi;
+            }
+        });
+        mBtnShareWeChat = null;
+        mBtnShareWeChat = (ToggleButton)view.findViewById(R.id.btn_wechat);
+        mBtnShareWeChat.setChecked(publishToWe);
+        mBtnShareWeChat.setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                publishToWe = !publishToWe;
+                if (publishToWe)
+                {
+                    Timber.d("lyl %s", securityCompactDTO.toString());
+                    wechatSharerLazy.get().share(getActivity(), securityCompactDTO);
+                }
             }
         });
         mBtnLocation = null;

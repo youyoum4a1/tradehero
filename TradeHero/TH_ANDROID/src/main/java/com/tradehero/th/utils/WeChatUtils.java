@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import com.tradehero.th.wxapi.WXMessageType;
 import javax.inject.Inject;
@@ -29,6 +30,18 @@ public class WeChatUtils implements SocialSharer
 
             intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, WXMessageType.News.getType());
             intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, discussionKey.id);
+            context.startActivity(intent);
+        }
+    }
+
+    @Override public void share(Context context, SecurityCompactDTO securityCompactDTO)
+    {
+        if (securityCompactDTO instanceof SecurityCompactDTO)
+        {
+            Intent intent = new Intent(context, WXEntryActivity.class);
+
+            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, WXMessageType.Trade.getType());
+            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, securityCompactDTO.id);
             context.startActivity(intent);
         }
     }
