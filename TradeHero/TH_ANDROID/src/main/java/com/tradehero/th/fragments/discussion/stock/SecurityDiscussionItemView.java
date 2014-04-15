@@ -20,9 +20,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -60,6 +60,17 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        Timber.d("VotePair: %s", discussionVotePair);
+        if (discussionVotePair != null)
+        {
+            discussionVotePair.setDownVote(false);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
