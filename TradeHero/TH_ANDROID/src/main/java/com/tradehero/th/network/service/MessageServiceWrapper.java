@@ -37,6 +37,7 @@ public class MessageServiceWrapper
     private Lazy<MessageStatusCache> messageStatusCache;
 
 
+
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,

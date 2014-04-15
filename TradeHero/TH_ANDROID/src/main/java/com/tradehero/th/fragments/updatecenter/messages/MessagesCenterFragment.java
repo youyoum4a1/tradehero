@@ -387,14 +387,12 @@ public class MessagesCenterFragment extends DashboardFragment
             hasMorePage = true;
             if(getListAdapter() != null && getListAdapter().getCount() > 0)
             {
-                //do nothing
+                //when already fetch the data,do not show error view
             }
             else
             {
                 messagesView.showErrorView();
             }
-
-
         }
     }
 
