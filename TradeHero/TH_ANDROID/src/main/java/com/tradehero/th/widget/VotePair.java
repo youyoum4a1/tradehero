@@ -1,6 +1,7 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -13,8 +14,6 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -38,6 +37,7 @@ public class VotePair extends LinearLayout
 
     private MiddleCallback<DiscussionDTO> voteCallback;
     private AbstractDiscussionDTO discussionDTO;
+    private boolean downVote = true;
 
     //<editor-fold desc="Constructors">
     public VotePair(Context context)
@@ -48,13 +48,30 @@ public class VotePair extends LinearLayout
     public VotePair(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init(attrs);
     }
 
     public VotePair(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        init(attrs);
     }
     //</editor-fold>
+
+    private void init(AttributeSet attrs)
+    {
+        if (attrs != null)
+        {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.VotePair);
+            downVote = a.getBoolean(R.styleable.VotePair_downVote, true);
+            a.recycle();
+        }
+    }
+
+    private void updateDownVoteVisibility()
+    {
+        voteDown.setVisibility(downVote ? VISIBLE : GONE);
+    }
 
     @Override protected void onFinishInflate()
     {
@@ -62,6 +79,13 @@ public class VotePair extends LinearLayout
 
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        updateDownVoteVisibility();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -128,31 +152,30 @@ public class VotePair extends LinearLayout
                     {
                         Timber.d("Failure");
                     }
-                });
+                }
+        );
+    }
+
+    public boolean hasDownVote()
+    {
+        return downVote;
+    }
+
+    public void setDownVote(boolean downVote)
+    {
+        this.downVote = downVote;
+
+        updateDownVoteVisibility();
     }
 
     private DiscussionType getDiscussionType()
     {
-        // TODO Server should return type of discussionDTO, while it does not do so at the moment,
-        // this hAcK will be used to get type of the dto
-        DiscussionType discussionType = null;
-        if (discussionDTO instanceof NewsItemDTO)
+        if (discussionDTO != null && discussionDTO.getDiscussionKey() != null)
         {
-            discussionType = DiscussionType.NEWS;
+            return discussionDTO.getDiscussionKey().getType();
         }
-        else if (discussionDTO instanceof TimelineItemDTOEnhanced)
-        {
-            discussionType = DiscussionType.TIMELINE_ITEM;
-        }
-        else if (discussionDTO instanceof DiscussionDTO)
-        {
-            discussionType = DiscussionType.COMMENT;
-        }
-        else
-        {
-            throw new IllegalStateException("Unknown discussion type");
-        }
-        return discussionType;
+
+        throw new IllegalStateException("Unknown discussion type");
     }
 
     private void resetVoting()
