@@ -14,6 +14,16 @@
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
+  <string name="link">Link</string>
+  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link_now">Link now!</string>
+  <string name="later">Later</string>
+  <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
+  <string name="upgrade_needed">Upgrade needed</string>
+  <string name="update_now">Update now</string>
+  <string name="update_guide">Please reinstall TradeHero</string>
+  <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
+  <string name="press_back_again_to_exit">Press back again to exit</string>
   <string name="discussion">Discussion</string>
   <string name="more_character">…</string>
   <string name="buy_sell">Buy/Sell</string>

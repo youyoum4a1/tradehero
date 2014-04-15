@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
@@ -45,7 +44,6 @@ abstract public class AbstractTradeListItemAdapter<PositionDTOType extends Posit
     private List<Object> objects;
 
     protected PositionDTOType shownPositionDTO;
-    protected PortfolioDTO portfolioDTO;
     private WeakReference<TradeListHeaderView.TradeListHeaderClickListener> parentTradeListHeaderClickListenerWeak = new WeakReference<>(null);
 
     public AbstractTradeListItemAdapter(final Context context, final LayoutInflater inflater)
@@ -121,11 +119,6 @@ abstract public class AbstractTradeListItemAdapter<PositionDTOType extends Posit
         this.shownPositionDTO = positionDTO;
     }
 
-    public void linkWith(PortfolioDTO portfolioDTO)
-    {
-        this.portfolioDTO = portfolioDTO;
-    }
-
     /**
      * The listener should be strongly referenced elsewhere
      * @param tradeListHeaderClickListener
@@ -194,8 +187,7 @@ abstract public class AbstractTradeListItemAdapter<PositionDTOType extends Posit
 
                 ((AbstractPositionView) convertView).linkWith(this.shownPositionDTO, false);
                 ((AbstractPositionView) convertView).linkWithHasHistoryButton(false, false);
-                ((AbstractPositionView) convertView).linkWith(portfolioDTO, false);
-                        ((AbstractPositionView) convertView).display();
+                ((AbstractPositionView) convertView).display();
                 View buttons = convertView.findViewById(R.id.position_shortcuts);
                 if (buttons != null)
                 {
@@ -216,7 +208,6 @@ abstract public class AbstractTradeListItemAdapter<PositionDTOType extends Posit
                 {
                     convertView = inflater.inflate(layoutResourceId, viewGroup, false);
                 }
-                ((TradeListItemView) convertView).linkWith(portfolioDTO, false);
                 ((TradeListItemView) convertView).display((ExpandableTradeItem) item);
                 toggleExpanded((ExpandableTradeItem) item, convertView);
                 break;

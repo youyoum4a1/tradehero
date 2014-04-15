@@ -7,6 +7,9 @@ import android.widget.RelativeLayout;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.PositionUtils;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 2/5/14.
@@ -21,7 +24,8 @@ abstract public class AbstractPartialBottomView<
 
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
-    protected PortfolioDTO portfolioDTO;
+
+    @Inject protected PositionUtils positionUtils;
 
     //<editor-fold desc="Constructors">
     public AbstractPartialBottomView(Context context)
@@ -43,6 +47,7 @@ abstract public class AbstractPartialBottomView<
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         initViews();
     }
 
@@ -71,15 +76,6 @@ abstract public class AbstractPartialBottomView<
         if (andDisplay)
         {
             // Let children do it
-        }
-    }
-
-    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        this.portfolioDTO = portfolioDTO;
-        if (andDisplay)
-        {
-
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.utils.DaggerUtils;
@@ -12,6 +13,7 @@ public class ProviderListRetrievedMilestone extends DTORetrievedAsyncMilestone<P
     public static final String TAG = ProviderListRetrievedMilestone.class.getSimpleName();
 
     @Inject ProviderListCache providerListCache;
+    @Inject ProviderCache providerCache;
 
     @Inject public ProviderListRetrievedMilestone()
     {
@@ -32,5 +34,26 @@ public class ProviderListRetrievedMilestone extends DTORetrievedAsyncMilestone<P
     @Override public void launch()
     {
         launchOwn();
+    }
+
+    @Override public boolean isComplete()
+    {
+        return super.isComplete() && hasDTOs(providerListCache.get(key));
+    }
+
+    public boolean hasDTOs(ProviderIdList keyList)
+    {
+        if (keyList == null)
+        {
+            return false;
+        }
+        for (ProviderId id : keyList)
+        {
+            if (providerCache.get(id) == null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

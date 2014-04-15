@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {

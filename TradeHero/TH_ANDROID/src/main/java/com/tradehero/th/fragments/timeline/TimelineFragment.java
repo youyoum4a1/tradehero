@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -142,7 +141,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
@@ -154,7 +153,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
@@ -686,7 +685,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (userInteractor != null)
         {
-            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
@@ -728,8 +727,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void follow()
     {
-        userInteractor = new PushableTimelineTHIABUserInteractor();
-        userInteractor.followHero(shownUserBaseKey);
+        followUser(shownUserBaseKey);
     }
 
     public class FreeFollowCallback implements Callback<UserProfileDTO>
@@ -758,42 +756,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void followRequested()
         {
             follow();
-        }
-    }
-
-    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
-    {
-        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
-
-        public PushableTimelineTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-            updateBottomButton();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
-                UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            updateBottomButton();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(),
-                    userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    updateBottomButton();
-                }
-            };
         }
     }
 }

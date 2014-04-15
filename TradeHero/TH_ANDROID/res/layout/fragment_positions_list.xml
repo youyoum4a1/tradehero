@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-  <com.tradehero.th.widget.list.ExpandingListView
-      android:id="@+id/position_list"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-      android:paddingTop="50dp"
-      android:clipToPadding="false"
-      />
-
   <ViewStub
       android:id="@+id/position_list_header_stub"
       android:inflatedId="@+id/position_list_portfolio_header"
@@ -22,12 +12,18 @@
       android:layout_height="wrap_content"
       />
 
-  <ProgressBar
-      android:id="@android:id/empty"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
+  <com.tradehero.th.fragments.position.PositionListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/pull_to_refresh_position_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      ptr:ptrMode="pullDownFromTop"
       />
-  <!-- see PortfolioHeaderFactory.java for the different layout that are used -->
 
-</RelativeLayout>
+  <com.tradehero.th.widget.list.ExpandingListView
+      android:id="@+id/position_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      />
+</LinearLayout>

@@ -12,12 +12,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
-import retrofit.client.Response;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use File | Settings | File Templates.
@@ -29,14 +27,10 @@ public class PushableTimelineFragment extends TimelineFragment
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    //private MenuItem menuFollow;
-    //private MenuItem followingStamp;
-    //private TextView followButton;
-
-    //@Override protected void createUserInteractor()
-    //{
-    //    userInteractor = new PushableTimelineTHIABUserInteractor();
-    //}
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new PushableTimelineUserFollowedListener();
+    }
 
     @Override protected void initViews(View view)
     {
@@ -49,20 +43,6 @@ public class PushableTimelineFragment extends TimelineFragment
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
         this.actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        //super.onCreateOptionsMenu(menu, inflater);
-        //menuFollow = menu.findItem(R.id.btn_follow_this_user);
-        //followButton = (TextView) menuFollow.getActionView().findViewById(R.id.follow_button);
-        //if (followButton != null)
-        //{
-        //    followButton.setOnClickListener(new View.OnClickListener()
-        //    {
-        //        @Override public void onClick(View v)
-        //        {
-        //            localyticsSession.tagEvent(LocalyticsConstants.Proﬁle_Follow);
-        //            handleInfoButtonPressed();
-        //        }
-        //    });
-        //}
 
         //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
@@ -72,14 +52,6 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         Boolean isFollowing = isPurchaserFollowingUserShown();
         updateBottomButton();
-        //if (menuFollow != null)
-        //{
-        //    menuFollow.setVisible(isFollowing != null && !isFollowing);
-        //}
-        //if (followingStamp != null)
-        //{
-        //    followingStamp.setVisible(isFollowing != null && isFollowing);
-        //}
 
         MenuItem settingsButton = menu.findItem(R.id.menu_settings);
         if (settingsButton != null)
@@ -89,24 +61,6 @@ public class PushableTimelineFragment extends TimelineFragment
 
         super.onPrepareOptionsMenu(menu);
     }
-
-    //@Override public boolean onOptionsItemSelected(MenuItem item)
-    //{
-    //    switch (item.getItemId())
-    //    {
-    //        case R.id.btn_follow_this_user:
-    //            handleInfoButtonPressed();
-    //            break;
-    //    }
-    //    return super.onOptionsItemSelected(item);
-    //}
-
-    //@Override public void onDestroyOptionsMenu()
-    //{
-    //    this.menuFollow = null;
-    //    this.followingStamp = null;
-    //    super.onDestroyOptionsMenu();
-    //}
 
     @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
@@ -126,7 +80,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         if (userInteractor != null)
         {
-            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
@@ -143,18 +97,13 @@ public class PushableTimelineFragment extends TimelineFragment
         return null;
     }
 
-    //public void displayFollowButton()
-    //{
-    //    getActivity().supportInvalidateOptionsMenu();
-    //}
-
     private void handleInfoButtonPressed()
     {
         heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                userInteractor.followHero(shownUserBaseKey);
+                followUser(shownUserBaseKey);
             }
         });
     }
@@ -166,37 +115,11 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    //public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
-    //{
-    //    public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
-    //
-    //    public PushableTimelineTHIABUserInteractor()
-    //    {
-    //        super();
-    //    }
-    //
-    //    @Override protected void handleShowProductDetailsMilestoneComplete()
-    //    {
-    //        super.handleShowProductDetailsMilestoneComplete();
-    //        //displayFollowButton();
-    //    }
-    //
-    //    @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-    //    {
-    //        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-    //        //displayFollowButton();
-    //    }
-    //
-    //    @Override protected void createFollowCallback()
-    //    {
-    //        this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-    //        {
-    //            @Override public void success(UserProfileDTO userProfileDTO, Response response)
-    //            {
-    //                super.success(userProfileDTO, response);
-    //                //displayFollowButton();
-    //            }
-    //        };
-    //    }
-    //}
+    protected class PushableTimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+        }
+    }
 }

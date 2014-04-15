@@ -14,7 +14,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -34,7 +33,7 @@ public class IABServiceConnector implements ServiceConnection
     private boolean setupDone = false;
     boolean disposed = false;
 
-    protected WeakReference<ConnectorListener> listener = new WeakReference<>(null);
+    protected ConnectorListener listener;
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABServiceConnector()
@@ -114,7 +113,6 @@ public class IABServiceConnector implements ServiceConnection
             }
         }
         disposed = true;
-        currentActivityHolder = null;
         billingService = null;
         listener = null;
     }
@@ -232,15 +230,12 @@ public class IABServiceConnector implements ServiceConnection
 
     public ConnectorListener getListener()
     {
-        if (listener == null)
-            return null;
-
-        return listener.get();
+        return listener;
     }
 
     public void setListener(ConnectorListener listener)
     {
-        this.listener = new WeakReference<>(listener);
+        this.listener = listener;
     }
     //</editor-fold>
 

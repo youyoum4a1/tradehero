@@ -128,7 +128,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         Bundle bundle = new Bundle();
         bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
@@ -140,7 +140,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         Bundle bundle = new Bundle();
         bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());

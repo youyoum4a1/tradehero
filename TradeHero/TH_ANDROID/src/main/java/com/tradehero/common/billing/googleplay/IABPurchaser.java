@@ -158,7 +158,6 @@ abstract public class IABPurchaser<
 
     private void startPurchaseActivity()
     {
-
         if (!areSubscriptionsSupported() && getProductDetails(purchaseOrder.getProductIdentifier()).isOfType(
                 IABConstants.ITEM_TYPE_SUBS))
         {

@@ -109,7 +109,9 @@ public class THJsonAdapter implements Converter
     {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         toBody(object).writeTo(byteArrayOutputStream);
-        return byteArrayOutputStream.toString("UTF-8");
+        String body = byteArrayOutputStream.toString("UTF-8");
+        byteArrayOutputStream.close();
+        return body;
     }
 
     private enum ConverterType

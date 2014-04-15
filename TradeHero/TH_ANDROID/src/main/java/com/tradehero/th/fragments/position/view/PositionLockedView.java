@@ -8,7 +8,9 @@ import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.PositionUtils;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 31/10/13
@@ -22,7 +24,8 @@ public class PositionLockedView extends LinearLayout
     private TextView totalInvestedValue;
 
     private PositionDTO positionDTO;
-    private PortfolioDTO portfolioDTO;
+
+    @Inject protected PositionUtils positionUtils;
 
     //<editor-fold desc="Constructors">
     public PositionLockedView(Context context)
@@ -44,6 +47,7 @@ public class PositionLockedView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         initViews();
     }
 
@@ -65,17 +69,6 @@ public class PositionLockedView extends LinearLayout
         }
     }
 
-    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        this.portfolioDTO = portfolioDTO;
-        if (andDisplay)
-        {
-            displayUnrealisedPLValue();
-            displayRealisedPLValue();
-            displayTotalInvested();
-        }
-    }
-
     public void display()
     {
         if (colorIndicator != null && positionDTO != null)
@@ -93,9 +86,9 @@ public class PositionLockedView extends LinearLayout
     {
         if (unrealisedPLValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                unrealisedPLValue.setText(PositionUtils.getUnrealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                unrealisedPLValue.setText(positionUtils.getUnrealizedPL(getContext(), positionDTO));
             }
         }
     }
@@ -104,9 +97,9 @@ public class PositionLockedView extends LinearLayout
     {
         if (realisedPLValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
             }
         }
     }
@@ -115,9 +108,9 @@ public class PositionLockedView extends LinearLayout
     {
         if (totalInvestedValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
             }
         }
     }
@@ -126,7 +119,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            PositionUtils.setROISinceInception(positionPercent, positionDTO);
+            positionUtils.setROISinceInception(positionPercent, positionDTO);
         }
     }
 }

@@ -52,6 +52,7 @@ abstract public class TrendingFilterTypeDTO
     abstract public TrendingFilterTypeDTO getPrevious();
     abstract public TrendingFilterTypeDTO getNext();
     abstract public TrendingSecurityListType getSecurityListType(String usableExchangeName, Integer page, Integer perPage);
+    abstract public String getTrackEventCategory();
 
     protected void putParameters(Bundle args)
     {

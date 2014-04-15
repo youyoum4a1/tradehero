@@ -72,6 +72,6 @@ abstract public class OneWatchlistIntent extends PortfolioIntent
     {
         super.populate(bundle);
         // TODO have implementation
-        //bundle.putInt(PositionWatchlistFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioId().key);
+        //bundle.putInt(PositionWatchlistFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioIdKey().key);
     }
 }

@@ -4,14 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/security_search_menu_elements"
-      android:actionLayout="@layout/menu_elements_security_search"
-      android:visible="true"
-      android:showAsAction="always"
-      android:enabled="true"
-      />
-
-  <item
       android:id="@+id/current_search_mode"
       android:showAsAction="always"
       android:title="@string/trending_search_mode"

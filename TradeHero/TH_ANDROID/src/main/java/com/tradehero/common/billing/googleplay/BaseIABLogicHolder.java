@@ -5,30 +5,27 @@ import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.ProductIdentifierFetcher;
+import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.request.BillingRequest;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABLogicHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         IABProductIdentifierFetcherHolderType extends ProductIdentifierFetcherHolder<
+                IABSKUListKeyType,
                 IABSKUType,
-                IABProductIdentifierFetchedListenerType,
-                IABException>,
-        IABProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                IABSKUType,
+                IABSKUListType,
                 IABException>,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherHolderType extends IABInventoryFetcherHolder<
                 IABSKUType,
                 IABProductDetailType,
-                IABInventoryFetchedListenerType,
                 IABException>,
-        IABInventoryFetchedListenerType extends BillingInventoryFetcher.OnInventoryFetchedListener<
-                IABSKUType,
-                IABProductDetailType,
-                IABException>,
+        ProductTunerType extends ProductDetailTuner<IABSKUType, IABProductDetailType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<
@@ -38,21 +35,8 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
-                IABPurchaseFetchedListenerType,
-                IABException>,
-        IABPurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType,
                 IABException>,
         IABPurchaserHolderType extends IABPurchaserHolder<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABPurchaseFinishedListenerType,
-                IABException>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKUType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
@@ -62,27 +46,37 @@ abstract public class BaseIABLogicHolder<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
-                IABConsumeFinishedListenerType,
                 IABException>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+        BillingRequestType extends BillingRequest<
+                IABSKUListKeyType,
                 IABSKUType,
+                IABSKUListType,
+                IABProductDetailType,
+                IABPurchaseOrderType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABException>>
     extends BaseBillingLogicHolder<
+        IABSKUListKeyType,
         IABSKUType,
+        IABSKUListType,
+        IABProductDetailType,
+        ProductTunerType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        BillingRequestType,
+        IABException>
+    implements IABLogicHolder<
+        IABSKUListKeyType,
+        IABSKUType,
+        IABSKUListType,
         IABProductDetailType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
+        BillingRequestType,
         IABException>
-    implements IABLogicHolder<
-            IABSKUType,
-            IABProductDetailType,
-            IABPurchaseOrderType,
-            IABOrderIdType,
-            IABPurchaseType,
-            IABException>
 {
     protected IABServiceConnector availabilityTester;
     protected IABProductIdentifierFetcherHolderType productIdentifierFetcherHolder;
@@ -135,12 +129,6 @@ abstract public class BaseIABLogicHolder<
         }
     }
 
-    @Override protected void testBillingAvailable()
-    {
-        availabilityTester = new AvailabilityTester();
-        availabilityTester.startConnectionSetup();
-    }
-
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return
@@ -168,28 +156,27 @@ abstract public class BaseIABLogicHolder<
     abstract protected IABPurchaserHolderType createPurchaserHolder();
     abstract protected IABPurchaseConsumerHolderType createPurchaseConsumeHolder();
 
+    @Override public void registerInventoryFetchedListener(int requestCode,
+            BillingInventoryFetcher.OnInventoryFetchedListener<
+                    IABSKUType,
+                    IABProductDetailType,
+                    IABException> inventoryFetchedListener)
+    {
+        inventoryFetcherHolder.registerInventoryFetchedListener(requestCode, inventoryFetchedListener);
+    }
+
+    @Override public void registerPurchaseFetchedListener(int requestCode,
+            BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    IABSKUType,
+                    IABOrderIdType,
+                    IABPurchaseType,
+                    IABException> purchaseFetchedListener)
+    {
+        purchaseFetcherHolder.registerPurchaseFetchedListener(requestCode, purchaseFetchedListener);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         purchaserHolder.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public class AvailabilityTester extends IABServiceConnector
-    {
-        protected AvailabilityTester()
-        {
-            super();
-        }
-
-        @Override protected void handleSetupFinished(IABResponse response)
-        {
-            super.handleSetupFinished(response);
-            notifyBillingAvailable();
-        }
-
-        @Override protected void handleSetupFailed(IABException exception)
-        {
-            super.handleSetupFailed(exception);
-            notifyBillingNotAvailable(exception);
-        }
     }
 }

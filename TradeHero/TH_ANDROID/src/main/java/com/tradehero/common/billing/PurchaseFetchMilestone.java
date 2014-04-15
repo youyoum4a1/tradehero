@@ -3,6 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.BaseMilestone;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,31 +13,34 @@ abstract public class PurchaseFetchMilestone<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        PurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
         extends BaseMilestone
 {
     protected boolean running;
     protected boolean complete;
     protected boolean failed;
-    protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, PurchaseFetchedListenerType, BillingExceptionType>
+    protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
             purchaseFetcherHolder;
-    protected PurchaseFetchedListenerType purchaseFetchedListener;
+    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFetchedListener;
     protected int requestCode;
-    protected Map<ProductIdentifierType, ProductPurchaseType> fetchedPurchases;
+    protected List<ProductPurchaseType> fetchedPurchases;
 
-    public PurchaseFetchMilestone(BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, PurchaseFetchedListenerType, BillingExceptionType> purchaseFetcherHolder)
+    public PurchaseFetchMilestone(BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder)
     {
         super();
         setBillingActor(purchaseFetcherHolder);
         purchaseFetchedListener = createPurchaseFetchedListener();
     }
 
-    abstract protected PurchaseFetchedListenerType createPurchaseFetchedListener();
+    abstract protected BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> createPurchaseFetchedListener();
 
     @Override public boolean isComplete()
     {
@@ -53,14 +57,14 @@ abstract public class PurchaseFetchMilestone<
         return running;
     }
 
-    public void setBillingActor(BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, PurchaseFetchedListenerType, BillingExceptionType> billingActor)
+    public void setBillingActor(BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> billingActor)
     {
         this.purchaseFetcherHolder = billingActor;
     }
 
-    public Map<ProductIdentifierType, ProductPurchaseType> getFetchedPurchases()
+    public List<ProductPurchaseType> getFetchedPurchases()
     {
-        return Collections.unmodifiableMap(fetchedPurchases);
+        return Collections.unmodifiableList(fetchedPurchases);
     }
 
     @Override public void launch()

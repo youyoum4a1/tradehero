@@ -102,7 +102,6 @@ public class AlertEditFragment extends BaseAlertEditFragment
         }
     }
 
-
     protected void displayActionBarTitle()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();

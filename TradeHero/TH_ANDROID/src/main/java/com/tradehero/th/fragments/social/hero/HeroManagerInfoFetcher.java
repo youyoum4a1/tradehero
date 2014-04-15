@@ -73,7 +73,7 @@ public class HeroManagerInfoFetcher
         this.heroListListener = heroListListener;
     }
 
-    public void fetch(UserBaseKey userBaseKey,HeroType heroType)
+    public void fetch(UserBaseKey userBaseKey, HeroType heroType)
     {
         fetchUserProfile(userBaseKey);
         fetchHeroes(userBaseKey,heroType);
@@ -89,7 +89,7 @@ public class HeroManagerInfoFetcher
         this.userProfileFetchTask.execute();
     }
 
-    public void fetchHeroes(UserBaseKey userBaseKey,HeroType heroType)
+    public void fetchHeroes(UserBaseKey userBaseKey, HeroType heroType)
     {
         HeroKey heroKey = new HeroKey(userBaseKey,heroType);
         HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);

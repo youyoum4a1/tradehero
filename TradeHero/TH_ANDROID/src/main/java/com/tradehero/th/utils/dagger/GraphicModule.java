@@ -4,6 +4,7 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
+import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.discussion.CommentItemView;
 import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
@@ -27,7 +28,8 @@ import java.io.File;
                 EarnCreditTileView.class,
                 ExtraCashTileView.class,
 
-                CommentItemView.class
+                AdView.class,
+                CommentItemView.class,
         },
         complete = false,
         library = true // TODO remove

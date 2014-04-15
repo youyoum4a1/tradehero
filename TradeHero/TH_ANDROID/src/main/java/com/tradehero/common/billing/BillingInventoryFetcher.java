@@ -18,9 +18,9 @@ public interface BillingInventoryFetcher<
     void fetchInventory(int requestCode);
 
     public static interface OnInventoryFetchedListener<
-            ProductIdentifierType,
-            ProductDetailType,
-            BillingExceptionType>
+            ProductIdentifierType extends ProductIdentifier,
+            ProductDetailType extends ProductDetail<ProductIdentifierType>,
+            BillingExceptionType extends BillingException>
     {
         void onInventoryFetchSuccess(
                 int requestCode,

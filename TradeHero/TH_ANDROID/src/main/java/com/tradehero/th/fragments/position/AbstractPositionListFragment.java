@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
-import android.widget.ProgressBar;
+import android.widget.ListView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -26,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -42,6 +43,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -79,8 +81,9 @@ abstract public class AbstractPositionListFragment<
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
-    protected ExpandingListView positionsListView;
-    private ProgressBar progressBar;
+    @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
+    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
+    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
 
     protected OwnedPortfolioId shownOwnedPortfolioId;
     protected GetPositionsDTOType getPositionsDTO;
@@ -101,10 +104,13 @@ abstract public class AbstractPositionListFragment<
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
 
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new AbstractPositionListUserFollowedListener();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
@@ -113,6 +119,7 @@ abstract public class AbstractPositionListFragment<
 
         View view = inflater.inflate(R.layout.fragment_positions_list, container, false);
 
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
@@ -147,50 +154,62 @@ abstract public class AbstractPositionListFragment<
 
         if (view != null)
         {
-            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-
-            positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
-            positionsListView.setEmptyView(view.findViewById(android.R.id.empty));
-
             if (positionItemAdapter == null)
             {
                 createPositionItemAdapter();
             }
-            if (positionsListView != null)
+
+            positionsListView.setAdapter(positionItemAdapter);
+            positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
             {
-                positionsListView.setAdapter(positionItemAdapter);
-                positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
                 {
-                    @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-                    {
-                        handlePositionItemClicked(adapterView, view, position, id);
-                    }
+                    handlePositionItemClicked(adapterView, view, position, id);
+                }
 
-                    @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
-                    {
-                    }
+                @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
+                {
+                }
 
-                    @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
-                    {
-                    }
-                });
-            }
+                @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
+                {
+                }
+            });
+
+            initPullToRefreshListView(view);
 
             // portfolio header
             Bundle args = getArguments();
             if (args != null)
             {
-                ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
+                headerStub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
                 int headerLayoutId = headerFactory.get().layoutIdFor(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
-                stub.setLayoutResource(headerLayoutId);
-                this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
+                headerStub.setLayoutResource(headerLayoutId);
+                this.portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
             }
         }
     }
 
-    abstract protected void createPositionItemAdapter();
+    private void initPullToRefreshListView(View view)
+    {
 
-    @Override abstract protected void createUserInteractor();
+        ((ViewGroup) view).removeView(positionsListView);
+        pullToRefreshListView.setRefreshableView(positionsListView);
+        pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                // refresh header values
+                fetchPortfolio(true);
+
+                // refresh position cache
+                fetchSimplePage(true);
+            }
+        });
+        displayProgress(true);
+    }
+
+    abstract protected void createPositionItemAdapter();
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -306,6 +325,12 @@ abstract public class AbstractPositionListFragment<
             positionItemAdapter.setCellListener(null);
         }
         positionItemAdapter = null;
+
+        if (pullToRefreshListView != null)
+        {
+            pullToRefreshListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
+        }
+
         super.onDestroyView();
     }
 
@@ -317,7 +342,7 @@ abstract public class AbstractPositionListFragment<
 
         detachPortfolioTask();
         detachUserProfileTask();
-        fetchPortfolio();
+        fetchPortfolio(false);
         fetchUserProfile();
 
         fetchSimplePage();
@@ -328,7 +353,7 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
-    protected void fetchPortfolio()
+    protected void fetchPortfolio(boolean force)
     {
         detachPortfolioTask();
         if (shownOwnedPortfolioId != null)
@@ -337,7 +362,7 @@ abstract public class AbstractPositionListFragment<
             Boolean isOtherPeople = isShownOwnedPortfolioIdForOtherPeople(shownOwnedPortfolioId);
             if (isOtherPeople != null && !isOtherPeople)
             {
-                fetchPortfolioDTOTask = createPortfolioFetchTask(shownOwnedPortfolioId);
+                fetchPortfolioDTOTask = createPortfolioFetchTask(shownOwnedPortfolioId, force);
                 fetchPortfolioDTOTask.execute();
             }
             else
@@ -358,7 +383,7 @@ abstract public class AbstractPositionListFragment<
             if (!isShownOwnedPortfolioIdForOtherPeople(positionPortfolioId))
             {
                 this.shownOwnedPortfolioId = positionPortfolioId;
-                fetchPortfolio();
+                fetchPortfolio(false);
             }
         }
     }
@@ -379,8 +404,9 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void fetchSimplePage();
+    abstract protected void fetchSimplePage(boolean force);
     abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheListener();
-    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheFetchTask();
+    abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheFetchTask(boolean force);
 
     protected void detachGetPositionsTask()
     {
@@ -414,18 +440,17 @@ abstract public class AbstractPositionListFragment<
         return userProfileCache.getOrFetch(userBaseKey, false, userProfileCacheListener);
     }
 
-    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId)
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId, boolean force)
     {
-        return portfolioCache.get().getOrFetch(ownedPortfolioId, false, portfolioCacheListener);
+        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, portfolioCacheListener);
     }
 
     protected void rePurposeAdapter()
     {
-        if (this.getPositionsDTO != null && this.portfolioDTO != null)
+        if (this.getPositionsDTO != null)
         {
             createPositionItemAdapter();
             positionItemAdapter.setItems(getPositionsDTO.positions);
-            positionItemAdapter.linkWith(portfolioDTO);
             restoreExpandingStates();
             if (positionsListView != null)
             {
@@ -536,9 +561,14 @@ abstract public class AbstractPositionListFragment<
 
     public void displayProgress(boolean running)
     {
-        if (progressBar != null)
+        Timber.d("displayProgress %b", running);
+        if (running)
         {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+            pullToRefreshListView.setRefreshing();
+        }
+        else
+        {
+            pullToRefreshListView.onRefreshComplete();
         }
     }
 
@@ -592,7 +622,7 @@ abstract public class AbstractPositionListFragment<
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                userInteractor.followHero(userBaseKey);
+                followUser(userBaseKey);
             }
         });
     }
@@ -659,34 +689,6 @@ abstract public class AbstractPositionListFragment<
     }
     //</editor-fold>
 
-    abstract public class AbstractPositionListTHIABUserInteractor extends THIABUserInteractor
-    {
-        public final String TAG = AbstractPositionListTHIABUserInteractor.class.getName();
-
-        public AbstractPositionListTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            displayHeaderView();
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    displayHeaderView();
-                }
-            };
-        }
-    }
-
     abstract protected class AbstractGetPositionsListener<
             CacheQueryIdType,
             PositionDTOType extends PositionDTO,
@@ -704,5 +706,15 @@ abstract public class AbstractPositionListFragment<
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
+    }
+
+    protected class AbstractPositionListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            displayHeaderView();
+            fetchSimplePage(true);
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -24,7 +24,6 @@ import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -33,7 +32,7 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -48,20 +47,20 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import org.json.JSONObject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import timber.log.Timber;
 
 public class InviteFriendFragment extends DashboardFragment
 {
-    private static final String TAG = InviteFriendFragment.class.getName();
-
     private static final int MIN_LENGTH_TEXT_TO_SEARCH = 0;
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
@@ -75,6 +74,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
@@ -145,7 +145,7 @@ public class InviteFriendFragment extends DashboardFragment
         };
         socialNetworkCallback = new LogInCallback()
         {
-            @Override public void done(UserBaseDTO user, THException ex)
+            @Override public void done(UserLoginDTO user, THException ex)
             {
                 if (!isDetached())
                 {
@@ -160,9 +160,12 @@ public class InviteFriendFragment extends DashboardFragment
                         currentUserId.toUserBaseKey(),
                         UserFormFactory.create(json),
                         createSocialConnectCallback());
-                if (!isDetached())
+                FragmentActivity activity = getActivity();
+                if (!isDetached() && activity != null && !activity.isFinishing())
                 {
-                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                    progressDialog.setMessage(getString(
+                            R.string.authentication_connecting_tradehero,
+                            currentSocialNetworkConnect.getName()));
                 }
                 return false;
             }
@@ -446,7 +449,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = ProgressDialogUtil.show(
+        progressDialog = progressDialogUtil.show(
                 getActivity(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
@@ -512,7 +515,6 @@ public class InviteFriendFragment extends DashboardFragment
     //<editor-fold desc="Search">
     private void activateSearch(String searchText)
     {
-        THLog.d(TAG, "Search term: " + searchText + ", Thread: " + Looper.myLooper());
         if (referFriendListAdapter != null)
         {
             referFriendListAdapter.filter(searchText);
@@ -616,6 +618,7 @@ public class InviteFriendFragment extends DashboardFragment
         StringBuilder stringBuilder = new StringBuilder();
         if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
         {
+            Collections.shuffle(selectedFacebookFriends);
             for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
             {
                 stringBuilder.append(selectedFacebookFriends.get(i).fbId).append(',');
@@ -628,7 +631,7 @@ public class InviteFriendFragment extends DashboardFragment
         {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
-        THLog.d(TAG, "list of fbIds: " + stringBuilder.toString());
+        Timber.d("list of fbIds: %s", stringBuilder.toString());
 
         Bundle params = new Bundle();
         String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message);

@@ -1,45 +1,49 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.THPurchaseOrder;
+import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
 import java.io.IOException;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 10:45 AM To change this template use File | Settings | File Templates. */
-public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
+public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>
 {
     public static final String TAG = THIABPurchaseOrder.class.getSimpleName();
 
     private IABSKU sku;
     private int quantity;
     private OwnedPortfolioId developerPayload;
+    private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseOrder (IABSKU sku)
-    {
-        this(sku, 1);
-    }
-
-    public THIABPurchaseOrder (IABSKU sku, int quantity)
-    {
-        this(sku, quantity, null);
-    }
-
-    public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
     {
         this(sku, 1, developerPayload);
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
-    public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
     {
         this.sku = sku;
         this.quantity = quantity;
         this.developerPayload = developerPayload;
+        testOwnedPortfolioIdValid(developerPayload);
     }
     //</editor-fold>
+
+    public void testOwnedPortfolioIdValid(OwnedPortfolioId developerPayload) throws MissingApplicablePortfolioIdException
+    {
+        if (developerPayload == null || !developerPayload.isValid())
+        {
+            throw new MissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
+        }
+    }
 
     @Override public IABSKU getProductIdentifier()
     {
@@ -74,6 +78,18 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
         {
             this.developerPayload = null;
         }
+    }
+
+    @JsonIgnore
+    @Override public void setUserToFollow(UserBaseKey userToFollow)
+    {
+        this.userToFollow = userToFollow;
+    }
+
+    @JsonIgnore
+    @Override public UserBaseKey getUserToFollow()
+    {
+        return userToFollow;
     }
 
     @Override public String toString()

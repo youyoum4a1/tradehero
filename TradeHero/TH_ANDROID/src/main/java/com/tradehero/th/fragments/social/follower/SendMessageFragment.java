@@ -71,6 +71,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
 
@@ -207,7 +208,7 @@ public class SendMessageFragment extends DashboardFragment
             return;
         }
         this.progressDialog =
-                ProgressDialogUtil.show(getActivity(), null, getString(R.string.broadcast_message_sending_hint));
+                progressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
         // TODO not sure about this implementation yet
         messageServiceWrapper.get()

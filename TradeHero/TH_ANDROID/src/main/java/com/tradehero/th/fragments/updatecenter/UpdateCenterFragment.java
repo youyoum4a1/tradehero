@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +7,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -39,7 +39,6 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
-import com.tradehero.th.utils.LocalyticsConstants;
 import timber.log.Timber;
 
 /**

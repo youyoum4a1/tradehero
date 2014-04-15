@@ -9,6 +9,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 30/10/13
@@ -58,17 +59,6 @@ abstract public class AbstractPositionPartialBottomClosedView<
         periodHeld = (TextView) findViewById(R.id.period_value);
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        super.linkWith(portfolioDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayRealisedPLValue();
-            displayTotalInvested();
-
-        }
-    }
-
     @Override public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         super.linkWith(positionDTO, andDisplay);
@@ -98,25 +88,25 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (realisedPLValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                realisedPLValue.setText(PositionUtils.getRealizedPL(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
             }
         }
     }
 
     public void displayRoiValue()
     {
-        PositionUtils.setROISinceInception(roiValue, positionDTO);
+        positionUtils.setROISinceInception(roiValue, positionDTO);
     }
 
     public void displayTotalInvested()
     {
         if (totalInvestedValue != null)
         {
-            if (portfolioDTO != null)
+            if (positionDTO != null)
             {
-                totalInvestedValue.setText(PositionUtils.getSumInvested(getContext(), positionDTO, portfolioDTO.getNiceCurrency()));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
             }
         }
     }

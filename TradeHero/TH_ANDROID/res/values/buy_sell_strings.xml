@@ -45,7 +45,7 @@
   <string name="alert_dialog_buy_sell_retrofit_failed_message">We failed to execute your order.\nYou may confirm the trade did not go through and try again.</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_cancel">Okay</string>
 
-  <string name="alert_dialog_buy_sell_returned_null_title">Oh Oh</string>
+  <string name="alert_dialog_buy_sell_returned_null_title">We are sorry</string>
   <string name="alert_dialog_buy_sell_returned_null_message">The server returned invalid information.\nYou may confirm the trade did not go through and try again.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
 

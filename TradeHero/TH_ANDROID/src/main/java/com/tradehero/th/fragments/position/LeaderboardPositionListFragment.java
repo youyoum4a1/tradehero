@@ -57,9 +57,9 @@ public class LeaderboardPositionListFragment
         return new GetLeaderboardPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask()
+    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
+        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, force, getLeaderboardPositionsCacheListener);
     }
 
     @Override public void onResume()
@@ -95,10 +95,15 @@ public class LeaderboardPositionListFragment
 
     @Override protected void fetchSimplePage()
     {
+        fetchSimplePage(false);
+    }
+
+    @Override protected void fetchSimplePage(boolean force)
+    {
         if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
         {
             detachGetLeaderboardPositions();
-            fetchGetPositionsDTOTask = getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
+            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
             fetchGetPositionsDTOTask.execute();
         }
     }
@@ -122,11 +127,6 @@ public class LeaderboardPositionListFragment
         };
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new LeaderboardPositionListTHIABUserInteractor();
-    }
-
     @Override public void onTradeHistoryClicked(PositionInPeriodDTO clickedPositionDTO)
     {
         // We should not call the super method.
@@ -144,14 +144,6 @@ public class LeaderboardPositionListFragment
                 displayProgress(false);
                 linkWith(value, true);
             }
-        }
-    }
-
-    public class LeaderboardPositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
-    {
-        public LeaderboardPositionListTHIABUserInteractor()
-        {
-            super();
         }
     }
 }

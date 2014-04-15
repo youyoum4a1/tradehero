@@ -8,6 +8,8 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THProductDetail;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,33 +19,33 @@ import java.util.TreeSet;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,
-        ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        ProductDetailViewType extends ProductDetailView<ProductIdentifierType, ProductDetailType>>
-        extends ArrayDTOAdapter<ProductDetailType, ProductDetailViewType>
+        THProductDetailType extends THProductDetail<ProductIdentifierType>,
+        ProductDetailViewType extends ProductDetailView<ProductIdentifierType, THProductDetailType>>
+        extends ArrayDTOAdapter<THProductDetailType, ProductDetailViewType>
 {
     public static final String TAG = ProductDetailAdapter.class.getSimpleName();
 
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_VALUE = 1;
 
-    protected Comparator<ProductDetailType> productDetailComparator;
+    protected Comparator<THProductDetailType> productDetailComparator;
     protected Map<ProductIdentifier, Boolean> enabledItems;
-    protected String skuDomain;
+    protected ProductIdentifierDomain skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
+    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, ProductIdentifierDomain skuDomain)
     {
         super(context, inflater, layoutResourceId);
         this.skuDomain = skuDomain;
     }
     //</editor-fold>
 
-    public Comparator<ProductDetailType> getProductDetailComparator()
+    public Comparator<THProductDetailType> getProductDetailComparator()
     {
         return productDetailComparator;
     }
 
-    public void setProductDetailComparator(Comparator<ProductDetailType> productDetailComparator)
+    public void setProductDetailComparator(Comparator<THProductDetailType> productDetailComparator)
     {
         this.productDetailComparator = productDetailComparator;
     }
@@ -53,7 +55,7 @@ abstract public class ProductDetailAdapter<
         this.enabledItems = enabledItems;
     }
 
-    @Override public void setItems(List<ProductDetailType> items)
+    @Override public void setItems(List<THProductDetailType> items)
     {
         if (productDetailComparator == null || items == null)
         {
@@ -61,7 +63,7 @@ abstract public class ProductDetailAdapter<
         }
         else
         {
-            TreeSet<ProductDetailType> sorted = new TreeSet<>(productDetailComparator);
+            TreeSet<THProductDetailType> sorted = new TreeSet<>(productDetailComparator);
             sorted.addAll(items);
             super.setItems(new ArrayList<>(sorted));
         }
@@ -144,12 +146,12 @@ abstract public class ProductDetailAdapter<
         return status == null || status;
     }
 
-    public String getSkuDomain()
+    public ProductIdentifierDomain getSkuDomain()
     {
         return skuDomain;
     }
 
-    public void setSkuDomain(String skuDomain)
+    public void setSkuDomain(ProductIdentifierDomain skuDomain)
     {
         this.skuDomain = skuDomain;
     }

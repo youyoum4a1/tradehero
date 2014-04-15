@@ -15,6 +15,7 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
     public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_volume_title;
     public static final int DEFAULT_ICON_RES_ID = R.drawable.ic_trending_volume;
     public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_volume_description;
+    public static final String TRACK_EVENT_SYMBOL = "Unusual Volumes";
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypeVolumeDTO()
@@ -53,6 +54,11 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
     @Override public TrendingSecurityListType getSecurityListType(String usableExchangeName, Integer page, Integer perPage)
     {
         return new TrendingVolumeSecurityListType(usableExchangeName, page, perPage);
+    }
+
+    @Override public String getTrackEventCategory()
+    {
+        return TRACK_EVENT_SYMBOL;
     }
 
     @Override protected void putParameters(Bundle args)

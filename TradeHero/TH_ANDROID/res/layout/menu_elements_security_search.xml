@@ -17,7 +17,6 @@
       android:layout_centerVertical="true"
       android:hint="@string/trending_search_stock_hint"
       android:textColorHint="@color/light_grey"
-      android:layout_marginRight="@dimen/abs__action_bar_default_height"
       >
 
     <requestFocus/>

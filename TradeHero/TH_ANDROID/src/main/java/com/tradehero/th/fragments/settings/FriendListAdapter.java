@@ -82,7 +82,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             sectionViewHolder = (SectionViewHolder) convertView.getTag();
         }
 
-        if (sectionViewHolder != null && sectionViewHolder.labelText != null)
+        if (sectionViewHolder != null && sectionViewHolder.labelText != null && sections != null)
         {
             sectionViewHolder.labelText.setText("" + sections[getSectionForPosition(position)]);
         }

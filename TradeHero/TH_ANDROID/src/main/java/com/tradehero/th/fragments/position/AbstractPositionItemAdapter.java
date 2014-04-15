@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
@@ -27,7 +28,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     protected List<Integer> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
-    protected PortfolioDTO portfolioDTO;
 
     protected final Context context;
     protected final LayoutInflater inflater;
@@ -179,11 +179,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         notifyDataSetChanged();
     }
 
-    public void linkWith(PortfolioDTO portfolioDTO)
-    {
-        this.portfolioDTO = portfolioDTO;
-    }
-
     protected ExpandableListItem<PositionDTOType> createExpandableItem(PositionDTOType dto)
     {
         return new ExpandableListItem<>(dto);
@@ -262,7 +257,19 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutToInflate, parent, false);
+            try
+            {
+                convertView = inflater.inflate(layoutToInflate, parent, false);
+            }
+            catch (Throwable t)
+            {
+                do
+                {
+                    Timber.e(t, "error");
+                    t = t.getCause();
+                }
+                while (t != null);
+            }
         }
 
         Object item = getItem(position);
@@ -275,7 +282,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         {
             PositionLockedView cell = (PositionLockedView) convertView;
             cell.linkWith((PositionDTOType) null, false);
-            cell.linkWith(portfolioDTO, false);
             cell.display();
         }
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
@@ -283,7 +289,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
             AbstractPositionView cell = (AbstractPositionView) convertView;
             cell.linkWith(expandableWrapper, false);
-            cell.linkWith(portfolioDTO, false);
             cell.display();
             cell.setListener(new AbstractPositionItemAdapterPositionListener());
         }

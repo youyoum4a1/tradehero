@@ -11,21 +11,23 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.billing.googleplay.exception.IABBillingUnavailableException;
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
@@ -33,15 +35,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
     public static boolean alreadyNotifiedNeedCreateAccount = false;
+    protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
-
-    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -67,11 +67,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new StoreScreenTHIABUserInteractor();
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -87,6 +82,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
 
         storeItemAdapter.notifyDataSetChanged();
+        cancelOthersAndShowBillingAvailable();
     }
 
     @Override public void onDestroyView()
@@ -105,25 +101,62 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return true;
     }
 
+    public void cancelOthersAndShowBillingAvailable()
+    {
+        if (alreadyNotifiedNeedCreateAccount)
+        {
+            return;
+        }
+
+        if (showBillingAvailableRequestCode != null)
+        {
+            userInteractor.forgetRequestCode(showBillingAvailableRequestCode);
+        }
+        showBillingAvailableRequestCode = showBillingAvailable();
+        alreadyNotifiedNeedCreateAccount = true;
+    }
+
+    public int showBillingAvailable()
+    {
+        return userInteractor.run(getShowBillingAvailableRequest());
+    }
+
+    public THUIBillingRequest getShowBillingAvailableRequest()
+    {
+        THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.applicablePortfolioId = getApplicablePortfolioId();
+        request.startWithProgressDialog = false;
+        request.popIfBillingNotAvailable = !alreadyNotifiedNeedCreateAccount;
+        request.billingAvailable = true;
+        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        {
+            @Override public void onError(int requestCode, BillingException billingException)
+            {
+                Timber.e(billingException, "Store had error");
+            }
+        };
+        return request;
+    }
+
     private void handlePositionClicked(int position)
     {
         Bundle bundle;
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                userInteractor.conditionalPopBuyVirtualDollars();
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                userInteractor.conditionalPopBuyFollowCredits();
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                userInteractor.conditionalPopBuyStockAlerts();
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                userInteractor.conditionalPopBuyResetPortfolio();
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
@@ -153,7 +186,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
@@ -165,7 +198,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
-        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
             bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
@@ -173,45 +206,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    private void pushFragment(Class<? extends Fragment> fragmentClass)
-    {
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass);
-    }
-
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass, bundle);
     }
 
-    private void popPleaseWait()
-    {
-        THIABAlertDialogUtil.popWithNegativeButton(getActivity(),
-                R.string.error_incomplete_info_title,
-                R.string.error_incomplete_info_message,
-                R.string.error_incomplete_info_cancel);
-    }
-
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_store_screen;
-    }
-
-    public class StoreScreenTHIABUserInteractor extends THIABUserInteractor
-    {
-        public StoreScreenTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-        {
-            // TODO warn if there are things unset
-            if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
-            {
-                alreadyNotifiedNeedCreateAccount = true;
-                popBillingUnavailable();
-            }
-            // Nothing to do presumably
-        }
     }
 }

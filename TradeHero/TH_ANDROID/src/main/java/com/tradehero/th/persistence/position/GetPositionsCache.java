@@ -8,11 +8,13 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
@@ -84,6 +86,21 @@ import retrofit.RetrofitError;
         }
 
         return previous;
+    }
+
+    /**
+     * Invalidates all the info about the given user
+     * @param userBaseKey
+     */
+    public void invalidate(final UserBaseKey userBaseKey)
+    {
+        for (OwnedPortfolioId ownedPortfolioId : lruCache.snapshot().keySet())
+        {
+            if (ownedPortfolioId.userId.equals(userBaseKey.key))
+            {
+                invalidate(ownedPortfolioId);
+            }
+        }
     }
 
     @Override public void invalidate(final OwnedPortfolioId key)

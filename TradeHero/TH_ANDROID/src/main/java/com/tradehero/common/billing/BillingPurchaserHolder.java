@@ -8,18 +8,22 @@ public interface BillingPurchaserHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        BillingPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);
     void forgetRequestCode(int requestCode);
-    BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode);
-    void registerPurchaseFinishedListener(int requestCode, BillingPurchaseFinishedListenerType purchaseFinishedListener);
+    BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseFinishedListener(int requestCode);
+    void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFinishedListener);
     void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder);
     void onDestroy();
 }
