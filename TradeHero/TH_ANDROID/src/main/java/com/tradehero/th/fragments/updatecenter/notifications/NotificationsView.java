@@ -389,6 +389,7 @@ public class NotificationsView extends BetterViewAnimator
             nextPageDelta = 0;
             paginatedNotificationListKey = null;
 
+            notificationList.setRefreshing();
             fetchNextPageIfNecessary(true);
         }
     }
