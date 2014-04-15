@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.SharedPreferences;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
@@ -28,7 +27,6 @@ import javax.inject.Singleton;
                 WXEntryActivity.class
         },
         staticInjections = {
-                DisplayablePortfolioUtil.class,
                 VisitedFriendListPrefs.class,
         },
         complete = false

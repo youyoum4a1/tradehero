@@ -35,8 +35,7 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public int countTrades;
     public int countExchanges;
 
-    @JsonIgnore
-    public String getNiceCurrency()
+    @JsonIgnore public String getNiceCurrency()
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())
         {

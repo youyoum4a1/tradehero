@@ -19,7 +19,7 @@ public class PhilipsMacquarieProviderSpecificResourcesDTO extends ProviderSpecif
         helpVideoLinkBackgroundResId = R.drawable.btn_provider_22_philips_macquarie;
         helpVideoLinkTextColourResId = R.color.white;
         //timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
-        //competitionPortfolioTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        competitionPortfolioTitleResId = R.string.competition_philip_macquarie_warrant_hero_portfolio_title;
         //securityListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_security_list_title;
     }
 }
