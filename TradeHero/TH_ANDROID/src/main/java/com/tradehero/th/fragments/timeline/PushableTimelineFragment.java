@@ -120,6 +120,8 @@ public class PushableTimelineFragment extends TimelineFragment
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            linkWith(currentUserProfileDTO, true);
+            updateBottomButton();
         }
     }
 }
