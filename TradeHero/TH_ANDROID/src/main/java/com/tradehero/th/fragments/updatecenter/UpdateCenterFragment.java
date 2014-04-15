@@ -254,7 +254,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
+        //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
         {

@@ -37,10 +37,6 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     private HeroType heroType;
     private int page;
 
-    public HeroesTabContentFragment()
-    {
-    }
-
     private HeroManagerViewContainer viewContainer;
     private ProgressDialog progressDialog;
 

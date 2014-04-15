@@ -88,7 +88,7 @@ import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
-import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
+import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
@@ -306,7 +306,7 @@ import javax.inject.Singleton;
                         THIABBillingInteractor.class,
                         HeroManagerInfoFetcher.class,
                         HeroesTabContentFragment.class,
-                        PrimiumHeroFragment.class,
+                        PremiumHeroFragment.class,
                         FreeHeroFragment.class,
                         AllHeroFragment.class,
                         HeroManagerInfoFetcher.class,
