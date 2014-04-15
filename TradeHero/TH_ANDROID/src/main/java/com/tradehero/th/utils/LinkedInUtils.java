@@ -2,6 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -27,6 +28,11 @@ public class LinkedInUtils implements SocialSharer
     }
 
     @Override public void share(Context context, DTOKey shareDtoKey)
+    {
+        // TODO
+    }
+
+    @Override public void share(Context context, SecurityCompactDTO securityCompactDTO)
     {
         // TODO
     }

@@ -4,17 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Inject;
 
 /**
  * Created by wangliang on 3/4/14.
@@ -31,14 +28,8 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     }
 
-
-
-    ///////////////////////////////////////////////////////////////////////////
-
     private MessageOnClickListener messageOnClickListener;
     private Set<Integer> markedDeletedIds;
-
-
 
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -128,6 +119,19 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         setItems(itemCopied);
         notifyDataSetChanged();
     }
+    //@Override public void setItems(List<MessageHeaderId> newItems)
+    //{
+    //    List<MessageHeaderId> itemCopied =
+    //            (items != null) ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
+    //    for (MessageHeaderId messageHeaderId : newItems)
+    //    {
+    //        if (!checkExist(messageHeaderId.key))
+    //        {
+    //            itemCopied.add(messageHeaderId);
+    //        }
+    //    }
+    //    super.setItems(itemCopied);
+    //}
 
     private void filter()
     {

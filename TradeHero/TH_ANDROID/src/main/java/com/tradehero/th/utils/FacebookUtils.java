@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -37,6 +38,11 @@ public class FacebookUtils implements SocialSharer
     }
 
     @Override public void share(Context context, DTOKey shareDtoKey)
+    {
+        // TODO implement way to share to facebook
+    }
+
+    @Override public void share(Context context, SecurityCompactDTO securityCompactDTO)
     {
         // TODO implement way to share to facebook
     }

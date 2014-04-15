@@ -112,4 +112,6 @@
   <dimen name="notification_horizontal_margin">10dp</dimen>
   <dimen name="notification_vertical_margin">0dp</dimen>
   <dimen name="timeline_belt_height">40dp</dimen>
+  <dimen name="vote_view_drawable_padding">3dp</dimen>
+  <dimen name="comment_count_drawable_padding">3dp</dimen>
 </resources>
