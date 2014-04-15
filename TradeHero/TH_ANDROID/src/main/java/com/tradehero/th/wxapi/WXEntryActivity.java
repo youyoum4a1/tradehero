@@ -81,7 +81,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private WXMediaMessage buildMessage(WXMessageType wxMessageType)
     {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = Constants.BASE_STATIC_CONTENT_URL;
+        webpage.webpageUrl = Constants.WECHAT_SHARE_URL;
 
         WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
         weChatMsg.title = getString(wxMessageType.getTitleResId());
