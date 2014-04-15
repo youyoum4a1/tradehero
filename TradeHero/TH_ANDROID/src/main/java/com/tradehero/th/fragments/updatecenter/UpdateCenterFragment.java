@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.updatecenter;
 
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import java.util.List;
 import javax.inject.Inject;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -35,6 +39,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.utils.LocalyticsConstants;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 3/4/14.
@@ -63,10 +68,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
         fetchUserProfileListener = new FetchUserProfileListener();
         initBroadcastReceiver();
+
+        Timber.d("onCreate");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        Timber.d("onCreateView");
         return addTabs();
     }
 
@@ -79,6 +87,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         super.onResume();
 
+        Timber.d("onResume");
         fetchUserProfile();
 
         LocalBroadcastManager.getInstance(getActivity())
@@ -173,8 +182,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
+        Timber.d("onDestroyView");
         clearTabs();
-
         detachUserProfileTask();
 
         super.onDestroyView();
@@ -182,6 +191,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public void onDestroy()
     {
+        Timber.d("onDestroy");
         fetchUserProfileListener = null;
 
         super.onDestroy();
@@ -192,28 +202,23 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
-
         Bundle args = getArguments();
         if (args == null)
         {
             args = new Bundle();
         }
-
         UpdateCenterTabType[] types = UpdateCenterTabType.values();
         for (UpdateCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE, tabTitle.pageIndex);
-
             TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
                     .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
             String title = getString(tabTitle.titleRes, 0);
             tabView.setTitle(title);
-
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
-
         return mTabHost;
     }
 
@@ -221,7 +226,26 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (mTabHost != null)
         {
+            android.support.v4.app.FragmentManager fm = getChildFragmentManager();
+            List<Fragment> fragmentList = fm.getFragments();
+            Timber.d("fragmentList %s",fragmentList);
+            if (fragmentList != null && fragmentList.size() > 0)
+            {
+                FragmentTransaction ft = fm.beginTransaction();
+                for (Fragment f:fragmentList)
+                {
+                    if (f != null)
+                    {
+                        ft.remove(f);
+                    }
+                }
+                //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+                ft.commitAllowingStateLoss();
+                fm.executePendingTransactions();
+            }
+
             mTabHost.clearAllTabs();
+            int tabCount = mTabHost.getTabWidget().getTabCount();
             mTabHost = null;
         }
 
