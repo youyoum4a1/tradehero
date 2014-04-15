@@ -1285,18 +1285,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
-        billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-            {
-                linkWith(updatedUserProfile, true);
-                waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
-            }
-
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-            }
-        };
+        billingRequest.purchaseReportedListener = new BuySellPurchaseReportedListener();
         return billingRequest;
     }
 
@@ -1983,6 +1972,21 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected class BuySellPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener
+    {
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            BuySellFragment.BuySellPurchaseReportedListener
+            linkWith(updatedUserProfile, true);
+            waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
+            updateBuySellDialog();
+        }
+
+        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+        {
         }
     }
 }
