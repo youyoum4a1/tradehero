@@ -30,9 +30,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by thonguyen on 9/4/14.
- */
 public class PostCommentView extends RelativeLayout
 {
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
@@ -95,7 +92,7 @@ public class PostCommentView extends RelativeLayout
     }
 
     @OnClick(R.id.post_comment_action_submit)
-    void postComment()
+    protected void postComment()
     {
         detachSubmitCommentMiddleCallback();
 
@@ -208,7 +205,7 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    private class CommentSubmitCallback implements Callback<DiscussionDTO>
+    protected class CommentSubmitCallback implements Callback<DiscussionDTO>
     {
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
