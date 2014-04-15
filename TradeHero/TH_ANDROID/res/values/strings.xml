@@ -52,4 +52,6 @@
   <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
   <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
   <string name="broadcast_message_sending_hint">Sending message...</string>
+
+  <string name="common_loading_error">Sorry, there is something wrong</string>
 </resources>

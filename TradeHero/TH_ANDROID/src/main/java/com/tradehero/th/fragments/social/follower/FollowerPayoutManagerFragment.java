@@ -38,6 +38,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private TextView totalRevenue;
     private ActionBar actionBar;
     private FollowerPaymentListView followerPaymentListView;
+    private View errorView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
     private FollowerHeroRelationId followerHeroRelationId;
@@ -79,6 +80,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
         followerPaymentListView = (FollowerPaymentListView) view.findViewById(R.id.follower_payments_list);
+
+        errorView = view.findViewById(R.id.error_view);
 
         if (followerPaymentListAdapter == null)
         {
@@ -147,6 +150,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                     @Override public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
                     {
                         THToast.show("There was an error fetching your follower information");
+                        showErrorView();
                     }
                 };
             }
@@ -161,12 +165,28 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected String getDisplayName()
     {
+        if (userFollowerDTO == null)
+        {
+            return followerHeroRelationId.followerName;
+        }
         return userBaseDTOUtil.getLongDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)
     {
         linkWith(summaryDTO, true);
+    }
+
+    private void showErrorView()
+    {
+        if (errorView != null)
+        {
+            errorView.setVisibility(View.VISIBLE);
+        }
+        if (followerPaymentListView != null)
+        {
+            followerPaymentListView.setVisibility(View.GONE);
+        }
     }
 
     public void linkWith(UserFollowerDTO summaryDTO, boolean andDisplay)

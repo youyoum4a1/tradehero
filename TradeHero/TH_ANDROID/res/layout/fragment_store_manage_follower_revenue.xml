@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
   >
 
   <RelativeLayout
@@ -13,6 +13,7 @@
       android:layout_alignParentTop="true"
       android:padding="3dp"
       android:background="@color/gray_3"
+      tools:background="#f00"
       >
 
 
@@ -75,5 +76,13 @@
       android:layout_below="@id/manage_follower_revenue_header"
       android:background="@null"
       />
-
+<TextView
+    android:id="@+id/error_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/manage_follower_revenue_header"
+    android:text="@string/common_loading_error"
+    android:gravity="center"
+    android:visibility="gone"
+    />
 </RelativeLayout>

@@ -112,14 +112,11 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+
         Timber.d("FollowerManagerTabFragment onResume");
         this.followedId = new UserBaseKey(
                 getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
-        //May be null(getSelectedTab)
-        //Integer tagId = (Integer)getSherlockActivity().getSupportActionBar().getSelectedTab().getTag();
-        //int tabIndex = getSherlockActivity().getSupportActionBar().getSelectedTab().getPosition();
-        //HeroType followerType = HeroType.fromId(tagId);
         this.infoFetcher.fetch(this.followedId);
     }
 
@@ -191,7 +188,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             if (followerDTO != null)
             {
                 FollowerHeroRelationId followerHeroRelationId =
-                        new FollowerHeroRelationId(getApplicablePortfolioId().userId, followerDTO.id);
+                        new FollowerHeroRelationId(getApplicablePortfolioId().userId, followerDTO.id, followerDTO.displayName);
                 Bundle args = new Bundle();
                 args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
                         followerHeroRelationId.getArgs());
