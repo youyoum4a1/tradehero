@@ -4,18 +4,17 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
-import com.tradehero.th.fragments.discussion.PostCommentView;
-import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
 {
     protected MessageType messageType;
+    private MessageStatusDTO messageStatusDTO;
+    private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionView(Context context)
@@ -46,7 +45,22 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
+        setMessageStatusDTO(messageStatusDTO);
         setLoaded();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        setMessageNotAllowedListenerOnPostCommentView(null);
+        messageNotAllowedToSendListener = null;
+        super.onDetachedFromWindow();
     }
 
     @Override protected void setLoading()
@@ -74,6 +88,51 @@ public class PrivateDiscussionView extends DiscussionView
         if (postCommentView != null)
         {
             postCommentView.linkWith(messageType);
+        }
+    }
+
+    public void setMessageStatusDTO(MessageStatusDTO messageStatusDTO)
+    {
+        this.messageStatusDTO = messageStatusDTO;
+        setMessageStatusOnPostCommentView();
+    }
+
+    public void setMessageNotAllowedToSendListener(PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener)
+    {
+        this.messageNotAllowedToSendListener = messageNotAllowedToSendListener;
+    }
+
+    private void setMessageStatusOnPostCommentView()
+    {
+        if (postCommentView != null && postCommentView instanceof PrivatePostCommentView)
+        {
+            ((PrivatePostCommentView) postCommentView).setMessageStatusDTO(messageStatusDTO);
+        }
+    }
+
+    private void setMessageNotAllowedListenerOnPostCommentView(PrivatePostCommentView.OnMessageNotAllowedToSendListener listener)
+    {
+        if (postCommentView != null && postCommentView instanceof PrivatePostCommentView)
+        {
+            ((PrivatePostCommentView) postCommentView).setMessageNotAllowedToSendListener(listener);
+        }
+    }
+
+    private void notifyPreSubmissionInterceptListener()
+    {
+        PrivatePostCommentView.OnMessageNotAllowedToSendListener listener = messageNotAllowedToSendListener;
+        if (listener != null)
+        {
+            listener.onMessageNotAllowedToSend();
+        }
+    }
+
+    protected class PrivateDiscussionViewOnMessageNotAllowedToSendListener
+            implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
+    {
+        @Override public void onMessageNotAllowedToSend()
+        {
+            notifyPreSubmissionInterceptListener();
         }
     }
 }

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
@@ -44,9 +45,8 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.Collection;
-import timber.log.Timber;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class PrivateMessageFragment extends AbstractDiscussionFragment
 {
@@ -122,7 +122,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         initViews(view);
     }
 
-    private void initViews(View view)
+    @Override protected void initViews(View view)
     {
         //postCommentView.setCommentPostedListener(new PrivateMessageFragmentCommentPostedListener());
         messageToSend.setHint(R.string.private_message_message_hint);
@@ -132,6 +132,8 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         if (discussionView instanceof PrivateDiscussionView)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+            ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(new PrivateMessageFragmentOnMessageNotAllowedToSendListener());
+            ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
         }
     }
 
@@ -271,6 +273,10 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     public void linkWith(MessageStatusDTO messageStatusDTO, boolean andDisplay)
     {
         this.messageStatusDTO = messageStatusDTO;
+        if (discussionView != null && discussionView instanceof PrivateDiscussionView)
+        {
+            ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
+        }
         //TODO
         if (andDisplay)
         {
@@ -414,6 +420,12 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         }
     }
 
+    protected void showPaidFollow()
+    {
+        THToast.show("Temp / need paid follow");
+        // TODO use new model of show FollowCredits
+    }
+
     @Override public boolean isTabBarVisible()
     {
         return false;
@@ -469,6 +481,15 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
         {
             Timber.e(error, "");
+        }
+    }
+
+    protected class PrivateMessageFragmentOnMessageNotAllowedToSendListener
+            implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
+    {
+        @Override public void onMessageNotAllowedToSend()
+        {
+            showPaidFollow();
         }
     }
 }

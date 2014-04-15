@@ -37,7 +37,7 @@
       />
 
   <include
-      layout="@layout/post_comment_widget"
+      layout="@layout/private_post_comment_widget"
       />
 
   <RelativeLayout
