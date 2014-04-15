@@ -2,8 +2,11 @@ package com.tradehero.th.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.TextUtils;
+import android.view.Window;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.soap.Text;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/29/14 Time: 4:14 PM Copyright (c) TradeHero
@@ -22,7 +25,13 @@ public class ProgressDialogUtil
         }
         else
         {
-            dialog.setTitle(title);
+            if(TextUtils.isEmpty(title))
+            {
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            }
+            else {
+                dialog.setTitle(title);
+            }
             dialog.setMessage(message);
         }
         return dialog;

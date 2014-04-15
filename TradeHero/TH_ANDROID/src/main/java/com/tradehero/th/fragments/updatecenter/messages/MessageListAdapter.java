@@ -133,6 +133,16 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
     //    super.setItems(itemCopied);
     //}
 
+    @Override public void clear()
+    {
+        super.clear();
+        if (items != null)
+        {
+            items.clear();
+            notifyDataSetChanged();
+        }
+    }
+
     private void filter()
     {
         List<MessageHeaderId> itemCopied = new ArrayList<MessageHeaderId>();
