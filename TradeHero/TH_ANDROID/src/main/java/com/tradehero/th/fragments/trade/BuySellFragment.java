@@ -1033,7 +1033,10 @@ public class BuySellFragment extends AbstractBuySellFragment
             Integer maxSellableShares = getMaxSellableShares();
             supportSell = maxSellableShares == null || maxSellableShares == 0;
         }
-        mSellBtn.setVisibility(supportSell ? View.VISIBLE : View.GONE);
+        if (mSellBtn != null)
+        {
+            mSellBtn.setVisibility(supportSell ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void displayTriggerButton()

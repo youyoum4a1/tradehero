@@ -36,5 +36,5 @@ public class Constants
 
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
-
+    public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 }
