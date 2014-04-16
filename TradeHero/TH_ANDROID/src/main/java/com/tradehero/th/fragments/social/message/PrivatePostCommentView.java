@@ -55,7 +55,9 @@ public class PrivatePostCommentView extends PostCommentView
      */
     @Override protected void postComment()
     {
-        if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount <= 0 &&
+        //TODO need replace false
+        if (messageStatusDTO != null && false &&
+        //if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount <= 0 &&
                 messageNotAllowedToSendListener != null)
         {
             notifyPreSubmissionInterceptListener();
