@@ -1,9 +1,15 @@
 package com.tradehero.th.models.user;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -12,9 +18,14 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.billing.StoreItemAdapter;
+import com.tradehero.th.models.alert.AlertSlotDTO;
+import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.Callback;
@@ -37,6 +48,7 @@ public class FollowUserAssistant implements
     protected final OwnedPortfolioId applicablePortfolioId;
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
+    @Inject protected CurrentActivityHolder currentActivityHolder;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
@@ -121,10 +133,125 @@ public class FollowUserAssistant implements
         }
         else
         {
-            haveInteractorForget();
-            requestCode = billingInteractor.run(createPurchaseCCRequest());
+            //TODO alipay hardcode
+            if (true)
+            {
+                hackToAlipay(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+            }
+            else
+            {
+                haveInteractorForget();
+                requestCode = billingInteractor.run(createPurchaseCCRequest());
+            }
         }
     }
+
+    public void hackToAlipay(ProductIdentifierDomain domain)
+    {
+        if (domain.equals(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_STOCK_ALERTS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
+        }
+    }
+
+    // HACK Alipay
+    public void alipayPopBuy(int type)
+    {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
+        int array = 0;
+        switch (type)
+        {
+            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
+                array = R.array.alipay_virtual_dollars_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
+                array = R.array.alipay_follow_credits_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
+                array = R.array.alipay_stock_alerts_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
+                array = R.array.alipay_reset_portfolio_array;
+                break;
+        }
+        final int type1 = type;
+        builder.setTitle(R.string.app_name)
+                .setItems(currentActivityHolder.getCurrentActivity()
+                        .getResources()
+                        .getStringArray(array),
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if (checkAlertsPlan(which, type1))
+                                {
+                                    Intent intent =
+                                            new Intent(currentActivityHolder.getCurrentActivity(),
+                                                    AlipayActivity.class);
+                                    intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
+                                    intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, which);
+                                    currentActivityHolder.getCurrentActivity()
+                                            .startActivity(intent);
+                                }
+                            }
+                        });
+        builder.create().show();
+    }
+
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
+
+    //TODO refactor
+    private boolean checkAlertsPlan(int which, int type1)
+    {
+        if (type1 != StoreItemAdapter.POSITION_BUY_STOCK_ALERTS)
+        {
+            return true;
+        }
+        AlertSlotDTO alertSlots =
+                securityAlertCountingHelperLazy.get().getAlertSlots(
+                        currentUserId.toUserBaseKey());
+        switch (which)
+        {
+            case 0:
+                if (alertSlots.totalAlertSlots >= 2)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 1:
+                if (alertSlots.totalAlertSlots >= 5)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 2:
+                break;
+        }
+        return true;
+    }
+
 
     protected void unFollow()
     {
