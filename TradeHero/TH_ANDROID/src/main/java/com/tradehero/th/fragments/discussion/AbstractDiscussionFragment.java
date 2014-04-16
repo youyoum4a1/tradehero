@@ -19,7 +19,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
 
