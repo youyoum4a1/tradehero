@@ -37,6 +37,7 @@
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:maxLines="2"
+      android:ellipsize="end"
       tools:text="Tho Nguyen (friend with Batman and 19 others) started following Lucy Zakuro"
       />
 </RelativeLayout>
