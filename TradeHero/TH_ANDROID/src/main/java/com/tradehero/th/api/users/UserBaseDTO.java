@@ -15,10 +15,13 @@ public class UserBaseDTO extends ExtendedDTO
     public String firstName;
     public String lastName;
     public Date memberSince;
+    public boolean isAdmin;
     public String activeSurveyURL;
     public String activeSurveyImageURL;
+    public Double roiSinceInception;
     public String countryCode;
-    public boolean isAdmin;
+
+    public UserRelationDTO relationship;
 
     //TODO fake data,may need to change
     //public boolean isFreeUser;

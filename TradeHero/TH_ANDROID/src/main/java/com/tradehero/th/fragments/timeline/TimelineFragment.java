@@ -58,7 +58,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements PortfolioRequestListener,UserProfileDetailView.OnHeroClickListener
+        implements PortfolioRequestListener, UserProfileDetailView.OnHeroClickListener
 {
     public static final String BUNDLE_KEY_SHOW_USER_ID =
             TimelineFragment.class.getName() + ".showUserId";
@@ -142,7 +142,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        if(mIsOtherProfile)
+        if (mIsOtherProfile)
         {
             bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, shownUserBaseKey.key);
         }
@@ -153,7 +153,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(
+                    BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    applicablePortfolio.getArgs());
         }
         getNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -161,7 +163,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        if(mIsOtherProfile)
+        if (mIsOtherProfile)
         {
             bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, shownUserBaseKey.key);
         }
@@ -172,7 +174,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            bundle.putBundle(
+                    BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                    applicablePortfolio.getArgs());
         }
         getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
@@ -383,7 +387,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, timelineItemDTOKey.getArgs());
+        bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
+                timelineItemDTOKey.getArgs());
         getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
@@ -672,7 +677,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
+                if (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
+                        || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                 {
                     alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
@@ -682,7 +688,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 {
                     pushPrivateMessageFragment();
                 }
-
             }
         });
     }
@@ -690,7 +695,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment()
     {
         Bundle args = new Bundle();
-        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY, shownUserBaseKey.getArgs());
+        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
+                shownUserBaseKey.getArgs());
         getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
@@ -699,7 +705,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
      */
     protected int getFollowType()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
+        UserProfileDTO userProfileDTO =
+                userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
         if (userProfileDTO != null)
         {
             return userProfileDTO.getFollowType(shownUserBaseKey);

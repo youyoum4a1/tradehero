@@ -3,19 +3,16 @@ package com.tradehero.th.fragments.social;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 
-/**
- * Created by alex on 14-4-11.
- */
-public class RelationsListItemAdapter extends ArrayDTOAdapter<UserBaseDTO, RelationsListItemView>
+public class RelationsListItemAdapter extends ArrayDTOAdapter<UserProfileCompactDTO, RelationsListItemView>
 {
     public RelationsListItemAdapter(Context context, LayoutInflater inflater, int layoutResId)
     {
         super(context, inflater, layoutResId);
     }
 
-    @Override protected void fineTune(int position, UserBaseDTO userBaseDTO,
+    @Override protected void fineTune(int position, UserProfileCompactDTO userProfileCompactDTO,
             RelationsListItemView relationsListItemView)
     {
     }

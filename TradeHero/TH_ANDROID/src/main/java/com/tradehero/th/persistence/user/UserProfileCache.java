@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.social.HeroType;
@@ -21,7 +22,8 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<UserService> userService;
-    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
+    @Inject protected Lazy<HeroListCache> heroListCache;
+    @Inject protected Lazy<LeaderboardCache> leaderboardCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCache()
@@ -53,7 +55,11 @@ import javax.inject.Singleton;
 
     @Override public UserProfileDTO put(UserBaseKey userBaseKey, UserProfileDTO userProfileDTO)
     {
-        heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        heroListCache.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        if (userProfileDTO.mostSkilledLbmu != null)
+        {
+            leaderboardCache.get().put(userProfileDTO.getMostSkilledLbmuKey(), userProfileDTO.mostSkilledLbmu);
+        }
         return super.put(userBaseKey, userProfileDTO);
     }
 }

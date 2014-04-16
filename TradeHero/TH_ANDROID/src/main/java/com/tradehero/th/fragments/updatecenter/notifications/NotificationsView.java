@@ -92,10 +92,10 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        notificationListAdapter = createNotificationAdapterListener();
+        notificationListAdapter = createNotificationListAdapter();
     }
 
-    private NotificationListAdapter createNotificationAdapterListener()
+    private NotificationListAdapter createNotificationListAdapter()
     {
         return new NotificationListAdapter(
                 getContext(),

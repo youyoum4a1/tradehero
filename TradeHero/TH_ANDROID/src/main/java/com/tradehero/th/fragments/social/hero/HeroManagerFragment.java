@@ -28,10 +28,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
- */
 public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
 {
     /**
