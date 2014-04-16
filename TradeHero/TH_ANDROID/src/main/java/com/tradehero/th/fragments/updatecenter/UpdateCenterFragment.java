@@ -41,12 +41,8 @@ import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
-    public static final String KEY_PAGE = "page";
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
@@ -264,7 +260,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         for (UpdateCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
-            args.putInt(KEY_PAGE, tabTitle.pageIndex);
             TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
                     .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
             String title = getString(tabTitle.titleRes, 0);

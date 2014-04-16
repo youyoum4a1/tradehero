@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
-/**
- * Created by tho on 14-4-3.
- */
 public class NotificationsCenterFragment extends DashboardFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="message_center_tab_message">Messages</string>
+  <string name="message_center_tab_notification">Notifications</string>
+  <string name="message_center_sending_to">Sending to:</string>
+  <string name="update_center_title">Inbox</string>
+  <string name="message_center_new_message_title">New Message</string>
+  <string name="message_center_private_message_menu">Private Message</string>
+  <string name="message_center_broadcast_message_menu">Broadcast Message</string>
+
+  <string name="message_list_refresh_menu">Refresh</string>
+
+</resources>

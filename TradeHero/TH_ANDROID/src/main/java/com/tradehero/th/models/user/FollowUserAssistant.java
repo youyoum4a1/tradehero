@@ -22,6 +22,9 @@ import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -49,6 +52,7 @@ public class FollowUserAssistant implements
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
     @Inject protected CurrentActivityHolder currentActivityHolder;
+    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
@@ -88,6 +92,7 @@ public class FollowUserAssistant implements
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
+        heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         notifyFollowSuccess(userToFollow, userProfileDTO);
     }
 
