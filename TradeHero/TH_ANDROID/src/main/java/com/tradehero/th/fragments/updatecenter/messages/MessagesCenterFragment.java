@@ -651,13 +651,19 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void unsetMarkAsReadMiddleCallbacks()
     {
-        for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
+        if (middleCallbackMap != null)
         {
-            middleCallback.setPrimaryCallback(null);
+            for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
+            {
+                middleCallback.setPrimaryCallback(null);
+            }
+            middleCallbackMap.clear();
         }
 
-        callbackMap.clear();
-        middleCallbackMap.clear();
+        if (middleCallbackMap != null)
+        {
+            callbackMap.clear();
+        }
     }
 
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
