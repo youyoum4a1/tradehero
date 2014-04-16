@@ -129,6 +129,13 @@ public class PushableTimelineFragment extends TimelineFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            super.onUserFollowFailed(userFollowed, error);
+            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 }
