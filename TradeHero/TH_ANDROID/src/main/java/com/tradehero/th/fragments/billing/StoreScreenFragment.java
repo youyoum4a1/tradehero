@@ -83,7 +83,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
 
         storeItemAdapter.notifyDataSetChanged();
-        cancelOthersAndShowBillingAvailable();
+        //cancelOthersAndShowBillingAvailable();//by alipay alex
     }
 
     @Override public void onDestroyView()
