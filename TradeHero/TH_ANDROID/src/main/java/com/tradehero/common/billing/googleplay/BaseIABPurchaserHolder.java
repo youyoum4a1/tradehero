@@ -24,26 +24,18 @@ abstract public class BaseIABPurchaserHolder<
                 IABPurchaseOrderType,
                 IABPurchaseType,
                 IABExceptionType>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                IABSKUType,
-                IABPurchaseOrderType,
-                IABOrderIdType,
-                IABPurchaseType,
-                IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseBillingPurchaserHolder<
         IABSKUType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFinishedListenerType,
         IABExceptionType>
     implements IABPurchaserHolder<
         IABSKUType,
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
-        IABPurchaseFinishedListenerType,
         IABExceptionType>
 {
     protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
@@ -74,19 +66,8 @@ abstract public class BaseIABPurchaserHolder<
 
     @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
     {
-        BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType>()
-        {
-            @Override public void onPurchaseFinished(int requestCode, IABPurchaseOrderType purchaseOrder, IABPurchaseType purchase)
-            {
-                notifyIABPurchaseFinished(requestCode, purchaseOrder, purchase);
-            }
-
-            @Override public void onPurchaseFailed(int requestCode, IABPurchaseOrderType purchaseOrder, IABExceptionType exception)
-            {
-                notifyIABPurchaseFailed(requestCode, purchaseOrder, exception);
-            }
-        };
-        purchaseFinishedListeners.put(requestCode, purchaseListener);
+        BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseListener =
+                createPurchaseFinishedListener();
         IABPurchaserType iabPurchaser = createPurchaser();
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         iabPurchasers.put(requestCode, iabPurchaser);

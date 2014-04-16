@@ -1,10 +1,9 @@
 package com.tradehero.th.persistence.billing.googleplay;
 
+import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -28,15 +27,5 @@ import javax.inject.Singleton;
     @Override protected THIABProductDetail fetch(IABSKU key)
     {
         throw new IllegalStateException("You should not fetch THIABProductDetail individually");
-    }
-
-    @Override public THIABProductDetail put(IABSKU key, THIABProductDetail value)
-    {
-        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override public List<THIABProductDetail> put(List<THIABProductDetail> values)
-    {
-        return super.put(values);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

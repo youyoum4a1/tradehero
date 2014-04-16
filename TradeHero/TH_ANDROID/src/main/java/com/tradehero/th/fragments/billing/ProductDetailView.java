@@ -10,12 +10,14 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.billing.THProductDetail;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
 abstract public class ProductDetailView<
         ProductIdentifierType extends ProductIdentifier,
-        ProductDetailType extends ProductDetail<ProductIdentifierType>>
-        extends RelativeLayout implements DTOView<ProductDetailType>
+        ProductDetailType extends THProductDetail<ProductIdentifierType>>
+        extends RelativeLayout
+        implements DTOView<ProductDetailType>
 {
     public static final String TAG = ProductDetailView.class.getSimpleName();
 
@@ -113,6 +115,25 @@ abstract public class ProductDetailView<
         }
     }
 
-    abstract protected void displayPrice();
-    abstract protected void displayDeliverableText();
+    protected void displayPrice()
+    {
+        if (skuPrice != null)
+        {
+            if (skuDetails != null)
+            {
+                skuPrice.setText(skuDetails.getPriceText());
+            }
+        }
+    }
+
+    protected void displayDeliverableText()
+    {
+        if (deliverableText != null)
+        {
+            if (skuDetails != null)
+            {
+                deliverableText.setText(skuDetails.getDescription());
+            }
+        }
+    }
 }

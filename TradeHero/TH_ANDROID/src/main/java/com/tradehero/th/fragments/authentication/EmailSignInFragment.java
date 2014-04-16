@@ -36,6 +36,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private View forgotDialogView;
 
     @Inject UserService userService;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -186,7 +187,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        mProgressDialog = ProgressDialogUtil.show(
+        mProgressDialog = progressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);

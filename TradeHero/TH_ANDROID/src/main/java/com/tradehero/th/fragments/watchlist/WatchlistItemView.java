@@ -41,7 +41,7 @@ import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;

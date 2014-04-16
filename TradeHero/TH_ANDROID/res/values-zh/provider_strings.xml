@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="error_fetch_provider_info_list">There was an error when fetching the list of competition providers.</string>
+  <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
+  <string name="error_fetch_provider_competition_list">There was an error when fetching the list of competitions</string>
+  <string name="error_fetch_provider_competition_leaderboard_list">There was an error when fetching the list of competition leaderboards</string>
+
+  <string name="provider_competition_portfolio_title">Competition Portfolio</string>
+  <string name="provider_competition_portfolio_description">view your competition positions</string>
+  <string name="provider_competition_wizard_title">Wizard</string>
+  <string name="provider_competition_rules_title">Competition Rules</string>
+  <string name="provider_competition_terms_title">Terms &amp; Conditions</string>
+
+  <string name="provider_security_list_title">Competition Securities</string>
+  <string name="provider_security_list_search_hint">Filter By Underlying Name or Code</string>
+
+  <string name="competition_leaderboard_timer_time_left_1">TIME</string>
+  <string name="competition_leaderboard_timer_time_left_2">LEFT</string>
+  <string name="competition_leaderboard_timer_days">DAYS</string>
+  <string name="competition_leaderboard_timer_time_separator">:</string>
+
+  <string name="competition_leaderboard_to_be_won">to be won!</string>
+
+  <string name="competition_enrollment_web_view_done">Done</string>
+
+  <!-- Macquarie WarrantHero specific strings. providerId == 3-->
+  <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
+
+</resources>

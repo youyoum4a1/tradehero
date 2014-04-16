@@ -22,7 +22,6 @@
   <string name="test_password">asd123</string>
 
   <!-- Splash screen -->
-  <string name="splash_version">@string/version_text</string>
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>
 

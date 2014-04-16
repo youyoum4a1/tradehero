@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 5:07 PM To change this template use File | Settings | File Templates. */
 public class ProductDetailQuickDescriptionView extends RelativeLayout
@@ -13,7 +13,7 @@ public class ProductDetailQuickDescriptionView extends RelativeLayout
     public static final String TAG = ProductDetailQuickDescriptionView.class.getSimpleName();
 
     private TextView quickDescription;
-    private String productDomain;
+    private ProductIdentifierDomain productDomain;
 
     //<editor-fold desc="Constructors">
     public ProductDetailQuickDescriptionView(Context context)
@@ -43,7 +43,7 @@ public class ProductDetailQuickDescriptionView extends RelativeLayout
         quickDescription = (TextView) findViewById(R.id.quick_description);
     }
 
-    public void linkWithProductDomain(String domain, boolean andDisplay)
+    public void linkWithProductDomain(ProductIdentifierDomain domain, boolean andDisplay)
     {
         this.productDomain = domain;
         if (andDisplay)
@@ -72,13 +72,13 @@ public class ProductDetailQuickDescriptionView extends RelativeLayout
     {
         switch (productDomain)
         {
-            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
+            case DOMAIN_VIRTUAL_DOLLAR:
                 return R.string.store_buy_virtual_dollar_window_message;
-            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
+            case DOMAIN_FOLLOW_CREDITS:
                 return R.string.store_buy_follow_credits_window_message;
-            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
+            case DOMAIN_STOCK_ALERTS:
                 return R.string.store_buy_stock_alerts_window_message;
-            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
+            case DOMAIN_RESET_PORTFOLIO:
                 return R.string.store_buy_reset_portfolio_window_message;
 
             default:

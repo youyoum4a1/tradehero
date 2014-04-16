@@ -16,6 +16,8 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.models.market.ExchangeSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -40,6 +42,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private OnFilterTypeChangedListener changedListener;
     //@Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
     @Inject ExchangeSpinnerDTOUtil exchangeSpinnerDTOUtil;
+    @Inject THLocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSelectorView(Context context)
@@ -207,10 +210,16 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void notifyListenerChanged()
     {
+        trackChangeEvent(trendingFilterTypeDTO);
         if (changedListener != null)
         {
             changedListener.onFilterTypeChanged(trendingFilterTypeDTO);
         }
+    }
+
+    private void trackChangeEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trending, trendingFilterTypeDTO);
     }
 
     private class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.common.persistence.DTOCache;
@@ -63,6 +64,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
 
     private DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
+    private DTOCache.Listener<MessageListKey, MessageHeaderIdList> refreshMessagesFetchListener;
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
     private MessageListKey messageListKey;
     private MessageHeaderIdList alreadyFetched;
@@ -71,7 +73,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
     private Map<Integer, Callback<Response>> callbackMap;
     private UpdateCenterTabType tabType;
-    private boolean isFirst = true;
     private MessageListAdapter messageListAdapter;
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
@@ -80,17 +81,39 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
         int tabTypeOrdinal = getArguments().getInt(UpdateCenterFragment.KEY_PAGE);
-
         tabType = UpdateCenterTabType.fromOrdinal(tabTypeOrdinal);
         Timber.d("%s onCreate hasCode %d", TAG, this.hashCode());
     }
 
+    //https://github.com/JakeWharton/ActionBarSherlock/issues/828
+    //https://github.com/purdyk/ActionBarSherlock/commit/30750def631aa4cdd224d4c4550b23e27c245ac4
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
 
+        MenuItem menuItem = menu.add(0,0,0,"Refresh");
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("%s onCreateOptionsMenu", TAG);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        Timber.d("%s onOptionsItemSelected", TAG);
+       if (item.getItemId() == 0)
+       {
+           refreshContent();
+           return true;
+       }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        super.onDestroyOptionsMenu();
+        Timber.d("%s onDestroyOptionsMenu", TAG);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -101,6 +124,8 @@ public class MessagesCenterFragment extends DashboardFragment
         return view;
     }
 
+
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -110,14 +135,14 @@ public class MessagesCenterFragment extends DashboardFragment
         if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
             Timber.d("onViewCreated fetch again");
-            messagesView.showLoadingView();
+            displayLoadingView(true);
             getOrFetchMessages();
         }
         else
         {
             Timber.d("onViewCreated don't have to fetch again");
-            messagesView.showListView();
-            setListAdapter(alreadyFetched);
+            hideLoadingView();
+            appendMessagesList(alreadyFetched);
         }
     }
 
@@ -212,7 +237,6 @@ public class MessagesCenterFragment extends DashboardFragment
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
 
-
     }
 
     private void initListener()
@@ -241,15 +265,50 @@ public class MessagesCenterFragment extends DashboardFragment
 
     }
 
+    private void refreshContent()
+    {
+        displayLoadingView(false);
+        if (refreshMessagesFetchListener == null)
+        {
+            refreshMessagesFetchListener = new RefershMessageFetchListener();
+        }
+
+        MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        Timber.d("refreshContent %s",messageListKey);
+        fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
+                refreshMessagesFetchListener);
+        fetchMessageTask.execute();
+    }
+
     private void loadNextMessages()
+    {
+        increasePageNumber();
+        getOrFetchMessages();
+    }
+
+    private void decreasePageNumber()
+    {
+        if (messageListKey == null)
+        {
+            return;
+        }
+        messageListKey = messageListKey.prev();
+    }
+
+    private void resetPageNumber()
+    {
+        messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE,DEFAULT_PER_PAGE);
+    }
+
+    private void increasePageNumber()
     {
         if (messageListKey == null)
         {
             messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
         messageListKey = messageListKey.next();
-        getOrFetchMessages();
     }
+
 
     private void detachPreviousTask()
     {
@@ -260,7 +319,7 @@ public class MessagesCenterFragment extends DashboardFragment
         fetchMessageTask = null;
     }
 
-    private void setListAdapter(MessageHeaderIdList messageKeys)
+    private void appendMessagesList(MessageHeaderIdList messageKeys)
     {
         ListView listView = messagesView.getListView();
 
@@ -272,6 +331,32 @@ public class MessagesCenterFragment extends DashboardFragment
         if (listView.getAdapter() == null)
         {
             listView.setAdapter(messageListAdapter);
+        }
+        MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
+        adapter.setMessageOnClickListener(this);
+        adapter.appendMore(messageKeys);
+    }
+
+    private void resetMessagesList(MessageHeaderIdList messageKeys)
+    {
+        ListView listView = messagesView.getListView();
+
+        if (messageListAdapter == null)
+        {
+            messageListAdapter = new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()), R.layout.message_list_item_wrapper);
+            messageListAdapter.initMarkDeletedIds(messageListCache.get().getDeletedMessageIds());
+        }
+        else
+        {
+            messageListAdapter.clear();
+        }
+        if (listView.getAdapter() == null)
+        {
+            listView.setAdapter(messageListAdapter);
+        }
+        else
+        {   MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
+            adapter.clear();
         }
         MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
@@ -350,6 +435,19 @@ public class MessagesCenterFragment extends DashboardFragment
         alreadyFetched.addAll(value);
     }
 
+    private void resetSavedPage(MessageHeaderIdList value)
+    {
+        if (alreadyFetched == null)
+        {
+            alreadyFetched = new MessageHeaderIdList();
+        }
+        else
+        {
+            alreadyFetched.clear();
+        }
+        alreadyFetched.addAll(value);
+    }
+
     private void changeTitleNumber(int number)
     {
         OnTitleNumberChangeListener listener =
@@ -360,10 +458,41 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void display(MessageHeaderIdList value)
+    private void displayContent(MessageHeaderIdList value)
     {
-        setListAdapter(value);
+        messagesView.showListView();
+        appendMessagesList(value);
         saveNewPage(value);
+    }
+
+    private void resetContent(MessageHeaderIdList value)
+    {
+        messagesView.showListView();
+        resetMessagesList(value);
+        resetSavedPage(value);
+        Timber.d("resetContent");
+    }
+
+    private void displayErrorView()
+    {
+        messagesView.showErrorView();
+    }
+
+    private void hideLoadingView()
+    {
+        messagesView.showListView();
+    }
+
+    private void displayLoadingView(boolean onlyShowLoadingView)
+    {
+        messagesView.showLoadingView(onlyShowLoadingView);
+    }
+
+    private void refreshCache(MessageHeaderIdList data)
+    {
+        MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        messageListCache.get().invalidateAll();
+        messageListCache.get().put(messageListKey,data);
     }
 
     class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
@@ -375,26 +504,68 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 hasMorePage = false;
             }
-            display(value);
-            messagesView.showListView();
+            displayContent(value);
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,fromCache);
             //TODO how to invalidate the old data ..
-            isFirst = false;
         }
 
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
         {
             hasMorePage = true;
+            decreasePageNumber();
             if(getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view
+                hideLoadingView();
             }
             else
             {
-                messagesView.showErrorView();
+                displayErrorView();
             }
         }
     }
+
+    class RefershMessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
+    {
+        @Override
+        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
+        {
+            if (fromCache)
+            {
+                //force to get news from the server
+                return;
+            }
+            refreshCache(value);
+            resetContent(value);
+            resetPageNumber();
+            if (value.size() == 0)
+            {
+                hasMorePage = false;
+            }
+            else
+            {
+                hasMorePage = true;
+            }
+            Timber.d("refresh onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,fromCache);
+            //TODO how to invalidate the old data ..
+        }
+
+        @Override public void onErrorThrown(MessageListKey key, Throwable error)
+        {
+            hasMorePage = true;
+            Timber.d("refresh onErrorThrown");
+            if(getListAdapter() != null && getListAdapter().getCount() > 0)
+            {
+                //when already fetch the data,do not show error view
+                hideLoadingView();
+            }
+            else
+            {
+                displayErrorView();
+            }
+        }
+    }
+
 
     class OnScrollListener extends FlagNearEndScrollListener
     {
@@ -480,13 +651,19 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void unsetMarkAsReadMiddleCallbacks()
     {
-        for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
+        if (middleCallbackMap != null)
         {
-            middleCallback.setPrimaryCallback(null);
+            for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
+            {
+                middleCallback.setPrimaryCallback(null);
+            }
+            middleCallbackMap.clear();
         }
 
-        callbackMap.clear();
-        middleCallbackMap.clear();
+        if (middleCallbackMap != null)
+        {
+            callbackMap.clear();
+        }
     }
 
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)

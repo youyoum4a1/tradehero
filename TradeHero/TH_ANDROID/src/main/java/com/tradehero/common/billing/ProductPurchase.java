@@ -11,5 +11,4 @@ public interface ProductPurchase<
 {
     OrderIdType getOrderId();
     ProductIdentifierType getProductIdentifier();
-    OwnedPortfolioId getApplicableOwnedPortfolioId();
 }

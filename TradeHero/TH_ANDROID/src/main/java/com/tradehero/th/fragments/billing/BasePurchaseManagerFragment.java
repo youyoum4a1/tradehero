@@ -2,17 +2,26 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 /**
@@ -23,34 +32,37 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    protected THIABUserInteractor userInteractor;
+    @Inject protected THBillingInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
+    protected Integer showProductDetailRequestCode;
+
+    protected FollowUserAssistant followUserAssistant;
+    protected FollowUserAssistant.OnUserFollowedListener userFollowedListener;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     abstract protected void initViews(View view);
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListRetrievedListener = new BasePurchaseManagementPortfolioCompactListRetrievedListener();
+        portfolioCompactListRetrievedListener = createPortfolioCompactListRetrievedListener();
+        userFollowedListener = createUserFollowedListener();
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
+    protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
     {
-        super.onActivityCreated(savedInstanceState);
-        createUserInteractor();
+        return new BasePurchaseManagementPortfolioCompactListRetrievedListener();
     }
 
-    /**
-     * You are encouraged to override this method to specify your own UserInteractor.
-     */
-    protected void createUserInteractor()
+    protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
-        userInteractor = new THIABUserInteractor();
+        return new BasePurchaseManagerUserFollowedListener();
     }
 
     @Override public void onResume()
@@ -64,7 +76,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
             if (thIntentBundle != null)
             {
-                int action = thIntentBundle.getInt(THIABUserInteractor.BUNDLE_KEY_ACTION);
+                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
                 if (action > 0)
                 {
                     userInteractor.doAction(action); // TODO place the action after portfolio has been set
@@ -74,33 +86,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    @Override public void onPause()
-    {
-        userInteractor.onPause();
-        super.onPause();
-    }
-
-    @Override public void onStop()
-    {
-        userInteractor.onStop();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
-        if (userInteractor != null)
-        {
-            userInteractor.onDestroy();
-        }
-        userInteractor = null;
-
         detachPortfolioRetrievedMilestone();
-
+        detachUserFollowAssistant();
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
+        userFollowedListener = null;
         portfolioCompactListRetrievedListener = null;
         super.onDestroy();
     }
@@ -140,7 +135,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             }
         }
 
-        Timber.d("purchase applicablePortfolio %s", applicablePortfolioId);
         if (applicablePortfolioId.portfolioId == null)
         {
             // At this stage, portfolioId is still null, we need to wait for the fetch
@@ -155,7 +149,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        userInteractor.setApplicablePortfolioId(purchaseApplicablePortfolioId);
         if (andDisplay)
         {
         }
@@ -170,8 +163,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedListener = null;
     }
 
+    private void detachUserFollowAssistant()
+    {
+        if (followUserAssistant != null)
+        {
+            followUserAssistant.setUserFollowedListener(null);
+        }
+        followUserAssistant = null;
+    }
 
-    private void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
+    protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
     {
         detachPortfolioRetrievedMilestone();
         portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(userBaseKey);
@@ -182,6 +183,54 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
+    }
+
+    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
+    {
+        if (showProductDetailRequestCode != null)
+        {
+            userInteractor.forgetRequestCode(showProductDetailRequestCode);
+        }
+        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+    }
+
+    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
+    {
+        return userInteractor.run(getShowProductDetailRequest(domain));
+    }
+
+    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = uiBillingRequestProvider.get();
+        request.applicablePortfolioId = getApplicablePortfolioId();
+        request.startWithProgressDialog = true;
+        request.popIfBillingNotAvailable = true;
+        request.popIfProductIdentifierFetchFailed = true;
+        request.popIfInventoryFetchFailed = true;
+        request.domainToPresent = domain;
+        request.popIfPurchaseFailed = true;
+        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        {
+            @Override public void onError(int requestCode, BillingException billingException)
+            {
+                Timber.e(billingException, "Store had error");
+            }
+        };
+        return request;
+    }
+
+    public void followUser(UserBaseKey userToFollow)
+    {
+        detachUserFollowAssistant();
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant.launchFollow();
+    }
+
+    public void unfollowUser(UserBaseKey userToUnFollow)
+    {
+        detachUserFollowAssistant();
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant.launchUnFollow();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
@@ -195,6 +244,20 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
             Timber.e(throwable, "Failed to download portfolio compacts");
+        }
+    }
+
+    protected class BasePurchaseManagerUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
+    {
+        @Override
+        public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            // Children classes should update the display
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // Anything to do?
         }
     }
 }

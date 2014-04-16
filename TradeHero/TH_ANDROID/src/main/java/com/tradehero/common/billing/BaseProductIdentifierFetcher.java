@@ -6,14 +6,20 @@ import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseProductIdentifierFetcher<
+        ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
+        ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
-        implements ProductIdentifierFetcher<ProductIdentifierType, BillingExceptionType>
+        implements ProductIdentifierFetcher<
+        ProductIdentifierListKeyType,
+        ProductIdentifierType,
+        ProductIdentifierListType,
+        BillingExceptionType>
 {
     public static final String TAG = BaseProductIdentifierFetcher.class.getSimpleName();
 
     protected int requestCode;
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> productIdentifierFetchedListener;
+    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
 
     public BaseProductIdentifierFetcher()
     {
@@ -30,20 +36,20 @@ abstract public class BaseProductIdentifierFetcher<
         return requestCode;
     }
 
-    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> getProductIdentifierListener()
+    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener()
     {
         return productIdentifierFetchedListener;
     }
 
     @Override public void setProductIdentifierListener(
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> listener)
+            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener)
     {
         this.productIdentifierFetchedListener = listener;
     }
 
-    protected void notifyListenerFetched(Map<String, List<ProductIdentifierType>> productIdentifiers)
+    protected void notifyListenerFetched(Map<ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifiers)
     {
-        OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> listenerCopy = getProductIdentifierListener();
+        OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listenerCopy = getProductIdentifierListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchedProductIdentifiers(requestCode, productIdentifiers);
@@ -52,7 +58,7 @@ abstract public class BaseProductIdentifierFetcher<
 
     protected void notifyListenerFetchFailed(BillingExceptionType exception)
     {
-        OnProductIdentifierFetchedListener<ProductIdentifierType, BillingExceptionType> listenerCopy = getProductIdentifierListener();
+        OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listenerCopy = getProductIdentifierListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchProductIdentifiersFailed(requestCode, exception);

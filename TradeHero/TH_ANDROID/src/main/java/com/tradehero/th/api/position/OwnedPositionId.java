@@ -35,7 +35,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
 
     public OwnedPositionId(OwnedPositionId ownedPositionId)
     {
-        super(ownedPositionId.getUserBaseKey(), ownedPositionId.getPortfolioId());
+        super(ownedPositionId.getUserBaseKey(), ownedPositionId.getPortfolioIdKey());
         this.positionId = ownedPositionId.positionId;
     }
     //</editor-fold>

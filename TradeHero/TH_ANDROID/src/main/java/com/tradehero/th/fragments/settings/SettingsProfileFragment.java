@@ -60,6 +60,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject ProgressDialogUtil progressDialogUtil;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -280,7 +281,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
         else
         {
-            profileView.progressDialog = ProgressDialogUtil.show(
+            profileView.progressDialog = progressDialogUtil.show(
                     getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);

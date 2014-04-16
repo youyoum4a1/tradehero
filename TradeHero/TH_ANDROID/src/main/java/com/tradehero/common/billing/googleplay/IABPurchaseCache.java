@@ -1,9 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
-import com.tradehero.common.persistence.StraightDTOCache;
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by xavier on 2/11/14.
@@ -24,7 +21,7 @@ public class IABPurchaseCache<
         super(maxSize);
     }
 
-    @Override protected IABPurchaseType fetch(IABSKUType key) throws Throwable
+    @Override protected IABPurchaseType fetch(IABOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }

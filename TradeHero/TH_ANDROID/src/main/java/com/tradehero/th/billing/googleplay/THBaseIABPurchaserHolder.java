@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -16,12 +15,6 @@ public class THBaseIABPurchaserHolder
         THIABOrderId,
         THIABPurchase,
         THIABPurchaser,
-        BillingPurchaser.OnPurchaseFinishedListener<
-            IABSKU,
-            THIABPurchaseOrder,
-            THIABOrderId,
-            THIABPurchase,
-            IABException>,
         IABException>
     implements THIABPurchaserHolder
 {

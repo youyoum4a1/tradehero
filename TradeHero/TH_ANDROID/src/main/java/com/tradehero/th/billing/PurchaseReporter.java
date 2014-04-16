@@ -16,7 +16,6 @@ public interface PurchaseReporter<
     PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseReporterListener();
     void setPurchaseReporterListener(final PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> listener);
     void reportPurchase(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase) throws BillingExceptionType;
 
     public static interface OnPurchaseReportedListener<
             ProductIdentifierType extends ProductIdentifier,

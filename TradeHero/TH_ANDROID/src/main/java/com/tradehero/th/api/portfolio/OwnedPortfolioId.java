@@ -139,7 +139,7 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
         return new UserBaseKey(userId);
     }
 
-    @JsonIgnore public PortfolioId getPortfolioId()
+    @JsonIgnore public PortfolioId getPortfolioIdKey()
     {
         return new PortfolioId(portfolioId);
     }

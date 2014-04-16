@@ -19,12 +19,4 @@ import dagger.Module;
 )
 public class BillingModule
 {
-    public static final String TAG = BillingModule.class.getSimpleName();
-
-    //@Provides @Singleton THBillingInteractor provideBillingInteractor(BillingLogicHolder billingLogicHolder)
-    //{
-    //    THBillingInteractor billingInteractor = new THIABUserInteractor();
-    //    billingInteractor.setBillingLogicHolder(billingLogicHolder);
-    //    return billingInteractor;
-    //}
 }

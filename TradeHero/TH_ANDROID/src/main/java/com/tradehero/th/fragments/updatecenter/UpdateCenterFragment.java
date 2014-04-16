@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +7,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.r11.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,6 +24,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -38,7 +39,6 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
-import com.tradehero.th.utils.LocalyticsConstants;
 import timber.log.Timber;
 
 /**
@@ -121,14 +121,19 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+        }
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(R.string.update_center_title);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         mMenuFollow = menu.findItem(R.id.btn_new_message);
-        mNewMsgButton =
-                (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);
+        mNewMsgButton = (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);
         if (mNewMsgButton != null)
         {
             mNewMsgButton.setOnClickListener(new View.OnClickListener()
@@ -139,8 +144,56 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
                 }
             });
         }
+        Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            boolean handled = ((SherlockFragment)getCurrentFragment()).onOptionsItemSelected(item);
+            if (handled)
+            {
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onPrepareOptionsMenu(menu);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override public void onOptionsMenuClosed(android.view.Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onOptionsMenuClosed(menu);
+        }
+        super.onOptionsMenuClosed(menu);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            f.onDestroyOptionsMenu();
+        }
+        Timber.d("onDestroyOptionsMenu");
+
+        super.onDestroyOptionsMenu();
+
     }
 
     private void showPopup(View v)
@@ -201,7 +254,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
+        //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
         {
@@ -248,7 +301,18 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
             int tabCount = mTabHost.getTabWidget().getTabCount();
             mTabHost = null;
         }
+    }
 
+    private Fragment getCurrentFragment()
+    {
+        if(mTabHost == null)
+        {
+            return null;
+        }
+        String tag = mTabHost.getCurrentTabTag();
+        android.support.v4.app.FragmentManager fm = getChildFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(tag);
+        return fragment;
     }
 
     private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)

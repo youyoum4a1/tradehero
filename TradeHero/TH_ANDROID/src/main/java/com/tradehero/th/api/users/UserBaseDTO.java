@@ -1,5 +1,6 @@
 package com.tradehero.th.api.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class UserBaseDTO extends ExtendedDTO
     {
     }
 
+    @JsonIgnore
     public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);

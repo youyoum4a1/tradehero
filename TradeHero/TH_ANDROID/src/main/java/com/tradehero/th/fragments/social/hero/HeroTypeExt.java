@@ -34,7 +34,7 @@ public class HeroTypeExt
             if (typeId == HeroType.PREMIUM.typeId)
             {
                 result[i] = new HeroTypeExt(R.string.leaderboard_community_hero_premium,
-                        HeroType.PREMIUM, 0, PrimiumHeroFragment.class);
+                        HeroType.PREMIUM, 0, PremiumHeroFragment.class);
             }
             else if (typeId == HeroType.FREE.typeId)
             {

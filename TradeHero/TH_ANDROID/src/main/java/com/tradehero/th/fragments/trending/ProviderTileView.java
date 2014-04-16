@@ -8,7 +8,6 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
@@ -17,7 +16,6 @@ import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/3/14 Time: 3:14 PM Copyright (c) TradeHero

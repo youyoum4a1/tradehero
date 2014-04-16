@@ -15,6 +15,7 @@ public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
     public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_basic_title;
     public static final int DEFAULT_ICON_RES_ID = 0;
     public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_basic_description;
+    public static final String TRACK_EVENT_SYMBOL = "Trending Securities";
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypeBasicDTO()
@@ -53,6 +54,11 @@ public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
     @Override public TrendingSecurityListType getSecurityListType(String usableExchangeName, Integer page, Integer perPage)
     {
         return new TrendingBasicSecurityListType(usableExchangeName, page, perPage);
+    }
+
+    @Override public String getTrackEventCategory()
+    {
+        return TRACK_EVENT_SYMBOL;
     }
 
     @Override protected void putParameters(Bundle args)

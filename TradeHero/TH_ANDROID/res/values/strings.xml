@@ -14,6 +14,16 @@
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
+  <string name="link">Link</string>
+  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link_now">Link now!</string>
+  <string name="later">Later</string>
+  <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
+  <string name="upgrade_needed">Upgrade needed</string>
+  <string name="update_now">Update now</string>
+  <string name="update_guide">Please reinstall TradeHero</string>
+  <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
+  <string name="press_back_again_to_exit">Press back again to exit</string>
   <string name="discussion">Discussion</string>
   <string name="more_character">…</string>
   <string name="buy_sell">Buy/Sell</string>
@@ -33,4 +43,15 @@
   <string name="error_empty_comment">Comment should not be empty</string>
   <string name="error_not_enough_information">Not enough information, try again</string>
   <string name="via">" via "</string>
+
+  <string name="broadcast_success">Send message success</string>
+  <string name="broadcast_error">Send message error</string>
+  <string name="broadcast_message_title">Broadcast Message</string>
+  <string name="broadcast_message_action_send">Send</string>
+  <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
+  <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
+  <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
+  <string name="broadcast_message_sending_hint">Sending message...</string>
+
+  <string name="common_loading_error">Sorry, there is something wrong</string>
 </resources>

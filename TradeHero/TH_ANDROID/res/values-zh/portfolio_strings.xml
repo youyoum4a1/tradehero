@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Portfolios list -->
+  <string name="portfolio_topbar_title">投资组合和自选股</string>
+  <string name="portfolio_own_header">投资组合</string>
+  <string name="portfolio_recently_viewed_heroes">最近查看的英雄</string>
+  <string name="portfolio_recently_viewed_others">最近查看的用户</string>
+  <string name="portfolio_loading_count">读取 %1$,d/%2$,d 投资组合..</string>
+  <string name="portfolio_description_count_open_positions">您当前有 %1$d 持仓</string>
+  <string name="portfolio_description_count_closed_positions">您当前有 %1$d 平仓</string>
+  <string name="portfolio_description_count_watchlist">您有 %1$d 项目</string>
+  <string name="portfolio_default_title">默认投资组合</string>
+  <string name="portfolio_item_title_loading">读取...</string>
+  <string name="portfolio_header_total_value">总值</string>
+  <string name="portfolio_header_cash_value">现金值</string>
+
+  <string name="error_fetch_portfolio_list_info">获取投资组合列表出现错误</string>
+  <string name="error_fetch_portfolio_info">获取投资组合信息出现错误</string>
+
+</resources>

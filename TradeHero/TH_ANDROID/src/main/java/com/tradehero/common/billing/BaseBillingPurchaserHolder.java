@@ -1,7 +1,6 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
@@ -14,85 +13,110 @@ abstract public class BaseBillingPurchaserHolder<
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        BillingPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
-                ProductIdentifierType,
-                PurchaseOrderType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingPurchaserHolder<
         ProductIdentifierType,
         PurchaseOrderType,
         OrderIdType,
         ProductPurchaseType,
-        BillingPurchaseFinishedListenerType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>> purchaseFinishedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<BillingPurchaseFinishedListenerType>> parentPurchaseFinishedListeners;
+    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>> parentPurchaseFinishedListeners;
 
     public BaseBillingPurchaserHolder()
     {
         super();
-        purchaseFinishedListeners = new HashMap<>();
         parentPurchaseFinishedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return !purchaseFinishedListeners.containsKey(requestCode) &&
-                !parentPurchaseFinishedListeners.containsKey(requestCode);
+        return !parentPurchaseFinishedListeners.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        purchaseFinishedListeners.remove(requestCode);
         parentPurchaseFinishedListeners.remove(requestCode);
     }
 
     /**
-     * The listener should be strongly referenced elsewhere.
      * @param purchaseFinishedListener
      * @return
      */
-    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaseFinishedListenerType purchaseFinishedListener)
+    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFinishedListener)
     {
-        parentPurchaseFinishedListeners.put(requestCode, new WeakReference<>(purchaseFinishedListener));
+        parentPurchaseFinishedListeners.put(requestCode, purchaseFinishedListener);
     }
 
-    @Override public BillingPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode)
+    @Override public BillingPurchaser.OnPurchaseFinishedListener<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseFinishedListener(int requestCode)
     {
-        WeakReference<BillingPurchaseFinishedListenerType> weakHandler = parentPurchaseFinishedListeners.get(requestCode);
-        if (weakHandler != null)
+        return parentPurchaseFinishedListeners.get(requestCode);
+    }
+
+    protected BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>
+    createPurchaseFinishedListener()
+    {
+        return new BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
         {
-            return weakHandler.get();
-        }
-        return null;
+            @Override public void onPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+            {
+                notifyPurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+
+            @Override public void onPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
+            {
+                notifyPurchaseFailed(requestCode, purchaseOrder, exception);
+            }
+        };
     }
 
-    protected void notifyIABPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
+    protected void notifyPurchaseFinished(int requestCode, PurchaseOrderType purchaseOrder, ProductPurchaseType purchase)
     {
-        Timber.d("notifyIABPurchaseFinished Purchase " + purchase);
-        BillingPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        Timber.d("notifyPurchaseFinished Purchase " + purchase);
+        BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            Timber.d("notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
+            Timber.d("notifyPurchaseFinished passing on the purchase for requestCode " + requestCode);
             handler.onPurchaseFinished(requestCode, purchaseOrder, purchase);
         }
         else
         {
-            Timber.d("notifyIABPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
+            Timber.d("notifyPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
         }
     }
 
-    protected void notifyIABPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
+    protected void notifyPurchaseFailed(int requestCode, PurchaseOrderType purchaseOrder, BillingExceptionType exception)
     {
-        Timber.e("notifyIABPurchaseFailed There was an exception during the purchase", exception);
-        BillingPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        Timber.e("notifyPurchaseFailed There was an exception during the purchase", exception);
+        BillingPurchaser.OnPurchaseFinishedListener<
+                ProductIdentifierType,
+                PurchaseOrderType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> handler = getPurchaseFinishedListener(requestCode);
         if (handler != null)
         {
-            Timber.d("notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);
+            Timber.d("notifyPurchaseFailed passing on the exception for requestCode " + requestCode);
             handler.onPurchaseFailed(requestCode, purchaseOrder, exception);
         }
         else
@@ -103,7 +127,6 @@ abstract public class BaseBillingPurchaserHolder<
 
     @Override public void onDestroy()
     {
-        purchaseFinishedListeners.clear();
         parentPurchaseFinishedListeners.clear();
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="authentication_welcome_new_user">新用户</string>
+  <string name="authentication_guarantee">我们尊重您的隐私： 我们永远不会在未经过您允许的情况下，发布任何信息至您的社交平台.</string>
+  <string name="authentication_sign_in_tos">服务条款</string>
+  <string name="authentication_email">电子邮件</string>
+  <string name="authentication_password">密码</string>
+  <string name="authentication_sign_up">注册</string>
+  <string name="authentication_sign_up_with">使用其他账号注册</string>
+  <string name="authentication_sign_up_with_email">or sign up with an\u0020</string>
+  <string name="authentication_sign_in">登陆</string>
+  <string name="authentication_sign_in_with">使用其他账号登陆</string>
+  <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
+  <string name="authentication_existing_user">已注册用户</string>
+  <string name="authentication_email_address">电子邮件</string>
+  <string name="authentication_ask_for_email">请输入您的电子邮件地址:</string>
+  <string name="authentication_thank_you_message_email">谢谢您 ! Please follow your mail box</string>
+  <string name="authentication_confirm">确认</string>
+  <string name="authentication_cancel">取消</string>
+  <string name="authentication_ok">好的</string>
+  <string name="authentication_not_registered">请返回登陆页面</string>
+
+  <string name="authentication_forgot_password">忘记密码 ?</string>
+  <string name="authentication_forgot_password_email">电子邮件</string>
+
+  <string name="authentication_connecting_tradehero">正在验证 %s, 连线股货英雄中</string>
+  <string name="authentication_connecting_tradehero_only">处理中</string>
+  <string name="facebook">Facebook</string>
+  <string name="authentication_connecting_to_facebook">连线至 Facebook</string>
+  <string name="linkedin">LinkedIn</string>
+  <string name="authentication_connecting_to_linkedin">连线至 LinkedIn</string>
+  <string name="twitter">Twitter</string>
+  <string name="authentication_twitter_email">电子邮件</string>
+  <string name="authentication_twitter_connecting">连线至 Twitter</string>
+  <string name="sina_weibo">Weibo</string>
+  <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
+
+</resources>

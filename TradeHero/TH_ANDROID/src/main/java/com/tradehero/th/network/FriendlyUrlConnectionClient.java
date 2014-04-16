@@ -1,19 +1,16 @@
 package com.tradehero.th.network;
 
+import android.content.Context;
+import com.tradehero.th.utils.NetworkUtils;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import retrofit.client.Request;
 import retrofit.client.UrlConnectionClient;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/17/14 Time: 12:30 PM Copyright (c) TradeHero
@@ -21,10 +18,34 @@ import retrofit.client.UrlConnectionClient;
 @Singleton
 public class FriendlyUrlConnectionClient extends UrlConnectionClient
 {
-    @Inject public FriendlyUrlConnectionClient()
+    private final Context context;
+
+    @Inject public FriendlyUrlConnectionClient(Context context)
     {
         super();
+        this.context = context;
+
         HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
+        enableHttpResponseCache();
+    }
+
+    /**
+     * Enable http cache
+     */
+    private void enableHttpResponseCache()
+    {
+        try
+        {
+            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+            File httpCacheDir = new File(context.getCacheDir(), "http");
+            Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("install", File.class, long.class)
+                    .invoke(null, httpCacheDir, httpCacheSize);
+        }
+        catch (Exception httpResponseCacheNotAvailable)
+        {
+            Timber.e("Response cache is not available", httpResponseCacheNotAvailable);
+        }
     }
 
     @Override protected HttpURLConnection openConnection(Request request) throws IOException
@@ -32,39 +53,8 @@ public class FriendlyUrlConnectionClient extends UrlConnectionClient
         HttpURLConnection connection = super.openConnection(request);
         if (connection instanceof HttpsURLConnection)
         {
-            ((HttpsURLConnection) connection).setSSLSocketFactory(createBadSslSocketFactory());
+            ((HttpsURLConnection) connection).setSSLSocketFactory(NetworkUtils.createBadSslSocketFactory());
         }
         return connection;
-    }
-
-    private static SSLSocketFactory createBadSslSocketFactory()
-    {
-        try
-        {
-            SSLContext context = SSLContext.getInstance("TLS");
-            TrustManager permissive = new X509TrustManager()
-            {
-                @Override public void checkClientTrusted(X509Certificate[] chain, String authType)
-                        throws CertificateException
-                {
-                }
-
-                @Override public void checkServerTrusted(X509Certificate[] chain, String authType)
-                        throws CertificateException
-                {
-                }
-
-                @Override public X509Certificate[] getAcceptedIssuers()
-                {
-                    return null;
-                }
-            };
-            context.init(null, new TrustManager[] {permissive}, new SecureRandom());
-            return context.getSocketFactory();
-        }
-        catch (Exception e)
-        {
-            throw new AssertionError(e);
-        }
     }
 }

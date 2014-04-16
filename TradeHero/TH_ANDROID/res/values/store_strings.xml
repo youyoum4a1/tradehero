@@ -38,14 +38,19 @@
 
   <string name="store_billing_sku_already_owned_window_title">You already own one of this object</string>
   <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
-  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Restart TradeHero?</string>
-  <string name="store_billing_sku_already_owned_ok">I already restarted</string>
-  <string name="store_billing_sku_already_owned_cancel">No need</string>
+  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Attempt a Restore?</string>
+  <string name="store_billing_sku_already_owned_ok">I already restored</string>
+  <string name="store_billing_sku_already_owned_cancel">Restore</string>
 
   <string name="store_billing_bad_response_window_title">Huh?</string>
   <string name="store_billing_bad_response_window_description">We received a bad response from GooglePlay.</string>
   <!--string name="store_billing_bad_response_ok">Sure</string-->
   <string name="store_billing_bad_response_cancel">OK</string>
+
+  <string name="store_billing_result_error_window_title">Huh?</string>
+  <string name="store_billing_result_error_window_description">We received a result error from Google Play. You may need to clear the cache of the Google Play Store app.</string>
+  <!--string name="store_billing_result_error_ok">Sure</string-->
+  <string name="store_billing_result_error_cancel">OK</string>
 
   <string name="store_billing_remote_error_window_title">Huh?</string>
   <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>
@@ -91,7 +96,7 @@
   <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
   <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your portfolio!</string>
 
-  <string name="store_buy_virtual_dollar_window_button_cancel">Later</string>
+  <string name="store_buy_virtual_dollar_window_button_cancel">Cancel</string>
   <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
 
   <!-- Manage heroes -->
@@ -181,8 +186,8 @@
   <string name="google_play_send_support_email_restore_fail_partial_ok">Sure</string>
   <string name="google_play_send_support_email_restore_fail_partial_cancel">Never Mind</string>
 
-  <string name="google_play_send_support_email_restore_fail_title">Purchases Failed To Restored</string>
-  <string name="google_play_send_support_email_restore_fail_message">We could not restore your purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_send_support_email_restore_fail_title">Purchases Failed To Restore</string>
+  <string name="google_play_send_support_email_restore_fail_message">We could not restore your %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
   <string name="google_play_send_support_email_restore_fail_ok">Sure</string>
   <string name="google_play_send_support_email_restore_fail_cancel">Never Mind</string>
 

@@ -58,9 +58,18 @@ public class MessagesView extends RelativeLayout
         showOnlyThis(emptyView);
     }
 
-    public void showLoadingView()
+    /**
+     * Show progressabar or/and listview
+     * @param onlyShowLoadingView
+     */
+    public void showLoadingView(boolean onlyShowLoadingView)
     {
         showOnlyThis(progressBar);
+        if (!onlyShowLoadingView)
+        {
+            changeViewVisibility(listView,true);
+        }
+
     }
 
     public ListView getListView()

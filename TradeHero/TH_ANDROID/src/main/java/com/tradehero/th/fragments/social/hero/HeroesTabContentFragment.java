@@ -17,8 +17,8 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -34,13 +34,8 @@ import timber.log.Timber;
 
 public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 {
-
     private HeroType heroType;
     private int page;
-
-    public HeroesTabContentFragment()
-    {
-    }
 
     private HeroManagerViewContainer viewContainer;
     private ProgressDialog progressDialog;
@@ -152,11 +147,6 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new HeroManagerTHIABUserInteractor();
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -219,6 +209,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             this.viewContainer.heroListView.setOnItemClickListener(null);
         }
         this.viewContainer = null;
+
         super.onDestroyView();
         Timber.d("onDestroyView page:%s", page);
     }
@@ -231,7 +222,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 
     private void handleBuyMoreClicked()
     {
-        userInteractor.conditionalPopBuyFollowCredits();
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -253,7 +244,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            userInteractor.followHero(clickedHeroDTO.getBaseKey());
+                            followUser(clickedHeroDTO.getBaseKey());
                         }
                     });
         }
@@ -264,7 +255,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
+                            unfollowUser(clickedHeroDTO.getBaseKey());
                         }
                     });
         }
@@ -340,49 +331,6 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         }
     }
     //</editor-fold>
-
-    public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
-    {
-        public HeroManagerTHIABUserInteractor()
-        {
-            super();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneComplete()
-        {
-            super.handleShowProductDetailsMilestoneComplete();
-        }
-
-        @Override protected void handleShowProductDetailsMilestoneFailed(Throwable throwable)
-        {
-            super.handleShowProductDetailsMilestoneFailed(throwable);
-        }
-
-        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase,
-                UserProfileDTO updatedUserProfile)
-        {
-            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            display(updatedUserProfile);
-        }
-
-        @Override protected void createFollowCallback()
-        {
-            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(),
-                    userProfileCache.get())
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    super.success(userProfileDTO, response);
-                    HeroesTabContentFragment.this.linkWith(userProfileDTO, true);
-                    if (HeroesTabContentFragment.this.infoFetcher != null)
-                    {
-                        HeroesTabContentFragment.this.infoFetcher.fetchHeroes(
-                                HeroesTabContentFragment.this.followerId, getHeroType());
-                    }
-                }
-            };
-        }
-    }
 
     private class HeroManagerUserProfileCacheListener
             implements DTOCache.Listener<UserBaseKey, UserProfileDTO>

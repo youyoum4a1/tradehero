@@ -5,16 +5,20 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
+import com.tradehero.th.billing.googleplay.exception.MissingCachedProductDetailException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
+import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -36,21 +40,27 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
+    @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    private MiddleCallbackAddCash middleCallbackAddCash;
 
     public THIABPurchaseReporter()
     {
         DaggerUtils.inject(this);
     }
 
-    private OwnedPortfolioId getApplicableOwnedPortfolioId(THIABPurchase purchase)
+    private OwnedPortfolioId getApplicableOwnedPortfolioId(THIABPurchase purchase) throws MissingApplicablePortfolioIdException
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
             portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
+        }
+        if (portfolioId == null)
+        {
+            throw new MissingApplicablePortfolioIdException("PortfolioId was not in payload or cache: " + currentUserId.toUserBaseKey());
         }
         return portfolioId;
     }
@@ -59,12 +69,23 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     {
         this.requestCode = requestCode;
         this.purchase = purchase;
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
+        OwnedPortfolioId portfolioId = null;
+        try
+        {
+            portfolioId = getApplicableOwnedPortfolioId(purchase);
+        }
+        catch (MissingApplicablePortfolioIdException e)
+        {
+            Timber.e(e, "Could not get ApplicablePortfolioId");
+            notifyListenerReportFailed(e);
+            return;
+        }
 
         // TODO do something when info is not available
         THIABProductDetail cachedSkuDetail = skuDetailCache.get().get(purchase.getProductIdentifier());
         if (cachedSkuDetail == null)
         {
+            notifyListenerReportFailed(new MissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));
             return;
         }
         if (purchase == null)
@@ -80,34 +101,33 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
         switch (cachedSkuDetail.domain)
         {
-            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
-                portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
-                break;
-
-            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
-                portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
-                break;
-
-            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
-                if (portfolioId != null)
-                {
-                    alertPlanService.get().subscribeToAlertPlan(
-                            portfolioId.userId,
-                            purchase.getGooglePlayPurchaseDTO(),
-                            new THIABPurchaseReporterAlertPlanPurchaseCallback());
-                }
-                else
-                {
-                    Timber.e("reportPurchase portfolioId is null %s", purchase);
-                    // TODO decide what to do
-                }
-                break;
-
-            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
-                userService.get().addCredit(
-                        portfolioId.userId,
+            case DOMAIN_RESET_PORTFOLIO:
+                portfolioServiceWrapper.get().resetPortfolio(
+                        portfolioId,
                         purchase.getGooglePlayPurchaseDTO(),
                         new THIABPurchaseReporterPurchaseCallback());
+                break;
+
+            case DOMAIN_VIRTUAL_DOLLAR:
+                if (middleCallbackAddCash != null)
+                {
+                    middleCallbackAddCash.setPrimaryCallback(null);
+                }
+                middleCallbackAddCash = portfolioServiceWrapper.get().addCash(
+                        portfolioId,
+                        purchase.getGooglePlayPurchaseDTO(),
+                        new THIABPurchaseReporterPurchaseCallback());
+                break;
+
+            case DOMAIN_STOCK_ALERTS:
+                alertPlanService.get().subscribeToAlertPlan(
+                        portfolioId.userId,
+                        purchase.getGooglePlayPurchaseDTO(),
+                        new THIABPurchaseReporterAlertPlanPurchaseCallback());
+                break;
+
+            case DOMAIN_FOLLOW_CREDITS:
+                addCredit(portfolioId);
                 break;
 
             default:
@@ -116,38 +136,41 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
     }
 
+    private void addCredit(OwnedPortfolioId portfolioId)
+    {
+        if (purchase.getUserToFollow() != null)
+        {
+            userServiceWrapper.follow(
+                    purchase.getUserToFollow(),
+                    purchase.getGooglePlayPurchaseDTO(),
+                    new THIABPurchaseReporterPurchaseCallback());
+        }
+        else
+        {
+            userService.get().addCredit(
+                    portfolioId.userId,
+                    purchase.getGooglePlayPurchaseDTO(),
+                    new THIABPurchaseReporterPurchaseCallback());
+        }
+    }
+
     protected void checkAlertPlanAttribution(RetrofitError retrofitErrorFromReport)
     {
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
+        OwnedPortfolioId portfolioId = null;
+        try
+        {
+            portfolioId = getApplicableOwnedPortfolioId(purchase);
+        }
+        catch (MissingApplicablePortfolioIdException e)
+        {
+            Timber.e(e, "Could not get ApplicablePortfolioId");
+            notifyListenerReportFailed(e);
+            return;
+        }
         alertPlanServiceWrapper.get().checkAlertPlanAttribution(
                 portfolioId.getUserBaseKey(),
                 purchase.getGooglePlayPurchaseDTO(),
                 new THIABPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
-    }
-
-    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws IABException
-    {
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
-
-        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
-        {
-            case THBillingInteractor.DOMAIN_RESET_PORTFOLIO:
-                return portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO());
-
-            case THBillingInteractor.DOMAIN_VIRTUAL_DOLLAR:
-                return portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO());
-
-            case THBillingInteractor.DOMAIN_STOCK_ALERTS:
-                return reportAlertPurchaseSync(purchase);
-
-            case THBillingInteractor.DOMAIN_FOLLOW_CREDITS:
-                return userService.get().addCredit(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            default:
-                throw new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method");
-        }
     }
 
     protected UserProfileDTO reportAlertPurchaseSync(THIABPurchase purchase) throws IABException
@@ -198,7 +221,18 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
     protected void handleCallbackStatusSuccess(AlertPlanStatusDTO alertPlanStatusDTO, Response response, RetrofitError errorFromReport)
     {
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
+        OwnedPortfolioId portfolioId = null;
+        try
+        {
+            portfolioId = getApplicableOwnedPortfolioId(purchase);
+        }
+        catch (MissingApplicablePortfolioIdException e)
+        {
+            Timber.e(e, "Could not get ApplicablePortfolioId");
+            notifyListenerReportFailed(e);
+            return;
+        }
+
         if (!alertPlanStatusDTO.isYours)
         {
             // TODO we need to pass a PurchaseReportedToOtherUserException here

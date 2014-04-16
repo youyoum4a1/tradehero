@@ -4,7 +4,6 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import java.util.List;
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

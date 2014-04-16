@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="follow">Follow</string>
+  <string name="message">Message</string>
+  <string name="upgrade_to_premium">Upgrade to Premium</string>
+  <string name="following_premium">Following\n(Premium)</string>
+  <string name="select_endpoint">Select Api Endpoint</string>
+  <string name="current_endpoint">"Current Endpoint: "</string>
+  <string name="action_menu_about">关于</string>
+  <string name="leaderboard_empty">开始交易并且成为第一个上此英雄榜的人吧。</string>
+  <string name="action_search">搜索</string>
+  <string name="update">更新</string>
+  <string name="empty_video_list">当前没有任何学习视频.</string>
+  <string name="loading_required_information">读取必要信息中</string>
+  <string name="server_response">"服务器响应: "</string>
+  <string name="link">Link</string>
+  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link_now">Link now!</string>
+  <string name="later">Later</string>
+  <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
+  <string name="upgrade_needed">Upgrade needed</string>
+  <string name="update_now">Update now</string>
+  <string name="update_guide">Please reinstall TradeHero</string>
+  <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
+  <string name="press_back_again_to_exit">Press back again to exit</string>
+  <string name="discussion">讨论</string>
+  <string name="more_character">…</string>
+  <string name="buy_sell">买入/卖出</string>
+  <string name="translate">翻译</string>
+  <string name="share_to">分享至…</string>
+  <string name="comment">评论</string>
+  <string name="timeline_discussion_post">发布</string>
+  <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
+  <string name="discussion_loaded">已读取全部讨论</string>
+  <string name="discussion_loading">读取讨论中…</string>
+  <string name="discussion_empty">成为第一个发布评论的人吧.</string>
+  <string name="news_view_on_web">View on the Web</string>
+  <string name="add_a_comment">Add a comment…</string>
+  <string name="start_new_discussion">Start a New Discussion</string>
+  <string name="error_empty_comment">Comment should not be empty</string>
+  <string name="error_not_enough_information">Not enough information, try again</string>
+  <string name="via">" via "</string>
+
+  <string name="broadcast_success">Send message success</string>
+  <string name="broadcast_error">Send message error</string>
+  <string name="broadcast_message_title">Broadcast Message</string>
+  <string name="broadcast_message_action_send">Send</string>
+  <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
+  <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
+  <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
+  <string name="broadcast_message_sending_hint">Sending message...</string>
+</resources>

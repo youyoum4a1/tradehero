@@ -1,6 +1,9 @@
 package com.tradehero.th.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,16 +17,23 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -33,6 +43,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.AppContainerImpl;
 import com.tradehero.th.ui.ViewWrapper;
@@ -42,6 +53,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -51,20 +63,24 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    // TODO BillingLogicHolder
-    @Inject protected Lazy<THIABLogicHolder> billingLogicHolder;
+    @Inject protected Lazy<THBillingInteractor> billingInteractor;
+    @Inject protected Provider<THUIBillingRequest> emptyBillingRequestProvider;
 
-    private THIABPurchaseRestorer purchaseRestorer;
-    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject CurrentUserId currentUserId;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
@@ -92,9 +108,29 @@ public class DashboardActivity extends SherlockFragmentActivity
         ViewGroup dashboardWrapper = appContainer.get(this);
         // ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
 
-        launchIAB();
+        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
+        {
+            @Override public void onPurchaseRestored(
+                    int requestCode,
+                    List restoredPurchases,
+                    List failedRestorePurchases,
+                    List failExceptions)
+            {
+                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
+                {
+                    restoreRequestCode = null;
+                }
+            }
+        };
+        launchBilling();
 
-        dtoCacheUtil.initialPrefetches();
+        detachUserProfileFetchTask();
+        userProfileFetchListener = new UserProfileFetchListener();
+        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
+        userProfileFetchTask.execute();
+
+        suggestUpgradeIfNecessary();
+        this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         //navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.main_fragment);
@@ -108,42 +144,73 @@ public class DashboardActivity extends SherlockFragmentActivity
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
-    private void launchIAB()
+    private void detachUserProfileFetchTask()
     {
-        purchaseRestorer = new THIABPurchaseRestorer(billingLogicHolder.get());
-        purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        if (userProfileFetchTask != null)
         {
-            @Override
-            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
-            {
-                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                        DashboardActivity.this,
-                        consumed,
-                        reportFailed,
-                        consumeFailed,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception("Tracing"))); // TODO have a better exception
-            }
+            userProfileFetchTask.setListener(null);
+        }
+        userProfileFetchTask = null;
+    }
 
-            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-            {
-            }
-
-            @Override public void onPurchaseRestoreFailed(IABException iabException)
-            {
-                // We keep silent on this one as we don't want to bother the user if for instance billing is not available
-                // On the other hand, the settings fragment will inform
-            }
-        };
-        purchaseRestorer.setPurchaseRestoreFinishedListener(purchaseRestorerFinishedListener);
-        purchaseRestorer.init();
-        purchaseRestorer.launchRestorePurchaseSequence();
-
+    private void launchBilling()
+    {
+        if (restoreRequestCode != null)
+        {
+            billingInteractor.get().forgetRequestCode(restoreRequestCode);
+        }
+        restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
+    }
+
+    protected THUIBillingRequest createRestoreRequest()
+    {
+        THUIBillingRequest request = emptyBillingRequestProvider.get();
+        request.restorePurchase = true;
+        request.startWithProgressDialog = false;
+        request.popRestorePurchaseOutcome = true;
+        request.popRestorePurchaseOutcomeVerbose = false;
+        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
+        return request;
+    }
+
+    protected THUIBillingRequest createFetchInventoryRequest()
+    {
+        THUIBillingRequest request = emptyBillingRequestProvider.get();
+        request.fetchInventory = true;
+        return request;
     }
 
     @Override public void onBackPressed()
     {
         getNavigator().popFragment();
+    }
+
+    private void suggestUpgradeIfNecessary()
+    {
+        if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
+        {
+            alertDialogUtil.get().popWithOkCancelButton(
+                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now, R.string.later,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            try
+                            {
+                                THToast.show(R.string.update_guide);
+                                startActivity(
+                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
+                            }
+                            catch (ActivityNotFoundException ex)
+                            {
+                                startActivity(
+                                        new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                            }
+                        }
+                    });
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -215,7 +282,12 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onDestroy()
     {
-        billingLogicHolder = null;
+        THBillingInteractor billingInteractorCopy = billingInteractor.get();
+        if (billingInteractorCopy != null && restoreRequestCode != null)
+        {
+            billingInteractorCopy.forgetRequestCode(restoreRequestCode);
+        }
+
         if (navigator != null)
         {
             navigator.onDestroy();
@@ -226,13 +298,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             currentActivityHolder.unsetActivity(this);
         }
-        if (purchaseRestorer != null)
-        {
-            purchaseRestorer.setPurchaseRestoreFinishedListener(null);
-        }
-        purchaseRestorer = null;
         purchaseRestorerFinishedListener = null;
 
+        detachUserProfileFetchTask();
         super.onDestroy();
     }
 
@@ -273,7 +341,20 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onActivityResult(requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
-        billingLogicHolder.get().onActivityResult(requestCode, resultCode, data);
+        billingInteractor.get().onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            supportInvalidateOptionsMenu();
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+
+        }
     }
 
     private DashboardTabType currentTab = DashboardTabType.TRENDING;

@@ -86,7 +86,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(currentUserId.toUserBaseKey()); // We need to keep a strong reference because the cache does not
+        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(currentUserId.toUserBaseKey());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

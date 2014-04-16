@@ -33,7 +33,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -67,6 +67,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -80,54 +81,40 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override protected void finish()
             {
-                ProgressDialog progressBarCopy = progressBar;
-                if (progressBarCopy != null)
-                {
-                    progressBarCopy.dismiss();
-                }
+                dismissProgress();
             }
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
             {
-                if (watchlistPositionDTO == null)
+                watchlistPositionCache.get().put(securityKeyId, watchlistPositionDTO);
+                if (isResumed())
                 {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO was null for key " + securityKeyId);
-                }
-                else if (watchlistPositionDTO.securityDTO == null)
-                {
-                    Timber.e(new IllegalArgumentException("watchlistPositionDTO.securityDTO cannot be null for key " + securityKeyId), "watchlistPositionDTO.securityDTO was null for key " + securityKeyId);
+                    SecurityIdList currentUserWatchlistSecurities =
+                            userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+                    if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityKeyId))
+                    {
+                        currentUserWatchlistSecurities.add(securityKeyId);
+                    }
+                    String returnFragment = null;
+                    Bundle args = getArguments();
+                    if (args != null)
+                    {
+                        returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+                    }
+
+                    getNavigator().popFragment(returnFragment);
                 }
                 else
                 {
-                    SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-                    watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-                    if (isResumed())
-                    {
-                        SecurityIdList currentUserWatchlistSecurities =
-                                userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-                        if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
-                        {
-                            currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
-                        }
-                        Bundle args = getArguments();
-                        if (args != null)
-                        {
-                            String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-                            if (returnFragment != null)
-                            {
-                                getNavigator().popFragment(returnFragment);
-                                return;
-                            }
-                        }
-                        getNavigator().popFragment();
-                    }
+                    dismissProgress();
                 }
             }
 
             @Override protected void failure(THException ex)
             {
-                Timber.e("Failed to update watchlist position", ex);
+                Timber.e(ex, "Failed to update watchlist position");
                 THToast.show(ex);
+                dismissProgress();
             }
         };
     }
@@ -175,7 +162,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
+            progressBar = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
         }
         try
         {
@@ -201,17 +188,22 @@ public class WatchlistEditFragment extends DashboardFragment
                     watchlistService.get().createWatchlistEntry(watchPositionItemForm, watchlistUpdateCallback);
                 }
             }
+            else
+            {
+                Timber.e(new Exception("SecurityCompactDTO from cache was null"),"");
+                dismissProgress();
+            }
         }
         catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
             Timber.e("Parsing error", ex);
-            progressBar.dismiss();
+            dismissProgress();
         }
         catch (Exception ex)
         {
             THToast.show(ex.getMessage());
-            progressBar.dismiss();
+            dismissProgress();
         }
     }
 
@@ -250,13 +242,14 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        progressBar = null;
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
+        progressBar = null;
         watchlistUpdateCallback = null;
+
         super.onDestroy();
     }
 
@@ -264,21 +257,18 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         this.securityKeyId = securityId;
 
-        if (securityId != null)
+        // TODO change the test to something passed in the args bundle
+        if (watchlistPositionCache.get().get(securityId) != null)
         {
-            if (watchlistPositionCache.get().get(securityId) != null)
-            {
-                setActionBarTitle(getString(R.string.watchlist_edit_title));
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
-            }
-            else
-            {
-                setActionBarTitle(getString(R.string.watchlist_add_title));
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
-            }
-
-            querySecurity(securityId, andDisplay);
+            setActionBarTitle(getString(R.string.watchlist_edit_title));
+            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
         }
+        else
+        {
+            setActionBarTitle(getString(R.string.watchlist_add_title));
+            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
+        }
+        querySecurity(securityId, andDisplay);
 
         if (andDisplay)
         {
@@ -291,6 +281,15 @@ public class WatchlistEditFragment extends DashboardFragment
         if (securityTitle != null)
         {
             securityTitle.setText(String.format("%s:%s", securityKeyId.exchange, securityKeyId.securitySymbol));
+        }
+    }
+
+    private void dismissProgress()
+    {
+        ProgressDialog progressBarCopy = progressBar;
+        if (progressBarCopy != null)
+        {
+            progressBarCopy.dismiss();
         }
     }
 

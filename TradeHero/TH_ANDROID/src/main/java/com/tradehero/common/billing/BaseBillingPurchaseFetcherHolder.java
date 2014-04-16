@@ -1,8 +1,8 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,65 +12,81 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        PurchaseFetchedListenerType extends BillingPurchaseFetcher.OnPurchaseFetchedListener<
-                ProductIdentifierType,
-                OrderIdType,
-                ProductPurchaseType,
-                BillingExceptionType>,
         BillingExceptionType extends BillingException>
     implements BillingPurchaseFetcherHolder<
         ProductIdentifierType,
         OrderIdType,
         ProductPurchaseType,
-        PurchaseFetchedListenerType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>>
-            purchaseFetchedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<PurchaseFetchedListenerType>> parentPurchaseFetchedListeners;
+    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType>> parentPurchaseFetchedListeners;
 
     public BaseBillingPurchaseFetcherHolder()
     {
         super();
-        purchaseFetchedListeners = new HashMap<>();
         parentPurchaseFetchedListeners = new HashMap<>();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
-        return !purchaseFetchedListeners.containsKey(requestCode) &&
-                !parentPurchaseFetchedListeners.containsKey(requestCode);
+        return !parentPurchaseFetchedListeners.containsKey(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
-        purchaseFetchedListeners.remove(requestCode);
         parentPurchaseFetchedListeners.remove(requestCode);
     }
 
-    @Override public PurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
+    @Override public BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseFetchedListener(int requestCode)
     {
-        WeakReference<PurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
-        if (weakListener == null)
-        {
-            return null;
-        }
-        return weakListener.get();
+        return parentPurchaseFetchedListeners.get(requestCode);
     }
 
     /**
-     * The listener needs to be strongly referenced elsewhere.
      * @param requestCode
      * @param purchaseFetchedListener
      */
-    @Override public void registerPurchaseFetchedListener(int requestCode, PurchaseFetchedListenerType purchaseFetchedListener)
+    @Override public void registerPurchaseFetchedListener(int requestCode, BillingPurchaseFetcher.OnPurchaseFetchedListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> purchaseFetchedListener)
     {
-        parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
+        parentPurchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
     }
 
-    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<ProductIdentifierType, ProductPurchaseType> purchases)
+    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
+        createPurchaseFetchedListener()
     {
-        PurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()
+        {
+            @Override public void onFetchPurchasesFailed(int requestCode, BillingExceptionType exception)
+            {
+                notifyPurchaseFetchedFailed(requestCode, exception);
+            }
+
+            @Override public void onFetchedPurchases(int requestCode, List<ProductPurchaseType> purchases)
+            {
+                notifyPurchaseFetchedSuccess(requestCode, purchases);
+            }
+        };
+    }
+
+    protected void notifyPurchaseFetchedSuccess(int requestCode, List<ProductPurchaseType> purchases)
+    {
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> parentListener = getPurchaseFetchedListener(requestCode);
         if (parentListener != null)
         {
             parentListener.onFetchedPurchases(requestCode, purchases);
@@ -79,7 +95,11 @@ abstract public class BaseBillingPurchaseFetcherHolder<
 
     protected void notifyPurchaseFetchedFailed(int requestCode, BillingExceptionType exception)
     {
-        PurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                BillingExceptionType> parentListener = getPurchaseFetchedListener(requestCode);
         if (parentListener != null)
         {
             parentListener.onFetchPurchasesFailed(requestCode, exception);
@@ -88,7 +108,6 @@ abstract public class BaseBillingPurchaseFetcherHolder<
 
     @Override public void onDestroy()
     {
-        purchaseFetchedListeners.clear();
         parentPurchaseFetchedListeners.clear();
     }
 }

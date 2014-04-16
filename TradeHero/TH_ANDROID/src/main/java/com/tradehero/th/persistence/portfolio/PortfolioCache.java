@@ -21,6 +21,7 @@ import javax.inject.Singleton;
 
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
 
@@ -40,7 +41,7 @@ import javax.inject.Singleton;
     {
         if (value != null)
         {
-            portfolioCompactCache.get().put(key.getPortfolioId(), value);
+            portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
             getPositionsCache.get().invalidate(key);
         }
 
@@ -73,6 +74,13 @@ import javax.inject.Singleton;
             values.add(getOrFetch(key));
         }
         return values;
+    }
+
+    @Override public void invalidate(OwnedPortfolioId key)
+    {
+        super.invalidate(key);
+        getPositionsCache.get().invalidate(key);
+        portfolioCompactListCache.autoFetch(key.getUserBaseKey(), true);
     }
 
     public GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> getOrFetchTask(

@@ -27,7 +27,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
@@ -54,6 +54,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -124,7 +125,7 @@ public class SettingsPayPalFragment extends DashboardFragment
         {
             @Override public void onClick(View view)
             {
-                progressDialog = ProgressDialogUtil.show(
+                progressDialog = progressDialogUtil.show(
                         getActivity(),
                         R.string.alert_dialog_please_wait,
                         R.string.authentication_connecting_tradehero_only);

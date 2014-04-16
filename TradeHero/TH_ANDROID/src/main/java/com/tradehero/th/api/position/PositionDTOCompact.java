@@ -1,6 +1,8 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class PositionDTOCompact extends ExtendedDTO
 
     // This price is always is USD
     public Double averagePriceRefCcy;
+    public String currencyDisplay;
+    public String currencyISO;
 
     //<editor-fold desc="Constructors">
     public PositionDTOCompact()
@@ -32,6 +36,7 @@ public class PositionDTOCompact extends ExtendedDTO
     }
     //</editor-fold>
 
+    @JsonIgnore
     public Boolean isClosed()
     {
         if (shares == null)
@@ -41,6 +46,7 @@ public class PositionDTOCompact extends ExtendedDTO
         return shares == 0;
     }
 
+    @JsonIgnore
     public Boolean isOpen()
     {
         if (shares == null)
@@ -50,9 +56,20 @@ public class PositionDTOCompact extends ExtendedDTO
         return shares != 0;
     }
 
+    @JsonIgnore
     public PositionCompactId getPositionCompactId()
     {
         return new PositionCompactId(id);
+    }
+
+    @JsonIgnore
+    public String getNiceCurrency()
+    {
+        if (currencyDisplay != null && !currencyDisplay.isEmpty())
+        {
+            return currencyDisplay;
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
 
     public static List<PositionCompactId> getPositionCompactIds(List<PositionDTOCompact> positionDTOCompacts)
@@ -77,6 +94,8 @@ public class PositionDTOCompact extends ExtendedDTO
                 ", shares=" + shares +
                 ", portfolioId=" + portfolioId +
                 ", averagePriceRefCcy=" + averagePriceRefCcy +
+                ", currencyDisplay=" + currencyDisplay +
+                ", currencyISO=" + currencyISO +
                 ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }

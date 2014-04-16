@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.r11.app.FragmentTabHost;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -355,6 +355,7 @@ public class DashboardNavigator extends Navigator
     private void updateTabBarOnTabChanged(String tabId)
     {
         Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
+        resetBackPressCount();
 
         if (mOnTabChangedListener != null)
         {

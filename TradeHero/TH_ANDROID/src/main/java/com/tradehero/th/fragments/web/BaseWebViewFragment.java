@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.actionbarsherlock.app.ActionBar;
@@ -15,6 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.network.NetworkConstants;
 import timber.log.Timber;
 
 /**
@@ -130,6 +129,11 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     {
         if (url != null)
         {
+            if (!url.startsWith("http"))
+            {
+                url = NetworkConstants.TRADEHERO_PROD_ENDPOINT + url;
+            }
+
             Timber.d("url: %s", url);
             webView.loadUrl(url);
         }

@@ -41,7 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:layout_marginTop="5dip"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
         android:textSize="12sp"

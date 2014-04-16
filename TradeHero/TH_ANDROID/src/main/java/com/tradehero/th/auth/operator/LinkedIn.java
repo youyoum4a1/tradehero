@@ -3,6 +3,7 @@ package com.tradehero.th.auth.operator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.WindowManager;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.auth.OAuthDialog;
 import com.tradehero.th.auth.THAuthenticationProvider;
@@ -14,6 +15,7 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:48 PM Copyright (c) TradeHero */
 public class LinkedIn extends SocialOperator
@@ -64,27 +66,6 @@ public class LinkedIn extends SocialOperator
         {
             private Throwable error;
 
-            @Override protected void onPostExecute(String result)
-            {
-                super.onPostExecute(result);
-                try
-                {
-                    if (this.error != null)
-                    {
-                        callback.onError(this.error);
-                        return;
-                    }
-                    CookieSyncManager.createInstance(context);
-                    OAuthDialog dialog = createOAuthDialog(context, callback, consumer, result);
-
-                    dialog.show();
-                }
-                finally
-                {
-                    hideProgress();
-                }
-            }
-
             @Override protected void onPreExecute()
             {
                 super.onPreExecute();
@@ -103,6 +84,31 @@ public class LinkedIn extends SocialOperator
                     this.error = e;
                 }
                 return null;
+            }
+
+            @Override protected void onPostExecute(String result)
+            {
+                super.onPostExecute(result);
+                try
+                {
+                    if (this.error != null)
+                    {
+                        callback.onError(this.error);
+                        return;
+                    }
+                    CookieSyncManager.createInstance(context);
+                    OAuthDialog dialog = createOAuthDialog(context, callback, consumer, result);
+
+                    dialog.show();
+                }
+                catch(WindowManager.BadTokenException e) // TODO make the SocialOperator deactivatable
+                {
+                    Timber.e(e, "Failed to show dialog");
+                }
+                finally
+                {
+                    hideProgress();
+                }
             }
         };
     }

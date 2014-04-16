@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.r11.app.FragmentTabHost;
+import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,35 +11,41 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.user.FollowUserAssistant;
+import java.util.List;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List;
 import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
  * use File | Settings | File Templates.
  */
-public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/ implements OnHeroesLoadedListener
+public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
 {
-    public static final String TAG = HeroManagerFragment.class.getSimpleName();
-
-    static final String KEY_PAGE = "KEY_PAGE";
-    static final String KEY_ID = "KEY_ID";
-    static final int FRAGMENT_LAYOUT_ID = 9999;
     /**
      * We are showing the heroes of this follower
      */
-    public static final String BUNDLE_KEY_FOLLOWER_ID =
-            HeroManagerFragment.class.getName() + ".followerId";
+    public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
+
+    static final String KEY_PAGE = "KEY_PAGE";
+    static final String KEY_ID = "KEY_ID";
+    // TODO change it into something like R.id.... to help with identifying its unicity
+    static final int FRAGMENT_LAYOUT_ID = 9999;
+
     /** categories of hero:premium,free,all */
     private HeroTypeExt[] heroTypes;
     private int selectedId = -1;
-
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -50,73 +56,27 @@ public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManager
         Timber.d("onCreate");
     }
 
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle("Heros");
+        return new HeroManagerUserFollowedListener();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Timber.d("onCreateView");
         return addTabs();
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    @Override protected void initViews(View view)
     {
-        super.onViewCreated(view, savedInstanceState);
+        // Nothing to do
     }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        Timber.d("onStart");
-    }
-
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Timber.d("onResume");
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-        Timber.d("onPause");
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-        Timber.d("onStop");
-    }
-
-
 
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        mTabHost.setOnTabChangedListener(new MyOnTouchListener());
+        mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
 
         ActionBar.Tab lastSavedTab = null;
         int lastSelectedId = selectedId;
@@ -142,25 +102,39 @@ public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManager
         }
 
         return mTabHost;
-
     }
 
-    @Override public boolean isTabBarVisible()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        return false;
+        super.onCreateOptionsMenu(menu, inflater);
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle("Heros");
     }
 
-    class MyOnTouchListener implements TabHost.OnTabChangeListener
+    @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-
-        @Override public void onTabChanged(String tabId)
+        switch (item.getItemId())
         {
-            Timber.d("onTabChanged tabId:%s",tabId);
-            //getChildFragmentManager().executePendingTransactions();
-            Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
-            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
-            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
+            case android.R.id.home:
+                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                break;
+
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void handleBuyMoreClicked()
+    {
+        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest request = super.getShowProductDetailRequest(domain);
+        request.purchaseReportedListener = new HeroManagerOnPurchaseReportedListener();
+        return request;
     }
 
     /**
@@ -176,7 +150,6 @@ public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManager
 
         TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
         tv.setText(title);
-
     }
 
     private void changeTabTitle(int number1, int number2, int number3)
@@ -186,26 +159,6 @@ public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManager
         changeTabTitle(2, number3);
     }
 
-    @Override public void onDestroyView()
-    {
-        super.onDestroyView();
-        //saveSelectedTab();
-        //clearTabs();
-        Timber.d("onDestroyView");
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-        Timber.d("onDestroy");
-    }
-
-    @Override public void onDetach()
-    {
-        super.onDetach();
-        Timber.d("onDetach");
-    }
-
     @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
     {
         if (!isDetached())
@@ -213,6 +166,49 @@ public class HeroManagerFragment extends DashboardFragment /*BasePurchaseManager
             changeTabTitle(0, value.herosCountGetPaid);
             changeTabTitle(1, value.herosCountNotGetPaid);
             changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
+        }
+    }
+
+    private void handleFollowSuccess(UserProfileDTO currentUserProfileDTO)
+    {
+        // TODO
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+
+    protected class HeroManagerOnTabChangeListener implements TabHost.OnTabChangeListener
+    {
+        @Override public void onTabChanged(String tabId)
+        {
+            Timber.d("onTabChanged tabId:%s",tabId);
+            Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
+            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
+            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
+        }
+    }
+
+    protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            handleFollowSuccess(currentUserProfileDTO);
+        }
+    }
+
+    protected class HeroManagerOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener
+    {
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+        {
+            //display(updatedUserPortfolio);
+        }
+
+        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+        {
+            // Anything to report?
         }
     }
 }

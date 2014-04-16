@@ -1,23 +1,12 @@
 package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by julien on 21/10/13

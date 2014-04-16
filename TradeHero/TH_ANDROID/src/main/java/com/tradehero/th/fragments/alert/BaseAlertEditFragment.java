@@ -19,6 +19,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -29,6 +31,10 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -84,6 +90,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -274,8 +281,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         this.securityId = securityId;
 
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
-                R.string.alert_dialog_please_wait);
+        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
         securityCompactCacheFetchTask =
                 securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
@@ -327,18 +333,39 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         else if (securityAlertCountingHelper.getAlertSlots(
                 currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
-            userInteractor.conditionalPopBuyStockAlerts(new Runnable()
-            {
-                @Override public void run()
-                {
-                    saveAlert();
-                }
-            });
+            popPurchase();
         }
         else
         {
             saveAlert();
         }
+    }
+
+    protected void popPurchase()
+    {
+        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+    }
+
+    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    {
+        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
+        uiBillingRequest.startWithProgressDialog = true;
+        uiBillingRequest.popIfBillingNotAvailable = true;
+        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
+        uiBillingRequest.popIfInventoryFetchFailed = true;
+        uiBillingRequest.popIfPurchaseFailed = true;
+        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        {
+            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                saveAlert();
+            }
+
+            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            {
+            }
+        };
+        return uiBillingRequest;
     }
 
     protected void saveAlert()
@@ -350,8 +377,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
         {
-            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading,
-                    R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.show();
             progressDialog.setCanceledOnTouchOutside(true);
             saveAlertProper(alertFormDTO);

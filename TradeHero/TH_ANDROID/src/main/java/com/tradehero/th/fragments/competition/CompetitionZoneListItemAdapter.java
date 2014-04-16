@@ -11,6 +11,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -24,17 +25,19 @@ import timber.log.Timber;
 public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZoneDTO, CompetitionZoneListItemView>
 {
     public static final int ITEM_TYPE_TRADE_NOW = 0;
-    public static final int ITEM_TYPE_HEADER = 1;
-    public static final int ITEM_TYPE_PORTFOLIO = 2;
-    public static final int ITEM_TYPE_ZONE_ITEM = 3;
-    public static final int ITEM_TYPE_LEADERBOARD = 4;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
+    public static final int ITEM_TYPE_ADS = 1;
+    public static final int ITEM_TYPE_HEADER = 2;
+    public static final int ITEM_TYPE_PORTFOLIO = 3;
+    public static final int ITEM_TYPE_ZONE_ITEM = 4;
+    public static final int ITEM_TYPE_LEADERBOARD = 5;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 6;
 
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
-
     private final Context context;
+
     private final int tradeNowResId;
+    private final int adsResId;
     private final int headerResId;
     private final int portfolioResId;
     private final int leaderboardResId;
@@ -46,16 +49,18 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     private ProviderDTO providerDTO;
     private List<CompetitionDTO> competitionDTOs;
 
-    public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId, int tradeNowResId, int headerResId,
-            int portfolioResId, int leaderboardResId, int legalResId)
+    public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId,
+            int tradeNowResId, int adsResId, int headerResId, int portfolioResId, int leaderboardResId, int legalResId)
     {
         super(context, inflater, zoneItemLayoutResId);
         this.context = context;
         this.tradeNowResId = tradeNowResId;
+        this.adsResId = adsResId;
         this.headerResId = headerResId;
         this.portfolioResId = portfolioResId;
         this.leaderboardResId = leaderboardResId;
         this.legalResId = legalResId;
+
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
         DaggerUtils.inject(this);
@@ -110,7 +115,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
 
     @Override public int getViewTypeCount()
     {
-        return 5;
+        return 7;
     }
 
     @Override public int getItemViewType(int position)
@@ -130,7 +135,8 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
 
     @Override public long getItemId(int position)
     {
-        return getItem(position).hashCode();
+        Object item = getItem(position);
+        return item != null ? item.hashCode() : position;
     }
 
     @Override public Object getItem(int position)
@@ -159,6 +165,11 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
             case ITEM_TYPE_TRADE_NOW:
                 view = inflater.inflate(tradeNowResId, parent, false);
                 ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
+                break;
+
+            case ITEM_TYPE_ADS:
+                view = inflater.inflate(adsResId, parent, false);
+                ((AdView) view).display((CompetitionZoneAdvertisementDTO) item);
                 break;
 
             case ITEM_TYPE_HEADER:

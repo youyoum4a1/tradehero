@@ -15,30 +15,61 @@
 
 package com.tradehero.th.billing.googleplay;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.THProductPurchase;
 import org.json.JSONException;
 
 /**
  * Represents an in-app billing purchase usable in TradeHero.
  */
-public class THIABPurchase extends BaseIABPurchase
+public class THIABPurchase
+        extends BaseIABPurchase<IABSKU, THIABOrderId>
+    implements THProductPurchase<IABSKU, THIABOrderId>
 {
     public static final String TAG = THIABPurchase.class.getSimpleName();
+
+    private UserBaseKey userToFollow;
 
     public THIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         super(itemType, jsonPurchaseInfo, signature);
     }
 
-    public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    @Override protected IABSKU createIABSKU(String skuString)
+    {
+        return new IABSKU(skuString);
+    }
+
+    @Override protected THIABOrderId createIABOrderId(String orderIdString)
+    {
+        return new THIABOrderId(orderIdString);
+    }
+
+    @JsonIgnore
+    @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         if (developerPayload != null)
         {
             return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
         }
         return null;
+    }
+
+    @JsonIgnore
+    @Override public void setUserToFollow(UserBaseKey userToFollow)
+    {
+        this.userToFollow = userToFollow;
+    }
+
+    @JsonIgnore
+    @Override public UserBaseKey getUserToFollow()
+    {
+        return userToFollow;
     }
 
     @Override public String toString()

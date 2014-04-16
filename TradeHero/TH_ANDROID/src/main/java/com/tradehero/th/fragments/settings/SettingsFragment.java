@@ -18,7 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -31,14 +31,13 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
-import com.tradehero.th.billing.googleplay.THIABUserInteractor;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -60,13 +59,14 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -76,7 +76,11 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
-    @Inject THIABUserInteractor userInteractor;
+    @Inject THBillingInteractor billingInteractor;
+    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
+
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject SocialServiceWrapper socialServiceWrapper;
@@ -96,6 +100,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject LocalyticsSession localyticsSession;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
@@ -123,13 +128,29 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         DaggerUtils.inject(this);
 
         createSocialConnectLogInCallback();
+
+        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
+        {
+            @Override public void onPurchaseRestored(
+                    int requestCode,
+                    List restoredPurchases,
+                    List failedRestorePurchases,
+                    List failExceptions)
+            {
+                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
+                {
+                    restoreRequestCode = null;
+                }
+
+            }
+        };
     }
 
     private void createSocialConnectLogInCallback()
     {
         socialConnectLogInCallback = new LogInCallback()
         {
-            @Override public void done(UserBaseDTO user, THException ex)
+            @Override public void done(UserLoginDTO user, THException ex)
             {
                 // when user cancel the process
                 if (!isDetached())
@@ -170,7 +191,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
+            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
         }
         this.currentUserProfileRetrievedMilestone.launch();
 
@@ -195,12 +216,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         initPreferenceClickHandlers();
         initInfo();
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        userInteractor.setApplicablePortfolioId(null);
     }
 
     //<editor-fold desc="ActionBar">
@@ -279,35 +294,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
+        this.purchaseRestorerFinishedListener = null;
         super.onDestroy();
     }
 
-    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
     {
-        return new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
-            @Override
-            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
+            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
             {
                 Timber.d("onPurchaseRestoreFinished3");
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
-                        consumed,
-                        reportFailed,
-                        consumeFailed,
+                        restoredPurchases,
+                        failedRestorePurchases,
                         IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
-            }
-
-            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
-            {
-                Timber.d("onPurchaseRestoreFinished2");
-            }
-
-            @Override public void onPurchaseRestoreFailed(IABException iabException)
-            {
-                Timber.d("onPurchaseRestoreFailed", iabException);
-                // Inform
-                userInteractor.conditionalPopBillingNotAvailable();
             }
         };
     }
@@ -645,7 +647,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private boolean changeEmailNotification(boolean enable)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_email_alert_title,
                 R.string.settings_notifications_email_alert_message);
 
@@ -657,7 +659,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private boolean changePushNotification(boolean enable)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_push_alert_title,
                 R.string.settings_notifications_push_alert_message);
 
@@ -676,14 +678,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             switch (socialNetwork)
             {
                 case FB:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.facebook,
                             R.string.authentication_connecting_to_facebook);
 
                     facebookUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
                 case TW:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.twitter,
                             R.string.authentication_twitter_connecting);
                     twitterUtils.get().logIn(getActivity(), socialConnectLogInCallback);
@@ -691,7 +693,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 case TH:
                     break;
                 case LN:
-                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                    progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.linkedin,
                             R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
@@ -700,7 +702,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
         else
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(),
+            progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             detachMiddleCallbackDisconnect();
@@ -813,10 +815,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleRestorePurchaseClicked()
     {
-        if (userInteractor.popErrorConditional() == null)
+        if (restoreRequestCode != null)
         {
-            userInteractor.launchRestoreSequence();
+            billingInteractor.forgetRequestCode(restoreRequestCode);
         }
+        restoreRequestCode = billingInteractor.run(createRestoreRequest());
+    }
+
+    protected THUIBillingRequest createRestoreRequest()
+    {
+        THUIBillingRequest request = billingRequestProvider.get();
+        request.restorePurchase = true;
+        request.startWithProgressDialog = true;
+        request.popRestorePurchaseOutcome = true;
+        request.popRestorePurchaseOutcomeVerbose = true;
+        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
+        return request;
     }
 
     private Callback<UserProfileDTO> createUserProfileCallback()
@@ -849,7 +863,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleClearCacheClicked()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_cache_clearing_alert_title,
                 R.string.settings_misc_cache_clearing_alert_message);
 
@@ -878,7 +892,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         FragmentActivity activity = getActivity();
         if (activity != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(),
+            progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.settings_misc_cache_cleared_alert_title,
                     R.string.empty);
             getView().postDelayed(new Runnable()
@@ -921,7 +935,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void effectSignOut()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(),
+        progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
         progressDialog.setCancelable(true);

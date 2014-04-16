@@ -48,15 +48,18 @@ import timber.log.Timber;
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE =
-            SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE =
-            SendMessageFragment.class.getName() + ".messageType";
-
+    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
 
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
+    /**ProgressDialog to show progress when sending message */
+    private Dialog progressDialog;
+    /**Dialog to change different type of follower*/
+    private Dialog chooseDialog;
+    /**callback for sending broadcast*/
+    private SendMessageDiscussionCallback sendMessageDiscussionCallback;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
@@ -68,11 +71,10 @@ public class SendMessageFragment extends DashboardFragment
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
-    private Dialog progressDialog;
-    private Dialog chooseDialog;
-    private SendMessageDiscussionCallback sendMessageDiscussionCallback;
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -82,7 +84,6 @@ public class SendMessageFragment extends DashboardFragment
         int discussionTypeValue = args.getInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
                 DiscussionType.BROADCAST_MESSAGE.value);
         this.discussionType = DiscussionType.fromValue(discussionTypeValue);
-
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
         this.messageType = MessageType.fromId(messageTypeInt);
 
@@ -95,11 +96,19 @@ public class SendMessageFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle("Broadcast Message");
-
-        MenuItem menuItem = menu.add(0, 100, 0, "Send");
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle(getString(R.string.broadcast_message_title));
+        MenuItem menuItem = menu.add(0, 100, 0,getString(R.string.broadcast_message_action_send));
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        Timber.d("onCreateOptionsMenu");
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        super.onDestroyOptionsMenu();
+        Timber.d("onDestroyOptionsMenu");
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -148,14 +157,13 @@ public class SendMessageFragment extends DashboardFragment
 
     private void showHeroTypeDialog()
     {
-        //R.layout.message_type_dialog_layout
         ListView listView = new ListView(getActivity());
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         TextView headerView = new TextView(getActivity());
         headerView.setPadding(0, 20, 0, 20);
         headerView.setGravity(Gravity.CENTER);
-        headerView.setText("Choose follower to send message"); //TODO
+        headerView.setText(getString(R.string.broadcast_message_change_type_hint)); //TODO
         headerView.setClickable(false);
         headerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.addHeaderView(headerView);
@@ -189,18 +197,18 @@ public class SendMessageFragment extends DashboardFragment
         int count = getFollowerCount(messageType);
         if (count <= 0)
         {
-            THToast.show("Sorry,you cannot send message because you don't have such type follower");
+            THToast.show(getString(R.string.broadcast_message_no_follower_hint));
             return;
         }
 
         String text = inputText.getText().toString();
         if (TextUtils.isEmpty(text))
         {
-            THToast.show("The message cannot be empty");
+            THToast.show(getString(R.string.broadcast_message_content_length_hint));
             return;
         }
         this.progressDialog =
-                ProgressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
+                progressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
 
         // TODO not sure about this implementation yet
         messageServiceWrapper.get()
@@ -257,8 +265,7 @@ public class SendMessageFragment extends DashboardFragment
                 dialog.dismiss();
                 dialog = null;
             }
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
 
         }
@@ -290,14 +297,14 @@ public class SendMessageFragment extends DashboardFragment
         @Override public void failure(RetrofitError error)
         {
             dismissDialog(progressDialog);
-            THToast.show("Send message error!");
+            THToast.show(getString(R.string.broadcast_error));
         }
 
         @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
             invalidateMessageCache();
-            THToast.show("Send message Successfully!");
+            THToast.show(getActivity().getString(R.string.broadcast_success));
             //TODO close me?
             //closeMe();
         }

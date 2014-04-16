@@ -4,24 +4,25 @@ import com.tradehero.common.billing.BaseProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by xavier on 2/24/14.
  */
 abstract public class BaseIABProductIdentifierFetcherHolder<
+        IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
+        IABSKUListType extends BaseIABSKUList<IABSKUType>,
         ProductIdentifierFetcherType extends ProductIdentifierFetcher<
+                IABSKUListKeyType,
                 IABSKUType,
-                IABExceptionType>,
-        ProductIdentifierFetchedListenerType extends ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-                IABSKUType,
+                IABSKUListType,
                 IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseProductIdentifierFetcherHolder<
+        IABSKUListKeyType,
         IABSKUType,
-        ProductIdentifierFetchedListenerType,
+        IABSKUListType,
         IABExceptionType>
 {
     protected Map<Integer /*requestCode*/, ProductIdentifierFetcherType> skuFetchers;
@@ -34,22 +35,7 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
 
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
-        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType> skuFetchedListener =
-                new ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUType, IABExceptionType>()
-                {
-                    @Override public void onFetchedProductIdentifiers(int requestCode,
-                            Map<String, List<IABSKUType>> availableSkus)
-                    {
-                        notifyProductIdentifierFetchedSuccess(requestCode, availableSkus);
-                    }
-
-                    @Override public void onFetchProductIdentifiersFailed(int requestCode,
-                            IABExceptionType exception)
-                    {
-                        notifyProductIdentifierFetchedFailed(requestCode, exception);
-                    }
-                };
-        productIdentifierFetchedListeners.put(requestCode, skuFetchedListener);
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUListKeyType, IABSKUType, IABSKUListType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
         ProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);

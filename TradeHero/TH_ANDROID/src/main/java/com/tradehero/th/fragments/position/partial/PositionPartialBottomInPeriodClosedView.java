@@ -68,18 +68,6 @@ public class PositionPartialBottomInPeriodClosedView
         }
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        super.linkWith(portfolioDTO, andDisplay);
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.linkWith(portfolioDTO, andDisplay);
-        }
-        if (andDisplay)
-        {
-        }
-    }
-
     @Override public void displayExpandingPart()
     {
         super.displayExpandingPart();
