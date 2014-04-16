@@ -44,7 +44,6 @@ public class DiscussionView extends FrameLayout
     protected TextView discussionStatus;
     private DiscussionKey discussionKey;
 
-    private AbstractDiscussionDTO discussionDTO;
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
 
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
@@ -214,11 +213,6 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
-    {
-        this.discussionDTO = abstractDiscussionDTO;
-    }
-
     private void fetchDiscussionListIfNecessary()
     {
         detachDiscussionFetchTask();
@@ -258,10 +252,14 @@ public class DiscussionView extends FrameLayout
 
     private void updateCommentCount()
     {
-        if (discussionDTO != null)
+        if (discussionKey != null)
         {
-            ++discussionDTO.commentCount;
-            displayTopicView();
+            AbstractDiscussionDTO discussionDTO = discussionCache.get(discussionKey);
+            if (discussionDTO != null)
+            {
+                ++discussionDTO.commentCount;
+                displayTopicView();
+            }
         }
     }
 
