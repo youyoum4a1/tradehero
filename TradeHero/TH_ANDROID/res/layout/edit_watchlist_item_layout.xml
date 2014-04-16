@@ -102,12 +102,32 @@
 
   </LinearLayout>
 
-  <Button
-      android:id="@+id/edit_watchlist_item_done"
-      android:layout_height="wrap_content"
+  <LinearLayout
       android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
       android:layout_gravity="center"
-      android:text="@string/watchlist_button_done"
-      />
+      >
+
+    <Button
+        android:id="@+id/edit_watchlist_item_delete"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@color/red"
+        android:textColor="@color/white"
+        android:text="@string/watchlist_button_delete"
+        />
+
+    <Button
+        android:id="@+id/edit_watchlist_item_done"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:text="@string/watchlist_button_done"
+        />
+
+  </LinearLayout>
+
+
 
 </LinearLayout>

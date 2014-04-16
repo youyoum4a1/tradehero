@@ -358,9 +358,17 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                         THSignedNumber.TYPE_SIGN_ARROW);
                 roiValue.setText(roi.toString(1));
                 roiValue.setTextColor(getResources().getColor(roi.getColor()));
+                roiValue.setVisibility(VISIBLE);
+            }
+            else if (displayablePortfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO.isWatchlist)
+            {
+                roiValue.setVisibility(GONE);
             }
             else
             {
+                roiValue.setVisibility(VISIBLE);
                 roiValue.setText(R.string.na);
             }
         }
