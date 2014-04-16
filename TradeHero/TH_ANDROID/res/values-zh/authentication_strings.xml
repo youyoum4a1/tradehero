@@ -27,13 +27,13 @@
   <string name="authentication_connecting_tradehero">正在验证 %s, 连线股货英雄中</string>
   <string name="authentication_connecting_tradehero_only">处理中</string>
   <string name="facebook">Facebook</string>
-  <string name="authentication_connecting_to_facebook">连线至 Facebook</string>
+  <string name="authentication_connecting_to_facebook">链接 Facebook</string>
   <string name="linkedin">LinkedIn</string>
-  <string name="authentication_connecting_to_linkedin">连线至 LinkedIn</string>
+  <string name="authentication_connecting_to_linkedin">链接 LinkedIn</string>
   <string name="twitter">Twitter</string>
   <string name="authentication_twitter_email">电子邮件</string>
-  <string name="authentication_twitter_connecting">连线至 Twitter</string>
+  <string name="authentication_twitter_connecting">链接 Twitter</string>
   <string name="sina_weibo">Weibo</string>
-  <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
+  <string name="authentication_connecting_to_weibo">链接微博</string>
 
 </resources>

@@ -16,7 +16,7 @@
   <string name="setting_accounts">账号</string>
   <string name="settings_primary_profile">个人资料</string>
   <string name="settings_primary_paypal">PayPal</string>
-  <string name="settings_primary_alipay">Alipay</string>
+  <string name="settings_primary_alipay">支付宝</string>
   <string name="settings_primary_transaction_history">历史购买记录</string>
   <string name="settings_primary_restore_purchases">恢复购买</string>
   <string name="settings_misc_sign_out">登出</string>
@@ -47,7 +47,7 @@
   <string name="settings_misc_cache_cleared_alert_title">缓存清理</string>
 
   <string name="settings_misc_about">关于</string>
-  <string name="settings_misc_version_server">VersionServer</string>
+  <string name="settings_misc_version_server">服务器版本</string>
 
   <string name="settings_update_profile">更新个人资料</string>
   <string name="settings_update_profile_successful">个人资料更新</string>
@@ -65,13 +65,13 @@
   <string name="settings_paypal_hint">Your PayPal email address</string>
   <string name="settings_paypal_update">Update</string>
   <string name="settings_paypal_description">We use your PayPal account to distribute your share of the income received from your followers&#8230;</string>
-  <string name="settings_paypal_successful_update">PayPal account successfully updated</string>
-  <string name="settings_alipay_header">Alipay</string>
-  <string name="settings_alipay_label">Alipay Account</string>
-  <string name="settings_alipay_hint">Your Alipay account</string>
-  <string name="settings_alipay_update">Update</string>
-  <string name="settings_alipay_description">We use your Alipay account to distribute your share of the income received from your followers&#8230;</string>
-  <string name="settings_alipay_successful_update">Alipay account successfully updated</string>
+  <string name="settings_paypal_successful_update">支付宝账号更新成功</string>
+  <string name="settings_alipay_header">支付宝</string>
+  <string name="settings_alipay_label">支付宝账号</string>
+  <string name="settings_alipay_hint">您的支付宝账号</string>
+  <string name="settings_alipay_update">更新</string>
+  <string name="settings_alipay_description">来自粉丝的收益分成，我们将转入您的支付宝帐户&#8230;</string>
+  <string name="settings_alipay_successful_update">支付宝账号更新成功</string>
   <string name="settings_transaction_header">历史购买记录</string>
   <string name="settings_transaction_date">日期</string>
   <string name="settings_transaction_balance">余额</string>

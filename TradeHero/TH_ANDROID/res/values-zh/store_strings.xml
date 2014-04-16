@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="store_option_menu_title">TradeHero Store</string>
-  <string name="store_header_in_app_purchases">In-App Purchases</string>
-  <string name="store_buy_virtual_dollars">Virtual Dollars</string>
+  <string name="store_option_menu_title">股货英雄商店 Sto</string>
+  <string name="store_header_in_app_purchases">应用内购</string>
+  <string name="store_buy_virtual_dollars">虚拟现金</string>
   <string name="store_buy_follow_credits">Follow Credits</string>
-  <string name="store_buy_stock_alerts">Stock Alerts</string>
-  <string name="store_buy_reset_portfolio">Reset Portfolio</string>
+  <string name="store_buy_stock_alerts">股市预警</string>
+  <string name="store_buy_reset_portfolio">重置投资组合</string>
   <string name="store_header_manage_purchases">Manage Purchases</string>
-  <string name="store_manage_heroes">Manage Heroes</string>
-  <string name="store_manage_followers">Manage Followers</string>
-  <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
+  <string name="store_manage_heroes">管理英雄</string>
+  <string name="store_manage_followers">管理粉丝</string>
+  <string name="store_manage_stock_alerts">管理股市预警</string>
 
-  <string name="store_billing_unavailable_window_title">No store account</string>
+  <string name="store_billing_unavailable_window_title">无商店账号</string>
   <string name="store_billing_unavailable_window_description">The %s will function properly when you have an account set up and you enable the billing function.</string>
-  <string name="store_billing_unavailable_cancel">Got it</string>
-  <string name="store_billing_unavailable_act">Add an account now</string>
+  <string name="store_billing_unavailable_cancel">知道了</string>
+  <string name="store_billing_unavailable_act">现在添加账号</string>
 
-  <string name="store_billing_error_loading_window_title">Oh!</string>
-  <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load properly.</string>
-  <string name="store_billing_error_loading_act">Reload Please</string>
+  <string name="store_billing_error_loading_window_title">哦!</string>
+  <string name="store_billing_error_loading_window_description">股货英雄商店无法读取.</string>
+  <string name="store_billing_error_loading_act">刷新中</string>
 
-  <string name="store_billing_loading_window_title">Loading&#8230;</string>
-  <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>
+  <string name="store_billing_loading_window_title">读取中&#8230;</string>
+  <string name="store_billing_loading_window_description">请耐心等待，正在读取中</string>
   <string name="store_billing_loading_cancel">Got it</string>
 
-  <string name="store_billing_verification_failed_window_title">Verification failed</string>
+  <string name="store_billing_verification_failed_window_title">验证失败</string>
   <string name="store_billing_verification_failed_window_description">This is embarassing, we could not trust the communication with GooglePlay.</string>
   <!--string name="store_billing_verification_failed_ok">Sure</string-->
-  <string name="store_billing_verification_failed_cancel">No worry</string>
+  <string name="store_billing_verification_failed_cancel">别担心</string>
 
   <string name="store_billing_user_cancelled_window_title">You cancelled the purchase</string>
   <string name="store_billing_user_cancelled_window_description">Anything you may want to let us know about?</string>
@@ -38,18 +38,18 @@
   <string name="store_billing_sku_already_owned_window_title">You already own one of this object</string>
   <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
   <string name="store_billing_sku_already_owned_window_description">We need to account for it. Attempt a Restore?</string>
-  <string name="store_billing_sku_already_owned_ok">I already restored</string>
-  <string name="store_billing_sku_already_owned_cancel">Restore</string>
+  <string name="store_billing_sku_already_owned_ok">已经成功恢复</string>
+  <string name="store_billing_sku_already_owned_cancel">恢复</string>
 
   <string name="store_billing_bad_response_window_title">Huh?</string>
   <string name="store_billing_bad_response_window_description">We received a bad response from GooglePlay.</string>
   <!--string name="store_billing_bad_response_ok">Sure</string-->
-  <string name="store_billing_bad_response_cancel">OK</string>
+  <string name="store_billing_bad_response_cancel">好的</string>
 
   <string name="store_billing_result_error_window_title">Huh?</string>
   <string name="store_billing_result_error_window_description">We received a result error from Google Play. You may need to clear the cache of the Google Play Store app.</string>
   <!--string name="store_billing_result_error_ok">Sure</string-->
-  <string name="store_billing_result_error_cancel">OK</string>
+  <string name="store_billing_result_error_cancel">好的</string>
 
   <string name="store_billing_remote_error_window_title">Huh?</string>
   <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>

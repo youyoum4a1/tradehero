@@ -17,19 +17,19 @@
   <string name="security_news">新闻</string>
 
   <!-- Warrant info -->
-  <string name="warrant_type_call">Call</string>
-  <string name="warrant_type_put">Put</string>
+  <string name="warrant_type_call">买入期权</string>
+  <string name="warrant_type_put">认估期权</string>
   <string name="warrant_price_header">价格</string>
   <string name="warrant_code_header">代码</string>
-  <string name="warrant_strike_header">Strike</string>
+  <string name="warrant_strike_header">履约</string>
   <string name="warrant_strike_value">%1$s &lt;b>%2$.2f&lt;/b> (%3$s)</string>
   <string name="warrant_expiry_header">逾期</string>
   <string name="warrant_info_header_warrant_data">Warrant Data</string>
   <string name="warrant_info_type">类型</string>
   <string name="warrant_info_code">代码</string>
   <string name="warrant_info_expiry">逾期</string>
-  <string name="warrant_info_strike_price">Strike Price</string>
-  <string name="warrant_info_underlying">Underlying</string>
+  <string name="warrant_info_strike_price">履约价</string>
+  <string name="warrant_info_underlying">标的</string>
   <string name="warrant_info_issuer">发行者</string>
   <string name="warrant_info_strike_price_value_display">%1$s %2$s</string>
 

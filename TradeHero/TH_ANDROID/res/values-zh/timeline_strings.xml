@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="timeline_menu_edit">Edit</string>
-  <string name="timeline_monitor">Monitor</string>
+    <string name="timeline_menu_edit">编辑</string>
+  <string name="timeline_monitor">显示</string>
   <string name="timeline_trade">交易</string>
   <string name="timeline_share">分享</string>
   <string name="timeline_enable_stock_alert">开启</string>

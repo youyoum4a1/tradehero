@@ -4,14 +4,14 @@
   <!--timeline-->
   <string name="tutorial_timeline_content">
     <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
-  <string name="tutorial_timeline_header">Welcome to TradeHero!</string>
-  <string name="tutorial_portfolio_list_header">Portfolios</string>
+  <string name="tutorial_timeline_header">欢迎来到股货英雄!</string>
+  <string name="tutorial_portfolio_list_header">投资组合</string>
 
   <!--Store screen-->
   <string name="tutorial_store_screen_content">Purchase TradeHero dollars, credits, stock alerts, and portfolio reset here. You can also manage your
     purchases.
   </string>
-  <string name="tutorial_store_screen_header">Store</string>
+  <string name="tutorial_store_screen_header">商店</string>
 
   <!--Portfolio list-->
   <string name="tutorial_portfolio_list_content">Lists names of TradeHero users that you recently viewed. Drill down each name to see the position
