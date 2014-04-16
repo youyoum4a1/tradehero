@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.portfolio.PortfolioListItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/portfolio_padding_left"
+    android:paddingTop="@dimen/portfolio_padding_top"
+    android:paddingBottom="@dimen/portfolio_padding_bottom"
+    android:background="@color/white"
+    android:paddingRight="@dimen/position_padding_right"
+    >
+
+  <ImageView
+      android:id="@+id/hint_open_portfolio"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/settings_forward_light"
+      android:scaleType="fitXY"
+      android:contentDescription="@null"
+      />
+
+  <TextView
+      android:id="@+id/roi_value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toLeftOf="@+id/hint_open_portfolio"
+      android:layout_centerVertical="true"
+      android:layout_marginRight="8dp"
+      tools:text="▼77.6%"
+      />
+
+  <LinearLayout
+      android:id="@+id/description_container"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_toLeftOf="@+id/roi_value"
+      android:paddingTop="2dp"
+      android:paddingBottom="2dp"
+      android:paddingLeft="5dp"
+      android:layout_centerVertical="true"
+    >
+
+      <TextView
+          android:id="@+id/portfolio_title"
+          android:layout_width="wrap_content"
+          android:layout_height="0dp"
+          android:maxLines="1"
+          android:layout_weight="3"
+          android:textStyle="bold"
+          tools:text="Default Portfolio"
+        />
+
+      <TextView
+          android:id="@+id/portfolio_description"
+          android:layout_width="wrap_content"
+          android:layout_height="0dp"
+          android:layout_weight="2"
+          android:maxLines="1"
+          tools:text="You have 3 open positions"
+        />
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.portfolio.PortfolioListItemView>

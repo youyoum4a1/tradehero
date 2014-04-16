@@ -31,24 +31,24 @@ public class PortfolioCompactDTO implements DTO
     public PortfolioCompactDTO()
     {
     }
+    //</editor-fold>
 
-    public PortfolioId getPortfolioId()
+    @JsonIgnore public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
     }
-    //</editor-fold>
 
-    public ProviderId getProviderId()
+    @JsonIgnore public ProviderId getProviderId()
     {
         return new ProviderId(providerId);
     }
 
-    public boolean isDefault()
+    @JsonIgnore public boolean isDefault()
     {
         return providerId == null && !isWatchlist;
     }
 
-    public double getTotalExtraCash()
+    @JsonIgnore public double getTotalExtraCash()
     {
         return totalExtraCashGiven + totalExtraCashPurchased;
     }

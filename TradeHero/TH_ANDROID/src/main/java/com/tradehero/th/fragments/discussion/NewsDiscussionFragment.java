@@ -21,9 +21,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:48 AM Copyright (c) TradeHero
- */
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
@@ -49,6 +46,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     {
         View view = inflater.inflate(R.layout.fragment_news_discussion, container, false);
         return view;
+    }
+
+    @Override protected void initViews(View view)
+    {
+        // Nothing to do
     }
 
     @Override public void onDestroyView()

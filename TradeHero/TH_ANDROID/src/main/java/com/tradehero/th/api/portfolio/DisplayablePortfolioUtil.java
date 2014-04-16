@@ -3,16 +3,22 @@ package com.tradehero.th.api.portfolio;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 12/2/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
 public class DisplayablePortfolioUtil
 {
-    public static final String TAG = DisplayablePortfolioUtil.class.getSimpleName();
+    @Inject public CurrentUserId currentUserId;
+    @Inject public Lazy<PortfolioDTOUtil> portfolioDTOUtil;
+    @Inject public Lazy<UserBaseDTOUtil> userBaseDTOUtil;
 
-    @Inject public static CurrentUserId currentUserId;
+    @Inject public DisplayablePortfolioUtil()
+    {
+        super();
+    }
 
-    public static String getLongTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
+    public String getLongTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         if (displayablePortfolioDTO != null &&
                 displayablePortfolioDTO.userBaseDTO != null &&
@@ -27,5 +33,38 @@ public class DisplayablePortfolioUtil
         }
 
         return context.getString(R.string.portfolio_item_title_loading);
+    }
+
+    public String getLongTitleType(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
+        {
+            return portfolioDTOUtil.get().getLongTitleType(context,
+                    displayablePortfolioDTO.portfolioDTO);
+        }
+        return context.getString(R.string.portfolio_title_unnamed);
+    }
+
+    public String getLongSubTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        String subTitle = null;
+        if (displayablePortfolioDTO != null)
+        {
+            boolean isCurrentUser = displayablePortfolioDTO.userBaseDTO != null && currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey());
+            if (!isCurrentUser)
+            {
+                subTitle = portfolioDTOUtil.get().getLongSubTitle(
+                        context,
+                        displayablePortfolioDTO.portfolioDTO,
+                        userBaseDTOUtil.get().getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO));
+            }
+            else
+            {
+                subTitle = portfolioDTOUtil.get().getLongSubTitle(
+                        context,
+                        displayablePortfolioDTO.portfolioDTO);
+            }
+        }
+        return subTitle;
     }
 }
