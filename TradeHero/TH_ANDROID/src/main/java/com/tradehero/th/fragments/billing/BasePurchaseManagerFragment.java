@@ -1,12 +1,17 @@
 package com.tradehero.th.fragments.billing;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -17,20 +22,27 @@ import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.models.alert.AlertSlotDTO;
+import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.utils.AlertDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
 
 /**
- * It expects its Activity to implement THIABInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
+ * It expects its Activity to implement THIABInteractor. Created with IntelliJ IDEA. User: xavier
+ * Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates.
+ */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
-    public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_THINTENT_BUNDLE =
+            BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Inject protected THBillingInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
@@ -45,6 +57,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected FollowUserAssistant followUserAssistant;
     protected FollowUserAssistant.OnUserFollowedListener userFollowedListener;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject protected CurrentActivityHolder currentActivityHolder;
 
     abstract protected void initViews(View view);
 
@@ -79,7 +92,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
                 if (action > 0)
                 {
-                    userInteractor.doAction(action); // TODO place the action after portfolio has been set
+                    userInteractor.doAction(
+                            action); // TODO place the action after portfolio has been set
                 }
                 args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
             }
@@ -107,7 +121,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            Bundle portfolioIdBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+            Bundle portfolioIdBundle =
+                    args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
             if (portfolioIdBundle != null)
             {
                 applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);
@@ -120,11 +135,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         if (applicablePortfolioId.userId == null)
         {
-            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
+            applicablePortfolioId =
+                    new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
         }
         if (applicablePortfolioId.portfolioId == null)
         {
-            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(applicablePortfolioId.getUserBaseKey());
+            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(
+                    applicablePortfolioId.getUserBaseKey());
             if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
             {
                 applicablePortfolioId = ownedPortfolioId;
@@ -146,7 +163,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
+            boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
         if (andDisplay)
@@ -175,8 +193,10 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
     {
         detachPortfolioRetrievedMilestone();
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(userBaseKey);
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedListener);
+        portfolioCompactListRetrievedMilestone =
+                new PortfolioCompactListRetrievedMilestone(userBaseKey);
+        portfolioCompactListRetrievedMilestone.setOnCompleteListener(
+                portfolioCompactListRetrievedListener);
         portfolioCompactListRetrievedMilestone.launch();
     }
 
@@ -187,16 +207,136 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
     {
-        if (showProductDetailRequestCode != null)
+        //TODO alipay hardcode
+        if (true)
         {
-            userInteractor.forgetRequestCode(showProductDetailRequestCode);
+            hackToAlipay(domain);
         }
-        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+        else
+        {
+            if (showProductDetailRequestCode != null)
+            {
+                userInteractor.forgetRequestCode(showProductDetailRequestCode);
+            }
+            showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+        }
+    }
+
+    // HACK Alipay
+    public void alipayPopBuy(int type)
+    {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
+        int array = 0;
+        switch (type)
+        {
+            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
+                array = R.array.alipay_virtual_dollars_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
+                array = R.array.alipay_follow_credits_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
+                array = R.array.alipay_stock_alerts_array;
+                break;
+            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
+                array = R.array.alipay_reset_portfolio_array;
+                break;
+        }
+        final int type1 = type;
+        builder.setTitle(R.string.app_name)
+                .setItems(currentActivityHolder.getCurrentActivity()
+                        .getResources()
+                        .getStringArray(array),
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if (checkAlertsPlan(which, type1))
+                                {
+                                    Intent intent =
+                                            new Intent(currentActivityHolder.getCurrentActivity(),
+                                                    AlipayActivity.class);
+                                    intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
+                                    intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, which);
+                                    currentActivityHolder.getCurrentActivity()
+                                            .startActivity(intent);
+                                }
+                            }
+                        });
+        builder.create().show();
+    }
+
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
+
+    //TODO refactor
+    private boolean checkAlertsPlan(int which, int type1)
+    {
+        if (type1 != StoreItemAdapter.POSITION_BUY_STOCK_ALERTS)
+        {
+            return true;
+        }
+        AlertSlotDTO alertSlots =
+                securityAlertCountingHelperLazy.get().getAlertSlots(
+                        currentUserId.toUserBaseKey());
+        switch (which)
+        {
+            case 0:
+                if (alertSlots.totalAlertSlots >= 2)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 1:
+                if (alertSlots.totalAlertSlots >= 5)
+                {
+                    alertDialogUtilLazy.get()
+                            .showDefaultDialog(
+                                    currentActivityHolder.getCurrentContext(),
+                                    R.string.store_billing_error_buy_alerts);
+                    return false;
+                }
+                break;
+            case 2:
+                break;
+        }
+        return true;
     }
 
     public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
     {
+        //TODO alipay hardcode
+        if (true)
+        {
+            hackToAlipay(domain);
+            return 0;
+        }
         return userInteractor.run(getShowProductDetailRequest(domain));
+    }
+
+    public void hackToAlipay(ProductIdentifierDomain domain)
+    {
+        if (domain.equals(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_STOCK_ALERTS);
+        }
+        else if (domain.equals(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+        {
+            alipayPopBuy(StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
+        }
     }
 
     public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
@@ -222,18 +362,21 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public void followUser(UserBaseKey userToFollow)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow,
+                purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchFollow();
     }
 
     public void unfollowUser(UserBaseKey userToUnFollow)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow,
+                purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchUnFollow();
     }
 
-    protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
+    protected class BasePurchaseManagementPortfolioCompactListRetrievedListener
+            implements Milestone.OnCompleteListener
     {
         @Override public void onComplete(Milestone milestone)
         {
@@ -247,10 +390,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagerUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
+    protected class BasePurchaseManagerUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
         @Override
-        public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
         {
             // Children classes should update the display
         }

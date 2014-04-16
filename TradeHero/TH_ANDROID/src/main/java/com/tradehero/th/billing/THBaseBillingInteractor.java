@@ -341,9 +341,8 @@ abstract public class THBaseBillingInteractor<
 
     protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain productIdentifierDomain, int titleResId)
     {
-        String language = Locale.getDefault().getLanguage();
-        Timber.d("lyl language=%s", language);
-        if ("zh".equals(language) || true)
+        //TODO alipay hardcode
+        if (true)
         {
             if (productIdentifierDomain.equals(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
             {
