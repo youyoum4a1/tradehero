@@ -1979,7 +1979,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
         {
-            BuySellFragment.BuySellPurchaseReportedListener
             linkWith(updatedUserProfile, true);
             waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
             updateBuySellDialog();
