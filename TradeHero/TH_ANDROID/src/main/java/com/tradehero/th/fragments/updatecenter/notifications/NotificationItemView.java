@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
@@ -15,6 +17,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -87,6 +93,16 @@ public class NotificationItemView
         notificationFetchListener = null;
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    @OnClick(R.id.notification_user_picture) void onUserProfileClicked()
+    {
+        Bundle bundle = new Bundle();
+        if (notificationDTO != null && notificationDTO.referencedUserId != null)
+        {
+            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, notificationDTO.referencedUserId);
+            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     @Override public void display(NotificationKey notificationKey)
@@ -176,4 +192,12 @@ public class NotificationItemView
             display(notificationDTO);
         }
     }
+
+
+    //<editor-fold desc="Navigation">
+    protected DashboardNavigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+    }
+    //</editor-fold>
 }
