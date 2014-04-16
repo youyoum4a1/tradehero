@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/notification_padding_top"
-    android:layout_alignParentTop="true"
-    android:layout_height="fill_parent"
     android:background="@color/notification_background_color">
 
   <ImageView android:id="@+id/notification_icon"
       android:src="@drawable/icon"
       android:layout_marginRight="@dimen/notification_margin"
       android:layout_marginLeft="@dimen/notification_margin"
+      android:padding="@dimen/notification_logo_padding"
       android:layout_width="@dimen/notification_logo_width"
       android:layout_height="@dimen/notification_logo_width"
       android:contentDescription="@null"/>
 
-  <TextView android:id="@+id/notification_subject"
+  <TextView
+      android:id="@+id/notification_subject"
       style="@style/dark_bold_header"
-      android:text="@null"
       android:layout_alignTop="@+id/notification_icon"
       android:layout_toRightOf="@+id/notification_icon"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:maxLines="1" />
+      android:singleLine="true"
+      tools:text="TradeHero"
+      />
 
   <TextView android:id="@+id/message"
-      android:textSize="14dip"
-      android:textColor="#FF000000"
-      android:text="@null"
-      android:layout_marginTop="3dip"
-      android:layout_marginRight="@dimen/notification_margin"
-      android:layout_marginLeft="@dimen/notification_margin"
-      android:layout_height="wrap_content"
+      android:layout_toRightOf="@+id/notification_icon"
+      android:textSize="12sp"
+      android:textColor="@color/notification_text_color"
       android:layout_below="@+id/notification_subject"
-      android:layout_width="wrap_content" />
-
+      android:layout_marginTop="3dip"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:maxLines="2"
+      tools:text="Tho Nguyen (friend with Batman and 19 others) started following Lucy Zakuro"
+      />
 </RelativeLayout>
