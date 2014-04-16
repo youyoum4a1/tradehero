@@ -2,12 +2,13 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
@@ -130,6 +131,30 @@ interface UserServiceAsync
             Callback<List<UserSearchResultDTO>> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Search Allowable Recipients">
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page,
+            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Get User">
     @GET("/users/{userId}")
     void getUser(
@@ -215,11 +240,5 @@ interface UserServiceAsync
     void getHeroes(
             @Path("userId") int userId,
             Callback<List<HeroDTO>> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Relations">
-    @GET("/users/allowablerecipients")
-    void getRelations(
-            Callback<UserRelationsDTO> callback);
     //</editor-fold>
 }

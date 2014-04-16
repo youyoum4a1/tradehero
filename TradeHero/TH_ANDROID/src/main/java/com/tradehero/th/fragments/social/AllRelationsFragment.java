@@ -13,8 +13,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserRelationsDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -27,14 +27,13 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
 {
 
-    List<UserBaseDTO> mRelationsList;
-    private MiddleCallback<UserRelationsDTO> relationsMiddleCallback;
+    List<UserProfileCompactDTO> mRelationsList;
+    private MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> relationsMiddleCallback;
     private RelationsListItemAdapter mRelationsListItemAdapter;
 
     @InjectView(R.id.relations_list) ListView mRelationsListView;
@@ -58,7 +57,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         alertDialogUtilLazy.get().showProgressDialog(getActivity());
         detachRelationsMiddleCallback();
         relationsMiddleCallback = userServiceWrapperLazy.get()
-                .getRelations(new RelationsCallback());
+                .searchAllowableRecipients(new RelationsCallback());
     }
 
     private void detachRelationsMiddleCallback()
@@ -83,13 +82,13 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
-    public class RelationsCallback implements Callback<UserRelationsDTO>
+    public class RelationsCallback implements Callback<PaginatedDTO<UserProfileCompactDTO>>
     {
-        @Override public void success(UserRelationsDTO list, Response response)
+        @Override public void success(PaginatedDTO<UserProfileCompactDTO> list, Response response)
         {
-            mRelationsList = list.data;
+            mRelationsList = list.getData();
             alertDialogUtilLazy.get().dismissProgressDialog();
-            mRelationsListItemAdapter.setItems(list.data);
+            mRelationsListItemAdapter.setItems(list.getData());
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 
