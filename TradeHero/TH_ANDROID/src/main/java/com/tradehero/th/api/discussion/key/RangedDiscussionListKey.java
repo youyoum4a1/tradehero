@@ -1,14 +1,16 @@
 package com.tradehero.th.api.discussion.key;
 
+import android.os.Bundle;
 import com.tradehero.th.api.pagination.RangedKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.Map;
 
-/**
- * Created by xavier on 3/7/14.
- */
 public class RangedDiscussionListKey extends DiscussionListKey implements RangedKey
 {
+    public static final String MAX_COUNT_BUNDLE_KEY = RangedDiscussionListKey.class.getName() + ".maxCount";
+    public static final String MAX_ID_BUNDLE_KEY = RangedDiscussionListKey.class.getName() + ".maxId";
+    public static final String MIN_ID_BUNDLE_KEY = RangedDiscussionListKey.class.getName() + ".minId";
+
     public final Integer maxCount;
     public final Integer maxId;
     public final Integer minId;
@@ -51,6 +53,14 @@ public class RangedDiscussionListKey extends DiscussionListKey implements Ranged
         this.maxId = maxId;
         this.minId = minId;
     }
+
+    public RangedDiscussionListKey(Bundle args)
+    {
+        super(args);
+        this.maxCount = args.containsKey(MAX_COUNT_BUNDLE_KEY) ? args.getInt(MAX_COUNT_BUNDLE_KEY) : null;
+        this.maxId = args.containsKey(MAX_ID_BUNDLE_KEY) ? args.getInt(MAX_ID_BUNDLE_KEY) : null;
+        this.minId = args.containsKey(MIN_ID_BUNDLE_KEY) ? args.getInt(MIN_ID_BUNDLE_KEY) : null;
+    }
     //</editor-fold>
 
     @Override public int hashCode()
@@ -92,6 +102,23 @@ public class RangedDiscussionListKey extends DiscussionListKey implements Ranged
         return minId;
     }
     //</editor-fold>
+
+    @Override protected void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        if (maxCount != null)
+        {
+            args.putInt(MAX_COUNT_BUNDLE_KEY, maxCount);
+        }
+        if (maxId != null)
+        {
+            args.putInt(MAX_ID_BUNDLE_KEY, maxId);
+        }
+        if (minId != null)
+        {
+            args.putInt(MIN_ID_BUNDLE_KEY, minId);
+        }
+    }
 
     @Override public Map<String, Object> toMap()
     {
