@@ -163,7 +163,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                 new UserBaseKey(getArguments().getInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID));
         displayProgress(true);
 
-        Timber.d("fetch heros heroType:%s", getHeroType());
+        Timber.d("onResume,fetch heros heroType:%s", getHeroType());
         this.infoFetcher.fetch(this.followerId, getHeroType());
     }
 
