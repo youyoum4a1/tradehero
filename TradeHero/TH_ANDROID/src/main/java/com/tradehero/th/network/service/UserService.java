@@ -32,8 +32,6 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:01 PM Copyright (c) TradeHero */
-
 public interface UserService
 {
     //<editor-fold desc="Sign-Up With Email">

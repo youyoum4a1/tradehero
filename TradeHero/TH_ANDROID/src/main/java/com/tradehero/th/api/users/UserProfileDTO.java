@@ -2,15 +2,18 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:03 PM Copyright (c) TradeHero */
 public class UserProfileDTO extends UserProfileCompactDTO
 {
+
     public String email;
     public String address;
     public String biography;
@@ -23,7 +26,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public Integer followerCount;
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)
-    public float ccBalance;       // non-recurring: CC spot level
+    public Double ccBalance;       // non-recurring: CC spot level
 
     public PortfolioDTO portfolio;
 
@@ -53,6 +56,12 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<ProviderDTO> enrolledProviders;
 
     public boolean competitionAutoEnrollOnFirstLaunch;
+    public LeaderboardDTO mostSkilledLbmu;
+
+    public LeaderboardKey getMostSkilledLbmuKey()
+    {
+        return new LeaderboardKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+    }
 
     public boolean isFollowingUser(int userId)
     {
