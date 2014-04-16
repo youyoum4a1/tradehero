@@ -180,10 +180,21 @@ public class DiscussionView extends FrameLayout
 
         if (andDisplay)
         {
-            if (topicView instanceof DTOView)
+            displayTopicView();
+        }
+    }
+
+    private void displayTopicView()
+    {
+        if (topicView instanceof DTOView)
+        {
+            try
             {
-                // TODO check type
                 ((DTOView<DiscussionKey>) topicView).display(discussionKey);
+            }
+            catch (Exception ex)
+            {
+                Timber.e(ex, "topicView should implement DTOView<DiscussionKey>");
             }
         }
     }
@@ -227,14 +238,30 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected void addDiscussion(DiscussionDTO newDiscussion)
+    /**
+     * This method is called when there is a new comment for the current discussion
+     * @param newDiscussion
+     */
+    protected void addComment(DiscussionDTO newDiscussion)
     {
         DiscussionKey newDiscussionKey = newDiscussion.getDiscussionKey();
         discussionCache.put(newDiscussionKey, newDiscussion);
+        updateCommentCount();
+
         if (discussionListAdapter != null)
         {
             discussionListAdapter.addItem(newDiscussionKey);
             discussionListAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void updateCommentCount()
+    {
+        if (discussionDTO != null)
+        {
+            ++discussionDTO.commentCount;
+            displayTopicView();
         }
     }
 
@@ -289,7 +316,7 @@ public class DiscussionView extends FrameLayout
     {
         @Override public void success(DiscussionDTO discussionDTO)
         {
-            addDiscussion(discussionDTO);
+            addComment(discussionDTO);
         }
 
         @Override public void failure(Exception exception)
