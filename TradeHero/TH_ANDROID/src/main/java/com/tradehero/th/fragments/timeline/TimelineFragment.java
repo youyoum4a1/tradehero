@@ -142,7 +142,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        if(mIsOtherProfile)
+        {
+            bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, shownUserBaseKey.key);
+        }
+        else
+        {
+            bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        }
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
@@ -154,7 +161,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
+        if(mIsOtherProfile)
+        {
+            bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, shownUserBaseKey.key);
+        }
+        else
+        {
+            bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
+        }
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

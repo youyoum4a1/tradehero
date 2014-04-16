@@ -110,7 +110,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle("Heros");
+        actionBar.setTitle(R.string.social_heros);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -142,6 +142,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
      */
     private void changeTabTitle(int page, int number)
     {
+        if (mTabHost == null)
+        {
+            return;
+        }
         TabHost.TabSpec tabSpec = tabSpecList.get(page);
         HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes,page);
         int titleRes = heroTypeExt.titleRes;

@@ -63,6 +63,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        Timber.d("onCreate");
         this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
         this.followerTypes = heroTypeResourceDTOFactory.getMapByHeroTypeId();
     }
@@ -76,7 +78,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
 
-        actionBar.setTitle("Followers");
+        actionBar.setTitle(getString(R.string.social_followers));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,11 +111,15 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onDestroyView()
     {
         super.onDestroyView();
+
+        Timber.d("onDestroyView");
     }
 
     @Override public void onDestroy()
     {
         super.onDestroy();
+
+        Timber.d("onDestroy");
         followerTypes = null;
     }
 

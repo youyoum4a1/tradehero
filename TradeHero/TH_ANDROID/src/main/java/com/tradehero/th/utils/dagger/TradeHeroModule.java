@@ -200,7 +200,7 @@ import javax.inject.Singleton;
                         BuySellFragment.class,
                         BuySellFragment.BuySellAsyncTask.class,
                         //BuySellConfirmFragment.class,
-                        //BuySellConfirmFragment.BuySellAsyncTask.class,
+                        BuySellFragment.BuySellAsyncTask.class,
                         //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
