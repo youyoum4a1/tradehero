@@ -25,6 +25,9 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     public String imageUrl;
     public boolean unread;
 
+    public String latestMessage;
+    public Date latestMessageAtUtc;
+
     public MessageHeaderDTO()
     {
         super();
