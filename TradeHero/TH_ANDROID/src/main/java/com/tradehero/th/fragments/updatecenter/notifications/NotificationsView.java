@@ -368,7 +368,10 @@ public class NotificationsView extends BetterViewAnimator
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        --userProfileDTO.unreadNotificationsCount;
+        if (userProfileDTO.unreadNotificationsCount > 0)
+        {
+            --userProfileDTO.unreadNotificationsCount;
+        }
         userProfileCache.put(userBaseKey, userProfileDTO);
 
         requestUpdateTabCounter();

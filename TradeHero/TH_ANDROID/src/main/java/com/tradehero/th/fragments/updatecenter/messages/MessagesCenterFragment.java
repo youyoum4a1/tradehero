@@ -725,11 +725,11 @@ public class MessagesCenterFragment extends DashboardFragment
 
                 // mark it as read in the cache
                 MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
-                MessageHeaderDTO notificationDTO = messageHeaderCache.get().get(messageHeaderId);
-                if (notificationDTO != null && notificationDTO.unread)
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+                if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
-                    notificationDTO.unread = false;
-                    messageHeaderCache.get().put(messageHeaderId, notificationDTO);
+                    messageHeaderDTO.unread = false;
+                    messageHeaderCache.get().put(messageHeaderId, messageHeaderDTO);
 
                     updateUnreadStatusInUserProfileCache();
                 }
@@ -749,7 +749,10 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        --userProfileDTO.unreadNotificationsCount;
+        if (userProfileDTO.unreadMessageThreadsCount > 0)
+        {
+            --userProfileDTO.unreadMessageThreadsCount;
+        }
         userProfileCache.put(userBaseKey, userProfileDTO);
 
         requestUpdateTabCounter();
