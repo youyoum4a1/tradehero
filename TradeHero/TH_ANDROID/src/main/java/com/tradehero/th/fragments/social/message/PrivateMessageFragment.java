@@ -15,9 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -27,10 +25,10 @@ import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -53,6 +51,7 @@ import timber.log.Timber;
 public class PrivateMessageFragment extends AbstractDiscussionFragment
 {
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
+    public static final String DISCUSSION_LIST_KEY_BUNDLE_KEY = PrivateMessageFragment.class.getName() + ".discussionListKey";
     public static final int DEFAULT_MAX_COUNT = 10;
 
     @Inject CurrentUserId currentUserId;
@@ -80,20 +79,16 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     private MessageHeaderDTOList loadedMessages;
     private MessageHeaderDTO currentMessageHeader;
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionListCache discussionListCache;
     private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionListCacheListener;
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionListCacheTask;
-    private RangedDiscussionListKey nextDiscussionListKey;
+    @Inject DiscussionListKeyFactory discussionListKeyFactory;
+    private DiscussionListKey nextDiscussionListKey;
     private DiscussionDTOList loadedDiscussions;
 
     @InjectView(R.id.private_message_empty) TextView emptyHint;
-    //@InjectView(R.id.message_list_view) ListView messageListView;
-    //@InjectView(R.id.discussion_comment_widget) PostCommentView postCommentView;
-    //@InjectView(R.id.button_send) View buttonSend;
     @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
-    //@InjectView(R.id.typing_message_content) EditText messageToSend;
     @InjectView(R.id.post_comment_text) EditText messageToSend;
     @InjectView(R.id.private_message_status_container) View statusViewContainer;
     @InjectView(R.id.private_message_status_text) TextView statusViewText;
@@ -156,6 +151,7 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
     @Override public void onResume()
     {
         super.onResume();
+        nextDiscussionListKey = discussionListKeyFactory.create(getArguments().getBundle(DISCUSSION_LIST_KEY_BUNDLE_KEY));
         fetchCorrespondentProfile();
         fetchMessageStatus();
         fetchMessageList();
@@ -277,6 +273,13 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
         }
     }
 
+    @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    {
+        super.linkWith(discussionKey, andDisplay);
+        this.nextDiscussionListKey = new DiscussionListKey(discussionKey.getType(), discussionKey.id);
+        fetchDiscussionList();
+    }
+
     public void linkWith(MessageStatusDTO messageStatusDTO, boolean andDisplay)
     {
         this.messageStatusDTO = messageStatusDTO;
@@ -318,12 +321,15 @@ public class PrivateMessageFragment extends AbstractDiscussionFragment
 
         //postCommentView.linkWith(discussionKey); // TODO remove
 
-        nextDiscussionListKey = new RangedDiscussionListKey(
+        nextDiscussionListKey = new PaginatedDiscussionListKey(
                 DiscussionType.PRIVATE_MESSAGE,
-                currentMessageHeader.id,
-                DEFAULT_MAX_COUNT,
-                null,
-                0);
+                currentMessageHeader.id);
+        //nextDiscussionListKey = new RangedDiscussionListKey(
+        //        DiscussionType.PRIVATE_MESSAGE,
+        //        currentMessageHeader.id,
+        //        DEFAULT_MAX_COUNT,
+        //        null,
+        //        0);
         fetchDiscussionList();
     }
 

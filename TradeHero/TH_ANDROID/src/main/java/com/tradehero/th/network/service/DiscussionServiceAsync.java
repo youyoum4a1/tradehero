@@ -43,14 +43,14 @@ public interface DiscussionServiceAsync
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
+            Callback<PaginatedDTO<DiscussionDTO>> callback);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback);
+            Callback<PaginatedDTO<DiscussionDTO>> callback);
 
     @POST("/discussions")
     void createDiscussion(
