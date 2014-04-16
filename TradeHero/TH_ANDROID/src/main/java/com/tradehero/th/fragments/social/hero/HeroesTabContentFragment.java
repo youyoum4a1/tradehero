@@ -34,23 +34,22 @@ import timber.log.Timber;
 
 public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 {
+    /**hero type*/
     private HeroType heroType;
+    /**page number*/
     private int page;
-
     private HeroManagerViewContainer viewContainer;
     private ProgressDialog progressDialog;
-
     private HeroListItemAdapter heroListAdapter;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
     private HeroListMostSkilledClickedListener heroListMostSkilledClickedListener;
-
     // The user whose heroes we are listing
     private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
     private List<HeroDTO> heroDTOs;
+    private HeroManagerInfoFetcher infoFetcher;
 
     @Inject public Lazy<HeroCache> heroCache;
-    private HeroManagerInfoFetcher infoFetcher;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
@@ -379,7 +378,6 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             handleGoMostSkilled();
         }
     }
-
 
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {
