@@ -51,10 +51,12 @@
   <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
   <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
   <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
-  <string name="broadcast_message_sending_hint">Sending message...</string>
+  <string name="broadcast_message_sending_hint">Sending message…</string>
 
   <string name="social_followers">Followers</string>
-  <string name="social_heros">Heros</string>
+  <string name="social_heroes">Heroes</string>
 
   <string name="common_loading_error">Sorry, there is something wrong</string>
+  <string name="no_message">No Message</string>
+  <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
 </resources>
