@@ -401,9 +401,11 @@ public class NotificationsView extends BetterViewAnimator
     {
         @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
         {
-            if (itemView instanceof NotificationItemView)
+            Object o = parent.getItemAtPosition(position);
+            if (o instanceof NotificationDTO)
             {
-                ((NotificationItemView) itemView).handleNotificationItemClicked();
+                NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), (NotificationDTO) o);
+                notificationClickHandler.handleNotificationItemClicked();
             }
         }
     }
