@@ -17,6 +17,11 @@ public class PrivateDiscussionDTO extends DiscussionDTO
     }
     //</editor-fold>
 
+    @Override public void putAll(ExtendedDTO other, Class<? extends ExtendedDTO> myClass)
+    {
+        super.putAll(other, myClass);
+    }
+
     @Override public PrivateMessageKey getDiscussionKey()
     {
         return new PrivateMessageKey(id);
