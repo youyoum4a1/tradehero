@@ -107,7 +107,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.social_heros);
+        actionBar.setTitle(R.string.social_heroes);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

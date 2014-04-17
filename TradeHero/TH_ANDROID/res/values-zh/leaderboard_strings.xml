@@ -22,7 +22,7 @@
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">帮助</string>
-  <string name="leaderboard_sort">Sort</string>
+  <string name="leaderboard_sort">分类</string>
   <string name="leaderboard_p_n_l"><![CDATA[P&L]]></string>
   <string name="leaderboard_benchmark_roi">回报率基准</string>
   <string name="leaderboard_action_bar_follow">关注</string>

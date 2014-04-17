@@ -3,7 +3,7 @@
   <string name="follow">关注</string>
   <string name="message">消息</string>
   <string name="upgrade_to_premium">升级至高级</string>
-  <string name="following_premium">关注中\n(Premium)</string>
+  <string name="following_premium">关注中\n(高级)</string>
   <string name="select_endpoint">Select Api Endpoint</string>
   <string name="current_endpoint">"Current Endpoint: "</string>
   <string name="action_menu_about">关于</string>

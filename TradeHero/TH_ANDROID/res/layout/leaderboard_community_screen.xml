@@ -31,7 +31,5 @@
       android:layout_gravity="center"
       android:text="Sorry,there is something wrong.Click to try again"
       />
-
-
 </com.tradehero.common.widget.BetterViewAnimator>
 

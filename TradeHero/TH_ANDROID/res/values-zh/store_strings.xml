@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="store_option_menu_title">股货英雄商店 Sto</string>
+  <string name="store_option_menu_title">股货英雄商店</string>
   <string name="store_header_in_app_purchases">应用内购</string>
   <string name="store_buy_virtual_dollars">虚拟现金</string>
   <string name="store_buy_follow_credits">Follow Credits</string>

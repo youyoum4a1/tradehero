@@ -7,15 +7,15 @@
   <string name="authentication_email">电子邮件</string>
   <string name="authentication_password">密码</string>
   <string name="authentication_sign_up">注册</string>
-  <string name="authentication_sign_up_with">使用其他账号注册</string>
-  <string name="authentication_sign_up_with_email">or sign up with an\u0020</string>
+  <string name="authentication_sign_up_with">使用以下账号注册</string>
+  <string name="authentication_sign_up_with_email">或以邮箱注册\u0020</string>
   <string name="authentication_sign_in">登陆</string>
-  <string name="authentication_sign_in_with">使用其他账号登陆</string>
-  <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
+  <string name="authentication_sign_in_with">使用社交平台账号登陆</string>
+  <string name="authentication_sign_in_with_email">或以注册邮箱登陆\u0020</string>
   <string name="authentication_existing_user">已注册用户</string>
   <string name="authentication_email_address">电子邮件</string>
   <string name="authentication_ask_for_email">请输入您的电子邮件地址:</string>
-  <string name="authentication_thank_you_message_email">谢谢您 ! Please follow your mail box</string>
+  <string name="authentication_thank_you_message_email">谢谢您 ! 请查看你的邮箱。</string>
   <string name="authentication_confirm">确认</string>
   <string name="authentication_cancel">取消</string>
   <string name="authentication_ok">好的</string>
@@ -27,13 +27,13 @@
   <string name="authentication_connecting_tradehero">正在验证 %s, 连线股货英雄中</string>
   <string name="authentication_connecting_tradehero_only">处理中</string>
   <string name="facebook">Facebook</string>
-  <string name="authentication_connecting_to_facebook">链接 Facebook</string>
+  <string name="authentication_connecting_to_facebook">连接 Facebook</string>
   <string name="linkedin">LinkedIn</string>
-  <string name="authentication_connecting_to_linkedin">链接 LinkedIn</string>
+  <string name="authentication_connecting_to_linkedin">连接 LinkedIn</string>
   <string name="twitter">Twitter</string>
   <string name="authentication_twitter_email">电子邮件</string>
-  <string name="authentication_twitter_connecting">链接 Twitter</string>
-  <string name="sina_weibo">Weibo</string>
-  <string name="authentication_connecting_to_weibo">链接微博</string>
+  <string name="authentication_twitter_connecting">连接 Twitter</string>
+  <string name="sina_weibo">新浪微博</string>
+  <string name="authentication_connecting_to_weibo">连接微博</string>
 
 </resources>
