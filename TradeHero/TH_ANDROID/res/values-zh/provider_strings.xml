@@ -9,8 +9,8 @@
   <string name="provider_competition_portfolio_title">Competition Portfolio</string>
   <string name="provider_competition_portfolio_description">view your competition positions</string>
   <string name="provider_competition_wizard_title">Wizard</string>
-  <string name="provider_competition_rules_title">Competition Rules</string>
-  <string name="provider_competition_terms_title">Terms &amp; Conditions</string>
+  <string name="provider_competition_rules_title">比赛规则</string>
+  <string name="provider_competition_terms_title">条款 &amp; 条件</string>
 
   <string name="provider_security_list_title">Competition Securities</string>
   <string name="provider_security_list_search_hint">Filter By Underlying Name or Code</string>

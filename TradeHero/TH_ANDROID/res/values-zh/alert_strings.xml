@@ -12,7 +12,7 @@
   <string name="stock_alert_price_info_as_of_date">as of %s</string>
   <string name="stock_alert_price_info_as_of_date_format">@string/data_format_d_mmm_yyyy_hh_mm</string>
   <string name="stock_alert_notification_received">收到通知</string>
-  <string name="stock_alert_edit">Edit</string>
+  <string name="stock_alert_edit">编辑</string>
   <string name="stock_alert_edit_menu_save">保存</string>
   <string name="stock_alert_trigger_conditions">触发状态</string>
   <string name="stock_alert_target_price_help_text">当证券价格上升或下降到你设定的价格时，你将收到提醒.</string>

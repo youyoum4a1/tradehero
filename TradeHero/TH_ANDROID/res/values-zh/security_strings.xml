@@ -24,7 +24,7 @@
   <string name="warrant_strike_header">Strike</string>
   <string name="warrant_strike_value">%1$s &lt;b>%2$.2f&lt;/b> (%3$s)</string>
   <string name="warrant_expiry_header">逾期</string>
-  <string name="warrant_info_header_warrant_data">Warrant Data</string>
+  <string name="warrant_info_header_warrant_data">保证数据</string>
   <string name="warrant_info_type">类型</string>
   <string name="warrant_info_code">代码</string>
   <string name="warrant_info_expiry">逾期</string>
@@ -49,5 +49,6 @@
   <string name="share_to_wechat_timeline_discussion">我在股货英雄上分享了一段讨论，快来加入吧。</string>
   <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧。</string>
   <string name="share_to_wechat_timeline_trade">我在股货英雄上完成了一笔交易，快来加入吧。</string>
+
 
 </resources>
