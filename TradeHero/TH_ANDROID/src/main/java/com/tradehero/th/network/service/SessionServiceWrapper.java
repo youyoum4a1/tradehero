@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.push.baidu.BaiduDeviceMode;
 import com.tradehero.th.models.user.MiddleCallbackLogout;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -26,4 +27,14 @@ import retrofit.Callback;
         sessionService.logout(middleCallback);
         return middleCallback;
     }
+
+    public void updateDevice(BaiduDeviceMode deviceMode, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallbackLogout middleCallback = new MiddleCallbackLogout(callback);
+        sessionService.updateDevice(deviceMode.token,middleCallback);
+
+    }
+
+
+
 }

@@ -6,6 +6,7 @@ import org.simpleframework.xml.Text;
  * Created by tradehero on 14-3-5.
  */
 public class TranslationResult {
+
     private String fromLanguageCode;
 
     private String languageCode;

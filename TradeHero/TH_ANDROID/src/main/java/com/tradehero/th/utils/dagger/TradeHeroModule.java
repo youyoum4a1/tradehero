@@ -6,6 +6,8 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
@@ -127,6 +129,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
@@ -137,7 +140,9 @@ import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.prefs.ForDeviceToken;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.UserManager;
@@ -150,6 +155,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
+import com.urbanairship.push.PushManager;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -172,6 +178,7 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 THIABModule.class,
                 NewsModule.class,
+                PushModule.class,
         },
         injects =
                 {
@@ -379,6 +386,29 @@ public class TradeHeroModule
 
     @Provides @Singleton PushNotificationManager providePushNotificationManager()
     {
-        return new UrbanAirshipPushNotificationManager();
+        boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+        if (isChineseLocale)
+        {
+            return new BaiduPushManager();
+        }
+        else
+        {
+            return new UrbanAirshipPushNotificationManager();
+        }
     }
+
+    //@Provides @Singleton @ForDeviceToken String provideDeviceToken(@SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
+    //{
+    //    boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+    //    if (isChineseLocale)
+    //    {
+    //        String token = savedPushDeviceIdentifier.get();
+    //        return token;
+    //    }
+    //    else
+    //    {
+    //        return PushManager.shared().getAPID();
+    //    }
+    //}
+
 }

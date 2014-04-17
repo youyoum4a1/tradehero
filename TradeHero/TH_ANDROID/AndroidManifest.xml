@@ -48,6 +48,13 @@
   <!-- END OPTIONAL Urban Airship Settings -->
   <!-- END push notification permission -->
 
+  <!--Baidu push-->
+  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+  <!--Baidu push-->
+
   <application
       android:name=".base.Application"
       android:allowBackup="true"
@@ -183,6 +190,17 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver" />
+
+    <!-- push应用定义消息receiver声明 -->
+    <receiver android:name="com.tradehero.th.models.push.baidu.BaiduPushMessageReceiver">
+      <intent-filter>
+        <!-- 接收push消息 -->
+        <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
+        <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
+        <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
+        <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+      </intent-filter>
+    </receiver>
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
     <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>
