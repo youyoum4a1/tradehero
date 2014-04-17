@@ -2,9 +2,6 @@ package com.tradehero.common.persistence;
 
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates.
- *
- */
 abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCache<DTOKeyType, DTOType>
 {

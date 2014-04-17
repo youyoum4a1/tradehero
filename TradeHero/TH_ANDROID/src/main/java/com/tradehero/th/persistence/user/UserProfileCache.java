@@ -22,6 +22,7 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<UserService> userService;
+    @Inject protected Lazy<UserProfileCompactCache> userProfileCompactCache;
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<LeaderboardCache> leaderboardCache;
 
@@ -60,6 +61,7 @@ import javax.inject.Singleton;
         {
             leaderboardCache.get().put(userProfileDTO.getMostSkilledLbmuKey(), userProfileDTO.mostSkilledLbmu);
         }
+        userProfileCompactCache.get().put(userBaseKey, userProfileDTO);
         return super.put(userBaseKey, userProfileDTO);
     }
 }

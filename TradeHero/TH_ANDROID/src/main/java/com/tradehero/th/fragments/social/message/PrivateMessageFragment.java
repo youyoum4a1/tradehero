@@ -27,6 +27,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;

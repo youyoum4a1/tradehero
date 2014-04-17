@@ -6,6 +6,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -134,25 +135,25 @@ interface UserServiceAsync
     //<editor-fold desc="Search Allowable Recipients">
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
-            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
 
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
             @Query("searchTerm") String searchString,
-            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
 
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") int page,
-            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
 
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") int page,
             @Query("perPage") int perPage,
-            Callback<PaginatedDTO<UserProfileCompactDTO>> callback);
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User">

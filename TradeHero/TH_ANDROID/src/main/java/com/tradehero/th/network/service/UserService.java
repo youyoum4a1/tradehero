@@ -6,6 +6,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -168,19 +169,19 @@ public interface UserService
 
     //<editor-fold desc="Search Allowable Recipients">
     @GET("/users/allowableRecipients")
-    PaginatedDTO<UserProfileCompactDTO> searchAllowableRecipients();
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients();
 
     @GET("/users/allowableRecipients")
-    PaginatedDTO<UserProfileCompactDTO> searchAllowableRecipients(
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString);
 
     @GET("/users/allowableRecipients")
-    PaginatedDTO<UserProfileCompactDTO> searchAllowableRecipients(
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") int page);
 
     @GET("/users/allowableRecipients")
-    PaginatedDTO<UserProfileCompactDTO> searchAllowableRecipients(
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") int page,
             @Query("perPage") int perPage);

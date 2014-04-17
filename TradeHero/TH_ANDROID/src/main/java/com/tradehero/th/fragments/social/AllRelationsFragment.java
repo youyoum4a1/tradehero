@@ -11,39 +11,35 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.users.SearchAllowableRecipientListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
+import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
 {
-
     List<UserProfileCompactDTO> mRelationsList;
-    private MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> relationsMiddleCallback;
+    @Inject UserProfileCompactCache userProfileCompactCache;
+    @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
+    private DTOCache.Listener<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>> allowableRecipientCacheListener;
+    private DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>> allowableRecipientCacheTask;
+
     private RelationsListItemAdapter mRelationsListItemAdapter;
-
     @InjectView(R.id.relations_list) ListView mRelationsListView;
-
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-
-    public AllRelationsFragment()
-    {
-    }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -55,18 +51,21 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     public void downloadRelations()
     {
         alertDialogUtilLazy.get().showProgressDialog(getActivity());
-        detachRelationsMiddleCallback();
-        relationsMiddleCallback = userServiceWrapperLazy.get()
-                .searchAllowableRecipients(new RelationsCallback());
+        detachAllowableRecipientTask();
+
+        allowableRecipientCacheTask = allowableRecipientPaginatedCache
+                .getOrFetch(new SearchAllowableRecipientListType(null, null, null),
+                        new AllRelationAllowableRecipientCacheListener());
+        allowableRecipientCacheTask.execute();
     }
 
-    private void detachRelationsMiddleCallback()
+    private void detachAllowableRecipientTask()
     {
-        if (relationsMiddleCallback != null)
+        if (allowableRecipientCacheTask != null)
         {
-            relationsMiddleCallback.setPrimaryCallback(null);
+            allowableRecipientCacheTask.setListener(null);
         }
-        relationsMiddleCallback = null;
+        allowableRecipientCacheTask = null;
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -80,23 +79,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
                 mRelationsList.get(position).getBaseKey().getArgs());
         getNavigator().pushFragment(PrivateMessageFragment.class, args);
-    }
-
-    public class RelationsCallback implements Callback<PaginatedDTO<UserProfileCompactDTO>>
-    {
-        @Override public void success(PaginatedDTO<UserProfileCompactDTO> list, Response response)
-        {
-            mRelationsList = list.getData();
-            alertDialogUtilLazy.get().dismissProgressDialog();
-            mRelationsListItemAdapter.setItems(list.getData());
-            mRelationsListItemAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
-        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,12 +117,12 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @Override public void onPause()
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        detachRelationsMiddleCallback();
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
+        detachAllowableRecipientTask();
         mRelationsListView.setAdapter(null);
         mRelationsListView.setOnItemClickListener(null);
         mRelationsListView = null;
@@ -152,6 +134,28 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
+        allowableRecipientCacheListener = null;
         super.onDestroy();
+    }
+
+    protected class AllRelationAllowableRecipientCacheListener
+        implements DTOCache.Listener<
+            SearchAllowableRecipientListType,
+            PaginatedDTO<UserBaseKey>>
+    {
+        @Override public void onDTOReceived(SearchAllowableRecipientListType key,
+                PaginatedDTO<UserBaseKey> value, boolean fromCache)
+        {
+            mRelationsList = userProfileCompactCache.get(value.getData());
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            mRelationsListItemAdapter.setItems(mRelationsList);
+            mRelationsListItemAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(SearchAllowableRecipientListType key, Throwable error)
+        {
+            THToast.show(new THException(error));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
     }
 }

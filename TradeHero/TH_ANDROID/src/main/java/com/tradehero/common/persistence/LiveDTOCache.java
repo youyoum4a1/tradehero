@@ -1,8 +1,6 @@
 package com.tradehero.common.persistence;
 
 /**
- * Created with IntelliJ IDEA. User: xavier Date: 10/11/13 Time: 5:55 PM To change this template use File | Settings | File Templates.
- *
  * Provides for a way to be informed on all updates to the cache
  * */
 public interface LiveDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
