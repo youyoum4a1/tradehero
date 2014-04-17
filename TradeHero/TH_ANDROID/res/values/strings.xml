@@ -59,4 +59,5 @@
   <string name="common_loading_error">Sorry, there is something wrong</string>
   <string name="no_message">No Message</string>
   <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
+  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
 </resources>
