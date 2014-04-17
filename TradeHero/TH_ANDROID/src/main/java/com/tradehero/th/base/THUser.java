@@ -25,11 +25,13 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
+import com.tradehero.th.persistence.prefs.ForDeviceToken;
 import com.tradehero.th.persistence.prefs.SavedCredentials;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
@@ -37,7 +39,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.urbanairship.push.PushManager;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +71,7 @@ public class THUser
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
+    @Inject @ForDeviceToken String deviceToken;
 
     public static void initialize()
     {
@@ -130,8 +132,12 @@ public class THUser
             // input error, unable to parse as json data
             return;
         }
-        Timber.d("APID: %s,authenticationMode :%s", PushManager.shared().getAPID(),authenticationMode);
-        userFormDTO.deviceToken = PushManager.shared().getAPID();
+        if (userFormDTO.deviceToken == null)
+        {
+            userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();
+        }
+        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/ authenticationMode);
+        //userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();//PushManager.shared().getAPID();
 
         if (authenticationMode == null)
         {
@@ -156,7 +162,7 @@ public class THUser
                 break;
             case SignIn:
                 LoginFormDTO loginFormDTO = new LoginFormDTO(
-                        PushManager.shared().getAPID(),
+                        DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                         DeviceType.Android,
                         VersionUtils.getVersionId(Application.context()));
                 sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));

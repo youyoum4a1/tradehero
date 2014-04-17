@@ -8,6 +8,7 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
@@ -129,6 +130,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
@@ -171,6 +173,7 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 THIABModule.class,
                 NewsModule.class,
+                PushModule.class,
         },
         injects =
                 {
@@ -377,8 +380,31 @@ public class TradeHeroModule
         return application;
     }
 
-    @Provides @Singleton PushNotificationManager providePushNotificationManager()
+    @Provides @Singleton PushNotificationManager providePushNotificationManager(BaiduPushManager baiduPushManager)
     {
-        return new UrbanAirshipPushNotificationManager();
+        boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+        if (isChineseLocale)
+        {
+            return baiduPushManager;
+        }
+        else
+        {
+            return new UrbanAirshipPushNotificationManager();
+        }
     }
+
+    //@Provides @Singleton @ForDeviceToken String provideDeviceToken(@SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
+    //{
+    //    boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+    //    if (isChineseLocale)
+    //    {
+    //        String token = savedPushDeviceIdentifier.get();
+    //        return token;
+    //    }
+    //    else
+    //    {
+    //        return PushManager.shared().getAPID();
+    //    }
+    //}
+
 }

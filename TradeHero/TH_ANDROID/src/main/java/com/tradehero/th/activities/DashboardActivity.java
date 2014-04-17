@@ -15,10 +15,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.android.pushservice.PushManager;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -41,6 +43,7 @@ import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -85,6 +88,9 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
+    @Inject Lazy<PushNotificationManager> pushNotificationManager;
+
+    private boolean isChineseLocale = false;
     // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
         // request the progress-bar feature for the activity
@@ -137,6 +143,13 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         //navigator.replaceTab(null,DashboardTabType.TRENDING);
         //currentTab = DashboardTabType.TRENDING;
+
+        this.isChineseLocale = MetaHelper.isChineseLocale(getApplicationContext());
+        if (isChineseLocale)
+        {
+            pushNotificationManager.get().enablePush();
+        }
+
     }
 
     @Override
@@ -276,9 +289,24 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         localyticsSession.get().close();
         localyticsSession.get().upload();
+        if (isChineseLocale)
+        {
+            PushManager.activityStarted(this);
+        }
 
         super.onPause();
     }
+
+    @Override protected void onStop()
+    {
+        if (isChineseLocale)
+        {
+            PushManager.activityStoped(this);
+        }
+
+        super.onStop();
+    }
+
 
     @Override protected void onDestroy()
     {

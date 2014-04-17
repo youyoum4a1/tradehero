@@ -1,10 +1,7 @@
 package com.tradehero.th.api.users;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:12 PM To change this template use File | Settings | File Templates. */
 public class SearchUserListType extends UserListType
 {
-    public static final String TAG = SearchUserListType.class.getSimpleName();
-
     //<editor-fold desc="Fields">
     public final String searchString;
     public final Integer page;
@@ -27,20 +24,14 @@ public class SearchUserListType extends UserListType
                 (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equalFields(UserListType other)
     {
-        return (other instanceof SearchUserListType) && equals((SearchUserListType) other);
+        return equalFields ((SearchUserListType) other);
     }
 
-    @Override public boolean equals(UserListType other)
+    public boolean equalFields(SearchUserListType other)
     {
-        return (other instanceof SearchUserListType) && equals((SearchUserListType) other);
-    }
-
-    public boolean equals(SearchUserListType other)
-    {
-        return (other != null) &&
-                (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
+        return (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
                 (page == null ? other.page == null : page.equals(other.page)) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }

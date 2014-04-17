@@ -4,6 +4,8 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -180,7 +182,6 @@ import retrofit.RetrofitError;
 
     //<editor-fold desc="Search Users">
     public List<UserSearchResultDTO> searchUsers(UserListType key)
-            throws RetrofitError
     {
         if (key instanceof SearchUserListType)
         {
@@ -209,14 +210,44 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    public MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> searchAllowableRecipients(Callback<PaginatedDTO<UserProfileCompactDTO>> callback)
+    public PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(SearchAllowableRecipientListType key)
     {
-        MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> middleCallback = new MiddleCallback<>(callback);
-        userServiceAsync.searchAllowableRecipients(callback);
-        return middleCallback;
+        if (key == null)
+        {
+            return userService.searchAllowableRecipients();
+        }
+        else if (key.page == null)
+        {
+            return userService.searchAllowableRecipients(key.searchString);
+        }
+        else if (key.perPage == null)
+        {
+            return userService.searchAllowableRecipients(key.searchString, key.page);
+        }
+        return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
-    // TODO overloaded methods with page and such. Use an appropriate DTOKey (SearchUserListType).
+    public MiddleCallback<PaginatedDTO<AllowableRecipientDTO>> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedDTO<AllowableRecipientDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<AllowableRecipientDTO>> middleCallback = new MiddleCallback<>(callback);
+        if (key == null)
+        {
+            userServiceAsync.searchAllowableRecipients(middleCallback);
+        }
+        else if (key.page == null)
+        {
+            userServiceAsync.searchAllowableRecipients(key.searchString, middleCallback);
+        }
+        else if (key.perPage == null)
+        {
+            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, middleCallback);
+        }
+        else
+        {
+            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, key.perPage, middleCallback);
+        }
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">

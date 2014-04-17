@@ -20,6 +20,7 @@
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
         />
 
     <TextView
