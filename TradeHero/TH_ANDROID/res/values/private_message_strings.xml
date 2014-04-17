@@ -10,7 +10,7 @@
   <string name="private_message_subtitle">Private Message Thread</string>
 
   <string name="private_message_expired_free_message_title">No more free messages</string>
-  <string name="private_message_expired_free_message_description">You have exhausted the free messages you can send to %s.\nDo you want to keep the conversation running?</string>
+  <string name="private_message_expired_free_message_description">You have exhausted the free messages you can send to %1$s.\nDo you want to keep the conversation running and premium-follow %1$s?</string>
   <string name="private_message_expired_free_message_ok">Yes</string>
   <string name="private_message_expired_free_message_cancel">No</string>
 

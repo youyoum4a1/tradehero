@@ -21,9 +21,12 @@ import retrofit.http.QueryMap;
  */
 public interface DiscussionService
 {
+    //<editor-fold desc="Get Comment">
     @GET("/discussions/{commentId}")
     DiscussionDTO getComment(@Path("commentId") int commentId);
+    //</editor-fold>
 
+    //<editor-fold desc="Get Discussions">
     @Deprecated
     @GET("/discussions/{inReplyToType}/{inReplyToId}")
     PaginatedDTO<DiscussionDTO> getDiscussions(
@@ -38,7 +41,9 @@ public interface DiscussionService
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options);
+    //</editor-fold>
 
+    //<editor-fold desc="Get Message Thread">
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     PaginatedDTO<DiscussionDTO> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
@@ -52,20 +57,27 @@ public interface DiscussionService
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options);
+    //</editor-fold>
 
+    //<editor-fold desc="Create Discussion">
     @POST("/discussions")
     DiscussionDTO createDiscussion(
             @Body DiscussionFormDTO discussionFormDTO);
+    //</editor-fold>
 
+    //<editor-fold desc="Vote">
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     DiscussionDTO vote(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Path("direction") VoteDirection direction);
+    //</editor-fold>
 
+    //<editor-fold desc="Share">
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
     DiscussionDTO share(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
+    //</editor-fold>
 }
