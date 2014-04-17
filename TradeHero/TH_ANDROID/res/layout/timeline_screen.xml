@@ -28,8 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="56dp"
-        android:layout_marginLeft="@dimen/timeline_side_spacing"
-        android:layout_marginRight="@dimen/timeline_side_spacing"
         android:cacheColorHint="#00000000"
         android:divider="@android:color/transparent"
         android:dividerHeight="1dp"

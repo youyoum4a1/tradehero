@@ -12,7 +12,9 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:padding="10dp"
-      android:background="@color/white">
+      android:background="@color/white"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing">
     <ImageView
         android:id="@+id/discussion_user_picture"
         android:layout_width="60dp"
@@ -68,5 +70,12 @@
     </RelativeLayout>
   </LinearLayout>
 
-  <include layout="@layout/discussion_action_buttons"/>
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing"
+      >
+    <include layout="@layout/discussion_action_buttons"/>
+  </FrameLayout>
 </com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView>

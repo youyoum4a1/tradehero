@@ -12,6 +12,8 @@
       android:background="@drawable/timeline_list_item_background"
       android:layout_marginTop="@dimen/timeline_side_spacing"
       android:padding="@dimen/timeline_item_padding"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing"
       >
 
     <ImageView
@@ -96,6 +98,12 @@
         />
   </RelativeLayout>
 
-  <include layout="@layout/discussion_action_buttons"/>
-
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/timeline_side_spacing"
+      android:layout_marginRight="@dimen/timeline_side_spacing"
+      >
+    <include layout="@layout/discussion_action_buttons"/>
+  </FrameLayout>
 </com.tradehero.th.fragments.timeline.TimelineItemView>
