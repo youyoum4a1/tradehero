@@ -8,6 +8,7 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
 import dagger.Lazy;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -23,7 +24,7 @@ public class PushSender
     private final @SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
     private final @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
 
-    public PushSender(
+    @Inject public PushSender(
             Lazy<SessionServiceWrapper> sessionServiceWrapper,
             CurrentUserId currentUserId,
             @SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,

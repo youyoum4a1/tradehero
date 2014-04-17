@@ -6,7 +6,9 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
 
@@ -14,17 +16,15 @@ import timber.log.Timber;
  */
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 {
-
-    /** TAG to Log */
     public static final String TAG = BaiduPushMessageReceiver.class.getSimpleName();
     public static final int CODE_OK = 0;
     public static final int MESSAGE_ID = 100;
 
-    private final Provider<PushSender> pushSender;
+    @Inject Provider<PushSender> pushSender;
 
-    public BaiduPushMessageReceiver(Provider<PushSender> pushSender)
+    public BaiduPushMessageReceiver()
     {
-        this.pushSender = pushSender;
+        DaggerUtils.inject(this);
     }
 
     /**
