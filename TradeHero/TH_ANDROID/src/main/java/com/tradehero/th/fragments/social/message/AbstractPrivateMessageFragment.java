@@ -40,26 +40,26 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
-    @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userPhotoTransformation;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject protected UserBaseDTOUtil userBaseDTOUtil;
+    @Inject protected Picasso picasso;
+    @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
-    @Inject UserProfileCache userProfileCache;
+    @Inject protected UserProfileCache userProfileCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
-    private UserBaseKey correspondentId;
-    private UserProfileDTO correspondentProfile;
+    protected UserBaseKey correspondentId;
+    protected UserProfileDTO correspondentProfile;
 
-    @Inject MessageStatusCache messageStatusCache;
+    @Inject protected MessageStatusCache messageStatusCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, MessageStatusDTO> messageStatusCacheTask;
-    private MessageStatusDTO messageStatusDTO;
+    protected MessageStatusDTO messageStatusDTO;
 
     protected ImageView correspondentImage;
-    @InjectView(R.id.private_message_empty) TextView emptyHint;
-    @InjectView(R.id.post_comment_action_submit) TextView buttonSend;
-    @InjectView(R.id.post_comment_text) EditText messageToSend;
-    @InjectView(R.id.private_message_status_container) View statusViewContainer;
-    @InjectView(R.id.private_message_status_text) TextView statusViewText;
+    @InjectView(R.id.private_message_empty) protected TextView emptyHint;
+    @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
+    @InjectView(R.id.post_comment_text) protected EditText messageToSend;
+    @InjectView(R.id.private_message_status_container) protected View statusViewContainer;
+    @InjectView(R.id.private_message_status_text) protected TextView statusViewText;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -220,7 +220,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         displayMessagingStatusText();
     }
 
-    private void displayCorrespondentImage()
+    protected void displayCorrespondentImage()
     {
         if (correspondentImage != null)
         {
@@ -239,7 +239,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private void displayTitle()
+    protected void displayTitle()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
@@ -254,7 +254,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private void displayMessagingStatusContainer()
+    protected void displayMessagingStatusContainer()
     {
         if (statusViewContainer != null)
         {
@@ -265,7 +265,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private void displayMessagingStatusText()
+    protected void displayMessagingStatusText()
     {
         if (statusViewText != null)
         {

@@ -5,13 +5,21 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
+import javax.inject.Inject;
 
 public class PrivateDiscussionView extends DiscussionView
 {
+    @Inject MessageHeaderCache messageHeaderCache;
+    protected MessageHeaderId messageHeaderId;
+    protected MessageHeaderDTO messageHeaderDTO;
+
     protected MessageType messageType;
     private MessageStatusDTO messageStatusDTO;
     private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
@@ -35,11 +43,13 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionListAdapter createDiscussionListAdapter()
     {
-        return new PrivateDiscussionListAdapter(
+        PrivateDiscussionListAdapter discussionListAdapter = new PrivateDiscussionListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.private_message_bubble_mine,
                 R.layout.private_message_bubble_other);
+        discussionListAdapter.setMessageHeaderDTO(messageHeaderDTO);
+        return discussionListAdapter;
     }
 
     @Override protected void onFinishInflate()
@@ -59,7 +69,6 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onDetachedFromWindow()
     {
         setMessageNotAllowedListenerOnPostCommentView(null);
-        messageNotAllowedToSendListener = null;
         super.onDetachedFromWindow();
     }
 
@@ -78,6 +87,32 @@ public class PrivateDiscussionView extends DiscussionView
         if (discussionStatus != null)
         {
             discussionStatus.setVisibility(View.GONE);
+        }
+    }
+
+    public void setMessageHeaderId(MessageHeaderId messageHeaderId)
+    {
+        this.messageHeaderId = messageHeaderId;
+        if (messageHeaderId != null)
+        {
+            linkWith(messageHeaderCache.get(messageHeaderId), true);
+        }
+        else
+        {
+            linkWith((MessageHeaderDTO) null, true);
+        }
+    }
+
+    public void linkWith(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
+    {
+        this.messageHeaderDTO = messageHeaderDTO;
+        if (discussionListAdapter != null)
+        {
+            ((PrivateDiscussionListAdapter) discussionListAdapter).setMessageHeaderDTO(messageHeaderDTO);
+        }
+        if (andDisplay)
+        {
+            // Anything to do?
         }
     }
 
