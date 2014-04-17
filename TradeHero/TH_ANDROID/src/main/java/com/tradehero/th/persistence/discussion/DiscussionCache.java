@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.discussion;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsCache;
@@ -19,16 +20,19 @@ import javax.inject.Singleton;
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final Lazy<NewsCache> newsCache;
+    private final NewsCache newsCache;
+    private final DiscussionDTOFactory discussionDTOFactory;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            Lazy<NewsCache> newsCache,
-            DiscussionServiceWrapper discussionServiceWrapper)
+            NewsCache newsCache,
+            DiscussionServiceWrapper discussionServiceWrapper,
+            DiscussionDTOFactory discussionDTOFactory)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
+        this.discussionDTOFactory = discussionDTOFactory;
 
         // very hacky, but server hacks it first :(
         this.newsCache = newsCache;
@@ -42,11 +46,11 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsCache.get().getOrFetch((NewsItemDTOKey) discussionKey);
+            return newsCache.getOrFetch((NewsItemDTOKey) discussionKey);
         }
         else
         {
-            return discussionServiceWrapper.getComment(discussionKey);
+            return discussionDTOFactory.createChildClass(discussionServiceWrapper.getComment(discussionKey));
         }
         throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }

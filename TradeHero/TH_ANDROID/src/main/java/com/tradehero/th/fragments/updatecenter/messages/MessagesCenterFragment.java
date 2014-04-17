@@ -215,9 +215,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
 
         Bundle args = new Bundle();
-        args.putBundle(ReplyPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                new UserBaseKey(targerUserId).getArgs());
-        ReplyPrivateMessageFragment.putInitiatingMessageHeaderId(args, messageHeaderId);
+        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(targerUserId));
         args.putBundle(ReplyPrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
                 discussionKeyFactory.create(messageHeaderDTO).getArgs());
         getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);

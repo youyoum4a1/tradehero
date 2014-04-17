@@ -4,21 +4,20 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
-import javax.inject.Inject;
 
 public class PrivateDiscussionView extends DiscussionView
 {
-    @Inject MessageHeaderCache messageHeaderCache;
-    protected MessageHeaderId messageHeaderId;
-    protected MessageHeaderDTO messageHeaderDTO;
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
 
     protected MessageType messageType;
     private MessageStatusDTO messageStatusDTO;
@@ -48,7 +47,6 @@ public class PrivateDiscussionView extends DiscussionView
                 LayoutInflater.from(getContext()),
                 R.layout.private_message_bubble_mine,
                 R.layout.private_message_bubble_other);
-        discussionListAdapter.setMessageHeaderDTO(messageHeaderDTO);
         return discussionListAdapter;
     }
 
@@ -68,8 +66,18 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected void onDetachedFromWindow()
     {
+        detachDiscussionFetchTask();
         setMessageNotAllowedListenerOnPostCommentView(null);
         super.onDetachedFromWindow();
+    }
+
+    private void detachDiscussionFetchTask()
+    {
+        if (discussionFetchTask != null)
+        {
+            discussionFetchTask.setListener(null);
+        }
+        discussionFetchTask = null;
     }
 
     @Override protected void setLoading()
@@ -90,32 +98,6 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    public void setMessageHeaderId(MessageHeaderId messageHeaderId)
-    {
-        this.messageHeaderId = messageHeaderId;
-        if (messageHeaderId != null)
-        {
-            linkWith(messageHeaderCache.get(messageHeaderId), true);
-        }
-        else
-        {
-            linkWith((MessageHeaderDTO) null, true);
-        }
-    }
-
-    public void linkWith(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
-    {
-        this.messageHeaderDTO = messageHeaderDTO;
-        if (discussionListAdapter != null)
-        {
-            ((PrivateDiscussionListAdapter) discussionListAdapter).setMessageHeaderDTO(messageHeaderDTO);
-        }
-        if (andDisplay)
-        {
-            // Anything to do?
-        }
-    }
-
     public void setMessageType(MessageType messageType)
     {
         this.messageType = messageType;
@@ -123,6 +105,43 @@ public class PrivateDiscussionView extends DiscussionView
         if (postCommentView != null)
         {
             postCommentView.linkWith(messageType);
+        }
+    }
+
+    @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    {
+        super.linkWith(discussionKey, andDisplay);
+        fetchDiscussion(discussionKey);
+    }
+
+    private void fetchDiscussion(DiscussionKey discussionKey)
+    {
+        detachDiscussionFetchTask();
+        discussionFetchTask = discussionCache.getOrFetch(discussionKey, createDiscussionCacheListener());
+        discussionFetchTask.execute();
+    }
+
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
+    {
+        return new PrivateDiscussionViewDiscussionCacheListener();
+    }
+
+    protected void linkWithInitiating(PrivateDiscussionDTO discussionDTO, boolean andDisplay)
+    {
+        int topicId;
+        if (currentUserId.toUserBaseKey().equals(discussionDTO.getSenderKey()))
+        {
+            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).mineResId;
+        }
+        else
+        {
+            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).otherResId;
+        }
+        setTopicLayout(topicId);
+        inflateDiscussionTopic();
+        if (andDisplay)
+        {
+            displayTopicView();
         }
     }
 
@@ -168,6 +187,20 @@ public class PrivateDiscussionView extends DiscussionView
         @Override public void onMessageNotAllowedToSend()
         {
             notifyPreSubmissionInterceptListener();
+        }
+    }
+
+    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+    {
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value,
+                boolean fromCache)
+        {
+            linkWithInitiating((PrivateDiscussionDTO) value, true);
+        }
+
+        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_private_message_initiating_discussion);
         }
     }
 }

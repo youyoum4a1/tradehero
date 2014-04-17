@@ -5,11 +5,9 @@ import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 
-/**
- * Created by xavier on 3/7/14.
- */
 public class DiscussionDTO extends AbstractDiscussionDTO
 {
+    public DiscussionType type;
     public UserBaseDTO user;
     public int inReplyToId;
     public DiscussionType inReplyToType;

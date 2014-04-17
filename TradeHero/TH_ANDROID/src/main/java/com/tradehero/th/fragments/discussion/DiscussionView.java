@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
@@ -31,14 +32,15 @@ import timber.log.Timber;
 public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>
 {
-    @InjectView(android.R.id.list) ListView discussionList;
+    @InjectView(android.R.id.list) protected ListView discussionList;
     @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
 
     private int listItemLayout;
     private int topicLayout;
 
+    @Inject protected CurrentUserId currentUserId;
     @Inject DiscussionListCache discussionListCache;
-    @Inject DiscussionCache discussionCache;
+    @Inject protected DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
     protected TextView discussionStatus;
@@ -98,11 +100,16 @@ public class DiscussionView extends FrameLayout
         {
             TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
             listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
-            topicLayout = styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0);
+            setTopicLayout(styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0));
             styled.recycle();
 
             ensureStyle();
         }
+    }
+
+    protected void setTopicLayout(int topicLayout)
+    {
+        this.topicLayout = topicLayout;
     }
 
     private void ensureStyle()
@@ -113,7 +120,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void inflateDiscussionTopic()
+    protected void inflateDiscussionTopic()
     {
         if (topicLayout != 0)
         {
@@ -161,7 +168,7 @@ public class DiscussionView extends FrameLayout
         linkWith(discussionKey, true);
     }
 
-    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         postCommentView.linkWith(discussionKey);
 
@@ -178,7 +185,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void displayTopicView()
+    protected void displayTopicView()
     {
         if (topicView instanceof DTOView)
         {

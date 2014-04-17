@@ -21,6 +21,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -37,7 +38,7 @@ import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
 {
-    public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
+    private static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserBaseDTOUtil userBaseDTOUtil;
@@ -60,6 +61,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
     @InjectView(R.id.private_message_status_container) protected View statusViewContainer;
     @InjectView(R.id.private_message_status_text) protected TextView statusViewText;
+
+    public static void putCorrespondentUserBaseKey(Bundle args, UserBaseKey correspondentBaseKey)
+    {
+        args.putBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY, correspondentBaseKey.getArgs());
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

@@ -126,8 +126,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment(int position)
     {
         Bundle args = new Bundle();
-        args.putBundle(NewPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                mRelationsList.get(position).getBaseKey().getArgs());
+        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, mRelationsList.get(position).getBaseKey());
         getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 

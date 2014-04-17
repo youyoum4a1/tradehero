@@ -14,4 +14,6 @@
   <string name="private_message_expired_free_message_ok">Yes</string>
   <string name="private_message_expired_free_message_cancel">No</string>
 
+  <string name="error_fetch_private_message_initiating_discussion">Failed to fetch the initiating discussion</string>
+
 </resources>

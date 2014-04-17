@@ -713,8 +713,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment()
     {
         Bundle args = new Bundle();
-        args.putBundle(NewPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                shownUserBaseKey.getArgs());
+        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
         getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
