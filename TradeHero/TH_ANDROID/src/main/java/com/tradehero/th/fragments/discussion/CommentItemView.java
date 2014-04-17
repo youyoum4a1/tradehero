@@ -21,7 +21,6 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -156,9 +155,9 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
 
     private void displayUserProfilePicture(UserBaseDTO user)
     {
+        displayDefaultUserProfilePicture();
         if (user.picture != null)
         {
-            displayDefaultUserProfilePicture();
             picasso.get()
                     .load(user.picture)
                     .transform(peopleIconTransformation)

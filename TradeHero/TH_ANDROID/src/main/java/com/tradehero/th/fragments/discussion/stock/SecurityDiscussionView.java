@@ -77,7 +77,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         securityDiscussionAdapter = new SecurityDiscussionAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
-                R.layout.security_discussion_item);
+                R.layout.security_discussion_item_view);
     }
 
     @Override protected void onAttachedToWindow()
