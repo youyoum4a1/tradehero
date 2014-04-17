@@ -120,17 +120,20 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected void inflateDiscussionTopic()
+    protected View inflateDiscussionTopic()
     {
+        View inflated = null;
         if (topicLayout != 0)
         {
-            topicView = LayoutInflater.from(getContext()).inflate(topicLayout, null);
+            inflated = LayoutInflater.from(getContext()).inflate(topicLayout, null);
+            topicView = inflated;
 
             if (topicView != null)
             {
                 discussionList.addHeaderView(topicView);
             }
         }
+        return inflated;
     }
 
     private void inflateDiscussionStatus()

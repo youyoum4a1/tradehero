@@ -22,6 +22,7 @@ public class PrivateDiscussionView extends DiscussionView
     protected MessageType messageType;
     private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
     private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
+    private boolean hasAddedHeader = false;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionView(Context context)
@@ -144,6 +145,25 @@ public class PrivateDiscussionView extends DiscussionView
         {
             displayTopicView();
         }
+    }
+
+    @Override protected void setTopicLayout(int topicLayout)
+    {
+        if (!hasAddedHeader)
+        {
+            super.setTopicLayout(topicLayout);
+        }
+    }
+
+    @Override protected View inflateDiscussionTopic()
+    {
+        View inflated = null;
+        if (!hasAddedHeader)
+        {
+            inflated = super.inflateDiscussionTopic();
+            hasAddedHeader = inflated != null;
+        }
+        return inflated;
     }
 
     public void setUserMessagingRelationshipDTO(UserMessagingRelationshipDTO userMessagingRelationshipDTO)
