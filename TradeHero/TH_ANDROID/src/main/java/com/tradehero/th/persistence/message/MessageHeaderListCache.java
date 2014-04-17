@@ -16,9 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by WangLiang on 14-4-4.
- */
 @Singleton
 public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, MessageHeaderIdList>
 {
