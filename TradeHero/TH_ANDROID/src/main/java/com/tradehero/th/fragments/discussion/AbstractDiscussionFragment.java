@@ -51,7 +51,10 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         {
             discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
-        linkWith(discussionKey, true);
+        if (discussionKey != null)
+        {
+            linkWith(discussionKey, true);
+        }
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
