@@ -38,8 +38,8 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
     @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
         //return putInternal(discussionServiceWrapper.getDiscussions(discussionListKey));
-        //return putInternal(discussionServiceWrapper.getPaginatedDiscussions(discussionListKey));
-        return putInternal(discussionServiceWrapper.getMessageThread(discussionListKey));
+        return putInternal(discussionServiceWrapper.getPaginatedDiscussions(discussionListKey));
+        //return putInternal(discussionServiceWrapper.getMessageThread(discussionListKey));
     }
 
     private DiscussionKeyList putInternal(RangedDTO<AbstractDiscussionDTO, DiscussionDTOList<AbstractDiscussionDTO>> rangedDTO)
