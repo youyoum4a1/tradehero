@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -30,6 +31,7 @@ import timber.log.Timber;
 public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey>
 {
     @InjectView(R.id.discussion_user_picture) ImageView discussionUserPicture;
+    @InjectView(R.id.user_profile_name) TextView userProfileName;
     @InjectView(R.id.vote_pair) VotePair discussionVotePair;
 
     @Inject Picasso picasso;
@@ -151,11 +153,31 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     private void displayUser()
     {
+        displayUsername();
+
         displayProfilePicture();
+    }
+
+    private void displayUsername()
+    {
+        userProfileName.setText(userBaseDTO.displayName);
+    }
+
+    private void resetUserProfileName()
+    {
+        userProfileName.setText(null);
     }
 
     private void resetUserView()
     {
+        resetUserProfileName();
+
+        resetUserProfilePicture();
+    }
+
+    private void resetUserProfilePicture()
+    {
+        cancelProfilePictureRequest();
         picasso.load(R.drawable.superman_facebook)
                 .transform(userProfilePictureTransformation)
                 .into(discussionUserPicture);
@@ -163,10 +185,13 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     private void displayProfilePicture()
     {
-        cancelProfilePictureRequest();
-        picasso.load(userBaseDTO.picture)
-                .transform(userProfilePictureTransformation)
-                .into(discussionUserPicture);
+        resetUserProfilePicture();
+        if (userBaseDTO.picture != null)
+        {
+            picasso.load(userBaseDTO.picture)
+                    .transform(userProfilePictureTransformation)
+                    .into(discussionUserPicture);
+        }
     }
 
     private void resetView()

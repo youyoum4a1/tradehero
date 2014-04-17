@@ -59,14 +59,8 @@
 
       <TextView
           android:id="@+id/timeline_user_profile_name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/TH.UserNameTitle"
           android:layout_marginLeft="10dp"
-          android:textColor="@color/black"
-          android:textSize="15sp"
-          android:textStyle="bold"
-          android:ellipsize="middle"
-          android:singleLine="true"
           android:layout_alignParentLeft="true"
           android:layout_toLeftOf="@id/timeline_vendor_picture"
           tools:text="Tho Nguyen"

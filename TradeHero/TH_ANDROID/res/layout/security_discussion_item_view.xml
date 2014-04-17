@@ -33,6 +33,25 @@
         android:paddingLeft="@dimen/timeline_item_padding"
         android:paddingRight="@dimen/timeline_item_padding"
         >
+      
+      <TextView
+          android:id="@+id/user_profile_name"
+          style="@style/TH.UserNameTitle"
+          android:layout_marginLeft="10dip"
+          tools:text="Tho Nguyen"
+          android:textColor="@color/timeline_item"
+          />
+
+      <TextView
+          android:id="@+id/discussion_time"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:textColor="@color/text_gray_normal"
+          android:textSize="@dimen/timeline_item_date"
+          android:layout_below="@id/user_profile_name"
+          tools:text="A moment ago"
+          />
 
       <TextView
           android:id="@+id/discussion_content"
@@ -43,18 +62,8 @@
           android:textColor="@color/timeline_item"
           android:textSize="12sp"
           android:textStyle="normal"
+          android:layout_below="@id/discussion_time"
           tools:text="Tho Nguyen has become the best trader of the world!"
-          />
-
-      <TextView
-          android:id="@+id/discussion_time"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/timeline_item_date"
-          android:layout_below="@id/discussion_content"
-          tools:text="A moment ago"
           />
     </RelativeLayout>
   </LinearLayout>
