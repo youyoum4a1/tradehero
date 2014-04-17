@@ -7,6 +7,8 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.PrivateMessageDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -15,9 +17,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 @Singleton
 public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, DiscussionKeyList>
 {
@@ -37,9 +36,15 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
 
     @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        //return putInternal(discussionServiceWrapper.getDiscussions(discussionListKey));
-        return putInternal(discussionServiceWrapper.getPaginatedDiscussions(discussionListKey));
-        //return putInternal(discussionServiceWrapper.getMessageThread(discussionListKey));
+        if (discussionListKey instanceof PrivateMessageDiscussionListKey)
+        {
+            return putInternal(discussionServiceWrapper.getMessageThread((PrivateMessageDiscussionListKey) discussionListKey));
+        }
+        else if (discussionListKey instanceof PaginatedDiscussionListKey)
+        {
+            return putInternal(discussionServiceWrapper.getDiscussions((PaginatedDiscussionListKey) discussionListKey));
+        }
+        throw new IllegalStateException("Unhandled key " + discussionListKey);
     }
 
     private DiscussionKeyList putInternal(RangedDTO<AbstractDiscussionDTO, DiscussionDTOList<AbstractDiscussionDTO>> rangedDTO)

@@ -48,6 +48,8 @@ public interface DiscussionService
     PaginatedDTO<DiscussionDTO> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
+            @Query("senderUserId") int senderUserId,
+            @Query("recipientUserId") int recipientUserId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId);

@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-/**
- * Created by xavier2 on 2014/4/10.
- */
 public class DiscussionServiceStub implements DiscussionService
 {
     public static final int DEFAULT_MAX_COUNT = 5;
@@ -75,6 +72,7 @@ public class DiscussionServiceStub implements DiscussionService
 
     @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
             DiscussionType inReplyToType, int inReplyToId,
+            int senderUserId, int recipientUserId,
             Integer maxCount, Integer maxId, Integer minId)
     {
         maxCount = maxCount == null ? DEFAULT_MAX_COUNT : maxCount;

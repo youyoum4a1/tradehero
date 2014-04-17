@@ -20,6 +20,7 @@ import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
@@ -41,7 +42,8 @@ public class DiscussionView extends FrameLayout
     @Inject protected CurrentUserId currentUserId;
     @Inject DiscussionListCache discussionListCache;
     @Inject protected DiscussionCache discussionCache;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;
     private DiscussionKey discussionKey;
@@ -166,25 +168,54 @@ public class DiscussionView extends FrameLayout
 
     @Override public void display(DiscussionKey discussionKey)
     {
-        this.discussionKey = discussionKey;
-
         linkWith(discussionKey, true);
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
+        this.discussionKey = discussionKey;
         postCommentView.linkWith(discussionKey);
 
-        if (discussionKey != null)
-        {
-            this.discussionListKey = discussionKeyFactory.toListKey(discussionKey);
-
-            fetchDiscussionListIfNecessary();
-        }
+        initialFetchDiscussion();
 
         if (andDisplay)
         {
             displayTopicView();
+        }
+    }
+
+    protected void initialFetchDiscussion()
+    {
+        this.discussionListKey = createListKey();
+        if (discussionListKey != null)
+        {
+            fetchDiscussionListIfNecessary();
+        }
+    }
+
+    protected DiscussionListKey createListKey()
+    {
+        if (discussionKey != null)
+        {
+            return new PaginatedDiscussionListKey(discussionListKeyFactory.create(discussionKey), 1);
+        }
+        return null;
+    }
+
+    private void fetchDiscussionListIfNecessary()
+    {
+        prepareDiscussionListKey();
+        setLoading();
+        detachDiscussionFetchTask();
+        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, false, createDiscussionListListener());
+        discussionFetchTask.execute();
+    }
+
+    protected void prepareDiscussionListKey()
+    {
+        if (discussionListKey instanceof PaginatedDiscussionListKey && nextPageDelta >= 0)
+        {
+            discussionListKey = ((PaginatedDiscussionListKey) discussionListKey).next(nextPageDelta);
         }
     }
 
@@ -215,25 +246,6 @@ public class DiscussionView extends FrameLayout
         if (andDisplay)
         {
             discussionStatus.setText(R.string.discussion_loaded);
-        }
-    }
-
-    private void fetchDiscussionListIfNecessary()
-    {
-        detachDiscussionFetchTask();
-
-        if (paginatedDiscussionListKey == null)
-        {
-            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
-        }
-
-        if (nextPageDelta >= 0)
-        {
-            paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
-
-            setLoading();
-            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, createDiscussionListListener());
-            discussionFetchTask.execute();
         }
     }
 

@@ -8,9 +8,11 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
@@ -18,6 +20,7 @@ import com.tradehero.th.fragments.discussion.DiscussionView;
 public class PrivateDiscussionView extends DiscussionView
 {
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
     private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
@@ -123,6 +126,16 @@ public class PrivateDiscussionView extends DiscussionView
         discussionFetchTask.execute();
     }
 
+    @Override protected DiscussionListKey createListKey()
+    {
+        return discussionListKeyFactory.create(initiatingDiscussion);
+    }
+
+    @Override protected void prepareDiscussionListKey()
+    {
+        // Do nothing TODO something
+    }
+
     protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
     {
         return new PrivateDiscussionViewDiscussionCacheListener();
@@ -130,6 +143,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     protected void linkWithInitiating(PrivateDiscussionDTO discussionDTO, boolean andDisplay)
     {
+        this.initiatingDiscussion = discussionDTO;
         int topicId;
         if (currentUserId.toUserBaseKey().equals(discussionDTO.getSenderKey()))
         {
@@ -141,6 +155,7 @@ public class PrivateDiscussionView extends DiscussionView
         }
         setTopicLayout(topicId);
         inflateDiscussionTopic();
+        initialFetchDiscussion();
         if (andDisplay)
         {
             displayTopicView();

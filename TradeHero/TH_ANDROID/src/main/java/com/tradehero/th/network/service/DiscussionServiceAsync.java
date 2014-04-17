@@ -40,11 +40,13 @@ public interface DiscussionServiceAsync
             Callback<PaginatedDTO<DiscussionDTO>> callback); // = 42
     //</editor-fold>
 
-    //<editor-fold desc="Get Messages">
+    //<editor-fold desc="Get Message Thread">
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
+            @Query("senderUserId") int senderUserId,
+            @Query("recipientUserId") int recipientUserId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,

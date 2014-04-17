@@ -46,13 +46,12 @@ public class DiscussionListKey
 
     @Override public boolean equals(Object other)
     {
-        return other.getClass().equals(getClass()) && equals((DiscussionListKey) other);
+        return equalClass(other) && equalFields((DiscussionListKey) other);
     }
 
-    public boolean equals(DiscussionListKey other)
+    public boolean equalClass(Object other)
     {
-        return other.getClass().equals(getClass()) &&
-                equalFields(other);
+        return other != null && getClass().equals(other.getClass());
     }
 
     protected boolean equalFields(DiscussionListKey other)

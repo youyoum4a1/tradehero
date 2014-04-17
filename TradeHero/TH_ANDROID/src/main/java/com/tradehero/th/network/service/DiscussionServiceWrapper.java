@@ -7,7 +7,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.PrivateMessageDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -103,55 +103,23 @@ import retrofit.Callback;
                 discussionsKey.toMap());
     }
 
-    public PaginatedDTO<DiscussionDTO> getMessageThread(DiscussionListKey discussionsKey)
-    {
-        if (discussionsKey instanceof RangedDiscussionListKey)
-        {
-            return getMessageThread((RangedDiscussionListKey) discussionsKey);
-        }
-        return discussionService.getMessageThread(discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.toMap());
-    }
-
-    public PaginatedDTO<DiscussionDTO> getMessageThread(RangedDiscussionListKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getMessageThread(PrivateMessageDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
-                discussionsKey.maxCount,
-                discussionsKey.maxId,
-                discussionsKey.minId);
+                discussionsKey.toMap());
     }
 
     public MiddleCallbackPaginatedDiscussion getMessageThread(
-            DiscussionListKey discussionsKey,
+            PrivateMessageDiscussionListKey discussionsKey,
             Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
-        if (discussionsKey instanceof RangedDiscussionListKey)
-        {
-            return getMessageThread((RangedDiscussionListKey) discussionsKey, callback);
-        }
         MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
         discussionServiceAsync.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
                 discussionsKey.toMap(),
-                middleCallback);
-        return middleCallback;
-    }
-
-    public MiddleCallbackPaginatedDiscussion getMessageThread(
-            RangedDiscussionListKey discussionsKey,
-            Callback<PaginatedDTO<DiscussionDTO>> callback)
-    {
-        MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
-        discussionServiceAsync.getMessageThread(
-                discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.maxCount,
-                discussionsKey.maxId,
-                discussionsKey.minId,
                 middleCallback);
         return middleCallback;
     }
