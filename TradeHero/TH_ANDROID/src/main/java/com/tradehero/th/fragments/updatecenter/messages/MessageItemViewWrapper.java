@@ -4,22 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
-import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by wangliang on 14-4-4.
@@ -45,16 +34,10 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
     @Override protected void onDetachedFromWindow()
     {
-        super.onDetachedFromWindow();
         ButterKnife.reset(this);
-
+        super.onDetachedFromWindow();
     }
 
     @Override public void display(MessageHeaderId dto)
@@ -64,7 +47,4 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
             messageItemView.display(dto);
         }
     }
-
-
-
 }
