@@ -238,14 +238,15 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     {
         if (!clickedHeroDTO.active)
         {
-            heroAlertDialogUtil.popAlertFollowHero(getActivity(),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
+            //TODO hacked by alipay alex
+            //heroAlertDialogUtil.popAlertFollowHero(getActivity(),
+            //        new DialogInterface.OnClickListener()
+            //        {
+            //            @Override public void onClick(DialogInterface dialog, int which)
+            //            {
                             followUser(clickedHeroDTO.getBaseKey());
-                        }
-                    });
+            //            }
+            //        });
         }
         else
         {

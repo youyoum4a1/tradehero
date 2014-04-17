@@ -101,13 +101,14 @@ public class PushableTimelineFragment extends TimelineFragment
 
     private void handleInfoButtonPressed()
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
+        //TODO hacked by alipay alex
+        //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        //{
+        //    @Override public void onClick(DialogInterface dialog, int which)
+        //    {
                 followUser(shownUserBaseKey);
-            }
-        });
+            //}
+        //});
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
@@ -129,13 +130,6 @@ public class PushableTimelineFragment extends TimelineFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
-            alertDialogUtilLazy.get().dismissProgressDialog();
-        }
-
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
-        {
-            super.onUserFollowFailed(userFollowed, error);
-            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 }

@@ -618,13 +618,14 @@ abstract public class AbstractPositionListFragment<
 
     protected void popFollowUser(final UserBaseKey userBaseKey)
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
+        //TODO hacked by alipay alex
+        //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        //{
+        //    @Override public void onClick(DialogInterface dialog, int which)
+        //    {
                 followUser(userBaseKey);
-            }
-        });
+        //    }
+        //});
     }
 
     //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">

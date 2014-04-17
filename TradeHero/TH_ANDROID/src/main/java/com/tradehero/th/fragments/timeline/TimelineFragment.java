@@ -757,7 +757,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void follow()
     {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity());
         followUser(shownUserBaseKey);
     }
 

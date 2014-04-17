@@ -56,7 +56,8 @@ public class FollowUserAssistant implements
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
-    public FollowUserAssistant(OnUserFollowedListener userFollowedListener, UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
+    public FollowUserAssistant(OnUserFollowedListener userFollowedListener,
+            UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
     {
         this.userFollowedListener = userFollowedListener;
         this.userToFollow = userToFollow;
@@ -92,12 +93,14 @@ public class FollowUserAssistant implements
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
+        alertDialogUtilLazy.get().dismissProgressDialog();
         heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         notifyFollowSuccess(userToFollow, userProfileDTO);
     }
 
     @Override public void failure(RetrofitError error)
     {
+        alertDialogUtilLazy.get().dismissProgressDialog();
         notifyFollowFailed(userToFollow, error);
     }
 
@@ -127,13 +130,15 @@ public class FollowUserAssistant implements
         {
             billingInteractor.forgetRequestCode(requestCode);
         }
-        requestCode =  null;
+        requestCode = null;
     }
 
     protected void follow()
     {
         if (this.currentUserProfile.ccBalance > 0)
         {
+            alertDialogUtilLazy.get()
+                    .showProgressDialog(currentActivityHolder.getCurrentActivity());
             userServiceWrapper.follow(userToFollow, this);
         }
         else
@@ -257,7 +262,6 @@ public class FollowUserAssistant implements
         return true;
     }
 
-
     protected void unFollow()
     {
         userServiceWrapper.unfollow(userToFollow, this);
@@ -285,13 +289,15 @@ public class FollowUserAssistant implements
         billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
         {
             @Override
-            public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                    UserProfileDTO updatedUserPortfolio)
             {
                 notifyFollowSuccess(userToFollow, updatedUserPortfolio);
             }
 
             @Override
-            public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
+                    BillingException error)
             {
                 notifyFollowFailed(userToFollow, error);
                 Timber.e(error, "Failed to report purchase");
@@ -303,6 +309,7 @@ public class FollowUserAssistant implements
     public static interface OnUserFollowedListener
     {
         void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO);
+
         void onUserFollowFailed(UserBaseKey userFollowed, Throwable error);
     }
 }
