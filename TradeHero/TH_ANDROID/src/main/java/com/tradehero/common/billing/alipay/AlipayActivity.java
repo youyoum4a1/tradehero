@@ -16,6 +16,7 @@ import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -57,9 +58,10 @@ public class AlipayActivity extends Activity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<AlipayServiceWrapper> alipayServiceWrapperLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    @Inject protected PortfolioCache portfolioCache;
-    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
+    @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCacheLazy;
+    @Inject protected Lazy<PortfolioCache> portfolioCacheLazy;
+    @Inject protected Lazy<UserProfileCache> userProfileCacheLazy;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -201,7 +203,7 @@ public class AlipayActivity extends Activity
 
     private void getOrderIdFromServer()
     {
-        OwnedPortfolioId portfolioId = portfolioCompactListCache.getDefaultPortfolio(
+        OwnedPortfolioId portfolioId = portfolioCompactListCacheLazy.get().getDefaultPortfolio(
                 currentUserId.toUserBaseKey());
         if (portfolioId != null)
         {
@@ -263,16 +265,17 @@ public class AlipayActivity extends Activity
             switch (mType)
             {
                 case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                    portfolioCache.invalidate(mPortfolioId);//update portfolioId's detail
+                    portfolioCacheLazy.get().invalidate(mPortfolioId);//update portfolioId's detail
+                    portfolioCompactCacheLazy.get().invalidate(mPortfolioId.getPortfolioIdKey());//update portfolio detail
                     break;
                 case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
+                    userProfileCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
                     break;
                 case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
+                    userProfileCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
                     break;
                 case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                    portfolioCompactListCache.invalidate(
+                    portfolioCompactListCacheLazy.get().invalidate(
                             currentUserId.toUserBaseKey());//update portfolio list
                     break;
             }

@@ -8,6 +8,7 @@ import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -101,6 +102,7 @@ public class FollowUserAssistant implements
     @Override public void failure(RetrofitError error)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
+        THToast.show(error.getMessage());
         notifyFollowFailed(userToFollow, error);
     }
 

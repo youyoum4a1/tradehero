@@ -95,7 +95,12 @@ import javax.inject.Singleton;
             portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
             if (portfolioCompactDTO != null && portfolioCompactDTO.providerId == null && !portfolioCompactDTO.isWatchlist)
             {
-                return ownedPortfolioId;
+                //TODO hard code for the default portfolio should be main portfolio
+                //return ownedPortfolioId;
+                if (portfolioCompactDTO.title.equals("Main Portfolio"))
+                {
+                    return ownedPortfolioId;
+                }
             }
         }
         return null;

@@ -718,9 +718,11 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (defaultOwnedPortfolioId != null && securityCompactDTO != null)
         {
+            Timber.d("lyl portfolioId=%s", defaultOwnedPortfolioId.portfolioId.toString());
             Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
             PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
+            Timber.d("lyl %s", defaultPortfolioCompactDTO.toString());
             newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
             TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
@@ -734,6 +736,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         {
                             providerId = entry.getKey();
                         }
+                        Timber.d("lyl providerId=%s", providerId.toString());
                         otherPortfolioIds.add(entry.getValue());
                         break; // Keep only the first
                     }
@@ -746,6 +749,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (ownedPortfolioArgs != null)
             {
                 OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
+                Timber.d("lyl ownedPortfolioId=%s", ownedPortfolioId.portfolioId.toString());
                 if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
                 {
                     otherPortfolioIds.add(ownedPortfolioId);
@@ -844,6 +848,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         TextView selectedPortfolio = mSelectedPortfolio;
         if (selectedPortfolio != null)
         {
+            if (usedMenuOwnedPortfolioIds != null)
+            {
+                Timber.d("lyl usedMenuOwnedPortfolioIds.size()=%d", usedMenuOwnedPortfolioIds.size());
+            }
             if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0 && purchaseApplicableOwnedPortfolioId != null)
             {
                 MenuOwnedPortfolioId chosen = null;
@@ -853,6 +861,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 while (iterator.hasNext())
                 {
                     lastElement = iterator.next();
+                    Timber.d("lyl lastElement.title=%s", lastElement.title);
                     if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
                     {
                         chosen = lastElement;
