@@ -34,52 +34,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     List<UserProfileCompactDTO> mRelationsList;
     @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
-    private DTOCache.Listener<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>> allowableRecipientCacheListener;
     private DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>> allowableRecipientCacheTask;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
-    public void downloadRelations()
-    {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity());
-        detachAllowableRecipientTask();
-
-        allowableRecipientCacheTask = allowableRecipientPaginatedCache
-                .getOrFetch(new SearchAllowableRecipientListType(null, null, null),
-                        new AllRelationAllowableRecipientCacheListener());
-        allowableRecipientCacheTask.execute();
-    }
-
-    private void detachAllowableRecipientTask()
-    {
-        if (allowableRecipientCacheTask != null)
-        {
-            allowableRecipientCacheTask.setListener(null);
-        }
-        allowableRecipientCacheTask = null;
-    }
-
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        pushPrivateMessageFragment(position);
-    }
-
-    protected void pushPrivateMessageFragment(int position)
-    {
-        Bundle args = new Bundle();
-        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                mRelationsList.get(position).getBaseKey().getArgs());
-        getNavigator().pushFragment(PrivateMessageFragment.class, args);
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -132,10 +91,44 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
     {
-        allowableRecipientCacheListener = null;
-        super.onDestroy();
+        return false;
+    }
+    //</editor-fold>
+
+    public void downloadRelations()
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getActivity());
+        detachAllowableRecipientTask();
+
+        allowableRecipientCacheTask = allowableRecipientPaginatedCache
+                .getOrFetch(new SearchAllowableRecipientListType(null, null, null),
+                        new AllRelationAllowableRecipientCacheListener());
+        allowableRecipientCacheTask.execute();
+    }
+
+    private void detachAllowableRecipientTask()
+    {
+        if (allowableRecipientCacheTask != null)
+        {
+            allowableRecipientCacheTask.setListener(null);
+        }
+        allowableRecipientCacheTask = null;
+    }
+
+    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        pushPrivateMessageFragment(position);
+    }
+
+    protected void pushPrivateMessageFragment(int position)
+    {
+        Bundle args = new Bundle();
+        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
+                mRelationsList.get(position).getBaseKey().getArgs());
+        getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 
     protected class AllRelationAllowableRecipientCacheListener
