@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="private_message_empty_list_hint">Start a conversation</string>
-  <string name="private_message_message_hint">Type a Message</string>
-  <string name="private_message_btn_send">Send</string>
+  <string name="private_message_empty_list_hint">开始会话</string>
+  <string name="private_message_message_hint">输入讯息</string>
+  <string name="private_message_btn_send">传送</string>
 
-  <string name="private_message_limited_count">%d messages left.\nUpgrade now for unlimited messaging!</string>
+  <string name="private_message_limited_count">剩余 %d 次消息.\n升级获得无限消息次数!</string>
 
 </resources>

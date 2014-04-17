@@ -26,17 +26,17 @@
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
-  <string name="dashboard_trending">Trending</string>
-  <string name="dashboard_community">Social Center</string>
-  <string name="dashboard_home">Home</string>
-  <string name="dashboard_portfolio">Portfolio</string>
-  <string name="dashboard_store">Store</string>
-  <string name="dashboard_headline">Headline</string>
-  <string name="update_center">Inbox</string>
+  <string name="dashboard_trending">交易中心</string>
+  <string name="dashboard_community">社交中心</string>
+  <string name="dashboard_home">首页</string>
+  <string name="dashboard_portfolio">投资组合</string>
+  <string name="dashboard_store">商店</string>
+  <string name="dashboard_headline">头条</string>
+  <string name="update_center">消息中心</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
-  <string name="key_price">price</string>
+  <string name="key_price">价格</string>
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"/>

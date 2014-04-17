@@ -16,7 +16,7 @@
   <string name="setting_accounts">账号</string>
   <string name="settings_primary_profile">个人资料</string>
   <string name="settings_primary_paypal">PayPal</string>
-  <string name="settings_primary_alipay">Alipay</string>
+  <string name="settings_primary_alipay">支付宝</string>
   <string name="settings_primary_transaction_history">历史购买记录</string>
   <string name="settings_primary_restore_purchases">恢复购买</string>
   <string name="settings_misc_sign_out">登出</string>
@@ -47,7 +47,7 @@
   <string name="settings_misc_cache_cleared_alert_title">缓存清理</string>
 
   <string name="settings_misc_about">关于</string>
-  <string name="settings_misc_version_server">VersionServer</string>
+  <string name="settings_misc_version_server">服务器版本</string>
 
   <string name="settings_update_profile">更新个人资料</string>
   <string name="settings_update_profile_successful">个人资料更新</string>

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_provider_info_list">There was an error when fetching the list of competition providers.</string>
-  <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
-  <string name="error_fetch_provider_competition_list">There was an error when fetching the list of competitions</string>
-  <string name="error_fetch_provider_competition_leaderboard_list">There was an error when fetching the list of competition leaderboards</string>
+  <string name="error_fetch_provider_info_list">获取比赛提供方发生错误</string>
+  <string name="error_fetch_provider_info">获取比赛提供方信息发生错误</string>
+  <string name="error_fetch_provider_competition_list">获取比赛列表时发生错误</string>
+  <string name="error_fetch_provider_competition_leaderboard_list">获取比赛英雄榜出现错误</string>
 
-  <string name="provider_competition_portfolio_title">Competition Portfolio</string>
-  <string name="provider_competition_portfolio_description">view your competition positions</string>
+  <string name="provider_competition_portfolio_title">比赛投资组合</string>
+  <string name="provider_competition_portfolio_description">查看您在比赛中的持仓</string>
   <string name="provider_competition_wizard_title">Wizard</string>
   <string name="provider_competition_rules_title">比赛规则</string>
   <string name="provider_competition_terms_title">条款 &amp; 条件</string>
 
-  <string name="provider_security_list_title">Competition Securities</string>
-  <string name="provider_security_list_search_hint">Filter By Underlying Name or Code</string>
+  <string name="provider_security_list_title">比赛证劵s</string>
+  <string name="provider_security_list_search_hint">根据标的名或是代码筛选</string>
 
-  <string name="competition_leaderboard_timer_time_left_1">TIME</string>
-  <string name="competition_leaderboard_timer_time_left_2">LEFT</string>
-  <string name="competition_leaderboard_timer_days">DAYS</string>
+  <string name="competition_leaderboard_timer_time_left_1">时间</string>
+  <string name="competition_leaderboard_timer_time_left_2">剩余</string>
+  <string name="competition_leaderboard_timer_days">天</string>
   <string name="competition_leaderboard_timer_time_separator">:</string>
 
   <string name="competition_leaderboard_to_be_won">to be won!</string>
 
-  <string name="competition_enrollment_web_view_done">Done</string>
+  <string name="competition_enrollment_web_view_done">完成</string>
 
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>

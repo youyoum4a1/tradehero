@@ -4,8 +4,8 @@
   <string name="trade_list_title">交易历史记录</string>
   <string name="trade_list_title_with_security">%1$s:%2$s</string>
   <string name="trade_list_avg_price">平均价格</string>
-  <string name="trade_list_realized_pl">Realized P&amp;L</string>
-  <string name="trade_list_unrealized_pl">Unrealized P&amp;L</string>
+  <string name="trade_list_realized_pl">已实现 P&amp;L</string>
+  <string name="trade_list_unrealized_pl">未实现 P&amp;L</string>
   <string name="trade_list_quantity">持仓数量</string>
   <string name="trade_list_comment">评论</string>
   <string name="trade_list_header_history">交易记录</string>

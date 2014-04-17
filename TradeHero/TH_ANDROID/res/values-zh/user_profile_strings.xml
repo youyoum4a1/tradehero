@@ -6,8 +6,8 @@
   <string name="user_profile_count_trades">交易</string>
   <string name="user_profile_count_exchanges">交易所</string>
 
-  <string name="user_profile_roi_below">投资回报率</string>
-  <string name="user_profile_profit">Profit</string>
+  <string name="user_profile_roi_below">回报率</string>
+  <string name="user_profile_profit">利润</string>
 
   <string name="user_profile_button_timeline">时间轴</string>
   <string name="user_profile_button_portfolios">投资组合</string>
@@ -22,8 +22,8 @@
   <string name="user_profile_first_name">名</string>
   <string name="user_profile_last_name">姓</string>
 
-  <string name="user_profile_roi">投资回报率:</string>
-  <string name="user_profile_member_since">会员至 </string>
+  <string name="user_profile_roi">回报率:</string>
+  <string name="user_profile_member_since">会员至</string>
   <string name="user_profile_trade_profit">交易中所获利</string>
   <string name="user_profile_total_wealth">总资产</string>
   <string name="user_profile_additional_cash">额外现金</string>

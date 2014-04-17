@@ -7,7 +7,7 @@
   <string name="leaderboard_community_leaderboards">英雄榜</string>
   <string name="leaderboard_community_exchange">交易所</string>
   <string name="leaderboard_community_sector">行业</string>
-  <string name="leaderboard_user_roi">投资回报率</string>
+  <string name="leaderboard_user_roi">回报率</string>
   <string name="leaderboard_user_hero_quotient">英雄系数</string>
   <string name="leaderboard_sort_followers">粉丝</string>
   <string name="leaderboard_sort_comments">评论</string>
@@ -24,7 +24,7 @@
   <string name="leaderboard_action_bar_help">帮助</string>
   <string name="leaderboard_sort">分类</string>
   <string name="leaderboard_p_n_l"><![CDATA[P&L]]></string>
-  <string name="leaderboard_benchmark_roi">投资回报率基准</string>
+  <string name="leaderboard_benchmark_roi">回报率基准</string>
   <string name="leaderboard_action_bar_follow">关注</string>
   <string name="leaderboard_action_bar_following">关注中</string>
   <string name="leaderboard_profile">个人资料</string>
@@ -38,26 +38,25 @@
   <string name="leaderboard_not_ranked">未排名</string>
   <string name="leaderboard_show_friends_only">只显示朋友</string>
   <string name="leaderboard_show_friends_of_friends">查看朋友的朋友</string>
-  <string name="leaderboard_keep_friends_close">Keep your friends close …</string>
-  <string name="leaderboard_friend_empty_text_invite_friends">… and your Heroes closer! Success is all the sweeter when your friends are around to
-    share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
+  <string name="leaderboard_keep_friends_close">与朋友保持联系</string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… 与牛人更加紧密！好成绩，要和好朋友一起分享。连接微博、QQ帐号，看看你在朋友中排第几.
   </string>
   <string name="leaderboard_connect_accounts">连接账号…</string>
   <string name="leaderboard_follow">@string/follow</string>
 
   <string name="error_fetch_leaderboard_def_list_key">获取英雄榜定义列表出现错误</string>
-  <string name="leaderboard_community_followers">Followers</string>
-  <string name="leaderboard_community_heros">Heros</string>
+  <string name="leaderboard_community_followers">粉丝</string>
+  <string name="leaderboard_community_heros">英雄</string>
 
   <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
 
-  <string name="message_center_tab_message">Private Messages</string>
-  <string name="message_center_tab_notification">Notifications</string>
-  <string name="message_center_sending_to">Sending to:</string>
-  <string name="update_center_title">Inbox</string>
-  <string name="message_center_new_message_title">New Message</string>
-  <string name="message_center_private_message_menu">Private Message</string>
-  <string name="message_center_broadcast_message_menu">Broadcast Message</string>
+  <string name="message_center_tab_message">私信</string>
+  <string name="message_center_tab_notification">通知</string>
+  <string name="message_center_sending_to">发送给:</string>
+  <string name="update_center_title">收件箱</string>
+  <string name="message_center_new_message_title">新消息</string>
+  <string name="message_center_private_message_menu">私信</string>
+  <string name="message_center_broadcast_message_menu">广播</string>
 </resources>

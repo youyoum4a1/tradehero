@@ -21,7 +21,7 @@
   <!-- For Win Ratio -->
   <string name="leaderboard_filter_win_ratio_header">胜率</string>
   <string name="leaderboard_filter_win_ratio_value_unit">%</string>
-  <string name="leaderboard_filter_win_ratio_description">Winning vs. losing trades - higher is better</string>
+  <string name="leaderboard_filter_win_ratio_description">输赢比例，越高越好！</string>
   <string name="leaderboard_filter_win_ratio_min_description">常败</string>
   <string name="leaderboard_filter_win_ratio_max_description">常胜</string>
 
