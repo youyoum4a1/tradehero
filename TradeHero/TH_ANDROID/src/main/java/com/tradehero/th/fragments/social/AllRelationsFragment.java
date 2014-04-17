@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
@@ -126,9 +126,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment(int position)
     {
         Bundle args = new Bundle();
-        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
+        args.putBundle(NewPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
                 mRelationsList.get(position).getBaseKey().getArgs());
-        getNavigator().pushFragment(PrivateMessageFragment.class, args);
+        getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected class AllRelationAllowableRecipientCacheListener
