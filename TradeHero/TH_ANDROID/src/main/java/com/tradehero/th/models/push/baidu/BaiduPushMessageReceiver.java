@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.th.R;
 import java.util.List;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 /**
@@ -18,6 +19,13 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public static final String TAG = BaiduPushMessageReceiver.class.getSimpleName();
     public static final int CODE_OK = 0;
     public static final int MESSAGE_ID = 100;
+
+    private final Provider<PushSender> pushSender;
+
+    public BaiduPushMessageReceiver(Provider<PushSender> pushSender)
+    {
+        this.pushSender = pushSender;
+    }
 
     /**
      * @return none
@@ -35,7 +43,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
         //  Bind success
         // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        new PushSender().updateDeviceIdentifier(appId, userId, channelId);
+        pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
     }
 
     private boolean isRequestSuccess(int errorCode)

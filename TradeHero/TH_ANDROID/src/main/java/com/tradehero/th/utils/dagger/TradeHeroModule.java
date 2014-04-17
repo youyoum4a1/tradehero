@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
@@ -140,9 +139,7 @@ import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
-import com.tradehero.th.persistence.prefs.ForDeviceToken;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
-import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.UserManager;
@@ -155,7 +152,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.urbanairship.push.PushManager;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -384,12 +380,12 @@ public class TradeHeroModule
         return application;
     }
 
-    @Provides @Singleton PushNotificationManager providePushNotificationManager()
+    @Provides @Singleton PushNotificationManager providePushNotificationManager(BaiduPushManager baiduPushManager)
     {
         boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
         if (isChineseLocale)
         {
-            return new BaiduPushManager();
+            return baiduPushManager;
         }
         else
         {
