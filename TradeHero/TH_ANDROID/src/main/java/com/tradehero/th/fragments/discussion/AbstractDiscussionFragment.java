@@ -10,19 +10,16 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
 
-/**
- * Created by tho on 3/27/2014.
- */
-public class AbstractDiscussionFragment extends DashboardFragment
+abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
     public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
 
@@ -54,7 +51,10 @@ public class AbstractDiscussionFragment extends DashboardFragment
         {
             discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
-        linkWith(discussionKey, true);
+        if (discussionKey != null)
+        {
+            linkWith(discussionKey, true);
+        }
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)

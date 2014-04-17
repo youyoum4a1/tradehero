@@ -2,16 +2,13 @@ package com.tradehero.th.models.push.baidu;
 
 import android.app.Notification;
 import android.content.Context;
-import android.content.res.Resources;
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.android.pushservice.PushNotificationBuilder;
 import com.baidu.frontia.FrontiaApplication;
 import com.tradehero.th.R;
-import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ForBaiduPush;
 import javax.inject.Inject;
@@ -22,7 +19,8 @@ import timber.log.Timber;
  * Created by wangliang on 14-4-16.
  */
 @Singleton
-public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**implements PushNotificationManager*/
+public class BaiduPushManager
+        extends UrbanAirshipPushNotificationManager /**implements PushNotificationManager*/
 {
 
     @Inject Context context;
@@ -37,7 +35,7 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
     {
         super.initialise();
 
-        Timber.d("initialise(FrontiaApplication.initFrontiaApplication) context:%s",context);
+        Timber.d("initialise(FrontiaApplication.initFrontiaApplication) context:%s", context);
         FrontiaApplication.initFrontiaApplication(context);
     }
 
@@ -45,9 +43,10 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
     {
         super.enablePush();
 
-        Timber.d("enablePush(PushManager.startWork) context:%s, appKey:%s",context,appKey);
+        Timber.d("enablePush(PushManager.startWork) context:%s, appKey:%s", context, appKey);
 
-        PushManager.setNotificationBuilder(context, BaiduPushMessageReceiver.MESSAGE_ID, createDefaultNotificationBuilder());
+        PushManager.setNotificationBuilder(context, BaiduPushMessageReceiver.MESSAGE_ID,
+                createDefaultNotificationBuilder());
         PushManager.disableLbs(context);
         PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY, appKey);
     }
@@ -63,7 +62,8 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
     {
         super.setSoundEnabled(enabled);
 
-        boolean isVibrateEnabled = com.urbanairship.push.PushManager.shared().getPreferences().isVibrateEnabled();
+        boolean isVibrateEnabled =
+                com.urbanairship.push.PushManager.shared().getPreferences().isVibrateEnabled();
         int defaultVal = Notification.DEFAULT_LIGHTS;
         if (isVibrateEnabled)
         {
@@ -82,7 +82,8 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
     {
         super.setVibrateEnabled(enabled);
 
-        boolean isSoundEnabled = com.urbanairship.push.PushManager.shared().getPreferences().isSoundEnabled();
+        boolean isSoundEnabled =
+                com.urbanairship.push.PushManager.shared().getPreferences().isSoundEnabled();
         int defaultVal = Notification.DEFAULT_LIGHTS;
         if (enabled)
         {
@@ -95,7 +96,6 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
         PushNotificationBuilder builder = createDefaultNotificationBuilder();
         builder.setNotificationDefaults(defaultVal);
         PushManager.setNotificationBuilder(context, BaiduPushMessageReceiver.MESSAGE_ID, builder);
-
     }
 
     private PushNotificationBuilder createDefaultNotificationBuilder()
@@ -112,7 +112,6 @@ public class BaiduPushManager extends UrbanAirshipPushNotificationManager /**imp
         cBuilder.setNotificationDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
         cBuilder.setStatusbarIcon(R.drawable.notification_logo);
         cBuilder.setLayoutDrawable(R.drawable.notification_logo);
-
 
         return cBuilder;
     }

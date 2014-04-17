@@ -2,12 +2,13 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -207,6 +208,17 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Search Allowable Recipients">
+    public MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> searchAllowableRecipients(Callback<PaginatedDTO<UserProfileCompactDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<UserProfileCompactDTO>> middleCallback = new MiddleCallback<>(callback);
+        userServiceAsync.searchAllowableRecipients(callback);
+        return middleCallback;
+    }
+
+    // TODO overloaded methods with page and such. Use an appropriate DTOKey (SearchUserListType).
+    //</editor-fold>
+
     //<editor-fold desc="Get User Transactions History">
     public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
     {
@@ -321,10 +333,4 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    public MiddleCallback<UserRelationsDTO> getRelations(Callback<UserRelationsDTO> callback)
-    {
-        MiddleCallback<UserRelationsDTO> middleCallback = new MiddleCallback<>(callback);
-        userServiceAsync.getRelations(callback);
-        return middleCallback;
-    }
 }

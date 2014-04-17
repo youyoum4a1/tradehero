@@ -38,24 +38,24 @@
         android:id="@+id/btn_add_alert"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_toLeftOf="@+id/btn_stock_info"
         android:layout_marginLeft="8dp"
         android:src="@drawable/add_alert_default"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
+        android:layout_alignParentRight="true"
         />
 
     <ImageButton
         android:id="@+id/btn_stock_info"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentRight="true"
         android:layout_marginLeft="8dp"
         android:src="@drawable/graph"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
+        android:visibility="gone"
         />
 
   </RelativeLayout>

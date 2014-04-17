@@ -89,6 +89,7 @@ import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.wxapi.WXMessageType;
 import com.viewpagerindicator.PageIndicator;
+import java.util.*;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;

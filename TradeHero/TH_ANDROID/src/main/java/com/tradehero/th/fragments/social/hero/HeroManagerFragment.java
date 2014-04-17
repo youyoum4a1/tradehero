@@ -28,10 +28,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
- */
 public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
 {
     /**
@@ -111,7 +107,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.social_heros);
+        actionBar.setTitle(R.string.social_heroes);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

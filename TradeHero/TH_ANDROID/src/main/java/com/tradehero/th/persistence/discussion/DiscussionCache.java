@@ -15,9 +15,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 @Singleton
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {

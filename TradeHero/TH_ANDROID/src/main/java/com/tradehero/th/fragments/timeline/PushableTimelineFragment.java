@@ -18,7 +18,8 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 
 /**
- * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use
+ * File | Settings | File Templates.
  *
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
@@ -42,7 +43,9 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
         this.actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE);
 
         //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
@@ -74,7 +77,6 @@ public class PushableTimelineFragment extends TimelineFragment
 
     /**
      * Null means unsure.
-     * @return
      */
     protected Boolean isPurchaserFollowingUserShown()
     {
@@ -115,12 +117,17 @@ public class PushableTimelineFragment extends TimelineFragment
     }
     //</editor-fold>
 
-    protected class PushableTimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class PushableTimelineUserFollowedListener
+            extends BasePurchaseManagerUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-            linkWith(currentUserProfileDTO, true);
+            if (!mIsOtherProfile)
+            {
+                linkWith(currentUserProfileDTO, true);
+            }
             updateBottomButton();
         }
     }

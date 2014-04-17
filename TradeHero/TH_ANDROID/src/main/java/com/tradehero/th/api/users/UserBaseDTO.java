@@ -15,32 +15,31 @@ public class UserBaseDTO extends ExtendedDTO
     public String firstName;
     public String lastName;
     public Date memberSince;
+    public boolean isAdmin;
     public String activeSurveyURL;
     public String activeSurveyImageURL;
+    public Double roiSinceInception;
     public String countryCode;
-    public boolean isAdmin;
 
-    //TODO fake data,may need to change
-    //public boolean isFreeUser;
+    public UserRelationDTO relationship;
 
     public UserBaseDTO()
     {
     }
 
-    @JsonIgnore
-    public UserBaseKey getBaseKey()
+    @JsonIgnore public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
     }
 
     @Override public int hashCode()
     {
-        return new Integer(id).hashCode();
+        return Integer.valueOf(id).hashCode();
     }
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof UserBaseDTO) && (new Integer(id)).equals(((UserBaseDTO) other).id);
+        return (other instanceof UserBaseDTO) && Integer.valueOf(id).equals(((UserBaseDTO) other).id);
     }
 
     @Override public String toString()

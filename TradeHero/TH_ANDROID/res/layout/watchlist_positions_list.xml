@@ -30,7 +30,7 @@
 
   <include
       android:layout_width="match_parent"
-      android:layout_height="50dp"
+      android:layout_height="@dimen/watch_list_header_height"
       layout="@layout/watchlist_position_header_view"
       />
 

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:08 PM Copyright (c) TradeHero */
 public class LeaderboardDTO implements DTO
 {
     public static final String INCLUDE_FOF = "INCLUDE_FOF";

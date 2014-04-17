@@ -52,7 +52,8 @@ public class HeroManagerViewContainer
         {
             if (userProfileDTO != null)
             {
-                this.icnCoinStack.getDrawable().setLevel((int) userProfileDTO.ccBalance);
+                this.icnCoinStack.getDrawable().setLevel((int) (double)
+                        (userProfileDTO.ccBalance == null ? 0d : userProfileDTO.ccBalance));
             }
         }
     }

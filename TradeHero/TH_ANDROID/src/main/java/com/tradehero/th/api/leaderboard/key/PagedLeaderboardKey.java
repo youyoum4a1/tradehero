@@ -5,11 +5,11 @@ import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import java.util.Iterator;
 import java.util.Set;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
 public class PagedLeaderboardKey extends LeaderboardKey
 {
     public final static String BUNDLE_KEY_PAGE = PagedLeaderboardKey.class.getName() + ".page";
     public static final String STRING_SET_LEFT_PAGE = "page";
+    public static final int FIRST_PAGE = 1;
 
     public final Integer page;
 

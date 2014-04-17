@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
@@ -92,10 +93,10 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        notificationListAdapter = createNotificationAdapterListener();
+        notificationListAdapter = createNotificationListAdapter();
     }
 
-    private NotificationListAdapter createNotificationAdapterListener()
+    private NotificationListAdapter createNotificationListAdapter()
     {
         return new NotificationListAdapter(
                 getContext(),
@@ -120,6 +121,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationListKey = new NotificationListKey();
 
         notificationList.setAdapter(notificationListAdapter);
+        notificationList.setOnItemClickListener(new NotificationListItemClickListener());
         notificationList.setEmptyView(emptyView);
 
         // scroll event will activate fetch task automatically
@@ -168,12 +170,10 @@ public class NotificationsView extends BetterViewAnimator
         notificationFetchListener = null;
 
         notificationListAdapter = null;
-
         notificationList.setAdapter(null);
-
         notificationList.setOnScrollListener(null);
-
         notificationList.setOnRefreshListener((PullToRefreshBase.OnRefreshListener) null);
+        notificationList.setOnItemClickListener(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -340,7 +340,7 @@ public class NotificationsView extends BetterViewAnimator
         {
             if (response.getStatus() == 200)
             {
-                Timber.d("Notification %d is reported as read");
+                Timber.d("Notification %d is reported as read", pushId);
                 // TODO update title
 
                 // mark it as read in the cache
@@ -394,6 +394,19 @@ public class NotificationsView extends BetterViewAnimator
 
             notificationList.setRefreshing();
             fetchNextPageIfNecessary(true);
+        }
+    }
+
+    private class NotificationListItemClickListener implements android.widget.AdapterView.OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
+        {
+            Object o = parent.getItemAtPosition(position);
+            if (o instanceof NotificationDTO)
+            {
+                NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), (NotificationDTO) o);
+                notificationClickHandler.handleNotificationItemClicked();
+            }
         }
     }
 }

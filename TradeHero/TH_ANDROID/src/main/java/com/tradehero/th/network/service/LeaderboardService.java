@@ -10,7 +10,6 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:35 PM Copyright (c) TradeHero */
 public interface LeaderboardService
 {
     //<editor-fold desc="Get Leaderboard Definitions">

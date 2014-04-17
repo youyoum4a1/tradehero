@@ -6,15 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:48 AM Copyright (c) TradeHero
- */
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_discussion, container, false);
         return view;
+    }
+
+    @Override protected void initViews(View view)
+    {
+        // Nothing to do
     }
 
     @Override public void onDestroyView()

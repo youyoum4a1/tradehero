@@ -14,8 +14,6 @@ public class THIABBillingInventoryFetcher
         IABSKUList,
         THIABProductDetail>
 {
-    public static final String TAG = THIABBillingInventoryFetcher.class.getSimpleName();
-
     public THIABBillingInventoryFetcher()
     {
         super();

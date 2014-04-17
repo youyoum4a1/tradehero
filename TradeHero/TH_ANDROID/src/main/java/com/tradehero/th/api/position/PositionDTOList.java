@@ -5,15 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-/**
- * Created by xavier on 2/5/14.
- */
 public class PositionDTOList<PositionDTOType extends PositionDTO>
         extends ArrayList<PositionDTOType>
     implements DTO
 {
-    public static final String TAG = PositionDTOList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public PositionDTOList(int capacity)
     {

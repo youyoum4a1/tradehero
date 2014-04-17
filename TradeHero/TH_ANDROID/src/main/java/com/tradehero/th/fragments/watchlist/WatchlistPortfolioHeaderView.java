@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -21,11 +23,9 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/14/14 Time: 11:14 AM Copyright (c) TradeHero
- */
 public class WatchlistPortfolioHeaderView extends LinearLayout
         implements DTOView<UserBaseKey>
 {
@@ -34,8 +34,11 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private WatchlistHeaderItem gainLoss;
     private WatchlistHeaderItem valuation;
+    private TextView marking;
     private SecurityIdList securityIdList;
     private UserBaseKey userBaseKey;
+    private PortfolioCompactDTO portfolioCompactDTO;
+    private SimpleDateFormat markingDateFormat;
 
     //<editor-fold desc="Constructors">
     public WatchlistPortfolioHeaderView(Context context)
@@ -84,17 +87,22 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
             throw new IllegalAccessError("Watchlist header view should have only 2 children, both are TwoStateView");
         }
 
-        valuation = (WatchlistHeaderItem) getChildAt(0);
+        LinearLayout container = (LinearLayout) getChildAt(0);
+
+        valuation = (WatchlistHeaderItem) container.getChildAt(0);
         if (valuation != null)
         {
             valuation.setFirstTitle(getContext().getString(R.string.watchlist_current_value));
             valuation.setSecondTitle(getContext().getString(R.string.watchlist_original_value));
         }
-        gainLoss = (WatchlistHeaderItem) getChildAt(1);
+        gainLoss = (WatchlistHeaderItem) container.getChildAt(1);
         if (gainLoss != null)
         {
             gainLoss.setTitle(getContext().getString(R.string.watchlist_gain_loss));
         }
+
+        marking = (TextView) findViewById(R.id.watchlist_position_list_marking);
+        markingDateFormat = new SimpleDateFormat(getResources().getString(R.string.watchlist_marking_date_format));
     }
 
     @Override public void display(UserBaseKey userBaseKey)
@@ -127,6 +135,15 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         {
             displayValuation();
             displayGainLoss();
+        }
+    }
+
+    public void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        this.portfolioCompactDTO = portfolioCompactDTO;
+        if (andDisplay)
+        {
+            displayMarkingDate();
         }
     }
 
@@ -203,6 +220,24 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
             }
         }
         return totalInvested;
+    }
+
+    private void displayMarkingDate()
+    {
+        if (marking != null)
+        {
+            marking.setText(
+                    getResources().getString(R.string.watchlist_marking_date, getMarkingDate()));
+        }
+    }
+
+    private String getMarkingDate()
+    {
+        if (portfolioCompactDTO != null && portfolioCompactDTO.markingAsOfUtc != null)
+        {
+            return markingDateFormat.format(portfolioCompactDTO.markingAsOfUtc);
+        }
+        return getResources().getString(R.string.na);
     }
 
     private BroadcastReceiver watchlistItemDeletedReceiver = new BroadcastReceiver()

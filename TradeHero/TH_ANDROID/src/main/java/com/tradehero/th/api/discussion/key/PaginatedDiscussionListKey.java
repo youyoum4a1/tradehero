@@ -1,18 +1,20 @@
 package com.tradehero.th.api.discussion.key;
 
+import android.os.Bundle;
 import com.tradehero.th.api.pagination.PaginatedKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.Map;
 
-/**
- * Created by xavier on 3/7/14.
- */
 public class PaginatedDiscussionListKey extends DiscussionListKey
     implements PaginatedKey
 {
+    public static final String PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".page";
+    public static final String PER_PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".perPage";
+
     public final Integer page;
     public final Integer perPage;
 
+    //<editor-fold desc="Constructors">
     public PaginatedDiscussionListKey(DiscussionType inReplyToType, int inReplyToId)
     {
         this(inReplyToType, inReplyToId, null);
@@ -39,6 +41,14 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
     {
         this(discussionListKey, page, null);
     }
+
+    public PaginatedDiscussionListKey(Bundle args)
+    {
+        super(args);
+        this.page = args.containsKey(PAGE_BUNDLE_KEY) ? args.getInt(PAGE_BUNDLE_KEY) : null;
+        this.perPage = args.containsKey(PER_PAGE_BUNDLE_KEY) ? args.getInt(PER_PAGE_BUNDLE_KEY) : null;
+    }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
@@ -78,6 +88,19 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
         return new PaginatedDiscussionListKey(this, page + pages);
     }
     //</editor-fold>
+
+    @Override protected void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        if (page != null)
+        {
+            args.putInt(PAGE_BUNDLE_KEY, page);
+        }
+        if (perPage != null)
+        {
+            args.putInt(PER_PAGE_BUNDLE_KEY, perPage);
+        }
+    }
 
     @Override public Map<String, Object> toMap()
     {
