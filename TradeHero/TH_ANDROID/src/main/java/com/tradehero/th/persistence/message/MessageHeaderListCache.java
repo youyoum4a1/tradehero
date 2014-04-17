@@ -60,7 +60,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 
     @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
     {
-        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessages(key);
+        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
         return putInternal(data);
     }
 

@@ -19,19 +19,18 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.persistence.discussion.MessageStatusCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -51,9 +50,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
-    @Inject protected MessageStatusCache messageStatusCache;
-    private DTOCache.GetOrFetchTask<UserBaseKey, MessageStatusDTO> messageStatusCacheTask;
-    protected MessageStatusDTO messageStatusDTO;
+    @Inject protected UserMessagingRelationshipCache userMessagingRelationshipCache;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserMessagingRelationshipDTO>
+            messagingRelationshipCacheTask;
+    protected UserMessagingRelationshipDTO userMessagingRelationshipDTO;
 
     protected ImageView correspondentImage;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
@@ -78,7 +78,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageStatusDTO> createMessageStatusCacheListener()
+    protected DTOCache.Listener<UserBaseKey, UserMessagingRelationshipDTO> createMessageStatusCacheListener()
     {
         return new AbstractPrivateMessageFragmentMessageStatusListener();
     }
@@ -107,7 +107,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
         ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
                 new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
-        ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
+        ((PrivateDiscussionView) discussionView).setUserMessagingRelationshipDTO(
+                userMessagingRelationshipDTO);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -158,11 +159,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     private void detachMessageStatusTask()
     {
-        if (messageStatusCacheTask != null)
+        if (messagingRelationshipCacheTask != null)
         {
-            messageStatusCacheTask.setListener(null);
+            messagingRelationshipCacheTask.setListener(null);
         }
-        messageStatusCacheTask = null;
+        messagingRelationshipCacheTask = null;
     }
 
     @Override public void onDestroy()
@@ -187,8 +188,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         Timber.d("fetchMessageStatus");
         detachMessageStatusTask();
-        messageStatusCacheTask = messageStatusCache.getOrFetch(correspondentId, force, createMessageStatusCacheListener());
-        messageStatusCacheTask.execute();
+        messagingRelationshipCacheTask = userMessagingRelationshipCache.getOrFetch(correspondentId, force, createMessageStatusCacheListener());
+        messagingRelationshipCacheTask.execute();
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -203,12 +204,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    public void linkWith(MessageStatusDTO messageStatusDTO, boolean andDisplay)
+    public void linkWith(UserMessagingRelationshipDTO messageStatusDTO, boolean andDisplay)
     {
-        this.messageStatusDTO = messageStatusDTO;
+        this.userMessagingRelationshipDTO = messageStatusDTO;
         if (discussionView != null && discussionView instanceof PrivateDiscussionView)
         {
-            ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
+            ((PrivateDiscussionView) discussionView).setUserMessagingRelationshipDTO(
+                    messageStatusDTO);
         }
         //TODO
         if (andDisplay)
@@ -266,7 +268,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             // TODO better test
             statusViewContainer.setVisibility(
-                    messageStatusDTO == null || messageStatusDTO.privateFreeRemainingCount == null
+                    userMessagingRelationshipDTO == null || userMessagingRelationshipDTO.canSendPrivate()
                             ? View.GONE : View.VISIBLE);
         }
     }
@@ -275,16 +277,16 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         if (statusViewText != null)
         {
-            if (messageStatusDTO != null && messageStatusDTO.isUnlimited())
+            if (userMessagingRelationshipDTO != null && userMessagingRelationshipDTO.isUnlimited())
             {
                 statusViewText.setVisibility(View.GONE);
             }
-            else if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount != null)
+            else if (userMessagingRelationshipDTO != null)
             {
                 statusViewText.setVisibility(View.VISIBLE);
                 statusViewText.setText(
                         getResources().getString(R.string.private_message_limited_count,
-                                messageStatusDTO.privateFreeRemainingCount));
+                                userMessagingRelationshipDTO.freeSendsRemaining));
             }
             else
             {
@@ -331,9 +333,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected class AbstractPrivateMessageFragmentMessageStatusListener implements DTOCache.Listener<UserBaseKey, MessageStatusDTO>
+    protected class AbstractPrivateMessageFragmentMessageStatusListener implements DTOCache.Listener<UserBaseKey, UserMessagingRelationshipDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageStatusDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserMessagingRelationshipDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }

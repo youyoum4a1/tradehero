@@ -15,4 +15,14 @@ public class UserMessagingRelationshipDTO implements DTO
 
     public Date followerSince;
     public Date heroSince;
+
+    public boolean isUnlimited()
+    {
+        return freeSendsRemaining == -1;
+    }
+
+    public boolean canSendPrivate()
+    {
+        return isUnlimited() || freeSendsRemaining > 0;
+    }
 }

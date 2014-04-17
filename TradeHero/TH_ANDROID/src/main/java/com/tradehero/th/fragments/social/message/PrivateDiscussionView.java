@@ -8,10 +8,10 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 
@@ -20,7 +20,7 @@ public class PrivateDiscussionView extends DiscussionView
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
 
     protected MessageType messageType;
-    private MessageStatusDTO messageStatusDTO;
+    private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
     private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
 
     //<editor-fold desc="Constructors">
@@ -54,14 +54,15 @@ public class PrivateDiscussionView extends DiscussionView
     {
         super.onFinishInflate();
         setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
-        setMessageStatusDTO(messageStatusDTO);
+        setUserMessagingRelationshipDTO(userMessagingRelationshipDTO);
         setLoaded();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
+        setMessageNotAllowedListenerOnPostCommentView(
+                new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
     }
 
     @Override protected void onDetachedFromWindow()
@@ -145,9 +146,9 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    public void setMessageStatusDTO(MessageStatusDTO messageStatusDTO)
+    public void setUserMessagingRelationshipDTO(UserMessagingRelationshipDTO userMessagingRelationshipDTO)
     {
-        this.messageStatusDTO = messageStatusDTO;
+        this.userMessagingRelationshipDTO = userMessagingRelationshipDTO;
         setMessageStatusOnPostCommentView();
     }
 
@@ -160,7 +161,8 @@ public class PrivateDiscussionView extends DiscussionView
     {
         if (postCommentView != null)
         {
-            ((PrivatePostCommentView) postCommentView).setMessageStatusDTO(messageStatusDTO);
+            ((PrivatePostCommentView) postCommentView).setUserMessagingRelationshipDTO(
+                    userMessagingRelationshipDTO);
         }
     }
 
