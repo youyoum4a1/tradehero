@@ -35,9 +35,9 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -713,9 +713,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment()
     {
         Bundle args = new Bundle();
-        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
+        args.putBundle(NewPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
                 shownUserBaseKey.getArgs());
-        getNavigator().pushFragment(PrivateMessageFragment.class, args);
+        getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     /**
