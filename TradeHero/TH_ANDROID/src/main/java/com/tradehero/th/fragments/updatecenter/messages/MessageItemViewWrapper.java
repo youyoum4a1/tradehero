@@ -10,9 +10,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 
-/**
- * Created by wangliang on 14-4-4.
- */
 public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderId>
 {
     @InjectView(R.id.message_item_front) MessageItemView messageItemView;

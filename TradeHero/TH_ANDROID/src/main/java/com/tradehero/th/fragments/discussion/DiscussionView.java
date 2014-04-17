@@ -44,10 +44,8 @@ public class DiscussionView extends FrameLayout
     protected TextView discussionStatus;
     private DiscussionKey discussionKey;
 
-    private DTOCache.Listener<DiscussionListKey, DiscussionKeyList> discussionFetchTaskListener;
-
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
-    private DiscussionListAdapter discussionListAdapter;
+    protected DiscussionListAdapter discussionListAdapter;
     private DiscussionListKey discussionListKey;
     private int nextPageDelta;
     private PaginatedDiscussionListKey paginatedDiscussionListKey;
@@ -83,7 +81,6 @@ public class DiscussionView extends FrameLayout
 
         DaggerUtils.inject(this);
 
-        discussionFetchTaskListener = new DiscussionFetchListener();
         discussionListAdapter = createDiscussionListAdapter();
     }
 
@@ -143,7 +140,6 @@ public class DiscussionView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        discussionFetchTaskListener = new DiscussionFetchListener();
         discussionList.setAdapter(discussionListAdapter);
         postCommentView.setCommentPostedListener(new DiscussionViewCommentPostedListener());
     }
@@ -153,7 +149,6 @@ public class DiscussionView extends FrameLayout
         detachDiscussionFetchTask();
         postCommentView.setCommentPostedListener(null);
         discussionList.setAdapter(null);
-        discussionFetchTaskListener = null;
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -227,9 +222,14 @@ public class DiscussionView extends FrameLayout
             paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
 
             setLoading();
-            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, discussionFetchTaskListener);
+            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, createDiscussionListListener());
             discussionFetchTask.execute();
         }
+    }
+
+    protected DTOCache.Listener<DiscussionListKey, DiscussionKeyList> createDiscussionListListener()
+    {
+        return new DiscussionFetchListener();
     }
 
     /**
