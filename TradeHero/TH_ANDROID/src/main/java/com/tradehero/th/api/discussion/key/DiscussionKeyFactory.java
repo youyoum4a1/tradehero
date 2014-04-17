@@ -18,7 +18,7 @@ public class DiscussionKeyFactory
     {
         ensureKeys(bundle);
 
-        DiscussionType discussionType = DiscussionType.fromDescription(bundle.getString(DiscussionKey.BUNDLE_KEY_TYPE));
+        DiscussionType discussionType = DiscussionType.valueOf(bundle.getString(DiscussionKey.BUNDLE_KEY_TYPE));
 
         switch (discussionType)
         {
