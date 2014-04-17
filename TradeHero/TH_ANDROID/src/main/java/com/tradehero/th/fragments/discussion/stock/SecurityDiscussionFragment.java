@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -37,6 +38,11 @@ public class SecurityDiscussionFragment extends DashboardFragment
                 linkWith(new SecurityId(securityIdBundle), true);
             }
         }
+    }
+
+    @OnClick(R.id.security_discussion_add) void onAddNewDiscussionRequested()
+    {
+        //getNavigator().pushFragment();
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
