@@ -9,7 +9,6 @@ import com.baidu.android.pushservice.PushNotificationBuilder;
 import com.baidu.frontia.FrontiaApplication;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ForBaiduPush;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,17 +17,16 @@ import timber.log.Timber;
 /**
  * Created by wangliang on 14-4-16.
  */
-@Singleton
-public class BaiduPushManager
-        extends UrbanAirshipPushNotificationManager /**implements PushNotificationManager*/
+@Singleton public class BaiduPushManager extends UrbanAirshipPushNotificationManager
 {
 
-    @Inject Context context;
-    @Inject @ForBaiduPush String appKey;
+    private final Context context;
+    private final String appKey;
 
-    public BaiduPushManager()
+    @Inject public BaiduPushManager(Context context, @ForBaiduPush String appKey)
     {
-        DaggerUtils.inject(this);
+        this.context = context;
+        this.appKey = appKey;
     }
 
     @Override public void initialise()

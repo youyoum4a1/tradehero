@@ -21,8 +21,6 @@ public class BaiduDeviceMode
 
     private void processToken()
     {
-        this.token = channelId+"-"+userId;
+        this.token = channelId + "-" + userId;
     }
-
-
 }

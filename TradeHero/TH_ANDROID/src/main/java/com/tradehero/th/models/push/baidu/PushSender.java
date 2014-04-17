@@ -7,9 +7,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -20,14 +18,21 @@ import timber.log.Timber;
  */
 public class PushSender
 {
-    @Inject Lazy<SessionServiceWrapper> sessionServiceWrapper;
-    @Inject CurrentUserId currentUserId;
-    @Inject @SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
-    @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
+    private final Lazy<SessionServiceWrapper> sessionServiceWrapper;
+    private final CurrentUserId currentUserId;
+    private final @SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
+    private final @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
 
-    public PushSender()
+    public PushSender(
+            Lazy<SessionServiceWrapper> sessionServiceWrapper,
+            CurrentUserId currentUserId,
+            @SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
+            @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag)
     {
-        DaggerUtils.inject(this);
+        this.sessionServiceWrapper = sessionServiceWrapper;
+        this.currentUserId = currentUserId;
+        this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
+        this.pushDeviceIdentifierSentFlag = pushDeviceIdentifierSentFlag;
     }
 
     public void updateDeviceIdentifier(String appId,String userId, String channelId)
