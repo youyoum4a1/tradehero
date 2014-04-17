@@ -73,12 +73,12 @@ public class DiscussionServiceStub implements DiscussionService
         return paginatedDTO;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
+    @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
             DiscussionType inReplyToType, int inReplyToId,
             Integer maxCount, Integer maxId, Integer minId)
     {
         maxCount = maxCount == null ? DEFAULT_MAX_COUNT : maxCount;
-        RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> rangedDTO = new RangedDTO<>();
+        PaginatedDTO<DiscussionDTO> rangedDTO = new PaginatedDTO<>();
         DiscussionDTOList data = new DiscussionDTOList();
         if (maxId != null)
         {
@@ -96,7 +96,7 @@ public class DiscussionServiceStub implements DiscussionService
         RangeSequenceDTO sequenceDTO = new RangeSequenceDTO();
         sequenceDTO.prev = new RangeDTO(maxCount, minId - 1, null);
         sequenceDTO.next = new RangeDTO(maxCount, null, maxId + 1);
-        rangedDTO.setSequenceDTO(sequenceDTO);
+        //rangedDTO.setSequenceDTO(sequenceDTO);
         return rangedDTO;
     }
 
@@ -119,7 +119,7 @@ public class DiscussionServiceStub implements DiscussionService
         return minId;
     }
 
-    @Override public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
+    @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
             DiscussionType inReplyToType,
             int inReplyToId,
             Map<String, Object> options)

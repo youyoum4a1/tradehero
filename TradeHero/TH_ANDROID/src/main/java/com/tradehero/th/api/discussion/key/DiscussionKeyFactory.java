@@ -7,9 +7,6 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import javax.inject.Inject;
 
-/**
- * Created by thonguyen on 9/4/14.
- */
 public class DiscussionKeyFactory
 {
     @Inject public DiscussionKeyFactory()

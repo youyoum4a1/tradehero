@@ -21,6 +21,7 @@ import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -59,6 +60,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
     private DTOCache.Listener<MessageListKey, MessageHeaderIdList> refreshMessagesFetchListener;
@@ -217,6 +219,8 @@ public class MessagesCenterFragment extends DashboardFragment
         Bundle args = new Bundle();
         args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
                 new UserBaseKey(targerUserId).getArgs());
+        args.putBundle(PrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
+                discussionKeyFactory.create(messageHeaderDTO).getArgs());
         getNavigator().pushFragment(PrivateMessageFragment.class, args);
     }
 

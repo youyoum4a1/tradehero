@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
@@ -10,11 +9,10 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
-import com.tradehero.th.models.discussion.MiddleCallbackRangedDiscussion;
+import com.tradehero.th.models.discussion.MiddleCallbackPaginatedDiscussion;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.MessageStatusCache;
 import javax.inject.Inject;
@@ -103,16 +101,18 @@ import retrofit.Callback;
                 discussionsKey.toMap());
     }
 
-    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(DiscussionListKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getMessageThread(DiscussionListKey discussionsKey)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
-            return getDiscussions((RangedDiscussionListKey) discussionsKey);
+            return getMessageThread((RangedDiscussionListKey) discussionsKey);
         }
-        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
+        return discussionService.getMessageThread(discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.toMap());
     }
 
-    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(RangedDiscussionListKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getMessageThread(RangedDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
@@ -122,22 +122,28 @@ import retrofit.Callback;
                 discussionsKey.minId);
     }
 
-    public MiddleCallbackRangedDiscussion getDiscussions(
+    public MiddleCallbackPaginatedDiscussion getMessageThread(
             DiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
+            Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
         if (discussionsKey instanceof RangedDiscussionListKey)
         {
-            return getDiscussions((RangedDiscussionListKey) discussionsKey, callback);
+            return getMessageThread((RangedDiscussionListKey) discussionsKey, callback);
         }
-        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
+        MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
+        discussionServiceAsync.getMessageThread(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.toMap(),
+                middleCallback);
+        return middleCallback;
     }
 
-    public MiddleCallbackRangedDiscussion getDiscussions(
+    public MiddleCallbackPaginatedDiscussion getMessageThread(
             RangedDiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
+            Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
-        MiddleCallbackRangedDiscussion middleCallback = new MiddleCallbackRangedDiscussion(callback);
+        MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
         discussionServiceAsync.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,

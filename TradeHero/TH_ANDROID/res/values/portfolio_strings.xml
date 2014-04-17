@@ -9,10 +9,10 @@
   <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios...</string>
   <string name="portfolio_description_count_open_positions_you">You have %1$d open positions</string>
   <string name="portfolio_description_count_closed_positions_you">You have %1$d closed positions</string>
-  <string name="portfolio_description_count_watch_positions_you">You are watching %1$d positions</string>
+  <string name="portfolio_description_count_watch_positions_you">You are watching %1$d items</string>
   <string name="portfolio_description_count_open_positions_other">%2$s has %1$d open positions</string>
   <string name="portfolio_description_count_closed_positions_other">%2$s has %1$d closed positions</string>
-  <string name="portfolio_description_count_watch_positions_other">%2$s is watching %1$d positions</string>
+  <string name="portfolio_description_count_watch_positions_other">%2$s is watching %1$d items</string>
   <string name="portfolio_description_count_watchlist">You have %1$d items</string>
   <string name="portfolio_default_title">Main Portfolio</string>
   <string name="portfolio_item_title_loading">Loading...</string>

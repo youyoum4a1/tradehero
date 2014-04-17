@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
   <com.tradehero.th.fragments.watchlist.WatchlistHeaderItem
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:layout_gravity="center_vertical"
       >
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -15,6 +17,7 @@
         android:textColor="@color/portfolio_header_text_color"
         android:layout_centerHorizontal="true"
         />
+
     <TextView
         android:id="@+id/value"
         android:layout_below="@+id/title"
@@ -25,5 +28,7 @@
         android:textColor="@color/portfolio_header_text_color"
         android:layout_centerHorizontal="true"
         />
+
   </com.tradehero.th.fragments.watchlist.WatchlistHeaderItem>
+
 </merge>

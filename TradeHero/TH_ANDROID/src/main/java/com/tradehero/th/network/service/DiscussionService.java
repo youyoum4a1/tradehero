@@ -40,7 +40,7 @@ public interface DiscussionService
             @QueryMap Map<String, Object> options);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
+    PaginatedDTO<DiscussionDTO> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Query("maxCount") Integer maxCount,
@@ -48,7 +48,7 @@ public interface DiscussionService
             @Query("minId") Integer minId);
 
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getMessageThread(
+    PaginatedDTO<DiscussionDTO> getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options);
