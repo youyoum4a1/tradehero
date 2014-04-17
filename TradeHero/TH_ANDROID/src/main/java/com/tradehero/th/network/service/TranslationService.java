@@ -39,9 +39,6 @@ public interface TranslationService {
     );
 }
 
-
-
-
 //        Get accsss_token
 
 //        POST https://datamarket.accesscontrol.windows.net/v2/OAuth2-13 with body params

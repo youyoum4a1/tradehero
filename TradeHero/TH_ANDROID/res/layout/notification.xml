@@ -6,10 +6,13 @@
     android:paddingTop="@dimen/notification_padding_top"
     android:layout_alignParentTop="true"
     android:layout_height="fill_parent"
-    android:background="@color/notification_background_color">
+    android:background="@color/notification_background_color"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
   <ImageView android:id="@+id/notification_icon"
       android:src="@drawable/icon"
+      tools:src="@drawable/icon"
       android:layout_marginRight="@dimen/notification_margin"
       android:layout_marginLeft="@dimen/notification_margin"
       android:layout_width="@dimen/notification_logo_width"
@@ -19,6 +22,7 @@
   <TextView android:id="@+id/notification_subject"
       style="@style/dark_bold_header"
       android:text="@null"
+      tools:text="subject"
       android:layout_alignTop="@+id/notification_icon"
       android:layout_toRightOf="@+id/notification_icon"
       android:layout_height="wrap_content"
@@ -34,6 +38,7 @@
       android:layout_marginLeft="@dimen/notification_margin"
       android:layout_height="wrap_content"
       android:layout_below="@+id/notification_subject"
-      android:layout_width="wrap_content" />
+      android:layout_width="wrap_content"
+      tools:text="message"/>
 
 </RelativeLayout>

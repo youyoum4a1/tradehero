@@ -11,6 +11,7 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
+import com.tradehero.th.utils.ForBaiduPush;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.WeChatUtils;
@@ -49,11 +50,14 @@ public class SocialNetworkModule
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
                     + "follow_app_official_microblog," + "invitation_write";
 
+    private static final String BAIDU_API_KEY = "iI9WWqP3SfGApTW37UuSyIdc";
+    private static final String BAIDU_SECRET_KEY = "i5xkWnVUQLYE703cYG85QoSkrPwjl3ip";
 
     @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
     }
+
     @Provides @Singleton @ConsumerSecret("Twitter") String provideTwitterConsumerSecret()
     {
         return TWITTER_CONSUMER_SECRET;
@@ -99,4 +103,6 @@ public class SocialNetworkModule
     {
         return weChatUtils;
     }
+
+
 }
