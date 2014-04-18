@@ -34,7 +34,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public void onBind(Context context, int errorCode, String appId,
             String userId, String channelId, String requestId)
     {
-        Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%d", appId, userId, channelId,
+        Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%s", appId, userId, channelId,
                 requestId);
         // 绑定成功，设置已绑定flag，可以有效的减少不必要的绑定请求
         if (!isRequestSuccess(errorCode))
