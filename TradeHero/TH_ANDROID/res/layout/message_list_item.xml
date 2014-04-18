@@ -8,11 +8,10 @@
     tools:background="@color/number_green"
     android:id="@+id/message_item_front"
     android:tag="message_item_front"
-    android:background="@color/timeline_background_color"
+    android:background="@color/white"
+    android:padding="@dimen/timeline_item_padding"
     >
 
-  <!--android:id="@+id/message_item_front"-->
-  <!--android:tag="message_item_front"-->
   <ImageView
       android:id="@+id/message_item_icon"
       android:layout_width="60dp"
@@ -30,9 +29,6 @@
       android:layout_gravity="center_vertical"
       android:background="@drawable/timeline_list_item_background"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
-      android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:layout_marginTop="@dimen/timeline_side_spacing"
-      android:padding="@dimen/timeline_item_padding"
       android:layout_toRightOf="@id/message_item_icon"
       >
 

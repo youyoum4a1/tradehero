@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/transparent"
     >
 
   <ProgressBar
@@ -187,6 +187,7 @@
         android:orientation="horizontal"
         android:id="@+id/buy_sell_action_buttons"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         >
@@ -210,44 +211,27 @@
     <LinearLayout
         android:id="@+id/belt"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/buy_sell_action_buttons"
+        android:padding="5dp"
+        android:background="@color/white"
         >
-
       <TextView
           android:id="@+id/info"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:layout_margin="10dp"
-          android:textColor="@color/btn_twitter_color_end"
           android:text="@string/security_info"
-          android:gravity="center"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
 
       <TextView
           android:id="@+id/discussions"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:gravity="center"
-          android:layout_margin="10dp"
           android:text="@string/security_discussions"
-          android:textColor="@color/btn_twitter_color_end"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
 
       <TextView
           android:id="@+id/news"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:layout_margin="10dp"
-          android:gravity="center"
           android:text="@string/security_news"
-          android:textColor="@color/btn_twitter_color_end"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
     </LinearLayout>
 

@@ -2,14 +2,14 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 
 public class PrivatePostCommentView extends PostCommentView
 {
     private OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
-    private MessageStatusDTO messageStatusDTO;
+    private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
     
     //<editor-fold desc="Constructors">
     public PrivatePostCommentView(Context context)
@@ -45,9 +45,10 @@ public class PrivatePostCommentView extends PostCommentView
         this.messageNotAllowedToSendListener = messageNotAllowedToSendListener;
     }
 
-    public void setMessageStatusDTO(MessageStatusDTO messageStatusDTO)
+    public void setUserMessagingRelationshipDTO(
+            UserMessagingRelationshipDTO userMessagingRelationshipDTO)
     {
-        this.messageStatusDTO = messageStatusDTO;
+        this.userMessagingRelationshipDTO = userMessagingRelationshipDTO;
     }
 
     /**
@@ -55,16 +56,13 @@ public class PrivatePostCommentView extends PostCommentView
      */
     @Override protected void postComment()
     {
-        //TODO need replace false
-        if (messageStatusDTO != null && false &&
-        //if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount <= 0 &&
-                messageNotAllowedToSendListener != null)
-        {
-            notifyPreSubmissionInterceptListener();
-        }
-        else 
+        if (userMessagingRelationshipDTO != null && userMessagingRelationshipDTO.canSendPrivate())
         {
             super.postComment();
+        }
+        else
+        {
+            notifyPreSubmissionInterceptListener();
         }
     }
 

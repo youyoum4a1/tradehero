@@ -11,11 +11,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by wangliang on 14-4-4.
- *
- * message item
- */
 @Singleton
 public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, MessageHeaderDTO>
 {

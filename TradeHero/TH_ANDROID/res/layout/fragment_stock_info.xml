@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-  >
+    >
 
   <android.support.v4.view.ViewPager
       android:id="@+id/top_pager"
@@ -14,6 +14,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:layout_above="@+id/top_pager_indicator"
+      android:background="@color/white"
       />
 
   <com.viewpagerindicator.CirclePageIndicator
@@ -31,7 +32,7 @@
       android_auto:fillColor="@color/btn_new_user_color_light"
       android_auto:pageColor="@android:color/transparent"
       android_auto:strokeColor="@color/btn_new_user_color_light"
-    />
+      />
 
   <ListView
       android:id="@+id/list_news_headline"

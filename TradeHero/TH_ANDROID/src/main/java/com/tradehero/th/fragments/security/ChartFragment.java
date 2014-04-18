@@ -31,7 +31,6 @@ import javax.inject.Inject;
  */
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    private final static String TAG = ChartFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
     public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
     public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";

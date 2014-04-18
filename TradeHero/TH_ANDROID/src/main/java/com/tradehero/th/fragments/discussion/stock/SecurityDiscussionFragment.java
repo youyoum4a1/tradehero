@@ -19,7 +19,7 @@ public class SecurityDiscussionFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.stock_discussion, container, false);
+        View view = inflater.inflate(R.layout.security_discussion, container, false);
         ButterKnife.inject(this, view);
         return view;
     }

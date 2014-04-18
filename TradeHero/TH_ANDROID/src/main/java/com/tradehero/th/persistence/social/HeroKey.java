@@ -39,6 +39,6 @@ public class HeroKey implements DTOKey
 
     @Override public String toString()
     {
-        return String.format("HeroKey %s, HeroType%s", followerKey, heroType);
+        return String.format("HeroKey %s, HeroType %s", followerKey, heroType);
     }
 }

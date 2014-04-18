@@ -16,8 +16,10 @@ public class PrivateDiscussionListAdapter extends DiscussionListAdapter
 {
     public static final int ITEM_TYPE_MINE = 0;
     public static final int ITEM_TYPE_OTHER = 1;
+
     public final int mineResId;
     public final int otherResId;
+
     @Inject DiscussionCache discussionCache;
     @Inject CurrentUserId currentUserId;
 

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:listItemLayout="@layout/timeline_discussion_comment_item"
-    app:topicLayout="@layout/security_discussion_item"
+    app:topicLayout="@layout/security_discussion_item_view"
     >
   <ListView
       android:layout_width="match_parent"

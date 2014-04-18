@@ -6,6 +6,7 @@ import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.android.pushservice.PushNotificationBuilder;
+import com.baidu.android.pushservice.PushSettings;
 import com.baidu.frontia.FrontiaApplication;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
@@ -42,10 +43,10 @@ import timber.log.Timber;
         super.enablePush();
 
         Timber.d("enablePush(PushManager.startWork) context:%s, appKey:%s", context, appKey);
-
+        PushSettings.enableDebugMode(context,true);
         PushManager.setNotificationBuilder(context, BaiduPushMessageReceiver.MESSAGE_ID,
                 createDefaultNotificationBuilder());
-        PushManager.disableLbs(context);
+        //PushManager.disableLbs(context);
         PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY, appKey);
     }
 

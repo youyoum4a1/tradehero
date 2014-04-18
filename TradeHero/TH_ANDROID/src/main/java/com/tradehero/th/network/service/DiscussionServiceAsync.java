@@ -22,11 +22,14 @@ import retrofit.http.QueryMap;
  */
 public interface DiscussionServiceAsync
 {
+    //<editor-fold desc="Get Comment">
     @GET("/discussions/{commentId}")
     void getComment(
             @Path("commentId") int commentId,
             Callback<DiscussionDTO> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Get Discussions">
     @Deprecated // Use getMessageThread
     @GET("/discussions/")
     void getDiscussions(
@@ -35,11 +38,15 @@ public interface DiscussionServiceAsync
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<DiscussionDTO>> callback); // = 42
+    //</editor-fold>
 
+    //<editor-fold desc="Get Message Thread">
     @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
     void getMessageThread(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
+            @Query("senderUserId") int senderUserId,
+            @Query("recipientUserId") int recipientUserId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
@@ -51,24 +58,31 @@ public interface DiscussionServiceAsync
             @Path("inReplyToId") int inReplyToId,
             @QueryMap Map<String, Object> options,
             Callback<PaginatedDTO<DiscussionDTO>> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Create Discussion">
     @POST("/discussions")
     void createDiscussion(
             @Body DiscussionFormDTO discussionFormDTO,
             Callback<DiscussionDTO> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Vote">
     @POST("/discussions/{inReplyToType}/{inReplyToId}/vote/{direction}")
     void vote(
             @Path("inReplyToType") DiscussionType inReplytoType,
             @Path("inReplyToId") int inReplyToId,
             @Path("direction") VoteDirection direction,
             Callback<DiscussionDTO> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Share">
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
     void share(
             @Path("inReplyToType") DiscussionType inReplytoType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback);
+    //</editor-fold>
 
 }

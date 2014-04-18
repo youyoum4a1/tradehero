@@ -97,7 +97,7 @@ public class HeroManagerInfoFetcher
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
         if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
-            Timber.d("fetchHeroes get the result and return %d ",heroIds.size());
+            Timber.d("fetchHeroes get the result and return %d heroType:%s",heroIds.size(),heroType);
             if (this.heroListListener != null)
             {
                 this.heroListListener.onDTOReceived(heroKey, heroIdExtWrapper, true);
@@ -105,7 +105,7 @@ public class HeroManagerInfoFetcher
         }
         else
         {
-            Timber.d("fetchHeroes try to fetch");
+            Timber.d("fetchHeroes try to fetch heroType:%s",heroType);
             if (heroListFetchTask != null)
             {
                 heroListFetchTask.setListener(null);

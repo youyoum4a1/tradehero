@@ -4,17 +4,28 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 
 public class PrivateDiscussionView extends DiscussionView
 {
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    protected DiscussionDTO initiatingDiscussion;
+
     protected MessageType messageType;
-    private MessageStatusDTO messageStatusDTO;
+    private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
     private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
+    private boolean hasAddedHeader = false;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionView(Context context)
@@ -35,32 +46,43 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionListAdapter createDiscussionListAdapter()
     {
-        return new PrivateDiscussionListAdapter(
+        PrivateDiscussionListAdapter discussionListAdapter = new PrivateDiscussionListAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.private_message_bubble_mine,
                 R.layout.private_message_bubble_other);
+        return discussionListAdapter;
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
-        setMessageStatusDTO(messageStatusDTO);
+        setUserMessagingRelationshipDTO(userMessagingRelationshipDTO);
         setLoaded();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
+        setMessageNotAllowedListenerOnPostCommentView(
+                new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        detachDiscussionFetchTask();
         setMessageNotAllowedListenerOnPostCommentView(null);
-        messageNotAllowedToSendListener = null;
         super.onDetachedFromWindow();
+    }
+
+    private void detachDiscussionFetchTask()
+    {
+        if (discussionFetchTask != null)
+        {
+            discussionFetchTask.setListener(null);
+        }
+        discussionFetchTask = null;
     }
 
     @Override protected void setLoading()
@@ -91,9 +113,77 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    public void setMessageStatusDTO(MessageStatusDTO messageStatusDTO)
+    @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        this.messageStatusDTO = messageStatusDTO;
+        super.linkWith(discussionKey, andDisplay);
+        fetchDiscussion(discussionKey);
+    }
+
+    private void fetchDiscussion(DiscussionKey discussionKey)
+    {
+        detachDiscussionFetchTask();
+        discussionFetchTask = discussionCache.getOrFetch(discussionKey, createDiscussionCacheListener());
+        discussionFetchTask.execute();
+    }
+
+    @Override protected DiscussionListKey createListKey()
+    {
+        return discussionListKeyFactory.create(initiatingDiscussion);
+    }
+
+    @Override protected void prepareDiscussionListKey()
+    {
+        // Do nothing TODO something
+    }
+
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
+    {
+        return new PrivateDiscussionViewDiscussionCacheListener();
+    }
+
+    protected void linkWithInitiating(PrivateDiscussionDTO discussionDTO, boolean andDisplay)
+    {
+        this.initiatingDiscussion = discussionDTO;
+        int topicId;
+        if (currentUserId.toUserBaseKey().equals(discussionDTO.getSenderKey()))
+        {
+            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).mineResId;
+        }
+        else
+        {
+            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).otherResId;
+        }
+        setTopicLayout(topicId);
+        inflateDiscussionTopic();
+        initialFetchDiscussion();
+        if (andDisplay)
+        {
+            displayTopicView();
+        }
+    }
+
+    @Override protected void setTopicLayout(int topicLayout)
+    {
+        if (!hasAddedHeader)
+        {
+            super.setTopicLayout(topicLayout);
+        }
+    }
+
+    @Override protected View inflateDiscussionTopic()
+    {
+        View inflated = null;
+        if (!hasAddedHeader)
+        {
+            inflated = super.inflateDiscussionTopic();
+            hasAddedHeader = inflated != null;
+        }
+        return inflated;
+    }
+
+    public void setUserMessagingRelationshipDTO(UserMessagingRelationshipDTO userMessagingRelationshipDTO)
+    {
+        this.userMessagingRelationshipDTO = userMessagingRelationshipDTO;
         setMessageStatusOnPostCommentView();
     }
 
@@ -106,7 +196,8 @@ public class PrivateDiscussionView extends DiscussionView
     {
         if (postCommentView != null)
         {
-            ((PrivatePostCommentView) postCommentView).setMessageStatusDTO(messageStatusDTO);
+            ((PrivatePostCommentView) postCommentView).setUserMessagingRelationshipDTO(
+                    userMessagingRelationshipDTO);
         }
     }
 
@@ -133,6 +224,20 @@ public class PrivateDiscussionView extends DiscussionView
         @Override public void onMessageNotAllowedToSend()
         {
             notifyPreSubmissionInterceptListener();
+        }
+    }
+
+    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+    {
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value,
+                boolean fromCache)
+        {
+            linkWithInitiating((PrivateDiscussionDTO) value, true);
+        }
+
+        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_private_message_initiating_discussion);
         }
     }
 }

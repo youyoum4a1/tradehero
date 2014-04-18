@@ -1,9 +1,12 @@
 package com.tradehero.th.api.discussion;
 
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 
 public class DiscussionDTOFactory
 {
+    @Inject UserProfileCache userProfileCache;
+
     @Inject public DiscussionDTOFactory()
     {
         super();
@@ -11,15 +14,41 @@ public class DiscussionDTOFactory
 
     public DiscussionDTO createChildClass(DiscussionDTO unidentified)
     {
-        if (unidentified != null && unidentified.inReplyToType != null)
+        if (unidentified == null)
         {
-            switch (unidentified.inReplyToType)
+            return null;
+        }
+
+        // TODO remove this temporary HACK
+        {
+            if (unidentified.type.equals(DiscussionType.COMMENT))
             {
-                case PRIVATE_MESSAGE:
-                    unidentified = new PrivateDiscussionDTO(unidentified, PrivateDiscussionDTO.class);
-                    break;
+                unidentified.type = DiscussionType.PRIVATE_MESSAGE;
             }
         }
-        return unidentified;
+
+        return createChildClass(unidentified.type, unidentified);
+    }
+
+    public DiscussionDTO createChildClass(DiscussionType discussionType, DiscussionDTO discussionDTO)
+    {
+        DiscussionDTO created = discussionDTO;
+        if (discussionType != null)
+        {
+            switch (discussionType)
+            {
+                case PRIVATE_MESSAGE:
+                    created = new PrivateDiscussionDTO();
+                    if (discussionDTO != null)
+                    {
+                        ((PrivateDiscussionDTO) created).putAll(discussionDTO, PrivateDiscussionDTO.class);
+                    }
+                    break;
+
+                default:
+                    created = new DiscussionDTO();
+            }
+        }
+        return created;
     }
 }

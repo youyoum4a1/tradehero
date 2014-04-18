@@ -39,7 +39,7 @@ abstract public class DiscussionKey implements DTOKey
 
     protected void putParameters(Bundle args)
     {
-        args.putString(BUNDLE_KEY_TYPE, getType().description);
+        args.putString(BUNDLE_KEY_TYPE, getType().name());
         args.putInt(BUNDLE_KEY_ID, id);
     }
 

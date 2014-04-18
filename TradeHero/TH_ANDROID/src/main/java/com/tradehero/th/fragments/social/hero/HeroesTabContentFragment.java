@@ -18,7 +18,6 @@ import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -29,7 +28,6 @@ import com.tradehero.th.persistence.social.HeroType;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class HeroesTabContentFragment extends BasePurchaseManagerFragment

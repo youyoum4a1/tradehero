@@ -2,11 +2,9 @@ package com.tradehero.th.api.discussion;
 
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:41 PM Copyright (c) TradeHero
- */
 public abstract class AbstractDiscussionDTO extends ExtendedDTO
 {
     public int id;
@@ -25,7 +23,6 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
         super();
     }
 
-
     public <ExtendedDTOType extends ExtendedDTO> AbstractDiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
     {
         super(other, myClass);
@@ -37,6 +34,11 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
         target.upvoteCount = upvoteCount;
         target.downvoteCount = downvoteCount;
         target.voteDirection = voteDirection;
+    }
+
+    public UserBaseKey getSenderKey()
+    {
+        return new UserBaseKey(userId);
     }
 
     public abstract DiscussionKey getDiscussionKey();

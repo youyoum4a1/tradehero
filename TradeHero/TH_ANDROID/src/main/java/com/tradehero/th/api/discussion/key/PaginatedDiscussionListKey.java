@@ -69,7 +69,6 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
         return super.equalFields(other) &&
                 (page == null ? other.page == null : page.equals(other.page)) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
-
     }
 
     //<editor-fold desc="PaginatedKey">

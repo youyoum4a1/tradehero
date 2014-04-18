@@ -2,12 +2,7 @@ package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import timber.log.Timber;
 
-/**
- * Created by xavier on 3/7/14.
- */
 public enum DiscussionType
 {
     COMMENT(1, "comment"),

@@ -28,9 +28,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.FragmentUtils;
-import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
-import com.tradehero.th.fragments.updatecenter.OnTitleNumberChangeListener;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -217,11 +215,10 @@ public class MessagesCenterFragment extends DashboardFragment
         }
 
         Bundle args = new Bundle();
-        args.putBundle(PrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                new UserBaseKey(targerUserId).getArgs());
-        args.putBundle(PrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
+        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(targerUserId));
+        args.putBundle(ReplyPrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
                 discussionKeyFactory.create(messageHeaderDTO).getArgs());
-        getNavigator().pushFragment(PrivateMessageFragment.class, args);
+        getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)
