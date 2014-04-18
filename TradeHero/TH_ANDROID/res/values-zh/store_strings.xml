@@ -88,7 +88,7 @@
 
   <string name="store_buy_virtual_dollar_window_title">额外虚拟股金</string>
   <string name="store_buy_virtual_dollar_window_message">用虚拟股金</string>
-  <string name="store_buy_follow_credits_window_title">信用积分/string>
+  <string name="store_buy_follow_credits_window_title">信用积分</string>
   <string name="store_buy_follow_credits_window_message">使用信用积分，关注股市牛人!</string>
   <string name="store_buy_stock_alerts_window_title">股市闹钟</string>
   <string name="store_buy_stock_alerts_window_message">在股票价格变更的时候，及时获得通知。按月支付，随时取消。</string>
