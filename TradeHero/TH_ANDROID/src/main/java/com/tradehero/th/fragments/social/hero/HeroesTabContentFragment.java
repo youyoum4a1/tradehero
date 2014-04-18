@@ -166,14 +166,9 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         this.infoFetcher.fetch(this.followerId, getHeroType());
     }
 
-    HeroType getHeroType()
+    private HeroType getHeroType()
     {
         return this.heroType;
-    }
-
-    void setHeroType(HeroType heroType)
-    {
-        this.heroType = heroType;
     }
 
     @Override public void onPause()
@@ -404,6 +399,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             handleGoMostSkilled();
         }
     }
+
 
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {

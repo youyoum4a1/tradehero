@@ -7,7 +7,11 @@ public class NetworkConstants
 {
     public static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
     //public static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/api/";
+<<<<<<< Updated upstream
     public static final String TRADEHERO_PROD_ENDPOINT = "https://192.168.20.49/api/";
+=======
+    public static final String TRADEHERO_PROD_ENDPOINT = "http://192.168.20.49/api/";
+>>>>>>> Stashed changes
     //public static final String TRADEHERO_PROD_ENDPOINT = "https://thvm-proxy.cloudapp.net:8000/api";
     public static final String COMPETITION_PATH = "competitionpages/";
 
