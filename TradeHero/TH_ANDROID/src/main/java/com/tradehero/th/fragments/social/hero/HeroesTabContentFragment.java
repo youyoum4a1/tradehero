@@ -223,11 +223,12 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                     UserProfileDTO currentUserProfileDTO)
             {
                 Timber.d("onUserFollowSuccess");
+                THToast.show(getString(R.string.manage_heroes_unfollow_success));
                 linkWith(currentUserProfileDTO, true);
                 if (infoFetcher != null)
                 {
-                    Timber.d("onUserFollowSuccess,fetchHeroes");
-                    //infoFetcher.getHeros(followerId,getHeroType());
+                    HeroIdExtWrapper heroIdExtWrapper = infoFetcher.getHeros(followerId,getHeroType());
+                    Timber.d("onUserFollowSuccess,fetchHeroes return %s",heroIdExtWrapper);
                     infoFetcher.fetchHeroes(followerId,getHeroType());
                 }
             }
@@ -235,6 +236,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
             {
                 Timber.e(error,"onUserFollowFailed error");
+                THToast.show(getString(R.string.manage_heroes_unfollow_failed));
             }
         };
 
@@ -277,6 +279,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
+                            THToast.show(getString(R.string.manage_heroes_unfollow_progress_message));
                             unfollowUser(clickedHeroDTO.getBaseKey());
                         }
                     });
@@ -389,7 +392,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         {
             displayProgress(false);
             setListShown(true);
-            Timber.e("Could not fetch heroes", error);
+            Timber.e(error,"Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
         }
     }

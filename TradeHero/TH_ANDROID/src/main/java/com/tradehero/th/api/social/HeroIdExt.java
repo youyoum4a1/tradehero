@@ -15,4 +15,11 @@ public class HeroIdExt extends FollowerHeroRelationId
     {
         super(heroId.heroId, heroId.followerId);
     }
+
+    @Override public String toString()
+    {
+        return "HeroIdExt{" +
+                "getPaid=" + getPaid +" heroId "+heroId+
+                '}';
+    }
 }
