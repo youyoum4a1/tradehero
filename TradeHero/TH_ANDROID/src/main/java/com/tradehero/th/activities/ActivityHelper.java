@@ -16,6 +16,13 @@ public class ActivityHelper
         ((Activity) activity).finish();
     }
 
+    public static void launchGuide(Context activity)
+    {
+        Intent localIntent = new Intent(activity, GuideActivity.class);
+        activity.startActivity(localIntent);
+        ((Activity) activity).finish();
+    }
+
     public static void launchDashboard(Activity activity)
     {
         presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP);

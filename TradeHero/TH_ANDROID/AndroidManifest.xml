@@ -88,6 +88,12 @@
         />
 
     <activity
+        android:name=".activities.GuideActivity"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+
+    <activity
         android:name=".activities.DashboardActivity"
         android:screenOrientation="portrait"
         android:theme="@style/TradeHero.Dashboard"
