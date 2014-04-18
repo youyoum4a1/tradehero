@@ -17,13 +17,17 @@ public class DeviceTokenHelper
     @Inject @SavedBaiduPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;
     @Inject static Context context;
 
+    /**
+     * If locale is Chinese, return the token from baidu,otherwise from urbanairship
+     * @return
+     */
     public static String getDeviceToken()
     {
         boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
         if (isChineseLocale)
         {
             String token = savedPushDeviceIdentifier.get();
-            Timber.d("get saved the token %s", token);
+            Timber.d("get saved the token from baidu %s", token);
             if (token != null)
             {
                 return token;
@@ -33,14 +37,17 @@ public class DeviceTokenHelper
         return PushManager.shared().getAPID();
     }
 
+    /**
+     * just return DeviceType.Android
+     * @return
+     */
     public static DeviceType getDeviceType()
     {
-        boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
-        if (isChineseLocale)
-        {
-            return DeviceType.Baidu;
-
-        }
+        //boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
+        //if (isChineseLocale)
+        //{
+        //    return DeviceType.Baidu;
+        //}
         return DeviceType.Android;
     }
 }

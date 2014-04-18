@@ -79,6 +79,13 @@ public class HeroManagerInfoFetcher
         fetchHeroes(userBaseKey,heroType);
     }
 
+    public HeroIdExtWrapper getHeros(UserBaseKey userBaseKey, HeroType heroType)
+    {
+        HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
+        return heroIdExtWrapper;
+    }
+
     public void fetchUserProfile(UserBaseKey userBaseKey)
     {
         if (this.userProfileFetchTask != null)

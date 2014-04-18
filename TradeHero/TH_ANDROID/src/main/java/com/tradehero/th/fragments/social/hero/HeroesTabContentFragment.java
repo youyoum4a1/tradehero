@@ -227,6 +227,8 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             public void onUserFollowSuccess(UserBaseKey userFollowed,
                     UserProfileDTO currentUserProfileDTO)
             {
+                Timber.d("onUserFollowSuccess");
+                linkWith(currentUserProfileDTO, true);
                 if (infoFetcher != null)
                 {
                     Timber.d("onUserFollowSuccess,fetchHeroes");
@@ -236,7 +238,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 
             @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
             {
-
+                Timber.e(error,"onUserFollowFailed error");
             }
         };
 
