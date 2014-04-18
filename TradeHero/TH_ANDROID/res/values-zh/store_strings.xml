@@ -130,6 +130,7 @@
   <string name="manage_heroes_unfollow_progress_title">执行中</string>
   <string name="manage_heroes_unfollow_progress_message">正在尝试取消关注这位牛人。</string>
   <string name="manage_heroes_unfollow_failed">取消关注过程中，发生了一点错误。</string>
+  <string name="manage_heroes_unfollow_success">已经取消关注这位牛人</string>
 
   <!-- Manage followers -->
   <string name="manage_followers_title">粉丝</string>

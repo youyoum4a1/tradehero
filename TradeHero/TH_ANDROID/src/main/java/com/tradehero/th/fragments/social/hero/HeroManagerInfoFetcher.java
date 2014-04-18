@@ -83,6 +83,14 @@ public class HeroManagerInfoFetcher
     {
         HeroKey heroKey = new HeroKey(userBaseKey,heroType);
         HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
+
+        HeroIdExtWrapper all = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.ALL));
+        HeroIdExtWrapper free = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.FREE));
+        HeroIdExtWrapper paid = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.FREE));
+        Timber.d("fetchHeroes getHeros all:%s",all);
+        Timber.d("fetchHeroes getHeros free:%s",free);
+        Timber.d("fetchHeroes getHeros paid:%s",paid);
+
         return heroIdExtWrapper;
     }
 
