@@ -1565,7 +1565,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 publishToWe = !publishToWe;
                 if (publishToWe)
                 {
-                    Timber.d("lyl %s", securityCompactDTO.toString());
                     wechatSharerLazy.get().share(getActivity(), securityCompactDTO);
                 }
             }

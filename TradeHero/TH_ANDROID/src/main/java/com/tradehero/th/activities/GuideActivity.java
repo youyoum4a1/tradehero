@@ -55,7 +55,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
 
     @Override public void onClick(View v)
     {
-        Timber.d("lyl go");
         ActivityHelper.launchAuthentication(this);
     }
 
