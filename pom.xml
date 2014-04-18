@@ -18,7 +18,7 @@
     <repository>
       <id>crashlytics-repo</id>
       <url>http://download.crashlytics.com/maven</url>
-    </repository>4
+    </repository>
 
     <repository>
       <id>sonatype</id>
