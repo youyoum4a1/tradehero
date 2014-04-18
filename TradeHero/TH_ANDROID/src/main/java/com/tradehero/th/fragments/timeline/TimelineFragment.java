@@ -214,11 +214,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(View v)
                 {
-            //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
-            //                .setVisibility(View.GONE);
-            //        userProfileView.showNext();
-            //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
-            //                .setVisibility(View.VISIBLE);
+                    //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
+                    //                .setVisibility(View.GONE);
+                    //        userProfileView.showNext();
+                    //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
+                    //                .setVisibility(View.VISIBLE);
                 }
             });
             userProfileView.setPortfolioRequestListener(this);
@@ -528,13 +528,16 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (item instanceof DisplayablePortfolioDTO)
         {
             DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) item;
-            if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
+            if (displayablePortfolioDTO.portfolioDTO != null)
             {
-                pushWatchlistPositionFragment(displayablePortfolioDTO.ownedPortfolioId);
-            }
-            else
-            {
-                pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId);
+                if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
+                {
+                    pushWatchlistPositionFragment(displayablePortfolioDTO.ownedPortfolioId);
+                }
+                else
+                {
+                    pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId);
+                }
             }
         }
         else
