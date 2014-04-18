@@ -267,6 +267,7 @@ public class AlipayActivity extends Activity
                 case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
                     portfolioCacheLazy.get().invalidate(mPortfolioId);//update portfolioId's detail
                     portfolioCompactCacheLazy.get().invalidate(mPortfolioId.getPortfolioIdKey());//update portfolio detail
+                    userProfileCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
                     break;
                 case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
                     userProfileCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
