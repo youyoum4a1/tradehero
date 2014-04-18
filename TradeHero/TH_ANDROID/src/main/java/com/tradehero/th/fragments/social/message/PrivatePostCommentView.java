@@ -44,7 +44,8 @@ public class PrivatePostCommentView extends PostCommentView
         super.onDetachedFromWindow();
     }
 
-    public void setMessageNotAllowedToSendListener(OnMessageNotAllowedToSendListener messageNotAllowedToSendListener)
+    public void setMessageNotAllowedToSendListener(
+            OnMessageNotAllowedToSendListener messageNotAllowedToSendListener)
     {
         this.messageNotAllowedToSendListener = messageNotAllowedToSendListener;
     }
@@ -90,7 +91,7 @@ public class PrivatePostCommentView extends PostCommentView
             listener.onMessageNotAllowedToSend();
         }
     }
-    
+
     public static interface OnMessageNotAllowedToSendListener
     {
         void onMessageNotAllowedToSend();

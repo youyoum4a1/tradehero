@@ -209,15 +209,16 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (userProfileView != null)
         {
+            //TODO now only one view, userProfileView useless, need cancel, alex
             userProfileView.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View v)
                 {
-                    userProfileView.getChildAt(userProfileView.getDisplayedChild())
-                            .setVisibility(View.GONE);
-                    userProfileView.showNext();
-                    userProfileView.getChildAt(userProfileView.getDisplayedChild())
-                            .setVisibility(View.VISIBLE);
+            //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
+            //                .setVisibility(View.GONE);
+            //        userProfileView.showNext();
+            //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
+            //                .setVisibility(View.VISIBLE);
                 }
             });
             userProfileView.setPortfolioRequestListener(this);
