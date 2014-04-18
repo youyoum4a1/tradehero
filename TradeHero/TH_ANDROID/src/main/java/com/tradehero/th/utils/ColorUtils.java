@@ -12,7 +12,6 @@ public class ColorUtils
     public static final int MAX_GREEN_VALUE = 200;
 
     /**
-     *
      * @param percentage, a value from -1 to 1
      * @return
      */
