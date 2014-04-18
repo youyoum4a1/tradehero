@@ -227,8 +227,8 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                 if (infoFetcher != null)
                 {
                     Timber.d("onUserFollowSuccess,fetchHeroes");
-                    infoFetcher.getHeros(followerId,getHeroType());
-                    //infoFetcher.fetchHeroes(followerId,getHeroType());
+                    //infoFetcher.getHeros(followerId,getHeroType());
+                    infoFetcher.fetchHeroes(followerId,getHeroType());
                 }
             }
 
