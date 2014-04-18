@@ -132,6 +132,7 @@ public class PostCommentView extends RelativeLayout
     {
         MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = commentText.getText().toString();
+        messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
         return messageCreateFormDTO;
     }
 

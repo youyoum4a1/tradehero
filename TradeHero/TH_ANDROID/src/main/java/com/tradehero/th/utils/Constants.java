@@ -4,7 +4,7 @@ public class Constants
 {
     // build constants
     // TODO fix
-    public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
+    public static final boolean RELEASE = true; // !BuildConfig.DEBUG;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
