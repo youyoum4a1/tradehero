@@ -3,6 +3,7 @@ package com.tradehero.th.models.push;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.MetaHelper;
+import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
@@ -30,5 +31,16 @@ public class DeviceTokenHelper
 
         }
         return PushManager.shared().getAPID();
+    }
+
+    public static DeviceType getDeviceType()
+    {
+        boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
+        if (isChineseLocale)
+        {
+            return DeviceType.Baidu;
+
+        }
+        return DeviceType.Android;
     }
 }

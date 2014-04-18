@@ -163,7 +163,7 @@ public class THUser
             case SignIn:
                 LoginFormDTO loginFormDTO = new LoginFormDTO(
                         DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                        DeviceType.Android,
+                        DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                         VersionUtils.getVersionId(Application.context()));
                 sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;

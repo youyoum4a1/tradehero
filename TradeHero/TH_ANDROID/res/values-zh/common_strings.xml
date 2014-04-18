@@ -10,12 +10,12 @@
 
   <string name="network_error">请检查您的网路连接!</string>
   <!-- data format-->
-  <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
-  <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
-  <string name="data_format_dd_mmm_yyyy">dd MMM yyyy</string>
-  <string name="data_format_dd_mmm_hh_mm">dd MMM HH:mm</string>
-  <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
-  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">dd MMM HH:mm \'GMT\'</string>
+  <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
+  <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年 MM月 d日 HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy">yyyy年 MM月 dd日</string>
+  <string name="data_format_dd_mmm_hh_mm">MM月 dd日 HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年 MM月 dd日 kk:mm z</string>
+  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">MM月 dd日 HH:mm \'GMT\'</string>
 
   <!-- TEMP stuff -->
   <string name="test_email">neeraj@eatechnologies.com</string>

@@ -92,6 +92,7 @@ public class HeroManagerInfoFetcher
     public void fetchHeroes(UserBaseKey userBaseKey, HeroType heroType)
     {
         HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+
         HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
         HeroIdList heroIds = (heroIdExtWrapper != null)?heroIdExtWrapper.heroIdList:null;
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
