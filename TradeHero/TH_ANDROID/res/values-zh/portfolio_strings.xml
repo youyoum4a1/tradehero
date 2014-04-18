@@ -9,11 +9,17 @@
   <string name="portfolio_loading_count">读取 %1$,d/%2$,d 投资组合..</string>
   <string name="portfolio_description_count_open_positions">您当前有 %1$d 持仓</string>
   <string name="portfolio_description_count_closed_positions">您当前有 %1$d 平仓</string>
+  <string name="portfolio_description_count_watch_positions_you">You are watching %1$d items</string>
+  <string name="portfolio_description_count_open_positions_other">%2$s has %1$d open positions</string>
+  <string name="portfolio_description_count_closed_positions_other">%2$s has %1$d closed positions</string>
+  <string name="portfolio_description_count_watch_positions_other">%2$s is watching %1$d items</string>
   <string name="portfolio_description_count_watchlist">您有 %1$d 项目</string>
   <string name="portfolio_default_title">默认投资组合</string>
   <string name="portfolio_item_title_loading">读取...</string>
   <string name="portfolio_header_total_value">总值</string>
   <string name="portfolio_header_cash_value">现金值</string>
+
+  <string name="portfolio_title_unnamed">Unnamed Portfoliod</string>
 
   <string name="error_fetch_portfolio_list_info">获取投资组合列表出现错误</string>
   <string name="error_fetch_portfolio_info">获取投资组合信息出现错误</string>

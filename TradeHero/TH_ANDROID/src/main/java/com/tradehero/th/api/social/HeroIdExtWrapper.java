@@ -12,4 +12,13 @@ public class HeroIdExtWrapper implements DTO
     public int herosCountGetPaid;
     /**count of heros that I've not paid money  follow them currently  */
     public int herosCountNotGetPaid;
+
+    @Override public String toString()
+    {
+        return "HeroIdExtWrapper{" +
+                "heroIdList=" + heroIdList +
+                ", herosCountGetPaid=" + herosCountGetPaid +
+                ", herosCountNotGetPaid=" + herosCountNotGetPaid +
+                '}';
+    }
 }

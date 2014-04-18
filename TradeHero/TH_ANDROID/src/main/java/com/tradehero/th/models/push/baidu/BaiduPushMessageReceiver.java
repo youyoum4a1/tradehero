@@ -72,7 +72,13 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(MESSAGE_ID, notification);
+        int hashCode = message.hashCode();
+        if(hashCode < 0)
+        {
+            hashCode = -hashCode;
+        }
+        int msgId = hashCode % 1000;
+        nm.notify(msgId, notification);
     }
 
     private void handleRecevieMessage(Context context, String customContentString)

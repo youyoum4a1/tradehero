@@ -19,10 +19,11 @@ public class ColorUtils
     {
         if(MetaHelper.isChineseLocale(PApplication.context()))
         {
-            return Color.rgb(
-                    (int) (MAX_RED_VALUE * MathUtils.clamp(percentage, 0, 1)),
-                    (int) (MAX_GREEN_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
-                    0);
+            return getColorResourceForNumber(percentage);
+            //return Color.rgb(
+            //        (int) (MAX_RED_VALUE * MathUtils.clamp(percentage, 0, 1)),
+            //        (int) (MAX_GREEN_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
+            //        0);
         }
         else
         {

@@ -25,17 +25,15 @@ import timber.log.Timber;
 
 public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
-    private FollowerManagerViewContainer viewContainer;
+    @Inject protected CurrentUserId currentUserId;
 
+    private FollowerManagerViewContainer viewContainer;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey followedId;
     private FollowerSummaryDTO followerSummaryDTO;
-
-    @Inject protected CurrentUserId currentUserId;
     private FollowerManagerInfoFetcher infoFetcher;
-
-    int page;
-    HeroType followerType;
+    private int page;
+    private HeroType followerType;
 
     public FollowerManagerTabFragment()
     {

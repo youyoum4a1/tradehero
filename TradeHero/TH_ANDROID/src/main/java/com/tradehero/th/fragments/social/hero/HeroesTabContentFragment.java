@@ -166,14 +166,9 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         this.infoFetcher.fetch(this.followerId, getHeroType());
     }
 
-    HeroType getHeroType()
+    private HeroType getHeroType()
     {
         return this.heroType;
-    }
-
-    void setHeroType(HeroType heroType)
-    {
-        this.heroType = heroType;
     }
 
     @Override public void onPause()
@@ -227,16 +222,19 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             public void onUserFollowSuccess(UserBaseKey userFollowed,
                     UserProfileDTO currentUserProfileDTO)
             {
+                Timber.d("onUserFollowSuccess");
+                linkWith(currentUserProfileDTO, true);
                 if (infoFetcher != null)
                 {
                     Timber.d("onUserFollowSuccess,fetchHeroes");
-                    infoFetcher.fetchHeroes(followerId,getHeroType());
+                    infoFetcher.getHeros(followerId,getHeroType());
+                    //infoFetcher.fetchHeroes(followerId,getHeroType());
                 }
             }
 
             @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
             {
-
+                Timber.e(error,"onUserFollowFailed error");
             }
         };
 
@@ -403,6 +401,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             handleGoMostSkilled();
         }
     }
+
 
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {
