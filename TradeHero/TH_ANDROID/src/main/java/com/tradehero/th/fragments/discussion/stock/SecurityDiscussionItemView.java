@@ -20,6 +20,8 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
@@ -28,7 +30,8 @@ import timber.log.Timber;
 /**
  * Created by thonguyen on 4/4/14.
  */
-public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey>
+public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey> implements
+        View.OnClickListener
 {
     @InjectView(R.id.discussion_user_picture) ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) TextView userProfileName;
@@ -67,7 +70,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
+        discussionUserPicture.setOnClickListener(this);
         Timber.d("VotePair: %s", discussionVotePair);
         if (discussionVotePair != null)
         {
@@ -78,7 +81,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     @Override protected void onDetachedFromWindow()
     {
         resetView();
-
+        discussionUserPicture.setOnClickListener(null);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -130,7 +133,8 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id, discussionDTO.text, discussionDTO.getDiscussionKey(), true);
+        ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id,
+                discussionDTO.text, discussionDTO.getDiscussionKey(), true);
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
 
@@ -202,5 +206,12 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     private void cancelProfilePictureRequest()
     {
         picasso.cancelRequest(discussionUserPicture);
+    }
+
+    @Override public void onClick(View v)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseDTO.id);
+        getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
     }
 }
