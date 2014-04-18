@@ -107,6 +107,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
         ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
                 new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
+        ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
         ((PrivateDiscussionView) discussionView).setUserMessagingRelationshipDTO(
                 userMessagingRelationshipDTO);
     }

@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.MessageType;
 abstract public class MessageCreateFormDTO
 {
     public String message;
+    public int senderUserId;
 
     public MessageCreateFormDTO()
     {

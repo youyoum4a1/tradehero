@@ -13,6 +13,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
@@ -23,6 +24,7 @@ public class PrivateDiscussionView extends DiscussionView
     protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
+    private UserBaseKey recipient;
     private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
     private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
     private boolean hasAddedHeader = false;
@@ -58,7 +60,8 @@ public class PrivateDiscussionView extends DiscussionView
     {
         super.onFinishInflate();
         setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
-        setUserMessagingRelationshipDTO(userMessagingRelationshipDTO);
+        setRecipientOnPostCommentView();
+        setMessageStatusOnPostCommentView();
         setLoaded();
     }
 
@@ -179,6 +182,20 @@ public class PrivateDiscussionView extends DiscussionView
             hasAddedHeader = inflated != null;
         }
         return inflated;
+    }
+
+    public void setRecipient(UserBaseKey recipient)
+    {
+        this.recipient = recipient;
+        setRecipientOnPostCommentView();
+    }
+
+    private void setRecipientOnPostCommentView()
+    {
+        if (postCommentView != null)
+        {
+            ((PrivatePostCommentView) postCommentView).setRecipient(recipient);
+        }
     }
 
     public void setUserMessagingRelationshipDTO(UserMessagingRelationshipDTO userMessagingRelationshipDTO)
