@@ -95,7 +95,12 @@ import javax.inject.Singleton;
             portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
             if (portfolioCompactDTO != null && portfolioCompactDTO.providerId == null && !portfolioCompactDTO.isWatchlist)
             {
-                return ownedPortfolioId;
+                //TODO this was not good, cos this depandency thie order of list, alex
+                //return ownedPortfolioId;
+                if (portfolioCompactDTO.title.equals("Main Portfolio"))
+                {
+                    return ownedPortfolioId;
+                }
             }
         }
         return null;
