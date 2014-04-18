@@ -59,7 +59,7 @@ public class SplashActivity extends SherlockActivity
         if (Constants.RELEASE)
         {
             //TODO can't run in alipay branch
-            //Crashlytics.start(this);
+            Crashlytics.start(this);
         }
         setContentView(R.layout.splash_screen);
 
