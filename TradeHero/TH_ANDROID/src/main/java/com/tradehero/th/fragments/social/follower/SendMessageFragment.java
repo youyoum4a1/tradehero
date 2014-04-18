@@ -229,7 +229,7 @@ public class SendMessageFragment extends DashboardFragment
     private int getFollowerCountByUserProfile(MessageType messageType)
     {
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-            int followerCount = userProfileDTO.followerCount;
+            int followerCount = userProfileDTO.allFollowerCount;
             int followerCountFree = userProfileDTO.followerCountFree;
             int followerCountPaid = userProfileDTO.followerCountPaid;
             Timber.d("followerCount:%d,followerCountFree:%d,followerCountPaid:%d",followerCount,followerCountFree,followerCountPaid);
@@ -240,7 +240,7 @@ public class SendMessageFragment extends DashboardFragment
                     result = userProfileDTO.followerCountFree;
                     break;
                 case BROADCAST_ALL_FOLLOWERS:
-                    result = userProfileDTO.followerCount;
+                    result = userProfileDTO.allFollowerCount;
                     break;
                 case BROADCAST_PAID_FOLLOWERS:
                     result = userProfileDTO.followerCountPaid;

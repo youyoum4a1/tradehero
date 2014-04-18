@@ -24,6 +24,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<Integer> freeHeroIds;
     public List<Integer> premiumHeroIds;
     public Integer followerCount;
+    public Integer allFollowerCount;
     public Integer followerCountFree;
     public Integer followerCountPaid;
 

@@ -155,7 +155,7 @@ public class UserProfileCompactViewHolder
             if (userProfileDTO != null)
             {
                 followersCount.setText(Integer.toString(
-                        userProfileDTO.followerCount == null ? 0 : userProfileDTO.followerCount));
+                        userProfileDTO.followerCount == null ? 0 : userProfileDTO.allFollowerCount));
             }
             else
             {

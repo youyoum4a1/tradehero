@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
@@ -215,6 +216,31 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     {
         super.onDestroy();
         Timber.d("onDestroy page:%s", page);
+    }
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new FollowUserAssistant.OnUserFollowedListener()
+        {
+
+            @Override
+            public void onUserFollowSuccess(UserBaseKey userFollowed,
+                    UserProfileDTO currentUserProfileDTO)
+            {
+                if (infoFetcher != null)
+                {
+                    Timber.d("onUserFollowSuccess,fetchHeroes");
+                    infoFetcher.fetchHeroes(followerId,getHeroType());
+                }
+            }
+
+            @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+            {
+
+            }
+        };
+
+        //return super.createUserFollowedListener();
     }
 
     private void handleBuyMoreClicked()
