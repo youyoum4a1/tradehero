@@ -91,6 +91,10 @@ import javax.inject.Singleton;
             for (HeroDTO heroDTO : fleshedValues)
             {
                 //THLog.d(TAG, heroDTO.toString());
+                if (!heroDTO.active)
+                {
+                    continue;
+                }
                 heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.followerKey));
 
                 if (forAllHeros)
@@ -143,7 +147,6 @@ import javax.inject.Singleton;
         int[] result = new int[2];
         if (allHeros != null)
         {
-
             int paidCount = 0;
             int notPaidCount = 0;
             int totalCount = allHeros.size();
