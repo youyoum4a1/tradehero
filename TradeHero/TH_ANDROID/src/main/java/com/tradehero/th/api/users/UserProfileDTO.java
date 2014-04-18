@@ -24,6 +24,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<Integer> freeHeroIds;
     public List<Integer> premiumHeroIds;
     public Integer followerCount;
+    public Integer followerCountFree;
+    public Integer followerCountPaid;
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)
     public Double ccBalance;       // non-recurring: CC spot level

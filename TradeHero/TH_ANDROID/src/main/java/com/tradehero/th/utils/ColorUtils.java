@@ -1,6 +1,8 @@
 package com.tradehero.th.utils;
 
 import android.graphics.Color;
+import com.tradehero.common.application.PApplication;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 3:24 PM To change this template use File | Settings | File Templates. */
@@ -16,15 +18,34 @@ public class ColorUtils
      */
     public static int getColorForPercentage(float percentage)
     {
-        return Color.rgb(
-                (int) (MAX_RED_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
-                (int) (MAX_GREEN_VALUE * MathUtils.clamp(percentage, 0, 1)),
-                0);
+        if(MetaHelper.isChineseLocale(PApplication.context()))
+        {
+            return Color.rgb(
+                    (int) (MAX_RED_VALUE * MathUtils.clamp(percentage, 0, 1)),
+                    (int) (MAX_GREEN_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
+                    0);
+        }
+        else
+        {
+            return Color.rgb(
+                    (int) (MAX_RED_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
+                    (int) (MAX_GREEN_VALUE * MathUtils.clamp(percentage, 0, 1)),
+                    0);
+        }
+
+
     }
 
     public static int getColorResourceForNumber(double n)
     {
-        return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
+        if(MetaHelper.isChineseLocale(PApplication.context()))
+        {
+            return n < 0 ? R.color.number_green : n > 0 ? R.color.number_red : R.color.black;
+        }
+        else
+        {
+            return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
+        }
     }
 
 
