@@ -33,7 +33,7 @@ import timber.log.Timber;
     @Override protected HeroIdExtWrapper fetch(HeroKey key) throws Throwable
     {
         List<HeroDTO> allHeros = userServiceWrapper.getHeroes(key);
-        Timber.d("HeroListCache#fetch fetchHeroes allHeros:%s",allHeros);
+        //Timber.d("HeroListCache#fetch fetchHeroes allHeros:%s",allHeros);
         return putInternal(key, allHeros);
     }
 
@@ -47,21 +47,6 @@ import timber.log.Timber;
         Timber.d("HeroListCache#put key:%s value:%s",key,value);
         return super.put(key, value);
     }
-
-    //04-18 20:04:37.145  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:116﹕ fetchHeroes try to fetch heroType:Premium
-    //04-18 20:04:42.101  26787-26787/com.tradehero.th D/TradeHero-HeroListCache:70﹕ HeroListCache,fetchHeroes key HeroKey [UserBaseKey key=239284], HeroType Free, return HeroIdExtWrapper{heroIdList=[[heroId=375098; followerId=239284], [heroId=383332; followerId=239284], [heroId=394257; followerId=239284]], herosCountGetPaid=15, herosCountNotGetPaid=3}
-    //04-18 20:04:42.101  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 3 heroType:Free
-    //04-18 20:04:49.949  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 18 heroType:All
-    //04-18 20:04:50.465  26787-26787/com.tradehero.th D/TradeHero-HeroListCache:70﹕ HeroListCache,fetchHeroes key HeroKey [UserBaseKey key=239284], HeroType Free, return HeroIdExtWrapper{heroIdList=[[heroId=375098; followerId=239284], [heroId=383332; followerId=239284], [heroId=394257; followerId=239284]], herosCountGetPaid=15, herosCountNotGetPaid=3}
-    //04-18 20:04:50.465  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 3 heroType:Free
-    //04-18 20:04:50.981  26787-26787/com.tradehero.th D/TradeHero-HeroListCache:70﹕ HeroListCache,fetchHeroes key HeroKey [UserBaseKey key=239284], HeroType Premium, return HeroIdExtWrapper{heroIdList=[[heroId=365543; followerId=239284], [heroId=366496; followerId=239284], [heroId=367422; followerId=239284], [heroId=371581; followerId=239284], [heroId=373205; followerId=239284], [heroId=373660; followerId=239284], [heroId=379647; followerId=239284], [heroId=387230; followerId=239284], [heroId=390992; followerId=239284], [heroId=391022; followerId=239284], [heroId=393429; followerId=239284], [heroId=393533; followerId=239284], [heroId=393931; followerId=239284], [heroId=393942; followerId=239284], [heroId=397448; followerId=239284]], herosCountGetPaid=15, herosCountNotGetPaid=3}
-    //04-18 20:04:50.981  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 15 heroType:Premium
-    //04-18 20:04:51.381  26787-26787/com.tradehero.th D/TradeHero-HeroListCache:70﹕ HeroListCache,fetchHeroes key HeroKey [UserBaseKey key=239284], HeroType Free, return HeroIdExtWrapper{heroIdList=[[heroId=375098; followerId=239284], [heroId=383332; followerId=239284], [heroId=394257; followerId=239284]], herosCountGetPaid=15, herosCountNotGetPaid=3}
-    //04-18 20:04:51.381  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 3 heroType:Free
-    //04-18 20:05:05.337  26787-26787/com.tradehero.th D/TradeHero-HeroesTabContentFragment$4:231﹕ onUserFollowSuccess,fetchHeroes return null
-    //    04-18 20:05:05.337  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:116﹕ fetchHeroes try to fetch heroType:Free
-    //04-18 20:05:12.333  26787-26787/com.tradehero.th D/TradeHero-HeroListCache:70﹕ HeroListCache,fetchHeroes key HeroKey [UserBaseKey key=239284], HeroType Premium, return HeroIdExtWrapper{heroIdList=[], herosCountGetPaid=15, herosCountNotGetPaid=2}
-    //04-18 20:05:12.333  26787-26787/com.tradehero.th D/TradeHero-HeroManagerInfoFetcher:108﹕ fetchHeroes get the result and return 0 heroType:Premium
 
     @Override public HeroIdExtWrapper get(HeroKey key)
     {
@@ -96,7 +81,6 @@ import timber.log.Timber;
 
     protected HeroIdExtWrapper putInternal(HeroKey key, List<HeroDTO> fleshedValues)
     {
-        Timber.d("HeroListCache#putInternal");
         HeroIdList heroIds = null;
         HeroIdList allHeroIds = null;
 
@@ -112,7 +96,6 @@ import timber.log.Timber;
             boolean forAllHeros = (key.heroType == HeroType.ALL);
             for (HeroDTO heroDTO : fleshedValues)
             {
-                //THLog.d(TAG, heroDTO.toString());
                 if (!heroDTO.active)
                 {
                     continue;
@@ -161,17 +144,21 @@ import timber.log.Timber;
                 put(key, AllHeroIdExtWrapper);
             }
         }
-
-        //HeroIdExtWrapper all = get(new HeroKey(key.followerKey,HeroType.ALL));
-        //HeroIdExtWrapper free = get(new HeroKey(key.followerKey,HeroType.FREE));
-        //HeroIdExtWrapper paid = get(new HeroKey(key.followerKey,HeroType.PREMIUM));
-        //
-        //Timber.d("HeroListCache#putInternal,fetchHeroes free %s",free);
-        //Timber.d("HeroListCache#putInternal,fetchHeroes paid %s",paid);
-        //Timber.d("HeroListCache#putInternal,fetchHeroes all %s",all);
+        //printHeros(key);
 
         //but just return needed heros
         return neededHeroIdExtWrapper;
+    }
+
+    private void printHeros(HeroKey key)
+    {
+        HeroIdExtWrapper all = get(new HeroKey(key.followerKey,HeroType.ALL));
+        HeroIdExtWrapper free = get(new HeroKey(key.followerKey,HeroType.FREE));
+        HeroIdExtWrapper paid = get(new HeroKey(key.followerKey,HeroType.PREMIUM));
+
+        Timber.d("HeroListCache#putInternal,fetchHeroes free %s",free);
+        Timber.d("HeroListCache#putInternal,fetchHeroes paid %s",paid);
+        Timber.d("HeroListCache#putInternal,fetchHeroes all %s",all);
     }
 
     ////////////////////
