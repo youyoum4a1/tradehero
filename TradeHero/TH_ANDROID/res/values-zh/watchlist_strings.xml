@@ -8,6 +8,7 @@
   <string name="watchlist_edit_title">编辑自选股</string>
 
   <string name="watchlist_button_done">完成</string>
+  <string name="watchlist_button_delete">Delete</string>
   <string name="watchlist_average_price_header">平均价格 (US$)</string>
   <string name="watchlist_quantity_header">数量</string>
   <string name="watchlist_quantity_initial">1</string>
@@ -29,5 +30,7 @@
   <string name="watchlist_not_yet_implemented">暂未开放. 请保持关注.</string>
 
   <string name="error_fetch_portfolio_watchlist">获取自选股列表错误</string>
+  <string name="watchlist_marking_date_format">dd MMM yyyy HH:mm</string>
+  <string name="watchlist_marking_date">Last Updated: %1$s</string>
 
 </resources>

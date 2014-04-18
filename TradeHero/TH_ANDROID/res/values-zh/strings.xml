@@ -49,4 +49,11 @@
   <string name="broadcast_message_no_follower_hint">对不起，你无法发送信息。因为你没有此类粉丝。</string>
   <string name="broadcast_message_content_length_hint">信息不可为空白</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
+  <string name="social_followers">Followers</string>
+  <string name="social_heroes">Heroes</string>
+
+  <string name="common_loading_error">Sorry, there is something wrong</string>
+  <string name="no_message">No Message</string>
+  <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
+  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
 </resources>
