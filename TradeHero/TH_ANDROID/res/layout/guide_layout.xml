@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerHorizontal="true"
-      android:layout_alignParentBottom="true">
+  <!--<LinearLayout-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_centerHorizontal="true"-->
+      <!--android:layout_alignParentBottom="true">-->
 
-    <ImageView
-        android:id="@+id/guide_go"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="50dp"
-        android:background="@color/button_blue"
-        android:visibility="invisible"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/guide_go"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginBottom="50dp"-->
+        <!--android:background="@color/button_blue"-->
+        <!--android:visibility="invisible"/>-->
 
-  </LinearLayout>
+  <!--</LinearLayout>-->
 
 </RelativeLayout>
