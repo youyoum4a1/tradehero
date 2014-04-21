@@ -38,7 +38,7 @@
         android:id="@+id/send_message_broadcast"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Send Broadcast"
+        android:text="@string/message_center_broadcast_message_menu"
         android:drawableLeft="@android:drawable/ic_menu_add"
         android:layout_weight="1"
         android:paddingTop="5dp"
