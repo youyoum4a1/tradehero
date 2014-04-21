@@ -52,11 +52,4 @@
   <string name="leaderboard_community_hero_free">{0,choice,0#免费|0&lt;免费({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#所有|0&lt;所有({0})}</string>
 
-  <string name="message_center_tab_message">私信</string>
-  <string name="message_center_tab_notification">通知</string>
-  <string name="message_center_sending_to">发送给:</string>
-  <string name="update_center_title">收件箱</string>
-  <string name="message_center_new_message_title">新消息</string>
-  <string name="message_center_private_message_menu">私信</string>
-  <string name="message_center_broadcast_message_menu">广播</string>
 </resources>

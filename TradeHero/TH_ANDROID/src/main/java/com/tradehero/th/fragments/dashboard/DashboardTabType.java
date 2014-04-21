@@ -18,7 +18,7 @@ public enum DashboardTabType
     TRENDING(R.string.dashboard_trending, R.drawable.icn_menu_trending, TrendingFragment.class),
     COMMUNITY(R.string.dashboard_community, R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
     PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class, false),
-    UPDATE_CENTER(R.layout.update_center_selector, R.string.update_center, R.color.transparent, UpdateCenterFragment.class),
+    UPDATE_CENTER(R.layout.update_center_selector, R.string.message_center, R.color.transparent, UpdateCenterFragment.class),
     //UPDATE_CENTER(R.string.update_center, R.drawable.icn_menu_messages, UpdateCenterFragment.class),
     STORE(R.string.dashboard_store, R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.string.settings, R.drawable.icn_menu_settings, SettingsFragment.class);

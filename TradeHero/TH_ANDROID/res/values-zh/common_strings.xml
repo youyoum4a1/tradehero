@@ -32,7 +32,7 @@
   <string name="dashboard_portfolio">投资组合</string>
   <string name="dashboard_store">商店</string>
   <string name="dashboard_headline">头条</string>
-  <string name="update_center">消息中心</string>
+  <string name="message_center">消息中心</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
