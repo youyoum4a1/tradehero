@@ -66,7 +66,7 @@ public class PrivatePostCommentView extends PostCommentView
      */
     @Override protected void postComment()
     {
-        if (userMessagingRelationshipDTO != null && userMessagingRelationshipDTO.canSendPrivate())
+        if (canSendMessage())
         {
             super.postComment();
         }
@@ -74,6 +74,11 @@ public class PrivatePostCommentView extends PostCommentView
         {
             notifyPreSubmissionInterceptListener();
         }
+    }
+
+    protected boolean canSendMessage()
+    {
+        return userMessagingRelationshipDTO == null || userMessagingRelationshipDTO.canSendPrivate();
     }
 
     @Override protected MessageCreateFormDTO buildMessageCreateFormDTO()

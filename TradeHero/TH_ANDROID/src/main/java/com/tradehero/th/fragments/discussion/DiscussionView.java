@@ -28,6 +28,9 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -189,6 +192,7 @@ public class DiscussionView extends FrameLayout
 
     protected void initialFetchDiscussion()
     {
+        discussionListAdapter.setItems(null);
         this.discussionListKey = createListKey();
         if (discussionListKey != null)
         {
@@ -243,7 +247,10 @@ public class DiscussionView extends FrameLayout
         {
             nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
 
-            discussionListAdapter.appendMore(discussionKeyList);
+            // Most recent at bottom
+            List<DiscussionKey> reversedList = new ArrayList<>(discussionKeyList);
+            Collections.reverse(reversedList);
+            discussionListAdapter.appendMore(reversedList);
         }
 
         if (andDisplay)
