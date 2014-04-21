@@ -1,7 +1,9 @@
 package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
+import com.tradehero.common.application.PApplication;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
@@ -36,8 +38,11 @@ public class RequestHeaders implements RequestInterceptor
 
     private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
+        //TODO use api like login(@Header("Authorization") String authorization,...) may override these header
+
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+        request.addHeader(Constants.ACCEPT_HEADER, MetaHelper.getLanguage(PApplication.context()));
         Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
     }
 }

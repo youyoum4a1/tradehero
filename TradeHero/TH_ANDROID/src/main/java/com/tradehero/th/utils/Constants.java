@@ -34,6 +34,8 @@ public class Constants
     public static final String TH_CLIENT_VERSION_VALUE = "1.6.2.3501";
     public static final String AUTHORIZATION = "Authorization";
 
+    public static final String ACCEPT_HEADER = "TH-Language-Code";
+
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";

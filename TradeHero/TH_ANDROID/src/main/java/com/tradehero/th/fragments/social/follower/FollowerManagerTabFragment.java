@@ -200,7 +200,8 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            THToast.show("Position clicked " + position);
+            Timber.d("Position clicked ",position);
+            //THToast.show("Position clicked " + position);
         }
     }
 
