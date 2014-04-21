@@ -98,7 +98,8 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class BuySellFragment extends AbstractBuySellFragment
+public class
+        BuySellFragment extends AbstractBuySellFragment
     implements SecurityAlertAssistant.OnPopulatedListener, WithTutorial,
         ViewPager.OnPageChangeListener
 {
@@ -960,8 +961,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                 bPrice = bthSignedNumber.toString();
                 sPrice = sthSignedNumber.toString();
             }
-            String buyPrice = String.format("Buy @ %s %s", display, bPrice);
-            String suyPrice = String.format("Sell @ %s %s", display, sPrice);
+            String buyPrice = getString(R.string.buy_sell_button_buy) + String.format(" @ %s %s", display, bPrice);
+            String suyPrice = getString(R.string.buy_sell_button_sell) + String.format(" @ %s %s", display, sPrice);
             mBuyPrice.setText(buyPrice);
             mSellPrice.setText(suyPrice);
         }
