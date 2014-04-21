@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,10 @@ import timber.log.Timber;
 
 public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
-    @Inject protected CurrentUserId currentUserId;
 
+    public static final int ITEM_ID_REFRESH_MENU = 0;
+
+    @Inject protected CurrentUserId currentUserId;
     private FollowerManagerViewContainer viewContainer;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey followedId;
@@ -106,29 +109,26 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(R.string.manage_followers_title);
+
+        //MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+        //menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //Timber.d("onCreateOptionsMenu");
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    //@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    //{
-    //    super.onCreateOptionsMenu(menu, inflater);
-    //
-    //    MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
-    //    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-    //    Timber.d("onCreateOptionsMenu");
-    //}
-    //
-    //@Override public boolean onOptionsItemSelected(MenuItem item)
-    //{
-    //    Timber.d("onOptionsItemSelected");
-    //    if (item.getItemId() == ITEM_ID_REFRESH_MENU)
-    //    {
-    //        refreshContent();
-    //        return true;
-    //    }
-    //
-    //    return super.onOptionsItemSelected(item);
-    //}
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        Timber.d("onOptionsItemSelected");
+        if (item.getItemId() == ITEM_ID_REFRESH_MENU)
+        {
+            refreshContent();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override public void onResume()
     {
@@ -159,6 +159,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 
     public void display(FollowerSummaryDTO summaryDTO)
     {
+        Timber.d("onDTOReceived display followerType:%s,%s",followerType,summaryDTO);
         linkWith(summaryDTO, true);
     }
 
@@ -200,18 +201,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 
     private void refreshContent()
     {
-        //displayLoadingView(false);
-        //if (refreshMessagesFetchListener == null)
-        //{
-        //    refreshMessagesFetchListener = new RefershMessageFetchListener();
-        //}
-        //
-        //MessageListKey messageListKey =
-        //        new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
-        //Timber.d("refreshContent %s", messageListKey);
-        //fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
-        //        refreshMessagesFetchListener);
-        //fetchMessageTask.execute();
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)

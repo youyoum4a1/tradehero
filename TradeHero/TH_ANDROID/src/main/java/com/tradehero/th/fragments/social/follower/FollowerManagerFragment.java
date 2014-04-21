@@ -1,17 +1,21 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -71,14 +75,71 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+        }
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
 
         actionBar.setTitle(getString(R.string.social_followers));
+        Timber.d("onCreateOptionsMenu");
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            boolean handled = ((SherlockFragment)getCurrentFragment()).onOptionsItemSelected(item);
+            if (handled)
+            {
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onPrepareOptionsMenu(menu);
+        }
+
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override public void onOptionsMenuClosed(android.view.Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onOptionsMenuClosed(menu);
+        }
+
+        super.onOptionsMenuClosed(menu);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            f.onDestroyOptionsMenu();
+        }
+        Timber.d("onDestroyOptionsMenu");
+
+        super.onDestroyOptionsMenu();
+
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +173,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         super.onDestroyView();
 
+        mTabHost = null;
         Timber.d("onDestroyView");
     }
 
@@ -137,6 +199,18 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         }
         whisperView.setVisibility(View.GONE);
         messageLayout.setVisibility(shown ? View.VISIBLE : View.GONE);
+    }
+
+    private Fragment getCurrentFragment()
+    {
+        if(mTabHost == null)
+        {
+            return null;
+        }
+        String tag = mTabHost.getCurrentTabTag();
+        android.support.v4.app.FragmentManager fm = getChildFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(tag);
+        return fragment;
     }
 
     private int[] getFollowerCount()

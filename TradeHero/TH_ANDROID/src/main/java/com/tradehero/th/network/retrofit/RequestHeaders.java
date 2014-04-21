@@ -1,6 +1,7 @@
 package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
+import android.text.TextUtils;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.prefs.LanguageCode;
@@ -37,15 +38,14 @@ public class RequestHeaders implements RequestInterceptor
         {
             buildAuthorizationHeader(request);
         }
+        request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
     }
 
     private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        //TODO api like login(@Header("Authorization") String authorization,...) may override these header
-
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
-        request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
+        //request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
         Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
     }
 }

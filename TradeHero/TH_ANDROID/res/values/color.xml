@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
   <color name="number_green">#1A930A</color>
   <color name="number_red">#D42621</color>
   <color name="number_up">@color/number_green</color>
@@ -70,6 +69,4 @@
   <color name="trade_highlight_share_quantity">#40929CBA</color>
   <color name="projected_pl_gain">#ff00cc00</color>
   <color name="projected_pl_loss">#ffee0000</color>
-
-
 </resources>
