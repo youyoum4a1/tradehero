@@ -1,5 +1,6 @@
 package com.tradehero.th.ui;
 
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
@@ -54,6 +55,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 DiscussionView.class,
                 PostCommentView.class,
                 PrivatePostCommentView.class,
+
+                DiscussionEditPostFragment.class,
         },
         complete = false,
         library = true

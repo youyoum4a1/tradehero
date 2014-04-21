@@ -10,6 +10,7 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -42,7 +43,8 @@ public class SecurityDiscussionFragment extends DashboardFragment
 
     @OnClick(R.id.security_discussion_add) void onAddNewDiscussionRequested()
     {
-        //getNavigator().pushFragment();
+        Bundle bundle = new Bundle();
+        getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
