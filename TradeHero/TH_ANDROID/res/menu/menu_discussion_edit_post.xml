@@ -5,6 +5,5 @@
       android:id="@+id/discussion_edit_post"
       android:title="@string/post"
       android:showAsAction="ifRoom|withText"
-      android:enabled="false"
       />
 </menu>

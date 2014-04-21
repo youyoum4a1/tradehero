@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
@@ -20,6 +20,8 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ForWeChat;
+import com.tradehero.th.utils.SocialSharer;
 import javax.inject.Inject;
 
 /**
@@ -36,6 +38,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
+    @Inject @ForWeChat SocialSharer weChatSharer;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context)
@@ -77,7 +80,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             R.id.btn_share_tw,
             R.id.btn_share_li
     })
-    void onSocialNetworkActionButtonClicked(View view)
+    void onSocialNetworkActionButtonClicked(CompoundButton view)
     {
         SocialNetworkEnum socialNetwork = null;
         boolean ableToShare = false;
@@ -98,8 +101,9 @@ public class DiscussionPostActionButtonsView extends LinearLayout
                 break;
         }
 
-        if (socialNetwork != null && !ableToShare)
+        if (socialNetwork != null && !ableToShare && view.isChecked())
         {
+            view.setChecked(false);
             alertDialogUtil.popWithOkCancelButton(
                     getContext(),
                     getContext().getString(R.string.link) + socialNetwork.getName(),

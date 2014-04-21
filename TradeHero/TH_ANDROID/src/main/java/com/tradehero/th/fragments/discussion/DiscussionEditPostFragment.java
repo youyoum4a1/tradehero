@@ -230,10 +230,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             if (postMenuButton != null)
             {
-                boolean validated = validateNotEmptyText();
-                if (validated != postMenuButton.isEnabled())
+                boolean notEmptyText = validateNotEmptyText();
+                if (notEmptyText != postMenuButton.isVisible())
                 {
-                    postMenuButton.setVisible(validated);
+                    // TODO do something to enable Post menu button
+                    getSherlockActivity().invalidateOptionsMenu();
                 }
             }
         }
