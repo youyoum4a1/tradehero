@@ -4,12 +4,12 @@
   <!-- Security Info -->
   <string name="security_previous_close">昨日收盘</string>
   <string name="security_open">持仓</string>
-  <string name="security_days_high">高</string>
-  <string name="security_days_low">低</string>
+  <string name="security_days_high">当日最高</string>
+  <string name="security_days_low">当日最低</string>
   <string name="security_market_cap">市值</string>
   <string name="security_pe_ratio">本益比</string>
   <string name="security_eps">每股盈余</string>
-  <string name="security_volume">量</string>
+  <string name="security_volume">总量</string>
   <string name="security_avg_volume">平均量</string>
   <string name="security_market_status">市场状态</string>
   <string name="security_info">信息</string>
