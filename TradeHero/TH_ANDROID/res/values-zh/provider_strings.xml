@@ -12,7 +12,7 @@
   <string name="provider_competition_rules_title">比赛规则</string>
   <string name="provider_competition_terms_title">条款 &amp; 条件</string>
 
-  <string name="provider_security_list_title">比赛证劵s</string>
+  <string name="provider_security_list_title">比赛证劵</string>
   <string name="provider_security_list_search_hint">根据标的名或是代码筛选</string>
 
   <string name="competition_leaderboard_timer_time_left_1">时间</string>
