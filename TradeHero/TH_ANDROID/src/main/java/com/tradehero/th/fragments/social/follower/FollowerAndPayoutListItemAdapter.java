@@ -222,6 +222,7 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
             default:
                 throw new IllegalStateException("Unhandled view type " + getItemViewType(position));
         }
+        Timber.d("FollowerAndPayoutListItemAdapter,getView position:%d,type:%d",position,getItemViewType(position));
         return convertView;
     }
 

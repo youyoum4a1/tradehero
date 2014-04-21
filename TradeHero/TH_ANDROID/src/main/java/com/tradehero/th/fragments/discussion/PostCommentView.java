@@ -206,26 +206,38 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
+    protected void notifyCommentPosted(DiscussionDTO discussionDTO)
+    {
+        CommentPostedListener commentPostedListenerCopy = commentPostedListener;
+        if (commentPostedListenerCopy != null)
+        {
+            commentPostedListenerCopy.success(discussionDTO);
+        }
+    }
+
+    protected void notifyCommentPostFailed(Exception exception)
+    {
+        CommentPostedListener commentPostedListenerCopy = commentPostedListener;
+        if (commentPostedListenerCopy != null)
+        {
+            commentPostedListenerCopy.failure(exception);
+        }
+    }
+
     protected class CommentSubmitCallback implements Callback<DiscussionDTO>
     {
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
             setPosted();
             fixHackDiscussion(discussionDTO);
-            if (commentPostedListener != null)
-            {
-                commentPostedListener.success(discussionDTO);
-            }
+            notifyCommentPosted(discussionDTO);
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             setPosted();
             THToast.show(new THException(retrofitError));
-            if (commentPostedListener != null)
-            {
-                commentPostedListener.failure(retrofitError);
-            }
+            notifyCommentPostFailed(retrofitError);
         }
     }
 

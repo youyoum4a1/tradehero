@@ -26,8 +26,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public Integer followerCount;
     /**newly added fields*/
     public int allFollowerCount;
-    public int followerCountFree;
-    public int followerCountPaid;
+    public int freeFollowerCount;
+    public int paidFollowerCount;
     /**newly added fields*/
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)

@@ -7,6 +7,6 @@
   </string-array>
 
   <string name="search_stock_spinner_stock">股票</string>
-  <string name="search_stock_spinner_people">人</string>
+  <string name="search_stock_spinner_people">用户</string>
 
 </resources>

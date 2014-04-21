@@ -1,7 +1,5 @@
 package com.tradehero.th.network.retrofit;
 
-import android.content.Context;
-import android.net.http.HttpResponseCache;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,20 +41,14 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
 import dagger.Module;
 import dagger.Provides;
-import java.io.File;
-import java.io.IOException;
 import javax.inject.Singleton;
 import retrofit.RestAdapter;
 import retrofit.Server;
-import retrofit.client.Client;
-import retrofit.client.OkClient;
 import retrofit.converter.Converter;
-import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:39 AM Copyright (c) TradeHero

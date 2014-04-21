@@ -23,16 +23,7 @@
 
   <!--Trending-->
   <string name="tutorial_trending_header">寻找股票</string>
-  <string name="tutorial_trending_content">Search for stocks across all our supported exchanges by typing into the search bar on the top of the
-    screen. You can search by company or symbol name.\n\nIf you prefer, you can scroll through the trending stocks: these are the stocks that other
-    TradeHero users are buying and selling.
-  </string>
   <string name="tutorial_buy_sell_header">买 / 卖</string>
-  <string name="tutorial_buy_sell_content">Trade Price* is set to the market ask price when buying, and the bid price when selling. This is to
-    simulate Market Order type transactions. For some stocks, we don\'t have ask and bid data. For these stocks, we use the last traded price of the
-    stock.\n\nTrade Quantity is limited to 20% of Average Daily Volume or Current Day Volume, whichever is higher. Your Trade Value may be limited due
-    to this constraint.\n\n*Price is delayed as specified by financial exchanges or our data providers.
-  </string>
 
   <!--Positions list-->
   <string name="tutorial_position_list_header">持仓投资回报率</string>

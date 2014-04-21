@@ -21,10 +21,6 @@ public class ColorUtils
         if(MetaHelper.isChineseLocale(PApplication.context()))
         {
             return getColorResourceForNumber(percentage);
-            //return Color.rgb(
-            //        (int) (MAX_RED_VALUE * MathUtils.clamp(percentage, 0, 1)),
-            //        (int) (MAX_GREEN_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),
-            //        0);
         }
         else
         {
@@ -39,14 +35,16 @@ public class ColorUtils
 
     public static int getColorResourceForNumber(double n)
     {
-        if(MetaHelper.isChineseLocale(PApplication.context()))
-        {
-            return n < 0 ? R.color.number_green : n > 0 ? R.color.number_red : R.color.black;
-        }
-        else
-        {
-            return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
-        }
+        return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
+
+        //if(MetaHelper.isChineseLocale(PApplication.context()))
+        //{
+        //    return n < 0 ? R.color.number_green : n > 0 ? R.color.number_red : R.color.black;
+        //}
+        //else
+        //{
+        //    return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
+        //}
     }
 
 

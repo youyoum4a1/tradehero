@@ -198,6 +198,8 @@ public class SendMessageFragment extends DashboardFragment
     private void sendMessage()
     {
         int count = getFollowerCount(messageType);
+        //TODO
+        //Needn't to checkout for this, we don't know a user is following or unfollowing me unless we get the flesh data from server.
         if (count <= 0)
         {
             THToast.show(getString(R.string.broadcast_message_no_follower_hint));
@@ -229,21 +231,21 @@ public class SendMessageFragment extends DashboardFragment
     private int getFollowerCountByUserProfile(MessageType messageType)
     {
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-            int followerCount = userProfileDTO.allFollowerCount;
-            int followerCountFree = userProfileDTO.followerCountFree;
-            int followerCountPaid = userProfileDTO.followerCountPaid;
-            Timber.d("followerCount:%d,followerCountFree:%d,followerCountPaid:%d",followerCount,followerCountFree,followerCountPaid);
+            int allFollowerCount = userProfileDTO.allFollowerCount;
+            int followerCountFree = userProfileDTO.freeFollowerCount;
+            int followerCountPaid = userProfileDTO.paidFollowerCount;
+            Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d",allFollowerCount,followerCountFree,followerCountPaid);
             int result = 0;
             switch (messageType)
             {
                 case BROADCAST_FREE_FOLLOWERS:
-                    result = userProfileDTO.followerCountFree;
-                    break;
-                case BROADCAST_ALL_FOLLOWERS:
-                    result = userProfileDTO.allFollowerCount;
+                    result = followerCountFree;
                     break;
                 case BROADCAST_PAID_FOLLOWERS:
-                    result = userProfileDTO.followerCountPaid;
+                    result = followerCountPaid;
+                    break;
+                case BROADCAST_ALL_FOLLOWERS:
+                    result = allFollowerCount;
                     break;
                 default:
                     throw new IllegalStateException("unknown messageType");

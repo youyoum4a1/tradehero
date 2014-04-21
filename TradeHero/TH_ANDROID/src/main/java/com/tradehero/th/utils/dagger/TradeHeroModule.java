@@ -142,6 +142,7 @@ import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
@@ -157,6 +158,7 @@ import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Locale;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
@@ -375,6 +377,12 @@ public class TradeHeroModule
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
+    }
+
+    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
+    {
+        Locale locale = context.getResources().getConfiguration().locale;
+        return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 
     @Provides @Singleton Application provideApplication()

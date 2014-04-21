@@ -8,10 +8,12 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -64,8 +66,8 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        this.viewContainer = new FollowerManagerViewContainer(view);
-        this.infoFetcher =
+        viewContainer = new FollowerManagerViewContainer(view);
+        infoFetcher =
                 new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
 
         if (followerListAdapter == null)
@@ -80,9 +82,9 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             );
         }
 
-        if (this.viewContainer.followerList != null)
+        if (viewContainer.followerList != null)
         {
-            this.viewContainer.followerList.setOnItemClickListener(
+            viewContainer.followerList.setOnItemClickListener(
                     new AdapterView.OnItemClickListener()
                     {
                         @Override
@@ -93,7 +95,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                         }
                     }
             );
-            this.viewContainer.followerList.setAdapter(followerListAdapter);
+            viewContainer.followerList.setAdapter(followerListAdapter);
         }
     }
 
@@ -107,15 +109,36 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    //@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    //{
+    //    super.onCreateOptionsMenu(menu, inflater);
+    //
+    //    MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+    //    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    //    Timber.d("onCreateOptionsMenu");
+    //}
+    //
+    //@Override public boolean onOptionsItemSelected(MenuItem item)
+    //{
+    //    Timber.d("onOptionsItemSelected");
+    //    if (item.getItemId() == ITEM_ID_REFRESH_MENU)
+    //    {
+    //        refreshContent();
+    //        return true;
+    //    }
+    //
+    //    return super.onOptionsItemSelected(item);
+    //}
+
     @Override public void onResume()
     {
         super.onResume();
 
         Timber.d("FollowerManagerTabFragment onResume");
-        this.followedId = new UserBaseKey(
+        followedId = new UserBaseKey(
                 getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
-        this.infoFetcher.fetch(this.followedId);
+        infoFetcher.fetch(this.followedId);
     }
 
     @Override public void onDestroyView()
@@ -175,6 +198,22 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
     }
 
+    private void refreshContent()
+    {
+        //displayLoadingView(false);
+        //if (refreshMessagesFetchListener == null)
+        //{
+        //    refreshMessagesFetchListener = new RefershMessageFetchListener();
+        //}
+        //
+        //MessageListKey messageListKey =
+        //        new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        //Timber.d("refreshContent %s", messageListKey);
+        //fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
+        //        refreshMessagesFetchListener);
+        //fetchMessageTask.execute();
+    }
+
     private void handleFollowerItemClicked(View view, int position, long id)
     {
         if (followerListAdapter != null
@@ -200,7 +239,8 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            THToast.show("Position clicked " + position);
+            Timber.d("Position clicked ",position);
+            //THToast.show("Position clicked " + position);
         }
     }
 

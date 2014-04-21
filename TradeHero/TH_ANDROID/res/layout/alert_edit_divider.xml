@@ -8,8 +8,8 @@
   <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:paddingTop="10dp"
-      android:paddingBottom="10dp"
+      android:paddingTop="@dimen/common_margin_10"
+      android:paddingBottom="@dimen/common_margin_10"
       android:background="@color/divider_gray"
       />
 

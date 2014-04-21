@@ -23,6 +23,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
@@ -47,6 +48,8 @@ public class DiscussionView extends FrameLayout
 
     protected TextView discussionStatus;
     private DiscussionKey discussionKey;
+
+    private PostCommentView.CommentPostedListener commentPostedListener;
 
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
     protected DiscussionListAdapter discussionListAdapter;
@@ -153,7 +156,7 @@ public class DiscussionView extends FrameLayout
     {
         super.onAttachedToWindow();
         discussionList.setAdapter(discussionListAdapter);
-        postCommentView.setCommentPostedListener(new DiscussionViewCommentPostedListener());
+        postCommentView.setCommentPostedListener(createCommentPostedListener());
     }
 
     @Override protected void onDetachedFromWindow()
@@ -310,6 +313,34 @@ public class DiscussionView extends FrameLayout
         discussionFetchTask = null;
     }
 
+    public void setCommentPostedListener(PrivatePostCommentView.CommentPostedListener commentPostedListener)
+    {
+        this.commentPostedListener = commentPostedListener;
+    }
+
+    private void notifyCommentPostedListener(DiscussionDTO discussionDTO)
+    {
+        PostCommentView.CommentPostedListener listener = commentPostedListener;
+        if (listener != null)
+        {
+            listener.success(discussionDTO);
+        }
+    }
+
+    private void notifyCommentPostFailedListener(Exception exception)
+    {
+        PostCommentView.CommentPostedListener listener = commentPostedListener;
+        if (listener != null)
+        {
+            listener.failure(exception);
+        }
+    }
+
+    protected PostCommentView.CommentPostedListener createCommentPostedListener()
+    {
+        return new DiscussionViewCommentPostedListener();
+    }
+
     private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
     {
         @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
@@ -337,11 +368,13 @@ public class DiscussionView extends FrameLayout
         @Override public void success(DiscussionDTO discussionDTO)
         {
             addComment(discussionDTO);
+            notifyCommentPostedListener(discussionDTO);
         }
 
         @Override public void failure(Exception exception)
         {
             THToast.show(R.string.error_unknown);
+            notifyCommentPostFailedListener(exception);
         }
     }
 }

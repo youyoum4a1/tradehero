@@ -46,7 +46,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:padding="8dp"
-      android:background="@color/follow_button_green_overlay">
+      android:background="@color/follow_button_green_overlay"
+      android:visibility="gone"
+      >
 
     <ImageView
         android:id="@+id/private_icn_white_star"

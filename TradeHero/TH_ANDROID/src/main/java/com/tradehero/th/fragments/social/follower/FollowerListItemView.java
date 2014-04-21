@@ -33,7 +33,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
     @InjectView(R.id.follower_revenue) TextView revenueInfo;
-    @InjectView(R.id.follower_time) TextView followTime;
+    //@InjectView(R.id.follower_time) TextView followTime;
     @InjectView(R.id.hint_open_follower_info) ImageView country;
 
     private UserFollowerDTO userFollowerDTO;
@@ -103,8 +103,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     }
 
     private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",
-                userFollowerDTO.displayName));
+        //THToast.show(String.format("user icon click %s", userFollowerDTO.displayName));
         TimelineFragment.viewProfile((DashboardActivity) getContext(), userFollowerDTO.id);
     }
 
@@ -136,7 +135,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         displayUserIcon();
         displayTitle();
         displayRevenue();
-        displayFollowing();
+        //displayFollowing();
         displayCountryLogo();
     }
 
@@ -153,21 +152,21 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         }
     }
 
-    public void displayFollowing()
-    {
-        if (followTime != null && userFollowerDTO != null)
-        {
-            followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
-        }
-    }
+    //public void displayFollowing()
+    //{
+    //    if (followTime != null && userFollowerDTO != null)
+    //    {
+    //        followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
+    //    }
+    //}
 
-    public void displayCountry()
-    {
-        if (country != null && userFollowerDTO != null)
-        {
-            followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
-        }
-    }
+    //public void displayCountry()
+    //{
+    //    if (country != null && userFollowerDTO != null)
+    //    {
+    //        followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
+    //    }
+    //}
 
     public void displayCountryLogo()
     {

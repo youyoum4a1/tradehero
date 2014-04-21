@@ -15,11 +15,6 @@ public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragmen
         return view;
     }
 
-    @Override protected void initViews(View view)
-    {
-        // Nothing to do
-    }
-
     @Override public void onDestroyView()
     {
         super.onDestroyView();

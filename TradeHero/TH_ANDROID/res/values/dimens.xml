@@ -124,4 +124,6 @@
   <dimen name="vote_view_drawable_padding">3dp</dimen>
   <dimen name="comment_count_drawable_padding">3dp</dimen>
   <dimen name="notification_logo_padding">5dp</dimen>
+  <!--common margin should not change-->
+  <dimen name="common_margin_10">10dp</dimen>
 </resources>

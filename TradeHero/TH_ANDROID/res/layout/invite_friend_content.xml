@@ -33,7 +33,7 @@
 
   <TextView
       android:id="@+id/friend_list_empty_view"
-      android:paddingTop="10dp"
+      android:paddingTop="@dimen/common_margin_10"
       android:paddingLeft="3dp"
       android:paddingRight="3dp"
       android:layout_width="match_parent"

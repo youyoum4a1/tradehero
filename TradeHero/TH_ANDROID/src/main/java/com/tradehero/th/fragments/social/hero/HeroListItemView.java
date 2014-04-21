@@ -121,8 +121,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     }
 
     private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",
-                heroDTO.displayName));
+        //THToast.show(String.format("user icon click %s", heroDTO.displayName));
         TimelineFragment.viewProfile((DashboardActivity) getContext(), heroDTO.id);
     }
 
