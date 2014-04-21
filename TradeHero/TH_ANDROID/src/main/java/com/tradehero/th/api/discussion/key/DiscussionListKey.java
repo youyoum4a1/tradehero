@@ -61,6 +61,13 @@ public class DiscussionListKey
                 inReplyToId == other.inReplyToId;
     }
 
+    public boolean equivalentFields(DiscussionKey other)
+    {
+        return (other != null) &&
+                (inReplyToType == null ? other.getType() == null : inReplyToType.equals(other.getType())) &&
+                Integer.valueOf(inReplyToId).equals(other.id);
+    }
+
     public Bundle getArgs()
     {
         Bundle args = new Bundle();

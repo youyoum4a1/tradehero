@@ -19,6 +19,7 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -29,6 +30,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -38,6 +40,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY =
             AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
+    @Inject protected MessageHeaderListCache messageHeaderListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserBaseDTOUtil userBaseDTOUtil;
     @Inject protected Picasso picasso;
@@ -235,6 +238,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+        super.handleCommentPosted(discussionDTO);
+        messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
     protected class AbstractPrivateMessageFragmentUserProfileListener
