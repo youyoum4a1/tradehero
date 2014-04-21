@@ -10,9 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/19/14.
- */
 @Singleton public class SecurityItemViewAdapterFactory
 {
     @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
@@ -29,7 +26,7 @@ import timber.log.Timber;
             switch (providerId.key)
             {
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
-                case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
+                case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
                     Timber.d("Macquarie adapter");
                     return new MacquarieWarrantItemViewAdapter(
                             activity,

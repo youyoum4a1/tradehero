@@ -2,9 +2,6 @@ package com.tradehero.th.models.provider;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * Created by xavier on 1/29/14.
- */
 public class ProviderSpecificResourcesDTO
 {
     public static final String TAG = ProviderSpecificResourcesDTO.class.getSimpleName();

@@ -6,9 +6,6 @@ import com.tradehero.th.api.competition.ProviderIdConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/21/14.
- */
 @Singleton public class SecurityItemLayoutFactory
 {
     public static final String TAG = SecurityItemLayoutFactory.class.getSimpleName();
@@ -22,7 +19,7 @@ import javax.inject.Singleton;
         switch (providerId.key)
         {
             case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
-            case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
+            case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
                 return R.layout.warrant_security_item;
 
             default:
