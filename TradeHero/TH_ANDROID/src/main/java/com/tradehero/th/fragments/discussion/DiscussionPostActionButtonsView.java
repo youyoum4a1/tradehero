@@ -7,20 +7,20 @@ import android.widget.LinearLayout;
 /**
  * Created by tho on 4/17/2014.
  */
-public class DiscussionMessageActionButtonsView extends LinearLayout
+public class DiscussionPostActionButtonsView extends LinearLayout
 {
     //<editor-fold desc="Constructors">
-    public DiscussionMessageActionButtonsView(Context context)
+    public DiscussionPostActionButtonsView(Context context)
     {
         super(context);
     }
 
-    public DiscussionMessageActionButtonsView(Context context, AttributeSet attrs)
+    public DiscussionPostActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public DiscussionMessageActionButtonsView(Context context, AttributeSet attrs, int defStyle)
+    public DiscussionPostActionButtonsView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

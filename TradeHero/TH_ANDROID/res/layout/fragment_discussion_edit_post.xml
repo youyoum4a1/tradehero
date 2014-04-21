@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
+  <include
+      android:id="@+id/discussion_new_post_action_buttons"
+      layout="@layout/discussion_edit_post_action_buttons"
+      android:layout_alignParentBottom="true"
+      />
 
-</FrameLayout>
+  <EditText
+      android:id="@+id/discussion_post_content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:textAppearance="?android:textAppearanceSmall"
+      android:padding="5dp"
+      android:gravity="top"
+      android:layout_above="@id/discussion_new_post_action_buttons"
+      android:background="@color/transparent"
+      android:inputType="text"
+      tools:text="Buy more security from TradeHero"
+      />
+</RelativeLayout>

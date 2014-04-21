@@ -18,6 +18,7 @@ import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 public class SecurityDiscussionFragment extends DashboardFragment
 {
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
+    private SecurityId securityId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,13 +44,22 @@ public class SecurityDiscussionFragment extends DashboardFragment
 
     @OnClick(R.id.security_discussion_add) void onAddNewDiscussionRequested()
     {
-        Bundle bundle = new Bundle();
-        getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+        if (securityId != null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+        }
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        securityDiscussionView.display(securityId);
+        this.securityId  = securityId;
+
+        if (andDisplay)
+        {
+            securityDiscussionView.display(securityId);
+        }
     }
 
     @Override public boolean isTabBarVisible()
