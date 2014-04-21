@@ -103,8 +103,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     }
 
     private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",
-                userFollowerDTO.displayName));
+        //THToast.show(String.format("user icon click %s", userFollowerDTO.displayName));
         TimelineFragment.viewProfile((DashboardActivity) getContext(), userFollowerDTO.id);
     }
 

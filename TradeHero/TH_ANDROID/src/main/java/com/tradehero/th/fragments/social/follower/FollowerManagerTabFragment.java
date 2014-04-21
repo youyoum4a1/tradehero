@@ -64,8 +64,8 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        this.viewContainer = new FollowerManagerViewContainer(view);
-        this.infoFetcher =
+        viewContainer = new FollowerManagerViewContainer(view);
+        infoFetcher =
                 new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
 
         if (followerListAdapter == null)
@@ -80,9 +80,9 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             );
         }
 
-        if (this.viewContainer.followerList != null)
+        if (viewContainer.followerList != null)
         {
-            this.viewContainer.followerList.setOnItemClickListener(
+            viewContainer.followerList.setOnItemClickListener(
                     new AdapterView.OnItemClickListener()
                     {
                         @Override
@@ -93,7 +93,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                         }
                     }
             );
-            this.viewContainer.followerList.setAdapter(followerListAdapter);
+            viewContainer.followerList.setAdapter(followerListAdapter);
         }
     }
 
@@ -112,10 +112,10 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onResume();
 
         Timber.d("FollowerManagerTabFragment onResume");
-        this.followedId = new UserBaseKey(
+        followedId = new UserBaseKey(
                 getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
-        this.infoFetcher.fetch(this.followedId);
+        infoFetcher.fetch(this.followedId);
     }
 
     @Override public void onDestroyView()

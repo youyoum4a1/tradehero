@@ -59,6 +59,7 @@
   <string name="settings_about_copyright">&#169; 版权 2012&#8211;2014 上海迈和科技有限公司</string>
   <string name="settings_about_registered_company">新加坡总公司执照号 201003309N</string>
   <string name="settings_about_patents_pending">申请中的专利</string>
+  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>
   <string name="settings_paypal_header">PayPal</string>
   <string name="settings_paypal_label">PayPal帐号(邮箱地址)</string>
   <string name="settings_paypal_hint">你的PayPal邮箱地址</string>
