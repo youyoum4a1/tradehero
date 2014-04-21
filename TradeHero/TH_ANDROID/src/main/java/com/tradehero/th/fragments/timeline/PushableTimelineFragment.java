@@ -28,11 +28,6 @@ public class PushableTimelineFragment extends TimelineFragment
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
-    {
-        return new PushableTimelineUserFollowedListener();
-    }
-
     @Override protected void initViews(View view)
     {
         super.initViews(view);
@@ -117,19 +112,4 @@ public class PushableTimelineFragment extends TimelineFragment
         return false;
     }
     //</editor-fold>
-
-    protected class PushableTimelineUserFollowedListener
-            extends BasePurchaseManagerUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
-        {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-            if (!mIsOtherProfile)
-            {
-                linkWith(currentUserProfileDTO, true);
-            }
-            updateBottomButton();
-        }
-    }
 }

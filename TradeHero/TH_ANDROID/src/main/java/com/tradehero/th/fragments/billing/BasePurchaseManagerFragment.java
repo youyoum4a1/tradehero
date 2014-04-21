@@ -55,7 +55,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected Integer showProductDetailRequestCode;
 
     protected FollowUserAssistant followUserAssistant;
-    protected FollowUserAssistant.OnUserFollowedListener userFollowedListener;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject protected CurrentActivityHolder currentActivityHolder;
 
@@ -65,7 +64,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListRetrievedListener = createPortfolioCompactListRetrievedListener();
-        userFollowedListener = createUserFollowedListener();
     }
 
     protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -109,7 +107,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        userFollowedListener = null;
         portfolioCompactListRetrievedListener = null;
         super.onDestroy();
     }
@@ -361,17 +358,20 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     public void followUser(UserBaseKey userToFollow)
     {
+        followUser(userToFollow, createUserFollowedListener());
+    }
+
+    public void followUser(UserBaseKey userToFollow, FollowUserAssistant.OnUserFollowedListener followedListener)
+    {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToFollow,
-                purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(followedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchFollow();
     }
 
     public void unfollowUser(UserBaseKey userToUnFollow)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(userFollowedListener, userToUnFollow,
-                purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(createUserFollowedListener(), userToUnFollow, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchUnFollow();
     }
 

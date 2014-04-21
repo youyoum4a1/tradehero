@@ -20,7 +20,7 @@ public class ColorUtils
     {
         if(MetaHelper.isChineseLocale(PApplication.context()))
         {
-            return getColorResourceForNumber(percentage);
+            return PApplication.context().getResources().getColor(getColorResourceForNumber(percentage));
         }
         else
         {
@@ -36,15 +36,6 @@ public class ColorUtils
     public static int getColorResourceForNumber(double n)
     {
         return n < 0 ? R.color.number_down : n > 0 ? R.color.number_up : R.color.black;
-
-        //if(MetaHelper.isChineseLocale(PApplication.context()))
-        //{
-        //    return n < 0 ? R.color.number_green : n > 0 ? R.color.number_red : R.color.black;
-        //}
-        //else
-        //{
-        //    return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
-        //}
     }
 
 
