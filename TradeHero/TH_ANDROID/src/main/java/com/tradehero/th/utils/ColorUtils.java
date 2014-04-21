@@ -35,7 +35,7 @@ public class ColorUtils
 
     public static int getColorResourceForNumber(double n)
     {
-        return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
+        return n < 0 ? R.color.number_down : n > 0 ? R.color.number_up : R.color.black;
 
         //if(MetaHelper.isChineseLocale(PApplication.context()))
         //{
