@@ -25,4 +25,17 @@ public class UserMessagingRelationshipDTO implements DTO
     {
         return isUnlimited() || freeSendsRemaining > 0;
     }
+
+    @Override public String toString()
+    {
+        return "UserMessagingRelationshipDTO{" +
+                "freeSendsRemaining=" + freeSendsRemaining +
+                ", isHero=" + isHero +
+                ", isFollower=" + isFollower +
+                ", isFriend=" + isFriend +
+                ", friendDesc='" + friendDesc + '\'' +
+                ", followerSince=" + followerSince +
+                ", heroSince=" + heroSince +
+                '}';
+    }
 }

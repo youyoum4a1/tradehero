@@ -14,11 +14,6 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
-    {
-        // Nothing to do
-    }
-
     @Override public void onDestroyView()
     {
         super.onDestroyView();
