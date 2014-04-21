@@ -8,10 +8,12 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -107,6 +109,27 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    //@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    //{
+    //    super.onCreateOptionsMenu(menu, inflater);
+    //
+    //    MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+    //    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    //    Timber.d("onCreateOptionsMenu");
+    //}
+    //
+    //@Override public boolean onOptionsItemSelected(MenuItem item)
+    //{
+    //    Timber.d("onOptionsItemSelected");
+    //    if (item.getItemId() == ITEM_ID_REFRESH_MENU)
+    //    {
+    //        refreshContent();
+    //        return true;
+    //    }
+    //
+    //    return super.onOptionsItemSelected(item);
+    //}
+
     @Override public void onResume()
     {
         super.onResume();
@@ -173,6 +196,22 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         {
             this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void refreshContent()
+    {
+        //displayLoadingView(false);
+        //if (refreshMessagesFetchListener == null)
+        //{
+        //    refreshMessagesFetchListener = new RefershMessageFetchListener();
+        //}
+        //
+        //MessageListKey messageListKey =
+        //        new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        //Timber.d("refreshContent %s", messageListKey);
+        //fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
+        //        refreshMessagesFetchListener);
+        //fetchMessageTask.execute();
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)

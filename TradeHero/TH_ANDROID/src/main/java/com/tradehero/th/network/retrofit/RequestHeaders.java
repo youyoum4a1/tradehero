@@ -41,7 +41,7 @@ public class RequestHeaders implements RequestInterceptor
 
     private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        //TODO use api like login(@Header("Authorization") String authorization,...) may override these header
+        //TODO api like login(@Header("Authorization") String authorization,...) may override these header
 
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
