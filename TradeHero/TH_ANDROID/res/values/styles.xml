@@ -216,13 +216,24 @@
   </style>
 
   <style name="TH.ShareButtons">
-    <item name="android:layout_width">32dp</item>
-    <item name="android:layout_height">32dp</item>
-    <item name="android:layout_marginRight">8dp</item>
+    <item name="android:layout_width">28dp</item>
+    <item name="android:layout_height">28dp</item>
+    <item name="android:layout_marginRight">2dp</item>
+    <item name="android:layout_marginLeft">2dp</item>
     <item name="android:contentDescription">@null</item>
     <item name="android:scaleType">fitCenter</item>
     <item name="android:checked">false</item>
+    <item name="android:gravity">center</item>
     <item name="android:textOff">""</item>
     <item name="android:textOn">""</item>
+  </style>
+
+  <style name="TH.TextSocialButtons">
+    <item name="android:layout_width">28dp</item>
+    <item name="android:layout_height">28dp</item>
+    <item name="android:layout_marginRight">2dp</item>
+    <item name="android:layout_marginLeft">2dp</item>
+    <item name="android:checked">false</item>
+    <item name="android:gravity">center</item>
   </style>
 </resources>
