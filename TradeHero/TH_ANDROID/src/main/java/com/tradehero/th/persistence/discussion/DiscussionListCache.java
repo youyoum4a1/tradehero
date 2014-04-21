@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PrivateMessageDiscussionListKey;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -66,5 +68,16 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
         }
 
         return discussionKeyList;
+    }
+
+    public void invalidateAllPagesFor(DiscussionKey discussionKey)
+    {
+        for (DiscussionListKey discussionListKey : new ArrayList<>(snapshot().keySet()))
+        {
+            if (discussionListKey.equivalentFields(discussionKey))
+            {
+                invalidate(discussionListKey);
+            }
+        }
     }
 }

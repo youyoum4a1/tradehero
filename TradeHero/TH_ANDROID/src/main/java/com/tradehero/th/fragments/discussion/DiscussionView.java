@@ -279,7 +279,7 @@ public class DiscussionView extends FrameLayout
             discussionListAdapter.addItem(newDiscussionKey);
             discussionListAdapter.notifyDataSetChanged();
         }
-
+        discussionListCache.invalidateAllPagesFor(discussionKey);
     }
 
     private void updateCommentCount()

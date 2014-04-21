@@ -347,11 +347,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
                 if (pl > 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_up));
                 }
                 else if (pl < 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_down));
                 }
                 else
                 {
