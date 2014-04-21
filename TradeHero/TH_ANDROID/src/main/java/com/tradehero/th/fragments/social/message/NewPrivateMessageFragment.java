@@ -152,6 +152,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         isFresh = false;
         userMessagingRelationshipCache.invalidate(correspondentId);
         displayMessagingStatusContainer();
+        linkWith(discussionDTO.getDiscussionKey(), true);
     }
 
     protected class AbstractPrivateMessageFragmentMessageStatusListener
