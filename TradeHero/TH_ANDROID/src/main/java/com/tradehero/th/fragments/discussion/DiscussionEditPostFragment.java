@@ -2,12 +2,15 @@ package com.tradehero.th.fragments.discussion;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -34,6 +37,7 @@ import retrofit.client.Response;
 public class DiscussionEditPostFragment extends DashboardFragment
 {
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
+    @InjectView(R.id.discussion_new_post_action_buttons) DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
@@ -43,20 +47,39 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
+    private MenuItem postMenuButton;
+    private TextWatcher discussionEditTextWatcher;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_discussion_edit_post, container, false);
         ButterKnife.inject(this, view);
+        initView();
         return view;
+    }
+
+    private void initView()
+    {
+        discussionEditTextWatcher = new DiscussionEditTextWatcher();
+        discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_discussion_edit_post, menu);
+        postMenuButton = menu.findItem(R.id.discussion_edit_post);
 
         getSherlockActivity().getSupportActionBar().setTitle(R.string.discussion);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setTitle(null);
+        actionBar.setSubtitle(null);
+
+        super.onDestroyOptionsMenu();
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -74,7 +97,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         unsetDiscussionEditMiddleCallback();
+        discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
 
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -101,6 +126,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             SecurityDiscussionFormDTO securityDiscussionFormDTO = new SecurityDiscussionFormDTO();
             securityDiscussionFormDTO.inReplyToId = securityCompactDTO.id;
             securityDiscussionFormDTO.text = discussionPostContent.getText().toString();
+            discussionPostActionButtonsView.populate(securityDiscussionFormDTO);
 
             unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
@@ -146,8 +172,15 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         if (andDisplay && securityId != null)
         {
-            String securityName = String.format("%s:%s", securityId.securitySymbol, securityId.exchange);
+            String securityName = String.format("%s:%s", securityId.exchange, securityId.securitySymbol);
             discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
+        }
+
+        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
+        if (andDisplay && securityCompactDTO != null)
+        {
+            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_security_subtitle, securityCompactDTO.name));
+            getSherlockActivity().invalidateOptionsMenu();
         }
     }
 
@@ -179,6 +212,29 @@ public class DiscussionEditPostFragment extends DashboardFragment
             if (progressDialog != null)
             {
                 progressDialog.hide();
+            }
+        }
+    }
+
+    private class DiscussionEditTextWatcher implements TextWatcher
+    {
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+        }
+
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+        }
+
+        @Override public void afterTextChanged(Editable s)
+        {
+            if (postMenuButton != null)
+            {
+                boolean validated = validateNotEmptyText();
+                if (validated != postMenuButton.isEnabled())
+                {
+                    postMenuButton.setVisible(validated);
+                }
             }
         }
     }
