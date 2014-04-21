@@ -2,11 +2,30 @@
 
 <com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/discussion_new_post_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:gravity="center_vertical"
     android:layout_alignParentBottom="true"
+    android:background="@color/gray_3"
     >
+
+  <TextView
+      android:id="@+id/btn_at"
+      style="@style/TH.TextSocialButtons"
+      android:text="@string/at"
+      android:textSize="15sp"
+      />
+
+  <TextView
+      android:id="@+id/btn_mention"
+      style="@style/TH.TextSocialButtons"
+      android:text="@string/hashtag"
+      android:textSize="15sp"
+      />
+
   <ToggleButton
       android:id="@+id/btn_share_fb"
       style="@style/TH.ShareButtons"
@@ -26,9 +45,32 @@
       />
 
   <ToggleButton
+      android:id="@+id/btn_wechat"
+      style="@style/TH.ShareButtons"
+      android:background="@drawable/ic_wechat"
+      />
+
+  <ToggleButton
       android:id="@+id/btn_location"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_location"
       />
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="right"
+      >
+    <ToggleButton
+        android:id="@+id/switch_share_public"
+        style="@style/TH.ShareButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:textSize="13sp"
+        android:textOn="@string/buy_sell_confirm_share_public"
+        android:textOff="@string/buy_sell_confirm_share_private"
+        android:textColor="@color/authentication_button_light"
+        />
+  </LinearLayout>
 </com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView>
