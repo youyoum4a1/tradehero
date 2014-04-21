@@ -27,7 +27,7 @@
       android:layout_height="wrap_content"
       android:text="@string/leaderboard_connect_accounts"
       android:textColor="@color/connect_accounts"
-      android:paddingTop="10dp"
+      android:paddingTop="@dimen/common_margin_10"
       android:gravity="center_horizontal"
       />
 </LinearLayout>
