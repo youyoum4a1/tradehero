@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -21,6 +22,7 @@ import com.tradehero.th.api.discussion.form.SecurityDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -49,6 +51,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
+
+    private SearchStockPeopleFragment searchStockPeopleFragment;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -103,6 +107,25 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onDetach()
+    {
+        searchStockPeopleFragment = null;
+        super.onDetach();
+    }
+
+    //<editor-fold desc="View's events handling">
+    // TODO following views' events should be handled inside DiscussionPostActionButtonsView
+    @OnClick({
+            R.id.btn_mention,
+            R.id.btn_security_tag
+    })
+    void onMentionButtonClicked(View clickedButton)
+    {
+        Bundle bundle = new Bundle();
+        searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+    }
+    //</editor-fold>
+
     private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
     {
         this.discussionDTO = discussionDTO;
@@ -142,7 +165,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
         discussionEditMiddleCallback = null;
     }
-
 
     private boolean validateNotEmptyText()
     {

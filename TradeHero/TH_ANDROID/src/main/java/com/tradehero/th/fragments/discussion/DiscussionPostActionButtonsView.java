@@ -5,14 +5,17 @@ import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -34,6 +37,9 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
+
+    @InjectView(R.id.btn_mention) TextView mMention;
+    @InjectView(R.id.btn_security_tag) TextView mSecurityTag;
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -145,4 +151,17 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.geo_lat = null;
         publishableFormDTO.geo_long = null;
     }
+
+
+    //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
+    public static interface OnMentionListener
+    {
+        void onMentioned(UserBaseKey userBaseKey);
+    }
+
+    public static interface OnSecurityTaggedListener
+    {
+        void onTagged(SecurityId securityId);
+    }
+    //</editor-fold>
 }

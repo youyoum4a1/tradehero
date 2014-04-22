@@ -13,14 +13,14 @@
     >
 
   <TextView
-      android:id="@+id/btn_at"
+      android:id="@+id/btn_mention"
       style="@style/TH.TextSocialButtons"
       android:text="@string/at"
       android:textSize="15sp"
       />
 
   <TextView
-      android:id="@+id/btn_mention"
+      android:id="@+id/btn_security_tag"
       style="@style/TH.TextSocialButtons"
       android:text="@string/hashtag"
       android:textSize="15sp"
