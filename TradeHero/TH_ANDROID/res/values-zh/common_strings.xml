@@ -64,9 +64,9 @@
   <string name="time_display_view_holder_format_second">%02d</string>
   <string name="help">帮助</string>
   <string name="tab_to_dismiss">点击取消</string>
-  <string name="sharing">Sharing</string>
-  <string name="translation">Translation</string>
-  <string name="translating">Translating...</string>
-  <string name="translation_result">Translation result:</string>
+  <string name="sharing">分享</string>
+  <string name="translation">翻译</string>
+  <string name="translating">翻译中...</string>
+  <string name="translation_result">翻译结果:</string>
 
 </resources>

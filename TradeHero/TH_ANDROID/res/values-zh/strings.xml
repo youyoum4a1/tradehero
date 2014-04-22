@@ -31,13 +31,8 @@
   <string name="comment">评论</string>
   <string name="timeline_discussion_post">发布</string>
   <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
-<<<<<<< HEAD
   <string name="discussion_loaded">已全部读取</string>
   <string name="discussion_loading">读取中…</string>
-=======
-  <string name="discussion_loaded">已读取全部讨论</string>
-  <string name="discussion_loading">正在读取讨论…</string>
->>>>>>> change some UIs
   <string name="discussion_empty">成为第一个发布评论的人吧</string>
   <string name="news_view_on_web">在网页中查看</string>
   <string name="add_a_comment">发布评论…</string>
