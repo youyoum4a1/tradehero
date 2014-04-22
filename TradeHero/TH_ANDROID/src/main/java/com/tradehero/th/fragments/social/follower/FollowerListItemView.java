@@ -10,10 +10,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -24,6 +24,7 @@ import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template
@@ -129,6 +130,7 @@ public class FollowerListItemView extends RelativeLayout
             displayUserIcon();
             displayTitle();
             displayRevenue();
+            //displayCountryLogo();
         }
     }
 
@@ -139,7 +141,7 @@ public class FollowerListItemView extends RelativeLayout
         displayTitle();
         displayRevenue();
         //displayFollowing();
-        displayCountryLogo();
+        //displayCountryLogo();
     }
 
     public void displayUserIcon()
@@ -178,7 +180,7 @@ public class FollowerListItemView extends RelativeLayout
         {
             if (userFollowerDTO != null)
             {
-                country.setImageResource(getExchangeLogoId(userFollowerDTO.countryCode));
+                country.setImageResource(getConutryLogoId(userFollowerDTO.countryCode));
             }
             else
             {
@@ -187,16 +189,17 @@ public class FollowerListItemView extends RelativeLayout
         }
     }
 
-    public int getExchangeLogoId(String country)
+    public int getConutryLogoId(String country)
     {
-        return getExchangeLogoId(0, country);
+        return getConutryLogoId(0, country);
     }
 
-    public int getExchangeLogoId(int defaultResId, String country)
+    public int getConutryLogoId(int defaultResId, String country)
     {
         try
         {
-            return Exchange.valueOf(country).logoId;
+            Timber.d("getConutryLogoId country:%s",country);
+            return Country.valueOf(country).logoId;
         } catch (IllegalArgumentException ex)
         {
             return defaultResId;

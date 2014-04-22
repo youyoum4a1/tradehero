@@ -191,10 +191,14 @@ public class TrendingFragment extends SecurityListFragment
                     int height = filterSelectorView.getHeight();
                     if (listView != null && height > 0)
                     {
-                        getSecurityListView().setPadding((int)getResources().getDimension(R.dimen.trending_list_padding_left_and_right),
-                                height > 103 ? height + 10 : (int)getResources().getDimension(R.dimen.trending_list_padding_top),
-                                (int)getResources().getDimension(R.dimen.trending_list_padding_left_and_right),
-                                (int)getResources().getDimension(R.dimen.trending_list_padding_bottom));
+                        getSecurityListView().setPadding((int) getResources().getDimension(
+                                R.dimen.trending_list_padding_left_and_right),
+                                height > 103 ? height + 10 : (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_top),
+                                (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_left_and_right),
+                                (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_bottom));
                     }
                 }
             }
@@ -209,6 +213,7 @@ public class TrendingFragment extends SecurityListFragment
         actionBar.setTitle(R.string.trending_header);
         actionBar.setHomeButtonEnabled(true);
         inflater.inflate(R.menu.trending_menu, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
