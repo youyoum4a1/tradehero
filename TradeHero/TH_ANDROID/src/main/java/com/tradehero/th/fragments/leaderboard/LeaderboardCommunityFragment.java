@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -62,6 +63,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -279,6 +281,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.dashboard_community));
+        actionBar.setHomeButtonEnabled(true);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -286,6 +289,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -17,7 +17,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -101,6 +103,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
@@ -222,11 +225,24 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(getString(R.string.settings));
+        actionBar.setHomeButtonEnabled(true);
     }
     //</editor-fold>
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override public void onDestroyView()
     {

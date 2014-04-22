@@ -5,5 +5,6 @@ package com.tradehero.th.utils.metrics.tapstream;
  */
 public class TapStreamEvents
 {
+    public static final String APP_INSTALL = "android-tradehero-install";
     public static final String APP_OPENED = "android-tradehero-open";
 }
