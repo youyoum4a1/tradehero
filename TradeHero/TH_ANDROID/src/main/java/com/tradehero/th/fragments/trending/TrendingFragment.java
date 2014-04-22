@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -77,6 +78,7 @@ public class TrendingFragment extends SecurityListFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
@@ -205,7 +207,7 @@ public class TrendingFragment extends SecurityListFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(R.string.trending_header);
-
+        actionBar.setHomeButtonEnabled(true);
         inflater.inflate(R.menu.trending_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -216,6 +218,9 @@ public class TrendingFragment extends SecurityListFragment
         {
             case R.id.btn_search:
                 pushSearchIn();
+                return true;
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);

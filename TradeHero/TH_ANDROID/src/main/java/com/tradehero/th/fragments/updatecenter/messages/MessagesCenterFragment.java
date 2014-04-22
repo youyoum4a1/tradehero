@@ -16,7 +16,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -319,7 +318,6 @@ public class MessagesCenterFragment extends DashboardFragment
             messageListAdapter =
                     new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
                             R.layout.message_list_item_wrapper);
-            messageListAdapter.initMarkDeletedIds(messageListCache.get().getDeletedMessageIds());
         }
         if (listView.getAdapter() == null)
         {
@@ -339,11 +337,11 @@ public class MessagesCenterFragment extends DashboardFragment
             messageListAdapter =
                     new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
                             R.layout.message_list_item_wrapper);
-            messageListAdapter.initMarkDeletedIds(messageListCache.get().getDeletedMessageIds());
         }
         else
         {
             messageListAdapter.clear();
+            messageListAdapter.notifyDataSetChanged();
         }
         if (listView.getAdapter() == null)
         {
@@ -353,6 +351,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
             adapter.clear();
+            adapter.notifyDataSetChanged();
         }
         MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
@@ -396,21 +395,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageIfNecessary(int position)
     {
-        MessageListAdapter adapter = getListAdapter();
-        MessageHeaderId messageHeaderId = adapter.getItem(position);
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
-        Integer messageId = messageHeaderDTO.id;
-        Integer senderUserId = messageHeaderDTO.senderUserId;
-        Integer recipientUserId = messageHeaderDTO.recipientUserId;
-        int myId = currentUserId.toUserBaseKey().key;
-        Timber.d("messageId:%d,senderUserId:%d,recipientUserId:%d,myId:%d", messageId, senderUserId,
-                recipientUserId, myId);
-        if (senderUserId != null && senderUserId == myId)
-        {
-            THToast.show("You cannot delete the message you sent");
-            return;
-        }
-        adapter.markDeleted(messageHeaderId.key, true);
+        MessageHeaderId messageHeaderId = getListAdapter().getItem(position);
+        getListAdapter().markDeleted(messageHeaderId, true);
         removeMessageOnServer(messageHeaderId);
     }
 
@@ -420,9 +406,10 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     private void removeMessageOnServer(MessageHeaderId messageHeaderId)
     {
-        messageDeletionMiddleCallback = messageServiceWrapper.get()
-                .deleteMessage(messageHeaderId.key, messageListCache.get(),
-                        new MessageDeletionCallback(messageHeaderId.key));
+        unsetDeletionMiddleCallback();
+        messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
+                messageHeaderId,
+                new MessageDeletionCallback(messageHeaderId));
     }
 
     private void saveNewPage(MessageHeaderIdList value)
@@ -730,9 +717,9 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<Response>
     {
-        private int messageId;
+        private MessageHeaderId messageId;
 
-        MessageDeletionCallback(int messageId)
+        MessageDeletionCallback(MessageHeaderId messageId)
         {
             this.messageId = messageId;
         }

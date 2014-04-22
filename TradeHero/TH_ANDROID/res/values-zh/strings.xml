@@ -2,7 +2,7 @@
 <resources>
   <string name="follow">关注</string>
   <string name="message">消息</string>
-  <string name="upgrade_to_premium">升级关注特权</string>
+  <string name="upgrade_to_premium">高级关注</string>
   <string name="following_premium">关注中\n(高级)</string>
   <string name="select_endpoint">选择 Api 端口</string>
   <string name="current_endpoint">"目前端口: "</string>
@@ -31,8 +31,8 @@
   <string name="comment">评论</string>
   <string name="timeline_discussion_post">发布</string>
   <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
-  <string name="discussion_loaded">已读取全部讨论</string>
-  <string name="discussion_loading">读取讨论中…</string>
+  <string name="discussion_loaded">已全部读取</string>
+  <string name="discussion_loading">读取中…</string>
   <string name="discussion_empty">成为第一个发布评论的人吧</string>
   <string name="news_view_on_web">在网页中查看</string>
   <string name="add_a_comment">发布评论…</string>

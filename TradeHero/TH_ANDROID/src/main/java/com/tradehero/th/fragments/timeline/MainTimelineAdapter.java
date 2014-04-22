@@ -28,9 +28,6 @@ import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-/**
- * Created by xavier on 3/6/14.
- */
 public class MainTimelineAdapter extends ArrayAdapter
     implements StickyListHeadersAdapter,
         AbsListView.OnScrollListener,

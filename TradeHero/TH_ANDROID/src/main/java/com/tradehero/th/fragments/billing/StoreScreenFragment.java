@@ -10,7 +10,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -25,6 +27,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -39,6 +42,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
@@ -73,7 +77,19 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
+        actionBar.setHomeButtonEnabled(true);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()

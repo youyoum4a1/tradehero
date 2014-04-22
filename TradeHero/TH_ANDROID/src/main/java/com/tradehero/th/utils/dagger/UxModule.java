@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -55,6 +56,7 @@ public class UxModule
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
+        config.setInstallEventName(TapStreamEvents.APP_INSTALL);
         return config;
     }
 }

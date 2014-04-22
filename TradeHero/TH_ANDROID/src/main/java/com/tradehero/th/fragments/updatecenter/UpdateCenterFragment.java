@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.util.List;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
@@ -49,11 +51,11 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private FragmentTabHost mTabHost;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
-    private MenuItem mMenuFollow;
     private ImageButton mNewMsgButton;
 
     private BroadcastReceiver broadcastReceiver;
@@ -126,10 +128,11 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(R.string.message_center_title);
+        actionBar.setHomeButtonEnabled(true);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
-        mMenuFollow = menu.findItem(R.id.btn_new_message);
-        mNewMsgButton = (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);
+        MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
+        mNewMsgButton = (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
         if (mNewMsgButton != null)
         {
             mNewMsgButton.setOnClickListener(new View.OnClickListener()
@@ -147,6 +150,12 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
         Fragment f = getCurrentFragment();
         if (f != null)
         {

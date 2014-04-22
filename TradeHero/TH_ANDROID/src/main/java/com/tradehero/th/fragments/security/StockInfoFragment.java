@@ -17,15 +17,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -84,7 +83,7 @@ public class StockInfoFragment extends DashboardFragment
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-                    handleNewsClicked((YahooNewsHeadline) adapterView.getItemAtPosition(position));
+                    handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position));
                 }
             });
         }
@@ -361,15 +360,14 @@ public class StockInfoFragment extends DashboardFragment
         alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
-    protected void handleNewsClicked(YahooNewsHeadline news)
+    protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
     {
-        if (news != null && news.getUrl() != null)
-        {
-            Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            Bundle bundle = new Bundle();
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
-            navigator.pushFragment(WebViewFragment.class, bundle);
-        }
+        Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+        int resId = newsHeadlineAdapter.getBackgroundRes(position);
+        bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+        navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

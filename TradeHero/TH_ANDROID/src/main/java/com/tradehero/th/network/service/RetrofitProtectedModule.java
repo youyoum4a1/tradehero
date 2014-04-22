@@ -52,5 +52,10 @@ public class RetrofitProtectedModule
     {
         return adapter.create(NotificationServiceAsync.class);
     }
+
+    @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineServiceAsync.class);
+    }
     //</editor-fold>
 }

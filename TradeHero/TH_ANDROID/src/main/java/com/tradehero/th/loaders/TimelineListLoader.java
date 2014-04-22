@@ -12,7 +12,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
 public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 {
     private final UserBaseKey userBaseKey;

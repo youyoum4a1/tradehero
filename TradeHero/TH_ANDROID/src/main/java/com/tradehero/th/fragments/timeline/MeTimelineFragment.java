@@ -8,6 +8,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
@@ -15,6 +16,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -24,6 +26,7 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -62,6 +65,9 @@ public class MeTimelineFragment extends TimelineFragment
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
                 getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+                return true;
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);

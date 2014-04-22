@@ -4,9 +4,9 @@
   <string name="loading_loading">读取中…</string>
   <string name="processing">处理中…</string>
   <string name="alert_dialog_market_close_title">市场关闭</string>
-  <string name="alert_dialog_market_close_message_basic">当前证劵的交易市场已关闭.\n您还是可以根据最近一次的交易价做交易，只是需要注意的是，其差价幅度可能会比正常时间要来的大</string>
-  <string name="alert_dialog_market_close_message">%1$s 当前已关闭.\n你还是可以根据最近一次的交易价做交易 %2$s ，只是需要注意的是，其差价幅度可能会比正常时间要来的大</string>
-  <string name="alert_dialog_market_close_cancel">取消</string>
+  <string name="alert_dialog_market_close_message_basic">当前证劵的交易市场已休市.\n您还是可以根据最近一次的交易价做交易，只是需要注意的是，其差价幅度可能会比正常时间要来的大</string>
+  <string name="alert_dialog_market_close_message">%1$s 当前已休市.\n您还是可以根据最近一次的交易价交易 %2$s ，只是需要注意的是，其差价幅度可能会比正常时间要来的大</string>
+  <string name="alert_dialog_market_close_cancel">知道了</string>
   <string name="alert_dialog_please_wait">请等待</string>
 
 </resources>

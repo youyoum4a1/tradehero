@@ -214,11 +214,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        this.actionBar = getSherlockActivity().getSupportActionBar();
-        this.actionBar.setDisplayOptions(
+        actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(
                 (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-
+        actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }

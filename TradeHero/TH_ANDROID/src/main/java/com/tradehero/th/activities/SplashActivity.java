@@ -102,8 +102,6 @@ public class SplashActivity extends SherlockActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
-
-        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
