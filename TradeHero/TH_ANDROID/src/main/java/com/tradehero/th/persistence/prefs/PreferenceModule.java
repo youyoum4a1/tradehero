@@ -28,8 +28,8 @@ public class PreferenceModule
     private static final String PREF_CURRENT_AUTHENTICATION_TYPE_KEY = "PREF_CURRENT_AUTHENTICATION_TYPE_KEY";
     private static final String PREF_SAVED_CREDENTIALS_KEY = "PREF_SAVED_CREDENTIALS_KEY";
     private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
-    private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_SAVED_PUSH_IDENTIFIER_FLAG";
-    private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER_FLAG";
+    private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
+    private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
 
     @Provides @Singleton @SessionToken StringPreference provideCurrentSessionToken(SharedPreferences sharedPreferences)
     {

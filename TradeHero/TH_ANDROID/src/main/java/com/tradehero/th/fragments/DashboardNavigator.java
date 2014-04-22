@@ -86,13 +86,13 @@ public class DashboardNavigator extends Navigator
             }
         });
 
-        for (DashboardTabType tabType : DashboardTabType.values())
+        for (DashboardTabType tabType : DashboardTabType.usableValues())
         {
             addNewTab(tabType);
         }
 
         // Hack to fix the issue with typing inside the competition webview
-        for (int i=0; i<DashboardTabType.values().length; ++i)
+        for (int i=0; i<DashboardTabType.usableValues().size(); ++i)
         {
             mTabHost.getTabWidget().getChildAt(i).setFocusable(false);
         }

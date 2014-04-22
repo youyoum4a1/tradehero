@@ -19,7 +19,7 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -30,15 +30,17 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.persistence.discussion.MessageStatusCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
 {
-    public static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY = AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
+    private static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY =
+            AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
+    @Inject protected MessageHeaderListCache messageHeaderListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserBaseDTOUtil userBaseDTOUtil;
     @Inject protected Picasso picasso;
@@ -50,21 +52,21 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
-    @Inject protected MessageStatusCache messageStatusCache;
-    private DTOCache.GetOrFetchTask<UserBaseKey, MessageStatusDTO> messageStatusCacheTask;
-    protected MessageStatusDTO messageStatusDTO;
-
     protected ImageView correspondentImage;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
-    @InjectView(R.id.private_message_status_container) protected View statusViewContainer;
-    @InjectView(R.id.private_message_status_text) protected TextView statusViewText;
+
+    public static void putCorrespondentUserBaseKey(Bundle args, UserBaseKey correspondentBaseKey)
+    {
+        args.putBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY, correspondentBaseKey.getArgs());
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        correspondentId = new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+        correspondentId =
+                new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
     }
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -72,17 +74,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageStatusDTO> createMessageStatusCacheListener()
-    {
-        return new AbstractPrivateMessageFragmentMessageStatusListener();
-    }
-
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
         return new AbstractPrivateMessageFragmentUserFollowedListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
     }
@@ -95,13 +93,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override protected void initViews(View view)
     {
+        super.initViews(view);
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
         ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
         ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
                 new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
-        ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
+        ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -123,7 +122,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onResume();
         fetchCorrespondentProfile();
-        fetchMessageStatus();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -136,7 +134,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onDestroyView()
     {
         detachUserProfileTask();
-        detachMessageStatusTask();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -150,15 +147,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         userProfileCacheTask = null;
     }
 
-    private void detachMessageStatusTask()
-    {
-        if (messageStatusCacheTask != null)
-        {
-            messageStatusCacheTask.setListener(null);
-        }
-        messageStatusCacheTask = null;
-    }
-
     @Override public void onDestroy()
     {
         super.onDestroy();
@@ -168,21 +156,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         Timber.d("fetchCorrespondentProfile");
         detachUserProfileTask();
-        userProfileCacheTask = userProfileCache.getOrFetch(correspondentId, createUserProfileCacheListener());
+        userProfileCacheTask =
+                userProfileCache.getOrFetch(correspondentId, createUserProfileCacheListener());
         userProfileCacheTask.execute();
-    }
-
-    private void fetchMessageStatus()
-    {
-        fetchMessageStatus(false);
-    }
-
-    private void fetchMessageStatus(boolean force)
-    {
-        Timber.d("fetchMessageStatus");
-        detachMessageStatusTask();
-        messageStatusCacheTask = messageStatusCache.getOrFetch(correspondentId, force, createMessageStatusCacheListener());
-        messageStatusCacheTask.execute();
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -197,27 +173,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    public void linkWith(MessageStatusDTO messageStatusDTO, boolean andDisplay)
-    {
-        this.messageStatusDTO = messageStatusDTO;
-        if (discussionView != null && discussionView instanceof PrivateDiscussionView)
-        {
-            ((PrivateDiscussionView) discussionView).setMessageStatusDTO(messageStatusDTO);
-        }
-        //TODO
-        if (andDisplay)
-        {
-            displayMessagingStatusContainer();
-            displayMessagingStatusText();
-        }
-    }
-
     public void display()
     {
         displayCorrespondentImage();
         displayTitle();
-        displayMessagingStatusContainer();
-        displayMessagingStatusText();
     }
 
     protected void displayCorrespondentImage()
@@ -225,14 +184,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (correspondentImage != null)
         {
             RequestCreator picassoRequestCreator;
-            if (correspondentProfile != null && correspondentProfile.picture != null && !correspondentProfile.picture.isEmpty())
+            if (correspondentProfile != null
+                    && correspondentProfile.picture != null
+                    && !correspondentProfile.picture.isEmpty())
             {
                 picassoRequestCreator = picasso.load(correspondentProfile.picture);
             }
             else
             {
                 picassoRequestCreator = picasso.load(R.drawable.superman_facebook);
-
             }
             picassoRequestCreator.transform(userPhotoTransformation)
                     .into(correspondentImage);
@@ -244,46 +204,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
         {
-            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+            String title =
+                    userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
             Timber.d("Display title " + title);
             actionBar.setTitle(title);
         }
         else
         {
             actionBar.setTitle(R.string.loading_loading);
-        }
-    }
-
-    protected void displayMessagingStatusContainer()
-    {
-        if (statusViewContainer != null)
-        {
-            // TODO better test
-            statusViewContainer.setVisibility(
-                    messageStatusDTO == null || messageStatusDTO.privateFreeRemainingCount == null
-                            ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    protected void displayMessagingStatusText()
-    {
-        if (statusViewText != null)
-        {
-            if (messageStatusDTO != null && messageStatusDTO.isUnlimited())
-            {
-                statusViewText.setVisibility(View.GONE);
-            }
-            else if (messageStatusDTO != null && messageStatusDTO.privateFreeRemainingCount != null)
-            {
-                statusViewText.setVisibility(View.VISIBLE);
-                statusViewText.setText(
-                        getResources().getString(R.string.private_message_limited_count,
-                                messageStatusDTO.privateFreeRemainingCount));
-            }
-            else
-            {
-                statusViewText.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -312,22 +240,17 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return false;
     }
 
-    protected class AbstractPrivateMessageFragmentUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            Timber.e(error, "");
-        }
+        super.handleCommentPosted(discussionDTO);
+        messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
-    protected class AbstractPrivateMessageFragmentMessageStatusListener implements DTOCache.Listener<UserBaseKey, MessageStatusDTO>
+    protected class AbstractPrivateMessageFragmentUserProfileListener
+            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageStatusDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -347,13 +270,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected class AbstractPrivateMessageFragmentUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class AbstractPrivateMessageFragmentUserFollowedListener
+            extends BasePurchaseManagerUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-            fetchMessageStatus(true);
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)

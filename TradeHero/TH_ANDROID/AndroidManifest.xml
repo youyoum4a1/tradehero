@@ -53,6 +53,7 @@
   <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
   <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
   <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <!--Baidu push-->
 
   <application
@@ -83,6 +84,12 @@
 
     <activity
         android:name=".activities.AuthenticationActivity"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+
+    <activity
+        android:name=".activities.GuideActivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
         />
@@ -201,6 +208,34 @@
         <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
       </intent-filter>
     </receiver>
+
+    <!-- push必须的receviver和service声明 -->
+    <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
+        android:process=":bdservice_v1">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+        <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
+        <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+      </intent-filter>
+    </receiver>
+    <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver"
+        android:process=":bdservice_v1">
+      <intent-filter>
+        <action android:name="com.baidu.android.pushservice.action.METHOD"/>
+        <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+        <data android:scheme="package" />
+      </intent-filter>
+    </receiver>
+    <service
+        android:name="com.baidu.android.pushservice.PushService"
+        android:exported="true"
+        android:process=":bdservice_v1" />
+    <!-- push结束 -->
+    
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
     <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>

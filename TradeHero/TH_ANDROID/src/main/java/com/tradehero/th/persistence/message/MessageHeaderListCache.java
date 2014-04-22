@@ -2,13 +2,16 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +63,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 
     @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
     {
-        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessages(key);
+        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
         return putInternal(data);
     }
 
@@ -105,5 +108,17 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
     public Set<Integer> getDeletedMessageIds()
     {
         return deletedMessageIds;
+    }
+
+    public void invalidateWithRecipient(UserBaseKey userBaseKey)
+    {
+        for (MessageListKey messageListKey : new ArrayList<>(snapshot().keySet()))
+        {
+            if (messageListKey instanceof RecipientTypedMessageListKey &&
+                    ((RecipientTypedMessageListKey) messageListKey).recipientId.equals(userBaseKey))
+            {
+                invalidate(messageListKey);
+            }
+        }
     }
 }

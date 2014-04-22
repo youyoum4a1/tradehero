@@ -137,7 +137,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     }
 
     private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",displayablePortfolioDTO.userBaseDTO.displayName));
+        //THToast.show(String.format("user icon click %s",displayablePortfolioDTO.userBaseDTO.displayName));
         TimelineFragment.viewProfile((DashboardActivity) getContext(), displayablePortfolioDTO.userBaseDTO.id);
     }
 

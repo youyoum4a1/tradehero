@@ -4,9 +4,6 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 6:05 PM Copyright (c) TradeHero
- */
 abstract public class DiscussionKey implements DTOKey
 {
     static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";

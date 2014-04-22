@@ -55,12 +55,9 @@ public class UserProfileCompactViewHolder
         followersCount = (TextView) view.findViewById(R.id.user_profile_followers_count);
         heroesCount = (TextView) view.findViewById(R.id.user_profile_heroes_count);
         displayName = (TextView) view.findViewById(R.id.user_profile_display_name);
-        btnDefaultPortfolio = (ImageView) view.findViewById(R.id.btn_user_profile_default_portfolio);
-
+        btnDefaultPortfolio =
+                (ImageView) view.findViewById(R.id.btn_user_profile_default_portfolio);
     }
-
-
-
 
     public void display(UserProfileDTO dto)
     {
@@ -91,7 +88,8 @@ public class UserProfileCompactViewHolder
                         SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
                         THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitValue.setText(thPlSinceInception.toString());
-                profitValue.setTextColor(context.getResources().getColor(thPlSinceInception.getColor()));
+                profitValue.setTextColor(
+                        context.getResources().getColor(thPlSinceInception.getColor()));
             }
             else
             {
@@ -132,13 +130,16 @@ public class UserProfileCompactViewHolder
     {
         if (roiSinceInception != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null && userProfileDTO.portfolio.roiSinceInception != null)
+            if (userProfileDTO != null
+                    && userProfileDTO.portfolio != null
+                    && userProfileDTO.portfolio.roiSinceInception != null)
             {
                 THSignedNumber thRoiSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_PERCENTAGE,
                         userProfileDTO.portfolio.roiSinceInception * 100);
                 roiSinceInception.setText(thRoiSinceInception.toString());
-                roiSinceInception.setTextColor(context.getResources().getColor(thRoiSinceInception.getColor()));
+                roiSinceInception.setTextColor(
+                        context.getResources().getColor(thRoiSinceInception.getColor()));
             }
             else
             {
@@ -153,7 +154,7 @@ public class UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                followersCount.setText(Integer.toString(userProfileDTO.followerCount == null ? 0 : userProfileDTO.followerCount));
+                followersCount.setText(Integer.toString(userProfileDTO.allFollowerCount));
             }
             else
             {
@@ -168,7 +169,8 @@ public class UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                heroesCount.setText(Integer.toString(userProfileDTO.heroIds == null ? 0 : userProfileDTO.heroIds.size()));
+                heroesCount.setText(Integer.toString(
+                        userProfileDTO.heroIds == null ? 0 : userProfileDTO.heroIds.size()));
             }
             else
             {

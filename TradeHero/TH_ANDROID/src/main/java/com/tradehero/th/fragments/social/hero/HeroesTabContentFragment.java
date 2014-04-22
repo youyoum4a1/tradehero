@@ -18,18 +18,17 @@ import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class HeroesTabContentFragment extends BasePurchaseManagerFragment
@@ -167,14 +166,9 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         this.infoFetcher.fetch(this.followerId, getHeroType());
     }
 
-    HeroType getHeroType()
+    private HeroType getHeroType()
     {
         return this.heroType;
-    }
-
-    void setHeroType(HeroType heroType)
-    {
-        this.heroType = heroType;
     }
 
     @Override public void onPause()
@@ -219,6 +213,36 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         Timber.d("onDestroy page:%s", page);
     }
 
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new FollowUserAssistant.OnUserFollowedListener()
+        {
+
+            @Override
+            public void onUserFollowSuccess(UserBaseKey userFollowed,
+                    UserProfileDTO currentUserProfileDTO)
+            {
+                Timber.d("onUserFollowSuccess");
+                THToast.show(getString(R.string.manage_heroes_unfollow_success));
+                linkWith(currentUserProfileDTO, true);
+                if (infoFetcher != null)
+                {
+                    HeroIdExtWrapper heroIdExtWrapper = infoFetcher.getHeros(followerId,getHeroType());
+                    Timber.d("onUserFollowSuccess,fetchHeroes return %s",heroIdExtWrapper);
+                    infoFetcher.fetchHeroes(followerId,getHeroType());
+                }
+            }
+
+            @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+            {
+                Timber.e(error,"onUserFollowFailed error");
+                THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+            }
+        };
+
+        //return super.createUserFollowedListener();
+    }
+
     private void handleBuyMoreClicked()
     {
         cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
@@ -254,6 +278,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
+                            THToast.show(getString(R.string.manage_heroes_unfollow_progress_message));
                             unfollowUser(clickedHeroDTO.getBaseKey());
                         }
                     });
@@ -366,7 +391,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         {
             displayProgress(false);
             setListShown(true);
-            Timber.e("Could not fetch heroes", error);
+            Timber.e(error,"Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
         }
     }
@@ -378,6 +403,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
             handleGoMostSkilled();
         }
     }
+
 
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {

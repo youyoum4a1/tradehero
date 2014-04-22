@@ -4,13 +4,10 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.macquarie.PhilipsMacquarieProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/29/14.
- */
 @Singleton public class ProviderSpecificResourcesFactory
 {
     //<editor-fold desc="Constructors">
@@ -40,8 +37,8 @@ import javax.inject.Singleton;
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
                     created = new MacquarieProviderSpecificResourcesDTO();
                     break;
-                case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
-                    created = new PhilipsMacquarieProviderSpecificResourcesDTO();
+                case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
+                    created = new PhillipMacquarieProviderSpecificResourcesDTO();
                     break;
             }
         }

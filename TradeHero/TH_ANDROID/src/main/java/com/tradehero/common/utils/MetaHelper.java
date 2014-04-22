@@ -1,5 +1,6 @@
 package com.tradehero.common.utils;
 
+import android.util.Log;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -197,11 +198,14 @@ public class MetaHelper {
 
 	public static String getLanguage(Context ctx) {
 		Configuration configuration = ctx.getResources().getConfiguration();
-		String language = configuration.locale.getLanguage();
-		if (language == null) {
-			language = Locale.getDefault().getDisplayLanguage();
+        //Log.d("Configuration"," configuration.locale "+configuration.locale+" "+configuration.locale.getDisplayName());
+		String displayName = configuration.locale.toString();
+        //string like '中文 (中国)'
+		//configuration.locale.getDisplayName();
+		if (displayName == null) {
+			displayName = Locale.getDefault().toString();
 		}
-		return language;
+		return displayName;
 	}
 
 

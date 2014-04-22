@@ -32,7 +32,8 @@
   <string name="dashboard_portfolio">Portfolio</string>
   <string name="dashboard_store">Store</string>
   <string name="dashboard_headline">Headline</string>
-  <string name="update_center">Inbox</string>
+  <string name="message_center">Message Center</string>
+  <string name="dashboard_admin_settings">Admin Settings</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>

@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
 import java.util.Random;
 
@@ -53,6 +54,16 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     @Override public MessageHeaderId getDTOKey()
     {
         return new MessageHeaderId(id);
+    }
+
+    public UserBaseKey getSenderId()
+    {
+        return new UserBaseKey(senderUserId);
+    }
+
+    public UserBaseKey getRecipientId()
+    {
+        return new UserBaseKey(recipientUserId);
     }
 
     @Override public String toString()

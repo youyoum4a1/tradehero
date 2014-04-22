@@ -20,29 +20,39 @@ import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>
 {
-    @InjectView(android.R.id.list) ListView discussionList;
+    @InjectView(android.R.id.list) protected ListView discussionList;
     @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
 
     private int listItemLayout;
     private int topicLayout;
 
+    @Inject protected CurrentUserId currentUserId;
     @Inject DiscussionListCache discussionListCache;
-    @Inject DiscussionCache discussionCache;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionCache discussionCache;
+    @Inject protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;
     private DiscussionKey discussionKey;
+
+    private PostCommentView.CommentPostedListener commentPostedListener;
 
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
     protected DiscussionListAdapter discussionListAdapter;
@@ -98,11 +108,16 @@ public class DiscussionView extends FrameLayout
         {
             TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
             listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
-            topicLayout = styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0);
+            setTopicLayout(styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0));
             styled.recycle();
 
             ensureStyle();
         }
+    }
+
+    protected void setTopicLayout(int topicLayout)
+    {
+        this.topicLayout = topicLayout;
     }
 
     private void ensureStyle()
@@ -113,17 +128,20 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void inflateDiscussionTopic()
+    protected View inflateDiscussionTopic()
     {
+        View inflated = null;
         if (topicLayout != 0)
         {
-            topicView = LayoutInflater.from(getContext()).inflate(topicLayout, null);
+            inflated = LayoutInflater.from(getContext()).inflate(topicLayout, null);
+            topicView = inflated;
 
             if (topicView != null)
             {
                 discussionList.addHeaderView(topicView);
             }
         }
+        return inflated;
     }
 
     private void inflateDiscussionStatus()
@@ -141,7 +159,7 @@ public class DiscussionView extends FrameLayout
     {
         super.onAttachedToWindow();
         discussionList.setAdapter(discussionListAdapter);
-        postCommentView.setCommentPostedListener(new DiscussionViewCommentPostedListener());
+        postCommentView.setCommentPostedListener(createCommentPostedListener());
     }
 
     @Override protected void onDetachedFromWindow()
@@ -156,21 +174,15 @@ public class DiscussionView extends FrameLayout
 
     @Override public void display(DiscussionKey discussionKey)
     {
-        this.discussionKey = discussionKey;
-
         linkWith(discussionKey, true);
     }
 
-    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
+        this.discussionKey = discussionKey;
         postCommentView.linkWith(discussionKey);
 
-        if (discussionKey != null)
-        {
-            this.discussionListKey = discussionKeyFactory.toListKey(discussionKey);
-
-            fetchDiscussionListIfNecessary();
-        }
+        initialFetchDiscussion();
 
         if (andDisplay)
         {
@@ -178,7 +190,43 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void displayTopicView()
+    protected void initialFetchDiscussion()
+    {
+        discussionListAdapter.setItems(null);
+        this.discussionListKey = createListKey();
+        if (discussionListKey != null)
+        {
+            fetchDiscussionListIfNecessary();
+        }
+    }
+
+    protected DiscussionListKey createListKey()
+    {
+        if (discussionKey != null)
+        {
+            return new PaginatedDiscussionListKey(discussionListKeyFactory.create(discussionKey), 1);
+        }
+        return null;
+    }
+
+    private void fetchDiscussionListIfNecessary()
+    {
+        prepareDiscussionListKey();
+        setLoading();
+        detachDiscussionFetchTask();
+        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, false, createDiscussionListListener());
+        discussionFetchTask.execute();
+    }
+
+    protected void prepareDiscussionListKey()
+    {
+        if (discussionListKey instanceof PaginatedDiscussionListKey && nextPageDelta >= 0)
+        {
+            discussionListKey = ((PaginatedDiscussionListKey) discussionListKey).next(nextPageDelta);
+        }
+    }
+
+    protected void displayTopicView()
     {
         if (topicView instanceof DTOView)
         {
@@ -199,31 +247,15 @@ public class DiscussionView extends FrameLayout
         {
             nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
 
-            discussionListAdapter.appendMore(discussionKeyList);
+            // Most recent at bottom
+            List<DiscussionKey> reversedList = new ArrayList<>(discussionKeyList);
+            Collections.reverse(reversedList);
+            discussionListAdapter.appendMore(reversedList);
         }
 
         if (andDisplay)
         {
             discussionStatus.setText(R.string.discussion_loaded);
-        }
-    }
-
-    private void fetchDiscussionListIfNecessary()
-    {
-        detachDiscussionFetchTask();
-
-        if (paginatedDiscussionListKey == null)
-        {
-            paginatedDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
-        }
-
-        if (nextPageDelta >= 0)
-        {
-            paginatedDiscussionListKey = paginatedDiscussionListKey.next(nextPageDelta);
-
-            setLoading();
-            discussionFetchTask = discussionListCache.getOrFetch(paginatedDiscussionListKey, false, createDiscussionListListener());
-            discussionFetchTask.execute();
         }
     }
 
@@ -247,7 +279,7 @@ public class DiscussionView extends FrameLayout
             discussionListAdapter.addItem(newDiscussionKey);
             discussionListAdapter.notifyDataSetChanged();
         }
-
+        discussionListCache.invalidateAllPagesFor(discussionKey);
     }
 
     private void updateCommentCount()
@@ -288,6 +320,34 @@ public class DiscussionView extends FrameLayout
         discussionFetchTask = null;
     }
 
+    public void setCommentPostedListener(PrivatePostCommentView.CommentPostedListener commentPostedListener)
+    {
+        this.commentPostedListener = commentPostedListener;
+    }
+
+    private void notifyCommentPostedListener(DiscussionDTO discussionDTO)
+    {
+        PostCommentView.CommentPostedListener listener = commentPostedListener;
+        if (listener != null)
+        {
+            listener.success(discussionDTO);
+        }
+    }
+
+    private void notifyCommentPostFailedListener(Exception exception)
+    {
+        PostCommentView.CommentPostedListener listener = commentPostedListener;
+        if (listener != null)
+        {
+            listener.failure(exception);
+        }
+    }
+
+    protected PostCommentView.CommentPostedListener createCommentPostedListener()
+    {
+        return new DiscussionViewCommentPostedListener();
+    }
+
     private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
     {
         @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
@@ -315,11 +375,13 @@ public class DiscussionView extends FrameLayout
         @Override public void success(DiscussionDTO discussionDTO)
         {
             addComment(discussionDTO);
+            notifyCommentPostedListener(discussionDTO);
         }
 
         @Override public void failure(Exception exception)
         {
             THToast.show(R.string.error_unknown);
+            notifyCommentPostFailedListener(exception);
         }
     }
 }

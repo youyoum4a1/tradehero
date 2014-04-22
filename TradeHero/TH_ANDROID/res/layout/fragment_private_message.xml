@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:listItemLayout="@layout/private_message_bubble_mine"
-    app:topicLayout="@layout/private_message_list_header">
+    app:topicLayout="@null">
 
   <TextView
       android:id="@+id/private_message_empty"
@@ -46,7 +46,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:padding="8dp"
-      android:background="@color/follow_button_green_overlay">
+      android:background="@color/follow_button_green_overlay"
+      android:visibility="gone"
+      >
 
     <ImageView
         android:id="@+id/private_icn_white_star"

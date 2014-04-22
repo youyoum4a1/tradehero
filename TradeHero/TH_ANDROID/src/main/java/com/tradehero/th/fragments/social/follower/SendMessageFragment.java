@@ -30,10 +30,12 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -74,6 +76,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -195,6 +198,8 @@ public class SendMessageFragment extends DashboardFragment
     private void sendMessage()
     {
         int count = getFollowerCount(messageType);
+        //TODO
+        //Needn't to checkout for this, we don't know a user is following or unfollowing me unless we get the flesh data from server.
         if (count <= 0)
         {
             THToast.show(getString(R.string.broadcast_message_no_follower_hint));
@@ -223,11 +228,44 @@ public class SendMessageFragment extends DashboardFragment
         return messageCreateFormDTO;
     }
 
+    private int getFollowerCountByUserProfile(MessageType messageType)
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+            int allFollowerCount = userProfileDTO.allFollowerCount;
+            int followerCountFree = userProfileDTO.freeFollowerCount;
+            int followerCountPaid = userProfileDTO.paidFollowerCount;
+            Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d",allFollowerCount,followerCountFree,followerCountPaid);
+            int result = 0;
+            switch (messageType)
+            {
+                case BROADCAST_FREE_FOLLOWERS:
+                    result = followerCountFree;
+                    break;
+                case BROADCAST_PAID_FOLLOWERS:
+                    result = followerCountPaid;
+                    break;
+                case BROADCAST_ALL_FOLLOWERS:
+                    result = allFollowerCount;
+                    break;
+                default:
+                    throw new IllegalStateException("unknown messageType");
+
+            }
+            return result;
+
+    }
+
     /**
      * return how many followers whom you will send message to
      */
     private int getFollowerCount(MessageType messageType)
     {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
+            return getFollowerCountByUserProfile(messageType);
+        }
+
         FollowerSummaryDTO followerSummaryDTO =
                 followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)

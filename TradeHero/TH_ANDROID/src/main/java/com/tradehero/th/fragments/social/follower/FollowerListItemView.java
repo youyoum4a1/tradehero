@@ -25,15 +25,19 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class FollowerListItemView extends RelativeLayout implements DTOView<UserFollowerDTO>,View.OnClickListener
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template
+ * use File | Settings | File Templates.
+ */
+public class FollowerListItemView extends RelativeLayout
+        implements DTOView<UserFollowerDTO>, View.OnClickListener
 {
     public static final String TAG = FollowerListItemView.class.getName();
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
     @InjectView(R.id.follower_revenue) TextView revenueInfo;
-    @InjectView(R.id.follower_time) TextView followTime;
+    //@InjectView(R.id.follower_time) TextView followTime;
     @InjectView(R.id.hint_open_follower_info) ImageView country;
 
     private UserFollowerDTO userFollowerDTO;
@@ -90,7 +94,6 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         }
     }
 
-
     @Override public void onClick(View v)
     {
         if (v.getId() == R.id.follower_profile_picture)
@@ -102,12 +105,11 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         }
     }
 
-    private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",
-                userFollowerDTO.displayName));
+    private void handleUserIconClicked()
+    {
+        //THToast.show(String.format("user icon click %s", userFollowerDTO.displayName));
         TimelineFragment.viewProfile((DashboardActivity) getContext(), userFollowerDTO.id);
     }
-
 
     public UserFollowerDTO getUserFollowerDTO()
     {
@@ -136,7 +138,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         displayUserIcon();
         displayTitle();
         displayRevenue();
-        displayFollowing();
+        //displayFollowing();
         displayCountryLogo();
     }
 
@@ -147,27 +149,28 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
             if (userFollowerDTO != null)
             {
                 picasso.get().load(userFollowerDTO.picture)
-                             .transform(peopleIconTransformation)
-                             .into(userIcon);
+                        .transform(peopleIconTransformation)
+                        .placeholder(userIcon.getDrawable())
+                        .into(userIcon);
             }
         }
     }
 
-    public void displayFollowing()
-    {
-        if (followTime != null && userFollowerDTO != null)
-        {
-            followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
-        }
-    }
+    //public void displayFollowing()
+    //{
+    //    if (followTime != null && userFollowerDTO != null)
+    //    {
+    //        followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
+    //    }
+    //}
 
-    public void displayCountry()
-    {
-        if (country != null && userFollowerDTO != null)
-        {
-            followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
-        }
-    }
+    //public void displayCountry()
+    //{
+    //    if (country != null && userFollowerDTO != null)
+    //    {
+    //        followTime.setText(prettyTime.format(userFollowerDTO.followingSince));
+    //    }
+    //}
 
     public void displayCountryLogo()
     {
@@ -186,21 +189,19 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
 
     public int getExchangeLogoId(String country)
     {
-        return getExchangeLogoId(0,country);
+        return getExchangeLogoId(0, country);
     }
 
-    public int getExchangeLogoId(int defaultResId,String country)
+    public int getExchangeLogoId(int defaultResId, String country)
     {
         try
         {
             return Exchange.valueOf(country).logoId;
-        }
-        catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }
     }
-
 
     public void displayTitle()
     {
@@ -221,7 +222,8 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
                         THSignedNumber.TYPE_PERCENTAGE,
                         userFollowerDTO.roiSinceInception * 100);
                 revenueInfo.setText(thRoiSinceInception.toString());
-                revenueInfo.setTextColor(getContext().getResources().getColor(thRoiSinceInception.getColor()));
+                revenueInfo.setTextColor(
+                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
 
                 //revenueInfo.setText(String.format(getResources().getString(R.string.manage_followers_revenue_follower), SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, userFollowerDTO.totalRevenue));
             }

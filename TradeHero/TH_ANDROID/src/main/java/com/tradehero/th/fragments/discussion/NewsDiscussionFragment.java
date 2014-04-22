@@ -48,11 +48,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
-    {
-        // Nothing to do
-    }
-
     @Override public void onDestroyView()
     {
         detachNewsFetchTask();

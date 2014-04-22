@@ -18,7 +18,16 @@ public class DiscussionDTOFactory
         {
             return null;
         }
-        return createChildClass(unidentified.inReplyToType, unidentified);
+
+        // TODO remove this temporary HACK
+        {
+            if (unidentified.type.equals(DiscussionType.COMMENT))
+            {
+                unidentified.type = DiscussionType.PRIVATE_MESSAGE;
+            }
+        }
+
+        return createChildClass(unidentified.type, unidentified);
     }
 
     public DiscussionDTO createChildClass(DiscussionType discussionType, DiscussionDTO discussionDTO)
@@ -41,26 +50,5 @@ public class DiscussionDTOFactory
             }
         }
         return created;
-    }
-
-    /**
-     * This message is useful to pretend that the message header is the first item of the discussion.
-     * Example in private messages.
-     * @param messageHeaderDTO
-     * @return
-     */
-    public DiscussionDTO createFrom(MessageHeaderDTO messageHeaderDTO)
-    {
-        if (messageHeaderDTO == null)
-        {
-            return null;
-        }
-        DiscussionDTO discussionDTO = createChildClass(messageHeaderDTO.discussionType, null);
-        discussionDTO.inReplyToType = messageHeaderDTO.discussionType;
-        discussionDTO.inReplyToId = messageHeaderDTO.id;
-        discussionDTO.createdAtUtc = messageHeaderDTO.createdAtUtc;
-        discussionDTO.text = messageHeaderDTO.message;
-        discussionDTO.userId = messageHeaderDTO.senderUserId;
-        return discussionDTO;
     }
 }

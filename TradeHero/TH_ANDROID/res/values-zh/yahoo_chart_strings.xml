@@ -9,6 +9,6 @@
   <string name="yahoo_chart_1y">1年</string>
   <string name="yahoo_chart_2y">2年</string>
   <string name="yahoo_chart_5y">5年</string>
-  <string name="yahoo_chart_max">my</string>
+  <string name="yahoo_chart_max">所有</string>
 
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="security_type_label_short">Type</string>
+
+  <string name="security_type_equity">Equity</string>
+  <string name="security_type_fund">Fund</string>
+  <string name="security_type_warrant">Warrant</string>
+  <string name="security_type_bond">Bond</string>
+  <string name="security_type_unit">Unit</string>
+  <string name="security_type_tradable_rights_issue">Tradable Rights Issue</string>
+  <string name="security_type_preference_share">Preference Share</string>
+  <string name="security_type_depository_receipt">Depository Receipt</string>
+  <string name="security_type_covered_warrant">Covered Warrant</string>
+  <string name="security_type_preferred_sec">Preferred Sec</string>
+  <string name="security_type_stapled_sec">Stapled Sec</string>
+</resources>

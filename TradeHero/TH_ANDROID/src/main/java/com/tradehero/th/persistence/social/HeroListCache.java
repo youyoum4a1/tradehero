@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
 @Singleton public class HeroListCache extends StraightDTOCache<HeroKey, HeroIdExtWrapper>
@@ -32,6 +33,7 @@ import javax.inject.Singleton;
     @Override protected HeroIdExtWrapper fetch(HeroKey key) throws Throwable
     {
         List<HeroDTO> allHeros = userServiceWrapper.getHeroes(key);
+        //Timber.d("HeroListCache#fetch fetchHeroes allHeros:%s",allHeros);
         return putInternal(key, allHeros);
     }
 
@@ -42,6 +44,7 @@ import javax.inject.Singleton;
         {
             return value;
         }
+        Timber.d("HeroListCache#put key:%s value:%s",key,value);
         return super.put(key, value);
     }
 
@@ -49,6 +52,7 @@ import javax.inject.Singleton;
     {
         if (key.heroType == HeroType.ALL)
         {
+            //Timber.d("HeroListCache#get,fetchHeroes key %s, return %s",key, super.get(key));
             return super.get(key);
         }
         else
@@ -65,6 +69,8 @@ import javax.inject.Singleton;
                     heroIdExtWrapper.heroIdList = heroIdList;
                     heroIdExtWrapper.herosCountGetPaid = allHeros.herosCountGetPaid;
                     heroIdExtWrapper.herosCountNotGetPaid = allHeros.herosCountNotGetPaid;
+
+                    //Timber.d("HeroListCache#get,fetchHeroes key %s, return %s",key, heroIdExtWrapper);
                     return heroIdExtWrapper;
                 }
             }
@@ -90,9 +96,12 @@ import javax.inject.Singleton;
             boolean forAllHeros = (key.heroType == HeroType.ALL);
             for (HeroDTO heroDTO : fleshedValues)
             {
-                //THLog.d(TAG, heroDTO.toString());
+                if (!heroDTO.active)
+                {
+                    continue;
+                }
                 heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.followerKey));
-
+                heroIdExt.getPaid = !heroDTO.isFreeFollow;
                 if (forAllHeros)
                 {
                     heroIdExt.getPaid = !heroDTO.isFreeFollow;
@@ -108,6 +117,7 @@ import javax.inject.Singleton;
                     heroIdExt.getPaid = false;
                     heroIds.add(heroIdExt);
                 }
+
                 allHeroIds.add(heroIdExt);
                 heroCache.put(heroIdExt, heroDTO);
             }
@@ -120,6 +130,9 @@ import javax.inject.Singleton;
             neededHeroIdExtWrapper.herosCountGetPaid = result[0];
             neededHeroIdExtWrapper.herosCountNotGetPaid = result[1];
             neededHeroIdExtWrapper.heroIdList = heroIds;
+
+            Timber.d("HeroListCache#putInternal,all size %s,key size:%s,key:%s",AllHeroIdExtWrapper.heroIdList.size(),neededHeroIdExtWrapper.heroIdList.size(),key.heroType);
+
             if (forAllHeros)
             {
                 put(key, AllHeroIdExtWrapper);
@@ -131,9 +144,21 @@ import javax.inject.Singleton;
                 put(key, AllHeroIdExtWrapper);
             }
         }
+        //printHeros(key);
 
         //but just return needed heros
         return neededHeroIdExtWrapper;
+    }
+
+    private void printHeros(HeroKey key)
+    {
+        HeroIdExtWrapper all = get(new HeroKey(key.followerKey,HeroType.ALL));
+        HeroIdExtWrapper free = get(new HeroKey(key.followerKey,HeroType.FREE));
+        HeroIdExtWrapper paid = get(new HeroKey(key.followerKey,HeroType.PREMIUM));
+
+        Timber.d("HeroListCache#putInternal,fetchHeroes free %s",free);
+        Timber.d("HeroListCache#putInternal,fetchHeroes paid %s",paid);
+        Timber.d("HeroListCache#putInternal,fetchHeroes all %s",all);
     }
 
     ////////////////////
@@ -143,7 +168,6 @@ import javax.inject.Singleton;
         int[] result = new int[2];
         if (allHeros != null)
         {
-
             int paidCount = 0;
             int notPaidCount = 0;
             int totalCount = allHeros.size();

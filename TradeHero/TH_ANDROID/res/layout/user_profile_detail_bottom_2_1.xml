@@ -16,18 +16,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="15dp">
+
       <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
           tools:text="ROI"
-          android:minWidth="50dp"
+          android:minWidth="70dp"
           android:text="@string/user_profile_roi_below"
-          style="@style/UserProfile.Contained.Header"
-          />
+          style="@style/UserProfile.Contained.Value"
+          android:gravity="left"/>
+
       <TextView
           android:id="@+id/user_profile_roi"
           style="@style/UserProfile.Contained.Value"
           android:layout_width="wrap_content" android:layout_height="wrap_content"
-          tools:text="+408%"
-          />
+          tools:text="+408%"/>
+
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -39,10 +41,9 @@
       <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
           tools:text="Profit"
           android:text="@string/user_profile_profit"
-          android:minWidth="50dp"
-          style="@style/UserProfile.Contained.Header"
-
-          />
+          android:minWidth="70dp"
+          style="@style/UserProfile.Contained.Value"
+          android:gravity="left"/>
 
       <!--android:id="@+id/user_profile_profit"-->
       <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -51,10 +52,12 @@
           style="@style/UserProfile.Contained.Value"
           />
     </LinearLayout>
+
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp">
+
       <TextView android:layout_height="wrap_content"
           tools:text="299"
           android:layout_weight="1"
@@ -80,9 +83,11 @@
           android:gravity="center"
           />
     </LinearLayout>
+
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
       <TextView android:layout_height="wrap_content"
           tools:text="Followers"
           android:layout_weight="1"

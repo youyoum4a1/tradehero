@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
+    >
 
   <TableLayout
       android:id="@+id/manage_followers_header"
@@ -14,7 +14,7 @@
       android:layout_alignParentTop="true"
       android:background="@color/gray_3"
       android:visibility="gone"
-    >
+      >
 
     <TableRow
         android:weightSum="3">
@@ -48,34 +48,34 @@
     <TableRow
         android:weightSum="3">
 
-        <TextView
-            android:id="@+id/manage_followers_total_revenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="US$ 0.70"
+      <TextView
+          android:id="@+id/manage_followers_total_revenue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.70"
           />
 
-        <TextView
-            android:id="@+id/manage_followers_total_amount_paid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="US$ 0.00"
+      <TextView
+          android:id="@+id/manage_followers_total_amount_paid"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.00"
           />
 
-        <TextView
-            android:id="@+id/manage_followers_number_followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="1"
+      <TextView
+          android:id="@+id/manage_followers_number_followers"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="1"
           />
 
     </TableRow>
@@ -88,9 +88,8 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/manage_followers_header"
       android:background="@null"
-    />
-
-
+      android:layout_marginBottom="50dp"
+      />
 
   <ProgressBar
       android:id="@android:id/empty"

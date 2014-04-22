@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
@@ -10,14 +9,14 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
-import com.tradehero.th.models.discussion.MiddleCallbackMessageStatus;
+import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.discussion.MessageStatusCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -34,79 +33,79 @@ public class MessageServiceWrapper
     private DiscussionDTOFactory discussionDTOFactory;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
-    private Lazy<MessageStatusCache> messageStatusCache;
-
-
+    private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
-            Lazy<MessageStatusCache> messageStatusCache)
+            Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
-        this.messageStatusCache = messageStatusCache;
+        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
 
-    //<editor-fold desc="Get Messages">
-    public PaginatedDTO<MessageHeaderDTO> getMessages(MessageListKey messageListKey)
+    //<editor-fold desc="Get Message Headers">
+    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey)
     {
-        Timber.d("getMessages messageService:%s", messageService);
         if (messageListKey instanceof TypedMessageListKey)
         {
-            return getMessages((TypedMessageListKey) messageListKey);
+            return getMessageHeaders((TypedMessageListKey) messageListKey);
         }
-        return messageService.getMessages(
+        return messageService.getMessageHeaders(
                 messageListKey.page,
                 messageListKey.perPage);
     }
 
-    public PaginatedDTO<MessageHeaderDTO> getMessages(TypedMessageListKey messageListKey)
+    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(TypedMessageListKey messageListKey)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
-            return getMessages((RecipientTypedMessageListKey) messageListKey);
+            return getMessageHeaders((RecipientTypedMessageListKey) messageListKey);
         }
-        return messageService.getMessages(
+        return messageService.getMessageHeaders(
                 messageListKey.discussionType.description,
                 null,
                 messageListKey.page,
                 messageListKey.perPage);
     }
 
-    public PaginatedDTO<MessageHeaderDTO> getMessages(RecipientTypedMessageListKey messageListKey)
+    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(
+            RecipientTypedMessageListKey messageListKey)
     {
-        return messageService.getMessages(
+        return messageService.getMessageHeaders(
                 messageListKey.discussionType.description,
                 messageListKey.recipientId.key,
                 messageListKey.page,
                 messageListKey.perPage);
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessages(MessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(MessageListKey messageListKey,
+            Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
-            return getMessages((TypedMessageListKey) messageListKey, callback);
+            return getMessageHeaders((TypedMessageListKey) messageListKey, callback);
         }
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(
+        messageServiceAsync.getMessageHeaders(
                 messageListKey.page,
                 messageListKey.perPage,
                 middleCallback);
         return middleCallback;
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessages(TypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(
+            TypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
-            return getMessages((RecipientTypedMessageListKey) messageListKey, callback);
+            return getMessageHeaders((RecipientTypedMessageListKey) messageListKey, callback);
         }
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(
+        messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 null,
                 messageListKey.page,
@@ -115,10 +114,12 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessages(RecipientTypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(
+            RecipientTypedMessageListKey messageListKey,
+            Callback<PaginatedDTO<MessageHeaderDTO>> callback)
     {
         MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
-        messageServiceAsync.getMessages(
+        messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 messageListKey.recipientId.key,
                 messageListKey.page,
@@ -142,17 +143,19 @@ public class MessageServiceWrapper
     }
     //</editor-fold>
 
-    //<editor-fold desc="Get Message Status">
-    public MessageStatusDTO getStatus(UserBaseKey recipient)
+    //<editor-fold desc="Get Messaging Relationship Status">
+    public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(UserBaseKey recipient)
     {
-        return messageService.getStatus(recipient.key);
+        return messageService.getMessagingRelationgshipStatus(recipient.key);
     }
 
-    public MiddleCallbackMessageStatus getStatus(UserBaseKey recipient,
-            Callback<MessageStatusDTO> callback)
+    public MiddleCallbackMessagingRelationship getMessagingRelationgshipStatus(
+            UserBaseKey recipient,
+            Callback<UserMessagingRelationshipDTO> callback)
     {
-        MiddleCallbackMessageStatus middleCallback = new MiddleCallbackMessageStatus(callback);
-        messageServiceAsync.getStatus(recipient.key, middleCallback);
+        MiddleCallbackMessagingRelationship
+                middleCallback = new MiddleCallbackMessagingRelationship(callback);
+        messageServiceAsync.getMessagingRelationshipStatus(recipient.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -163,19 +166,20 @@ public class MessageServiceWrapper
         DiscussionDTO discussionDTO = messageService.createMessage(form);
         if (discussionDTO != null)
         {
-            messageStatusCache.get().invalidate(new UserBaseKey(discussionDTO.userId));
+            userMessagingRelationshipCache.get().invalidate(new UserBaseKey(discussionDTO.userId));
         }
         return discussionDTO;
     }
 
     public MiddleCallbackDiscussion createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache.get());
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
+                callback,
+                discussionDTOFactory,
+                userMessagingRelationshipCache.get());
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }
-
-
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">

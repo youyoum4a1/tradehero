@@ -6,18 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    public static final String TAG = InfoTopStockPagerAdapter.class.getSimpleName();
-
     private final Context context;
 
     private SecurityCompactDTO securityCompactDTO;
@@ -101,7 +98,7 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
                     break;
 
                 default:
-                    THLog.w(TAG, "Not supported index " + position);
+                    Timber.w("Not supported index %d", position);
                     throw new UnsupportedOperationException("Not implemented");
             }
         }

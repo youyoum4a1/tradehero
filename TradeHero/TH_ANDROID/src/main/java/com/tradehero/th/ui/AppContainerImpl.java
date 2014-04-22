@@ -59,7 +59,7 @@ public class AppContainerImpl implements AppContainer
         };
 
         List<View> menuItems = new ArrayList<>();
-        for (DashboardTabType tabType : DashboardTabType.values())
+        for (DashboardTabType tabType : DashboardTabType.usableValues())
         {
             if (tabType.show)
             {

@@ -72,10 +72,4 @@ public class DiscussionKeyFactory
             throw new IllegalStateException("Discussion bundle should contain type of the discussion");
         }
     }
-
-    public DiscussionListKey toListKey(DiscussionKey discussionKey)
-    {
-        // for more than one type
-        return new DiscussionListKey(discussionKey.getType(), discussionKey.id);
-    }
 }

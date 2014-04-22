@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_unknown">A surprising error has occurred. Try again.</string>
+  <string name="error_canceled">Action has been canceled</string>
+  <string name="error_network_connection">Please check the network connection</string>
+  <string name="error_cache_flush">There was an error flushing the disk cache.</string>
+
+  <string name="error_incomplete_info_title">Not enough info</string>
+  <string name="error_incomplete_info_message">Try again in a moment</string>
+  <string name="error_incomplete_info_cancel">Ok</string>
+</resources>

@@ -16,8 +16,8 @@
       android:textStyle="bold"
       android:background="#72ffd36b"
       android:layout_gravity="top|right"
-      android:layout_marginTop="10dp"
-      android:layout_marginRight="10dp"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:layout_marginRight="@dimen/common_margin_10"
       />
 
   <LinearLayout
@@ -33,7 +33,7 @@
         android:orientation="vertical"
         android:background="@drawable/trend_price_bar"
         tools:visibility="visible"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_marginBottom="20dp"
         >
 

@@ -79,6 +79,21 @@ public class HeroManagerInfoFetcher
         fetchHeroes(userBaseKey,heroType);
     }
 
+    public HeroIdExtWrapper getHeros(UserBaseKey userBaseKey, HeroType heroType)
+    {
+        HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
+
+        HeroIdExtWrapper all = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.ALL));
+        HeroIdExtWrapper free = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.FREE));
+        HeroIdExtWrapper paid = heroListCache.get().get(new HeroKey(userBaseKey,HeroType.FREE));
+        Timber.d("fetchHeroes getHeros all:%s",all);
+        Timber.d("fetchHeroes getHeros free:%s",free);
+        Timber.d("fetchHeroes getHeros paid:%s",paid);
+
+        return heroIdExtWrapper;
+    }
+
     public void fetchUserProfile(UserBaseKey userBaseKey)
     {
         if (this.userProfileFetchTask != null)
@@ -92,12 +107,13 @@ public class HeroManagerInfoFetcher
     public void fetchHeroes(UserBaseKey userBaseKey, HeroType heroType)
     {
         HeroKey heroKey = new HeroKey(userBaseKey,heroType);
+
         HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(heroKey);
         HeroIdList heroIds = (heroIdExtWrapper != null)?heroIdExtWrapper.heroIdList:null;
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
         if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
-            Timber.d("fetchHeroes get the result and return %d ",heroIds.size());
+            Timber.d("fetchHeroes get the result and return %d heroType:%s",heroIds.size(),heroType);
             if (this.heroListListener != null)
             {
                 this.heroListListener.onDTOReceived(heroKey, heroIdExtWrapper, true);
@@ -105,7 +121,7 @@ public class HeroManagerInfoFetcher
         }
         else
         {
-            Timber.d("fetchHeroes try to fetch");
+            Timber.d("fetchHeroes try to fetch heroType:%s",heroType);
             if (heroListFetchTask != null)
             {
                 heroListFetchTask.setListener(null);

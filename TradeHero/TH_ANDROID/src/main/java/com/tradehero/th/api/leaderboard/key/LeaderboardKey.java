@@ -85,7 +85,7 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
         }
         catch (IOException e)
         {
-            Timber.e("Failed toString", e);
+            Timber.e(e,"Failed toString");
             return "";
         }
     }

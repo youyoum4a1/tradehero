@@ -2,10 +2,10 @@
 <resources>
   <string name="follow">关注</string>
   <string name="message">消息</string>
-  <string name="upgrade_to_premium">升级至高级</string>
+  <string name="upgrade_to_premium">升级关注特权</string>
   <string name="following_premium">关注中\n(高级)</string>
-  <string name="select_endpoint">Select Api Endpoint</string>
-  <string name="current_endpoint">"Current Endpoint: "</string>
+  <string name="select_endpoint">选择 Api 端口</string>
+  <string name="current_endpoint">"目前端口: "</string>
   <string name="action_menu_about">关于</string>
   <string name="leaderboard_empty">开始交易并且成为第一个上此英雄榜的人吧。</string>
   <string name="action_search">搜索</string>
@@ -13,16 +13,16 @@
   <string name="empty_video_list">当前没有任何学习视频.</string>
   <string name="loading_required_information">读取必要信息中</string>
   <string name="server_response">"服务器响应: "</string>
-  <string name="link">链接</string>
+  <string name="link">连接</string>
   <string name="link_description">分享前，请链接您的 %s 账号…</string>
-  <string name="link_now">现在链接!</string>
+  <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
   <string name="please_update">此版本已经过期，请升级至最新的版本</string>
   <string name="upgrade_needed">需要升级</string>
   <string name="update_now">现在升级</string>
   <string name="update_guide">请重新安装股货英雄</string>
   <string name="suggest_to_upgrade">新的版本上线了，强烈推荐您立刻升级，现在就升级吗？</string>
-  <string name="press_back_again_to_exit">请按一下返回退出</string>
+  <string name="press_back_again_to_exit">点击返回以退出</string>
   <string name="discussion">讨论</string>
   <string name="more_character">…</string>
   <string name="buy_sell">买入/卖出</string>
@@ -46,7 +46,14 @@
   <string name="broadcast_message_title">广播</string>
   <string name="broadcast_message_action_send">发送</string>
   <string name="broadcast_message_change_type_hint">请选择粉丝，发送信息</string>
-  <string name="broadcast_message_no_follower_hint">很抱歉，您现在无法发送此类信息，因为您还没有粉丝</string>
+  <string name="broadcast_message_no_follower_hint">对不起，你无法发送信息。因为你没有此类粉丝。</string>
   <string name="broadcast_message_content_length_hint">信息不可为空白</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
+  <string name="social_followers">粉丝</string>
+  <string name="social_heroes">英雄</string>
+
+  <string name="common_loading_error">Sorry, there is something wrong</string>
+  <string name="no_message">No Message</string>
+  <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
+  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
 </resources>

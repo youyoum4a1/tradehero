@@ -5,15 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayList;
 import javax.inject.Inject;
 
 public class PrivateDiscussionListAdapter extends DiscussionListAdapter
@@ -26,8 +22,6 @@ public class PrivateDiscussionListAdapter extends DiscussionListAdapter
 
     @Inject DiscussionCache discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject DiscussionDTOFactory discussionDTOFactory;
-    private MessageHeaderDTO messageHeaderDTO;
 
     public PrivateDiscussionListAdapter(
             Context context,
@@ -38,27 +32,6 @@ public class PrivateDiscussionListAdapter extends DiscussionListAdapter
         this.mineResId = mineResId;
         this.otherResId = otherResId;
         DaggerUtils.inject(this);
-    }
-
-    public void setMessageHeaderDTO(MessageHeaderDTO messageHeaderDTO)
-    {
-        if (items != null && this.messageHeaderDTO != null)
-        {
-            items.remove(0);
-        }
-        this.messageHeaderDTO = messageHeaderDTO;
-        if (messageHeaderDTO != null)
-        {
-            if (items == null)
-            {
-                items = new ArrayList<>();
-            }
-            DiscussionDTO fakeFirstDiscussion = discussionDTOFactory.createFrom(messageHeaderDTO);
-            DiscussionKey fakeFirstDiscussionKey = fakeFirstDiscussion.getDiscussionKey();
-            discussionCache.put(fakeFirstDiscussionKey, fakeFirstDiscussion);
-            items.add(0, fakeFirstDiscussionKey);
-        }
-        notifyDataSetChanged();
     }
 
     @Override public int getViewTypeCount()

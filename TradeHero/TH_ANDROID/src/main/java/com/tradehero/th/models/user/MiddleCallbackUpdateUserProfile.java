@@ -8,13 +8,8 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 3/6/14.
- */
 public class MiddleCallbackUpdateUserProfile extends MiddleCallback<UserProfileDTO>
 {
-    public static final String TAG = MiddleCallbackUpdateUserProfile.class.getSimpleName();
-
     @Inject UserProfileCache userProfileCache;
 
     public MiddleCallbackUpdateUserProfile(Callback<UserProfileDTO> primaryCallback)

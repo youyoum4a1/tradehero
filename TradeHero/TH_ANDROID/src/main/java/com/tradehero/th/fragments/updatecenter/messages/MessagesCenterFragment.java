@@ -33,6 +33,8 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -56,6 +58,8 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageHeaderCache> messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+    @Inject Lazy<DiscussionListCache> discussionListCache;
+    @Inject Lazy<DiscussionCache> discussionCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
@@ -215,9 +219,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
 
         Bundle args = new Bundle();
-        args.putBundle(ReplyPrivateMessageFragment.CORRESPONDENT_USER_BASE_BUNDLE_KEY,
-                new UserBaseKey(targerUserId).getArgs());
-        ReplyPrivateMessageFragment.putInitiatingMessageHeaderId(args, messageHeaderId);
+        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(targerUserId));
         args.putBundle(ReplyPrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
                 discussionKeyFactory.create(messageHeaderDTO).getArgs());
         getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
@@ -257,6 +259,8 @@ public class MessagesCenterFragment extends DashboardFragment
             refreshMessagesFetchListener = new RefershMessageFetchListener();
         }
 
+        discussionCache.get().invalidateAll();
+        discussionListCache.get().invalidateAll();
         MessageListKey messageListKey =
                 new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         Timber.d("refreshContent %s", messageListKey);

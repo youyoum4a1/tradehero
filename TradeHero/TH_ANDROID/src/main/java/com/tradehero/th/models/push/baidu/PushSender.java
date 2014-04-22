@@ -60,11 +60,13 @@ public class PushSender
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
+            Timber.d("UpdateDeviceIdentifierCallback send success");
             pushDeviceIdentifierSentFlag.set(true);
         }
 
         @Override public void failure(RetrofitError error)
         {
+            Timber.e(error,"UpdateDeviceIdentifierCallback send failure");
             pushDeviceIdentifierSentFlag.set(false);
         }
     }

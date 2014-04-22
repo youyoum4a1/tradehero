@@ -23,6 +23,7 @@ import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,17 +31,22 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
- * Repurposes queries Created by xavier on 12/12/13.
+ * Repurposes queries
  */
 @Singleton public class UserServiceWrapper
 {
     private final UserService userService;
     private final UserServiceAsync userServiceAsync;
+    private final UserMessagingRelationshipCache userMessagingRelationshipCache;
 
-    @Inject public UserServiceWrapper(UserService userService, UserServiceAsync userServiceAsync)
+    @Inject public UserServiceWrapper(
+            UserService userService,
+            UserServiceAsync userServiceAsync,
+            UserMessagingRelationshipCache userMessagingRelationshipCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
+        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
 
     //<editor-fold desc="Sign-Up With Email">
@@ -292,7 +298,9 @@ import retrofit.RetrofitError;
     //<editor-fold desc="Follow Hero">
     public UserProfileDTO follow(UserBaseKey userBaseKey)
     {
-        return userService.follow(userBaseKey.key);
+        UserProfileDTO myProfile = userService.follow(userBaseKey.key);
+        userMessagingRelationshipCache.invalidate(userBaseKey);
+        return myProfile;
     }
 
     public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
@@ -302,16 +310,18 @@ import retrofit.RetrofitError;
         return middleCallbackFollowUser;
     }
 
-    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallbackFollowUser freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallbackFollowUser middleCallback = new MiddleCallbackFollowUser(userBaseKey, callback);
         userService.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
     {
-        return userService.follow(userBaseKey.key, purchaseDTO);
+        UserProfileDTO myProfile = userService.follow(userBaseKey.key, purchaseDTO);
+        userMessagingRelationshipCache.invalidate(userBaseKey);
+        return myProfile;
     }
 
     public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
@@ -325,7 +335,9 @@ import retrofit.RetrofitError;
     //<editor-fold desc="Unfollow Hero">
     public UserProfileDTO unfollow(UserBaseKey userBaseKey)
     {
-        return userService.unfollow(userBaseKey.key);
+        UserProfileDTO myProfile = userService.unfollow(userBaseKey.key);
+        userMessagingRelationshipCache.invalidate(userBaseKey);
+        return myProfile;
     }
 
     public MiddleCallbackFollowUser unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)

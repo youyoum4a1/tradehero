@@ -2,9 +2,6 @@ package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 
-/**
- * Created by xavier2 on 2014/4/10.
- */
 public class TypedMessageListKey extends MessageListKey
 {
     public final DiscussionType discussionType;

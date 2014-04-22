@@ -8,10 +8,12 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
@@ -27,6 +29,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     {
         ButterKnife.inject(this, view);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override protected void initViews(View view)
+    {
+        discussionView.setCommentPostedListener(createCommentPostedListener());
     }
 
     @Override public void onDestroyView()
@@ -57,6 +64,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
+    public DiscussionKey getDiscussionKey()
+    {
+        return discussionKey;
+    }
+
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
@@ -69,5 +81,31 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+    }
+
+    protected void handleCommentPostFailed(Exception exception)
+    {
+    }
+
+    protected PostCommentView.CommentPostedListener createCommentPostedListener()
+    {
+        return new AbstractDiscussionCommentPostedListener();
+    }
+
+    protected class AbstractDiscussionCommentPostedListener implements PostCommentView.CommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            handleCommentPosted(discussionDTO);
+        }
+
+        @Override public void failure(Exception exception)
+        {
+            handleCommentPostFailed(exception);
+        }
     }
 }

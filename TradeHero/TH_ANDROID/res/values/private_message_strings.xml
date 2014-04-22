@@ -5,13 +5,15 @@
   <string name="private_message_message_hint">Type a Message</string>
   <string name="private_message_btn_send">Send</string>
 
-  <string name="private_message_limited_count">%d messages left.\nUpgrade now for unlimited messaging!</string>
+  <string name="private_message_limited_count">%d message threads left.\nUpgrade now for unlimited messaging!</string>
 
   <string name="private_message_subtitle">Private Message Thread</string>
 
-  <string name="private_message_expired_free_message_title">No more free messages</string>
-  <string name="private_message_expired_free_message_description">You have exhausted the free messages you can send to %s.\nDo you want to keep the conversation running?</string>
+  <string name="private_message_expired_free_message_title">No more free message threads</string>
+  <string name="private_message_expired_free_message_description">You have exhausted the free message threads you can send to %1$s.\nDo you want to keep the conversation running and premium-follow %1$s?</string>
   <string name="private_message_expired_free_message_ok">Yes</string>
   <string name="private_message_expired_free_message_cancel">No</string>
+
+  <string name="error_fetch_private_message_initiating_discussion">Failed to fetch the initiating discussion</string>
 
 </resources>

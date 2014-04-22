@@ -1,13 +1,20 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import javax.inject.Inject;
 
 public class DiscussionListKeyFactory
 {
-    @Inject public DiscussionListKeyFactory()
+    private CurrentUserId currentUserId;
+
+    @Inject public DiscussionListKeyFactory(CurrentUserId currentUserId)
     {
         super();
+        this.currentUserId = currentUserId;
     }
 
     public DiscussionListKey create(Bundle args)
@@ -34,5 +41,54 @@ public class DiscussionListKeyFactory
             }
         }
         return discussionListKey;
+    }
+
+    public DiscussionListKey create(DiscussionDTO discussionDTO)
+    {
+        if (discussionDTO == null || discussionDTO.type == null)
+        {
+            return null;
+        }
+        if (discussionDTO.type.equals(DiscussionType.PRIVATE_MESSAGE))
+        {
+            DiscussionType discussionType = discussionDTO.inReplyToType != null ?
+                    discussionDTO.inReplyToType :
+                    discussionDTO.type;
+            int inReplyToId = discussionDTO.inReplyToId != 0 ?
+                    discussionDTO.inReplyToId :
+                    discussionDTO.id;
+            return new PrivateMessageDiscussionListKey(
+                    discussionType,
+                    inReplyToId,
+                    discussionDTO.getSenderKey(),
+                    currentUserId.toUserBaseKey(),
+                    null, null, null);
+        }
+        return create(discussionDTO.getDiscussionKey());
+    }
+
+    public DiscussionListKey create(DiscussionKey discussionKey)
+    {
+        return new DiscussionListKey(discussionKey.getType(), discussionKey.id);
+    }
+
+    public DiscussionListKey create(MessageHeaderDTO messageHeaderDTO)
+    {
+        if (messageHeaderDTO == null || messageHeaderDTO.discussionType == null)
+        {
+            return null;
+        }
+        switch (messageHeaderDTO.discussionType)
+        {
+            case PRIVATE_MESSAGE:
+                return new PrivateMessageDiscussionListKey(
+                        messageHeaderDTO.discussionType,
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
+                        null, null, null);
+            default:
+                throw new IllegalArgumentException("Unhandled type");
+        }
     }
 }

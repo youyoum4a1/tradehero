@@ -43,13 +43,13 @@
         tools:text="Buy @ AU$ 0.033"
         />
 
-    <TextView
-        android:id="@+id/dialog_portfolio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_price"
-        android:text="Portfolio: Main Portfolio"
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/dialog_portfolio"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/dialog_price"-->
+        <!--android:text="Portfolio: Main Portfolio"-->
+        <!--/>-->
 
     <ImageButton
         android:id="@+id/dialog_btn_add_cash"

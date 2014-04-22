@@ -40,6 +40,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.THSignedNumber;
@@ -308,18 +309,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                             new DecimalFormat("##.##").format(gainLoss));
                 }
 
-                if (pl > 0)
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
-                }
-                else if (pl < 0)
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
-                }
-                else
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_gray_normal));
-                }
+                gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
             }
             else
             {
@@ -357,11 +347,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
                 if (pl > 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_up));
                 }
                 else if (pl < 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_down));
                 }
                 else
                 {

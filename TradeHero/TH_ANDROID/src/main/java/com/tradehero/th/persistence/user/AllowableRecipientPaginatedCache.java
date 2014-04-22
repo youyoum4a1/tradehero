@@ -17,7 +17,7 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
     public static final int DEFAULT_MAX_SIZE = 20;
 
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject UserRelationCache userRelationCache;
+    @Inject UserMessagingRelationshipCache userRelationCache;
     @Inject UserProfileCompactCache userProfileCompactCache;
 
     //<editor-fold desc="Constructors">

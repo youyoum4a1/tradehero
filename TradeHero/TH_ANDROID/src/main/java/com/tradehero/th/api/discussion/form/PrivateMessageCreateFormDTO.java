@@ -6,6 +6,8 @@ public class PrivateMessageCreateFormDTO extends MessageCreateFormDTO
 {
     public static final MessageType TYPE = MessageType.PRIVATE;
 
+    public int recipientUserId;
+
     public PrivateMessageCreateFormDTO()
     {
         super();

@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="number_green">#1A930A</color>
-    <color name="number_red">#D42621</color>
-    <color name="red">#D42621</color>
+  <color name="number_green">#1A930A</color>
+  <color name="number_red">#D42621</color>
+  <color name="number_up">@color/number_green</color>
+  <color name="number_down">@color/number_red</color>
 
-    <color name="actionbar_gradient1">#6B748E</color>
-    <color name="actionbar_gradient2">#929CBA</color>
-    <color name="btn_new_user_color_light">#555555</color>
-    <color name="btn_new_user_color_dark">#2B4170</color>
-    <color name="round_rectangle1">#4E6DAE</color>
-    <color name="round_rectangle2">#2B4170</color>
-    <color name="round_rectangle3">#00CCED</color>
-    <color name="round_rectangle4">#0087CE</color>
-    <color name="round_rectangle5">#009CDA</color>
-    <color name="round_rectangle6">#0167A3</color>
-    <color name="black">@android:color/black</color>
-    <color name="light_grey">#BFBFBF</color>
-    <color name="white">@android:color/white</color>
-    <color name="signinbg_color">#D6D6D6</color>
-    <color name="signinfnt_color">#47454A</color>
+  <color name="red">#D42621</color>
 
-    <color name="btn_facebook_color_start">#5776b6</color>
-    <color name="btn_facebook_color_end">#3d5c9b</color>
-    <color name="btn_twitter_color_start">#5fb8ff</color>
-    <color name="btn_twitter_color_end">#419aff</color>
-    <color name="btn_linkedin_color_light">#1c8fcf</color>
-    <color name="btn_linkedin_color_dark">#0274b4</color>
-    <color name="gray_2">#A0AFAFAF</color>
-    <color name="text_gray_normal">#aaaaaa</color>
-    <color name="gray_normal">#aaaaaa</color>
-    <color name="gray_1">#C0C0C0</color>
-    <color name="gray_3">#F3F3F3</color>
-    <color name="gray_4">#F6F6F6</color>
-    <color name="font_roi">#00CC00</color>
+  <color name="actionbar_gradient1">#6B748E</color>
+  <color name="actionbar_gradient2">#929CBA</color>
+  <color name="btn_new_user_color_light">#555555</color>
+  <color name="btn_new_user_color_dark">#2B4170</color>
+  <color name="round_rectangle1">#4E6DAE</color>
+  <color name="round_rectangle2">#2B4170</color>
+  <color name="round_rectangle3">#00CCED</color>
+  <color name="round_rectangle4">#0087CE</color>
+  <color name="round_rectangle5">#009CDA</color>
+  <color name="round_rectangle6">#0167A3</color>
+  <color name="black">@android:color/black</color>
+  <color name="light_grey">#BFBFBF</color>
+  <color name="white">@android:color/white</color>
+  <color name="signinbg_color">#D6D6D6</color>
+  <color name="signinfnt_color">#47454A</color>
 
-    <color name="fbook_color1">#4E6DAE</color>
-    <color name="fbook_color2">#2B4170</color>
-    <color name="twit_color1">#00CCED</color>
-    <color name="twit_color2">#0087CE</color>
-    <color name="linkd_color1">#009CDA</color>
-    <color name="linkd_color2">#0167A3</color>
+  <color name="btn_facebook_color_start">#5776b6</color>
+  <color name="btn_facebook_color_end">#3d5c9b</color>
+  <color name="btn_twitter_color_start">#5fb8ff</color>
+  <color name="btn_twitter_color_end">#419aff</color>
+  <color name="btn_linkedin_color_light">#1c8fcf</color>
+  <color name="btn_linkedin_color_dark">#0274b4</color>
+  <color name="gray_2">#A0AFAFAF</color>
+  <color name="text_gray_normal">#aaaaaa</color>
+  <color name="gray_normal">#aaaaaa</color>
+  <color name="gray_1">#C0C0C0</color>
+  <color name="gray_3">#F3F3F3</color>
+  <color name="gray_4">#F6F6F6</color>
+  <color name="font_roi">#00CC00</color>
+
+  <color name="fbook_color1">#4E6DAE</color>
+  <color name="fbook_color2">#2B4170</color>
+  <color name="twit_color1">#00CCED</color>
+  <color name="twit_color2">#0087CE</color>
+  <color name="linkd_color1">#009CDA</color>
+  <color name="linkd_color2">#0167A3</color>
 
   <!-- What's Trending -->
-	<color name="trending_grid_item_bg">#FFFFFFFF</color>
+  <color name="trending_grid_item_bg">#FFFFFFFF</color>
   <color name="trending_gray_border">#A0787878</color>
-	<color name="title">#ffb0b0b0</color>
-	<color name="sec_type">#ff5791bd</color>
+  <color name="title">#ffb0b0b0</color>
+  <color name="sec_type">#ff5791bd</color>
   <color name="exchange_symbol">#556380</color>
 
   <!-- Trending detail -->
-	<color name="trending_detail_bg">#ffebebeb</color>
-	<color name="price_bar_bg">@color/transparent</color>
-	<color name="price_bar_bg_selected">#ff636363</color>
-	<color name="price_bar_text_default">#ff636363</color>
-	<color name="price_bar_text_selected">#ffbfbdbd</color>
-	<color name="btn_buy_default">#ff636363</color>
-	<color name="btn_buy_pressed">#ff636363</color>
-	<color name="stock_info_bg">#ffebebeb</color>
-	<color name="tab_color">#e0111111</color>
-	<color name="tab_scroll_color">#217ac8</color>
+  <color name="trending_detail_bg">#ffebebeb</color>
+  <color name="price_bar_bg">@color/transparent</color>
+  <color name="price_bar_bg_selected">#ff636363</color>
+  <color name="price_bar_text_default">#ff636363</color>
+  <color name="price_bar_text_selected">#ffbfbdbd</color>
+  <color name="btn_buy_default">#ff636363</color>
+  <color name="btn_buy_pressed">#ff636363</color>
+  <color name="stock_info_bg">#ffebebeb</color>
+  <color name="tab_color">#e0111111</color>
+  <color name="tab_scroll_color">#217ac8</color>
   <color name="authentication_welcome_bg">#f2f2f2</color>
   <color name="authentication_background_color">#f2f2f2</color>
 
@@ -66,5 +69,4 @@
   <color name="trade_highlight_share_quantity">#40929CBA</color>
   <color name="projected_pl_gain">#ff00cc00</color>
   <color name="projected_pl_loss">#ffee0000</color>
-
 </resources>
