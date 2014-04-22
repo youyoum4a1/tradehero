@@ -8,7 +8,6 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
-import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.DiscussionService;

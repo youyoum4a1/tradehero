@@ -10,8 +10,8 @@ import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,10 +22,12 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
     private final DiscussionServiceWrapper discussionServiceWrapper;
     private final NewsCache newsCache;
     private final DiscussionDTOFactory discussionDTOFactory;
+    private final UserTimelineService timelineService;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
             NewsCache newsCache,
+            UserTimelineService userTimelineService,
             DiscussionServiceWrapper discussionServiceWrapper,
             DiscussionDTOFactory discussionDTOFactory)
     {
@@ -36,13 +38,14 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
 
         // very hacky, but server hacks it first :(
         this.newsCache = newsCache;
+        this.timelineService = userTimelineService;
     }
 
     @Override protected AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
-            // TODO
+            return timelineService.getTimelineDetail(discussionKey.id);
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
@@ -52,7 +55,7 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         {
             return discussionDTOFactory.createChildClass(discussionServiceWrapper.getComment(discussionKey));
         }
-        throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
+        //throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }
 
     public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)

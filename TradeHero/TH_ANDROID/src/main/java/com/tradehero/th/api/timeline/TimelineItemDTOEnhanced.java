@@ -1,11 +1,9 @@
 package com.tradehero.th.api.timeline;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +18,7 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
     public boolean useSysIcon;
     public boolean renderSysStyle;
     public String imageUrl;
-    public UserProfileDTO user;
+    private UserProfileCompactDTO user;
 
     public TimelineItemDTOEnhanced()
     {
@@ -55,16 +53,14 @@ public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
         return securityMediaDTO;
     }
 
-    @JsonIgnore
     public void setUser(UserProfileCompactDTO user)
     {
-        put(UserProfileCompactDTO.TAG, user);
+        this.user = user;
     }
 
-    @JsonIgnore
     public UserProfileCompactDTO getUser()
     {
-        return (UserProfileCompactDTO) get(UserProfileCompactDTO.TAG);
+        return user;
     }
 
     @Override public TimelineItemDTOKey getDiscussionKey()
