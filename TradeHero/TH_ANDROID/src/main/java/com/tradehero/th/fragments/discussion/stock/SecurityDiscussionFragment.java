@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -16,6 +18,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 public class SecurityDiscussionFragment extends DashboardFragment
 {
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
+    private SecurityId securityId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -39,9 +42,24 @@ public class SecurityDiscussionFragment extends DashboardFragment
         }
     }
 
+    @OnClick(R.id.security_discussion_add) void onAddNewDiscussionRequested()
+    {
+        if (securityId != null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+        }
+    }
+
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        securityDiscussionView.display(securityId);
+        this.securityId  = securityId;
+
+        if (andDisplay)
+        {
+            securityDiscussionView.display(securityId);
+        }
     }
 
     @Override public boolean isTabBarVisible()

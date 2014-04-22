@@ -124,21 +124,21 @@ public class
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     //for dialog
-    AlertDialog mBuySellDialog;
-    TextView mTradeValueTextView;
-    TextView mCashLeftValueTextView;
-    TextView mQuantityTextView;
-    TextView mCashLeftTextView;
-    SeekBar mSlider;
-    QuickPriceButtonSet mQuickPriceButtonSet;
-    EditText mCommentsEditText;
-    ToggleButton mBtnShareFacebook;
-    ToggleButton mBtnShareTwitter;
-    ToggleButton mBtnShareLinkedIn;
-    ToggleButton mBtnShareWeChat;
-    ToggleButton mBtnLocation;
-    ToggleButton mBtnSharePublic;
-    Button mConfirmButton;
+    private AlertDialog mBuySellDialog;
+    private TextView mTradeValueTextView;
+    private TextView mCashLeftValueTextView;
+    private TextView mQuantityTextView;
+    private TextView mCashLeftTextView;
+    private SeekBar mSlider;
+    private QuickPriceButtonSet mQuickPriceButtonSet;
+    private EditText mCommentsEditText;
+    private ToggleButton mBtnShareFacebook;
+    private ToggleButton mBtnShareTwitter;
+    private ToggleButton mBtnShareLinkedIn;
+    private ToggleButton mBtnShareWeChat;
+    private ToggleButton mBtnLocation;
+    private ToggleButton mBtnSharePublic;
+    private Button mConfirmButton;
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
     private BaseBuySellAsyncTask buySellTask;
     private boolean isBuying = false;
