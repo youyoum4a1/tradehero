@@ -5,7 +5,6 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Collections;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/3/13 Time: 12:52 PM Copyright (c) TradeHero */
 public class TimelineDTO
 {
     private List<UserProfileCompactDTO> users;
