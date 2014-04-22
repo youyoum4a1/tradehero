@@ -23,8 +23,6 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ForWeChat;
-import com.tradehero.th.utils.SocialSharer;
 import javax.inject.Inject;
 
 /**
@@ -44,7 +42,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject @ForWeChat SocialSharer weChatSharer;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context)

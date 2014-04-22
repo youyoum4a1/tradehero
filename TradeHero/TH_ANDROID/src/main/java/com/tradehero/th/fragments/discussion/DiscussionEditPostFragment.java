@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -15,6 +17,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -46,17 +49,19 @@ import timber.log.Timber;
  */
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    private static final String SECURITY_TAG_FORMAT = "$%s";
-    private static final String MENTIONED_FORMAT = "@%s";
+    private static final String SECURITY_TAG_FORMAT = "<$$%s,%d$>";
+    private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
     @InjectView(R.id.discussion_new_post_action_buttons) DiscussionPostActionButtonsView discussionPostActionButtonsView;
+    @InjectView(R.id.btn_wechat) ToggleButton mWeChatShareButton;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject UserSearchResultCache userSearchResultCache;
     @Inject @ForWeChat SocialSharer weChatSharer;
+    @Inject RichTextCreator parser;
 
     private SecurityId securityId;
     private DiscussionDTO discussionDTO;
@@ -159,7 +164,10 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         this.discussionDTO = discussionDTO;
 
-        weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
+        if (mWeChatShareButton.isChecked())
+        {
+            weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
+        }
     }
 
     private boolean validate()
@@ -236,26 +244,24 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;
 
-            extraText = String.format(SECURITY_TAG_FORMAT, taggedSecurity.getExchangeSymbol());
+            extraText = String.format(SECURITY_TAG_FORMAT, taggedSecurity.getExchangeSymbol(), taggedSecurity.id);
         }
 
         if (extraInput instanceof UserBaseKey)
         {
             UserSearchResultDTO mentionedUserProfileDTO = userSearchResultCache.get((UserBaseKey) extraInput);
-            extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName);
+            extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName, mentionedUserProfileDTO.userId);
         }
 
-        if (editingText.isEmpty())
-        {
-            discussionPostContent.setText(extraText);
-        }
-        else
+        String newText = extraText;
+        if (!editingText.isEmpty())
         {
             int start = discussionPostContent.getSelectionStart();
             int end = discussionPostContent.getSelectionEnd();
-            Editable newText = discussionPostContent.getText().replace(start, end, extraText);
-            discussionPostContent.setText(newText);
+            newText = discussionPostContent.getText().replace(start, end, extraText).toString();
         }
+
+        discussionPostContent.setText(parser.load(newText).create(), TextView.BufferType.SPANNABLE);
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
