@@ -151,18 +151,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    @Override public void onPause()
-    {
-        //THLog.d(TAG, "onPause");
-        if (freshQuoteHolder != null)
-        {
-            freshQuoteHolder.cancel();
-        }
-        freshQuoteHolder = null;
-
-        super.onPause();
-    }
-
     //<editor-fold desc="ActionBar">
     protected void displayMarketClose()
     {
@@ -205,11 +193,20 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         detachFetchPositionDetailTask();
         detachFetchUserProfileTask();
-
+        destroyFreshQuoteHolder();
         freshQuoteListener = null;
         querying = false;
 
         super.onDestroyView();
+    }
+
+    protected void destroyFreshQuoteHolder()
+    {
+        if (freshQuoteHolder != null)
+        {
+            freshQuoteHolder.destroy();
+        }
+        freshQuoteHolder = null;
     }
 
     @Override public void onDestroy()
@@ -518,13 +515,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void prepareFreshQuoteHolder()
     {
-        if (freshQuoteHolder != null)
-        {
-            Timber.e("We should not have been cancelling here %s", freshQuoteHolder.identifier, new IllegalStateException());
-            freshQuoteHolder.cancel();
-        }
+        destroyFreshQuoteHolder();
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.registerListener(freshQuoteListener);
+        freshQuoteHolder.setListener(freshQuoteListener);
         freshQuoteHolder.start();
     }
 

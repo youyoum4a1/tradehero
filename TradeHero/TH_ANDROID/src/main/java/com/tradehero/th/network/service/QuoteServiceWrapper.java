@@ -4,6 +4,7 @@ import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -12,7 +13,6 @@ import timber.log.Timber;
 
 /**
  * Repurposes requests
- * Created by xavier on 12/12/13.
  */
 @Singleton public class QuoteServiceWrapper
 {
@@ -64,12 +64,13 @@ import timber.log.Timber;
                 securityId.securitySymbol));
     }
 
-    public void getRawQuote(SecurityId securityId, Callback<Response> callback)
+    public MiddleCallback<Response> getRawQuote(SecurityId securityId, Callback<Response> callback)
     {
+        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
         basicCheck(securityId);
-        Timber.d("getRawQuote securitySymbol ",securityId.securitySymbol);
         this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
-                securityId.securitySymbol), callback);
+                securityId.securitySymbol), middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 }
