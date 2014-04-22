@@ -10,6 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -19,12 +20,14 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 
 public class PrivateDiscussionView extends DiscussionView
 {
     @Inject protected MessageHeaderCache messageHeaderCache;
+    @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
@@ -242,6 +245,24 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
+    protected void putMessageHeaderStub(DiscussionDTO from)
+    {
+        messageHeaderCache.put(new MessageHeaderId(from.id),
+                createStub(from));
+    }
+
+    protected MessageHeaderDTO createStub(DiscussionDTO from)
+    {
+        MessageHeaderDTO stub = messageHeaderDTOFactory.create(from);
+        stub.recipientUserId = recipient.key;
+        return stub;
+    }
+
+    @Override protected PostCommentView.CommentPostedListener createCommentPostedListener()
+    {
+        return new PrivateDiscussionViewCommentPostedListener();
+    }
+
     protected class PrivateDiscussionViewOnMessageNotAllowedToSendListener
             implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
     {
@@ -262,6 +283,15 @@ public class PrivateDiscussionView extends DiscussionView
         @Override public void onErrorThrown(DiscussionKey key, Throwable error)
         {
             THToast.show(R.string.error_fetch_private_message_initiating_discussion);
+        }
+    }
+
+    protected class PrivateDiscussionViewCommentPostedListener extends DiscussionViewCommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            putMessageHeaderStub(discussionDTO);
+            super.success(discussionDTO);
         }
     }
 }

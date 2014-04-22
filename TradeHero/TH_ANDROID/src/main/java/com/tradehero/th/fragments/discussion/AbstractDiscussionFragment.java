@@ -64,6 +64,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
+    public DiscussionKey getDiscussionKey()
+    {
+        return discussionKey;
+    }
+
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
