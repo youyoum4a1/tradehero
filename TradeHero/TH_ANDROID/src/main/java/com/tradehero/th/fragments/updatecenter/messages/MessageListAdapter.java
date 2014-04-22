@@ -8,46 +8,21 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by wangliang on 3/4/14.
- */
-public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper> implements
+public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper>
+        implements
         View.OnClickListener
 {
-
-    public static interface MessageOnClickListener
-    {
-        public static final int TYPE_ICON = 1;
-        public static final int TYPE_CONTENT = 2;
-        void onMessageClick(int position,int type);
-
-    }
-
     private MessageOnClickListener messageOnClickListener;
-    private Set<Integer> markedDeletedIds;
+    private Set<MessageHeaderId> markedDeletedIds;
 
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
-
-    }
-
-    public void initMarkDeletedIds(Collection<Integer> ids)
-    {
-        if (markedDeletedIds == null)
-        {
-            markedDeletedIds = new HashSet<>();
-        }
-        if (ids == null)
-        {
-            return;
-        }
-        markedDeletedIds.addAll(ids);
+        markedDeletedIds = new HashSet<>();
     }
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
@@ -67,38 +42,28 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
     {
         if (v.getTag() != null && messageOnClickListener != null)
         {
-            Integer position = (Integer)v.getTag();
+            Integer position = (Integer) v.getTag();
             if (v.getId() == R.id.main_content_wrapper)
             {
-                messageOnClickListener.onMessageClick(position,MessageOnClickListener.TYPE_CONTENT);
+                messageOnClickListener.onMessageClick(position,
+                        MessageOnClickListener.TYPE_CONTENT);
             }
-            else if(v.getId() == R.id.message_item_icon)
+            else if (v.getId() == R.id.message_item_icon)
             {
-                messageOnClickListener.onMessageClick(position,MessageOnClickListener.TYPE_ICON);
+                messageOnClickListener.onMessageClick(position, MessageOnClickListener.TYPE_ICON);
             }
         }
-
     }
 
-    @Override protected void fineTune(int position, MessageHeaderId dto, MessageItemViewWrapper dtoView)
+    @Override protected void fineTune(int position, MessageHeaderId dto,
+            MessageItemViewWrapper dtoView)
     {
         // nothing for now
     }
 
-    @Override public int getCount()
-    {
-        return super.getCount();
-    }
-
     @Override public MessageHeaderId getItem(int i)
     {
-        Object o = super.getItem(i);
-        if (o != null)
-        {
-            MessageHeaderId msgId =  ((MessageHeaderId)o);
-            return msgId;
-        }
-        return null;
+        return (MessageHeaderId) super.getItem(i);
     }
 
     public void appendMore(List<MessageHeaderId> newItems)
@@ -108,10 +73,11 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
             return;
         }
         newItems = filter(newItems);
-        List<MessageHeaderId> itemCopied = items != null ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
+        List<MessageHeaderId> itemCopied =
+                items != null ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
         for (MessageHeaderId messageHeaderId : newItems)
         {
-            if (!checkExist(messageHeaderId.key))
+            if (!isInItems(messageHeaderId))
             {
                 itemCopied.add(messageHeaderId);
             }
@@ -119,77 +85,33 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         setItems(itemCopied);
         notifyDataSetChanged();
     }
-    //@Override public void setItems(List<MessageHeaderId> newItems)
-    //{
-    //    List<MessageHeaderId> itemCopied =
-    //            (items != null) ? new ArrayList<>(items) : new ArrayList<MessageHeaderId>();
-    //    for (MessageHeaderId messageHeaderId : newItems)
-    //    {
-    //        if (!checkExist(messageHeaderId.key))
-    //        {
-    //            itemCopied.add(messageHeaderId);
-    //        }
-    //    }
-    //    super.setItems(itemCopied);
-    //}
 
-    @Override public void clear()
+    private void filterAndSet()
     {
-        super.clear();
-        if (items != null)
-        {
-            items.clear();
-            notifyDataSetChanged();
-        }
-    }
-
-    private void filter()
-    {
-        List<MessageHeaderId> itemCopied = new ArrayList<MessageHeaderId>();
-        for(MessageHeaderId messageHeaderId:items)
-        {
-            if (!markedDeletedIds.contains(messageHeaderId.key))
-            {
-                itemCopied.add(messageHeaderId);
-
-            }
-        }
-        super.setItems(itemCopied);
+        super.setItems(filter(items));
     }
 
     private List<MessageHeaderId> filter(List<MessageHeaderId> messageHeaderIds)
     {
-        List<MessageHeaderId> itemCopied = new ArrayList<MessageHeaderId>();
-        for(MessageHeaderId messageHeaderId:messageHeaderIds)
+        List<MessageHeaderId> itemCopied = new ArrayList<>();
+        for (MessageHeaderId messageHeaderId : messageHeaderIds)
         {
-            if (!markedDeletedIds.contains(messageHeaderId.key))
+            if (!markedDeletedIds.contains(messageHeaderId))
             {
                 itemCopied.add(messageHeaderId);
-
             }
         }
         return itemCopied;
-
     }
 
-    private boolean checkExist(int messageId)
+    private boolean isInItems(MessageHeaderId messageId)
     {
-        if (items == null)
-        {
-            return false;
-        }
-        for (MessageHeaderId id:items)
-        {
-            if (messageId == id.key)
-            {
-                return true;
-            }
-        }
-        return false;
+        return items != null && items.contains(messageId);
     }
 
-    public void markDeleted(int messageId,boolean marlDeleted){
-        if (marlDeleted)
+    public void markDeleted(MessageHeaderId messageId, boolean markDeleted)
+    {
+        if (markDeleted)
         {
             markedDeletedIds.add(messageId);
         }
@@ -197,7 +119,7 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         {
             markedDeletedIds.remove(messageId);
         }
-        filter();
+        filterAndSet();
         notifyDataSetChanged();
     }
 
@@ -206,4 +128,11 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         this.messageOnClickListener = messageOnClickListener;
     }
 
+    public static interface MessageOnClickListener
+    {
+        public static final int TYPE_ICON = 1;
+        public static final int TYPE_CONTENT = 2;
+
+        void onMessageClick(int position, int type);
+    }
 }

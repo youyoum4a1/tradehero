@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -15,7 +16,6 @@ import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -183,28 +183,15 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    public Response deleteMessage(int commentId)
+    public Response deleteMessage(MessageHeaderId messageHeaderId)
     {
-        return messageService.deleteMessage(commentId);
+        return messageService.deleteMessage(messageHeaderId.key);
     }
 
-    public MiddleCallback<Response> deleteMessage(final int commentId, final MessageHeaderListCache messageHeaderListCache, Callback<Response> callback)
+    public MiddleCallback<Response> deleteMessage(final MessageHeaderId messageHeaderId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<Response>(callback)
-        {
-            @Override public void success(Response response, Response response2)
-            {
-                super.success(response, response2);
-                Timber.d("Delete message success :%d",commentId);
-                messageHeaderListCache.markMessageDeleted(commentId);
-            }
-
-            @Override public void failure(RetrofitError error)
-            {
-                super.failure(error);
-            }
-        };
-        messageServiceAsync.deleteMessage(commentId, middleCallback);
+        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        messageServiceAsync.deleteMessage(messageHeaderId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
