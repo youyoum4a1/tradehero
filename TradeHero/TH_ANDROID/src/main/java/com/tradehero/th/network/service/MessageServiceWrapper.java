@@ -1,29 +1,29 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
+import com.tradehero.th.models.discussion.MiddleCallbackMessageDeleted;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 @Singleton
 public class MessageServiceWrapper
@@ -33,17 +33,20 @@ public class MessageServiceWrapper
     private DiscussionDTOFactory discussionDTOFactory;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
+    private Lazy<MessageHeaderListCache> messageHeaderListCache;
     private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
+            Lazy<MessageHeaderListCache> messageHeaderListCache,
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
+        this.messageHeaderListCache = messageHeaderListCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
 
@@ -185,12 +188,14 @@ public class MessageServiceWrapper
     //<editor-fold desc="Delete Message">
     public Response deleteMessage(MessageHeaderId messageHeaderId)
     {
-        return messageService.deleteMessage(messageHeaderId.key);
+        Response response = messageService.deleteMessage(messageHeaderId.key);
+        messageHeaderListCache.get().invalidateKeysThatList(messageHeaderId);
+        return response;
     }
 
-    public MiddleCallback<Response> deleteMessage(final MessageHeaderId messageHeaderId, Callback<Response> callback)
+    public MiddleCallbackMessageDeleted deleteMessage(final MessageHeaderId messageHeaderId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallbackMessageDeleted middleCallback = new MiddleCallbackMessageDeleted(messageHeaderId, callback, messageHeaderListCache.get());
         messageServiceAsync.deleteMessage(messageHeaderId.key, middleCallback);
         return middleCallback;
     }

@@ -2,17 +2,19 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
-import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -65,6 +67,36 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
                     ((RecipientTypedMessageListKey) messageListKey).recipientId.equals(userBaseKey))
             {
                 invalidate(messageListKey);
+            }
+        }
+    }
+
+    /**
+     * Invalidate the keys where the parameter is listed in the value.
+     * @param messageHeaderId
+     */
+    public void invalidateKeysThatList(MessageHeaderId messageHeaderId)
+    {
+        for (Map.Entry<MessageListKey, MessageHeaderIdList> entry : new HashMap<>(snapshot()).entrySet())
+        {
+            if (entry.getValue().contains(messageHeaderId))
+            {
+                invalidateSameListing(entry.getKey());
+            }
+        }
+    }
+
+    /**
+     * Invalidates the keys that are part of the same listing as the key.
+     * @param key
+     */
+    public void invalidateSameListing(MessageListKey key)
+    {
+        for (MessageListKey entry : new ArrayList<MessageListKey>(snapshot().keySet()))
+        {
+            if (key.equalListing(entry))
+            {
+                invalidate(entry);
             }
         }
     }

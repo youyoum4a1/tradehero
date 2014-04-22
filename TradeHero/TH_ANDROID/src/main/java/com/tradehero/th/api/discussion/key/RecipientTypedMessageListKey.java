@@ -45,6 +45,14 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
                 (this.recipientId == null ? other.recipientId == null : this.recipientId.equals(other.recipientId));
     }
 
+    @Override public boolean equalListing(MessageListKey other)
+    {
+        return super.equalListing(other) &&
+                (recipientId == null ?
+                        ((RecipientTypedMessageListKey) other).recipientId == null :
+                        recipientId.equals(((RecipientTypedMessageListKey) other).recipientId));
+    }
+
     @Override public RecipientTypedMessageListKey prev()
     {
         if (this.page <= FIRST_PAGE)
