@@ -6,17 +6,16 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 3/24/14.
- */
 public class MiddleCallbackFollowUser extends MiddleCallbackUpdateUserProfile
 {
     @Inject HeroListCache heroListCache;
     @Inject GetPositionsCache getPositionsCache;
+    @Inject UserMessagingRelationshipCache userMessagingRelationshipCache;
     final UserBaseKey userToFollow;
 
     public MiddleCallbackFollowUser(UserBaseKey userToFollow, Callback<UserProfileDTO> primaryCallback)
@@ -32,6 +31,7 @@ public class MiddleCallbackFollowUser extends MiddleCallbackUpdateUserProfile
         heroListCache.invalidate(new HeroKey(userToFollow, HeroType.FREE));
         heroListCache.invalidate(new HeroKey(userToFollow, HeroType.PREMIUM));
         getPositionsCache.invalidate(userToFollow);
+        userMessagingRelationshipCache.invalidate(userToFollow);
         super.success(userProfileDTO, response);
     }
 }

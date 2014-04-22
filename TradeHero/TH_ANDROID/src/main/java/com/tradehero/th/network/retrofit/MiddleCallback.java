@@ -4,13 +4,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 3/5/14.
- */
 public class MiddleCallback<ValueType> implements Callback<ValueType>
 {
-    public static final String TAG = MiddleCallback.class.getSimpleName();
-
     private Callback<ValueType> primaryCallback;
 
     public MiddleCallback(Callback<ValueType> primaryCallback)

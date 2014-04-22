@@ -10,13 +10,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
 {
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
+
     public static final int[] TUTORIAL_ANIMATION = new int[] {
             R.anim.card_flip_right_in, R.anim.card_flip_right_out,
             R.anim.card_flip_left_in, R.anim.card_flip_left_out
@@ -92,11 +93,13 @@ public class Navigator
     {
         resetBackPressCount();
 
-        Timber.d("Push Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
-        Timber.d("Pushing fragment " + fragmentClass.getSimpleName());
+        Timber.d("Push Keyboard visible %s", DeviceUtil.isKeyboardVisible(context));
+        Timber.d("Pushing fragment %s", fragmentClass.getSimpleName());
+
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
         fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
+
         if (anim == null)
         {
             anim = getSafeAnimation();
@@ -108,11 +111,6 @@ public class Navigator
             backStackName = fragmentClass.getName();
         }
 
-        Fragment old = manager.findFragmentById(R.id.main_fragment);
-        Fragment old2 =  manager.findFragmentByTag("TH-tab:"+ DashboardTabType.TRENDING.ordinal());
-
-
-        Timber.d("pushFragment target:%s,old:%s,old2:%s", fragmentClass, old, old2);
         FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
         ft.addToBackStack(backStackName);
         ft.commitAllowingStateLoss();
@@ -124,11 +122,6 @@ public class Navigator
     {
         return pushFragment(fragmentClass, args, null, addBackStack);
     }
-
-    //public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
-    //{
-    //    return pushFragment(fragmentClass, args, getSafeAnimation());
-    //}
 
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass)
     {
@@ -142,9 +135,8 @@ public class Navigator
 
     public void popFragment(String backStackName)
     {
-        Timber.d("Pop Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
-        Timber.d("Popping fragment, count: " + manager.getBackStackEntryCount());
-
+        Timber.d("Pop Keyboard visible %b", DeviceUtil.isKeyboardVisible(context));
+        Timber.d("Popping fragment, count: %d", manager.getBackStackEntryCount());
 
         if (isBackStackEmpty())
         {
@@ -181,7 +173,15 @@ public class Navigator
 
     public void popFragment()
     {
-        popFragment(null);
+        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
+
+        String backStackName = null;
+        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
+        {
+            Bundle args = currentDashboardFragment.getArguments();
+            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+        }
+        popFragment(backStackName);
     }
 
     public boolean isBackStackEmpty()

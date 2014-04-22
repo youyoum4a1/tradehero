@@ -2,17 +2,16 @@
 <resources>
 
   <string name="invite_friends">邀请朋友</string>
-  <string name="invite_friend_refer_friend_empty_view">您的好友列表是空的, 链接 Facebook, Twitter 或是 Linkedin 推荐朋友吧。</string>
+  <string name="invite_friend_refer_friend_empty_view">您的好友列表是空的, 连接微博或是 Linkedin 推荐朋友吧</string>
   <string name="invite_friend_send_invitations">发送邀请</string>
   <string name="invite_friend_refer_friend_announcement">邀请朋友加入股货英雄，获取免费虚拟现金!</string>
   <string name="invite_friend_search_friends">搜索朋友</string>
   <string name="invite_friend_add_all">全部添加</string>
   <string name="invite_friend_remove_all">全部移除</string>
   <string name="invite_friend_success">成功</string>
-  <string name="invite_friend_facebook_tradehero_refer_friend_message">下载股货英雄，跟着顶尖牛人赚大钱!</string>
+  <string name="invite_friend_facebook_tradehero_refer_friend_message">下载股货英雄，跟着顶尖英雄赚大钱!</string>
   <string name="invite_friend_request_canceled">请求取消</string>
   <string name="invite_friend_request_sent">请求已发</string>
-
   <string name="error_fetch_friends">获取好友列表失败</string>
   <string name="error_fetch_local_contacts">获取手机通讯录失败</string>
   <string name="error_fetch_server_friends">从服务器获取好友列表失败</string>

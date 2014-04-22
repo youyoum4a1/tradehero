@@ -18,7 +18,7 @@
   <string name="leaderboard_avg_days_held">平均日持有数</string>
   <string name="leaderboard_followers_count"># 粉丝</string>
   <string name="leaderboard_comments_count"># 评论</string>
-  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(年度化: <b>%s</b>)]]></string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">帮助</string>
@@ -31,7 +31,7 @@
   <string name="leaderboard_positions">持仓</string>
   <string name="leaderboard_win_ratio">(胜率: <b>%s</b>%%)</string>
   <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
-  <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
+  <string name="leaderboard_volatility"><![CDATA[(波幅: <b>%.4f</b>)]]></string>
   <string name="leaderboard_number_of_trade">(%s 交易)</string>
   <string name="leaderboard_number_of_trades_plural">(%s 交易)</string>
   <string name="leaderboard_period">周期</string>
@@ -39,15 +39,12 @@
   <string name="leaderboard_show_friends_only">只显示朋友</string>
   <string name="leaderboard_show_friends_of_friends">查看朋友的朋友</string>
   <string name="leaderboard_keep_friends_close">与朋友保持联系</string>
-  <string name="leaderboard_friend_empty_text_invite_friends">… 与牛人更加紧密！好成绩，要和好朋友一起分享。连接微博、QQ帐号，看看你在朋友中排第几.
-  </string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… 与英雄更加紧密！好成绩，要和好朋友一起分享。连接微博、看看你在朋友中排第几</string>
   <string name="leaderboard_connect_accounts">连接账号…</string>
   <string name="leaderboard_follow">@string/follow</string>
-
   <string name="error_fetch_leaderboard_def_list_key">获取英雄榜定义列表出现错误</string>
   <string name="leaderboard_community_followers">粉丝</string>
   <string name="leaderboard_community_heros">英雄</string>
-
   <string name="leaderboard_community_hero_premium">{0,choice,0#付费|0&lt;付费({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#免费|0&lt;免费({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#所有|0&lt;所有({0})}</string>

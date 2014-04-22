@@ -2,7 +2,7 @@
 <resources>
 
   <!-- Portfolio detail / Positions -->
-  <string name="position_nothing_description">当前无持仓. 点击这里进行交易!</string>
+  <string name="position_nothing_description">当前无任何持仓. 点击这里开始进行交易吧!</string>
   <string name="position_list_action_bar_header">%d 仓位</string>
   <string name="position_list_action_bar_header_unknown">仓位</string>
   <string name="position_list_header_open">持仓 (%d)</string>
@@ -15,24 +15,19 @@
   <string name="position_total_invested_header">总投资</string>
   <string name="position_market_value_header">市场价值</string>
   <string name="position_quantity_header">数量</string>
-  <string name="position_average_price_header">平均价值</string>
-
+  <string name="position_average_price_header">平均值</string>
   <string name="error_fetch_position_list_info">获取列表发生了错误</string>
-  <string name="error_lost_position_in_cache">我们无法追踪到该交易的数据</string>
-
+  <string name="error_lost_position_in_cache">我们无法追踪到该笔交易的数据</string>
   <string name="position_expanded_close_pl_header">P&amp;L</string>
   <string name="position_expanded_close_opened_date_header">先前持仓</string>
   <string name="position_expanded_close_closed_date_header">平仓</string>
   <string name="position_expanded_close_period_header">持有时间</string>
   <string name="position_period_held_day_singular">%d 日</string>
   <string name="position_period_held_day_plural">%d 日</string>
-
   <string name="position_locked_follow_to_unlock">关注用户解锁!</string>
   <string name="position_locked_title">持仓</string>
-
   <string name="positions_in_period">周期内</string>
   <string name="positions_overall">总体</string>
-
   <string name="position_in_period_pl">周期 P&amp;L</string>
   <string name="position_in_period_additional_invested">额外的投资</string>
   <string name="position_in_period_start_value">起始值</string>

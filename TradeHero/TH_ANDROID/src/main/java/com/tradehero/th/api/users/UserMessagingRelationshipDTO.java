@@ -15,6 +15,7 @@ public class UserMessagingRelationshipDTO implements DTO
 
     public Date followerSince;
     public Date heroSince;
+    public Boolean freeFollow;
 
     public boolean isUnlimited()
     {

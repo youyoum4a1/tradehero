@@ -152,7 +152,11 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         isFresh = false;
         userMessagingRelationshipCache.invalidate(correspondentId);
         displayMessagingStatusContainer();
-        linkWith(discussionDTO.getDiscussionKey(), true);
+        if (getDiscussionKey() == null)
+        {
+            // We do this in order to ensure the next message is not a new one.
+            linkWith(discussionDTO.getDiscussionKey(), true);
+        }
     }
 
     protected class AbstractPrivateMessageFragmentMessageStatusListener

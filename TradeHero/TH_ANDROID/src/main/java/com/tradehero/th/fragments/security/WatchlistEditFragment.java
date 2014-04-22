@@ -34,8 +34,8 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -45,7 +45,6 @@ public class WatchlistEditFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
     public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
-    public static final String BUNDLE_KEY_RETURN_FRAGMENT = WatchlistEditFragment.class.getName() + ".returnFragment";
 
     private ImageView securityLogo;
     private TextView securityTitle;
@@ -422,14 +421,8 @@ public class WatchlistEditFragment extends DashboardFragment
                 {
                     currentUserWatchlistSecurities.add(securityKeyId);
                 }
-                String returnFragment = null;
-                Bundle args = getArguments();
-                if (args != null)
-                {
-                    returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-                }
 
-                getNavigator().popFragment(returnFragment);
+                getNavigator().popFragment();
             }
             else
             {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="message_center_tab_message">私信</string>
+  <string name="message_center_tab_message">收件箱</string>
   <string name="message_center_tab_notification">通知</string>
   <string name="message_center_sending_to">发送给:</string>
   <string name="message_center_title">消息中心</string>

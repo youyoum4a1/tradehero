@@ -32,7 +32,6 @@
   <string name="warrant_info_underlying">标的</string>
   <string name="warrant_info_issuer">发行者</string>
   <string name="warrant_info_strike_price_value_display">%1$s %2$s</string>
-
   <string name="error_find_security_id_to_int">找不到此证劵</string>
   <string name="error_fetch_security_list_info">获取证劵列表出现错误</string>
   <string name="error_fetch_security_info">获取证劵信息出现错误</string>
@@ -44,11 +43,10 @@
   <string name="need_install_wechat">请安装微信</string>
   <string name="need_update_wechat">请更新微信至 4.2 之后的版本</string>
   <string name="share_to_wechat_timeline">分享至微信朋友圈</string>
-  <string name="share_to_wechat_timeline_news">我在股货英雄上分享了一条新闻，快来加入吧。</string>
-  <string name="share_to_wechat_timeline_create_discussion">我在股货英雄上发起了一段讨论，快来加入吧。</string>
-  <string name="share_to_wechat_timeline_discussion">我在股货英雄上分享了一段讨论，快来加入吧。</string>
-  <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧。</string>
-  <string name="share_to_wechat_timeline_trade">我在股货英雄上完成了一笔交易，快来加入吧。</string>
-
-  <string name="share_success">Your share is success</string>
+  <string name="share_to_wechat_timeline_news">我在股货英雄上分享了一条新闻，快来加入吧</string>
+  <string name="share_to_wechat_timeline_create_discussion">我在股货英雄上发起了一段讨论，快来加入吧</string>
+  <string name="share_to_wechat_timeline_discussion">我在股货英雄上分享了一段讨论，快来加入吧</string>
+  <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧</string>
+  <string name="share_to_wechat_timeline_trade">我在股货英雄上完成了一笔交易，快来加入吧</string>
+  <string name="share_success">分享成功</string>
 </resources>

@@ -2,7 +2,7 @@
 <resources>
 
   <!-- Full page elements -->
-  <string name="leaderboard_filter_top_ranking_reminder">至少要有 2 个持仓才有可能上榜</string>
+  <string name="leaderboard_filter_top_ranking_reminder">至少要有 2 个持仓才可上榜</string>
   <string name="leaderboard_filter_reset_filter">重置筛选</string>
   <string name="leaderboard_filter_menu_title">筛选选项</string>
   <string name="leaderboard_filter_menu_button_done">完成</string>

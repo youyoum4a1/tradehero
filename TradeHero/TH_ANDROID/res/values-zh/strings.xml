@@ -7,14 +7,14 @@
   <string name="select_endpoint">选择 Api 端口</string>
   <string name="current_endpoint">"目前端口: "</string>
   <string name="action_menu_about">关于</string>
-  <string name="leaderboard_empty">开始交易并且成为第一个上此英雄榜的人吧。</string>
+  <string name="leaderboard_empty">开始交易并成为第一个上此英雄榜的人吧</string>
   <string name="action_search">搜索</string>
   <string name="update">更新</string>
-  <string name="empty_video_list">当前没有任何学习视频.</string>
-  <string name="loading_required_information">读取必要信息中</string>
+  <string name="empty_video_list">当前没有任何学习视频</string>
+  <string name="loading_required_information">读取所需信息中</string>
   <string name="server_response">"服务器响应: "</string>
   <string name="link">连接</string>
-  <string name="link_description">分享前，请链接您的 %s 账号…</string>
+  <string name="link_description">分享前，请连接您的 %s 账号…</string>
   <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
   <string name="please_update">此版本已经过期，请升级至最新的版本</string>
@@ -33,27 +33,25 @@
   <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
   <string name="discussion_loaded">已读取全部讨论</string>
   <string name="discussion_loading">读取讨论中…</string>
-  <string name="discussion_empty">成为第一个发布评论的人吧.</string>
+  <string name="discussion_empty">成为第一个发布评论的人吧</string>
   <string name="news_view_on_web">在网页中查看</string>
   <string name="add_a_comment">发布评论…</string>
   <string name="start_new_discussion">开始新的讨论</string>
   <string name="error_empty_comment">评论不可为空白</string>
   <string name="error_not_enough_information">信息不足，请再试一次</string>
-  <string name="via">" 通道 "</string>
-
+  <string name="via">" 通过 "</string>
   <string name="broadcast_success">发送信息成功</string>
   <string name="broadcast_error">发送信息错误</string>
   <string name="broadcast_message_title">广播</string>
   <string name="broadcast_message_action_send">发送</string>
-  <string name="broadcast_message_change_type_hint">请选择粉丝，发送信息</string>
-  <string name="broadcast_message_no_follower_hint">对不起，你无法发送信息。因为你没有此类粉丝。</string>
+  <string name="broadcast_message_change_type_hint">请选择粉丝类型发送信息</string>
+  <string name="broadcast_message_no_follower_hint">对不起，你无法发送广播。因为你没有此类粉丝。</string>
   <string name="broadcast_message_content_length_hint">信息不可为空白</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
-
-  <string name="common_loading_error">Sorry, there is something wrong</string>
-  <string name="no_message">No Message</string>
-  <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
-  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
+  <string name="common_loading_error">对不起，发生了点问题</string>
+  <string name="no_message">无消息</string>
+  <string name="message_fetch_error">对不起，发生了点问题。 \n请点击重试</string>
+  <string name="notification_list_empty">您还没有\'t 任何通知。 \n请下拉刷新通知列表!</string>
 </resources>
