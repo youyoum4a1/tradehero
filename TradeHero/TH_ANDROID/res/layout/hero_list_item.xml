@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="4dp"
     android:paddingRight="@dimen/position_padding_right"
+    style="@style/TH.ListItem"
     >
   <!--android:background="@color/white"-->
 

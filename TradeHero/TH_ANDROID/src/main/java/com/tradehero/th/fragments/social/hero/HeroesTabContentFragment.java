@@ -13,6 +13,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -20,9 +22,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
@@ -50,6 +56,8 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 
     @Inject public Lazy<HeroCache> heroCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
+    /**when no heroes*/
+    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -295,10 +303,22 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     private void handleGoMostSkilled()
     {
         // TODO this feels HACKy
-        getDashboardNavigator().popFragment();
+        //getDashboardNavigator().popFragment();
 
         // TODO make it go to most skilled
-        getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
+        //getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
+
+        LeaderboardDefKey key = new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+        LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
+        if (dto != null)
+        {
+            Bundle bundle = new Bundle(getArguments());
+            bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_ID, dto.id);
+            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
+            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
+
+            getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+        }
     }
 
     public void display(UserProfileDTO userProfileDTO)

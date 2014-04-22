@@ -31,13 +31,18 @@
   <string name="comment">评论</string>
   <string name="timeline_discussion_post">发布</string>
   <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
+<<<<<<< HEAD
   <string name="discussion_loaded">已全部读取</string>
   <string name="discussion_loading">读取中…</string>
+=======
+  <string name="discussion_loaded">已读取全部讨论</string>
+  <string name="discussion_loading">正在读取讨论…</string>
+>>>>>>> change some UIs
   <string name="discussion_empty">成为第一个发布评论的人吧</string>
   <string name="news_view_on_web">在网页中查看</string>
   <string name="add_a_comment">发布评论…</string>
   <string name="start_new_discussion">开始新的讨论</string>
-  <string name="error_empty_comment">评论不可为空白</string>
+  <string name="error_empty_comment">评论不可为空</string>
   <string name="error_not_enough_information">信息不足，请再试一次</string>
   <string name="via">" 通过 "</string>
   <string name="broadcast_success">发送信息成功</string>
@@ -51,7 +56,7 @@
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
   <string name="common_loading_error">对不起，发生了点问题</string>
-  <string name="no_message">无消息</string>
+  <string name="no_message">您还没有任何消息</string>
   <string name="message_fetch_error">对不起，发生了点问题。 \n请点击重试</string>
-  <string name="notification_list_empty">您还没有\'t 任何通知。 \n请下拉刷新通知列表!</string>
+  <string name="notification_list_empty">您还没有任何通知\n请下拉刷新通知列表!</string>
 </resources>
