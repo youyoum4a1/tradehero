@@ -122,8 +122,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void fillData()
     {
-        //TODO
-        String[] dataForFirst = {"Sharing", "Translation"};
+        String[] dataForFirst = {getContext().getString(R.string.sharing), getContext().getString(R.string.translation)};
         String[] dataForSecond = {"Facebook", "Twitter", "LinkedIn", "WeChat"};
         MyListAdapter adapterForFirst =
                 new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
@@ -159,8 +158,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void setShareTitle()
     {
-        //TODO
-        shareTitleView.setText("Share to...");
+        shareTitleView.setText(R.string.share_to);
     }
 
     private void showFirstChild()
@@ -246,8 +244,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 super.onPreExecute();
                 dialog = new ProgressDialog(getContext());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                //TODO R.string
-                dialog.setMessage("Translating...");
+                dialog.setMessage(getContext().getString(R.string.translating));
                 dialog.show();
             }
 
@@ -294,8 +291,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void showTranslationResult(String text)
     {
-        //TODO
-        Dialog dialog = THDialog.showCenterDialog(getContext(), "Translation result:", text, null,
+        THDialog.showCenterDialog(getContext(), getContext().getString(R.string.translation_result), text, null,
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
         {
             @Override

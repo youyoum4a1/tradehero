@@ -68,5 +68,9 @@
 
   <string name="help">Help</string>
   <string name="tab_to_dismiss">tap to dismiss</string>
+  <string name="sharing">Sharing</string>
+  <string name="translation">Translation</string>
+  <string name="translating">Translating...</string>
+  <string name="translation_result">Translation result:</string>
 
 </resources>
