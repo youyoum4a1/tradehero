@@ -2,12 +2,10 @@
 <resources>
 
   <string name="app_name">股货英雄</string>
-  <string name="version_text">v1.6.1(10)</string>
-
-  <string name="na">N/A</string>
+  <string name="version_text">v2.1.0(21)</string>
+  <string name="na">无</string>
   <string name="empty"/>
   <string name="action_menu_settings">设置</string>
-
   <string name="network_error">请检查您的网路连接!</string>
   <!-- data format-->
   <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
@@ -22,8 +20,8 @@
   <string name="test_password">asd123</string>
 
   <!-- Splash screen -->
-  <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
-  <string name="splash_copyright_3">Patents Pending</string>
+  <string name="splash_copyright_2">新加坡总公司执照号 201003309N</string>
+  <string name="splash_copyright_3">专利申请中</string>
 
   <!-- Dashboard -->
   <string name="dashboard_trending">交易中心</string>
@@ -33,6 +31,7 @@
   <string name="dashboard_store">商店</string>
   <string name="dashboard_headline">头条</string>
   <string name="message_center">消息中心</string>
+  <string name="dashboard_admin_settings">Admin Settings</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
@@ -56,7 +55,6 @@
   <string name="th_help_url">http://www.tradehero.mobi/about</string>
   <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
-
   <string name="plus">+</string>
 
   <!-- TimeDisplayViewHolder -->
@@ -64,7 +62,6 @@
   <string name="time_display_view_holder_format_hour">%02d</string>
   <string name="time_display_view_holder_format_minute">%02d</string>
   <string name="time_display_view_holder_format_second">%02d</string>
-
   <string name="help">帮助</string>
   <string name="tab_to_dismiss">点击取消</string>
 

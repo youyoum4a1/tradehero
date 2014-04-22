@@ -2,9 +2,9 @@
 <resources>
 
   <string name="buy_sell_price_as_of">自</string>
-  <string name="buy_sell_cash_available">可用现金.</string>
+  <string name="buy_sell_cash_available">可用现金</string>
   <string name="buy_sell_cash_left">剩余现金</string>
-  <string name="buy_sell_share_available">可用股票.</string>
+  <string name="buy_sell_share_available">可用股票</string>
   <string name="buy_sell_share_left">剩余股票</string>
   <string name="buy_sell_quantity">数量</string>
   <string name="buy_sell_trade_value">值</string>
@@ -21,7 +21,7 @@
   <string name="buy_sell_button_sell">卖出</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
-  <string name="buy_sell_buy_details_unavailable">准备信息中…</string>
+  <string name="buy_sell_buy_details_unavailable">信息准备中…</string>
   <string name="buy_sell_buy_details">买入 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n交易手续费: 虚拟 %6$s %7$,.2f\n总花费: %8$s %9$,.2f</string>
   <string name="buy_sell_sell_details_unavailable">准备信息中…</string>
   <string name="buy_sell_sell_details">卖出 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n交易手续费: 虚拟 %6$s %7$,.2f\n净支出: %8$s %9$,.2f</string>
@@ -34,20 +34,15 @@
   <string name="buy_sell_usd_price_unit_left">= US$</string>
   <string name="buy_sell_market_status">市场状态</string>
   <string name="buy_sell_toggle">切换 买入/卖出 模式</string>
-
   <string name="buy_sell_portfolio_selected_title">投资组合:</string>
-
   <string name="alert_dialog_buy_sell_order_null_title">真有点尴尬</string>
-  <string name="alert_dialog_buy_sell_order_null_message">买卖请求出了点问题.</string>
+  <string name="alert_dialog_buy_sell_order_null_message">交易请求出了点问题</string>
   <string name="alert_dialog_buy_sell_order_null_cancel">好的</string>
-
   <string name="alert_dialog_buy_sell_retrofit_failed_title">失败</string>
-  <string name="alert_dialog_buy_sell_retrofit_failed_message">执行出了点问题.\n请再尝试一次.</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_message">执行出了点问题.\n请再尝试一次</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_cancel">好的</string>
-
   <string name="alert_dialog_buy_sell_returned_null_title">喔喔</string>
   <string name="alert_dialog_buy_sell_returned_null_message">服务器返回无效信息.\n请再尝试一次.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">好的</string>
-
 
 </resources>

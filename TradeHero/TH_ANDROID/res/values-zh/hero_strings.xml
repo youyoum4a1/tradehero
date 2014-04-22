@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_hero">获取英雄信息出现了点错误</string>
+  <string name="error_fetch_hero">获取英雄信息发生了点错误</string>
 
 </resources>

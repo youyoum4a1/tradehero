@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_follower">获取粉丝信息出现了点错误</string>
-
-  <string name="not_follow_title">没有关注</string>
+  <string name="error_fetch_follower">获取粉丝信息发生了点错误</string>
+  <string name="not_follow_title">尚未关注</string>
   <string name="not_follow_msg_title">你需要关注\n%1$s\n之后才可以发送私信. 请选择关注类型:
   </string>
   <string name="not_follow_subtitle">免费关注</string>
   <string name="not_follow_premium_subtitle">高级关注</string>
   <string name="free_follow_title">关注中</string>
-  <string name="free_follow_content1">升级至高级关注，只要每月1.99美金，就可以获得下列特权:
+  <string name="free_follow_content1">高级关注此用户，只要每月6元，就可以获得下列特权:
   </string>
-  <string name="free_follow_content2">查看牛人的\持仓\n在你的时间线上\查看牛人的活动\n无上限条私信\n关于牛人动向的\实时通知。
+  <string name="free_follow_content2">查看英雄的\持仓\n可在您的时间轴上\查看英雄的活动\n不受限的私信\n关于英雄的动向的\实时通知。
   </string>
-  <string name="free_follow_content3">查看牛人的\持仓\n在你的时间线上\查看牛人的活动\n一定数量的私信
+  <string name="free_follow_content3">查看英雄的\持仓\n在您的时间轴上\查看英雄的活动\n受限制的私信
   </string>
   <string name="continue_free_follow">继续\n免费关注</string>
   <string name="upgrade">升级</string>

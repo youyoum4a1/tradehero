@@ -5,14 +5,11 @@
   <string name="user_profile_count_heroes">英雄</string>
   <string name="user_profile_count_trades">交易</string>
   <string name="user_profile_count_exchanges">交易所</string>
-
   <string name="user_profile_roi_below">回报率</string>
   <string name="user_profile_profit">利润</string>
-
   <string name="user_profile_button_timeline">时间轴</string>
   <string name="user_profile_button_portfolios">投资组合</string>
   <string name="user_profile_button_stats">统计</string>
-
   <string name="user_profile_info_required">必要</string>
   <string name="user_profile_email">电子邮件</string>
   <string name="user_profile_password">密码</string>
@@ -21,7 +18,6 @@
   <string name="user_profile_optional">可选项</string>
   <string name="user_profile_first_name">名</string>
   <string name="user_profile_last_name">姓</string>
-
   <string name="user_profile_roi">回报率:</string>
   <string name="user_profile_member_since">会员至</string>
   <string name="user_profile_trade_profit">交易中所获利</string>
@@ -29,7 +25,6 @@
   <string name="user_profile_additional_cash">额外现金</string>
   <string name="user_profile_cash_on_hand">手头现金</string>
   <string name="user_profile_first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localisations may swap those -->
-
 
   <string name="error_fetch_user_profile">获取用户资料信息发生错误</string>
   <string name="error_fetch_your_user_profile">获取个人资料信息发生错误</string>
