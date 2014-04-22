@@ -335,7 +335,9 @@ import retrofit.RetrofitError;
     //<editor-fold desc="Unfollow Hero">
     public UserProfileDTO unfollow(UserBaseKey userBaseKey)
     {
-        return userService.unfollow(userBaseKey.key);
+        UserProfileDTO myProfile = userService.unfollow(userBaseKey.key);
+        userMessagingRelationshipCache.invalidate(userBaseKey);
+        return myProfile;
     }
 
     public MiddleCallbackFollowUser unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
