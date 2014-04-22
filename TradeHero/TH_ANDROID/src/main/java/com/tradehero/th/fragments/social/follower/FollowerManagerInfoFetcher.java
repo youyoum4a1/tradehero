@@ -48,4 +48,16 @@ public class FollowerManagerInfoFetcher
         this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, this.followerSummaryListener);
         this.followerSummaryFetchTask.execute();
     }
+
+    /**
+     *
+     * @param heroId
+     * @param followerSummaryListener
+     */
+    public void fetch(final UserBaseKey heroId,DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
+    {
+        detachFetchTask();
+        this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, true, followerSummaryListener);
+        this.followerSummaryFetchTask.execute();
+    }
 }

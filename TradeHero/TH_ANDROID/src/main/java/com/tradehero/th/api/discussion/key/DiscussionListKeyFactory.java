@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion.key;
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import javax.inject.Inject;
 
@@ -69,5 +70,25 @@ public class DiscussionListKeyFactory
     public DiscussionListKey create(DiscussionKey discussionKey)
     {
         return new DiscussionListKey(discussionKey.getType(), discussionKey.id);
+    }
+
+    public DiscussionListKey create(MessageHeaderDTO messageHeaderDTO)
+    {
+        if (messageHeaderDTO == null || messageHeaderDTO.discussionType == null)
+        {
+            return null;
+        }
+        switch (messageHeaderDTO.discussionType)
+        {
+            case PRIVATE_MESSAGE:
+                return new PrivateMessageDiscussionListKey(
+                        messageHeaderDTO.discussionType,
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
+                        null, null, null);
+            default:
+                throw new IllegalArgumentException("Unhandled type");
+        }
     }
 }

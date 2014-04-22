@@ -40,6 +40,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     private int page;
     private HeroType followerType;
 
+
     public FollowerManagerTabFragment()
     {
     }
@@ -60,15 +61,18 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
+        Timber.d("FollowerManagerTabFragment onCreateView");
         View view =
                 inflater.inflate(R.layout.fragment_store_manage_followers, container, false);
         initViews(view);
-        Timber.d("FollowerManagerTabFragment onCreateView");
+
         return view;
     }
 
     @Override protected void initViews(View view)
     {
+        Timber.d("FollowerManagerTabFragment initViews");
+
         viewContainer = new FollowerManagerViewContainer(view);
         infoFetcher =
                 new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
@@ -100,6 +104,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             );
             viewContainer.followerList.setAdapter(followerListAdapter);
         }
+        displayProgress(true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -110,9 +115,9 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                 | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(R.string.manage_followers_title);
 
-        //MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
-        //menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        //Timber.d("onCreateOptionsMenu");
+        MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -191,16 +196,39 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void displayProgress(boolean running)
+    private void redisplayProgress()
     {
         if (this.viewContainer.progressBar != null)
         {
+            this.viewContainer.progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void displayProgress(boolean running)
+    {
+        Timber.d("displayProgress running:%s,progressBar:%b",running,(viewContainer.progressBar!=null));
+        if (this.viewContainer.progressBar != null)
+        {
             this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        }
+        if (this.viewContainer.followerList != null)
+        {
+            this.viewContainer.followerList.setVisibility(running ? View.GONE : View.VISIBLE);
         }
     }
 
     private void refreshContent()
     {
+        Timber.d("refreshContent");
+
+        redisplayProgress();
+        if (followedId == null)
+        {
+            followedId = new UserBaseKey(
+                    getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
+
+        }
+        infoFetcher.fetch(this.followedId,new RefresFollowerManagerFollowerSummaryListener());
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
@@ -239,7 +267,45 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         @Override
         public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
         {
+            Timber.d("onDTOReceived");
+
             displayProgress(false);
+            if (followerType == HeroType.FREE){
+                display(value.getFreeFollowerSummaryDTO());
+            }
+            else if (followerType == HeroType.PREMIUM)
+            {
+                display(value.getPaidFollowerSummaryDTO());
+            }
+            else
+            {
+                display(value);
+            }
+
+            notifyFollowerLoaded(value);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            displayProgress(false);
+            THToast.show(R.string.error_fetch_follower);
+            Timber.e("Failed to fetch FollowerSummary", error);
+        }
+    }
+
+    private class RefresFollowerManagerFollowerSummaryListener
+            implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+    {
+        @Override
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
+        {
+            if (fromCache)
+            {
+                return;
+            }
+
+            displayProgress(false);
+
             if (followerType == HeroType.FREE){
                 display(value.getFreeFollowerSummaryDTO());
             }

@@ -30,7 +30,7 @@
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
 
-  <!-- Philip-Macquaries specific strings, providerId == 22 -->
-  <string name="competition_philip_macquarie_warrant_hero_portfolio_title">Philip-Macquarie</string>
+  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
+  <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
 
 </resources>

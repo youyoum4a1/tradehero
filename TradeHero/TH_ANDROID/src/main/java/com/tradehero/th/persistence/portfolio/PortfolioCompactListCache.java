@@ -5,6 +5,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.PortfolioService;
 import dagger.Lazy;
@@ -21,6 +22,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<PortfolioService> portfolioService;
     @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
+    @Inject protected CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactListCache()
@@ -31,7 +33,7 @@ import javax.inject.Singleton;
 
     @Override protected OwnedPortfolioIdList fetch(UserBaseKey key) throws Throwable
     {
-        return putInternal(key, portfolioService.get().getPortfolios(key.key, true));
+        return putInternal(key, portfolioService.get().getPortfolios(key.key, key.equals(currentUserId.toUserBaseKey())));
     }
 
     protected OwnedPortfolioIdList putInternal(UserBaseKey key, List<PortfolioCompactDTO> fleshedValues)

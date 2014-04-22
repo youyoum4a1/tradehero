@@ -29,7 +29,7 @@
       android:layout_marginLeft="10dp"
       android:layout_gravity="center_vertical"
       android:id="@+id/tv_title"
-      android:text="@string/update_center_title"
+      android:text="@string/message_center_title"
       tools:text="Community"
       />
 

@@ -410,7 +410,7 @@ public class TrendingFragment extends SecurityListFragment
             ProviderDTO providerDTO = providerCache.get().get(new ProviderId(providerId));
             switch (providerId)
             {
-                case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
+                case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
                     handleCompetitionItemClicked(providerDTO);
                     break;
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:

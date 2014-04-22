@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        tools:background="@drawable/btn_provider_22_philips_macquarie"
+        tools:background="@drawable/btn_provider_22_phillip_macquarie"
         android:padding="8dp">
 
       <TextView

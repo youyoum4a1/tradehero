@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="message_center_tab_message">消息</string>
+  <string name="message_center_tab_message">私信</string>
   <string name="message_center_tab_notification">通知</string>
-  <string name="message_center_sending_to">Sending to:</string>
-  <string name="update_center_title">Inbox</string>
-  <string name="message_center_new_message_title">New Message</string>
+  <string name="message_center_sending_to">发送给:</string>
+  <string name="message_center_title">消息中心</string>
+  <string name="message_center_new_message_title">新消息</string>
   <string name="message_center_private_message_menu">私信</string>
   <string name="message_center_broadcast_message_menu">广播</string>
-
   <string name="message_list_refresh_menu">刷新</string>
 
 </resources>

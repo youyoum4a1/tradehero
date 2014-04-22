@@ -12,7 +12,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -35,11 +34,10 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 10:46 AM To change this template use File | Settings | File Templates. */
 public class StockInfoFragment extends DashboardFragment
 {
-    public static final String TAG = StockInfoFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
 
@@ -229,7 +227,7 @@ public class StockInfoFragment extends DashboardFragment
                 @Override public void onErrorThrown(SecurityId key, Throwable error)
                 {
                     THToast.show(R.string.error_fetch_security_info);
-                    THLog.e(TAG, "Failed to fetch SecurityCompact for " + securityId, error);
+                    Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
                 }
             };
 
@@ -261,7 +259,7 @@ public class StockInfoFragment extends DashboardFragment
                 @Override public void onErrorThrown(SecurityId key, Throwable error)
                 {
                     THToast.show(R.string.error_fetch_news_list);
-                    THLog.e(TAG, "Failed to fetch NewsHeadlineList for " + securityId, error);
+                    Timber.e(error, "Failed to fetch NewsHeadlineList for %s", securityId, error);
                 }
             };
 
@@ -335,21 +333,7 @@ public class StockInfoFragment extends DashboardFragment
             {
                 topViewPagerAdapter.linkWith(providerId);
                 topViewPagerAdapter.linkWith(securityCompactDTO);
-
-                if (topPager != null)
-                {
-                    topPager.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            if (topViewPagerAdapter != null)
-                            {
-                                topViewPagerAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
+                topViewPagerAdapter.notifyDataSetChanged();
             }
         }
     }

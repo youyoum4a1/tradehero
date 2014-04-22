@@ -9,17 +9,24 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
+import javax.inject.Inject;
 
 public class PrivateDiscussionView extends DiscussionView
 {
+    @Inject protected MessageHeaderCache messageHeaderCache;
+    private MessageHeaderDTO messageHeaderDTO;
+
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
     protected DiscussionDTO initiatingDiscussion;
 
@@ -118,6 +125,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
+        this.messageHeaderDTO = messageHeaderCache.get(new MessageHeaderId(discussionKey.id));
         super.linkWith(discussionKey, andDisplay);
         fetchDiscussion(discussionKey);
     }
@@ -131,7 +139,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionListKey createListKey()
     {
-        return discussionListKeyFactory.create(initiatingDiscussion);
+        return discussionListKeyFactory.create(messageHeaderDTO);
     }
 
     @Override protected void prepareDiscussionListKey()
@@ -158,7 +166,6 @@ public class PrivateDiscussionView extends DiscussionView
         }
         setTopicLayout(topicId);
         inflateDiscussionTopic();
-        initialFetchDiscussion();
         if (andDisplay)
         {
             displayTopicView();
