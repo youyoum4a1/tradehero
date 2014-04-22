@@ -31,6 +31,7 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
@@ -618,7 +619,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     // pop out current fragment and push in watchlist edit fragment
                     Bundle args = new Bundle();
                     args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
-                    args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
+                    args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
                     getNavigator().pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
