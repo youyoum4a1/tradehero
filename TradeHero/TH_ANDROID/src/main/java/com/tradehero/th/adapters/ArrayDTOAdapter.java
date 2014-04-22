@@ -6,7 +6,6 @@ import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 11:28 AM Copyright (c) TradeHero */
 public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapter<T, V>
 {
     protected List<T> items;
@@ -56,6 +55,15 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
         if (itemsCopy != null)
         {
             itemsCopy.addAll(data);
+        }
+    }
+
+    @Override public void clear()
+    {
+        super.clear();
+        if (items != null)
+        {
+            items.clear();
         }
     }
 
