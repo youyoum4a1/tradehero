@@ -118,6 +118,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 pushFollowerFragment();
                 break;
             default:
+                Timber.d("LeaderboardMarkUserListFragment %s",bundle);
                 getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }

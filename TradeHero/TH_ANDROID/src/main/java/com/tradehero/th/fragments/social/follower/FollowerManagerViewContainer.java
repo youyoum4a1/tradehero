@@ -29,7 +29,7 @@ public class FollowerManagerViewContainer
         totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
         followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
         followerList = (FollowerListView) view.findViewById(R.id.followers_list);
-        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+        progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
     }
 
     public void displayTotalRevenue(FollowerSummaryDTO followerSummaryDTO)

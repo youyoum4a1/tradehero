@@ -51,7 +51,7 @@
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
   <string name="common_loading_error">对不起，发生了点问题</string>
-  <string name="no_message">无消息</string>
-  <string name="message_fetch_error">对不起，发生了点问题。 \n请点击重试</string>
-  <string name="notification_list_empty">您还没有\'t 任何通知。 \n请下拉刷新通知列表!</string>
+  <string name="no_message">您还没有任何消息</string>
+  <string name="message_fetch_error">对不起，发生了点问题。\n请点击重试</string>
+  <string name="notification_list_empty">您还没有任何通知\n请下拉刷新通知列表!</string>
 </resources>

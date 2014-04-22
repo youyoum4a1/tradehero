@@ -99,7 +99,7 @@
   <string name="manage_heroes_follow_progress_message">正在尝试关注这位英雄</string>
   <string name="manage_heroes_follow_failed">关注英雄的过程中，发生了一点错误</string>
   <string name="manage_heroes_alert_unfollow_title">取消关注</string>
-  <string name="manage_heroes_alert_unfollow_message">Are you sure you wish to stop receiving trade information and market comments from this Hero? You will also not be able to view this Hero\'s open positions and timeline.\n\nYour subscription to this Hero will stop with immediate effect upon confirmation. It will cost you extra TradeHero credits to follow this Hero again.</string>
+  <string name="manage_heroes_alert_unfollow_message">您确定不想再收到这位英雄的交易信息以及对市场的评价？您将不能再查看该英雄的持仓与时间轴。一旦确认，您将立即停止对该用户的订阅。若要再次关注，将会重新扣除您的关注点数</string>
   <string name="manage_heroes_alert_unfollow_cancel">取消</string>
   <string name="manage_heroes_alert_unfollow_ok">取消关注</string>
   <string name="manage_heroes_unfollow_progress_title">执行中</string>

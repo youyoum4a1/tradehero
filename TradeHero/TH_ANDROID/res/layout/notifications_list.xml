@@ -8,7 +8,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/notifications_list"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       tools:context=".activities.DashboardActivity">
 
     <ProgressBar
@@ -32,19 +32,20 @@
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/notification_pull_to_refresh_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/notification_horizontal_margin"
         android:layout_marginRight="@dimen/notification_horizontal_margin"
         android:layout_marginTop="@dimen/notification_vertical_margin"
         android:layout_marginBottom="@dimen/notification_vertical_margin"
-        android:background="@drawable/timeline_list_item_background"
         />
+    <!--android:background="@drawable/timeline_list_item_background"-->
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@android:id/empty"
         android:text="@string/notification_list_empty"
+        android:gravity="center"
         />
 
   </com.tradehero.th.fragments.updatecenter.notifications.NotificationsView>
