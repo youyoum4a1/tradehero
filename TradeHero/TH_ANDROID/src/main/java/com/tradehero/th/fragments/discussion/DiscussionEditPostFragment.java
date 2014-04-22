@@ -32,7 +32,9 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
+import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialSharer;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -54,6 +56,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject SecurityCompactCache securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject UserSearchResultCache userSearchResultCache;
+    @Inject @ForWeChat SocialSharer weChatSharer;
 
     private SecurityId securityId;
     private DiscussionDTO discussionDTO;
@@ -155,6 +158,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
     {
         this.discussionDTO = discussionDTO;
+
+        weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
     }
 
     private boolean validate()
