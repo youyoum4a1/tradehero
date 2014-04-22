@@ -66,7 +66,7 @@
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/private_icn_white_star"
         android:layout_centerHorizontal="true"
-        tools:text="0 messages left.\nUpgrade now for unlimited messaging!"
+        tools:text="0 messages left.\nPremium-follow now for unlimited messaging!"
         android:textColor="@color/white"
         android:textSize="14sp"
         />

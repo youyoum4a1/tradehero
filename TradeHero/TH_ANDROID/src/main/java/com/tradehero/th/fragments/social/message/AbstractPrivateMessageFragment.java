@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -21,6 +22,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -118,6 +120,22 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        boolean handled = super.onOptionsItemSelected(item);
+        if (!handled)
+        {
+            switch (item.getItemId())
+            {
+                case R.id.private_message_refresh_btn:
+                    refresh();
+                    handled = true;
+                    break;
+            }
+        }
+        return handled;
+    }
+
     @Override public void onResume()
     {
         super.onResume();
@@ -150,6 +168,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onDestroy()
     {
         super.onDestroy();
+    }
+
+    protected void refresh()
+    {
+        if (getDiscussionKey() != null)
+        {
+            messageHeaderListCache.invalidateKeysThatList(new MessageHeaderId(getDiscussionKey().id));
+            linkWith(getDiscussionKey(), true);
+        }
     }
 
     private void fetchCorrespondentProfile()
