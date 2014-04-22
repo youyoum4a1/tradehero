@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -68,7 +67,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         super.onCreate(savedInstanceState);
 
-        Timber.d("onCreate");
         this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
         this.followerTypes = heroTypeResourceDTOFactory.getMapByHeroTypeId();
     }
@@ -86,7 +84,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 | ActionBar.DISPLAY_SHOW_HOME);
 
         actionBar.setTitle(getString(R.string.social_followers));
-        Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -136,7 +133,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             f.onDestroyOptionsMenu();
         }
-        Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
 
@@ -145,7 +141,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
         ButterKnife.inject(this, view);
         addTabs();

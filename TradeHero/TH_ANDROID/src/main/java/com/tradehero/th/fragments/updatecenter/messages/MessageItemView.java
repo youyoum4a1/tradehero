@@ -27,8 +27,8 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
-
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+
     @InjectView(R.id.message_item_icon) ImageView iconView;
     @InjectView(R.id.message_item_title) TextView titleView;
     @InjectView(R.id.message_item_date) TextView dateView;
