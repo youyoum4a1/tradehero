@@ -21,29 +21,39 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.form.SecurityDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by tho on 4/21/2014.
  */
 public class DiscussionEditPostFragment extends DashboardFragment
 {
+    private static final String SECURITY_TAG_FORMAT = "$%s";
+    private static final String MENTIONED_FORMAT = "@%s";
+
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
     @InjectView(R.id.discussion_new_post_action_buttons) DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject UserSearchResultCache userSearchResultCache;
 
     private SecurityId securityId;
     private DiscussionDTO discussionDTO;
@@ -121,8 +131,24 @@ public class DiscussionEditPostFragment extends DashboardFragment
     })
     void onMentionButtonClicked(View clickedButton)
     {
+        TrendingSearchType searchType = null;
+        switch (clickedButton.getId())
+        {
+            case R.id.btn_mention:
+                searchType = TrendingSearchType.PEOPLE;
+                break;
+            case R.id.btn_security_tag:
+                searchType = TrendingSearchType.STOCKS;
+                break;
+        }
+
         Bundle bundle = new Bundle();
-        searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+        bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
+        if (searchType != null)
+        {
+            bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_SEARCH_TYPE, searchType.name());
+            searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+        }
     }
     //</editor-fold>
 
@@ -185,6 +211,45 @@ public class DiscussionEditPostFragment extends DashboardFragment
                 SecurityId securityId = new SecurityId(securityBundle);
                 linkWith(securityId, true);
             }
+        }
+
+        if (searchStockPeopleFragment != null)
+        {
+            Object extraInput = searchStockPeopleFragment.getSelectedItem();
+            handleExtraInput(extraInput);
+        }
+    }
+
+    private void handleExtraInput(Object extraInput)
+    {
+        Timber.d("Extra: %s", extraInput);
+
+        String extraText = "";
+        String editingText = discussionPostContent.getText().toString();
+
+        if (extraInput instanceof SecurityCompactDTO)
+        {
+            SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;
+
+            extraText = String.format(SECURITY_TAG_FORMAT, taggedSecurity.getExchangeSymbol());
+        }
+
+        if (extraInput instanceof UserBaseKey)
+        {
+            UserSearchResultDTO mentionedUserProfileDTO = userSearchResultCache.get((UserBaseKey) extraInput);
+            extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName);
+        }
+
+        if (editingText.isEmpty())
+        {
+            discussionPostContent.setText(extraText);
+        }
+        else
+        {
+            int start = discussionPostContent.getSelectionStart();
+            int end = discussionPostContent.getSelectionEnd();
+            Editable newText = discussionPostContent.getText().replace(start, end, extraText);
+            discussionPostContent.setText(newText);
         }
     }
 

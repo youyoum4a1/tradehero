@@ -102,6 +102,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private MenuItem searchStock;
     private Runnable requestDataTask;
 
+    private Object selectedItem;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -147,15 +149,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         if (!shouldDisableSearchTypeOption)
         {
             inflater.inflate(R.menu.search_stock_people_menu, menu);
-        }
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (!shouldDisableSearchTypeOption)
-        {
+
             currentSearchMode = menu.findItem(R.id.current_search_mode);
             searchPeople = menu.findItem(R.id.search_people);
             searchStock = menu.findItem(R.id.search_stock);
         }
 
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_stock_menu, menu);
@@ -524,6 +524,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void collectParameters(Bundle args)
     {
+        if (args == null)
+        {
+            args = getArguments();
+        }
+
         if (args != null)
         {
             mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
@@ -578,6 +583,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         return perPage;
     }
 
+    public Object getSelectedItem()
+    {
+        return selectedItem;
+    }
+
     public SecurityListType makeSearchSecurityListType(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
@@ -610,13 +620,22 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            if (mSearchType == TrendingSearchType.STOCKS)
+            selectedItem = parent.getItemAtPosition(position);
+
+            if (getArguments() != null && getArguments().containsKey(Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
             {
-                SecurityCompactDTO clickedItem = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                getNavigator().popFragment();
+                return;
+            }
+
+            if (selectedItem instanceof SecurityCompactDTO)
+            {
+                SecurityCompactDTO clickedItem = (SecurityCompactDTO) selectedItem;
 
                 if (shouldDisableSearchTypeOption)
                 {
                     // pop out current fragment and push in watchlist edit fragment
+                    // TODO remove this hack
                     Bundle args = new Bundle();
                     args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
                     args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
@@ -627,9 +646,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     pushTradeFragmentIn(clickedItem.getSecurityId());
                 }
             }
-            else
+            else if (selectedItem instanceof UserBaseKey)
             {
-                pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
+                pushUserFragmentIn((UserBaseKey) selectedItem);
             }
         }
     }
