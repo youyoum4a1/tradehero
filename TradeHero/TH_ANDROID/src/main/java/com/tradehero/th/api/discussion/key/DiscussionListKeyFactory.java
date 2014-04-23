@@ -78,17 +78,25 @@ public class DiscussionListKeyFactory
         {
             return null;
         }
-        switch (messageHeaderDTO.discussionType)
-        {
-            case PRIVATE_MESSAGE:
-                return new PrivateMessageDiscussionListKey(
-                        messageHeaderDTO.discussionType,
-                        messageHeaderDTO.id,
-                        messageHeaderDTO.getSenderId(),
-                        messageHeaderDTO.getRecipientId(),
-                        null, null, null);
-            default:
-                throw new IllegalArgumentException("Unhandled type");
-        }
+        //PRIVATE_MESSAGE will return all the messages
+        return new PrivateMessageDiscussionListKey(
+                messageHeaderDTO.discussionType,
+                messageHeaderDTO.id,
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
+                null, null, null);
+
+        //switch (messageHeaderDTO.discussionType)
+        //{
+        //    case PRIVATE_MESSAGE:
+        //        return new PrivateMessageDiscussionListKey(
+        //                messageHeaderDTO.discussionType,
+        //                messageHeaderDTO.id,
+        //                messageHeaderDTO.getSenderId(),
+        //                messageHeaderDTO.getRecipientId(),
+        //                null, null, null);
+        //    default:
+        //        throw new IllegalArgumentException("Unhandled type");
+        //}
     }
 }

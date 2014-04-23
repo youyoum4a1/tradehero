@@ -242,46 +242,7 @@
         android:layout_below="@id/belt"
         />
 
-    <LinearLayout
-        android:id="@+id/bottom_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:paddingTop="@dimen/common_margin_10"
-        android:paddingBottom="5dp"
-        android:paddingLeft="@dimen/common_margin_10"
-        android:paddingRight="@dimen/common_margin_10"
-        android:background="@drawable/buy_sell_action_buttons_background"
-        >
-
-      <Button
-          android:id="@+id/btn_buy"
-          style="@style/TH.Btn_Price_Bar"
-          android:layout_height="40dp"
-          android:layout_width="50dp"
-          android:layout_marginBottom="5dp"
-          android:text="@string/buy_sell_button_buy"
-          android:background="@drawable/btn_buy"
-          android:textSize="20sp"
-          android:textColor="@color/white"
-          />
-
-      <Button
-          android:id="@+id/btn_sell"
-          style="@style/TH.Btn_Price_Bar"
-          android:layout_height="40dp"
-          android:layout_width="50dp"
-          android:layout_marginLeft="@dimen/common_margin_10"
-          android:layout_marginBottom="5dp"
-          android:text="@string/buy_sell_button_sell"
-          android:background="@drawable/btn_buy"
-          android:textSize="20sp"
-          android:textColor="@color/white"
-          android:visibility="gone"
-          />
-
-    </LinearLayout>
+    <include layout="@layout/buy_sell_buttons"/>
   </RelativeLayout>
 
 </LinearLayout>

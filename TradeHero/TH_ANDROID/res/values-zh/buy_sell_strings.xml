@@ -8,7 +8,7 @@
   <string name="buy_sell_share_left">剩余股票</string>
   <string name="buy_sell_quantity">数量</string>
   <string name="buy_sell_trade_value">价值</string>
-  <string name="buy_sell_projected_p_and_l_value">Projected P&amp;L</string>
+  <string name="buy_sell_projected_p_and_l_value">预计盈亏</string>
   <string name="buy_sell_bid_with_bracket">(买入)</string>
   <string name="buy_sell_ask_with_bracket">(卖出)</string>
   <string name="buy_sell_bid_price_not_available">无 买入</string>

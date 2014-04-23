@@ -169,13 +169,15 @@ public class SendMessageFragment extends DashboardFragment
         headerView.setText(getString(R.string.broadcast_message_change_type_hint)); //TODO
         headerView.setClickable(false);
         headerView.setBackgroundColor(getResources().getColor(android.R.color.white));
-        listView.addHeaderView(headerView);
+        listView.addHeaderView(headerView, null, false);
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter =
-                new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text,
-                        MessageType.getShowingTypes());
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(
+                getActivity(),
+                R.layout.common_dialog_item_layout,
+                R.id.popup_text,
+                MessageType.getShowingTypes());
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {

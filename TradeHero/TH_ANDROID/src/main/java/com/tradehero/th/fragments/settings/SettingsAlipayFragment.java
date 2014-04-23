@@ -148,6 +148,7 @@ public class SettingsAlipayFragment extends DashboardFragment
                 if (!isDetached())
                 {
                     THToast.show(getString(R.string.settings_alipay_successful_update));
+                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
                     progressDialog.hide();
                     Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                     navigator.popFragment();

@@ -110,6 +110,17 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             deleteButton.setOnClickListener(createOnDeleteButtonClickedListener());
         }
+
+        checkDeleteButtonEnable();
+    }
+
+    private void checkDeleteButtonEnable()
+    {
+        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
+        if (watchlistPositionDTO == null)
+        {
+            deleteButton.setEnabled(false);
+        }
     }
 
     private View.OnClickListener createOnWatchButtonClickedListener()
@@ -196,16 +207,17 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleButtonDeleteClicked()
     {
-        showProgressBar();
         WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
         if (watchlistPositionDTO != null)
         {
+            showProgressBar();
             watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), watchlistDeleteCallback);
         }
         else
         {
             THToast.show(R.string.error_fetch_portfolio_watchlist);
         }
+
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

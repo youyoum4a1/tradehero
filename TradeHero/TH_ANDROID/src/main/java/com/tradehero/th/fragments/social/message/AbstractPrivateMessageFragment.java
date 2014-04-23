@@ -172,10 +172,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     protected void refresh()
     {
-        if (getDiscussionKey() != null)
+        if (getDiscussionKey() != null && discussionView != null)
         {
-            messageHeaderListCache.invalidateKeysThatList(new MessageHeaderId(getDiscussionKey().id));
-            linkWith(getDiscussionKey(), true);
+            discussionView.refresh();
         }
     }
 

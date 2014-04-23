@@ -6,10 +6,10 @@
   <string name="security_type_warrant">担保</string>
   <string name="security_type_bond">债券</string>
   <string name="security_type_unit">单元</string>
-  <string name="security_type_tradable_rights_issue">Tradable Rights Issue</string>
+  <string name="security_type_tradable_rights_issue">交易权限问题</string>
   <string name="security_type_preference_share">优先股</string>
   <string name="security_type_depository_receipt">存托凭证</string>
   <string name="security_type_covered_warrant">备兑权证</string>
-  <string name="security_type_preferred_sec">Preferred Sec</string>
-  <string name="security_type_stapled_sec">Stapled Sec</string>
+  <string name="security_type_preferred_sec">优先证交会</string>
+  <string name="security_type_stapled_sec">合订证券</string>
 </resources>

@@ -9,6 +9,10 @@
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
+      android:paddingLeft="6dp"
+      android:paddingRight="6dp"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
       android:background="@drawable/timeline_discussion_edit_widget_background"
       >
 
@@ -16,26 +20,23 @@
         android:id="@+id/post_comment_action_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         >
-
-      <TextView
+      <Button
           android:id="@+id/post_comment_action_submit"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:text="@string/timeline_discussion_post"
+          android:background="@drawable/authentication_sign_in_button"
+          android:gravity="center"
           />
-
       <ProgressBar
           android:id="@+id/post_comment_action_processing"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_gravity="center"
           />
-
     </com.tradehero.common.widget.BetterViewAnimator>
 
     <EditText
@@ -44,9 +45,12 @@
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:inputType="text"
         android:hint="@string/timeline_discussion_comment_box_hint"
+        android:background="@drawable/et_bg"
+        android:layout_marginRight="5dp"
+        android:padding="2dp"
         />
 
   </com.tradehero.th.fragments.social.message.PrivatePostCommentView>

@@ -97,7 +97,7 @@ public class LruMemFileCache extends LruCache
             memoryClass = ActivityManagerHoneycomb.getLargeMemoryClass(am);
         }
         // Target 16% of the available RAM.
-        int size = 1024 * 1024 * memoryClass / 6;
+        int size = 1024 * 1024 * memoryClass / 10;
         // Bound to max size for mem cache.
         return Math.min(size, MAX_MEM_CACHE_SIZE);
     }
