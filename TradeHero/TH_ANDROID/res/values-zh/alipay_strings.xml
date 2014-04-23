@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="alipay_virtual_dollars_subject">股货英雄-虚拟现金</string>
+  <string name="alipay_follow_credits_subject">股货英雄-关注点数</string>
+  <string name="alipay_stock_alerts_subject">股货英雄-股市预警</string>
+  <string name="alipay_reset_portfolio_subject">股货英雄-重置投资组合</string>
+  <string name="alipay_cancel">您已取消支付</string>
+  <string name="alipay_success">支付完成，请查看您的账号</string>
+  <string name="alipay_not_sure">支付完成，请查看您的账号，可能会有点小延迟</string>
+  <array name="alipay_virtual_dollars_array">
+    <item>10 000 虚拟现金 (¥6.00)</item>
+    <item>50 000 虚拟现金 (¥18.00)</item>
+    <item>100 000 虚拟现金 (¥30.00)</item>
+  </array>
+  <array name="alipay_follow_credits_array">
+    <item>1 关注点数 (¥12.00)</item>
+    <item>10 关注点数 (¥123.00)</item>
+    <item>20 关注点数 (¥238.00)</item>
+  </array>
+  <array name="alipay_stock_alerts_array">
+    <item>2 股市预警(¥12.00)</item>
+    <item>5 股市预警(¥30.00)</item>
+    <item>无限股市预警(¥68.00)</item>
+  </array>
+  <array name="alipay_reset_portfolio_array">
+    <item>重置投资组合 (¥12.00)</item>
+  </array>
+</resources>

@@ -202,7 +202,7 @@ public class VotePair extends LinearLayout
             voteDown.setValue(discussionDTO.downvoteCount);
 
             VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
-            Timber.d("voteDirection: %s", voteDirection.description);
+            //Timber.d("voteDirection: %s", voteDirection.description);
             switch (voteDirection)
             {
                 case DownVote:
