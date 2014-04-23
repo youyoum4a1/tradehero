@@ -11,16 +11,9 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
-import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
-/**
- * Created by xavier on 3/14/14.
- */
 abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
@@ -153,11 +146,7 @@ abstract public class THBaseBillingLogicHolder<
         if (updatedUserPortfolio != null)
         {
             userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
-
-            // TODO nicer
-            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.ALL));
-            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.FREE));
-            heroListCache.invalidate(new HeroKey(updatedUserPortfolio.getBaseKey(), HeroType.PREMIUM));
+            heroListCache.invalidate(updatedUserPortfolio.getBaseKey());
         }
         notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);

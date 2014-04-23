@@ -3,12 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
@@ -289,7 +288,7 @@ public interface UserService
 
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes")
-    List<HeroDTO> getHeroes(
+    HeroDTOList getHeroes(
             @Path("userId") int userId)
         throws RetrofitError;
     //</editor-fold>

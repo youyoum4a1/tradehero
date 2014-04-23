@@ -7,10 +7,14 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_HERO_ID = FollowerHeroRelationId.class.getName() + ".heroId";
     public final static String BUNDLE_KEY_FOLLOWER_ID = FollowerHeroRelationId.class.getName() + ".followerId";
+
+    @Deprecated // TODO To remove with followerName
     public final static String BUNDLE_KEY_FOLLOWER_NAME = FollowerHeroRelationId.class.getName() + ".followerName";
 
     public final Integer heroId;
     public final Integer followerId;
+
+    @Deprecated // TODO This is ugly
     public final String followerName;
 
     //<editor-fold desc="Constructors">

@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
+public class HeroManagerFragment extends BasePurchaseManagerFragment
+        implements OnHeroesLoadedListener
 {
     /**
      * We are showing the heroes of this follower
      */
     private static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
-    static final String KEY_PAGE = "KEY_PAGE";
     // TODO change it into something like R.id.... to help with identifying its unicity
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
@@ -94,7 +94,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     private void addTab(HeroTypeResourceDTO resourceDTO)
     {
         Bundle args = new Bundle();
-        args.putInt(KEY_PAGE, resourceDTO.heroTabIndex);
         HeroesTabContentFragment.putFollowerId(args, getFollowerId(getArguments()));
 
         String title = MessageFormat.format(getString(resourceDTO.heroTabTitleRes), 0);
@@ -109,7 +108,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(R.string.social_heroes);
     }
 
@@ -120,7 +122,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
             case android.R.id.home:
                 //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -151,7 +152,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         String title = MessageFormat.format(getString(titleRes), number);
         tabSpec.setIndicator(title);
 
-        TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(resourceDTO.heroTabIndex).findViewById(android.R.id.title);
+        TextView tv = (TextView) mTabHost.getTabWidget()
+                .getChildAt(resourceDTO.heroTabIndex)
+                .findViewById(android.R.id.title);
         tv.setText(title);
     }
 
@@ -159,9 +162,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     {
         if (!isDetached())
         {
-            changeTabTitle(new PremiumHeroTypeResourceDTO(), value.herosCountGetPaid);
-            changeTabTitle(new FreeHeroTypeResourceDTO(), value.herosCountNotGetPaid);
-            changeTabTitle(new AllHeroTypeResourceDTO(), (value.herosCountGetPaid + value.herosCountNotGetPaid));
+            int premiumCount = value.getActivePremiumHeroesCount();
+            int freeCount = value.getActiveFreeHeroesCount();
+            changeTabTitle(new PremiumHeroTypeResourceDTO(), premiumCount);
+            changeTabTitle(new FreeHeroTypeResourceDTO(), freeCount);
+            changeTabTitle(new AllHeroTypeResourceDTO(), premiumCount + freeCount);
         }
     }
 
@@ -179,30 +184,33 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     {
         @Override public void onTabChanged(String tabId)
         {
-            Timber.d("onTabChanged tabId:%s",tabId);
             Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
-            Fragment f = ((Fragment) HeroManagerFragment.this).getChildFragmentManager().findFragmentByTag(tabId);
-            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
+            Fragment f = ((Fragment) HeroManagerFragment.this).getChildFragmentManager()
+                    .findFragmentByTag(tabId);
         }
     }
 
     protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
         }
     }
 
-    protected class HeroManagerOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener
+    protected class HeroManagerOnPurchaseReportedListener
+            implements PurchaseReporter.OnPurchaseReportedListener
     {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                UserProfileDTO updatedUserPortfolio)
         {
             //display(updatedUserPortfolio);
         }
 
-        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+        @Override public void onPurchaseReportFailed(int requestCode,
+                ProductPurchase reportedPurchase, BillingException error)
         {
             // Anything to report?
         }

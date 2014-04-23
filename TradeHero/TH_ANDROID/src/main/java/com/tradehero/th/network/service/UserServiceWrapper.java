@@ -3,13 +3,12 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
@@ -22,7 +21,6 @@ import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import java.util.List;
 import javax.inject.Inject;
@@ -30,9 +28,6 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Repurposes queries
- */
 @Singleton public class UserServiceWrapper
 {
     private final UserService userService;
@@ -347,33 +342,19 @@ import retrofit.RetrofitError;
         return middleCallbackFollowUser;
 
     }
-
-    public List<HeroDTO> getHeroes(HeroKey heroKey)
-    {
-        switch (heroKey.heroType)
-        {
-            case PREMIUM:
-                return userService.getHeroes(heroKey.followerKey.key);
-            case FREE:
-                return userService.getHeroes(heroKey.followerKey.key);
-            case ALL:
-                return userService.getHeroes(heroKey.followerKey.key);
-        }
-        return null;
-    }
-
-    public void getHeroes(HeroKey heroKey,Callback<List<HeroDTO>> callback)
-    {
-        switch (heroKey.heroType)
-        {
-            case PREMIUM:
-                userServiceAsync.getHeroes(heroKey.followerKey.key,callback);
-            case FREE:
-                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
-            case ALL:
-                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
-        }
-    }
     //</editor-fold>
 
+    //<editor-fold desc="Get Heroes">
+    public HeroDTOList getHeroes(UserBaseKey heroKey)
+    {
+        return userService.getHeroes(heroKey.key);
+    }
+
+    public MiddleCallback<HeroDTOList> getHeroes(UserBaseKey heroKey, Callback<HeroDTOList> callback)
+    {
+        MiddleCallback<HeroDTOList> middleCallback = new MiddleCallback<>(callback);
+        userServiceAsync.getHeroes(heroKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
 }

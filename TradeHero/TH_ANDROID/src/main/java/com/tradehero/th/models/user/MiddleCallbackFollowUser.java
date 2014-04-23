@@ -3,9 +3,7 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -27,9 +25,7 @@ public class MiddleCallbackFollowUser extends MiddleCallbackUpdateUserProfile
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         // TODO do it nicer
-        heroListCache.invalidate(new HeroKey(userToFollow, HeroType.ALL));
-        heroListCache.invalidate(new HeroKey(userToFollow, HeroType.FREE));
-        heroListCache.invalidate(new HeroKey(userToFollow, HeroType.PREMIUM));
+        heroListCache.invalidate(userToFollow);
         getPositionsCache.invalidate(userToFollow);
         userMessagingRelationshipCache.invalidate(userToFollow);
         super.success(userProfileDTO, response);

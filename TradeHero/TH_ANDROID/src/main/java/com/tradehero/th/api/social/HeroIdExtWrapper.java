@@ -1,24 +1,35 @@
 package com.tradehero.th.api.social;
 
 import com.tradehero.common.persistence.DTO;
-import javax.xml.stream.events.DTD;
+import com.tradehero.th.api.users.UserBaseKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class HeroIdExtWrapper implements DTO
 {
-    public HeroIdList heroIdList;
+    public HeroIdList allActiveHeroes;
+    public HeroIdList activeFreeHeroes;
+    public HeroIdList activePremiumHeroes;
 
-    /**count of heros that I've paid money to follow them currently  */
-    public int herosCountGetPaid;
-    /**count of heros that I've not paid money  follow them currently  */
-    public int herosCountNotGetPaid;
-
-    @Override public String toString()
+    //<editor-fold desc="Constructors">
+    public HeroIdExtWrapper()
     {
-        return "HeroIdExtWrapper{" +
-                "heroIdList=" + heroIdList +
-                ", herosCountGetPaid=" + herosCountGetPaid +
-                ", herosCountNotGetPaid=" + herosCountNotGetPaid +
-                '}';
+        super();
+    }
+
+    public HeroIdExtWrapper(UserBaseKey followerId, HeroDTOList heroDTOs)
+    {
+        activeFreeHeroes = heroDTOs.getFreeActiveHeroIds(followerId);
+        activePremiumHeroes = heroDTOs.getPremiumActiveHeroIds(followerId);
+        allActiveHeroes = heroDTOs.getAllActiveHeroIds(followerId);
+    }
+    //</editor-fold>
+
+    public int getActiveFreeHeroesCount()
+    {
+        return activeFreeHeroes.size();
+    }
+
+    public int getActivePremiumHeroesCount()
+    {
+        return activePremiumHeroes.size();
     }
 }
