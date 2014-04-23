@@ -60,8 +60,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     private UserBaseKey heroId;
-    /** categories of follower:premium,free,all */
-    private List<HeroTypeResourceDTO> followerTypes;
 
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
 
@@ -72,7 +70,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         super.onCreate(savedInstanceState);
 
         this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
-        this.followerTypes = heroTypeResourceDTOFactory.getListOfHeroType();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -91,7 +88,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -175,14 +171,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Timber.d("onDestroyView");
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-
-        Timber.d("onDestroy");
-        followerTypes = null;
-    }
-
     private void setMessageLayoutShown(boolean shown)
     {
         if (shown)
@@ -235,7 +223,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             args = new Bundle();
         }
-        for (HeroTypeResourceDTO entry : followerTypes)
+        for (HeroTypeResourceDTO entry : heroTypeResourceDTOFactory.getListOfHeroType())
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE, entry.pageIndex);
