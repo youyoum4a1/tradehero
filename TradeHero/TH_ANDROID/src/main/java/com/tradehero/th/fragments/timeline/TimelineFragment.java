@@ -817,16 +817,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         return false;
     }
-
-    // TODO put this thing closer to the object that needs it
-    @Deprecated
-    public static void viewProfile(DashboardNavigatorActivity navigatorActivity, int userId)
-    {
-        Bundle bundle = new Bundle();
-        DashboardNavigator navigator = navigatorActivity.getDashboardNavigator();
-        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
-    }
     //</editor-fold>
 
     protected void freeFollow(Callback<UserProfileDTO> followCallback)
