@@ -5,7 +5,7 @@
     >
   <com.tradehero.th.fragments.social.message.PrivatePostCommentView
       android:layout_width="match_parent"
-      android:layout_height="50dp"
+      android:layout_height="@dimen/discussion_comment_box_height"
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
