@@ -13,7 +13,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
@@ -24,6 +23,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @Inject protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
+
+    public static void putDiscussionKey(Bundle args, DiscussionKey discussionKey)
+    {
+        args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {

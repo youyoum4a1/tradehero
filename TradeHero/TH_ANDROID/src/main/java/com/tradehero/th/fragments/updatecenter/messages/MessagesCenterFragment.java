@@ -20,6 +20,7 @@ import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
@@ -55,7 +56,7 @@ public class MessagesCenterFragment extends DashboardFragment
     public static final int ITEM_ID_REFRESH_MENU = 0;
 
     @Inject Lazy<MessageHeaderListCache> messageListCache;
-    @Inject Lazy<MessageHeaderCache> messageHeaderCache;
+    @Inject MessageHeaderCache messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<DiscussionListCache> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
@@ -187,7 +188,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
-        pushPrivateMessageFragment(position);
+        pushMessageFragment(position);
     }
 
     public UpdateCenterTabType getTabType()
@@ -195,33 +196,22 @@ public class MessagesCenterFragment extends DashboardFragment
         return UpdateCenterTabType.Messages;
     }
 
-    protected void pushPrivateMessageFragment(int position)
+    protected void pushMessageFragment(int position)
     {
-        MessageListAdapter messageListAdapter = getListAdapter();
-        MessageHeaderId messageHeaderId = messageListAdapter.getItem(position);
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(getListAdapter().getItem(position));
+        pushMessageFragment(
+                discussionKeyFactory.create(messageHeaderDTO),
+                messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+    }
 
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
-        Integer messageId = messageHeaderDTO.id;
-        Integer senderUserId = messageHeaderDTO.senderUserId;
-        Integer recipientUserId = messageHeaderDTO.recipientUserId;
-        int myId = currentUserId.toUserBaseKey().key;
-        Timber.d("messageId:%d,senderUserId:%d,recipientUserId:%d,myId:%d", messageId, senderUserId,
-                recipientUserId, myId);
-        int targerUserId;
-        if (senderUserId != null && senderUserId == myId)
-        {
-            targerUserId = recipientUserId;
-        }
-        else
-        {
-            targerUserId = senderUserId;
-        }
-
+    protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)
+    {
         Bundle args = new Bundle();
-        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(targerUserId));
-        args.putBundle(ReplyPrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                discussionKeyFactory.create(messageHeaderDTO).getArgs());
+        // TODO separate between Private and Broadcast
+        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
+        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
         getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
+
     }
 
     private void initViews(View view)
@@ -630,7 +620,7 @@ public class MessagesCenterFragment extends DashboardFragment
             MessageHeaderId messageHeaderId = messageListAdapter.getItem(i);
             if (messageHeaderId != null)
             {
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
 
                 if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
@@ -676,11 +666,11 @@ public class MessagesCenterFragment extends DashboardFragment
 
                 // mark it as read in the cache
                 MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
                 if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
                     messageHeaderDTO.unread = false;
-                    messageHeaderCache.get().put(messageHeaderId, messageHeaderDTO);
+                    messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
 
                     updateUnreadStatusInUserProfileCache();
                 }

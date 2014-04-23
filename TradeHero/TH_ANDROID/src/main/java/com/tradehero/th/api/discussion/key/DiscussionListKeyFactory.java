@@ -57,7 +57,7 @@ public class DiscussionListKeyFactory
             int inReplyToId = discussionDTO.inReplyToId != 0 ?
                     discussionDTO.inReplyToId :
                     discussionDTO.id;
-            return new PrivateMessageDiscussionListKey(
+            return new MessageDiscussionListKey(
                     discussionType,
                     inReplyToId,
                     discussionDTO.getSenderKey(),
@@ -78,25 +78,29 @@ public class DiscussionListKeyFactory
         {
             return null;
         }
-        //PRIVATE_MESSAGE will return all the messages
-        return new PrivateMessageDiscussionListKey(
-                messageHeaderDTO.discussionType,
-                messageHeaderDTO.id,
-                messageHeaderDTO.getSenderId(),
-                messageHeaderDTO.getRecipientId(),
-                null, null, null);
 
-        //switch (messageHeaderDTO.discussionType)
-        //{
-        //    case PRIVATE_MESSAGE:
-        //        return new PrivateMessageDiscussionListKey(
-        //                messageHeaderDTO.discussionType,
-        //                messageHeaderDTO.id,
-        //                messageHeaderDTO.getSenderId(),
-        //                messageHeaderDTO.getRecipientId(),
-        //                null, null, null);
-        //    default:
-        //        throw new IllegalArgumentException("Unhandled type");
-        //}
+        switch (messageHeaderDTO.discussionType)
+        {
+            case BROADCAST_MESSAGE:
+            case PRIVATE_MESSAGE:
+                return new MessageDiscussionListKey(
+                        messageHeaderDTO.discussionType,
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
+                        null, null, null);
+
+            case COMMENT:
+            case TIMELINE_ITEM:
+            case SECURITY:
+            case NEWS:
+                return new PaginatedDiscussionListKey(
+                        messageHeaderDTO.discussionType,
+                        messageHeaderDTO.id,
+                        null, null);
+
+            default:
+                throw new IllegalArgumentException("Unhandled type");
+        }
     }
 }
