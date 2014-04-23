@@ -201,7 +201,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

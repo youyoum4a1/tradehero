@@ -33,7 +33,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     /**
      * We are showing the heroes of this follower
      */
-    public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
+    private static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
     static final String KEY_PAGE = "KEY_PAGE";
     static final String KEY_ID = "KEY_ID";
@@ -45,6 +45,16 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     private int selectedId = -1;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
+
+    public static void putFollowerId(Bundle args, UserBaseKey followerId)
+    {
+        args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
+    }
+
+    public static UserBaseKey getFollowerId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -72,18 +82,15 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
 
         ActionBar.Tab lastSavedTab = null;
         int lastSelectedId = selectedId;
         HeroTypeExt[] types = heroTypes;
         tabSpecList = new ArrayList<>(types.length);
-        Bundle args = getArguments();
-        if (args == null)
-        {
-            args = new Bundle();
-        }
+        Bundle args = new Bundle();
+        HeroesTabContentFragment.putFollowerId(args, getFollowerId(getArguments()));
         for (HeroTypeExt type : types)
         {
             args = new Bundle(args);
@@ -186,7 +193,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         {
             Timber.d("onTabChanged tabId:%s",tabId);
             Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
-            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
+            Fragment f = ((Fragment) HeroManagerFragment.this).getChildFragmentManager().findFragmentByTag(tabId);
             Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
         }
     }

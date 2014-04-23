@@ -173,14 +173,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        if (mIsOtherProfile)
-        {
-            bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, shownUserBaseKey.key);
-        }
-        else
-        {
-            bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
-        }
+        HeroManagerFragment.putFollowerId(
+                bundle,
+                mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

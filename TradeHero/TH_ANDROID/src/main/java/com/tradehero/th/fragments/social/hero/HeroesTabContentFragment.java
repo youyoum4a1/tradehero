@@ -39,6 +39,8 @@ import timber.log.Timber;
 
 public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 {
+    private static final String BUNDLE_KEY_FOLLOWER_ID = HeroesTabContentFragment.class.getName() + ".followerId";
+
     /**hero type*/
     private HeroType heroType;
     /**page number*/
@@ -58,6 +60,16 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /**when no heroes*/
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+
+    public static void putFollowerId(Bundle args, UserBaseKey followerId)
+    {
+        args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
+    }
+
+    public static UserBaseKey getFollowerId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
+    }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -166,8 +178,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        this.followerId =
-                new UserBaseKey(getArguments().getInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID));
+        this.followerId = getFollowerId(getArguments());
         displayProgress(true);
 
         Timber.d("onResume,fetch heros heroType:%s", getHeroType());
