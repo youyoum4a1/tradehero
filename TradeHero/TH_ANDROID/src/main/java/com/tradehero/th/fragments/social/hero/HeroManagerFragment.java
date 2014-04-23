@@ -36,7 +36,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     private static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
     static final String KEY_PAGE = "KEY_PAGE";
-    static final String KEY_ID = "KEY_ID";
     // TODO change it into something like R.id.... to help with identifying its unicity
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
@@ -95,7 +94,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE, type.pageIndex);
-            args.putInt(KEY_ID, type.heroType.typeId);
 
             String title = MessageFormat.format(getSherlockActivity().getString(type.titleRes), 0);
 

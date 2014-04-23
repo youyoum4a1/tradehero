@@ -21,9 +21,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
-import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -37,12 +35,10 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class HeroesTabContentFragment extends BasePurchaseManagerFragment
+abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_FOLLOWER_ID = HeroesTabContentFragment.class.getName() + ".followerId";
 
-    /**hero type*/
-    private HeroType heroType;
     /**page number*/
     private int page;
     private HeroManagerViewContainer viewContainer;
@@ -83,9 +79,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         this.page = args.getInt(HeroManagerFragment.KEY_PAGE);
-        int heroTypeId = args.getInt(HeroManagerFragment.KEY_ID);
-        this.heroType = HeroType.fromId(heroTypeId);
-        Timber.d("onCreate page:%s,heroTypeId:%s,heroType:%s", page, heroTypeId, heroType);
+        Timber.d("onCreate page:%s", page);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -185,10 +179,7 @@ public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         this.infoFetcher.fetch(this.followerId, getHeroType());
     }
 
-    private HeroType getHeroType()
-    {
-        return this.heroType;
-    }
+    abstract protected HeroType getHeroType();
 
     @Override public void onPause()
     {
