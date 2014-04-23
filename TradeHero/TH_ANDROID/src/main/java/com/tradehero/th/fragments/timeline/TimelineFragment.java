@@ -818,6 +818,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return false;
     }
 
+    // TODO put this thing closer to the object that needs it
+    @Deprecated
     public static void viewProfile(DashboardNavigatorActivity navigatorActivity, int userId)
     {
         Bundle bundle = new Bundle();

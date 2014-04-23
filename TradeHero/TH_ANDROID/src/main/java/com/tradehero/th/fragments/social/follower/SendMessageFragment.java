@@ -44,9 +44,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-1.
- */
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {

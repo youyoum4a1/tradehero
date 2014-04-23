@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,9 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -28,7 +26,6 @@ import timber.log.Timber;
 
 public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
-
     public static final int ITEM_ID_REFRESH_MENU = 0;
 
     @Inject protected CurrentUserId currentUserId;
@@ -39,7 +36,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     private FollowerManagerInfoFetcher infoFetcher;
     private int page;
     private HeroType followerType;
-
 
     public FollowerManagerTabFragment()
     {

@@ -8,13 +8,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.utils.SecurityUtils;
 
-/**
- * Created by xavier on 12/16/13.
- */
 public class FollowerManagerViewContainer
 {
-    public static final String TAG = FollowerManagerViewContainer.class.getSimpleName();
-
     public final TextView totalRevenue;
     public final TextView totalAmountPaid;
     public final TextView followersCount;

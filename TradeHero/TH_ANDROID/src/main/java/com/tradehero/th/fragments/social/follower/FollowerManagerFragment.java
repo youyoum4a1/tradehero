@@ -32,10 +32,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
- */
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
@@ -320,7 +316,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         }
 
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
-        Timber.d("goToMessagePage index:%d,tabIndex:%d,followerType:%s,discussionType:%s", page,
+        Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
