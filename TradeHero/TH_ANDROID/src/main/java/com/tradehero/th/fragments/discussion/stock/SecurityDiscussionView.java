@@ -25,6 +25,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -129,7 +130,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Override public void display(SecurityId securityId)
     {
         detachSecurityCompactCacheTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCacheListener);
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, false, securityCompactCacheListener);
         securityCompactCacheFetchTask.execute();
     }
 
@@ -184,6 +185,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
             if (discussionKeyList != null)
             {
                 nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+                Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page, discussionKeyList.size());
 
                 if (shouldAppend)
                 {

@@ -202,15 +202,24 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
-    public Response readMessage(int commentId)
+    public Response readMessage(int commentId, int senderUserId, int recipientUserId)
     {
-        return messageService.readMessage(commentId);
+        return messageService.readMessage(commentId, senderUserId, recipientUserId);
     }
 
-    public MiddleCallback<Response> readMessage(int commentId, Callback<Response> callback)
+    public MiddleCallback<Response> readMessage(int commentId, int senderUserId, int recipientUserId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
-        messageServiceAsync.readMessage(commentId, middleCallback);
+        MiddleCallback<Response> middleCallback = new MiddleCallback<Response>(callback)
+        {
+            @Override public void success(Response response, Response response2)
+            {
+                super.success(response, response2);
+                //TODO when MessagesCenterFragment is destroy, callback is removed, data will not be refreshed
+                //TODO how to refresh
+            }
+
+        };
+        messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

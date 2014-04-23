@@ -119,7 +119,8 @@ public class WatchlistEditFragment extends DashboardFragment
         WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
         if (watchlistPositionDTO == null)
         {
-            deleteButton.setEnabled(false);
+            //deleteButton.setEnabled(false);
+            Timber.d("checkDeleteButtonEnable watchlistPositionDTO:%s ",watchlistPositionDTO);
         }
     }
 

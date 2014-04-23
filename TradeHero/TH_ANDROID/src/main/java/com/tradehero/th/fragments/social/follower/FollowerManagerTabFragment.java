@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,9 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -26,9 +24,8 @@ import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
-
     public static final int ITEM_ID_REFRESH_MENU = 0;
 
     @Inject protected CurrentUserId currentUserId;
@@ -37,25 +34,13 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     private UserBaseKey followedId;
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
-    private int page;
-    private HeroType followerType;
-
-
-    public FollowerManagerTabFragment()
-    {
-    }
-
-    public FollowerManagerTabFragment(int page)
-    {
-        this.page = page;
-    }
+    protected int page;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         this.page = args.getInt(FollowerManagerFragment.KEY_PAGE);
-        this.followerType = HeroType.fromId(args.getInt(FollowerManagerFragment.KEY_ID));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +60,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 
         viewContainer = new FollowerManagerViewContainer(view);
         infoFetcher =
-                new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
+                new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
 
         if (followerListAdapter == null)
         {
@@ -134,7 +119,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override public void onResume()
     {
         super.onResume();
@@ -162,9 +146,13 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    abstract protected HeroType getFollowerType();
+
+    abstract protected void handleFollowerSummaryDTOReceived(FollowerSummaryDTO fromServer);
+
     public void display(FollowerSummaryDTO summaryDTO)
     {
-        Timber.d("onDTOReceived display followerType:%s,%s",followerType,summaryDTO);
+        Timber.d("onDTOReceived display followerType:%s,%s", getFollowerType(), summaryDTO);
         linkWith(summaryDTO, true);
     }
 
@@ -228,7 +216,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
                     getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
         }
-        infoFetcher.fetch(this.followedId,new RefresFollowerManagerFollowerSummaryListener());
+        infoFetcher.fetch(this.followedId, createFollowerSummaryCacheRefreshListener());
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
@@ -261,7 +249,17 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private class FollowerManagerFollowerSummaryListener
+    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
+    {
+        return new FollowerManagerFollowerSummaryListener();
+    }
+
+    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
+    {
+        return new RefresFollowerManagerFollowerSummaryListener();
+    }
+
+    protected class FollowerManagerFollowerSummaryListener
             implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
@@ -270,18 +268,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             Timber.d("onDTOReceived");
 
             displayProgress(false);
-            if (followerType == HeroType.FREE){
-                display(value.getFreeFollowerSummaryDTO());
-            }
-            else if (followerType == HeroType.PREMIUM)
-            {
-                display(value.getPaidFollowerSummaryDTO());
-            }
-            else
-            {
-                display(value);
-            }
-
+            handleFollowerSummaryDTOReceived(value);
             notifyFollowerLoaded(value);
         }
 
@@ -293,7 +280,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private class RefresFollowerManagerFollowerSummaryListener
+    protected class RefresFollowerManagerFollowerSummaryListener
             implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
@@ -305,19 +292,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             }
 
             displayProgress(false);
-
-            if (followerType == HeroType.FREE){
-                display(value.getFreeFollowerSummaryDTO());
-            }
-            else if (followerType == HeroType.PREMIUM)
-            {
-                display(value.getPaidFollowerSummaryDTO());
-            }
-            else
-            {
-                display(value);
-            }
-
+            handleFollowerSummaryDTOReceived(value);
             notifyFollowerLoaded(value);
         }
 
@@ -328,7 +303,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             Timber.e("Failed to fetch FollowerSummary", error);
         }
     }
-
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
@@ -345,6 +319,5 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     {
         return false;
     }
-
     //</editor-fold>
 }

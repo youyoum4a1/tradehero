@@ -5,13 +5,13 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Map;
 
-public class PrivateMessageDiscussionListKey extends DiscussionListKey
+public class MessageDiscussionListKey extends DiscussionListKey
 {
-    public static final String SENDER_USER_BUNDLE_KEY = PrivateMessageDiscussionListKey.class.getName() + ".senderUser";
-    public static final String RECIPIENT_USER_BUNDLE_KEY = PrivateMessageDiscussionListKey.class.getName() + ".recipientUser";
-    public static final String MAX_COUNT_BUNDLE_KEY = PrivateMessageDiscussionListKey.class.getName() + ".maxCount";
-    public static final String MAX_ID_BUNDLE_KEY = PrivateMessageDiscussionListKey.class.getName() + ".maxId";
-    public static final String MIN_ID_BUNDLE_KEY = PrivateMessageDiscussionListKey.class.getName() + ".minId";
+    public static final String SENDER_USER_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".senderUser";
+    public static final String RECIPIENT_USER_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".recipientUser";
+    public static final String MAX_COUNT_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".maxCount";
+    public static final String MAX_ID_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".maxId";
+    public static final String MIN_ID_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".minId";
 
     public static final String JSON_SENDER_USER = "senderUserId";
     public static final String JSON_RECIPIENT_USER = "recipientUserId";
@@ -23,7 +23,7 @@ public class PrivateMessageDiscussionListKey extends DiscussionListKey
     public final Integer minId;
 
     //<editor-fold desc="Constructors">
-    public PrivateMessageDiscussionListKey(
+    public MessageDiscussionListKey(
             DiscussionType inReplyToType,
             int inReplyToId,
             UserBaseKey senderUser,
@@ -40,7 +40,7 @@ public class PrivateMessageDiscussionListKey extends DiscussionListKey
         this.minId = minId;
     }
 
-    public PrivateMessageDiscussionListKey(Bundle args)
+    public MessageDiscussionListKey(Bundle args)
     {
         super(args);
         if (!args.containsKey(SENDER_USER_BUNDLE_KEY))
@@ -93,11 +93,11 @@ public class PrivateMessageDiscussionListKey extends DiscussionListKey
     @Override protected boolean equalFields(DiscussionListKey other)
     {
         return super.equalFields(other) &&
-                (other instanceof PrivateMessageDiscussionListKey) &&
-                equalFields((PrivateMessageDiscussionListKey) other);
+                (other instanceof MessageDiscussionListKey) &&
+                equalFields((MessageDiscussionListKey) other);
     }
 
-    public boolean equalFields(PrivateMessageDiscussionListKey other)
+    public boolean equalFields(MessageDiscussionListKey other)
     {
         return super.equalFields(other) &&
                 (senderUser == null ? other.senderUser == null : senderUser.equals(other.senderUser)) &&

@@ -94,8 +94,9 @@ public class MessageServiceStub implements MessageService
         return null;
     }
 
-    @Override public Response readMessage(@Path("commentId") int commentId)
+    @Override public Response readMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId)
     {
-        return null;
+        throw new RuntimeException("Not implemented");
     }
 }

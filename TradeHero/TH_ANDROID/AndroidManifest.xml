@@ -27,7 +27,7 @@
   <uses-permission android:name="com.android.vending.BILLING"/>
 
   <!-- Samsung IAP -->
-￼￼<uses-permission android:name="com.sec.android.iap.permission.BILLING"/>
+  <uses-permission android:name="com.sec.android.iap.permission.BILLING"/>
 
   <!--tap stream-->
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -291,8 +291,7 @@
     </receiver>
 
     <!-- push必须的receviver和service声明 -->
-    <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
-        android:process=":bdservice_v1">
+    <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
         <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -300,8 +299,8 @@
         <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
       </intent-filter>
     </receiver>
-    <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver"
-        android:process=":bdservice_v1">
+
+    <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver" android:process=":bdservice_v1">
       <intent-filter>
         <action android:name="com.baidu.android.pushservice.action.METHOD"/>
         <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />

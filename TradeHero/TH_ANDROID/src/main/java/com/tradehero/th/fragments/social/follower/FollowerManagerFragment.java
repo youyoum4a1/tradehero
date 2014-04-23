@@ -22,25 +22,26 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
+import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.text.MessageFormat;
-import java.util.Map;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
- */
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
     public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
-    public static final String KEY_ID = FollowerManagerFragment.class.getName() + ".keyId";
 
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String BUNDLE_KEY_HERO_ID =
@@ -56,19 +57,22 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject FollowerSummaryCache followerSummaryCache;
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     private UserBaseKey heroId;
     /** categories of follower:premium,free,all */
-    private Map<Integer /* tab index */, HeroTypeResourceDTO> followerTypes;
+    private List<HeroTypeResourceDTO> followerTypes;
 
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
+
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
-        this.followerTypes = heroTypeResourceDTOFactory.getMapByHeroTypeId();
+        this.followerTypes = heroTypeResourceDTOFactory.getListOfHeroType();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -135,7 +139,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         }
 
         super.onDestroyOptionsMenu();
-
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -232,38 +235,27 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             args = new Bundle();
         }
-        for (Map.Entry<Integer, HeroTypeResourceDTO> entry : followerTypes.entrySet())
+        for (HeroTypeResourceDTO entry : followerTypes)
         {
             args = new Bundle(args);
-            args.putInt(KEY_PAGE, entry.getValue().pageIndex);
-            args.putInt(KEY_ID, entry.getValue().getFollowerType().typeId);
+            args.putInt(KEY_PAGE, entry.pageIndex);
 
-            String title =
-                    MessageFormat.format(getSherlockActivity().getString(entry.getValue().titleRes),
-                            0);
+            String title = MessageFormat.format(getString(entry.titleRes), 0);
 
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
-            mTabHost.addTab(tabSpec, entry.getValue().fragmentClass, args);
+            mTabHost.addTab(tabSpec, entry.fragmentClass, args);
         }
 
         return mTabHost;
     }
 
-    private void changeTabTitle(int page, int number)
+    private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
     {
-        int titleRes = 0;
-        for (Map.Entry<Integer, HeroTypeResourceDTO> entry : followerTypes.entrySet())
-        {
-            if (entry.getValue().pageIndex == page)
-            {
-                titleRes = entry.getValue().titleRes;
-            }
-        }
-        TextView tv = (TextView) mTabHost.getTabWidget()
-                .getChildTabViewAt(page)
+        TextView titleView = (TextView) mTabHost.getTabWidget()
+                .getChildTabViewAt(resourceDTO.pageIndex)
                 .findViewById(android.R.id.title);
-        String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
-        tv.setText(title);
+        String title = MessageFormat.format(getString(resourceDTO.titleRes), count);
+        titleView.setText(title);
     }
 
     @Override public void onFollowerLoaded(int page, FollowerSummaryDTO value)
@@ -274,10 +266,29 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             //setMessageLayoutShown(false);
             int paid = value.getPaidFollowerCount();
             int free = value.getFreeFollowerCount();
-            changeTabTitle(0, paid);
-            changeTabTitle(1, free);
-            changeTabTitle(2, (paid + free));
+
+            changeTabTitle(new PremiumHeroTypeResourceDTO(), paid);
+            changeTabTitle(new FreeHeroTypeResourceDTO(), free);
+            changeTabTitle(new AllHeroTypeResourceDTO(), paid + free);
+
+            //changeTabTitle(0, paid);
+            //changeTabTitle(1, free);
+            //changeTabTitle(2, (paid + free));
+
+            updateUserProfileCache(value);
         }
+    }
+
+    private void updateUserProfileCache(FollowerSummaryDTO value)
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();
+        userProfileDTO.freeFollowerCount = value.getFreeFollowerCount();
+        userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
+        userProfileCache.get().put(userBaseKey, userProfileDTO);
+
     }
 
     @Override public void onClick(View v)
@@ -316,11 +327,11 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 messageType = MessageType.BROADCAST_FREE_FOLLOWERS;
                 break;
             default:
-                throw new IllegalStateException("unknown followerType! ");
+                throw new IllegalStateException("unknown followerType!");
         }
 
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
-        Timber.d("goToMessagePage index:%d,tabIndex:%d,followerType:%s,discussionType:%s", page,
+        Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
@@ -330,6 +341,4 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         return false;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
 }

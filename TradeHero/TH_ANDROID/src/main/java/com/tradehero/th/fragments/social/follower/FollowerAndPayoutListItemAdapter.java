@@ -14,11 +14,8 @@ import com.tradehero.th.fragments.social.hero.HeroPayoutListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 {
-    public static final String TAG = FollowerAndPayoutListItemAdapter.class.getName();
-
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_ITEM_PAYOUT = 1;
     public static final int VIEW_TYPE_ITEM_PAYOUT_NONE = 2;

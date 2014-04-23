@@ -8,8 +8,8 @@ import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.discussion.key.PrivateMessageDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -38,9 +38,9 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
 
     @Override protected DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        if (discussionListKey instanceof PrivateMessageDiscussionListKey)
+        if (discussionListKey instanceof MessageDiscussionListKey)
         {
-            return putInternal(discussionServiceWrapper.getMessageThread((PrivateMessageDiscussionListKey) discussionListKey));
+            return putInternal(discussionServiceWrapper.getMessageThread((MessageDiscussionListKey) discussionListKey));
         }
         else if (discussionListKey instanceof PaginatedDiscussionListKey)
         {

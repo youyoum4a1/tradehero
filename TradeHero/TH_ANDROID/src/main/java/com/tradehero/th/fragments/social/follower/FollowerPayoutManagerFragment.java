@@ -26,14 +26,8 @@ import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template
- * use File | Settings | File Templates.
- */
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
-    public static final String TAG = FollowerPayoutManagerFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
             FollowerPayoutManagerFragment.class.getName() + ".followerId";
 

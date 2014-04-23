@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,14 +10,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -24,14 +24,9 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template
- * use File | Settings | File Templates.
- */
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>, View.OnClickListener
 {
-    public static final String TAG = HeroListItemView.class.getName();
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
     public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
 
@@ -130,8 +125,11 @@ public class HeroListItemView extends RelativeLayout
 
     private void handleUserIconClicked()
     {
-        //THToast.show(String.format("user icon click %s", heroDTO.displayName));
-        TimelineFragment.viewProfile((DashboardActivity) getContext(), heroDTO.id);
+        Bundle bundle = new Bundle();
+        DashboardNavigator navigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
+        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     public void setHeroStatusButtonClickedListener(

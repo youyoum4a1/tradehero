@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -63,6 +64,18 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     @Override public void display(MessageHeaderId dto)
     {
         this.messageHeaderDTO = messageHeaderCache.get(dto);
+        if(messageHeaderDTO != null)
+        {
+            if(messageHeaderDTO.discussionType == DiscussionType.BROADCAST_MESSAGE)
+            {
+                setBackgroundColor(getResources().getColor(R.color.broadcast_message_item_bg));
+            }
+            else if (messageHeaderDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
+            {
+                setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            }
+
+        }
         displayData();
     }
 

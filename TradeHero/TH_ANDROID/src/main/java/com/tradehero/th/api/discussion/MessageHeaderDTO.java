@@ -66,6 +66,21 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
         return new UserBaseKey(recipientUserId);
     }
 
+    /**
+     * Returns the user id that is not the currentUserId parameter.
+     * @param currentUserId
+     * @return
+     */
+    public UserBaseKey getCorrespondentId(UserBaseKey currentUserId)
+    {
+        UserBaseKey senderId = getSenderId();
+        if (!senderId.equals(currentUserId))
+        {
+            return senderId;
+        }
+        return getRecipientId();
+    }
+
     @Override public String toString()
     {
         return "MessageHeaderDTO{" +

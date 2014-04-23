@@ -6,8 +6,8 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.discussion.key.PrivateMessageDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -103,7 +103,7 @@ import retrofit.Callback;
                 discussionsKey.toMap());
     }
 
-    public PaginatedDTO<DiscussionDTO> getMessageThread(PrivateMessageDiscussionListKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getMessageThread(MessageDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
@@ -112,7 +112,7 @@ import retrofit.Callback;
     }
 
     public MiddleCallbackPaginatedDiscussion getMessageThread(
-            PrivateMessageDiscussionListKey discussionsKey,
+            MessageDiscussionListKey discussionsKey,
             Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
         MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
