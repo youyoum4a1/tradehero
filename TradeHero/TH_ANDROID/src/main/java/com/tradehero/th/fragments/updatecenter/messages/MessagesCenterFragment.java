@@ -193,12 +193,8 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
-<<<<<<< HEAD
-        pushMessageFragment(position);
-=======
         updateReadStatus(position);
-        pushPrivateMessageFragment(position);
->>>>>>> 1.change the background of private message and broadcast message
+        pushMessageFragment(position);
     }
 
     //private void fetchUserProfile()
@@ -227,11 +223,7 @@ public class MessagesCenterFragment extends DashboardFragment
         return UpdateCenterTabType.Messages;
     }
 
-<<<<<<< HEAD
     protected void pushMessageFragment(int position)
-=======
-    private void pushPrivateMessageFragment(int position)
->>>>>>> 1.change the background of private message and broadcast message
     {
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(getListAdapter().getItem(position));
         pushMessageFragment(
@@ -654,11 +646,11 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageHeaderId messageHeaderId = messageListAdapter.getItem(position);
         if (messageHeaderId != null)
         {
-            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
             Timber.d("updateReadStatus :%d,unread:%s,title:%s",position,messageHeaderDTO.unread,messageHeaderDTO.title);
             if (messageHeaderDTO != null && messageHeaderDTO.unread)
             {
-                reportMessageRead(messageHeaderDTO.id);
+                reportMessageRead(messageHeaderDTO);
             }
         }
     }
@@ -686,12 +678,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
-<<<<<<< HEAD
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(messageHeaderDTO.id);
-=======
-        Timber.d("reportMessageRead id:%d",pushId);
-        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
->>>>>>> 1.change the background of private message and broadcast message
         if (middleCallback != null)
         {
             middleCallback.setPrimaryCallback(null);
