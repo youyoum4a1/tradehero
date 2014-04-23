@@ -1049,7 +1049,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         else
         {
             Integer maxSellableShares = getMaxSellableShares();
-            supportSell = maxSellableShares == null || maxSellableShares == 0;
+            supportSell = maxSellableShares != null && maxSellableShares > 0;
         }
         if (mSellBtn != null)
         {
