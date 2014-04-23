@@ -403,8 +403,9 @@ public class MessagesCenterFragment extends DashboardFragment
     private void removeMessageOnServer(MessageHeaderId messageHeaderId)
     {
         unsetDeletionMiddleCallback();
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
-                messageHeaderId,
+                messageHeaderId, messageHeaderDTO.senderUserId, messageHeaderDTO.recipientUserId,
                 new MessageDeletionCallback(messageHeaderId));
     }
 
@@ -742,6 +743,7 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void success(Response response, Response response2)
         {
             // mark message as deleted
+            Timber.d("lyl %d", response.getStatus());
             if (getListAdapter() != null)
             {
                 if (alreadyFetched != null)
