@@ -640,6 +640,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayBuySellPrice();
             displayAsOf();
             displayQuickPriceButtonSet();
+            displayBuySellSwitch();
         }
     }
 
@@ -1049,7 +1050,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         else
         {
             Integer maxSellableShares = getMaxSellableShares();
-            supportSell = maxSellableShares != null && maxSellableShares > 0;
+            supportSell = maxSellableShares != null && maxSellableShares.intValue() > 0;
         }
         if (mSellBtn != null)
         {
