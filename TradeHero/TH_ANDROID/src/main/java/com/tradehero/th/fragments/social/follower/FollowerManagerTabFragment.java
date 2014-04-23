@@ -27,14 +27,25 @@ import timber.log.Timber;
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
+    private static final String HERO_ID_BUNDLE_KEY = FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
     private FollowerManagerViewContainer viewContainer;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
-    private UserBaseKey followedId;
+    private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
     protected int page;
+
+    public static void putHeroId(Bundle args, UserBaseKey followerId)
+    {
+        args.putBundle(HERO_ID_BUNDLE_KEY, followerId.getArgs());
+    }
+
+    public static UserBaseKey getHeroId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(HERO_ID_BUNDLE_KEY));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -124,10 +135,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         super.onResume();
 
         Timber.d("FollowerManagerTabFragment onResume");
-        followedId = new UserBaseKey(
-                getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
+        heroId = getHeroId(getArguments());
 
-        infoFetcher.fetch(this.followedId);
+        infoFetcher.fetch(this.heroId);
     }
 
     @Override public void onDestroyView()
@@ -210,13 +220,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         Timber.d("refreshContent");
 
         redisplayProgress();
-        if (followedId == null)
+        if (heroId == null)
         {
-            followedId = new UserBaseKey(
-                    getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
-
+            heroId = getHeroId(getArguments());
         }
-        infoFetcher.fetch(this.followedId, createFollowerSummaryCacheRefreshListener());
+        infoFetcher.fetch(this.heroId, createFollowerSummaryCacheRefreshListener());
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
