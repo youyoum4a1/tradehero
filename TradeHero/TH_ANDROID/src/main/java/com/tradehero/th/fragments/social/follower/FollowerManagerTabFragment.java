@@ -314,11 +314,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
-        Timber.d("notifyFollowerLoaded for page:%d", getHeroTypeResource().pageIndex);
+        Timber.d("notifyFollowerLoaded for followerTabIndex:%d", getHeroTypeResource().followerTabIndex);
         OnFollowersLoadedListener loadedListener = FragmentUtils.getParent(this,OnFollowersLoadedListener.class);
         if (loadedListener != null && !isDetached())
         {
-            loadedListener.onFollowerLoaded(getHeroTypeResource().pageIndex, value);
+            loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
         }
     }
 

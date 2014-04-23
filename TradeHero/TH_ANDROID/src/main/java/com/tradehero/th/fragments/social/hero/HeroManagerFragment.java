@@ -20,12 +20,15 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import java.util.List;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
@@ -39,9 +42,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     // TODO change it into something like R.id.... to help with identifying its unicity
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
+    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     /** categories of hero:premium,free,all */
     private HeroTypeExt[] heroTypes;
-    private int selectedId = -1;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -84,26 +87,27 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
 
-        ActionBar.Tab lastSavedTab = null;
-        int lastSelectedId = selectedId;
-        HeroTypeExt[] types = heroTypes;
-        tabSpecList = new ArrayList<>(types.length);
-        Bundle args = new Bundle();
-        HeroesTabContentFragment.putFollowerId(args, getFollowerId(getArguments()));
-        for (HeroTypeExt type : types)
+        List<HeroTypeResourceDTO> resourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
+        tabSpecList = new ArrayList<>(resourceDTOs.size());
+        for (HeroTypeResourceDTO resourceDTO : resourceDTOs)
         {
-            args = new Bundle(args);
-            args.putInt(KEY_PAGE, type.pageIndex);
-
-            String title = MessageFormat.format(getSherlockActivity().getString(type.titleRes), 0);
-
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
-            tabSpecList.add(tabSpec);
-            mTabHost.addTab(tabSpec,
-                    type.fragmentClass, args);
+            addTab(resourceDTO);
         }
 
         return mTabHost;
+    }
+
+    private void addTab(HeroTypeResourceDTO resourceDTO)
+    {
+        Bundle args = new Bundle();
+        args.putInt(KEY_PAGE, resourceDTO.heroTabIndex);
+        HeroesTabContentFragment.putFollowerId(args, getFollowerId(getArguments()));
+
+        String title = MessageFormat.format(getString(resourceDTO.heroTabTitleRes), 0);
+
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+        tabSpecList.add(tabSpec);
+        mTabHost.addTab(tabSpec, resourceDTO.heroContentFragmentClass, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -149,20 +153,13 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
             return;
         }
         TabHost.TabSpec tabSpec = tabSpecList.get(page);
-        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes,page);
+        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes, page);
         int titleRes = heroTypeExt.titleRes;
         String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
         tabSpec.setIndicator(title);
 
         TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
         tv.setText(title);
-    }
-
-    private void changeTabTitle(int number1, int number2, int number3)
-    {
-        changeTabTitle(0, number1);
-        changeTabTitle(1, number2);
-        changeTabTitle(2, number3);
     }
 
     @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)

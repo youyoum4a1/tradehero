@@ -240,18 +240,18 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Bundle args = new Bundle();
         FollowerManagerTabFragment.putHeroId(args, heroId);
 
-        String title = MessageFormat.format(getString(resourceDTO.titleRes), 0);
+        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), 0);
 
         TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
-        mTabHost.addTab(tabSpec, resourceDTO.fragmentClass, args);
+        mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
     }
 
     private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
     {
         TextView titleView = (TextView) mTabHost.getTabWidget()
-                .getChildTabViewAt(resourceDTO.pageIndex)
+                .getChildTabViewAt(resourceDTO.followerTabIndex)
                 .findViewById(android.R.id.title);
-        String title = MessageFormat.format(getString(resourceDTO.titleRes), count);
+        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), count);
         titleView.setText(title);
     }
 

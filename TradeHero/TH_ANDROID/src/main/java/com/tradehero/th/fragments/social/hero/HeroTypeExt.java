@@ -7,6 +7,7 @@ import com.tradehero.th.persistence.social.HeroType;
 /**
  * Created by thonguyen on 3/4/14.
  */
+@Deprecated
 public class HeroTypeExt
 {
     public final int titleRes;

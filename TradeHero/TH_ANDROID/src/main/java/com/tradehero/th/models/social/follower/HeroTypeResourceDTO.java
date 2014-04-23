@@ -5,19 +5,31 @@ import com.tradehero.th.persistence.social.HeroType;
 
 abstract public class HeroTypeResourceDTO
 {
-    public final int titleRes;
-    public final int pageIndex;
-    public final Class<? extends Fragment> fragmentClass;
+    public final int heroTabTitleRes;
+    public final int heroTabIndex;
+    public final Class<? extends Fragment> heroContentFragmentClass;
+
+    public final int followerTabTitleRes;
+    public final int followerTabIndex;
+    public final Class<? extends Fragment> followerContentFragmentClass;
 
     protected HeroTypeResourceDTO(
-            int titleRes,
-            int pageIndex,
-            Class<? extends Fragment> fragmentClass)
+            int heroTabTitleRes,
+            int heroTabIndex,
+            Class<? extends Fragment> heroContentFragmentClass,
+
+            int followerTabTitleRes,
+            int followerTabIndex,
+            Class<? extends Fragment> followerContentFragmentClass)
     {
-        this.titleRes = titleRes;
-        this.pageIndex = pageIndex;
-        this.fragmentClass = fragmentClass;
+        this.heroTabTitleRes = heroTabTitleRes;
+        this.heroTabIndex = heroTabIndex;
+        this.heroContentFragmentClass = heroContentFragmentClass;
+
+        this.followerTabTitleRes = followerTabTitleRes;
+        this.followerTabIndex = followerTabIndex;
+        this.followerContentFragmentClass = followerContentFragmentClass;
     }
 
-    abstract public HeroType getFollowerType();
+    abstract public HeroType getHeroType();
 }
