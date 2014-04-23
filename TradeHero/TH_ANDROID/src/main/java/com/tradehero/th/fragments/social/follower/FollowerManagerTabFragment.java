@@ -34,7 +34,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private UserBaseKey followedId;
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
-    private int page;
+    protected int page;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -60,7 +60,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
         viewContainer = new FollowerManagerViewContainer(view);
         infoFetcher =
-                new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
+                new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
 
         if (followerListAdapter == null)
         {
@@ -216,7 +216,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                     getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
 
         }
-        infoFetcher.fetch(this.followedId,new RefresFollowerManagerFollowerSummaryListener());
+        infoFetcher.fetch(this.followedId, createFollowerSummaryCacheRefreshListener());
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
@@ -249,7 +249,17 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
-    private class FollowerManagerFollowerSummaryListener
+    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
+    {
+        return new FollowerManagerFollowerSummaryListener();
+    }
+
+    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
+    {
+        return new RefresFollowerManagerFollowerSummaryListener();
+    }
+
+    protected class FollowerManagerFollowerSummaryListener
             implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
@@ -270,7 +280,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
-    private class RefresFollowerManagerFollowerSummaryListener
+    protected class RefresFollowerManagerFollowerSummaryListener
             implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
@@ -309,6 +319,5 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     {
         return false;
     }
-
     //</editor-fold>
 }
