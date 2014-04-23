@@ -25,6 +25,8 @@ import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroKey;
@@ -56,6 +58,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /**when no heroes*/
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
 
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
     {
@@ -177,6 +180,11 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
         Timber.d("onResume,fetch heros heroType:%s", getHeroType());
         this.infoFetcher.fetch(this.followerId, getHeroType());
+    }
+
+    protected HeroTypeResourceDTO getHeroTypeResource()
+    {
+        return heroTypeResourceDTOFactory.create(getHeroType());
     }
 
     abstract protected HeroType getHeroType();
@@ -426,15 +434,13 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
     }
 
-
     private void notifyHeroesLoaded(HeroIdExtWrapper value)
     {
-
         OnHeroesLoadedListener listener = FragmentUtils.getParent(this,OnHeroesLoadedListener.class);
         Timber.d("OnHeroesLoadedListener listener:%s",listener);
         if (listener != null && !isDetached())
         {
-            listener.onHerosLoaded(page, value);
+            listener.onHerosLoaded(getHeroTypeResource(), value);
         }
     }
 }

@@ -20,8 +20,11 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
+import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import java.util.List;
 import com.actionbarsherlock.view.MenuItem;
@@ -43,8 +46,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
-    /** categories of hero:premium,free,all */
-    private HeroTypeExt[] heroTypes;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -56,13 +57,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     public static UserBaseKey getFollowerId(Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        heroTypes = HeroTypeExt.getSortedList();
-        Timber.d("onCreate");
     }
 
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
@@ -146,29 +140,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     /**
      * change the number of tab
      */
-    private void changeTabTitle(int page, int number)
+    private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int number)
     {
         if (mTabHost == null)
         {
             return;
         }
-        TabHost.TabSpec tabSpec = tabSpecList.get(page);
-        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes, page);
-        int titleRes = heroTypeExt.titleRes;
-        String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
+        TabHost.TabSpec tabSpec = tabSpecList.get(resourceDTO.heroTabIndex);
+        int titleRes = resourceDTO.heroTabTitleRes;
+        String title = MessageFormat.format(getString(titleRes), number);
         tabSpec.setIndicator(title);
 
-        TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
+        TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(resourceDTO.heroTabIndex).findViewById(android.R.id.title);
         tv.setText(title);
     }
 
-    @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
+    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroIdExtWrapper value)
     {
         if (!isDetached())
         {
-            changeTabTitle(0, value.herosCountGetPaid);
-            changeTabTitle(1, value.herosCountNotGetPaid);
-            changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
+            changeTabTitle(new PremiumHeroTypeResourceDTO(), value.herosCountGetPaid);
+            changeTabTitle(new FreeHeroTypeResourceDTO(), value.herosCountNotGetPaid);
+            changeTabTitle(new AllHeroTypeResourceDTO(), (value.herosCountGetPaid + value.herosCountNotGetPaid));
         }
     }
 
