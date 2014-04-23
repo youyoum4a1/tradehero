@@ -36,7 +36,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         implements View.OnClickListener, OnFollowersLoadedListener
 {
     public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
-    public static final String KEY_ID = FollowerManagerFragment.class.getName() + ".keyId";
 
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String BUNDLE_KEY_HERO_ID =
@@ -232,7 +231,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             args = new Bundle(args);
             args.putInt(KEY_PAGE, entry.getValue().pageIndex);
-            args.putInt(KEY_ID, entry.getValue().getFollowerType().typeId);
 
             String title =
                     MessageFormat.format(getSherlockActivity().getString(entry.getValue().titleRes),

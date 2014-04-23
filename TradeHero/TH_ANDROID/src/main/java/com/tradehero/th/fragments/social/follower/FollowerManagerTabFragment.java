@@ -24,7 +24,7 @@ import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
 
@@ -35,23 +35,12 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
     private int page;
-    private HeroType followerType;
-
-    public FollowerManagerTabFragment()
-    {
-    }
-
-    public FollowerManagerTabFragment(int page)
-    {
-        this.page = page;
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         this.page = args.getInt(FollowerManagerFragment.KEY_PAGE);
-        this.followerType = HeroType.fromId(args.getInt(FollowerManagerFragment.KEY_ID));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,7 +119,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override public void onResume()
     {
         super.onResume();
@@ -158,9 +146,13 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    abstract protected HeroType getFollowerType();
+
+    abstract protected void handleFollowerSummaryDTOReceived(FollowerSummaryDTO fromServer);
+
     public void display(FollowerSummaryDTO summaryDTO)
     {
-        Timber.d("onDTOReceived display followerType:%s,%s",followerType,summaryDTO);
+        Timber.d("onDTOReceived display followerType:%s,%s", getFollowerType(), summaryDTO);
         linkWith(summaryDTO, true);
     }
 
@@ -266,18 +258,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             Timber.d("onDTOReceived");
 
             displayProgress(false);
-            if (followerType == HeroType.FREE){
-                display(value.getFreeFollowerSummaryDTO());
-            }
-            else if (followerType == HeroType.PREMIUM)
-            {
-                display(value.getPaidFollowerSummaryDTO());
-            }
-            else
-            {
-                display(value);
-            }
-
+            handleFollowerSummaryDTOReceived(value);
             notifyFollowerLoaded(value);
         }
 
@@ -301,19 +282,7 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             }
 
             displayProgress(false);
-
-            if (followerType == HeroType.FREE){
-                display(value.getFreeFollowerSummaryDTO());
-            }
-            else if (followerType == HeroType.PREMIUM)
-            {
-                display(value.getPaidFollowerSummaryDTO());
-            }
-            else
-            {
-                display(value);
-            }
-
+            handleFollowerSummaryDTOReceived(value);
             notifyFollowerLoaded(value);
         }
 
@@ -324,7 +293,6 @@ public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
             Timber.e("Failed to fetch FollowerSummary", error);
         }
     }
-
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {

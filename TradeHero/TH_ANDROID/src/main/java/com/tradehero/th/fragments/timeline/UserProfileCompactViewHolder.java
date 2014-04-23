@@ -1,32 +1,21 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerTabFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/6/14.
- */
 public class UserProfileCompactViewHolder
 {
-    public static final String TAG = UserProfileCompactViewHolder.class.getSimpleName();
-
     public ImageView avatar;
     public TextView roiSinceInception;
     public TextView profitValue;
