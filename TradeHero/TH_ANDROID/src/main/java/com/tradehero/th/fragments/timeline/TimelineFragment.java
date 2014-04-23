@@ -586,7 +586,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         });
     }
     //</editor-fold>
-
+    /**item of Portfolio tab is clicked*/
     private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Object item = adapterView.getItemAtPosition(i);
@@ -644,6 +644,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
+    /**
+     *
+     * @param ownedPortfolioId
+     */
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
@@ -654,6 +658,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         navigator.pushFragment(PositionListFragment.class, args);
     }
 
+    /**
+     * Go to watchlist
+     * @param ownedPortfolioId
+     */
     private void pushWatchlistPositionFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();

@@ -46,9 +46,16 @@ public class TitleTabView extends RelativeLayout
 
     public void setTitleNumber(int number)
     {
-        if (number > 1)
+        if (number > 100)
         {
-            numberView.setText("" + number);
+            //when message count is greater 100, just show red background
+            //this is not the best way
+            numberView.setText(" ");
+            numberView.setVisibility(View.VISIBLE);
+        }
+        else if (number > 0)
+        {
+            numberView.setText(String.valueOf(number));
             numberView.setVisibility(View.VISIBLE);
         }
         else

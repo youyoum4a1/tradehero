@@ -85,7 +85,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         super.onResume();
 
-        Timber.d("onResume");
+        Timber.d("onResume fetchUserProfile");
         fetchUserProfile();
 
         LocalBroadcastManager.getInstance(getActivity())
@@ -116,6 +116,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         }
         fetchUserProfileTask = null;
     }
+
+
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -241,7 +243,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
         Timber.d("onDestroyView");
-        clearTabs();
+        //don't have to clear sub fragment to refresh data
+        //clearTabs();
         detachUserProfileTask();
 
         super.onDestroyView();
@@ -251,6 +254,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         Timber.d("onDestroy");
         fetchUserProfileListener = null;
+        clearTabs();
 
         super.onDestroy();
     }
@@ -348,6 +352,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (andDisplay)
         {
+            Timber.d("changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",userProfileDTO.unreadMessageThreadsCount,userProfileDTO.unreadNotificationsCount);
             changeTabTitleNumber(UpdateCenterTabType.Messages, userProfileDTO.unreadMessageThreadsCount);
             changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }

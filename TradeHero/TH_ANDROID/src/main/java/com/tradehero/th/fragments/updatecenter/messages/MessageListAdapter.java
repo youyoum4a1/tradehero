@@ -28,7 +28,8 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         View v = super.getView(position, convertView, viewGroup);
-        View contentView = v.findViewById(R.id.main_content_wrapper);
+        View fontView = v.findViewById(R.id.message_item_front);
+        View contentView = fontView.findViewById(R.id.main_content_wrapper);
         View iconView = v.findViewById(R.id.message_item_icon);
         contentView.setTag(position);
         iconView.setTag(position);

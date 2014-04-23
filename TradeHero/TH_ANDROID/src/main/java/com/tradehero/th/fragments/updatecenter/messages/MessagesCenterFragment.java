@@ -76,6 +76,9 @@ public class MessagesCenterFragment extends DashboardFragment
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
 
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -152,7 +155,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        unsetMiddleCallback();
+        //we set a message unread when click the item, so don't remove callback at the moment.
+        //unsetMiddleCallback();
         detachFetchMessageTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
@@ -169,6 +173,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesFetchListener = null;
         alreadyFetched = null;
         messageListKey = null;
+        unsetMiddleCallback();
 
         super.onDestroy();
         Timber.d("onDestroy");
@@ -188,15 +193,45 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
+<<<<<<< HEAD
         pushMessageFragment(position);
+=======
+        updateReadStatus(position);
+        pushPrivateMessageFragment(position);
+>>>>>>> 1.change the background of private message and broadcast message
     }
+
+    //private void fetchUserProfile()
+    //{
+    //    detachUserProfileTask();
+    //    if (fetchUserProfileListener == null)
+    //    {
+    //        fetchUserProfileListener = new
+    //    }
+    //    fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, fetchUserProfileListener);
+    //    fetchUserProfileTask.execute();
+    //}
+    //
+    //private void detachUserProfileTask()
+    //{
+    //    if (fetchUserProfileTask != null)
+    //    {
+    //        fetchUserProfileTask.setListener(null);
+    //    }
+    //    fetchUserProfileTask = null;
+    //}
+
 
     public UpdateCenterTabType getTabType()
     {
         return UpdateCenterTabType.Messages;
     }
 
+<<<<<<< HEAD
     protected void pushMessageFragment(int position)
+=======
+    private void pushPrivateMessageFragment(int position)
+>>>>>>> 1.change the background of private message and broadcast message
     {
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(getListAdapter().getItem(position));
         pushMessageFragment(
@@ -553,7 +588,8 @@ public class MessagesCenterFragment extends DashboardFragment
                 onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
             Timber.d("onScroll called");
-            updateReadStatus(firstVisibleItem, visibleItemCount);
+            // if the count of messages is too fewer，onScroll may not be called
+            //updateReadStatus(firstVisibleItem, visibleItemCount);
 
             super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
@@ -609,6 +645,24 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
+    private void updateReadStatus(int position)
+    {
+        if (messageListAdapter == null)
+        {
+            return;
+        }
+        MessageHeaderId messageHeaderId = messageListAdapter.getItem(position);
+        if (messageHeaderId != null)
+        {
+            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get().get(messageHeaderId);
+            Timber.d("updateReadStatus :%d,unread:%s,title:%s",position,messageHeaderDTO.unread,messageHeaderDTO.title);
+            if (messageHeaderDTO != null && messageHeaderDTO.unread)
+            {
+                reportMessageRead(messageHeaderDTO.id);
+            }
+        }
+    }
+
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
     {
         if (messageListAdapter == null)
@@ -632,7 +686,12 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
+<<<<<<< HEAD
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(messageHeaderDTO.id);
+=======
+        Timber.d("reportMessageRead id:%d",pushId);
+        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
+>>>>>>> 1.change the background of private message and broadcast message
         if (middleCallback != null)
         {
             middleCallback.setPrimaryCallback(null);

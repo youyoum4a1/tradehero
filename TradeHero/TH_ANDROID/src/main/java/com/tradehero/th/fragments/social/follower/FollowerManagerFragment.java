@@ -22,6 +22,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
@@ -30,6 +31,8 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.text.MessageFormat;
 import java.util.List;
 import javax.inject.Inject;
@@ -54,12 +57,15 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject FollowerSummaryCache followerSummaryCache;
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     private UserBaseKey heroId;
     /** categories of follower:premium,free,all */
     private List<HeroTypeResourceDTO> followerTypes;
 
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
+
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -260,10 +266,29 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             //setMessageLayoutShown(false);
             int paid = value.getPaidFollowerCount();
             int free = value.getFreeFollowerCount();
+
             changeTabTitle(new PremiumHeroTypeResourceDTO(), paid);
             changeTabTitle(new FreeHeroTypeResourceDTO(), free);
             changeTabTitle(new AllHeroTypeResourceDTO(), paid + free);
+
+            //changeTabTitle(0, paid);
+            //changeTabTitle(1, free);
+            //changeTabTitle(2, (paid + free));
+
+            updateUserProfileCache(value);
         }
+    }
+
+    private void updateUserProfileCache(FollowerSummaryDTO value)
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();
+        userProfileDTO.freeFollowerCount = value.getFreeFollowerCount();
+        userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
+        userProfileCache.get().put(userBaseKey, userProfileDTO);
+
     }
 
     @Override public void onClick(View v)
