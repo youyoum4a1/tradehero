@@ -181,6 +181,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", ccBalance=" + ccBalance +
                 ", portfolio=" + portfolio +
                 ", paypalEmailAddress='" + paypalEmailAddress + '\'' +
+                ", alipayAccount='" + alipayAccount + '\'' +
                 ", pushNotificationsEnabled=" + pushNotificationsEnabled +
                 ", emailNotificationsEnabled=" + emailNotificationsEnabled +
                 ", rank=" + rank +
