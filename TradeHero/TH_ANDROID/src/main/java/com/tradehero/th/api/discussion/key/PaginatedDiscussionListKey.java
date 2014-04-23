@@ -10,6 +10,7 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
 {
     public static final String PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".page";
     public static final String PER_PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".perPage";
+    private static final Integer DEFAULT_PERPAGE = 42;
 
     public final Integer page;
     public final Integer perPage;
@@ -39,7 +40,7 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
 
     public PaginatedDiscussionListKey(DiscussionListKey discussionListKey, Integer page)
     {
-        this(discussionListKey, page, null);
+        this(discussionListKey, page, DEFAULT_PERPAGE);
     }
 
     public PaginatedDiscussionListKey(Bundle args)
