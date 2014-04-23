@@ -2,7 +2,7 @@
 <resources>
 
   <string name="private_message_empty_list_hint">开始会话</string>
-  <string name="private_message_message_hint">输入讯息</string>
+  <string name="private_message_message_hint">请输入消息</string>
   <string name="private_message_btn_send">发送</string>
   <string name="private_message_limited_count">剩余可发送消息次数 %d \n升级获得不受限的消息功能!</string>
   <string name="private_message_subtitle">私信</string>

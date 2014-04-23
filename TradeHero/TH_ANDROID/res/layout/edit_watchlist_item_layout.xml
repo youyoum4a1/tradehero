@@ -111,20 +111,27 @@
       >
 
     <Button
+        android:gravity="center"
         android:id="@+id/edit_watchlist_item_delete"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:background="@color/red"
-        android:textColor="@color/white"
         android:text="@string/watchlist_button_delete"
+        android:background="@drawable/authentication_sign_in_button"
+        android:minWidth="100dp"
         />
+    <!--android:background="@color/red"
+    android:textColor="@color/white"
+    -->
 
     <Button
+        android:gravity="center"
         android:id="@+id/edit_watchlist_item_done"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginLeft="24dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/watchlist_button_done"
+        android:background="@drawable/authentication_sign_in_button"
+        android:minWidth="100dp"
         />
 
   </LinearLayout>

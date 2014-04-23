@@ -75,7 +75,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     {
         if (messageHeaderDTO != null)
         {
-            titleView.setText(messageHeaderDTO.title);
+            titleView.setText(createTitle());
             contentView.setText(messageHeaderDTO.message);
             dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
             if (messageHeaderDTO.imageUrl != null)
@@ -87,6 +87,11 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
                 setDefaultIcon();
             }
         }
+    }
+
+    private String createTitle()
+    {
+        return messageHeaderDTO.title +" "+messageHeaderDTO.subTitle;
     }
 
     private void setDefaultIcon()
