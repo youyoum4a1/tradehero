@@ -20,6 +20,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -30,12 +32,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private static final String HERO_ID_BUNDLE_KEY = FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     private FollowerManagerViewContainer viewContainer;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
-    protected int page;
 
     public static void putHeroId(Bundle args, UserBaseKey followerId)
     {
@@ -45,13 +47,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     public static UserBaseKey getHeroId(Bundle args)
     {
         return new UserBaseKey(args.getBundle(HERO_ID_BUNDLE_KEY));
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        this.page = args.getInt(FollowerManagerFragment.KEY_PAGE);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -154,6 +149,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
         this.infoFetcher = null;
         super.onDestroyView();
+    }
+
+    protected HeroTypeResourceDTO getHeroTypeResource()
+    {
+        return heroTypeResourceDTOFactory.create(getFollowerType());
     }
 
     abstract protected HeroType getFollowerType();
@@ -314,11 +314,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
-        Timber.d("notifyFollowerLoaded for page:%d", page);
+        Timber.d("notifyFollowerLoaded for page:%d", getHeroTypeResource().pageIndex);
         OnFollowersLoadedListener loadedListener = FragmentUtils.getParent(this,OnFollowersLoadedListener.class);
         if (loadedListener != null && !isDetached())
         {
-            loadedListener.onFollowerLoaded(page, value);
+            loadedListener.onFollowerLoaded(getHeroTypeResource().pageIndex, value);
         }
     }
 

@@ -41,8 +41,6 @@ import timber.log.Timber;
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
-    public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
-
     static final int FRAGMENT_LAYOUT_ID = 10000;
     private static final String BUNDLE_KEY_HERO_ID =
             FollowerManagerFragment.class.getName() + ".heroId";
@@ -201,9 +199,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             return null;
         }
         String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = getChildFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        return fragment;
+        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+        return fm.findFragmentByTag(tag);
     }
 
     private int[] getFollowerCount()
@@ -224,7 +221,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         //TODO NestedFragments needs ChildFragmentManager
         //http://developer.android.com/about/versions/android-4.2.html#NestedFragments
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         for (HeroTypeResourceDTO resourceDTO : getTabResourceDTOs())
         {
             addTab(resourceDTO);
@@ -242,7 +239,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         Bundle args = new Bundle();
         FollowerManagerTabFragment.putHeroId(args, heroId);
-        args.putInt(KEY_PAGE, resourceDTO.pageIndex);
 
         String title = MessageFormat.format(getString(resourceDTO.titleRes), 0);
 
