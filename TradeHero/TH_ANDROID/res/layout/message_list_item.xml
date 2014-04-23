@@ -23,7 +23,8 @@
       android:contentDescription="@null"
       />
 
-  <RelativeLayout android:id="@+id/main_content_wrapper"
+  <RelativeLayout
+      android:id="@+id/main_content_wrapper"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="center_vertical"
@@ -46,6 +47,20 @@
         />
 
     <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/message_item_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:textColorLink="@color/timeline_item_link"
+        android:textColor="@color/text_gray_normal"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        android:layout_below="@id/message_item_title"
+        tools:text="Subtitle"
+       android:maxLines="2"
+        />
+
+    <com.tradehero.th.widget.MarkdownTextView
         android:id="@+id/message_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +70,7 @@
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
         android:textStyle="normal"
-        android:layout_below="@id/message_item_title"
+        android:layout_below="@id/message_item_sub_title"
         tools:text="Hello world!"
         android:maxLines="2"
         />
@@ -67,11 +82,12 @@
         android:layout_marginLeft="10dp"
         android:textColor="@color/text_gray_normal"
         android:textSize="@dimen/timeline_item_date"
-        android:layout_below="@id/message_item_content"
+        android:layout_alignParentRight="true"
         tools:text="A moment ago"
-        android:layout_marginTop="3dip"
+        android:layout_marginTop="0dip"
         android:maxLines="2"
         />
+
   </RelativeLayout>
 
 </com.tradehero.th.fragments.updatecenter.messages.MessageItemView>
