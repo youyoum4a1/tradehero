@@ -182,7 +182,7 @@ public class DiscussionView extends FrameLayout
         this.discussionKey = discussionKey;
         postCommentView.linkWith(discussionKey);
 
-        initialFetchDiscussion();
+        initialFetchDiscussion(false);
 
         if (andDisplay)
         {
@@ -190,13 +190,26 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected void initialFetchDiscussion()
+    public void refresh()
+    {
+        if (discussionKey != null)
+        {
+            discussionListCache.invalidateAllPagesFor(discussionKey);
+        }
+        initialFetchDiscussion(true);
+        if (topicView instanceof AbstractDiscussionItemView)
+        {
+            ((AbstractDiscussionItemView) topicView).refresh();
+        }
+    }
+
+    protected void initialFetchDiscussion(boolean force)
     {
         discussionListAdapter.setItems(null);
         this.discussionListKey = createListKey();
         if (discussionListKey != null)
         {
-            fetchDiscussionListIfNecessary();
+            fetchDiscussionListIfNecessary(force);
         }
     }
 
@@ -209,12 +222,12 @@ public class DiscussionView extends FrameLayout
         return null;
     }
 
-    private void fetchDiscussionListIfNecessary()
+    private void fetchDiscussionListIfNecessary(boolean force)
     {
         prepareDiscussionListKey();
         setLoading();
         detachDiscussionFetchTask();
-        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, false, createDiscussionListListener());
+        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, force, createDiscussionListListener());
         discussionFetchTask.execute();
     }
 
