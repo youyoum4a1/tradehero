@@ -61,9 +61,11 @@ interface MessageServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
-    @POST("/messages/read/{commentId}")
+    @POST("/messages/read/{commentId}/{senderUserId}/{recipientUserId}")
     void readMessage(
             @Path("commentId") int commentId,
+            @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId,
             Callback<Response> callback);
     //</editor-fold>
 }

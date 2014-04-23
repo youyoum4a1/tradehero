@@ -51,7 +51,10 @@ public interface MessageService
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
-    @POST("/messages/read/{commentId}")
-    Response readMessage(@Path("commentId") int commentId);
+    @POST("/messages/read/{commentId}/{senderUserId}/{recipientUserId}")
+    Response readMessage(
+            @Path("commentId") int commentId,
+            @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId);
     //</editor-fold>
 }

@@ -624,23 +624,23 @@ public class MessagesCenterFragment extends DashboardFragment
 
                 if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
-                    reportMessageRead(messageHeaderDTO.id);
+                    reportMessageRead(messageHeaderDTO);
                 }
             }
         }
     }
 
-    private void reportMessageRead(int pushId)
+    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
-        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
+        MiddleCallback<Response> middleCallback = middleCallbackMap.get(messageHeaderDTO.id);
         if (middleCallback != null)
         {
             middleCallback.setPrimaryCallback(null);
         }
-        middleCallbackMap.put(
-                pushId,
-                messageServiceWrapper.get()
-                        .readMessage(pushId, createMessageAsReadCallback(pushId)));
+        middleCallbackMap.put(messageHeaderDTO.id, messageServiceWrapper.get()
+                .readMessage(messageHeaderDTO.id, messageHeaderDTO.senderUserId
+                        , messageHeaderDTO.recipientUserId.intValue()
+                        , createMessageAsReadCallback(messageHeaderDTO.id)));
     }
 
     private Callback<Response> createMessageAsReadCallback(int pushId)
