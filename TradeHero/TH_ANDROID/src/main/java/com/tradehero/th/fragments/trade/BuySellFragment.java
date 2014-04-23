@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -72,7 +73,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
@@ -81,15 +81,13 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.wxapi.WXMessageType;
-import com.viewpagerindicator.PageIndicator;
-import java.util.*;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;
@@ -98,12 +96,12 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class
-        BuySellFragment extends AbstractBuySellFragment
-    implements SecurityAlertAssistant.OnPopulatedListener, WithTutorial,
-        ViewPager.OnPageChangeListener
+public class BuySellFragment extends AbstractBuySellFragment
+    implements SecurityAlertAssistant.OnPopulatedListener,  ViewPager.OnPageChangeListener, WithTutorial
+
 {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
+    private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE  = 200;
 
@@ -170,26 +168,23 @@ public class
     @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     @Inject Picasso picasso;
     @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
+    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
+    @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     protected SecurityAlertAssistant securityAlertAssistant;
-    protected PageIndicator mBottomPagerIndicator;
     protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchTask;
 
-    int mQuantity = 0;
-    int volume = 0;
-    int avgDailyVolume = 0;
-
+    private int mQuantity = 0;
     private Bundle desiredArguments;
 
     protected SecurityIdList watchedList;
 
-    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
-    @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
+    private int selectedPageIndex;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -213,8 +208,12 @@ public class
             desiredArguments = getArguments();
         }
 
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
+        if (savedInstanceState != null )
+        {
+            selectedPageIndex = savedInstanceState.getInt(BUNDLE_KEY_SELECTED_PAGE_INDEX);
+        }
+
+        View view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
         initViews(view);
         return view;
     }
@@ -307,7 +306,7 @@ public class
 
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getChildFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), ((Fragment) this).getChildFragmentManager());
         }
         if (mBottomViewPager != null)
         {
@@ -315,7 +314,8 @@ public class
             mBottomViewPager.setOnPageChangeListener(this);
         }
 
-        selectPage(0);
+        selectPage(selectedPageIndex);
+
         if (mInfoTextView != null)
         {
             mInfoTextView.setOnClickListener(new OnClickListener()
@@ -355,6 +355,13 @@ public class
                 }
             });
         }
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -410,8 +417,9 @@ public class
     {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(chartImageButtonClickReceiver, new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(chartImageButtonClickReceiver, new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
+
+        mBottomViewPager.setCurrentItem(selectedPageIndex);
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
@@ -425,8 +433,8 @@ public class
 
     @Override public void onPause()
     {
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(chartImageButtonClickReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(chartImageButtonClickReceiver);
+        selectedPageIndex = mBottomViewPager.getCurrentItem();
         super.onPause();
     }
 
@@ -471,7 +479,6 @@ public class
 
         bottomViewPagerAdapter = null;
         mBottomViewPager = null;
-        mBottomPagerIndicator = null;
 
         pushPortfolioFragmentRunnable = null;
         if (mBuySellDialog != null)
@@ -753,10 +760,8 @@ public class
                 }
             }
 
-            Iterator<OwnedPortfolioId> iterator = otherPortfolioIds.iterator();
-            while (iterator.hasNext())
+            for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
             {
-                OwnedPortfolioId ownedPortfolioId = iterator.next();
                 PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioIdKey());
                 if (portfolioCompactDTO == null)
                 {
@@ -784,6 +789,7 @@ public class
         displayActionBarElements();
         displayPageElements();
 
+        int avgDailyVolume = 0;
         if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
         {
             avgDailyVolume = 0;
@@ -793,6 +799,7 @@ public class
             avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
         }
 
+        int volume = 0;
         if (securityCompactDTO == null || securityCompactDTO.volume == null)
         {
             volume = 0;
@@ -1922,6 +1929,7 @@ public class
 
     public void selectPage(int position)
     {
+        selectedPageIndex = position;
         mInfoTextView.setEnabled(position != 0);
         mDiscussTextView.setEnabled(position != 1);
         mNewsTextView.setEnabled(position != 2);
