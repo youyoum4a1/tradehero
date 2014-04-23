@@ -40,7 +40,7 @@
 
   <color name="follow_button_green">#a0dc50</color>
   <color name="follow_button_green_overlay">#eea0dc50</color>
-  <color name="notification_text_color">@color/white</color>
+  <color name="notification_text_color">@color/black</color>
 
   <color name="broadcast_message_item_bg">#FFFFFF</color>
   <color name="private_message_item_bg">#EFEFEF</color>

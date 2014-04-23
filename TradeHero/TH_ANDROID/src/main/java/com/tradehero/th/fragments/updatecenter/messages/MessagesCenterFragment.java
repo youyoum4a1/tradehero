@@ -197,27 +197,6 @@ public class MessagesCenterFragment extends DashboardFragment
         pushMessageFragment(position);
     }
 
-    //private void fetchUserProfile()
-    //{
-    //    detachUserProfileTask();
-    //    if (fetchUserProfileListener == null)
-    //    {
-    //        fetchUserProfileListener = new
-    //    }
-    //    fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, fetchUserProfileListener);
-    //    fetchUserProfileTask.execute();
-    //}
-    //
-    //private void detachUserProfileTask()
-    //{
-    //    if (fetchUserProfileTask != null)
-    //    {
-    //        fetchUserProfileTask.setListener(null);
-    //    }
-    //    fetchUserProfileTask = null;
-    //}
-
-
     public UpdateCenterTabType getTabType()
     {
         return UpdateCenterTabType.Messages;
