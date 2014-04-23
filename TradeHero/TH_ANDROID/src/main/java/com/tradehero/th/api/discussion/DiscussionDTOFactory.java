@@ -44,9 +44,6 @@ public class DiscussionDTOFactory
                         ((PrivateDiscussionDTO) created).putAll(discussionDTO, PrivateDiscussionDTO.class);
                     }
                     break;
-
-                default:
-                    created = new DiscussionDTO();
             }
         }
         return created;
