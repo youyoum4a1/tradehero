@@ -1,9 +1,7 @@
 package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.common.api.PagedDTOKey;
-import sun.plugin2.message.Message;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:05 PM To change this template use File | Settings | File Templates. */
 public class MessageListKey implements Comparable<MessageListKey>, PagedDTOKey
 {
     public static final int FIRST_PAGE = 1;

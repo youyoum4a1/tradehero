@@ -13,6 +13,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
@@ -32,6 +33,12 @@ import retrofit.client.Response;
 
 public class PostCommentView extends RelativeLayout
 {
+    /**
+     * If true, then we wait for a return from the server before adding the discussion.
+     * If false, we add it right away.
+     */
+    public static final boolean NOTIFY_ON_SUCCESS = false;
+
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
@@ -47,6 +54,7 @@ public class PostCommentView extends RelativeLayout
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
+    @Inject DiscussionDTOFactory discussionDTOFactory;
     private CommentPostedListener commentPostedListener;
 
     //<editor-fold desc="Constructors">
@@ -102,15 +110,13 @@ public class PostCommentView extends RelativeLayout
         }
         else if (discussionKey != null)
         {
-            DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
-            setPosting();
-            postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new CommentSubmitCallback());
+            submitAsDiscussionReply();
         }
         else if (messageType != null)
         {
             MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
             setPosting();
-            postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, new CommentSubmitCallback());
+            postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback());
         }
         else
         {
@@ -128,12 +134,16 @@ public class PostCommentView extends RelativeLayout
         return true;
     }
 
-    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    protected void submitAsDiscussionReply()
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
-        messageCreateFormDTO.message = commentText.getText().toString();
-        messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
-        return messageCreateFormDTO;
+        DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
+        setPosting();
+        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, createCommentSubmitCallback());
+        if (!NOTIFY_ON_SUCCESS)
+        {
+            // Notify now
+            handleCommentPosted(discussionDTOFactory.createStub(discussionFormDTO));
+        }
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
@@ -142,6 +152,14 @@ public class PostCommentView extends RelativeLayout
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
         return discussionFormDTO;
+    }
+
+    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    {
+        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        messageCreateFormDTO.message = commentText.getText().toString();
+        messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
+        return messageCreateFormDTO;
     }
 
     public void setCommentPostedListener(CommentPostedListener listener)
@@ -197,6 +215,13 @@ public class PostCommentView extends RelativeLayout
         commentSubmit.setEnabled(true);
     }
 
+    protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+        setPosted();
+        fixHackDiscussion(discussionDTO);
+        notifyCommentPosted(discussionDTO);
+    }
+
     // HACK
     protected void fixHackDiscussion(DiscussionDTO discussionDTO)
     {
@@ -224,13 +249,19 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
+    protected Callback<DiscussionDTO> createCommentSubmitCallback()
+    {
+        return new CommentSubmitCallback();
+    }
+
     protected class CommentSubmitCallback implements Callback<DiscussionDTO>
     {
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            setPosted();
-            fixHackDiscussion(discussionDTO);
-            notifyCommentPosted(discussionDTO);
+            if (NOTIFY_ON_SUCCESS)
+            {
+                handleCommentPosted(discussionDTO);
+            }
         }
 
         @Override public void failure(RetrofitError retrofitError)
