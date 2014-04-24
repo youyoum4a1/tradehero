@@ -85,8 +85,8 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         {
             titleView.setText(messageHeaderDTO.title);
             subTitleView.setText(messageHeaderDTO.subTitle);
-            contentView.setText(messageHeaderDTO.message);
-            dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
+            contentView.setText(messageHeaderDTO.latestMessage);
+            dateView.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
             if (messageHeaderDTO.imageUrl != null && iconView != null)
             {
                 picasso.load(messageHeaderDTO.imageUrl)
