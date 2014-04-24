@@ -17,6 +17,7 @@ import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
@@ -35,19 +36,22 @@ public class MessageServiceWrapper
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
     private Lazy<MessageHeaderListCache> messageHeaderListCache;
     private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
+    private Lazy<DiscussionCache> discussionCache;
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
             Lazy<MessageHeaderListCache> messageHeaderListCache,
-            Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
+            Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
+            Lazy<DiscussionCache> discussionCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
         this.messageHeaderListCache = messageHeaderListCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
+        this.discussionCache = discussionCache;
     }
 
     //<editor-fold desc="Get Message Headers">
@@ -191,7 +195,8 @@ public class MessageServiceWrapper
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
                 callback,
                 discussionDTOFactory,
-                userMessagingRelationshipCache.get());
+                userMessagingRelationshipCache.get(),
+                discussionCache.get());
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }

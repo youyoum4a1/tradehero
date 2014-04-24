@@ -3,16 +3,19 @@ package com.tradehero.th.api.discussion;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.Date;
+import java.util.Random;
 import javax.inject.Inject;
 
 public class DiscussionDTOFactory
 {
     private final CurrentUserId currentUserId;
+    private final Random random;
 
     @Inject public DiscussionDTOFactory(CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
+        this.random = new Random(new Date().getTime());
     }
 
     public DiscussionDTO createChildClass(DiscussionDTO unidentified)
@@ -77,6 +80,7 @@ public class DiscussionDTOFactory
         if (fromForm != null)
         {
             created = createEmptyChild(fromForm.getInReplyToType());
+            created.id = - random.nextInt(Integer.MAX_VALUE);
             created.inReplyToType = DiscussionType.PRIVATE_MESSAGE;
             created.type = DiscussionType.PRIVATE_MESSAGE;
             created.inReplyToId = fromForm.inReplyToId;

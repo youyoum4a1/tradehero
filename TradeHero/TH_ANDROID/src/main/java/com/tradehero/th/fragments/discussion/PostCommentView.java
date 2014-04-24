@@ -25,6 +25,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -52,6 +53,7 @@ public class PostCommentView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
+    @Inject DiscussionCache discussionCache;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionDTOFactory discussionDTOFactory;
@@ -142,7 +144,9 @@ public class PostCommentView extends RelativeLayout
         if (!NOTIFY_ON_SUCCESS)
         {
             // Notify now
-            handleCommentPosted(discussionDTOFactory.createStub(discussionFormDTO));
+            DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
+            discussionCache.put(stub.getDiscussionKey(), stub);
+            handleCommentPosted(stub);
         }
     }
 
