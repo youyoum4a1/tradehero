@@ -47,6 +47,7 @@
   <string name="broadcast_message_change_type_hint">请选择粉丝类型发送信息</string>
   <string name="broadcast_message_no_follower_hint">对不起，你无法发送广播。因为你没有此类粉丝。</string>
   <string name="broadcast_message_content_length_hint">信息不可为空白</string>
+  <string name="broadcast_message_waiting">请稍候</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
