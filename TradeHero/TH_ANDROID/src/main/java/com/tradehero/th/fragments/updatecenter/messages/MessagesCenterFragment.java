@@ -743,7 +743,7 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void success(Response response, Response response2)
         {
             // mark message as deleted
-            Timber.d("lyl %d", response.getStatus());
+            //Timber.d("lyl %d", response.getStatus());
             if (getListAdapter() != null)
             {
                 if (alreadyFetched != null)

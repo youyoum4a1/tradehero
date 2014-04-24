@@ -14,13 +14,13 @@
   </array>
   <array name="alipay_follow_credits_array">
     <item>1 关注点数 (¥12.00)</item>
-    <item>10 关注点数 (¥123.00)</item>
-    <item>20 关注点数 (¥238.00)</item>
+    <item>10 关注点数 (¥120.00)</item>
+    <item>20 关注点数 (¥240.00)</item>
   </array>
   <array name="alipay_stock_alerts_array">
-    <item>2 股市预警(¥12.00)</item>
-    <item>5 股市预警(¥30.00)</item>
-    <item>无限股市预警(¥68.00)</item>
+    <item>2 股票月预警(¥12.00)</item>
+    <item>5 股票月预警(¥30.00)</item>
+    <item>无限股票月预警(¥68.00)</item>
   </array>
   <array name="alipay_reset_portfolio_array">
     <item>重置投资组合 (¥12.00)</item>

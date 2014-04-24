@@ -50,7 +50,7 @@ public class AlipayActivity extends Activity
             {{"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"},
                     {"0.01"}};
     //private String PRICE[][] =
-    //        {{"6", "18", "30"}, {"12", "123", "238"}, {"12", "30", "68"}, {"12"}};
+    //        {{"6", "18", "30"}, {"12", "120", "240"}, {"12", "30", "68"}, {"12"}};
     private OwnedPortfolioId mPortfolioId;
     private MiddleCallback<String> getOrderIdMiddleCallback;
     private MiddleCallback<OrderStatusDTO> getOrderStatusMiddleCallback;
@@ -93,7 +93,7 @@ public class AlipayActivity extends Activity
         String sign = Rsa.sign(info, Constants.ALIPAY_PRIVATE);
         sign = URLEncoder.encode(sign);
         info += "&sign=\"" + sign + "\"&" + "sign_type=\"RSA\"";
-        Timber.d("lyl info=%s", info);
+        //Timber.d("lyl info=%s", info);
 
         Intent intent = new Intent();
         intent.setPackage(getPackageName());

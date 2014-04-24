@@ -14,13 +14,13 @@
   </array>
   <array name="alipay_follow_credits_array">
     <item>1 point (¥12.00)</item>
-    <item>10 points (¥123.00)</item>
-    <item>20 points (¥238.00)</item>
+    <item>10 points (¥120.00)</item>
+    <item>20 points (¥240.00)</item>
   </array>
   <array name="alipay_stock_alerts_array">
-    <item>2 alerts(¥12.00)</item>
-    <item>5 alerts(¥30.00)</item>
-    <item>unlimited alerts(¥68.00)</item>
+    <item>2 alerts per month(¥12.00)</item>
+    <item>5 alerts per month(¥30.00)</item>
+    <item>unlimited alerts per month(¥68.00)</item>
   </array>
   <array name="alipay_reset_portfolio_array">
     <item>reset portfolio (¥12.00)</item>
