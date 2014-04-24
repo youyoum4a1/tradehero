@@ -112,11 +112,17 @@ public class LeaderboardUserDTO extends UserBaseDTO
     @JsonIgnore
     public String getNiceCurrency()
     {
-        if (currencyDisplay != null && !currencyDisplay.isEmpty())
+        if (hasValidCurrencyDisplay())
         {
             return currencyDisplay;
         }
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+    }
+
+    @JsonIgnore
+    public boolean hasValidCurrencyDisplay()
+    {
+        return currencyDisplay != null && !currencyDisplay.isEmpty();
     }
 
     //<editor-fold desc="ExtendedDTO">

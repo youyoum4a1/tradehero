@@ -189,7 +189,12 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         }
         else
         {
-            return leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
+            View view = leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
+            if (view instanceof CompetitionLeaderboardMarkUserItemView)
+            {
+                ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
+            }
+            return view;
         }
     }
 }

@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemView
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -284,6 +285,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
+                        CompetitionLeaderboardMarkUserItemView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,

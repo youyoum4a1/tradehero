@@ -41,6 +41,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.StringUtils;
@@ -69,7 +70,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
     // data
-    private LeaderboardUserDTO leaderboardItem;
+    protected LeaderboardUserDTO leaderboardItem;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -291,14 +292,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private void displayExpandableSection()
     {
         // display P&L
-
-        THSignedNumber formattedNumber =
-                new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
-                        false);
-        lbmuPl.setText(formattedNumber.toString());
-        String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
+        displayLbmuPl();
 
         // display period
+        String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
         SimpleDateFormat sdf =
                 new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
@@ -372,6 +369,26 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // followers & comments count
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
+    }
+
+    protected void displayLbmuPl()
+    {
+        if (lbmuPl != null && leaderboardItem != null)
+        {
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
+                            false, getLbmuPlCurrencyDisplay());
+            lbmuPl.setText(formattedNumber.toString());
+        }
+    }
+
+    protected String getLbmuPlCurrencyDisplay()
+    {
+        if (leaderboardItem != null)
+        {
+            return leaderboardItem.getNiceCurrency();
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
 
     private void displayFollow()
