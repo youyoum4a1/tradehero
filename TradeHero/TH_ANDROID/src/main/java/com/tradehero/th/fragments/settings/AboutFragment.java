@@ -89,10 +89,10 @@ public class AboutFragment extends DashboardFragment
                 Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, -1f);
+                Animation.RELATIVE_TO_SELF, -1.1f);
         set.addAnimation(translateAnimation);
 
-        Rotate3dAnimation rotateAnimation = new Rotate3dAnimation(1, 5, 0.f, 0.f, 0.f, 0.f);
+        Rotate3dAnimation rotateAnimation = new Rotate3dAnimation(0, 5, 0.f, 0.f, 0.f, 0.f);
         rotateAnimation.setDuration(getResources().getInteger(R.integer.duration_shrink_inflate));
         set.addAnimation(rotateAnimation);
 
@@ -114,6 +114,7 @@ public class AboutFragment extends DashboardFragment
 
             }
         });
+        set.setStartOffset(1000);
 
         mainContentWrapper.startAnimation(set);
     }

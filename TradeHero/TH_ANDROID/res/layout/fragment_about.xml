@@ -29,7 +29,6 @@
         style="@style/TradeHero_Settings_About_Text"
         android:text="@string/team_credit"
         android:textStyle="bold"
-        android:textSize="16sp"
         />
 
     <LinearLayout

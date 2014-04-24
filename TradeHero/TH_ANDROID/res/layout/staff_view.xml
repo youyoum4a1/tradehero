@@ -8,14 +8,14 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     tools:background="@color/red"
-    android:padding="5dp"
+    android:padding="8dp"
     >
   <TextView
       android:id="@+id/staff_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textStyle="bold"
-      android:padding="3dp"
+      android:textSize="20sp"
       android:textColor="@color/white"
       tools:text="Tho Nguyen"
       tools:background="@color/gray_1"
@@ -24,8 +24,8 @@
       android:id="@+id/staff_title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textSize="16sp"
       android:textColor="@color/white"
-      android:padding="3dp"
       tools:text="Destroyer of Keyboards"
       />
 </com.tradehero.th.fragments.settings.StaffTitleView>
