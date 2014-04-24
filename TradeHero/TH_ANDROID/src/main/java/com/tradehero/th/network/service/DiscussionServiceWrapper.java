@@ -13,7 +13,6 @@ import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
 import com.tradehero.th.models.discussion.MiddleCallbackPaginatedDiscussion;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
@@ -23,7 +22,7 @@ import retrofit.Callback;
 
 @Singleton public class DiscussionServiceWrapper
 {
-    public static final String TAG = DiscussionServiceWrapper.class.getSimpleName();
+    public final static boolean DEFAULT_USE_QUICK_STUB_RESPONSE = false;
 
     private final DiscussionService discussionService;
     private final DiscussionServiceAsync discussionServiceAsync;
@@ -84,13 +83,31 @@ import retrofit.Callback;
         return discussionDTO;
     }
 
-    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionFormDTO discussionFormDTO, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion createDiscussion(
+            DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallbackDiscussion(
+        return createDiscussion(discussionFormDTO, callback, DEFAULT_USE_QUICK_STUB_RESPONSE);
+    }
+
+    public MiddleCallbackDiscussion createDiscussion(
+            DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback,
+            boolean useQuickStubResponse)
+    {
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache,
                 discussionCache.get());
+        if (useQuickStubResponse)
+        {
+            DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
+            middleCallback.success(stub, null);
+
+            // TODO nullifying here is debatable
+            middleCallback.setPrimaryCallback(null);
+        }
         discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
     }
