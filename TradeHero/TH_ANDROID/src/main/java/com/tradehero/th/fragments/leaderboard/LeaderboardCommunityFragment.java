@@ -32,6 +32,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -276,6 +278,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        inflater.inflate(R.menu.menu_search_button, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -291,6 +294,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             case android.R.id.home:
                 resideMenuLazy.get().openMenu();
+                return true;
+
+            case R.id.btn_search:
+                pushSearchFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -415,6 +422,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         (LeaderboardDefListKey.getExchange()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
         getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+    }
+
+    private void pushSearchFragment()
+    {
+        Bundle args = new Bundle();
+        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.PEOPLE.name());
+        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
     //</editor-fold>
 

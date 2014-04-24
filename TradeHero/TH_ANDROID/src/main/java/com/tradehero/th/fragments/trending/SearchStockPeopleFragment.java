@@ -53,11 +53,11 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
-    public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
-    public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
+    public final static String BUNDLE_KEY_RESTRICT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".restrictSearchType";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".currentSearchString";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".currentSearchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
-    public final static String BUNDLE_KEY_CALLER_FRAGMENT = SearchStockPeopleFragment.class.getName() + ".nextFragment";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
@@ -227,7 +227,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private void updateSearchType()
     {
         // check current search type
-        mSearchType = TrendingSearchType.STOCKS;
         if (searchPeople != null && searchPeople.isChecked())
         {
             mSearchType = TrendingSearchType.PEOPLE;
@@ -261,16 +260,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         populateSearchActionBar();
         initialPopulateOnCreate();
-
-        Bundle arguments = getArguments();
-        if (arguments != null)
-        {
-            String callerClassName = arguments.getString(BUNDLE_KEY_CALLER_FRAGMENT);
-            if (callerClassName != null && callerClassName.equalsIgnoreCase(WatchlistPositionFragment.class.getName()))
-            {
-                shouldDisableSearchTypeOption = true;
-            }
-        }
     }
 
     protected void startAnew()
@@ -515,8 +504,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (args != null)
         {
-            args.putString(BUNDLE_KEY_SEARCH_TYPE, mSearchType.name());
-            args.putString(BUNDLE_KEY_SEARCH_STRING, mSearchText);
+            args.putString(BUNDLE_KEY_CURRENT_SEARCH_TYPE, mSearchType.name());
+            args.putString(BUNDLE_KEY_CURRENT_SEARCH_STRING, mSearchText);
             args.putInt(BUNDLE_KEY_PAGE, lastLoadedPage);
             args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
         }
@@ -531,10 +520,12 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         if (args != null)
         {
-            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
-            mSearchText = args.getString(BUNDLE_KEY_SEARCH_STRING);
+            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_CURRENT_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
+            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_RESTRICT_SEARCH_TYPE, mSearchType.name()));
+            mSearchText = args.getString(BUNDLE_KEY_CURRENT_SEARCH_STRING);
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
             lastLoadedPage = args.getInt(BUNDLE_KEY_PAGE, FIRST_PAGE);
+            shouldDisableSearchTypeOption = args.containsKey(BUNDLE_KEY_RESTRICT_SEARCH_TYPE);
         }
     }
 
