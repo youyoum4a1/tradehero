@@ -413,6 +413,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
+        Preference alipayBlock = findPreference(getString(R.string.key_settings_primary_alipay));
+        if (alipayBlock != null)
+        {
+            alipayBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override public boolean onPreferenceClick(Preference preference)
+                {
+                    handleAlipayClicked();
+                    return true;
+                }
+            });
+        }
+
         Preference transactionHistoryBlock = findPreference(getString(R.string.key_settings_primary_transaction_history));
         if (transactionHistoryBlock != null)
         {
@@ -789,6 +802,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handlePaypalClicked()
     {
         getNavigator().pushFragment(SettingsPayPalFragment.class);
+    }
+
+    private void handleAlipayClicked()
+    {
+        getNavigator().pushFragment(SettingsAlipayFragment.class);
     }
 
     private void handleTransactionHistoryClicked()

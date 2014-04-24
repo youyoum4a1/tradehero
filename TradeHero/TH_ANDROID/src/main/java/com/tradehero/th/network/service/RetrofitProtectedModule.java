@@ -42,5 +42,15 @@ public class RetrofitProtectedModule
     {
         return adapter.create(DiscussionServiceAsync.class);
     }
+
+    @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(MessageServiceAsync.class);
+    }
+
+    @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(NotificationServiceAsync.class);
+    }
     //</editor-fold>
 }

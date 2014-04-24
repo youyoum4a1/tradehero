@@ -23,14 +23,18 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
         if (args.containsKey(getBundleKey()))
         {
-            Object unbundled = args.get(getBundleKey());
-            this.key = (T) unbundled;
+            key = fromKeyBundle(args.get(getBundleKey()));
         }
         else
         {
             key = null;
         }
         init();
+    }
+
+    protected T fromKeyBundle(Object keyBundle)
+    {
+        return (T) keyBundle;
     }
     //</editor-fold>
 

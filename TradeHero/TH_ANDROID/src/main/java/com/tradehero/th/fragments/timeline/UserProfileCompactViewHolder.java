@@ -1,15 +1,22 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerTabFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
@@ -22,6 +29,7 @@ public class UserProfileCompactViewHolder
 
     public ImageView avatar;
     public TextView roiSinceInception;
+    public TextView profitValue;
     public TextView followersCount;
     public TextView heroesCount;
     public TextView displayName;
@@ -43,20 +51,54 @@ public class UserProfileCompactViewHolder
     {
         avatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
         roiSinceInception = (TextView) view.findViewById(R.id.user_profile_roi);
+        profitValue = (TextView) view.findViewById(R.id.user_profile_profit_value);
         followersCount = (TextView) view.findViewById(R.id.user_profile_followers_count);
         heroesCount = (TextView) view.findViewById(R.id.user_profile_heroes_count);
         displayName = (TextView) view.findViewById(R.id.user_profile_display_name);
         btnDefaultPortfolio = (ImageView) view.findViewById(R.id.btn_user_profile_default_portfolio);
+
     }
+
+
+
 
     public void display(UserProfileDTO dto)
     {
         this.userProfileDTO = dto;
         loadUserPicture();
         displayRoiSinceInception();
+        displayProfitValue();
         displayFollowersCount();
         displayHeroesCount();
         displayDisplayName();
+    }
+
+    protected void displayProfitValue()
+    {
+        if (profitValue != null)
+        {
+            if (userProfileDTO != null && userProfileDTO.portfolio != null)
+            {
+                Double pl = userProfileDTO.portfolio.plSinceInception;
+                if (pl == null)
+                {
+                    pl = 0.0;
+                }
+                THSignedNumber thPlSinceInception = new THSignedNumber(
+                        THSignedNumber.TYPE_MONEY,
+                        pl,
+                        true,
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                profitValue.setText(thPlSinceInception.toString());
+                profitValue.setTextColor(context.getResources().getColor(thPlSinceInception.getColor()));
+            }
+            else
+            {
+                profitValue.setText(R.string.na);
+                profitValue.setTextColor(context.getResources().getColor(R.color.black));
+            }
+        }
     }
 
     protected void loadUserPicture()

@@ -3,9 +3,11 @@
 
   <string name="buy_sell_price_as_of">As of</string>
   <string name="buy_sell_cash_available">Cash Avail.</string>
+  <string name="buy_sell_cash_left">Cash Left</string>
   <string name="buy_sell_share_available">Shares Avail.</string>
+  <string name="buy_sell_share_left">Shares Left</string>
   <string name="buy_sell_quantity">Quantity</string>
-  <string name="buy_sell_trade_value">Trade Value</string>
+  <string name="buy_sell_trade_value">Value</string>
   <string name="buy_sell_projected_p_and_l_value">Projected P&amp;L</string>
   <string name="buy_sell_bid_with_bracket">(bid)</string>
   <string name="buy_sell_ask_with_bracket">(ask)</string>
@@ -15,8 +17,8 @@
   <string name="buy_sell_p10k">$10K</string>
   <string name="buy_sell_p25k">$25K</string>
   <string name="buy_sell_p50k">$50K</string>
-  <string name="buy_sell_button_buy">BUY</string>
-  <string name="buy_sell_button_sell">SELL</string>
+  <string name="buy_sell_button_buy">Buy</string>
+  <string name="buy_sell_button_sell">Sell</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
   <string name="buy_sell_buy_details_unavailable">Preparing information…</string>
@@ -25,8 +27,8 @@
   <string name="buy_sell_sell_details">Sell %1$,d %2$s:%3$s @ %4$s %5$,.2f\nTransaction fee: virtual %6$s %7$,.2f\nNet proceeds: %8$s %9$,.2f</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
-  <string name="buy_sell_confirm_buy_comment">Post comments to attract followers…(optional)</string>
-  <string name="buy_sell_confirm_share_on">Share on</string>
+  <string name="buy_sell_confirm_buy_comment">Add a comment...</string>
+  <string name="buy_sell_confirm_share_on">Share:</string>
   <string name="buy_sell_switch_buy">Buy</string>
   <string name="buy_sell_switch_sell">Sell</string>
   <string name="buy_sell_usd_price_unit_left">= US$</string>

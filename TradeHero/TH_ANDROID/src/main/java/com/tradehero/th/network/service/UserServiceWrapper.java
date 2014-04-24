@@ -2,17 +2,24 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.social.HeroKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,8 +27,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
- * Repurposes queries
- * Created by xavier on 12/12/13.
+ * Repurposes queries Created by xavier on 12/12/13.
  */
 @Singleton public class UserServiceWrapper
 {
@@ -207,16 +213,34 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
+            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
     }
 
-    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey, UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO, Callback<UpdatePayPalEmailDTO> callback)
+    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey,
+            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
+            Callback<UpdatePayPalEmailDTO> callback)
     {
-        MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail = new MiddleCallbackUpdatePayPalEmail(callback);
-        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO, middleCallbackUpdatePayPalEmail);
-        return middleCallbackUpdatePayPalEmail;
+        MiddleCallbackUpdatePayPalEmail
+                middleCallbackUpdatePayPalAccount = new MiddleCallbackUpdatePayPalEmail(callback);
+        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO,
+                middleCallbackUpdatePayPalAccount);
+        return middleCallbackUpdatePayPalAccount;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Alipay account">
+    public MiddleCallbackUpdateAlipayAccount updateAlipayAccount(UserBaseKey userBaseKey,
+            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+            Callback<UpdateAlipayAccountDTO> callback)
+    {
+        MiddleCallbackUpdateAlipayAccount
+                middleCallbackUpdateAlipayAccount = new MiddleCallbackUpdateAlipayAccount(callback);
+        userServiceAsync.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO,
+                middleCallbackUpdateAlipayAccount);
+        return middleCallbackUpdateAlipayAccount;
     }
     //</editor-fold>
 
@@ -231,6 +255,13 @@ import retrofit.RetrofitError;
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
         userServiceAsync.follow(userBaseKey.key, middleCallbackFollowUser);
         return middleCallbackFollowUser;
+    }
+
+    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new MiddleCallback<>(callback);
+        userService.freeFollow(userBaseKey.key, callback);
+        return middleCallback;
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, PurchaseReportDTO purchaseReportDTO)
@@ -259,5 +290,39 @@ import retrofit.RetrofitError;
         return middleCallbackFollowUser;
 
     }
+
+    public List<HeroDTO> getHeroes(HeroKey heroKey)
+    {
+        switch (heroKey.heroType)
+        {
+            case PREMIUM:
+                return userService.getHeroes(heroKey.followerKey.key);
+            case FREE:
+                return userService.getHeroes(heroKey.followerKey.key);
+            case ALL:
+                return userService.getHeroes(heroKey.followerKey.key);
+        }
+        return null;
+    }
+
+    public void getHeroes(HeroKey heroKey,Callback<List<HeroDTO>> callback)
+    {
+        switch (heroKey.heroType)
+        {
+            case PREMIUM:
+                userServiceAsync.getHeroes(heroKey.followerKey.key,callback);
+            case FREE:
+                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
+            case ALL:
+                userServiceAsync.getHeroes(heroKey.followerKey.key, callback);
+        }
+    }
     //</editor-fold>
+
+    public MiddleCallback<UserRelationsDTO> getRelations(Callback<UserRelationsDTO> callback)
+    {
+        MiddleCallback<UserRelationsDTO> middleCallback = new MiddleCallback<>(callback);
+        userServiceAsync.getRelations(callback);
+        return middleCallback;
+    }
 }

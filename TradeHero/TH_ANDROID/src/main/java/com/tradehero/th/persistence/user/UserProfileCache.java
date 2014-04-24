@@ -4,6 +4,9 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.social.HeroKey;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<UserService> userService;
+    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCache()
@@ -45,5 +49,11 @@ import javax.inject.Singleton;
             userProfileDTOs.add(getOrFetch(baseKey, false));
         }
         return userProfileDTOs;
+    }
+
+    @Override public UserProfileDTO put(UserBaseKey userBaseKey, UserProfileDTO userProfileDTO)
+    {
+        heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        return super.put(userBaseKey, userProfileDTO);
     }
 }

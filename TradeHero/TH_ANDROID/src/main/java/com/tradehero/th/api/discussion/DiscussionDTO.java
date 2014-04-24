@@ -1,5 +1,8 @@
 package com.tradehero.th.api.discussion;
 
+import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.discussion.key.CommentKey;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 
 /**
@@ -7,15 +10,13 @@ import com.tradehero.th.api.users.UserBaseDTO;
  */
 public class DiscussionDTO extends AbstractDiscussionDTO
 {
-    public static final String TAG = DiscussionDTO.class.getSimpleName();
-
-    public String type; //probably not needed - should always be `DiscussionTypeEnum.COMMENT`
-
     public UserBaseDTO user;
-    public DiscussionType inReplyToType;
     public int inReplyToId;
+    public DiscussionType inReplyToType;
 
     public String url; // to post a link
+
+    public Integer sentToCount;         // only applicable to Messages
 
     // BEGIN: duplicated from buy/sell
     public Boolean publishToFb;
@@ -26,4 +27,20 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     public String geo_long;
     public boolean isPublic;
     // END: duplicated from buy/sell
+
+    //<editor-fold desc="Constructors">
+    public DiscussionDTO()
+    {
+    }
+
+    public <ExtendedDTOType extends ExtendedDTO> DiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
+
+    @Override public DiscussionKey getDiscussionKey()
+    {
+        return new CommentKey(id);
+    }
 }

@@ -16,8 +16,10 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.news.NewsHeadlineList;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -25,11 +27,13 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.persistence.news.NewsHeadlineCache;
+import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 10:46 AM To change this template use File | Settings | File Templates. */
@@ -46,13 +50,13 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<SecurityNewsCache> newsCache;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
-    protected NewsHeadlineList newsHeadlineList;
-    @Inject Lazy<NewsHeadlineCache> newsCache;
-    private DTOCache.Listener<SecurityId, NewsHeadlineList> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, NewsHeadlineList> yahooNewsCacheFetchTask;
+    protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
+    private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
     private MenuItem marketCloseIcon;
@@ -90,7 +94,7 @@ public class StockInfoFragment extends DashboardFragment
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
         if (topViewPagerAdapter == null)
         {
-            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), getFragmentManager());
+            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), getChildFragmentManager());
         }
         if (topPager != null)
         {
@@ -240,16 +244,16 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
     {
-        NewsHeadlineList newsHeadlineList = newsCache.get().get(securityId);
+        PaginatedDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
         if (newsHeadlineList != null)
         {
             linkWith(newsHeadlineList, andDisplay);
         }
         else
         {
-            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsHeadlineList>()
+            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>>()
             {
-                @Override public void onDTOReceived(SecurityId key, NewsHeadlineList value, boolean fromCache)
+                @Override public void onDTOReceived(SecurityId key, PaginatedDTO<NewsItemDTO> value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }
@@ -281,7 +285,7 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(NewsHeadlineList newsHeadlineList, boolean andDisplay)
+    private void linkWith(PaginatedDTO<NewsItemDTO> newsHeadlineList, boolean andDisplay)
     {
         this.newsHeadlineList = newsHeadlineList;
 
@@ -352,9 +356,19 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayYahooNewsList()
     {
-        if (newsHeadlineAdapter != null)
+        if (newsHeadlineAdapter != null && newsHeadlineList !=null)
         {
-            newsHeadlineAdapter.setItems(newsHeadlineList);
+            List<NewsItemDTO> data = newsHeadlineList.getData();
+            List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
+
+            if (data != null)
+            {
+                for (NewsItemDTO newsItemDTO: data)
+                {
+                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
+                }
+            }
+            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
         }
     }
 

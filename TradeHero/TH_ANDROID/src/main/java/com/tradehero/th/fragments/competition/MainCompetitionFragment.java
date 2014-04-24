@@ -35,8 +35,9 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -368,23 +369,19 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
+        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
+        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
+        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
+        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
+        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
-            args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-            args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
-            args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
-            args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
-            args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-            args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-            getNavigator().pushFragment(
-                    CompetitionLeaderboardMarkUserListFragment.class, args);
+            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
         }
         else
         {
-            args.putInt(LeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
-            args.putString(LeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
-            args.putString(LeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-            getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, args);
+            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
         }
     }
 

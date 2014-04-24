@@ -1,16 +1,22 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
-public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>
+public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>, View.OnClickListener
 {
     protected UserProfileDetailViewHolder userProfileDetailViewHolder;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
@@ -36,7 +42,55 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     {
         super.onFinishInflate();
         userProfileDetailViewHolder = new UserProfileDetailViewHolder(this);
+        initClickEvent();
     }
+
+
+    private void initClickEvent()
+    {
+        if(userProfileDetailViewHolder.followersCount != null)
+        {
+            userProfileDetailViewHolder.followersCount.setOnClickListener(this);
+        }
+
+        if (userProfileDetailViewHolder.heroesCount != null)
+        {
+            userProfileDetailViewHolder.heroesCount.setOnClickListener(this);
+        }
+    }
+
+    @Override public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.user_profile_heroes_count:
+                if (onHeroClickListener != null)
+                {
+                    onHeroClickListener.onHeroClick();
+                }
+                break;
+            case R.id.user_profile_followers_count:
+                if (onHeroClickListener != null)
+                {
+                    onHeroClickListener.onFollowerClick();
+                }
+                break;
+        }
+    }
+
+    public static interface OnHeroClickListener
+    {
+        void onHeroClick();
+        void onFollowerClick();
+    }
+
+    OnHeroClickListener onHeroClickListener;
+    public void setOnHeroClickListener(OnHeroClickListener onHeroClickListener)
+    {
+        this.onHeroClickListener = onHeroClickListener;
+    }
+
+
 
     @Override protected void onAttachedToWindow()
     {

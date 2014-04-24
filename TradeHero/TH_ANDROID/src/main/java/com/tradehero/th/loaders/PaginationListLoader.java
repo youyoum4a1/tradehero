@@ -11,7 +11,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
     private static final int DEFAULT_ITEM_PER_PAGE = 10;
     private int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
 
-    private LoadMode currentLoadMode = LoadMode.IDLE;
+    private LoadMode loadMode = LoadMode.IDLE;
 
     public PaginationListLoader(Context context)
     {
@@ -29,27 +29,35 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
     }
 
     // load next items
-    public void loadNext()
+    public void loadNext(Object...params)
     {
-        if (currentLoadMode != LoadMode.IDLE)
+        if (loadMode != LoadMode.IDLE)
         {
             onBusy();
             return;
         }
-        currentLoadMode = LoadMode.NEXT;
+        loadMode = LoadMode.NEXT;
         D newestItem = items.isEmpty() ? null : items.get(0);
         onLoadNext(newestItem);
     }
 
-    public void loadPrevious()
+    protected boolean isBusy() {
+        return loadMode != LoadMode.IDLE;
+    }
+
+    protected void setNotBusy() {
+        loadMode = LoadMode.IDLE;
+    }
+
+    public void loadPrevious(Object...params)
     {
-        if (currentLoadMode != LoadMode.IDLE)
+        if (loadMode != LoadMode.IDLE)
         {
             onBusy();
             return;
         }
 
-        currentLoadMode = LoadMode.PREVIOUS;
+        loadMode = LoadMode.PREVIOUS;
         D oldestItem = items.isEmpty() ? null : items.get(items.size() - 1);
         onLoadPrevious(oldestItem);
     }
@@ -66,7 +74,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
         {
             if (data != null)
             {
-                switch (currentLoadMode)
+                switch (loadMode)
                 {
                     case IDLE:
                     case NEXT:
@@ -78,10 +86,15 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
                 }
             }
             super.deliverResult(data);
-            currentLoadMode = LoadMode.IDLE;
+            setNotBusy();
         }
     }
 
     protected abstract void onLoadNext(D endItem);
     protected abstract void onLoadPrevious(D startItem);
+
+    public LoadMode getLoadMode()
+    {
+        return loadMode;
+    }
 }

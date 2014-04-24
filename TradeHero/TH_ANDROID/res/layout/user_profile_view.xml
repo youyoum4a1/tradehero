@@ -11,14 +11,14 @@
     android:measureAllChildren="false"
     >
 
-  <include
+  <!--include
       layout="@layout/user_profile_compact_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      />
+      /-->
 
   <include
-      layout="@layout/user_profile_detail_view"
+      layout="@layout/user_profile_detail_view_2_0"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       />

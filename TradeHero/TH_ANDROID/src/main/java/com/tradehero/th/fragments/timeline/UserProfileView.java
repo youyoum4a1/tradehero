@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -17,8 +18,8 @@ import java.lang.ref.WeakReference;
 public class UserProfileView extends BetterViewAnimator
     implements DTOView<UserProfileDTO>
 {
-    @InjectView(R.id.user_profile_compact_view) protected UserProfileCompactView userProfileCompactView;
-    @InjectView(R.id.user_profile_detail_view) protected UserProfileDetailView userProfileDetailView;
+    @InjectView(R.id.user_profile_compact_view) @Optional protected UserProfileCompactView userProfileCompactView;
+    @InjectView(R.id.user_profile_detail_view) @Optional protected UserProfileDetailView userProfileDetailView;
 
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
@@ -38,14 +39,54 @@ public class UserProfileView extends BetterViewAnimator
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        userProfileCompactView.setPortfolioRequestListener(portfolioRequestListener.get());
-        userProfileDetailView.setPortfolioRequestListener(portfolioRequestListener.get());
+    }
+
+    public void setHeroClickListener(UserProfileDetailView.OnHeroClickListener onHeroClickListener)
+    {
+        if(userProfileDetailView != null)
+        {
+            userProfileDetailView.setOnHeroClickListener(onHeroClickListener);
+        }
+
+    }
+
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (userProfileCompactView != null)
+        {
+            userProfileCompactView.setPortfolioRequestListener(portfolioRequestListener.get());
+        }
+        if (userProfileDetailView != null)
+        {
+            userProfileDetailView.setPortfolioRequestListener(portfolioRequestListener.get());
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (userProfileCompactView != null)
+        {
+            userProfileCompactView.setPortfolioRequestListener(null);
+        }
+        if (userProfileDetailView != null)
+        {
+            userProfileDetailView.setPortfolioRequestListener(null);
+        }
+        super.onDetachedFromWindow();
     }
 
     @Override public void display(UserProfileDTO userProfileDTO)
     {
-        userProfileCompactView.display(userProfileDTO);
-        userProfileDetailView.display(userProfileDTO);
+        if (userProfileCompactView != null)
+        {
+            userProfileCompactView.display(userProfileDTO);
+        }
+        if (userProfileDetailView != null)
+        {
+            userProfileDetailView.display(userProfileDTO);
+        }
     }
 
     public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)

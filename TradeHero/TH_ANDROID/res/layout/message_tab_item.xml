@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.updatecenter.TitleTabView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="?android:attr/actionBarSize"
+    android:orientation="horizontal"
+    style="@android:style/Widget.Holo.Tab"
+    >
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/tab_title"
+      android:layout_centerInParent="true"
+      tools:text="stock name"
+      android:textSize="14sp"
+      />
+
+  <TextView
+      android:visibility="invisible"
+      android:id="@+id/tab_title_number"
+      android:layout_width="15dp"
+      android:layout_height="15dp"
+      android:contentDescription="@null"
+      android:layout_toRightOf="@+id/tab_title"
+      android:layout_above="@+id/tab_title"
+      android:layout_marginBottom="-5dp"
+      android:gravity="center"
+      android:textSize="9sp"
+      android:background="@drawable/red_circle"
+      tools:text="33"
+      />
+</com.tradehero.th.fragments.updatecenter.TitleTabView>
+

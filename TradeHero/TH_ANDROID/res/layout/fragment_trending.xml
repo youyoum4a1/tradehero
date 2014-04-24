@@ -25,6 +25,8 @@
       android:clipToPadding="false"
       android:scrollbarStyle="outsideOverlay"
       android:listSelector="@color/transparent"
+      android:cacheColorHint="@android:color/transparent"
+
       />
 
   <include

@@ -152,6 +152,7 @@ public class ExtraTileAdapter extends BaseAdapter
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         int viewType = getItemViewType(position);
+        Timber.d("getView position:%d viewType:%d",position,viewType);
         if (viewType == TileType.Normal.ordinal())
         {
             return wrappedAdapter.getView(getWrappedPosition(position), convertView, parent);

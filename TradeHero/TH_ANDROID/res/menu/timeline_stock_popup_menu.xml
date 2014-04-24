@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/timeline_action_add_to_watchlist"
+      android:title="@string/watchlist_add_title"
+      />
+
+  <item
+      android:id="@+id/timeline_action_add_alert"
+      android:title="@string/timeline_enable_stock_alert"
+      />
+
+  <item
+      android:id="@+id/timeline_popup_menu_buy_sell"
+      android:title="@string/buy_sell"
+      />
+</menu>

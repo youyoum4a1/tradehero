@@ -32,9 +32,9 @@ public class THException extends Exception
             {
                 this.code = ExceptionCode.NetworkError;
             }
-            else if (error.getResponse().getStatus() == 417)
+            else if (error.getResponse() != null && error.getResponse().getStatus() == 417)
             {
-                this.code = ExceptionCode.DoNotRunBellow;
+                this.code = ExceptionCode.DoNotRunBelow;
             }
             else if (error.getResponse() != null && error.getResponse().getStatus() != 200) // Bad Request
             {
@@ -86,7 +86,7 @@ public class THException extends Exception
         UserCanceled(true, R.string.error_canceled),
         UnknownError(R.string.error_unknown),
         NetworkError(R.string.error_network_connection),
-        DoNotRunBellow(R.string.please_update);
+        DoNotRunBelow(R.string.please_update);
 
         private boolean canContinue;
         private String errorMessage;

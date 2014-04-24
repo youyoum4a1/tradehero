@@ -45,7 +45,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject @SessionToken StringPreference currentSessionToken;
     @Inject Lazy<LocalyticsSession> localyticsSession;
-    @Inject Lazy<Tapstream> tabStream;
+    @Inject Lazy<Tapstream> tapStream;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,18 +79,25 @@ public class SplashActivity extends SherlockActivity
                 initialisation();
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
         };
         initialAsyncTask.execute();
 
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
-        tabStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
+        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
 
 
         if (!Constants.RELEASE)
         {
             VersionUtils.logScreenMeasurements(this);
         }
+
+        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
@@ -144,6 +151,9 @@ public class SplashActivity extends SherlockActivity
         catch (RetrofitError retrofitError)
         {
             canLoad = false;
+            if(retrofitError.isNetworkError()) {
+                //THToast.show(R.string.network_error);
+            }
         }
         return canLoad;
     }

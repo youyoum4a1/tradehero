@@ -3,10 +3,12 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.network.UrlEncoderHelper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Repurposes requests
@@ -42,13 +44,15 @@ import retrofit.client.Response;
     public SignatureContainer<QuoteDTO> getQuote(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol);
+        return this.quoteService.getQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
+                securityId.securitySymbol));
     }
 
     public void getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
     {
         basicCheck(securityId);
-        this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol, callback);
+        this.quoteService.getQuote(UrlEncoderHelper.transform(
+                securityId.exchange), UrlEncoderHelper.transform(securityId.securitySymbol), callback);
     }
     //</editor-fold>
 
@@ -56,13 +60,16 @@ import retrofit.client.Response;
     public Response getRawQuote(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getRawQuote(securityId.exchange, securityId.securitySymbol);
+        return this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
+                securityId.securitySymbol));
     }
 
     public void getRawQuote(SecurityId securityId, Callback<Response> callback)
     {
         basicCheck(securityId);
-        this.quoteService.getRawQuote(securityId.exchange, securityId.securitySymbol, callback);
+        Timber.d("getRawQuote securitySymbol ",securityId.securitySymbol);
+        this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
+                securityId.securitySymbol), callback);
     }
     //</editor-fold>
 }

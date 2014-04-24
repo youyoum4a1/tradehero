@@ -36,4 +36,9 @@
         <attr name="timeSpan" format="string"/>
     </declare-styleable>
 
+  <declare-styleable name="DiscussionView">
+    <attr name="listItemLayout" format="reference"/>
+    <attr name="topicLayout" format="reference"/>
+  </declare-styleable>
+
 </resources>

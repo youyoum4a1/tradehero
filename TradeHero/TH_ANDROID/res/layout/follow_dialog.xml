@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:layout_marginTop="40dp"
+      android:layout_marginBottom="40dp">
+
+    <ImageView
+        android:id="@+id/user_profile_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/user_profile_compact_avatar_margin"
+        android:background="@drawable/layout_oval"
+        android:padding="0.5dp"
+        android:contentDescription="@null"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/user_profile_avatar"/>
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/user_profile_avatar"
+        android:layout_below="@id/title"
+        android:textStyle="bold"
+        android:textSize="18sp"/>
+  </RelativeLayout>
+
+  <LinearLayout
+      android:id="@+id/free_follow_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/content1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/free_follow_content1"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/content2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/free_follow_content2"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_grey"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+      <Button
+          android:id="@+id/btn_free"
+          android:layout_height="match_parent"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:text="@string/continue_free_follow"
+          android:textSize="14sp"
+          android:textColor="#77a4fd"
+          android:background="@color/white"/>
+
+      <Button
+          android:id="@+id/btn_premium"
+          android:layout_height="match_parent"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:background="#ffb0e872"
+          android:text="@string/upgrade"
+          android:textSize="16sp"
+          android:textColor="@color/black"
+          android:textStyle="bold"
+          android:layout_marginLeft="1dp"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/not_follow_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/free_follow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="#cacaca"
+        android:orientation="vertical">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/not_follow_subtitle"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/free_follow_content3"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/premium_follow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#abe874"
+        android:padding="10dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:orientation="vertical">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/not_follow_premium_subtitle"
+          android:textStyle="bold"/>
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/free_follow_content2"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>

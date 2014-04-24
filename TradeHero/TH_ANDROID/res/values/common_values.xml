@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <dimen name="button_corner_radius">4dp</dimen>
+  <color name="button_blue">@color/follow_button_background</color>
+
+</resources>

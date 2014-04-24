@@ -3,14 +3,14 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
-import com.tradehero.th.api.social.HeroId;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 2:35 PM To change this template use File | Settings | File Templates. */
-@Singleton public class HeroCache extends StraightDTOCache<HeroId, HeroDTO>
+@Singleton public class HeroCache extends StraightDTOCache<FollowerHeroRelationId, HeroDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -21,7 +21,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected HeroDTO fetch(HeroId key)
+    @Override protected HeroDTO fetch(FollowerHeroRelationId key)
     {
         throw new UnsupportedOperationException("Not implemented");
     }
@@ -43,7 +43,7 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public HeroDTOList get(List<HeroId> heroIds)
+    public HeroDTOList get(List<FollowerHeroRelationId> heroIds)
     {
         if (heroIds == null)
         {
@@ -51,7 +51,7 @@ import javax.inject.Singleton;
         }
         HeroDTOList heroDTOs = new HeroDTOList();
 
-        for (HeroId heroId: heroIds)
+        for (FollowerHeroRelationId heroId: heroIds)
         {
             heroDTOs.add(get(heroId));
         }

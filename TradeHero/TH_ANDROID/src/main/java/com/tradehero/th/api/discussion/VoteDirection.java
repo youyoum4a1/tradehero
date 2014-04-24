@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Created by xavier on 3/7/14.
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum VoteDirection
 {
     DownVote(-1, "down"),
-    Unvote(0, "cancel"),
+    UnVote(0, "cancel"),
     UpVote(1, "up");
 
     public final int value;
@@ -42,5 +43,16 @@ public enum VoteDirection
             }
         }
         throw new IllegalArgumentException("Value " + value + " does not map to a VoteDirection");
+    }
+
+    @JsonValue public String getDescription()
+    {
+        return description;
+    }
+
+    // For serialize in path with @Path annotation (retrofit)
+    @Override public String toString()
+    {
+        return description;
     }
 }

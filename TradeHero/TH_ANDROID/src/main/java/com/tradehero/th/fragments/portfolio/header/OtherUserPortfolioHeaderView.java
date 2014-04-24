@@ -11,17 +11,27 @@ import butterknife.InjectView;
 import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by julien on 21/10/13
@@ -41,6 +51,11 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Picasso picasso;
     @Inject LocalyticsSession localyticsSession;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
@@ -81,10 +96,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
                 @Override public void onClick(View view)
                 {
                     localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
-                    if (userProfileDTO != null)
-                    {
-                        notifyFollowRequested(userProfileDTO.getBaseKey());
-                    }
+                    alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+                            UserProfileDTOUtil.IS_NOT_FOLLOWER,
+                            new OtherUserPortfolioFollowRequestedListener());
                 }
             });
         }
@@ -104,6 +118,61 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
     }
 
+    public class OtherUserPortfolioFollowRequestedListener implements FollowRequestedListener
+    {
+        @Override public void freeFollowRequested()
+        {
+            freeFollow();
+        }
+
+        @Override public void followRequested()
+        {
+            follow();
+        }
+    }
+
+    protected void freeFollow()
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getContext());
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get()
+                        .freeFollow(userProfileDTO.getBaseKey(), new FreeFollowCallback());
+    }
+
+    protected void follow()
+    {
+        if (userProfileDTO != null)
+        {
+            notifyFollowRequested(userProfileDTO.getBaseKey());
+        }
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
+    }
+
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            configureFollowItemsVisibility();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         if (followButton != null)
@@ -114,6 +183,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             userViewContainer.setOnClickListener(null);
         }
+
+        detachFreeFollowMiddleCallback();
 
         super.onDetachedFromWindow();
     }

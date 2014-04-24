@@ -9,10 +9,14 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -21,7 +25,7 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
+public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>,View.OnClickListener
 {
     public static final String TAG = HeroListItemView.class.getName();
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
@@ -36,6 +40,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -92,6 +97,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
                 }
             });
         }
+        userIcon.setOnClickListener(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -100,7 +106,24 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
         {
             statusIcon.setOnClickListener(null);
         }
+        userIcon.setOnClickListener(null);
         super.onDetachedFromWindow();
+    }
+
+    @Override public void onClick(View v)
+    {
+        if (v.getId() == R.id.follower_profile_picture)
+        {
+            if (heroDTO != null) {
+                handleUserIconClicked();
+            }
+        }
+    }
+
+    private void handleUserIconClicked(){
+        THToast.show(String.format("user icon click %s",
+                heroDTO.displayName));
+        TimelineFragment.viewProfile((DashboardActivity) getContext(), heroDTO.id);
     }
 
     public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
@@ -181,7 +204,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     {
         if (title != null)
         {
-            title.setText(UserBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
+            title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
         }
     }
 
@@ -219,6 +242,8 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
             statusIcon.setImageResource((heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
         }
     }
+
+
     //</editor-fold>
 
     public static interface OnHeroStatusButtonClickedListener

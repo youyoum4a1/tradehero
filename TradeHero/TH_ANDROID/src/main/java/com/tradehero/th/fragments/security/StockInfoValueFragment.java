@@ -23,8 +23,6 @@ import javax.inject.Inject;
  */
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    private final static String TAG = StockInfoValueFragment.class.getSimpleName();
-
     private TextView mPreviousClose;
     private TextView mOpen;
     private TextView mDaysHigh;
@@ -64,7 +62,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
     }
 
-    @Override LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
     {
         return securityCompactCache;
     }
