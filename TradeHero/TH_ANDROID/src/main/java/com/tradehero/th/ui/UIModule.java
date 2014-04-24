@@ -58,7 +58,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PrivatePostCommentView.class,
 
                 DiscussionEditPostFragment.class,
-                DiscussionPostActionButtonsView.class
+                DiscussionPostActionButtonsView.class,
         },
         complete = false,
         library = true
