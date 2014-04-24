@@ -71,10 +71,18 @@ public class AboutFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_about_title));
-        super.onCreateOptionsMenu(menu, inflater);
+        getSherlockActivity().getSupportActionBar().hide();
     }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        getSherlockActivity().getSupportActionBar().show();
+        super.onDestroyOptionsMenu();
+    }
+
     //</editor-fold>
 
     @Override public void onResume()
@@ -89,10 +97,10 @@ public class AboutFragment extends DashboardFragment
                 Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, -1.1f);
+                Animation.RELATIVE_TO_SELF, -1.5f);
         set.addAnimation(translateAnimation);
 
-        Rotate3dAnimation rotateAnimation = new Rotate3dAnimation(0, 5, 0.f, 0.f, 0.f, 0.f);
+        Rotate3dAnimation rotateAnimation = new Rotate3dAnimation(0f, 10f, 0f, 0f, 0f, 0f);
         rotateAnimation.setDuration(getResources().getInteger(R.integer.duration_shrink_inflate));
         set.addAnimation(rotateAnimation);
 
@@ -114,7 +122,7 @@ public class AboutFragment extends DashboardFragment
 
             }
         });
-        set.setStartOffset(1000);
+        set.setStartOffset(3000);
 
         mainContentWrapper.startAnimation(set);
     }
