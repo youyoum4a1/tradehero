@@ -8,8 +8,6 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import java.util.Date;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:09 PM Copyright (c) TradeHero */
-
 public class LeaderboardUserDTO extends UserBaseDTO
     implements ExpandableItem
 {
