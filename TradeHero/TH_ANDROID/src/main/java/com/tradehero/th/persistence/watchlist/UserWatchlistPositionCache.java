@@ -11,7 +11,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 5:54 PM Copyright (c) TradeHero */
 @Singleton public class UserWatchlistPositionCache extends StraightDTOCache<UserBaseKey, SecurityIdList>
 {
     private static final int DEFAULT_MAX_SIZE = 200;

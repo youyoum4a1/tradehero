@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -11,50 +12,57 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface WatchlistService
+interface WatchlistServiceAsync
 {
     //<editor-fold desc="Add a watch item">
     @POST("/watchlistPositions")
-    WatchlistPositionDTO createWatchlistEntry(
-            @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
+    void createWatchlistEntry(
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
+            Callback<WatchlistPositionDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Edit a watch item">
     @PUT("/watchlistPositions/{position}")
-    WatchlistPositionDTO updateWatchlistEntry(
+    void updateWatchlistEntry(
             @Path("position") int position,
-            @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
+            Callback<WatchlistPositionDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
     @GET("/watchlistPositions")
-    WatchlistPositionDTOList getAllByUser();
+    void getAllByUser(Callback<WatchlistPositionDTOList> callback);
 
     @GET("/watchlistPositions")
-    WatchlistPositionDTOList getAllByUser(
-            @Query("pageNumber") Integer pageNumber);
-
-    @GET("/watchlistPositions")
-    WatchlistPositionDTOList getAllByUser(
+    void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage);
+            Callback<WatchlistPositionDTOList> callback);
 
     @GET("/watchlistPositions")
-    WatchlistPositionDTOList getAllByUser(
+    void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
-            @Query("securityId") Integer securityId);
+            Callback<WatchlistPositionDTOList> callback);
 
     @GET("/watchlistPositions")
-    WatchlistPositionDTOList getAllByUser(
+    void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,
-            @Query("skipCache") Boolean skipCache);
+            Callback<WatchlistPositionDTOList> callback);
+
+    @GET("/watchlistPositions")
+    void getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage,
+            @Query("securityId") Integer securityId,
+            @Query("skipCache") Boolean skipCache,
+            Callback<WatchlistPositionDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Delete Watchlist">
     @DELETE("/watchlistPositions/{watchlistId}")
-    WatchlistPositionDTO deleteWatchlist(@Path("watchlistId") int watchlistId);
+    void deleteWatchlist(@Path("watchlistId") int watchlistId,
+            Callback<WatchlistPositionDTO> callback);
     //</editor-fold>
 }

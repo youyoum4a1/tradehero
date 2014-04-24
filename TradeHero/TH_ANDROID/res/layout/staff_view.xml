@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.settings.StaffTitleView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:background="@color/red"
+    android:padding="8dp"
+    >
+  <TextView
+      android:id="@+id/staff_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textStyle="bold"
+      android:textSize="20sp"
+      android:textColor="@color/white"
+      tools:text="Tho Nguyen"
+      tools:background="@color/gray_1"
+      />
+  <TextView
+      android:id="@+id/staff_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="16sp"
+      android:textColor="@color/white"
+      tools:text="Destroyer of Keyboards"
+      />
+</com.tradehero.th.fragments.settings.StaffTitleView>

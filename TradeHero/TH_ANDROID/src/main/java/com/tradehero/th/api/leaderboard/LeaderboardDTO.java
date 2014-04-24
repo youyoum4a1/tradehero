@@ -1,5 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -17,6 +19,15 @@ public class LeaderboardDTO implements DTO
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
+    public int minPositionCount;
+    @JsonProperty("max_sharpeRatioInPeriod_vsSP500")
+    public double maxSharpeRatioInPeriodVsSP500;
+    @JsonProperty("max_stddev_positionRoiInPeriod")
+    public double maxStdDevPositionRoiInPeriod;
+    @JsonProperty("avg_stddev_positionRoiInPeriod")
+    public double avgStdDevPositionRoiInPeriod;
+
+    //<editor-fold desc="Constructors">
     public LeaderboardDTO()
     {
         super();
@@ -30,7 +41,9 @@ public class LeaderboardDTO implements DTO
         this.userIsAtPositionZeroBased = userIsAtPositionZeroBased;
         this.markUtc = markUtc;
     }
+    //</editor-fold>
 
+    @JsonIgnore
     public LeaderboardKey getLeaderboardKey()
     {
         return new LeaderboardKey(id);

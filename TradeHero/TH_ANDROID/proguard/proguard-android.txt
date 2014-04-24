@@ -117,6 +117,9 @@
 -dontwarn com.squareup.**
 -dontwarn com.fasterxml.jackson.**
 -dontwarn org.hamcrest.**
+-dontwarn com.baidu.**
+-dontwarn com.bea.**
+-dontwarn org.simpleframework.xml.**
 
 -dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
 

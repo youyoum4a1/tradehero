@@ -1,6 +1,8 @@
 package com.tradehero.th.api.watchlist;
 
-/** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 5:49 PM Copyright (c) TradeHero */
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.th.api.security.SecurityIntegerId;
+
 public class WatchlistPositionFormDTO
 {
     public int securityId;
@@ -12,5 +14,11 @@ public class WatchlistPositionFormDTO
         this.securityId = securityId;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    @JsonIgnore
+    public SecurityIntegerId getSecurityIntegerId()
+    {
+        return new SecurityIntegerId(securityId);
     }
 }

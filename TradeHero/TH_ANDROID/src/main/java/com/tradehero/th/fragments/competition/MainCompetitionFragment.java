@@ -372,7 +372,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
         args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
-        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
+        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())

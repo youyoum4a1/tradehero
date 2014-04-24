@@ -17,9 +17,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/12/14.
- */
 public class LeaderboardFilterFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";

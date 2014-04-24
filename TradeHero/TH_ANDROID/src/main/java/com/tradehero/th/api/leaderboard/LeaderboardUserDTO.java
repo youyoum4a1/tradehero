@@ -1,14 +1,14 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
-
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:09 PM Copyright (c) TradeHero */
 
 public class LeaderboardUserDTO extends UserBaseDTO
     implements ExpandableItem
@@ -21,8 +21,10 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public long lbmuId;    // leaderboardMarkUser.id ...
     public int portfolioId;    // ...OR portfolioId --> messy
 
-    public List<Integer> friendOf_UserIds;    // client expects userIds here to be present in LeaderboardDTO.users collection!
-    public String friendOf_markupString;
+    @JsonProperty("friendOf_UserIds")
+    public List<Integer> friendOfUserIds;    // client expects userIds here to be present in LeaderboardDTO.users collection!
+    @JsonProperty("friendOf_markupString")
+    public String friendOfMarkupString;
 
     public double roiInPeriod;
     public double PLinPeriodRefCcy;
@@ -31,7 +33,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public int numberOfTradesInPeriod;
     public int numberOfPositionsInPeriod;
-    public int avgNumberOfTradesPerMonth;
+    public Double avgNumberOfTradesPerMonth;
 
     public int ordinalPosition; // OK
 
@@ -40,10 +42,13 @@ public class LeaderboardUserDTO extends UserBaseDTO
     // additional fields for most skilled
     public Date periodStartUtc;
     public Date periodEndUtc;
-    public Double stddev_positionRoiInPeriod;
-    public Double sharpeRatioInPeriod_vsSP500;
+    @JsonProperty("stddev_positionRoiInPeriod")
+    public Double stdDevPositionRoiInPeriod;
+    @JsonProperty("sharpeRatioInPeriod_vsSP500")
+    public Double sharpeRatioInPeriodVsSP500;
     public Double benchmarkRoiInPeriod;
-    public Double avg_positionRoiInPeriod;
+    @JsonProperty("avg_positionRoiInPeriod")
+    public Double avgPositionRoiInPeriod;
     public Double winRatio;
     public Double starRating;
     public Double heroQuotient;
@@ -51,6 +56,8 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Integer followerCountFree;
     public Integer followerCountPaid;
     public Integer commentCount;
+    public String currencyDisplay;
+    public String currencyISO;
 
     public LeaderboardUserDTO()
     {
@@ -89,7 +96,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public Double getVolatility()
     {
-        return stddev_positionRoiInPeriod;
+        return stdDevPositionRoiInPeriod;
     }
 
     public int getNumberOfTrades()
@@ -100,6 +107,22 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public double getBenchmarkRoiInPeriod()
     {
         return benchmarkRoiInPeriod != null ? benchmarkRoiInPeriod : 0;
+    }
+
+    @JsonIgnore
+    public String getNiceCurrency()
+    {
+        if (hasValidCurrencyDisplay())
+        {
+            return currencyDisplay;
+        }
+        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+    }
+
+    @JsonIgnore
+    public boolean hasValidCurrencyDisplay()
+    {
+        return currencyDisplay != null && !currencyDisplay.isEmpty();
     }
 
     //<editor-fold desc="ExtendedDTO">

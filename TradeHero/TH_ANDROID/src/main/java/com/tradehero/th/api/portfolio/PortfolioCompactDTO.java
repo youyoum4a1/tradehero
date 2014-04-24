@@ -6,7 +6,6 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:05 PM Copyright (c) TradeHero */
 public class PortfolioCompactDTO implements DTO
 {
     public static final String DEFAULT_TITLE = "Default";

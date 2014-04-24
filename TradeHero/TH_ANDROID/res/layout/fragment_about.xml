@@ -1,135 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-    
-<ScrollView
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    >
+  <ScrollView
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/black">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/main_content_wrapper"
+        >
 
+      <ImageView
+          android:id="@+id/bg_about"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/logo_about_bull"
+          android:layout_gravity="center_horizontal"
+          android:layout_margin="@dimen/common_margin_10"
+          android:contentDescription="@null"/>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TradeHero_Settings_About_Text"
+          android:text="@string/team_credit"
+          android:textStyle="bold"
+          />
+
+      <LinearLayout
+          android:id="@+id/staff_list_holder"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:orientation="vertical"
+          />
+    </LinearLayout>
+
+  </ScrollView>
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
+      android:layout_gravity="bottom"
+      android:orientation="horizontal"
+      android:weightSum="3"
+      android:background="@color/black"
+      android:paddingTop="3dp"
+      android:paddingBottom="3dp"
       >
-
-    <ImageView
-        android:id="@+id/bg_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/pimp_bull"
-        android:layout_margin="@dimen/common_margin_10"/>
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="0dp"
         >
-
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="0dp"
-          style="@style/TradeHero_Settings_About_Text"
-          android:text="@string/app_name"
-          android:textStyle="bold"
-          android:textSize="16sp"
+          android:gravity="center_horizontal"
+          android:textColor="@color/white"
+          android:text="@string/about_screen_secure_by"
+          android:singleLine="true"
           />
-
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/icn_about_vkey"
+          android:contentDescription="@null"
+          />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="0dp"
+        >
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginLeft="0dp"
-          style="@style/TradeHero_Settings_About_Text"
-          android:text="@string/settings_about_trademark"
-          android:textSize="8sp"
-          android:lines="2"
+          android:gravity="center_horizontal"
+          android:textColor="@color/white"
+          android:text="@string/about_screen_text_processing_by"
+          android:singleLine="true"
           />
-
-      <TextView
-          android:id="@+id/settings_about_version"
+      <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/TradeHero_Settings_About_Text"
-          tools:text="v1.5.9.3500"
+          android:src="@drawable/icn_about_repustate"
+          android:contentDescription="@null"
           />
-
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_about_copyright"
-        style="@style/TradeHero_Settings_About_Text"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_about_registered_company"
-        style="@style/TradeHero_Settings_About_Text"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/settings_about_patents_pending"
-        style="@style/TradeHero_Settings_About_Text"
-        />
-
-    <TextView
-        android:id="@+id/about_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TradeHero_Settings_About_Text"
-        android:text="@string/settings_about" />
-
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="0dp"
         >
-
-      <Button
-          android:id="@+id/settings_privacy"
-          style="@style/TradeHero_Settings_About_Text"
-          android:layout_width="wrap_content"
-          android:layout_height="48dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginRight="4dp"
-          android:text="@string/settings_privacy"
-          android:textStyle="bold"
-          />
-
       <TextView
           android:layout_width="wrap_content"
-          android:layout_height="48dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginLeft="0dp"
-          android:layout_marginRight="0dp"
-          style="@style/TradeHero_Settings_About_Text"
-          android:text="|"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:textColor="@color/white"
+          android:text="@string/about_screen_sentiment_analysis_by"
+          android:singleLine="true"
           />
-
-      <Button
-          android:id="@+id/settings_terms"
-          style="@style/TradeHero_Settings_About_Text"
+      <ImageView
           android:layout_width="wrap_content"
-          android:layout_height="48dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginLeft="4dp"
-          android:text="@string/settings_terms"
-          android:textStyle="bold"
+          android:layout_height="wrap_content"
+          android:src="@drawable/icn_about_heckyl"
+          android:contentDescription="@null"
           />
-
     </LinearLayout>
-
   </LinearLayout>
-
-</ScrollView>
+</FrameLayout>

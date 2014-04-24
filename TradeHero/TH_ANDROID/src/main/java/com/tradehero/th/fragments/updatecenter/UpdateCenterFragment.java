@@ -262,7 +262,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
@@ -287,7 +287,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (mTabHost != null)
         {
-            android.support.v4.app.FragmentManager fm = getChildFragmentManager();
+            android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
             List<Fragment> fragmentList = fm.getFragments();
             Timber.d("fragmentList %s",fragmentList);
             if (fragmentList != null && fragmentList.size() > 0)
@@ -318,7 +318,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
             return null;
         }
         String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = getChildFragmentManager();
+        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
         Fragment fragment = fm.findFragmentByTag(tag);
         return fragment;
     }

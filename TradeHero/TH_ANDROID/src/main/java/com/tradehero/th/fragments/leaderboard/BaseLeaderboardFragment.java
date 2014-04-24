@@ -20,7 +20,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 6:24 PM Copyright (c) TradeHero */
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer
 {

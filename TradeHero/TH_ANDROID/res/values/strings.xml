@@ -67,4 +67,8 @@
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
   <string name="discussion_security_subtitle">on %s</string>
+  <string name="team_credit">Made with love in Singapore and Shanghai</string>
+  <string name="about_screen_secure_by">Secure by:</string>
+  <string name="about_screen_text_processing_by">Text processing by:</string>
+  <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
 </resources>
