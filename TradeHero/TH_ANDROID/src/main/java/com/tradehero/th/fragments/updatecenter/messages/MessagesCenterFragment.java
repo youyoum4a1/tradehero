@@ -64,10 +64,9 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
-    private DTOCache.Listener<MessageListKey, MessageHeaderIdList> messagesFetchListener;
-    private DTOCache.Listener<MessageListKey, MessageHeaderIdList> refreshMessagesFetchListener;
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
-    private MessageListKey messageListKey;
+    private MessageListKey nextOlderMessageListKey;
+    private MessageListKey nextMoreRecentMessageListKey;
     private MessageHeaderIdList alreadyFetched;
     private MessagesView messagesView;
     private SwipeListener swipeListener;
@@ -76,15 +75,11 @@ public class MessagesCenterFragment extends DashboardFragment
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         middleCallbackMap = new HashMap<>();
-        messagesFetchListener = new MessageFetchListener();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
 
@@ -170,9 +165,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        messagesFetchListener = null;
         alreadyFetched = null;
-        messageListKey = null;
+        nextMoreRecentMessageListKey = null;
         unsetMiddleCallback();
 
         super.onDestroy();
@@ -233,26 +227,22 @@ public class MessagesCenterFragment extends DashboardFragment
         swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);
 
-        if (messageListKey == null)
+        if (nextMoreRecentMessageListKey == null)
         {
-            messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+            nextMoreRecentMessageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
     }
 
     private void getOrFetchMessages()
     {
         detachFetchMessageTask();
-        fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, false, messagesFetchListener);
+        fetchMessageTask = messageListCache.get().getOrFetch(nextMoreRecentMessageListKey, false, createMessageHeaderIdListCacheListener());
         fetchMessageTask.execute();
     }
 
     private void refreshContent()
     {
         displayLoadingView(false);
-        if (refreshMessagesFetchListener == null)
-        {
-            refreshMessagesFetchListener = new RefershMessageFetchListener();
-        }
 
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
@@ -260,7 +250,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
-                refreshMessagesFetchListener);
+                createRefreshMessageHeaderIdListCacheListener());
         fetchMessageTask.execute();
     }
 
@@ -272,27 +262,27 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void decreasePageNumber()
     {
-        if (messageListKey == null)
+        if (nextMoreRecentMessageListKey == null)
         {
             return;
         }
-        messageListKey = messageListKey.prev();
+        nextMoreRecentMessageListKey = nextMoreRecentMessageListKey.prev();
     }
 
     private void resetPageNumber()
     {
-        messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        nextMoreRecentMessageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
     }
 
     private void increasePageNumber()
     {
-        if (messageListKey == null)
+        if (nextMoreRecentMessageListKey == null)
         {
             resetPageNumber();
         }
         else
         {
-            messageListKey = messageListKey.next();
+            nextMoreRecentMessageListKey = nextMoreRecentMessageListKey.next();
         }
     }
 
@@ -468,6 +458,11 @@ public class MessagesCenterFragment extends DashboardFragment
         messageListCache.get().put(messageListKey, data);
     }
 
+    protected DTOCache.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
+    {
+        return new MessageFetchListener();
+    }
+
     class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
@@ -499,8 +494,12 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    class RefershMessageFetchListener
-            implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
+    protected DTOCache.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
+    {
+        return new RefreshMessageFetchListener();
+    }
+
+    class RefreshMessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
         public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
