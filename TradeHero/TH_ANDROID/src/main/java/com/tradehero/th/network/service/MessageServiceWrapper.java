@@ -144,6 +144,18 @@ public class MessageServiceWrapper
         messageServiceAsync.getMessageHeader(commentId, middleCallback);
         return middleCallback;
     }
+
+    public MessageHeaderDTO getMessageThread(UserBaseKey correspondentId)
+    {
+        return messageService.getMessageThread(correspondentId.key);
+    }
+
+    public MiddleCallbackMessageHeader getMessageThread(UserBaseKey correspondentId, Callback<MessageHeaderDTO> callback)
+    {
+        MiddleCallbackMessageHeader middleCallback = new MiddleCallbackMessageHeader(callback);
+        messageServiceAsync.getMessageThread(correspondentId.key, middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">

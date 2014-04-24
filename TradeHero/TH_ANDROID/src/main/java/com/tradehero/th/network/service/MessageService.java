@@ -32,6 +32,9 @@ public interface MessageService
     //<editor-fold desc="Get Message Header">
     @GET("/messages/{commentId}")
     MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId);
+
+    @GET("/messages/thread/{correspondentId}")
+    MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId);
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">

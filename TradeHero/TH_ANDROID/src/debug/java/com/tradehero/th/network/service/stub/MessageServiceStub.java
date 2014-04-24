@@ -60,6 +60,11 @@ public class MessageServiceStub implements MessageService
         return createMessageHeader(commentId, null, new Date());
     }
 
+    @Override public MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId)
+    {
+        return null;
+    }
+
     private MessageHeaderDTO createMessageHeaderNeerajToOscarAguilar()
     {
         MessageHeaderDTO messageHeader = new MessageHeaderDTO();
