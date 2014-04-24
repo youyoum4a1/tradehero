@@ -9,7 +9,6 @@ import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 6:26 PM Copyright (c) TradeHero */
 public class FriendLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     @Override public void onResume()

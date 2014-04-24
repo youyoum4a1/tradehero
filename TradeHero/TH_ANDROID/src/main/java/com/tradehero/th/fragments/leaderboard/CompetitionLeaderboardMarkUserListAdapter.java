@@ -14,9 +14,6 @@ import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
 
-/**
- * Created by tho on 4/1/2014.
- */
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     implements WrapperListAdapter
 {

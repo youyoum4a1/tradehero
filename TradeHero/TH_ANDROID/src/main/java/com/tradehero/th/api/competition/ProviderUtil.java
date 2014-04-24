@@ -8,11 +8,7 @@ import com.tradehero.th.network.CompetitionUrl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/20/14.
- */
-@Singleton
-public class ProviderUtil
+@Singleton public class ProviderUtil
 {
     public static final String TAG = ProviderUtil.class.getSimpleName();
 
