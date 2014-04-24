@@ -2,7 +2,7 @@
 <resources>
 
   <string name="app_name">股货英雄</string>
-  <string name="version_text">v2.1.0(21)</string>
+  <string name="version_text">v2.1.0(22)</string>
   <string name="na">无</string>
   <string name="empty"/>
   <string name="action_menu_settings">设置</string>

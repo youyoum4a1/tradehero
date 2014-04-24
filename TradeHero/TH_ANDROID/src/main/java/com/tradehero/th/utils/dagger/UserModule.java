@@ -22,7 +22,6 @@ import javax.inject.Singleton;
 
                 FriendListLoader.class,
 
-                DashboardActivity.class,
                 UserManager.class,
                 WXEntryActivity.class
         },
