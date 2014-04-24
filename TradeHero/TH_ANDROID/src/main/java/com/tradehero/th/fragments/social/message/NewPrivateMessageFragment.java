@@ -15,6 +15,7 @@ import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
@@ -227,7 +228,16 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THToast.show(R.string.error_fetch_message_thread_header);
+            if (!(error instanceof RetrofitError) ||
+                    ((RetrofitError) error).getResponse().getStatus() != 404)
+            {
+                THToast.show(R.string.error_fetch_message_thread_header);
+                Timber.e(error, "Error while getting message thread");
+            }
+            else
+            {
+                // There is just no existing thread
+            }
         }
     }
 }

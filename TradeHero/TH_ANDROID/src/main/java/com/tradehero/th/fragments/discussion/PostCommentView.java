@@ -38,7 +38,7 @@ public class PostCommentView extends RelativeLayout
      * If true, then we wait for a return from the server before adding the discussion.
      * If false, we add it right away.
      */
-    public static final boolean NOTIFY_ON_SUCCESS = false;
+    public static final boolean NOTIFY_REPLY_ON_SUCCESS = false;
 
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
@@ -116,9 +116,7 @@ public class PostCommentView extends RelativeLayout
         }
         else if (messageType != null)
         {
-            MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
-            setPosting();
-            postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback());
+            submitAsNewDiscussion();
         }
         else
         {
@@ -140,8 +138,8 @@ public class PostCommentView extends RelativeLayout
     {
         DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
         setPosting();
-        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, createCommentSubmitCallback());
-        if (!NOTIFY_ON_SUCCESS)
+        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, createCommentSubmitCallback(NOTIFY_REPLY_ON_SUCCESS));
+        if (!NOTIFY_REPLY_ON_SUCCESS)
         {
             // Notify now
             DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
@@ -156,6 +154,13 @@ public class PostCommentView extends RelativeLayout
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
         return discussionFormDTO;
+    }
+
+    protected void submitAsNewDiscussion()
+    {
+        MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
+        setPosting();
+        postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback(true));
     }
 
     protected MessageCreateFormDTO buildMessageCreateFormDTO()
@@ -253,16 +258,24 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    protected Callback<DiscussionDTO> createCommentSubmitCallback()
+    protected Callback<DiscussionDTO> createCommentSubmitCallback(boolean notifyReplyOnSuccess)
     {
-        return new CommentSubmitCallback();
+        return new CommentSubmitCallback(notifyReplyOnSuccess);
     }
 
     protected class CommentSubmitCallback implements Callback<DiscussionDTO>
     {
+        private final boolean notifyReplyOnSuccess;
+
+        public CommentSubmitCallback(boolean notifyReplyOnSuccess)
+        {
+            super();
+            this.notifyReplyOnSuccess = notifyReplyOnSuccess;
+        }
+
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            if (NOTIFY_ON_SUCCESS)
+            if (notifyReplyOnSuccess)
             {
                 handleCommentPosted(discussionDTO);
             }
