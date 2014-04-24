@@ -77,7 +77,20 @@ public class FollowUserAssistant implements
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
+        updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
+    }
+
+    /**
+     * newly added method
+     */
+    private void updateUserProfileCache(UserProfileDTO userProfileDTO)
+    {
+        if (userProfileCache != null && currentUserId != null)
+        {
+            UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+            userProfileCache.put(userBaseKey, userProfileDTO);
+        }
     }
 
     @Override public void failure(RetrofitError error)

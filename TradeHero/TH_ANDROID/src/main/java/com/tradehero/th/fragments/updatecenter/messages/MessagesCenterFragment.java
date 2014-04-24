@@ -83,6 +83,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        middleCallbackMap = new HashMap<>();
         messagesFetchListener = new MessageFetchListener();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
@@ -92,7 +93,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.update_center_messages_fragment, container, false);
-        middleCallbackMap = new HashMap<>();
         initViews(view);
         return view;
     }
@@ -749,6 +749,14 @@ public class MessagesCenterFragment extends DashboardFragment
                 if (alreadyFetched != null)
                 {
                     alreadyFetched.remove(messageId);
+                }
+
+                //if the unread message is deleted, update unread counter
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageId);
+                if (messageHeaderDTO != null && messageHeaderDTO.unread)
+                {
+                    messageHeaderDTO.unread = false;
+                    updateUnreadStatusInUserProfileCache();
                 }
                 //MessageListAdapter adapter = getListAdapter();
             }
