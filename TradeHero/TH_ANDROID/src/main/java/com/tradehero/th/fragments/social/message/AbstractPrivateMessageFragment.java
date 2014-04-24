@@ -22,12 +22,10 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -258,7 +256,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @OnClick(R.id.private_message_status_container) protected void showPaidFollow()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        //it's better premium follow than always let user pay
+        followUser(correspondentId, createUserFollowedListener());
     }
 
     @Override public boolean isTabBarVisible()
