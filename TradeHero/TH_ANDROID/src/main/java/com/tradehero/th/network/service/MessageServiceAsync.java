@@ -54,9 +54,11 @@ interface MessageServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    @DELETE("/messages/{commentId}")
+    @DELETE("/messages/delete/{commentId}/{senderUserId}/{recipientUserId}")
     void deleteMessage(
             @Path("commentId") int commentId,
+            @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId,
             Callback<Response> callback);
     //</editor-fold>
 

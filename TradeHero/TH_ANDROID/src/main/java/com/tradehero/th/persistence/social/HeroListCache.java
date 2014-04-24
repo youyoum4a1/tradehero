@@ -1,20 +1,14 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroIdExt;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
-import com.tradehero.th.api.social.HeroIdList;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class HeroListCache extends StraightDTOCache<HeroKey, HeroIdExtWrapper>
+@Singleton public class HeroListCache extends StraightDTOCache<UserBaseKey, HeroIdExtWrapper>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
@@ -30,193 +24,17 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    @Override protected HeroIdExtWrapper fetch(HeroKey key) throws Throwable
+    @Override protected HeroIdExtWrapper fetch(UserBaseKey key) throws Throwable
     {
-        List<HeroDTO> allHeros = userServiceWrapper.getHeroes(key);
-        //Timber.d("HeroListCache#fetch fetchHeroes allHeros:%s",allHeros);
+        HeroDTOList allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);
     }
 
-    @Override public HeroIdExtWrapper put(HeroKey key, HeroIdExtWrapper value)
+    protected HeroIdExtWrapper putInternal(UserBaseKey key, HeroDTOList fleshedValues)
     {
-        //Just cache all heros,do not cache paid heros and free heros separately.
-        if (key.heroType != HeroType.ALL)
-        {
-            return value;
-        }
-        Timber.d("HeroListCache#put key:%s value:%s",key,value);
-        return super.put(key, value);
-    }
-
-    @Override public HeroIdExtWrapper get(HeroKey key)
-    {
-        if (key.heroType == HeroType.ALL)
-        {
-            //Timber.d("HeroListCache#get,fetchHeroes key %s, return %s",key, super.get(key));
-            return super.get(key);
-        }
-        else
-        {
-            HeroIdExtWrapper allHeros = get(new HeroKey(key.followerKey, HeroType.ALL));
-            if (allHeros != null && allHeros.heroIdList != null)
-            {
-                Map<HeroType, HeroIdList> herosMap = splitHeros(allHeros.heroIdList);
-                if (herosMap != null)
-                {
-                    HeroIdList heroIdList = herosMap.get(key.heroType);
-
-                    HeroIdExtWrapper heroIdExtWrapper = new HeroIdExtWrapper();
-                    heroIdExtWrapper.heroIdList = heroIdList;
-                    heroIdExtWrapper.herosCountGetPaid = allHeros.herosCountGetPaid;
-                    heroIdExtWrapper.herosCountNotGetPaid = allHeros.herosCountNotGetPaid;
-
-                    //Timber.d("HeroListCache#get,fetchHeroes key %s, return %s",key, heroIdExtWrapper);
-                    return heroIdExtWrapper;
-                }
-            }
-
-            return null;
-        }
-    }
-
-    protected HeroIdExtWrapper putInternal(HeroKey key, List<HeroDTO> fleshedValues)
-    {
-        HeroIdList heroIds = null;
-        HeroIdList allHeroIds = null;
-
-        HeroIdExtWrapper AllHeroIdExtWrapper = new HeroIdExtWrapper();
-        HeroIdExtWrapper neededHeroIdExtWrapper = new HeroIdExtWrapper();
-
-        if (fleshedValues != null)
-        {
-            heroIds = new HeroIdList();
-            allHeroIds = new HeroIdList();
-            HeroIdExt heroIdExt;
-            boolean forHerosGetPaid = (key.heroType == HeroType.PREMIUM);
-            boolean forAllHeros = (key.heroType == HeroType.ALL);
-            for (HeroDTO heroDTO : fleshedValues)
-            {
-                if (!heroDTO.active)
-                {
-                    continue;
-                }
-                heroIdExt = new HeroIdExt(heroDTO.getHeroId(key.followerKey));
-                heroIdExt.getPaid = !heroDTO.isFreeFollow;
-                if (forAllHeros)
-                {
-                    heroIdExt.getPaid = !heroDTO.isFreeFollow;
-                    heroIds.add(heroIdExt);
-                }
-                else if (forHerosGetPaid && !heroDTO.isFreeFollow)
-                {
-                    heroIdExt.getPaid = true;
-                    heroIds.add(heroIdExt);
-                }
-                else if (!forAllHeros && !forHerosGetPaid && heroDTO.isFreeFollow)
-                {
-                    heroIdExt.getPaid = false;
-                    heroIds.add(heroIdExt);
-                }
-
-                allHeroIds.add(heroIdExt);
-                heroCache.put(heroIdExt, heroDTO);
-            }
-
-            int[] result = computeFollowersTypeCount(fleshedValues);
-            AllHeroIdExtWrapper.herosCountGetPaid = result[0];
-            AllHeroIdExtWrapper.herosCountNotGetPaid = result[1];
-            AllHeroIdExtWrapper.heroIdList = allHeroIds;
-
-            neededHeroIdExtWrapper.herosCountGetPaid = result[0];
-            neededHeroIdExtWrapper.herosCountNotGetPaid = result[1];
-            neededHeroIdExtWrapper.heroIdList = heroIds;
-
-            Timber.d("HeroListCache#putInternal,all size %s,key size:%s,key:%s",AllHeroIdExtWrapper.heroIdList.size(),neededHeroIdExtWrapper.heroIdList.size(),key.heroType);
-
-            if (forAllHeros)
-            {
-                put(key, AllHeroIdExtWrapper);
-            }
-            else
-            {
-                key = new HeroKey(key.followerKey, HeroType.ALL);
-                //cache all heros
-                put(key, AllHeroIdExtWrapper);
-            }
-        }
-        //printHeros(key);
-
-        //but just return needed heros
-        return neededHeroIdExtWrapper;
-    }
-
-    private void printHeros(HeroKey key)
-    {
-        HeroIdExtWrapper all = get(new HeroKey(key.followerKey,HeroType.ALL));
-        HeroIdExtWrapper free = get(new HeroKey(key.followerKey,HeroType.FREE));
-        HeroIdExtWrapper paid = get(new HeroKey(key.followerKey,HeroType.PREMIUM));
-
-        Timber.d("HeroListCache#putInternal,fetchHeroes free %s",free);
-        Timber.d("HeroListCache#putInternal,fetchHeroes paid %s",paid);
-        Timber.d("HeroListCache#putInternal,fetchHeroes all %s",all);
-    }
-
-    ////////////////////
-
-    private int[] computeFollowersTypeCount(List<HeroDTO> allHeros)
-    {
-        int[] result = new int[2];
-        if (allHeros != null)
-        {
-            int paidCount = 0;
-            int notPaidCount = 0;
-            int totalCount = allHeros.size();
-            for (HeroDTO hero : allHeros)
-            {
-                if (hero.active)
-                {
-                    if (!hero.isFreeFollow)
-                    {
-                        paidCount += 1;
-                    }
-                    else
-                    {
-                        notPaidCount += 1;
-                    }
-                }
-            }
-
-            result[0] = paidCount;
-            result[1] = notPaidCount;
-        }
-        return result;
-    }
-
-    private Map<HeroType, HeroIdList> splitHeros(HeroIdList allHeroIdList)
-    {
-        if (allHeroIdList == null)
-        {
-            return null;
-        }
-        Map<HeroType, HeroIdList> map = new HashMap<>();
-        HeroIdList herosGetPaid = new HeroIdList();
-        HeroIdList herosNotGetPaid = new HeroIdList();
-        map.put(HeroType.PREMIUM, herosGetPaid);
-        map.put(HeroType.FREE, herosNotGetPaid);
-
-        int size = allHeroIdList.size();
-        for (int i = 0; i < size; i++)
-        {
-            HeroIdExt heroIdExt = (HeroIdExt) allHeroIdList.get(i);
-            if (heroIdExt.getPaid)
-            {
-                herosGetPaid.add(heroIdExt);
-            }
-            else
-            {
-                herosNotGetPaid.add(heroIdExt);
-            }
-        }
-        return map;
+        heroCache.put(key, fleshedValues);
+        HeroIdExtWrapper created = new HeroIdExtWrapper(key, fleshedValues);
+        put(key, created);
+        return created;
     }
 }

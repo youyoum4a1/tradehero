@@ -5,20 +5,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
 @Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
 {
-    public static final String TAG = UserProfileCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<UserService> userService;
@@ -56,7 +53,7 @@ import javax.inject.Singleton;
 
     @Override public UserProfileDTO put(UserBaseKey userBaseKey, UserProfileDTO userProfileDTO)
     {
-        heroListCache.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        heroListCache.get().invalidate(userBaseKey);
         if (userProfileDTO.mostSkilledLbmu != null)
         {
             leaderboardCache.get().put(userProfileDTO.getMostSkilledLbmuKey(), userProfileDTO.mostSkilledLbmu);

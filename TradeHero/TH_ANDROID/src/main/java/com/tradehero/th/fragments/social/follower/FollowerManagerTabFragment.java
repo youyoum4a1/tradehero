@@ -20,6 +20,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.HeroType;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -27,20 +29,24 @@ import timber.log.Timber;
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
+    private static final String HERO_ID_BUNDLE_KEY = FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     private FollowerManagerViewContainer viewContainer;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
-    private UserBaseKey followedId;
+    private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
-    protected int page;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    public static void putHeroId(Bundle args, UserBaseKey followerId)
     {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        this.page = args.getInt(FollowerManagerFragment.KEY_PAGE);
+        args.putBundle(HERO_ID_BUNDLE_KEY, followerId.getArgs());
+    }
+
+    public static UserBaseKey getHeroId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(HERO_ID_BUNDLE_KEY));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,10 +130,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         super.onResume();
 
         Timber.d("FollowerManagerTabFragment onResume");
-        followedId = new UserBaseKey(
-                getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
+        heroId = getHeroId(getArguments());
 
-        infoFetcher.fetch(this.followedId);
+        infoFetcher.fetch(this.heroId);
     }
 
     @Override public void onDestroyView()
@@ -144,6 +149,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
         this.infoFetcher = null;
         super.onDestroyView();
+    }
+
+    protected HeroTypeResourceDTO getHeroTypeResource()
+    {
+        return heroTypeResourceDTOFactory.create(getFollowerType());
     }
 
     abstract protected HeroType getFollowerType();
@@ -210,13 +220,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         Timber.d("refreshContent");
 
         redisplayProgress();
-        if (followedId == null)
+        if (heroId == null)
         {
-            followedId = new UserBaseKey(
-                    getArguments().getInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID));
-
+            heroId = getHeroId(getArguments());
         }
-        infoFetcher.fetch(this.followedId, createFollowerSummaryCacheRefreshListener());
+        infoFetcher.fetch(this.heroId, createFollowerSummaryCacheRefreshListener());
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
@@ -306,11 +314,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
-        Timber.d("notifyFollowerLoaded for page:%d", page);
+        Timber.d("notifyFollowerLoaded for followerTabIndex:%d", getHeroTypeResource().followerTabIndex);
         OnFollowersLoadedListener loadedListener = FragmentUtils.getParent(this,OnFollowersLoadedListener.class);
         if (loadedListener != null && !isDetached())
         {
-            loadedListener.onFollowerLoaded(page, value);
+            loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
         }
     }
 

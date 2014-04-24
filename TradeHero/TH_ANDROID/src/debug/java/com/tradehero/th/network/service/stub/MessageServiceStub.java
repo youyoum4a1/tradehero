@@ -89,7 +89,8 @@ public class MessageServiceStub implements MessageService
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public Response deleteMessage(@Path("commentId") int commentId)
+    @Override public Response deleteMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId)
     {
         return null;
     }

@@ -23,9 +23,7 @@ import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -37,9 +35,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 3/24/14.
- */
 public class FollowUserAssistant implements
         Callback<UserProfileDTO>,
         DTOCache.Listener<UserBaseKey, UserProfileDTO>
@@ -95,7 +90,8 @@ public class FollowUserAssistant implements
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        //heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
+        heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
         notifyFollowSuccess(userToFollow, userProfileDTO);
     }
 

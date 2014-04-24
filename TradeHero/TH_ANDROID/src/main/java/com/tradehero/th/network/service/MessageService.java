@@ -46,8 +46,11 @@ public interface MessageService
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    @DELETE("/messages/{commentId}")
-    Response deleteMessage(@Path("commentId") int commentId);
+    @DELETE("/messages/delete/{commentId}/{senderUserId}/{recipientUserId}")
+    Response deleteMessage(
+            @Path("commentId") int commentId,
+            @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId);
     //</editor-fold>
 
     //<editor-fold desc="Read Message">

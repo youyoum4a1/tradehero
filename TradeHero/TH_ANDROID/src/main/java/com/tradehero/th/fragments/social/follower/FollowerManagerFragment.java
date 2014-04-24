@@ -34,17 +34,15 @@ import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
-    public static final String KEY_PAGE = FollowerManagerFragment.class.getName() + ".keyPage";
-
     static final int FRAGMENT_LAYOUT_ID = 10000;
-    public static final String BUNDLE_KEY_HERO_ID =
+    private static final String BUNDLE_KEY_HERO_ID =
             FollowerManagerFragment.class.getName() + ".heroId";
 
     /** parent layout of broadcastView and whisperView */
@@ -60,19 +58,23 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     private UserBaseKey heroId;
-    /** categories of follower:premium,free,all */
-    private List<HeroTypeResourceDTO> followerTypes;
 
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
 
+    public static void putHeroId(Bundle args, UserBaseKey heroId)
+    {
+        args.putBundle(BUNDLE_KEY_HERO_ID, heroId.getArgs());
+    }
 
+    public static UserBaseKey getHeroId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(BUNDLE_KEY_HERO_ID));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        this.heroId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_HERO_ID));
-        this.followerTypes = heroTypeResourceDTOFactory.getListOfHeroType();
+        this.heroId = getHeroId(getArguments());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -91,7 +93,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -175,14 +176,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Timber.d("onDestroyView");
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-
-        Timber.d("onDestroy");
-        followerTypes = null;
-    }
-
     private void setMessageLayoutShown(boolean shown)
     {
         if (shown)
@@ -206,9 +199,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             return null;
         }
         String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = getChildFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        return fragment;
+        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+        return fm.findFragmentByTag(tag);
     }
 
     private int[] getFollowerCount()
@@ -229,32 +221,37 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         //TODO NestedFragments needs ChildFragmentManager
         //http://developer.android.com/about/versions/android-4.2.html#NestedFragments
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        Bundle args = getArguments();
-        if (args == null)
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        for (HeroTypeResourceDTO resourceDTO : getTabResourceDTOs())
         {
-            args = new Bundle();
-        }
-        for (HeroTypeResourceDTO entry : followerTypes)
-        {
-            args = new Bundle(args);
-            args.putInt(KEY_PAGE, entry.pageIndex);
-
-            String title = MessageFormat.format(getString(entry.titleRes), 0);
-
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
-            mTabHost.addTab(tabSpec, entry.fragmentClass, args);
+            addTab(resourceDTO);
         }
 
         return mTabHost;
     }
 
+    protected ArrayList<HeroTypeResourceDTO> getTabResourceDTOs()
+    {
+        return heroTypeResourceDTOFactory.getListOfHeroType();
+    }
+
+    private void addTab(HeroTypeResourceDTO resourceDTO)
+    {
+        Bundle args = new Bundle();
+        FollowerManagerTabFragment.putHeroId(args, heroId);
+
+        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), 0);
+
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+        mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
+    }
+
     private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
     {
         TextView titleView = (TextView) mTabHost.getTabWidget()
-                .getChildTabViewAt(resourceDTO.pageIndex)
+                .getChildTabViewAt(resourceDTO.followerTabIndex)
                 .findViewById(android.R.id.title);
-        String title = MessageFormat.format(getString(resourceDTO.titleRes), count);
+        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), count);
         titleView.setText(title);
     }
 

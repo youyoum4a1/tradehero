@@ -186,17 +186,17 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    public Response deleteMessage(MessageHeaderId messageHeaderId)
+    public Response deleteMessage(MessageHeaderId messageHeaderId, int senderUserId, int recipientUserId)
     {
-        Response response = messageService.deleteMessage(messageHeaderId.key);
+        Response response = messageService.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId);
         messageHeaderListCache.get().invalidateKeysThatList(messageHeaderId);
         return response;
     }
 
-    public MiddleCallbackMessageDeleted deleteMessage(final MessageHeaderId messageHeaderId, Callback<Response> callback)
+    public MiddleCallbackMessageDeleted deleteMessage(final MessageHeaderId messageHeaderId, int senderUserId, int recipientUserId, Callback<Response> callback)
     {
         MiddleCallbackMessageDeleted middleCallback = new MiddleCallbackMessageDeleted(messageHeaderId, callback, messageHeaderListCache.get());
-        messageServiceAsync.deleteMessage(messageHeaderId.key, middleCallback);
+        messageServiceAsync.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

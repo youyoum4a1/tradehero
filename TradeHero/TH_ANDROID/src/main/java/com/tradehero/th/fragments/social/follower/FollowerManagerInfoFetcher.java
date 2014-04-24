@@ -3,16 +3,10 @@ package com.tradehero.th.fragments.social.follower;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.social.HeroKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 12/16/13.
- */
 public class FollowerManagerInfoFetcher
 {
     public static final String TAG = FollowerManagerInfoFetcher.class.getSimpleName();

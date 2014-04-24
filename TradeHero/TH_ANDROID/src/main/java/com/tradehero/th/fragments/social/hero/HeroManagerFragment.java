@@ -20,37 +20,43 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
+import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
+import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import java.util.List;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import javax.inject.Inject;
 import timber.log.Timber;
 
-public class HeroManagerFragment extends BasePurchaseManagerFragment implements OnHeroesLoadedListener
+public class HeroManagerFragment extends BasePurchaseManagerFragment
+        implements OnHeroesLoadedListener
 {
     /**
      * We are showing the heroes of this follower
      */
-    public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
+    private static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
-    static final String KEY_PAGE = "KEY_PAGE";
-    static final String KEY_ID = "KEY_ID";
     // TODO change it into something like R.id.... to help with identifying its unicity
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
-    /** categories of hero:premium,free,all */
-    private HeroTypeExt[] heroTypes;
-    private int selectedId = -1;
+    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    public static void putFollowerId(Bundle args, UserBaseKey followerId)
     {
-        super.onCreate(savedInstanceState);
-        heroTypes = HeroTypeExt.getSortedList();
-        Timber.d("onCreate");
+        args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
+    }
+
+    public static UserBaseKey getFollowerId(Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
 
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
@@ -72,33 +78,29 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
 
-        ActionBar.Tab lastSavedTab = null;
-        int lastSelectedId = selectedId;
-        HeroTypeExt[] types = heroTypes;
-        tabSpecList = new ArrayList<>(types.length);
-        Bundle args = getArguments();
-        if (args == null)
+        List<HeroTypeResourceDTO> resourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
+        tabSpecList = new ArrayList<>(resourceDTOs.size());
+        for (HeroTypeResourceDTO resourceDTO : resourceDTOs)
         {
-            args = new Bundle();
-        }
-        for (HeroTypeExt type : types)
-        {
-            args = new Bundle(args);
-            args.putInt(KEY_PAGE, type.pageIndex);
-            args.putInt(KEY_ID, type.heroType.typeId);
-
-            String title = MessageFormat.format(getSherlockActivity().getString(type.titleRes), 0);
-
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
-            tabSpecList.add(tabSpec);
-            mTabHost.addTab(tabSpec,
-                    type.fragmentClass, args);
+            addTab(resourceDTO);
         }
 
         return mTabHost;
+    }
+
+    private void addTab(HeroTypeResourceDTO resourceDTO)
+    {
+        Bundle args = new Bundle();
+        HeroesTabContentFragment.putFollowerId(args, getFollowerId(getArguments()));
+
+        String title = MessageFormat.format(getString(resourceDTO.heroTabTitleRes), 0);
+
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+        tabSpecList.add(tabSpec);
+        mTabHost.addTab(tabSpec, resourceDTO.heroContentFragmentClass, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -106,7 +108,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(R.string.social_heroes);
     }
 
@@ -117,7 +122,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
             case android.R.id.home:
                 //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -137,36 +141,32 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     /**
      * change the number of tab
      */
-    private void changeTabTitle(int page, int number)
+    private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int number)
     {
         if (mTabHost == null)
         {
             return;
         }
-        TabHost.TabSpec tabSpec = tabSpecList.get(page);
-        HeroTypeExt heroTypeExt = HeroTypeExt.fromIndex(heroTypes,page);
-        int titleRes = heroTypeExt.titleRes;
-        String title = MessageFormat.format(getSherlockActivity().getString(titleRes), number);
+        TabHost.TabSpec tabSpec = tabSpecList.get(resourceDTO.heroTabIndex);
+        int titleRes = resourceDTO.heroTabTitleRes;
+        String title = MessageFormat.format(getString(titleRes), number);
         tabSpec.setIndicator(title);
 
-        TextView tv = (TextView)mTabHost.getTabWidget().getChildAt(page).findViewById(android.R.id.title);
+        TextView tv = (TextView) mTabHost.getTabWidget()
+                .getChildAt(resourceDTO.heroTabIndex)
+                .findViewById(android.R.id.title);
         tv.setText(title);
     }
 
-    private void changeTabTitle(int number1, int number2, int number3)
-    {
-        changeTabTitle(0, number1);
-        changeTabTitle(1, number2);
-        changeTabTitle(2, number3);
-    }
-
-    @Override public void onHerosLoaded(int page, HeroIdExtWrapper value)
+    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroIdExtWrapper value)
     {
         if (!isDetached())
         {
-            changeTabTitle(0, value.herosCountGetPaid);
-            changeTabTitle(1, value.herosCountNotGetPaid);
-            changeTabTitle(2, (value.herosCountGetPaid + value.herosCountNotGetPaid));
+            int premiumCount = value.getActivePremiumHeroesCount();
+            int freeCount = value.getActiveFreeHeroesCount();
+            changeTabTitle(new PremiumHeroTypeResourceDTO(), premiumCount);
+            changeTabTitle(new FreeHeroTypeResourceDTO(), freeCount);
+            changeTabTitle(new AllHeroTypeResourceDTO(), premiumCount + freeCount);
         }
     }
 
@@ -184,30 +184,33 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment implements 
     {
         @Override public void onTabChanged(String tabId)
         {
-            Timber.d("onTabChanged tabId:%s",tabId);
             Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
-            Fragment f = getChildFragmentManager().findFragmentByTag(tabId);
-            Timber.d("activity fragment:%s,child fragment:%s",fragment,f);
+            Fragment f = ((Fragment) HeroManagerFragment.this).getChildFragmentManager()
+                    .findFragmentByTag(tabId);
         }
     }
 
     protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
         }
     }
 
-    protected class HeroManagerOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener
+    protected class HeroManagerOnPurchaseReportedListener
+            implements PurchaseReporter.OnPurchaseReportedListener
     {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                UserProfileDTO updatedUserPortfolio)
         {
             //display(updatedUserPortfolio);
         }
 
-        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+        @Override public void onPurchaseReportFailed(int requestCode,
+                ProductPurchase reportedPurchase, BillingException error)
         {
             // Anything to report?
         }
