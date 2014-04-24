@@ -38,7 +38,6 @@ import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -267,8 +266,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setVisibility(
                     leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(
-                            leaderboardItem.friendOf_markupString) ? VISIBLE : GONE);
-            lbmuFoF.setText(leaderboardItem.friendOf_markupString);
+                            leaderboardItem.friendOfMarkupString) ? VISIBLE : GONE);
+            lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
         loadDefaultUserImage();
@@ -330,10 +329,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
         // sharpe ratio
-        if (leaderboardItem.sharpeRatioInPeriod_vsSP500 != null)
+        if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
             lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                    leaderboardItem.sharpeRatioInPeriod_vsSP500, false).toString());
+                    leaderboardItem.sharpeRatioInPeriodVsSP500, false).toString());
         }
         else
         {
