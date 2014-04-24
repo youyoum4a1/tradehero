@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.milestone.Milestone;
@@ -45,31 +46,24 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/10/14 Time: 4:11 PM Copyright (c) TradeHero
- */
 public class WatchlistPositionFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-    public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
+    private static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
     private static final int NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND = 2;
 
     @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
 
-    @Inject Lazy<WatchlistPositionCache> watchlistCache;
-    @Inject Lazy<UserWatchlistPositionCache> userWatchlistCache;
-    @Inject Lazy<PortfolioCache> portfolioCache;
-    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
+    @Inject WatchlistPositionCache watchlistPositionCache;
+    @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject PortfolioCache portfolioCache;
+    @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
 
-    private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistFetchTask;
-
-    private DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchCompleteListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionFetchTask;
     private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> portfolioFetchTask;
 
     @InjectView(android.R.id.list) SwipeListView watchlistListView;
@@ -79,26 +73,33 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistAdapter watchListAdapter;
 
     private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
-    private Milestone.OnCompleteListener watchlistRetrievedMilestoneListener;
     private TwoStateView.OnStateChange gainLossModeListener;
     private BroadcastReceiver broadcastReceiver;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
 
+    public static void putOwnedPortfolioId(Bundle args, OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    public static OwnedPortfolioId getOwnedPortfolioId(Bundle args)
+    {
+        return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        createWatchlistRetrievedMilestoneListener();
         createGainLossModeListener();
         createBroadcastReceiver();
-        createWatchlistFetchCompleteListener();
-        createPortfolioFetchListener();
+        createPortfolioCacheListener();
     }
 
-    protected void createWatchlistRetrievedMilestoneListener()
+    protected Milestone.OnCompleteListener createWatchlistRetrievedMilestoneListener()
     {
-        watchlistRetrievedMilestoneListener = new Milestone.OnCompleteListener()
+        return new Milestone.OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)
             {
@@ -135,51 +136,19 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 if (watchlistListView != null)
                 {
-                    int deletedItemId = intent.getIntExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, -1);
-                    if (deletedItemId != -1)
+                    SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
+                    if (deletedSecurityId != null)
                     {
-                        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
-                        watchlistListView.dismiss(deletedItemId);
-                        watchlistListView.closeOpenedItems();
+                        WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
+                        int deletedItemId = adapter.getIndexOf(deletedSecurityId);
+                        if (deletedItemId != -1)
+                        {
+                            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
+                            watchlistListView.dismiss(deletedItemId);
+                            watchlistListView.closeOpenedItems();
+                        }
                     }
                 }
-            }
-        };
-    }
-
-    protected void createWatchlistFetchCompleteListener()
-    {
-        watchlistFetchCompleteListener = new DTOCache.Listener<UserBaseKey, SecurityIdList>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
-            {
-                watchlistPositionListView.onRefreshComplete();
-                watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
-                watchListAdapter.notifyDataSetChanged();
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                watchlistPositionListView.onRefreshComplete();
-                THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-            }
-        };
-    }
-
-    protected void createPortfolioFetchListener()
-    {
-        portfolioFetchCompleteListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
-        {
-            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value,
-                    boolean fromCache)
-            {
-                shownPortfolioDTO = value;
-                displayHeader();
-            }
-
-            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_portfolio_info);
             }
         };
     }
@@ -207,12 +176,14 @@ public class WatchlistPositionFragment extends DashboardFragment
                     if (watchlistListViewCopy != null)
                     {
                         watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
-                                getResources().getDimension(R.dimen.watchlist_item_button_width) * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+                                getResources().getDimension(R.dimen.watchlist_item_button_width)
+                                        * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
                     }
                 }
             });
-            watchlistListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
-
+            watchlistListView.setEmptyView(
+                    view.findViewById(R.id.watchlist_position_list_empty_view));
+            watchlistListView.setSwipeListViewListener(createSwipeListViewListener());
             initPullToRefreshListView(view);
         }
     }
@@ -225,11 +196,19 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                detachWatchlistCacheTask();
-                refreshWatchlistFetchTask = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
-                refreshWatchlistFetchTask.execute();
+                fetchSecurityIdList();
             }
         });
+    }
+
+    protected void fetchSecurityIdList()
+    {
+        detachUserWatchlistFetchTask();
+        userWatchlistPositionFetchTask = userWatchlistPositionCache.getOrFetch(
+                currentUserId.toUserBaseKey(),
+                true,
+                createSecurityIdListCacheListener());
+        userWatchlistPositionFetchTask.execute();
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -267,24 +246,29 @@ public class WatchlistPositionFragment extends DashboardFragment
         LocalBroadcastManager.getInstance(this.getActivity())
                 .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
 
-        shownPortfolioId = new OwnedPortfolioId(getArguments().getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        shownPortfolioId = getOwnedPortfolioId(getArguments());
         detachPortfolioFetchTask();
-        portfolioFetchTask = portfolioCache.get().getOrFetch(shownPortfolioId, portfolioFetchCompleteListener);
+        portfolioFetchTask = portfolioCache.getOrFetch(shownPortfolioId, createPortfolioCacheListener());
         portfolioFetchTask.execute();
 
         // watchlist is not yet retrieved
-        if (userWatchlistCache.get().get(currentUserId.toUserBaseKey()) == null)
+        if (userWatchlistPositionCache.get(currentUserId.toUserBaseKey()) == null)
         {
-            detachWatchlistRetrievedMilestone();
-            watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
-            watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
-            watchlistRetrievedMilestone.launch();
-            displayProgress(true);
+            launchWatchlistRetrievedMilestone();
         }
         else
         {
             display();
         }
+    }
+
+    protected void launchWatchlistRetrievedMilestone()
+    {
+        detachWatchlistRetrievedMilestone();
+        watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
+        watchlistRetrievedMilestone.setOnCompleteListener(createWatchlistRetrievedMilestoneListener());
+        displayProgress(true);
+        watchlistRetrievedMilestone.launch();
     }
 
     @Override public void onPause()
@@ -298,7 +282,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachWatchlistRetrievedMilestone();
-        detachWatchlistCacheTask();
+        detachUserWatchlistFetchTask();
         detachPortfolioFetchTask();
         if (watchlistPortfolioHeaderView != null)
         {
@@ -324,13 +308,22 @@ public class WatchlistPositionFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected void detachWatchlistCacheTask()
+    protected void detachWatchlistRetrievedMilestone()
     {
-        if (refreshWatchlistFetchTask != null)
+        if (watchlistRetrievedMilestone != null)
         {
-            refreshWatchlistFetchTask.setListener(null);
+            watchlistRetrievedMilestone.setOnCompleteListener(null);
         }
-        refreshWatchlistFetchTask = null;
+        watchlistRetrievedMilestone = null;
+    }
+
+    protected void detachUserWatchlistFetchTask()
+    {
+        if (userWatchlistPositionFetchTask != null)
+        {
+            userWatchlistPositionFetchTask.setListener(null);
+        }
+        userWatchlistPositionFetchTask = null;
     }
 
     protected void detachPortfolioFetchTask()
@@ -344,29 +337,17 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        portfolioFetchCompleteListener = null;
-        watchlistFetchCompleteListener = null;
         broadcastReceiver = null;
         gainLossModeListener = null;
-        watchlistRetrievedMilestoneListener = null;
 
         super.onDestroy();
-    }
-
-    protected void detachWatchlistRetrievedMilestone()
-    {
-        if (watchlistRetrievedMilestone != null)
-        {
-            watchlistRetrievedMilestone.setOnCompleteListener(null);
-        }
-        watchlistRetrievedMilestone = null;
     }
 
     private void display()
     {
         displayProgress(false);
         displayHeader();
-        displayWatchlist();
+        displayWatchlist(new SecurityIdList(userWatchlistPositionCache.get(currentUserId.toUserBaseKey())));
     }
 
     private void displayHeader()
@@ -379,36 +360,12 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    private void displayWatchlist()
+    private void displayWatchlist(SecurityIdList securityIds)
     {
         watchListAdapter = createWatchlistAdapter();
-        watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
+        watchListAdapter.setItems(securityIds);
+        watchlistPositionListView.onRefreshComplete();
         watchlistListView.setAdapter(watchListAdapter);
-        watchlistListView.setSwipeListViewListener(new BaseSwipeListViewListener()
-        {
-            @Override public void onClickFrontView(int position)
-            {
-                super.onClickFrontView(position);
-
-                openWatchlistItemEditor(position);
-            }
-
-            @Override public void onStartOpen(int position, int action, boolean right)
-            {
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_CellSwipe);
-                super.onStartOpen(position, action, right);
-            }
-
-            @Override public void onDismiss(int[] reverseSortedPositions)
-            {
-                super.onDismiss(reverseSortedPositions);
-                if (watchListAdapter != null)
-                {
-                    watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
-                    watchListAdapter.notifyDataSetChanged();
-                }
-            }
-        });
     }
 
     private void openWatchlistItemEditor(int position)
@@ -418,7 +375,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         if (securityId != null)
         {
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            if (watchlistCache.get().get(securityId) != null)
+            if (watchlistPositionCache.get(securityId) != null)
             {
                 args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
             }
@@ -442,5 +399,70 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected DTOCache.Listener<UserBaseKey, SecurityIdList> createSecurityIdListCacheListener()
+    {
+        return new WatchlistPositionFragmentSecurityIdListCacheListener();
+    }
+
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
+    {
+        return new WatchlistPositionFragmentPortfolioCacheListener();
+    }
+
+    protected SwipeListViewListener createSwipeListViewListener()
+    {
+        return new WatchlistPositionFragmentSwipeListViewListener();
+    }
+
+    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        {
+            displayWatchlist(value);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            watchlistPositionListView.onRefreshComplete();
+            THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+        }
+    }
+
+    protected class WatchlistPositionFragmentPortfolioCacheListener implements DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value,
+        boolean fromCache)
+        {
+            shownPortfolioDTO = value;
+            displayHeader();
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_info);
+        }
+    }
+
+    protected class WatchlistPositionFragmentSwipeListViewListener extends BaseSwipeListViewListener
+    {
+        @Override public void onClickFrontView(int position)
+        {
+            super.onClickFrontView(position);
+            openWatchlistItemEditor(position);
+        }
+
+        @Override public void onStartOpen(int position, int action, boolean right)
+        {
+            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_CellSwipe);
+            super.onStartOpen(position, action, right);
+        }
+
+        @Override public void onDismiss(int[] reverseSortedPositions)
+        {
+            super.onDismiss(reverseSortedPositions);
+            fetchSecurityIdList();
+        }
     }
 }

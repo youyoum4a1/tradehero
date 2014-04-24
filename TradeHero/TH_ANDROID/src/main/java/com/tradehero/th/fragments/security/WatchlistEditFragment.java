@@ -28,7 +28,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.WatchlistService;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -39,9 +39,9 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
+import retrofit.Callback;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
 public class WatchlistEditFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
@@ -57,34 +57,20 @@ public class WatchlistEditFragment extends DashboardFragment
     private Button deleteButton;
     private ProgressDialog progressBar;
 
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
-    private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
 
-    private THCallback<WatchlistPositionDTO> watchlistUpdateCallback;
-    private THCallback<WatchlistPositionDTO> watchlistDeleteCallback;
+    private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
+    private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject Lazy<WatchlistService> watchlistService;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        createWatchlistUpdateCallback();
-    }
-
-    private void createWatchlistUpdateCallback()
-    {
-        watchlistUpdateCallback = new WatchlistEditTHCallback();
-        watchlistDeleteCallback = new WatchlistDeletedTHCallback();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -156,13 +142,19 @@ public class WatchlistEditFragment extends DashboardFragment
                 WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
                 WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+                detachMiddleCallbackUpdate();
                 if (existingWatchlistPosition != null)
                 {
-                    watchlistService.get().updateWatchlistEntry(existingWatchlistPosition.id, watchPositionItemForm, watchlistUpdateCallback);
+                    middleCallbackUpdate = watchlistServiceWrapper.get().updateWatchlistEntry(
+                            existingWatchlistPosition.getPositionCompactId(),
+                            watchPositionItemForm,
+                            createWatchlistUpdateCallback());
                 }
                 else
                 {
-                    watchlistService.get().createWatchlistEntry(watchPositionItemForm, watchlistUpdateCallback);
+                    middleCallbackUpdate = watchlistServiceWrapper.get().createWatchlistEntry(
+                            watchPositionItemForm,
+                            createWatchlistUpdateCallback());
                 }
             }
             else
@@ -214,7 +206,8 @@ public class WatchlistEditFragment extends DashboardFragment
         if (watchlistPositionDTO != null)
         {
             showProgressBar();
-            watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), watchlistDeleteCallback);
+            detachMiddleCallbackDelete();
+            middleCallbackDelete = watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
         }
         else
         {
@@ -258,15 +251,42 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        detachSecurityCompactFetchTask();
+        detachMiddleCallbackUpdate();
+        detachMiddleCallbackDelete();
         super.onDestroyView();
+    }
+
+    protected void detachSecurityCompactFetchTask()
+    {
+        if (securityCompactCacheFetchTask != null)
+        {
+            securityCompactCacheFetchTask.setListener(null);
+        }
+        securityCompactCacheFetchTask = null;
+    }
+
+    protected void detachMiddleCallbackUpdate()
+    {
+        if (middleCallbackUpdate != null)
+        {
+            middleCallbackUpdate.setPrimaryCallback(null);
+        }
+        middleCallbackUpdate = null;
+    }
+
+    protected void detachMiddleCallbackDelete()
+    {
+        if (middleCallbackDelete != null)
+        {
+            middleCallbackDelete.setPrimaryCallback(null);
+        }
+        middleCallbackDelete = null;
     }
 
     @Override public void onDestroy()
     {
         progressBar = null;
-        watchlistUpdateCallback = null;
-        watchlistDeleteCallback = null;
-
         super.onDestroy();
     }
 
@@ -321,35 +341,9 @@ public class WatchlistEditFragment extends DashboardFragment
             progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
         }
 
-        compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
-        {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
-            {
-                if (progressBar != null)
-                {
-                    progressBar.dismiss();
-                }
-                linkWith(value, andDisplay);
-            }
-
-            @Override public void onErrorThrown(SecurityId key, Throwable error)
-            {
-                if (progressBar != null)
-                {
-                    progressBar.dismiss();
-                }
-                THToast.show(R.string.error_fetch_security_info);
-                Timber.e("Failed to fetch SecurityCompact for %s", key, error);
-            }
-        };
-
-        if (compactCacheFetchTask != null)
-        {
-            compactCacheFetchTask.cancel(true);
-        }
-
-        compactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, compactCacheListener);
-        compactCacheFetchTask.execute();
+        detachSecurityCompactFetchTask();
+        securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
+        securityCompactCacheFetchTask.execute();
     }
 
     private void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -407,6 +401,21 @@ public class WatchlistEditFragment extends DashboardFragment
         return false;
     }
     //</editor-fold>
+
+    protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
+    {
+        return new WatchlistEditTHCallback();
+    }
+
+    protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
+    {
+        return new WatchlistDeletedTHCallback();
+    }
+
+    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener(boolean andDisplay)
+    {
+        return new WatchlistEditSecurityCompactCacheListener(andDisplay);
+    }
 
     //TODO this extends is better? maybe not alex
     protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
@@ -470,5 +479,35 @@ public class WatchlistEditFragment extends DashboardFragment
             dismissProgress();
         }
 
+    }
+
+    protected class WatchlistEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    {
+        private final boolean andDisplay;
+
+        public WatchlistEditSecurityCompactCacheListener(boolean andDisplay)
+        {
+            super();
+            this.andDisplay = andDisplay;
+        }
+
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
+        {
+            if (progressBar != null)
+            {
+                progressBar.dismiss();
+            }
+            linkWith(value, andDisplay);
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            if (progressBar != null)
+            {
+                progressBar.dismiss();
+            }
+            THToast.show(R.string.error_fetch_security_info);
+            Timber.e("Failed to fetch SecurityCompact for %s", key, error);
+        }
     }
 }

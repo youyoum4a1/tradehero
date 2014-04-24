@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityId;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/10/14 Time: 4:39 PM Copyright (c) TradeHero
- */
 public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemView>
 {
     private boolean showGainLossPercentage = true;
@@ -25,5 +22,10 @@ public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemV
     public void setShowGainLossPercentage(boolean show)
     {
         showGainLossPercentage = show;
+    }
+
+    public int getIndexOf(SecurityId securityId)
+    {
+        return items == null ? -1 : items.indexOf(securityId);
     }
 }
