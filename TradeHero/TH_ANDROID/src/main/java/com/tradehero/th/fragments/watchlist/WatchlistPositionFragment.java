@@ -278,7 +278,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             detachWatchlistRetrievedMilestone();
             watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
             watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
-
+            watchlistRetrievedMilestone.launch();
             displayProgress(true);
         }
         else

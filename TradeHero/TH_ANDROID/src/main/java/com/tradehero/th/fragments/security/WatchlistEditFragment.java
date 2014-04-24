@@ -30,6 +30,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -71,6 +72,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -406,13 +408,29 @@ public class WatchlistEditFragment extends DashboardFragment
     }
     //</editor-fold>
 
+    //TODO this extends is better? maybe not alex
     protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
     {
         @Override protected void success(WatchlistPositionDTO watchlistPositionDTO,
                 THResponse response)
         {
             watchlistPositionCache.get().invalidate(watchlistPositionDTO.securityDTO.getSecurityId());
-            super.success(watchlistPositionDTO, response);
+            portfolioCompactListCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
+            if (isResumed())
+            {
+                SecurityIdList currentUserWatchlistSecurities =
+                        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+                if (currentUserWatchlistSecurities != null
+                        && currentUserWatchlistSecurities.contains(securityKeyId))
+                {
+                    currentUserWatchlistSecurities.remove(securityKeyId);
+                }
+                getNavigator().popFragment();
+            }
+            else
+            {
+                dismissProgress();
+            }
         }
     }
 
@@ -425,7 +443,9 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
+            //TODO we need a cacheUtil control cache invalidate
             watchlistPositionCache.get().put(securityKeyId, watchlistPositionDTO);
+            portfolioCompactListCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
             if (isResumed())
             {
                 SecurityIdList currentUserWatchlistSecurities =
