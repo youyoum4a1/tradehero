@@ -66,7 +66,8 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         cBuilder.setNotificationDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
         cBuilder.setStatusbarIcon(R.drawable.notification_logo);
         cBuilder.setLayoutDrawable(R.drawable.notification_logo);
-        cBuilder.setNotificationTitle(context.getApplicationInfo().name);
+        //cBuilder.setNotificationTitle(context.getApplicationInfo().name);
+        cBuilder.setNotificationTitle(context.getString(R.string.app_name));
         cBuilder.setNotificationText(message);
         Notification notification = cBuilder.construct(context);
 

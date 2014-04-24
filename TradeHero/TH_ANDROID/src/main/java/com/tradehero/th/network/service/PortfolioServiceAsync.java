@@ -5,48 +5,54 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface PortfolioService
+interface PortfolioServiceAsync
 {
     //<editor-fold desc="Get User Portfolio List">
     @GET("/users/{userId}/portfolios")
-    List<PortfolioCompactDTO> getPortfolios(
+    void getPortfolios(
             @Path("userId") int userId,
-            @Query("includeWatchlist") Boolean includeWatchList);
+            @Query("includeWatchlist") Boolean includeWatchList,
+            Callback<List<PortfolioCompactDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
     @GET("/users/{userId}/portfolios/{portfolioId}")
-    PortfolioDTO getPortfolio(
+    void getPortfolio(
             @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId);
+            @Path("portfolioId") int portfolioId,
+            Callback<PortfolioDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Reset One User Portfolio">
     @POST("/users/{userId}/portfolios/{portfolioId}/reset")
-    UserProfileDTO resetPortfolio(
+    void resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
     @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
-    UserProfileDTO addCash(
+    void addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
     @POST("/users/{userId}/portfolios/{portfolioId}/mark")
-    PortfolioDTO markPortfolio(
+    void markPortfolio(
             @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId);
+            @Path("portfolioId") int portfolioId,
+            Callback<PortfolioDTO> callback);
     //</editor-fold>
 }

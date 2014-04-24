@@ -47,6 +47,7 @@
   <string name="broadcast_message_change_type_hint">请选择粉丝类型发送信息</string>
   <string name="broadcast_message_no_follower_hint">对不起，你无法发送广播。因为你没有此类粉丝。</string>
   <string name="broadcast_message_content_length_hint">信息不可为空白</string>
+  <string name="broadcast_message_waiting">请稍候</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
@@ -54,4 +55,11 @@
   <string name="no_message">无消息</string>
   <string name="message_fetch_error">对不起，发生了点问题。 \n请点击重试</string>
   <string name="notification_list_empty">您还没有任何通知。 \n请下拉刷新通知列表!</string>
+  <string name="security_discussion_add">+ 开始新的讨论</string>
+  <string name="post">发送</string>
+  <string name="discussion_new_post_hint">我感觉 %s 会涨/跌</string>
+  <string name="error_discussion_empty_post">讨论不可为空</string>
+  <string name="at">"@"</string>
+  <string name="hashtag">$</string>
+  <string name="discussion_security_subtitle">在 %s</string>
 </resources>

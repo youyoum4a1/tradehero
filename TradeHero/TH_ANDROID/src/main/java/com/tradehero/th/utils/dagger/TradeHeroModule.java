@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -350,6 +351,7 @@ import javax.inject.Singleton;
                         PrivateDiscussionListAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
+                        AbstractDiscussionFragment.class,
                         
                         AlertDialogUtil.class,
                         //alipay

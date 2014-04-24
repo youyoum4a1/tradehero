@@ -33,6 +33,11 @@ public class RetrofitProtectedModule
         return adapter.create(NewsServiceAsync.class);
     }
 
+    @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(PortfolioServiceAsync.class);
+    }
+
     @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
     {
         return adapter.create(SocialServiceAsync.class);

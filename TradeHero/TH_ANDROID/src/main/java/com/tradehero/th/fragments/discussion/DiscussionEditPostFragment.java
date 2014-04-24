@@ -154,7 +154,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         if (searchType != null)
         {
-            bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_SEARCH_TYPE, searchType.name());
+            bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, searchType.name());
             searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
         }
     }

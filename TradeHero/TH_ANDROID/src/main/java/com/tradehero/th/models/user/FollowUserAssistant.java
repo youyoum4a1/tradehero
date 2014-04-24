@@ -92,7 +92,20 @@ public class FollowUserAssistant implements
         alertDialogUtilLazy.get().dismissProgressDialog();
         //heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
+        updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
+    }
+
+    /**
+     * newly added method
+     */
+    private void updateUserProfileCache(UserProfileDTO userProfileDTO)
+    {
+        if (userProfileCache != null && currentUserId != null)
+        {
+            UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+            userProfileCache.put(userBaseKey, userProfileDTO);
+        }
     }
 
     @Override public void failure(RetrofitError error)

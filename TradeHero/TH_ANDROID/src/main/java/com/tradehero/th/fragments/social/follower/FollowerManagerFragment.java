@@ -90,7 +90,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 | ActionBar.DISPLAY_SHOW_HOME);
 
         actionBar.setTitle(getString(R.string.social_followers));
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -114,7 +113,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onPrepareOptionsMenu(menu);
+            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
         }
 
         super.onPrepareOptionsMenu(menu);
@@ -125,7 +124,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onOptionsMenuClosed(menu);
+            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
         }
 
         super.onOptionsMenuClosed(menu);

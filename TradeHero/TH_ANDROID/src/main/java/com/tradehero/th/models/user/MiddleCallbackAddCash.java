@@ -9,9 +9,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 3/21/14.
- */
 public class MiddleCallbackAddCash extends MiddleCallbackUpdateUserProfile
 {
     @Inject PortfolioCompactListCache portfolioCompactListCache;

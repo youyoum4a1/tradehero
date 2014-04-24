@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/notification_padding_top"
-    android:background="@color/white"
     >
-
+  <!--android:background="@color/white"-->
   <ImageView android:id="@+id/notification_icon"
       android:src="@drawable/icon"
       tools:src="@drawable/icon"
@@ -17,7 +16,8 @@
       android:padding="@dimen/notification_logo_padding"
       android:layout_width="@dimen/notification_logo_width"
       android:layout_height="@dimen/notification_logo_width"
-      android:contentDescription="@null"/>
+      android:contentDescription="@null"
+      android:paddingTop="3dp"/>
 
   <TextView
       android:id="@+id/notification_subject"
@@ -29,7 +29,6 @@
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:singleLine="true"
-      android:textColor="@color/black"
       />
 
   <TextView android:id="@+id/message"

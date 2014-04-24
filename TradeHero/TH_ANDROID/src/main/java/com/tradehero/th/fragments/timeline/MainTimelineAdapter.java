@@ -192,10 +192,12 @@ public class MainTimelineAdapter extends ArrayAdapter
 
             case PORTFOLIO_LIST:
                 // TODO
+                notifyLoadFinished();
                 break;
 
             case STATS:
                 // TODO
+                notifyLoadFinished();
                 break;
 
             default:

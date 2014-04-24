@@ -212,7 +212,9 @@ public class SendMessageFragment extends DashboardFragment
             return;
         }
         this.progressDialog =
-                progressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
+                progressDialogUtil.show(getActivity(),
+                        getString(R.string.broadcast_message_waiting),
+                        getString(R.string.broadcast_message_sending_hint));
 
         // TODO not sure about this implementation yet
         messageServiceWrapper.get()

@@ -212,7 +212,7 @@ public class TrendingFragment extends SecurityListFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(R.string.trending_header);
         actionBar.setHomeButtonEnabled(true);
-        inflater.inflate(R.menu.trending_menu, menu);
+        inflater.inflate(R.menu.menu_search_button, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -274,8 +274,6 @@ public class TrendingFragment extends SecurityListFragment
         }
         exchangeListCacheFetchTask = null;
     }
-
-
 
     @Override public void onDestroy()
     {
@@ -362,7 +360,9 @@ public class TrendingFragment extends SecurityListFragment
 
     public void pushSearchIn()
     {
-        getNavigator().pushFragment(SearchStockPeopleFragment.class);
+        Bundle args = new Bundle();
+        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
+        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
