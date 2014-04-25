@@ -24,7 +24,8 @@ public class HeroManagerInfoFetcher
     private DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, HeroIdExtWrapper> heroListFetchTask;
 
-    public HeroManagerInfoFetcher(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
+    public HeroManagerInfoFetcher(
+            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
             DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         super();
@@ -51,12 +52,14 @@ public class HeroManagerInfoFetcher
         setHeroListListener(null);
     }
 
-    public void setUserProfileListener(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
+    public void setUserProfileListener(
+            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
     {
         this.userProfileListener = userProfileListener;
     }
 
-    public void setHeroListListener(DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+    public void setHeroListListener(
+            DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         this.heroListListener = heroListListener;
     }
@@ -73,7 +76,8 @@ public class HeroManagerInfoFetcher
         {
             this.userProfileFetchTask.setListener(null);
         }
-        this.userProfileFetchTask = this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
+        this.userProfileFetchTask =
+                this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
         this.userProfileFetchTask.execute();
     }
 
@@ -82,7 +86,10 @@ public class HeroManagerInfoFetcher
         HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(userBaseKey);
         HeroIdList heroIds = (heroIdExtWrapper != null) ? heroIdExtWrapper.allActiveHeroes : null;
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
-        if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
+        if (heroIds != null
+                && heroDTOs != null
+                && heroIds.size()
+                == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
         {
             if (this.heroListListener != null)
             {
@@ -98,5 +105,14 @@ public class HeroManagerInfoFetcher
             heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
             heroListFetchTask.execute();
         }
+    }
+
+    public void reloadHeroes(UserBaseKey userBaseKey,
+            DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+    {
+        DTOCache.GetOrFetchTask<UserBaseKey, HeroIdExtWrapper> heroListFetchTask =
+                heroListCache.get().getOrFetch(
+                        userBaseKey, true, heroListListener);
+        heroListFetchTask.execute();
     }
 }

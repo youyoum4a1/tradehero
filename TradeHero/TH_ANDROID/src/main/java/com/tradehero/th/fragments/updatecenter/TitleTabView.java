@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -41,6 +42,7 @@ public class TitleTabView extends RelativeLayout
     private void init()
     {
         ButterKnife.inject(this);
+        numberView.setVisibility(View.INVISIBLE);
     }
 
     public void setTitleNumber(int number)

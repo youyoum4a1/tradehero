@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.utils.SecurityUtils;
@@ -14,6 +15,7 @@ public class FollowerManagerViewContainer
     public final TextView totalAmountPaid;
     public final TextView followersCount;
     public final ListView followerList;
+    public final PullToRefreshListView pullToRefreshListView;
     public final ProgressBar progressBar;
 
     public FollowerManagerViewContainer(View view)
@@ -23,7 +25,9 @@ public class FollowerManagerViewContainer
         totalRevenue = (TextView) view.findViewById(R.id.manage_followers_total_revenue);
         totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
         followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
-        followerList = (FollowerListView) view.findViewById(R.id.followers_list);
+        //followerList = (FollowerListView) view.findViewById(R.id.followers_list);
+        pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.followers_list);
+        followerList = pullToRefreshListView.getRefreshableView();
         progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
     }
 
@@ -33,7 +37,9 @@ public class FollowerManagerViewContainer
         {
             if (followerSummaryDTO != null)
             {
-                totalRevenue.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, followerSummaryDTO.totalRevenue));
+                totalRevenue.setText(String.format("%s %,.2f",
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        followerSummaryDTO.totalRevenue));
             }
             else
             {
@@ -48,7 +54,9 @@ public class FollowerManagerViewContainer
         {
             if (followerSummaryDTO != null && followerSummaryDTO.payoutSummary != null)
             {
-                totalAmountPaid.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, followerSummaryDTO.payoutSummary.totalPayout));
+                totalAmountPaid.setText(String.format("%s %,.2f",
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        followerSummaryDTO.payoutSummary.totalPayout));
             }
             else if (followerSummaryDTO != null)
             {
@@ -67,7 +75,8 @@ public class FollowerManagerViewContainer
         {
             if (followerSummaryDTO != null && followerSummaryDTO.userFollowers != null)
             {
-                followersCount.setText(String.format("%d", followerSummaryDTO.userFollowers.size()));
+                followersCount.setText(
+                        String.format("%d", followerSummaryDTO.userFollowers.size()));
             }
             else if (followerSummaryDTO != null)
             {

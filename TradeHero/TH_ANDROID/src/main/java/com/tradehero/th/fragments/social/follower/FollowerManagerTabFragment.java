@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -27,9 +29,12 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+        implements PullToRefreshBase.OnRefreshListener2<ListView>
 {
+
     public static final int ITEM_ID_REFRESH_MENU = 0;
-    private static final String HERO_ID_BUNDLE_KEY = FollowerManagerTabFragment.class.getName() + ".heroId";
+    private static final String HERO_ID_BUNDLE_KEY =
+            FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
@@ -80,6 +85,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             );
         }
 
+        if (viewContainer.pullToRefreshListView != null)
+        {
+            viewContainer.pullToRefreshListView.setOnRefreshListener(this);
+            viewContainer.followerList.setAdapter(followerListAdapter);
+        }
+
         if (viewContainer.followerList != null)
         {
             viewContainer.followerList.setOnItemClickListener(
@@ -106,8 +117,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                 | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(R.string.manage_followers_title);
 
-        MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+        //menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -204,7 +215,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     public void displayProgress(boolean running)
     {
-        Timber.d("displayProgress running:%s,progressBar:%b",running,(viewContainer.progressBar!=null));
+        Timber.d("displayProgress running:%s,progressBar:%b", running,
+                (viewContainer.progressBar != null));
         if (this.viewContainer.progressBar != null)
         {
             this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
@@ -215,11 +227,35 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
+    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+    {
+        doRefreshContent();
+    }
+
+    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+    {
+
+    }
+
+    private void onRefreshCompleted()
+    {
+        if (this.viewContainer != null && this.viewContainer.pullToRefreshListView != null)
+        {
+            viewContainer.pullToRefreshListView.onRefreshComplete();
+        }
+    }
+
     private void refreshContent()
     {
         Timber.d("refreshContent");
-
         redisplayProgress();
+        doRefreshContent();
+    }
+
+    private void doRefreshContent()
+    {
+        Timber.d("refreshContent");
+
         if (heroId == null)
         {
             heroId = getHeroId(getArguments());
@@ -238,7 +274,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             if (followerDTO != null)
             {
                 FollowerHeroRelationId followerHeroRelationId =
-                        new FollowerHeroRelationId(getApplicablePortfolioId().userId, followerDTO.id, followerDTO.displayName);
+                        new FollowerHeroRelationId(getApplicablePortfolioId().userId,
+                                followerDTO.id, followerDTO.displayName);
                 Bundle args = new Bundle();
                 args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
                         followerHeroRelationId.getArgs());
@@ -252,7 +289,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
         else
         {
-            Timber.d("Position clicked ",position);
+            Timber.d("Position clicked ", position);
             //THToast.show("Position clicked " + position);
         }
     }
@@ -300,6 +337,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             }
 
             displayProgress(false);
+            onRefreshCompleted();
             handleFollowerSummaryDTOReceived(value);
             notifyFollowerLoaded(value);
         }
@@ -307,15 +345,18 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             displayProgress(false);
-            THToast.show(R.string.error_fetch_follower);
+            onRefreshCompleted();
+            //THToast.show(R.string.error_fetch_follower);
             Timber.e("Failed to fetch FollowerSummary", error);
         }
     }
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
     {
-        Timber.d("notifyFollowerLoaded for followerTabIndex:%d", getHeroTypeResource().followerTabIndex);
-        OnFollowersLoadedListener loadedListener = FragmentUtils.getParent(this,OnFollowersLoadedListener.class);
+        Timber.d("notifyFollowerLoaded for followerTabIndex:%d",
+                getHeroTypeResource().followerTabIndex);
+        OnFollowersLoadedListener loadedListener =
+                FragmentUtils.getParent(this, OnFollowersLoadedListener.class);
         if (loadedListener != null && !isDetached())
         {
             loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
