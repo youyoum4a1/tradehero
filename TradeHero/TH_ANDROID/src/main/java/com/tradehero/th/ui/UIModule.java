@@ -9,6 +9,7 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
@@ -59,6 +60,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 DiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
+
+                FollowDialogView.class
         },
         complete = false,
         library = true
