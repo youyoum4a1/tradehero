@@ -151,6 +151,7 @@ public class SendMessageFragment extends DashboardFragment
     {
         inputText.setFocusable(true);
         inputText.requestFocus();
+        showInput(true);
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);
     }
@@ -172,6 +173,7 @@ public class SendMessageFragment extends DashboardFragment
             if (shown)
             {
                 imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
+                imm.showSoftInput(inputText, 0);
             }
             else
             {
