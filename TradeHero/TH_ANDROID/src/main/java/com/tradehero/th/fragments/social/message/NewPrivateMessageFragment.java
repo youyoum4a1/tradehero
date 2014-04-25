@@ -139,7 +139,9 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     {
         if (statusViewContainer != null)
         {
-            statusViewContainer.setVisibility(shouldShowStatusContainer() ? View.VISIBLE : View.GONE);
+            //TODO hardcode for design not sure alex
+            statusViewContainer.setVisibility(View.GONE);
+            //statusViewContainer.setVisibility(shouldShowStatusContainer() ? View.VISIBLE : View.GONE);
         }
     }
 
