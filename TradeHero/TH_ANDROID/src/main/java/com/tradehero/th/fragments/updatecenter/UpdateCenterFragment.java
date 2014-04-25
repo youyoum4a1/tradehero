@@ -302,8 +302,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
                     }
                 }
                 //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-                ft.commitAllowingStateLoss();
-                fm.executePendingTransactions();
+                //TODO this will crash when onDestroy alex
+                //ft.commitAllowingStateLoss();
+                //fm.executePendingTransactions();
             }
 
             mTabHost.clearAllTabs();

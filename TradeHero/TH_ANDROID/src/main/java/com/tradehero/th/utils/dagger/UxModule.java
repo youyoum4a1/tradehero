@@ -10,6 +10,7 @@ import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
 import dagger.Module;
@@ -56,7 +57,18 @@ public class UxModule
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
-        config.setInstallEventName(TapStreamEvents.APP_INSTALL);
+        switch (Constants.VERSION)
+        {
+            case 0:
+                config.setInstallEventName(TapStreamEvents.APP_INSTALL);
+                break;
+            case 1:
+                config.setInstallEventName(TapStreamEvents.APP_INSTALL_BAIDU);
+                break;
+            case 2:
+                config.setInstallEventName(TapStreamEvents.APP_INSTALL_TENCENT);
+                break;
+        }
         return config;
     }
 }
