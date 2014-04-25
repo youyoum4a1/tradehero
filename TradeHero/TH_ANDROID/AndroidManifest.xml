@@ -30,7 +30,7 @@
   <uses-permission android:name="com.sec.android.iap.permission.BILLING"/>
 
   <!--tap stream-->
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
   <!-- BEGIN push notification permission -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
@@ -39,9 +39,8 @@
 
   <permission
       android:name="com.tradehero.th.permission.C2D_MESSAGE"
-      android:protectionLevel="signature" />
-  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE" />
-
+      android:protectionLevel="signature"/>
+  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>
 
   <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
   <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
@@ -49,11 +48,11 @@
   <!-- END push notification permission -->
 
   <!--Baidu push-->
-  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
   <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <!--Baidu push-->
 
   <application
@@ -114,33 +113,31 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
-
       </intent-filter>
-
     </activity>
 
     <activity
         android:name="com.facebook.LoginActivity"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
     <activity
         android:name=".activities.StockChartActivity"
         android:screenOrientation="landscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-      <activity
-              android:name=".activities.WeiboAuthAcitivity"
-              android:windowSoftInputMode="adjustResize"
-              android:screenOrientation="portrait"
-              />
+
+    <activity
+        android:name=".activities.WeiboAuthAcitivity"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+
     <activity
         android:name=".wxapi.WXEntryActivity"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Translucent"
         android:launchMode="singleInstance"
         android:exported="true"/>
-
-    <meta-data
-        android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 
     <!-- Samsung IAP -->
     <activity
@@ -158,20 +155,20 @@
 
     <!-- GCM -->
     <!-- REQUIRED for Urban Airship GCM-->
-    <receiver android:name="com.urbanairship.CoreReceiver" />
+    <receiver android:name="com.urbanairship.CoreReceiver"/>
     <receiver
         android:name="com.urbanairship.push.GCMPushReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
         <!-- MODIFICATION REQUIRED - Use your package name as the category -->
-        <category android:name="com.tradehero.th" />
+        <category android:name="com.tradehero.th"/>
       </intent-filter>
       <!-- REQUIRED for detecting when the application is upgraded so it can request a new GCM ID -->
       <intent-filter>
-        <action android:name="android.intent.action.PACKAGE_REPLACED" />
+        <action android:name="android.intent.action.PACKAGE_REPLACED"/>
         <data android:scheme="package"/>
       </intent-filter>
     </receiver>
@@ -181,63 +178,61 @@
         android:label="Push Notification Service"/>
     <service
         android:name="com.urbanairship.analytics.EventService"
-        android:label="Event Service" />
+        android:label="Event Service"/>
 
-    <!-- This is required for persisting preferences related to push and location -->
-    <!-- MODIFICATION REQUIRED - Use your package name + ".urbanairship.provider" in the android:authorities -->
     <provider
         android:name="com.urbanairship.UrbanAirshipProvider"
         android:authorities="com.tradehero.th.urbanairship.provider"
         android:exported="false"
-        android:multiprocess="true" />
+        android:multiprocess="true"/>
 
     <!-- OPTIONAL (for segments support) -->
     <service android:name="com.urbanairship.location.LocationService" android:label="Segments Service"/>
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
-    <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver" />
+    <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
 
     <!-- receiver for baidu push -->
     <receiver android:name="com.tradehero.th.models.push.baidu.BaiduPushMessageReceiver">
       <intent-filter>
         <!-- receive push msg -->
-        <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
+        <action android:name="com.baidu.android.pushservice.action.MESSAGE"/>
         <!-- receive bind,unbind,fetch,delete etc msg -->
-        <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
-        <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+        <action android:name="com.baidu.android.pushservice.action.RECEIVE"/>
+        <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
       </intent-filter>
     </receiver>
 
-    <!-- push必须的receviver和service声明 -->
+    <!-- BEGIN Baidu inter-process communication -->
     <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1">
       <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-        <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
-        <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+        <action android:name="com.baidu.android.pushservice.action.notification.SHOW"/>
+        <action android:name="com.baidu.android.pushservice.action.media.CLICK"/>
       </intent-filter>
     </receiver>
 
     <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver" android:process=":bdservice_v1">
       <intent-filter>
         <action android:name="com.baidu.android.pushservice.action.METHOD"/>
-        <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
+        <action android:name="com.baidu.android.pushservice.action.BIND_SYNC"/>
       </intent-filter>
       <intent-filter>
         <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-        <data android:scheme="package" />
+        <data android:scheme="package"/>
       </intent-filter>
     </receiver>
+
     <service
         android:name="com.baidu.android.pushservice.PushService"
         android:exported="true"
-        android:process=":bdservice_v1" />
-    <!-- push结束 -->
-    
+        android:process=":bdservice_v1"/>
+    <!--END Baidu inter-process communication-->
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
     <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
   </application>
-
 </manifest>
