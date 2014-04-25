@@ -5,7 +5,6 @@ import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -45,11 +44,11 @@ public class PushableTimelineFragment extends TimelineFragment
         Boolean isFollowing = isPurchaserFollowingUserShown();
         updateBottomButton();
 
-        MenuItem settingsButton = menu.findItem(R.id.menu_settings);
-        if (settingsButton != null)
-        {
-            settingsButton.setVisible(false);
-        }
+        //MenuItem settingsButton = menu.findItem(R.id.menu_settings);
+        //if (settingsButton != null)
+        //{
+        //    settingsButton.setVisible(false);
+        //}
 
         super.onPrepareOptionsMenu(menu);
     }

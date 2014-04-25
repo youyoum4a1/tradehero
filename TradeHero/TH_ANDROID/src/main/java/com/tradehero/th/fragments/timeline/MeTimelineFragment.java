@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -54,7 +55,14 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(
+                (ActionBar.DISPLAY_USE_LOGO)
+                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setHomeButtonEnabled(true);
+        displayActionBarTitle();
+        actionBar.setLogo(R.drawable.icon_menu);
+        //super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

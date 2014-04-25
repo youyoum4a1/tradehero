@@ -49,12 +49,12 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -209,8 +209,11 @@ public class TrendingFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.trending_header);
+        actionBar.setLogo(R.drawable.icon_menu);
         actionBar.setHomeButtonEnabled(true);
         inflater.inflate(R.menu.menu_search_button, menu);
 
@@ -488,7 +491,8 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock, securityCompactDTO.getSecurityId());
+        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock,
+                securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);

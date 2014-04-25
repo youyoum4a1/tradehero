@@ -5,6 +5,6 @@
       android:id="@+id/menu_info"
       android:title="@string/help"
       android:icon="@drawable/icn_info_white"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       />
 </menu>

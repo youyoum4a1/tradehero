@@ -29,7 +29,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
-
 import timber.log.Timber;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
@@ -74,9 +73,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
         actionBar.setHomeButtonEnabled(true);
+        actionBar.setLogo(R.drawable.icon_menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
