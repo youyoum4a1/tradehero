@@ -66,12 +66,6 @@ public class HeroListItemView extends RelativeLayout
         super.onFinishInflate();
         initViews();
         DaggerUtils.inject(this);
-        if (userIcon != null)
-        {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(userIcon);
-        }
         Timber.d("HeroListItemView onFinishInflate hashCode:%d", this.hashCode());
     }
 
@@ -86,6 +80,13 @@ public class HeroListItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+
+        if (userIcon != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(userIcon);
+        }
         if (statusIcon != null)
         {
             statusIcon.setOnClickListener(new OnClickListener()
@@ -103,15 +104,25 @@ public class HeroListItemView extends RelativeLayout
             });
         }
         userIcon.setOnClickListener(this);
+        Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
     @Override protected void onDetachedFromWindow()
     {
+
         if (statusIcon != null)
         {
+            statusIcon.setImageDrawable(null);
             statusIcon.setOnClickListener(null);
         }
-        userIcon.setOnClickListener(null);
+        if (userIcon != null)
+        {
+            userIcon.setImageDrawable(null);
+            userIcon.setOnClickListener(null);
+        }
+        //ButterKnife.reset(this);
+        Timber.d("HeroListItemView onDetachedFromWindow hashCode:%d", this.hashCode());
+
         super.onDetachedFromWindow();
     }
 

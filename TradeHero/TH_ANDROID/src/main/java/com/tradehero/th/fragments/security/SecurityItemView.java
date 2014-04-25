@@ -124,6 +124,11 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             stockBgLogo.setImageDrawable(null);
         }
+        if (countryLogo != null)
+        {
+            countryLogo.setImageDrawable(null);
+        }
+
         super.onDetachedFromWindow();
     }
 
