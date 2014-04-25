@@ -364,7 +364,8 @@ public class TrendingFragment extends SecurityListFragment
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
-        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
+        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_CURRENT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
+        //args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
         getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
 
