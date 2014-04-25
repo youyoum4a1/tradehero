@@ -58,6 +58,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     public final static String BUNDLE_KEY_CURRENT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".currentSearchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
+    public final static String BUNDLE_KEY_FROM_WATCHLIST = SearchStockPeopleFragment.class.getName() + ".fromWatchlist";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
@@ -103,6 +104,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private Runnable requestDataTask;
 
     private Object selectedItem;
+    private boolean mIsFromWatchList;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -526,6 +528,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
             lastLoadedPage = args.getInt(BUNDLE_KEY_PAGE, FIRST_PAGE);
             shouldDisableSearchTypeOption = args.containsKey(BUNDLE_KEY_RESTRICT_SEARCH_TYPE);
+            mIsFromWatchList = args.getBoolean(BUNDLE_KEY_FROM_WATCHLIST, false);
         }
     }
 
@@ -623,7 +626,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             {
                 SecurityCompactDTO clickedItem = (SecurityCompactDTO) selectedItem;
 
-                if (shouldDisableSearchTypeOption)
+                if (mIsFromWatchList)
+                //if (shouldDisableSearchTypeOption)
                 {
                     // pop out current fragment and push in watchlist edit fragment
                     // TODO remove this hack

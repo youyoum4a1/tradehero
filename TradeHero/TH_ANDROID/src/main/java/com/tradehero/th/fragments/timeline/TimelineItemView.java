@@ -46,11 +46,13 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.ForWeChat;
+import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -114,6 +116,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject Lazy<DiscussionCache> discussionCache;
     @Inject LocalyticsSession localyticsSession;
+    @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
 
     private TimelineItemDTOEnhanced timelineItemDTO;
     private PopupMenu sharePopupMenu;
@@ -416,6 +419,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     socialNetworkEnum = SocialNetworkEnum.LN;
                     ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
                     break;
+                //case R.id.timeline_popup_menu_share_we_chat:
+                    //ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
+                    //wechatSharerLazy.get().share(getContext(), discussionKey);
+                    //break;
             }
             if (socialNetworkEnum == null)
             {

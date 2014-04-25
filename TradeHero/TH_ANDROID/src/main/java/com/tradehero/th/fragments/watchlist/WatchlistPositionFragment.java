@@ -230,6 +230,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
+                    bundle.putBoolean(SearchStockPeopleFragment.BUNDLE_KEY_FROM_WATCHLIST, true);
                     getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
                 }
             });
