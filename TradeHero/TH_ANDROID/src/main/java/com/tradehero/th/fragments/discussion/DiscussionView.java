@@ -28,6 +28,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -160,6 +161,7 @@ public class DiscussionView extends FrameLayout
         super.onAttachedToWindow();
         discussionList.setAdapter(discussionListAdapter);
         postCommentView.setCommentPostedListener(createCommentPostedListener());
+        DeviceUtil.showKeyboard(getContext());
     }
 
     @Override protected void onDetachedFromWindow()
