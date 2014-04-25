@@ -2,7 +2,6 @@
 <resources>
 
   <string name="app_name">TradeHero</string>
-  <string name="version_text">v2.1.0(22)</string>
 
   <string name="na">N/A</string>
   <string name="empty"/>
@@ -71,7 +70,7 @@
   <string name="ok">OK</string>
   <string name="sharing">Sharing</string>
   <string name="translation">Translation</string>
-  <string name="translating">Translating...</string>
+  <string name="translating">Translating…</string>
   <string name="translation_result">Translation result:</string>
 
 </resources>

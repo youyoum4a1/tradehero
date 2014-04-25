@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.tradehero.common.billing.alipay.AlipayActivity;
-import com.tradehero.common.billing.googleplay.BaseIABLogicHolder;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -94,6 +93,7 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
+import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
@@ -354,6 +354,7 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
                         AbstractDiscussionFragment.class,
+                        AbstractPrivateMessageFragment.class,
                         
                         AlertDialogUtil.class,
                         //alipay

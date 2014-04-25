@@ -397,12 +397,12 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.buy_sell_menu_market_status:
-                handleMarketCloseClicked();
-                break;
-        }
+        //switch (item.getItemId())
+        //{
+        //    case R.id.buy_sell_menu_market_status:
+        //        handleMarketCloseClicked();
+        //        break;
+        //}
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
@@ -948,7 +948,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         boolean marketIsOpen = securityCompactDTO == null || securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen;
         if (mMarketIcon != null)
         {
-            mMarketIcon.setVisibility(marketIsOpen ? View.INVISIBLE : View.VISIBLE);
+            mMarketIcon.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleMarketCloseClicked();
+                }
+            });
+            mMarketIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
         }
     }
 

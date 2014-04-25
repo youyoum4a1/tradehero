@@ -81,7 +81,8 @@
         android:layout_alignParentTop="true"
         android:textSize="18sp"
         android:gravity="center"
-        android:maxLines="2"
+        android:maxLines="1"
+        android:ellipsize="marquee"
         android:textStyle="bold"
         tools:text="UOB Mb"
         />
