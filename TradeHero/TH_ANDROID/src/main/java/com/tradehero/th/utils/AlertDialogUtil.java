@@ -11,19 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequestedListener;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
@@ -32,11 +25,7 @@ import javax.inject.Inject;
  */
 public class AlertDialogUtil
 {
-    @Inject protected Lazy<Picasso> picassoLazy;
-    @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
-
-    AlertDialog mFollowDialog;
-    ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
 
     @Inject public AlertDialogUtil()
     {
@@ -189,146 +178,44 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType,
-            FollowRequestedListener followRequestedListener)
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType, final FollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.follow_dialog, null);
-        builder.setView(view);
+        FollowDialogView followDialogView = (FollowDialogView) inflater.inflate(R.layout.follow_dialog, null);
+        followDialogView.setFollowType(followType);
+        followDialogView.display(userBaseDTO);
+
+        builder.setView(followDialogView);
         builder.setCancelable(true);
 
-        ImageView avatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
-        loadUserPicture(avatar, userBaseDTO);
-
-        TextView name = (TextView) view.findViewById(R.id.user_name);
-        name.setText(userBaseDTO == null ? context.getString(R.string.loading_loading)
-                : userBaseDTO.displayName);
-
-        TextView title = (TextView) view.findViewById(R.id.title);
-        switch (followType)
-        {
-            case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
-                title.setText(context.getString(R.string.not_follow_msg_title, name.getText()));
-                name.setVisibility(View.GONE);
-                break;
-            case UserProfileDTOUtil.IS_NOT_FOLLOWER:
-                title.setText(R.string.not_follow_title);
-                break;
-            case UserProfileDTOUtil.IS_FREE_FOLLOWER:
-                title.setText(R.string.free_follow_title);
-                break;
-        }
-
-        if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-        {
-            initFreeFollowDialog(view, followRequestedListener);
-        }
-        else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER
-                || followType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
-        {
-            initNotFollowDialog(view, followRequestedListener);
-        }
-
-        dismissFollowDialog();
-
-        mFollowDialog = builder.create();
+        final AlertDialog mFollowDialog = builder.create();
         mFollowDialog.show();
-    }
 
-    private void initNotFollowDialog(View view,
-            final FollowRequestedListener followRequestedListener)
-    {
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.free_follow_layout);
-        linearLayout.setVisibility(View.GONE);
-
-        LinearLayout freeFollow = (LinearLayout) view.findViewById(R.id.free_follow);
-        freeFollow.setOnClickListener(new View.OnClickListener()
+        followDialogView.setFollowRequestedListener(new FollowRequestedListener()
         {
-            @Override public void onClick(View v)
+            @Override public void freeFollowRequested()
             {
-                dismissFollowDialog();
+                onFinish();
                 followRequestedListener.freeFollowRequested();
             }
-        });
 
-        LinearLayout premiumFollow = (LinearLayout) view.findViewById(R.id.premium_follow);
-        premiumFollow.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
+            @Override public void followRequested()
             {
-                dismissFollowDialog();
+                onFinish();
                 followRequestedListener.followRequested();
             }
-        });
-    }
 
-    private void dismissFollowDialog()
-    {
-        if (mFollowDialog != null)
-        {
-            mFollowDialog.dismiss();
-        }
-    }
-
-    private void initFreeFollowDialog(View view,
-            final FollowRequestedListener followRequestedListener)
-    {
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.not_follow_layout);
-        linearLayout.setVisibility(View.GONE);
-
-        Button leftButton = (Button) view.findViewById(R.id.btn_free);
-        if (leftButton != null)
-        {
-            leftButton.setOnClickListener(new View.OnClickListener()
+            private void onFinish()
             {
-                @Override public void onClick(View view)
-                {
-                    dismissFollowDialog();
-                }
-            });
-        }
-        Button rightButton = (Button) view.findViewById(R.id.btn_premium);
-        if (rightButton != null)
-        {
-            rightButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    dismissFollowDialog();
-                    followRequestedListener.followRequested();
-                }
-            });
-        }
-    }
-
-    private void loadUserPicture(ImageView imageView, UserBaseDTO userBaseDTO)
-    {
-        if (imageView != null)
-        {
-            loadDefaultPicture(imageView);
-            if (userBaseDTO != null && userBaseDTO.picture != null)
-            {
-                picassoLazy.get().load(userBaseDTO.picture)
-                        .transform(peopleIconTransformationLazy.get())
-                        .placeholder(imageView.getDrawable())
-                        .into(imageView);
+                mFollowDialog.dismiss();
             }
-        }
-    }
-
-    protected void loadDefaultPicture(ImageView imageView)
-    {
-        if (imageView != null)
-        {
-            picassoLazy.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformationLazy.get())
-                    .into(imageView);
-        }
+        });
     }
 
     public void showProgressDialog(Context context)
