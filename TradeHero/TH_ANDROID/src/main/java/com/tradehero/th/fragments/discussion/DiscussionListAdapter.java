@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.AppendableArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 6:38 PM Copyright (c) TradeHero
- */
 public class DiscussionListAdapter extends AppendableArrayDTOAdapter<DiscussionKey, AbstractDiscussionItemView<DiscussionKey>>
 {
     public DiscussionListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)

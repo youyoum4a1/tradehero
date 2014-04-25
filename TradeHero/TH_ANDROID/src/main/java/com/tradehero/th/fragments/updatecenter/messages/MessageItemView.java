@@ -85,9 +85,9 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         {
             titleView.setText(messageHeaderDTO.title);
             subTitleView.setText(messageHeaderDTO.subTitle);
-            contentView.setText(messageHeaderDTO.message);
-            dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
-            if (messageHeaderDTO.imageUrl != null)
+            contentView.setText(messageHeaderDTO.latestMessage);
+            dateView.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
+            if (messageHeaderDTO.imageUrl != null && iconView != null)
             {
                 picasso.load(messageHeaderDTO.imageUrl)
                         .transform(userPhotoTransformation)
@@ -112,9 +112,13 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
 
     private void setDefaultIcon()
     {
-        picasso.cancelRequest(iconView);
-        picasso.load(R.drawable.superman_facebook)
-                .transform(userPhotoTransformation)
-                .into(iconView);
+        ImageView iconViewCopy = iconView;
+        if (iconViewCopy != null)
+        {
+            picasso.cancelRequest(iconViewCopy);
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(iconViewCopy);
+        }
     }
 }

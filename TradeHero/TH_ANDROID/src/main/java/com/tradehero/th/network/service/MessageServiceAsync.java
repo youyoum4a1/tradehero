@@ -37,6 +37,11 @@ interface MessageServiceAsync
     void getMessageHeader(
             @Path("commentId") int commentId,
             Callback<MessageHeaderDTO> callback);
+
+    @GET("/messages/thread/{correspondentId}")
+    void getMessageThread(@Path(
+            "correspondentId") int correspondentId,
+            Callback<MessageHeaderDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">

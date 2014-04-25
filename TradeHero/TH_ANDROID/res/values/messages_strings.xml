@@ -11,4 +11,6 @@
 
   <string name="message_list_refresh_menu">Refresh</string>
 
+  <string name="error_fetch_message_thread_header">Failed to fetch the message thread info</string>
+
 </resources>

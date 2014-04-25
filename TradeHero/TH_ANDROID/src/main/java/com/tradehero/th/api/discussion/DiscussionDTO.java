@@ -41,4 +41,14 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     {
         return new CommentKey(id);
     }
+
+    public DiscussionKey getParentDiscussionKey()
+    {
+        if (inReplyToId > 0)
+        {
+            return new CommentKey(inReplyToId);
+        }
+        // The assumption here is that this was the first comment of the discussion
+        return getDiscussionKey();
+    }
 }

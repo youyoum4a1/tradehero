@@ -284,7 +284,6 @@ public class DiscussionView extends FrameLayout
     protected void addComment(DiscussionDTO newDiscussion)
     {
         DiscussionKey newDiscussionKey = newDiscussion.getDiscussionKey();
-        discussionCache.put(newDiscussionKey, newDiscussion);
         updateCommentCount();
 
         if (discussionListAdapter != null)

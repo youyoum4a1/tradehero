@@ -4,23 +4,27 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 public class MiddleCallbackDiscussion extends MiddleCallback<DiscussionDTO>
 {
-    private DiscussionDTOFactory discussionDTOFactory;
-    private UserMessagingRelationshipCache userMessagingRelationshipCache;
+    private final DiscussionDTOFactory discussionDTOFactory;
+    private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    private final DiscussionCache discussionCache;
 
     public MiddleCallbackDiscussion(
             Callback<DiscussionDTO> primaryCallback,
             DiscussionDTOFactory discussionDTOFactory,
-            UserMessagingRelationshipCache userMessagingRelationshipCache)
+            UserMessagingRelationshipCache userMessagingRelationshipCache,
+            DiscussionCache discussionCache)
     {
         super(primaryCallback);
         this.discussionDTOFactory = discussionDTOFactory;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
+        this.discussionCache = discussionCache;
     }
 
     @Override public void success(DiscussionDTO discussionDTO, Response response)
@@ -28,6 +32,7 @@ public class MiddleCallbackDiscussion extends MiddleCallback<DiscussionDTO>
         if (discussionDTO != null)
         {
             userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
+            discussionCache.put(discussionDTO.getDiscussionKey(), discussionDTO);
         }
         if (discussionDTOFactory != null)
         {

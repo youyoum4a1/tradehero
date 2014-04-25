@@ -34,6 +34,7 @@
       android:paddingBottom="@dimen/discussion_comment_box_height"
       android:clipToPadding="false"
       android:layout_above="@+id/discussion_comment_widget"
+      android:transcriptMode="alwaysScroll"
       />
 
   <include

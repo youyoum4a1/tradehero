@@ -4,14 +4,18 @@ import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
@@ -22,6 +26,9 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     private DTOCache.GetOrFetchTask<UserBaseKey, UserMessagingRelationshipDTO>
             messagingRelationshipCacheTask;
     protected UserMessagingRelationshipDTO userMessagingRelationshipDTO;
+
+    @Inject protected MessageThreadHeaderCache messageThreadHeaderCache;
+    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
 
     @InjectView(R.id.private_message_status_container) protected View statusViewContainer;
     @InjectView(R.id.private_message_status_text) protected TextView statusViewText;
@@ -47,11 +54,13 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     {
         super.onResume();
         fetchMessageStatus();
+        fetchMessageThreadHeader();
     }
 
     @Override public void onDestroyView()
     {
         detachMessageStatusTask();
+        detachMessageThreadHeaderFetchTask();
         super.onDestroyView();
     }
 
@@ -62,6 +71,15 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
             messagingRelationshipCacheTask.setListener(null);
         }
         messagingRelationshipCacheTask = null;
+    }
+
+    protected void detachMessageThreadHeaderFetchTask()
+    {
+        if (messageThreadHeaderFetchTask != null)
+        {
+            messageThreadHeaderFetchTask.setListener(null);
+        }
+        messageThreadHeaderFetchTask = null;
     }
 
     private void fetchMessageStatus()
@@ -77,6 +95,13 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
                 userMessagingRelationshipCache.getOrFetch(correspondentId, force,
                         createMessageStatusCacheListener());
         messagingRelationshipCacheTask.execute();
+    }
+
+    protected void fetchMessageThreadHeader()
+    {
+        detachMessageThreadHeaderFetchTask();
+        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(correspondentId, createMessageThreadHeaderCacheListener());
+        messageThreadHeaderFetchTask.execute();
     }
 
     public void linkWith(UserMessagingRelationshipDTO messageStatusDTO, boolean andDisplay)
@@ -182,6 +207,37 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             fetchMessageStatus(true);
+        }
+    }
+
+    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    {
+        return new NewPrivateMessageFragmentThreadHeaderCacheListener();
+    }
+
+    protected class NewPrivateMessageFragmentThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value,
+                boolean fromCache)
+        {
+            if (getDiscussionKey() == null)
+            {
+                linkWith(discussionKeyFactory.create(value), true);
+            }
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            if (!(error instanceof RetrofitError) ||
+                    ((RetrofitError) error).getResponse().getStatus() != 404)
+            {
+                THToast.show(R.string.error_fetch_message_thread_header);
+                Timber.e(error, "Error while getting message thread");
+            }
+            else
+            {
+                // There is just no existing thread
+            }
         }
     }
 }

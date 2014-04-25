@@ -17,6 +17,8 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -40,6 +42,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -47,6 +50,7 @@ import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -81,6 +85,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
+    @Inject MessageThreadHeaderCache messageThreadHeaderCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -96,8 +102,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected OwnedPortfolioIdList portfolioIdList;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    private TimelineProfileClickListener profileButtonClickListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
+    protected MessageHeaderDTO messageThreadHeaderDTO;
 
     private boolean cancelRefreshingOnResume;
     protected boolean mIsOtherProfile = false;
@@ -106,18 +113,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
     public TabType currentTab = TabType.TIMELINE;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        profileButtonClickListener = new TimelineProfileClickListener()
-        {
-            @Override public void onBtnClicked(TabType tabType)
-            {
-                linkWith(tabType, true);
-            }
-        };
-    }
 
     @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
@@ -317,6 +312,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
 
+        fetchMessageThreadHeader();
+
         displayTab();
     }
 
@@ -340,6 +337,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         detachTimelineAdapter();
         detachTimelineListView();
         detachFreeFollowMiddleCallback();
+        detachMessageThreadHeaderFetchTask();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
         displayablePortfolioFetchAssistant = null;
@@ -388,10 +386,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         freeFollowMiddleCallback = null;
     }
 
-    @Override public void onDestroy()
+    private void detachMessageThreadHeaderFetchTask()
     {
-        profileButtonClickListener = null;
-        super.onDestroy();
+        if (messageThreadHeaderFetchTask != null)
+        {
+            messageThreadHeaderFetchTask.setListener(null);
+        }
+        messageThreadHeaderFetchTask = null;
+    }
+
+    protected void fetchMessageThreadHeader()
+    {
+        detachMessageThreadHeaderFetchTask();
+        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(shownUserBaseKey, createMessageThreadHeaderCacheListener());
+        messageThreadHeaderFetchTask.execute();
     }
 
     //<editor-fold desc="Display methods">
@@ -478,6 +486,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
+    protected void linkWithMessageThread(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
+    {
+        this.messageThreadHeaderDTO = messageHeaderDTO;
+        if (andDisplay)
+        {
+        }
+    }
+
     protected void updateView()
     {
         if (timelineScreen != null)
@@ -553,7 +569,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void prepareTimelineAdapter()
     {
         mainTimelineAdapter = createTimelineAdapter();
-        mainTimelineAdapter.setProfileClickListener(profileButtonClickListener);
+        mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
         mainTimelineAdapter.setOnLoadFinishedListener(
                 new MainTimelineAdapter.OnLoadFinishedListener()
                 {
@@ -778,9 +794,19 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void pushPrivateMessageFragment()
     {
-        Bundle args = new Bundle();
-        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-        getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        if (messageThreadHeaderDTO != null)
+        {
+            Bundle args = new Bundle();
+            ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
+            ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
+            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        }
+        else
+        {
+            Bundle args = new Bundle();
+            NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
+            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        }
     }
 
     /**
@@ -815,6 +841,17 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void follow(FollowUserAssistant.OnUserFollowedListener followedListener)
     {
         followUser(shownUserBaseKey, followedListener);
+    }
+
+    protected TimelineProfileClickListener createTimelineProfileClickListener()
+    {
+        return new TimelineProfileClickListener()
+        {
+            @Override public void onBtnClicked(TabType tabType)
+            {
+                linkWith(tabType, true);
+            }
+        };
     }
 
     public class FreeFollowCallback implements Callback<UserProfileDTO>
@@ -889,6 +926,33 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
+        }
+    }
+
+    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    {
+        return new TimelineMessageThreadHeaderCacheListener();
+    }
+
+    protected class TimelineMessageThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value, boolean fromCache)
+        {
+            linkWithMessageThread(value, true);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            if (!(error instanceof RetrofitError) ||
+                    ((RetrofitError) error).getResponse().getStatus() != 404)
+            {
+                THToast.show(R.string.error_fetch_message_thread_header);
+                Timber.e(error, "Error while getting message thread");
+            }
+            else
+            {
+                // There is just no existing thread
+            }
         }
     }
 }
