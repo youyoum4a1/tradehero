@@ -48,11 +48,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 6:57 PM To change this template use File | Settings | File Templates. */
 @Singleton public class DTOCacheUtil
 {
-    public final String TAG = DTOCacheUtil.class.getSimpleName();
-
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<AlertCache> alertCache;
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
