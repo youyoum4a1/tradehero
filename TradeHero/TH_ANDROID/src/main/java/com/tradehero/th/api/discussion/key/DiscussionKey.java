@@ -8,6 +8,7 @@ abstract public class DiscussionKey implements DTOKey
 {
     static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";
     static final String BUNDLE_KEY_ID = DiscussionKey.class.getName() + ".id";
+    public static final String BUNDLE_KEY_DISCUSSION_KEY_BUNDLE = DiscussionKey.class.getName() + ".bundle";
 
     public final Integer id;
 

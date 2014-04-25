@@ -61,5 +61,5 @@
   <string name="error_discussion_empty_post">讨论不可为空</string>
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
-  <string name="discussion_security_subtitle">在 %s</string>
+  <string name="discussion_edit_post_subtitle">在 %s</string>
 </resources>

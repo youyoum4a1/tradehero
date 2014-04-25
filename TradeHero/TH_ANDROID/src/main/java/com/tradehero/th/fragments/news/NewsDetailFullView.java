@@ -16,10 +16,12 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
@@ -42,9 +44,18 @@ public class NewsDetailFullView extends LinearLayout
     @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
     @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;
-    @InjectView(R.id.news_detail_reference_gv) GridView mNewsDetailReferenceGv;
+    @InjectView(R.id.news_detail_reference) GridView mNewsDetailReference;
     @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
-    @InjectView(R.id.news_detail_reference_gv_container) LinearLayout mNewsDetailReferenceGvContainer;
+    @InjectView(R.id.news_detail_reference_container) LinearLayout mNewsDetailReferenceContainer;
+    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
+    {
+        Bundle bundle = new Bundle();
+        if (newsItemDTO != null)
+        {
+            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, newsItemDTO.getDiscussionKey().getArgs());
+        }
+        getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+    }
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
@@ -101,8 +112,8 @@ public class NewsDetailFullView extends LinearLayout
     {
         simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
                 getContext(), LayoutInflater.from(getContext()), R.layout.trending_security_item);
-        mNewsDetailReferenceGv.setAdapter(simpleSecurityItemViewAdapter);
-        mNewsDetailReferenceGv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        mNewsDetailReference.setAdapter(simpleSecurityItemViewAdapter);
+        mNewsDetailReference.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
@@ -162,11 +173,11 @@ public class NewsDetailFullView extends LinearLayout
             @Override
             public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
             {
-                ViewGroup.LayoutParams lp = mNewsDetailReferenceGvContainer.getLayoutParams();
+                ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
                 lp.width = 510 * securityCompactDTOList.size();
-                mNewsDetailReferenceGvContainer.setLayoutParams(lp);
-                mNewsDetailReferenceGv.setNumColumns(securityCompactDTOList.size());
+                mNewsDetailReferenceContainer.setLayoutParams(lp);
+                mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
                 simpleSecurityItemViewAdapter.setItems(securityCompactDTOList);
                 simpleSecurityItemViewAdapter.notifyDataSetChanged();
             }

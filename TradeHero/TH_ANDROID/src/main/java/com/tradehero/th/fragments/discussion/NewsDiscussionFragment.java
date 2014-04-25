@@ -23,12 +23,13 @@ import javax.inject.Inject;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
-    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
-            NewsDiscussionFragment.class.getName() + ".title_bg";
+    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDiscussionFragment.class.getName() + ".title_bg";
 
     private NewsItemDTO mDetailNewsItemDTO;
 
     @Inject NewsCache newsCache;
+
+    @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
 
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
@@ -41,8 +42,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_discussion, container, false);
         return view;

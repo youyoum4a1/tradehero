@@ -26,13 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
           <LinearLayout
-              android:id="@+id/news_detail_reference_gv_container"
+              android:id="@+id/news_detail_reference_container"
               android:layout_width="600dp"
               android:layout_height="wrap_content"
               android:orientation="horizontal">
 
             <GridView
-                android:id="@+id/news_detail_reference_gv"
+                android:id="@+id/news_detail_reference"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="10dp"
@@ -95,6 +95,7 @@
           android:layout_marginRight="10dp"/>
 
       <TextView
+          android:id="@+id/news_start_new_discussion"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/start_new_discussion"

@@ -14,7 +14,6 @@
       android:gravity="center_horizontal"
       android:padding="5dp"
       android:background="@drawable/discussion_status_background"
-      android:text="@string/discussion_loading"
       tools:text="Status will be here"
       />
 </FrameLayout>
