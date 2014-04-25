@@ -23,15 +23,27 @@ import javax.inject.Inject;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
-    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
-            NewsDiscussionFragment.class.getName() + ".title_bg";
+    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDiscussionFragment.class.getName() + ".title_bg";
 
     private NewsItemDTO mDetailNewsItemDTO;
 
     @Inject NewsCache newsCache;
 
+    @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
+
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
+    private DiscussionEditPostFragment discussionEditPostFragment;
+
+    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
+    {
+        Bundle bundle = new Bundle();
+        if (newsItemDTOKey != null)
+        {
+            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, newsItemDTOKey.getArgs());
+        }
+        discussionEditPostFragment = (DiscussionEditPostFragment) getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+    }
 
     // Action buttons
     @InjectView(R.id.vote_pair) VotePair votePair;
@@ -41,8 +53,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_discussion, container, false);
         return view;
@@ -62,11 +73,27 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         newsCacheFetchListener = new NewsFetchListener();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        if (discussionEditPostFragment != null && discussionEditPostFragment.isPosted())
+        {
+            newsDiscussionView.refresh();
+        }
+    }
+
     @Override public void onDetach()
     {
         newsCacheFetchListener = null;
 
         super.onDetach();
+    }
+
+    @Override public void onDestroy()
+    {
+        discussionEditPostFragment = null;
+        super.onDestroy();
     }
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)

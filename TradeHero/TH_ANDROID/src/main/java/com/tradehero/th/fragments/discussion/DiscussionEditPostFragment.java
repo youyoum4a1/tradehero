@@ -20,8 +20,14 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.form.SecurityDiscussionFormDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -33,6 +39,7 @@ import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.ForWeChat;
@@ -62,6 +69,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject UserSearchResultCache userSearchResultCache;
     @Inject @ForWeChat SocialSharer weChatSharer;
     @Inject RichTextCreator parser;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
+    @Inject DiscussionCache discussionCache;
 
     private SecurityId securityId;
     private DiscussionDTO discussionDTO;
@@ -71,6 +81,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private TextWatcher discussionEditTextWatcher;
 
     private SearchStockPeopleFragment searchStockPeopleFragment;
+    private DiscussionKey discussionKey;
+    private boolean isPosted;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -136,8 +148,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @OnClick({
             R.id.btn_mention,
             R.id.btn_security_tag
-    })
-    void onMentionButtonClicked(View clickedButton)
+    }) void onMentionButtonClicked(View clickedButton)
     {
         TrendingSearchType searchType = null;
         switch (clickedButton.getId())
@@ -163,11 +174,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
     {
         this.discussionDTO = discussionDTO;
-
-        if (mWeChatShareButton.isChecked())
-        {
-            weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
-        }
     }
 
     private boolean validate()
@@ -183,16 +189,33 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void postDiscussion()
     {
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
-        if (validate() && securityCompactDTO != null)
+        if (validate())
         {
-            SecurityDiscussionFormDTO securityDiscussionFormDTO = new SecurityDiscussionFormDTO();
-            securityDiscussionFormDTO.inReplyToId = securityCompactDTO.id;
-            securityDiscussionFormDTO.text = discussionPostContent.getText().toString();
-            discussionPostActionButtonsView.populate(securityDiscussionFormDTO);
+            DiscussionType discussionType = null;
+            int discussionId = 0;
+            if (securityCompactDTO != null)
+            {
+                discussionType = DiscussionType.SECURITY;
+                discussionId = securityCompactDTO.id;
+            }
+            else if (discussionKey != null)
+            {
+                discussionType = discussionKey.getType();
+                discussionId = discussionKey.id;
+            }
+            else
+            {
+                return;
+            }
+
+            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
+            discussionFormDTO.inReplyToId = discussionId;
+            discussionFormDTO.text = discussionPostContent.getText().toString();
+            discussionPostActionButtonsView.populate(discussionFormDTO);
 
             unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
-            discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(securityDiscussionFormDTO, new SecurityDiscussionEditCallback());
+            discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
         }
     }
 
@@ -215,6 +238,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         super.onResume();
 
+        isPosted = false;
+
         Bundle args = getArguments();
         if (args != null)
         {
@@ -223,6 +248,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
                 Bundle securityBundle = args.getBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE);
                 SecurityId securityId = new SecurityId(securityBundle);
                 linkWith(securityId, true);
+            }
+
+            if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
+            {
+                DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
+                linkWith(discussionKey, true);
             }
         }
 
@@ -277,7 +308,32 @@ public class DiscussionEditPostFragment extends DashboardFragment
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
         if (andDisplay && securityCompactDTO != null)
         {
-            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_security_subtitle, securityCompactDTO.name));
+            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
+            getSherlockActivity().invalidateOptionsMenu();
+        }
+    }
+
+    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    {
+        this.discussionKey = discussionKey;
+        AbstractDiscussionDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
+        linkWith(abstractDiscussionDTO, andDisplay);
+    }
+
+    private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    {
+        // TODO question, should we subclass this to have a NewsEditPostFragment?
+        if (abstractDiscussionDTO instanceof NewsItemDTO)
+        {
+            linkWith((NewsItemDTO) abstractDiscussionDTO, andDisplay);
+        }
+    }
+
+    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
+    {
+        if (andDisplay)
+        {
+            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
             getSherlockActivity().invalidateOptionsMenu();
         }
     }
@@ -287,6 +343,10 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return false;
     }
 
+    public boolean isPosted()
+    {
+        return isPosted;
+    }
 
     private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
     {
@@ -295,6 +355,14 @@ public class DiscussionEditPostFragment extends DashboardFragment
             onFinish();
 
             linkWith(discussionDTO, true);
+
+            if (mWeChatShareButton.isChecked())
+            {
+                weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
+            }
+
+            isPosted = true;
+
             getNavigator().popFragment();
         }
 

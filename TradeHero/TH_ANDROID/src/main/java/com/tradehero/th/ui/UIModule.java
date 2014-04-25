@@ -3,6 +3,7 @@ package com.tradehero.th.ui;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
@@ -57,6 +58,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 DiscussionView.class,
                 PostCommentView.class,
                 PrivatePostCommentView.class,
+
+                NewsDiscussionView.class,
 
                 DiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
