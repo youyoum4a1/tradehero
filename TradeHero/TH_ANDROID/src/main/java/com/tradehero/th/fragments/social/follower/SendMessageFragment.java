@@ -1,12 +1,15 @@
 package com.tradehero.th.fragments.social.follower;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -78,6 +81,12 @@ public class SendMessageFragment extends DashboardFragment
 
     @Inject Lazy<UserProfileCache> userProfileCache;
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        showInput(true);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -148,8 +157,27 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        showInput(false);
         sendMessageDiscussionCallback = null;
         super.onDestroy();
+    }
+
+    private void showInput(boolean shown)
+    {
+        if (inputText != null)
+        {
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            if (shown)
+            {
+                imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
+            }
+            else
+            {
+                imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
+            }
+        }
     }
 
     private void changeHeroType(MessageType messageType)

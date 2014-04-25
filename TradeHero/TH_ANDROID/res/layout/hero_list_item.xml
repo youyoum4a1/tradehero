@@ -38,7 +38,7 @@
       android:layout_toLeftOf="@id/hint_open_follower_info"
       android:layout_centerVertical="true"
       android:src="@drawable/cross_red"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:contentDescription="@null"
       android:visibility="visible"
       />
