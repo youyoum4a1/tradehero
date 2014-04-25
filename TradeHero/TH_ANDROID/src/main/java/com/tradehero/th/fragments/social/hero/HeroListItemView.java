@@ -30,6 +30,7 @@ public class HeroListItemView extends RelativeLayout
 {
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
     public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
+    public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
 
     private ImageView userIcon;
     private TextView title;
@@ -255,8 +256,10 @@ public class HeroListItemView extends RelativeLayout
     {
         if (statusIcon != null)
         {
-            statusIcon.setImageResource(
-                    (heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
+            //statusIcon.setImageResource(
+            //        (heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
+
+            statusIcon.setImageResource(RES_ID_CROSS_RED);
         }
     }
 

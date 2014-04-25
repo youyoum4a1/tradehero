@@ -23,6 +23,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -47,17 +48,19 @@ import timber.log.Timber;
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
+    public static final String KEY_DISCUSSION_TYPE =
+            SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE =
+            SendMessageFragment.class.getName() + ".messageType";
 
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
-    /**ProgressDialog to show progress when sending message */
+    /** ProgressDialog to show progress when sending message */
     private Dialog progressDialog;
-    /**Dialog to change different type of follower*/
+    /** Dialog to change different type of follower */
     private Dialog chooseDialog;
-    /**callback for sending broadcast*/
+    /** callback for sending broadcast */
     private SendMessageDiscussionCallback sendMessageDiscussionCallback;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
@@ -74,7 +77,6 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -100,7 +102,7 @@ public class SendMessageFragment extends DashboardFragment
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.broadcast_message_title));
-        MenuItem menuItem = menu.add(0, 100, 0,getString(R.string.broadcast_message_action_send));
+        MenuItem menuItem = menu.add(0, 100, 0, getString(R.string.broadcast_message_action_send));
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("onCreateOptionsMenu");
     }
@@ -138,6 +140,8 @@ public class SendMessageFragment extends DashboardFragment
 
     private void initView()
     {
+        inputText.setFocusable(true);
+        inputText.requestFocus();
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);
     }
@@ -232,28 +236,27 @@ public class SendMessageFragment extends DashboardFragment
     private int getFollowerCountByUserProfile(MessageType messageType)
     {
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-            int allFollowerCount = userProfileDTO.allFollowerCount;
-            int followerCountFree = userProfileDTO.freeFollowerCount;
-            int followerCountPaid = userProfileDTO.paidFollowerCount;
-            Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d",allFollowerCount,followerCountFree,followerCountPaid);
-            int result = 0;
-            switch (messageType)
-            {
-                case BROADCAST_FREE_FOLLOWERS:
-                    result = followerCountFree;
-                    break;
-                case BROADCAST_PAID_FOLLOWERS:
-                    result = followerCountPaid;
-                    break;
-                case BROADCAST_ALL_FOLLOWERS:
-                    result = allFollowerCount;
-                    break;
-                default:
-                    throw new IllegalStateException("unknown messageType");
-
-            }
-            return result;
-
+        int allFollowerCount = userProfileDTO.allFollowerCount;
+        int followerCountFree = userProfileDTO.freeFollowerCount;
+        int followerCountPaid = userProfileDTO.paidFollowerCount;
+        Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d", allFollowerCount,
+                followerCountFree, followerCountPaid);
+        int result = 0;
+        switch (messageType)
+        {
+            case BROADCAST_FREE_FOLLOWERS:
+                result = followerCountFree;
+                break;
+            case BROADCAST_PAID_FOLLOWERS:
+                result = followerCountPaid;
+                break;
+            case BROADCAST_ALL_FOLLOWERS:
+                result = allFollowerCount;
+                break;
+            default:
+                throw new IllegalStateException("unknown messageType");
+        }
+        return result;
     }
 
     /**
@@ -331,6 +334,11 @@ public class SendMessageFragment extends DashboardFragment
     {
     }
 
+    private void closeMe()
+    {
+        ((DashboardActivity) getActivity()).getDashboardNavigator().popFragment();
+    }
+
     private class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
     {
         @Override public void failure(RetrofitError error)
@@ -345,7 +353,7 @@ public class SendMessageFragment extends DashboardFragment
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
             //TODO close me?
-            //closeMe();
+            closeMe();
         }
     }
 

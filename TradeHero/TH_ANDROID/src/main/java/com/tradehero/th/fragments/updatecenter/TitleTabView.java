@@ -49,7 +49,7 @@ public class TitleTabView extends RelativeLayout
     {
         if (number > 0)
         {
-            String titleWithNumber = title + "(" + number + ")";
+            String titleWithNumber = title + " (" + number + ")";
             titleView.setText(titleWithNumber);
         }
         else
