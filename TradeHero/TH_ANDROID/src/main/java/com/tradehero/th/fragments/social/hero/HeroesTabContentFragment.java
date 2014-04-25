@@ -78,6 +78,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
+        //com.handmark.pulltorefresh.library.PullToRefreshListView
         View view = inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
         initViews(view);
         return view;

@@ -83,6 +83,7 @@
 
   </TableLayout>
 
+
   <com.tradehero.th.fragments.social.follower.FollowerListView
       android:id="@+id/followers_list"
       android:layout_width="match_parent"

@@ -74,7 +74,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         int hashCode = message.hashCode();
-        if(hashCode < 0)
+        if (hashCode < 0)
         {
             hashCode = -hashCode;
         }
@@ -105,7 +105,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * 接收通知点击的函数。注：推送通知被用户点击前，应用无法通过接口获取通知的内容。
+     * when user click the notification
      */
     @Override
     public void onNotificationClicked(Context context, String title,

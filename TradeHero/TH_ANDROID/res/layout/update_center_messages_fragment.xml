@@ -9,6 +9,9 @@
     android:layout_height="match_parent"
     >
 
+  <!--com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
+  com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+  -->
   <com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
       android:id="@android:id/list"
       android:layout_width="match_parent"

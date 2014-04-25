@@ -757,6 +757,8 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.unread = false;
                     updateUnreadStatusInUserProfileCache();
                 }
+
+                getListAdapter().notifyDataSetChanged();
                 //MessageListAdapter adapter = getListAdapter();
             }
         }

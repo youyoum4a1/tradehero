@@ -43,7 +43,8 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
+public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
+        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
@@ -70,7 +71,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         Timber.d("onCreate");
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         Timber.d("onCreateView");
         return addTabs();
@@ -89,7 +91,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         fetchUserProfile();
 
         LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(broadcastReceiver, new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
+                .registerReceiver(broadcastReceiver,
+                        new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
     }
 
     @Override public void onPause()
@@ -104,7 +107,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         detachUserProfileTask();
 
-        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, fetchUserProfileListener);
+        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
+                fetchUserProfileListener);
         fetchUserProfileTask.execute();
     }
 
@@ -117,14 +121,12 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         fetchUserProfileTask = null;
     }
 
-
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+            ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
         }
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -135,7 +137,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
-        mNewMsgButton = (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
+        mNewMsgButton =
+                (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
         if (mNewMsgButton != null)
         {
             mNewMsgButton.setOnClickListener(new View.OnClickListener()
@@ -162,7 +165,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            boolean handled = ((SherlockFragment)getCurrentFragment()).onOptionsItemSelected(item);
+            boolean handled = ((SherlockFragment) getCurrentFragment()).onOptionsItemSelected(item);
             if (handled)
             {
                 return true;
@@ -176,7 +179,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onPrepareOptionsMenu(menu);
+            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
         }
         super.onPrepareOptionsMenu(menu);
     }
@@ -186,7 +189,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onOptionsMenuClosed(menu);
+            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
         }
         super.onOptionsMenuClosed(menu);
     }
@@ -201,7 +204,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
-
     }
 
     private void showPopup(View v)
@@ -234,8 +236,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Broadcast);
         Bundle args = new Bundle();
-        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, DiscussionType.BROADCAST_MESSAGE.value);
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
+        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
+                DiscussionType.BROADCAST_MESSAGE.value);
+        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
+                MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
     }
@@ -263,7 +267,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(),
+                FRAGMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
@@ -290,11 +295,11 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
         {
             android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
             List<Fragment> fragmentList = fm.getFragments();
-            Timber.d("fragmentList %s",fragmentList);
+            Timber.d("fragmentList %s", fragmentList);
             if (fragmentList != null && fragmentList.size() > 0)
             {
                 FragmentTransaction ft = fm.beginTransaction();
-                for (Fragment f:fragmentList)
+                for (Fragment f : fragmentList)
                 {
                     if (f != null)
                     {
@@ -315,7 +320,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     private Fragment getCurrentFragment()
     {
-        if(mTabHost == null)
+        if (mTabHost == null)
         {
             return null;
         }
@@ -339,7 +344,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -354,9 +360,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (andDisplay)
         {
-            Timber.d("changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",userProfileDTO.unreadMessageThreadsCount,userProfileDTO.unreadNotificationsCount);
-            changeTabTitleNumber(UpdateCenterTabType.Messages, userProfileDTO.unreadMessageThreadsCount);
-            changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
+            Timber.d(
+                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
+                    userProfileDTO.unreadMessageThreadsCount,
+                    userProfileDTO.unreadNotificationsCount);
+            changeTabTitleNumber(UpdateCenterTabType.Messages,
+                    userProfileDTO.unreadMessageThreadsCount);
+            //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }
     }
 
