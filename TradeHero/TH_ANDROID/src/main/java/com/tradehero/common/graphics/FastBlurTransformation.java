@@ -53,16 +53,24 @@ public class FastBlurTransformation implements Transformation
 
     public Bitmap transform(Bitmap bitmap)
     {
+        Bitmap processedBitmap = null;
         try
         {
             //keep the alpha channel,but the old one transform the transparent to grey.
-            return fastblur(bitmap, radius);
+            processedBitmap = fastblur(bitmap, radius);
         }
         catch (Exception ex)
         {
-            Timber.e(ex, "FastBlur error");
+            Timber.d("FastBlur error %s", ex);
         }
-        return null;
+        finally
+        {
+            if (processedBitmap != bitmap)
+            {
+                bitmap.recycle();
+            }
+        }
+        return processedBitmap;
     }
 
     /**
