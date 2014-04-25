@@ -33,6 +33,17 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
+    private DiscussionEditPostFragment discussionEditPostFragment;
+
+    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
+    {
+        Bundle bundle = new Bundle();
+        if (newsItemDTOKey != null)
+        {
+            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, newsItemDTOKey.getArgs());
+        }
+        discussionEditPostFragment = (DiscussionEditPostFragment) getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+    }
 
     // Action buttons
     @InjectView(R.id.vote_pair) VotePair votePair;
@@ -62,11 +73,27 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         newsCacheFetchListener = new NewsFetchListener();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        if (discussionEditPostFragment != null && discussionEditPostFragment.isPosted())
+        {
+            newsDiscussionView.refresh();
+        }
+    }
+
     @Override public void onDetach()
     {
         newsCacheFetchListener = null;
 
         super.onDetach();
+    }
+
+    @Override public void onDestroy()
+    {
+        discussionEditPostFragment = null;
+        super.onDestroy();
     }
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)

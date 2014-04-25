@@ -82,6 +82,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private SearchStockPeopleFragment searchStockPeopleFragment;
     private DiscussionKey discussionKey;
+    private boolean isPosted;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -237,6 +238,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         super.onResume();
 
+        isPosted = false;
+
         Bundle args = getArguments();
         if (args != null)
         {
@@ -340,6 +343,10 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return false;
     }
 
+    public boolean isPosted()
+    {
+        return isPosted;
+    }
 
     private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
     {
@@ -353,6 +360,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
             {
                 weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
             }
+
+            isPosted = true;
 
             getNavigator().popFragment();
         }

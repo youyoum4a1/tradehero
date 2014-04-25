@@ -47,15 +47,6 @@ public class NewsDetailFullView extends LinearLayout
     @InjectView(R.id.news_detail_reference) GridView mNewsDetailReference;
     @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
     @InjectView(R.id.news_detail_reference_container) LinearLayout mNewsDetailReferenceContainer;
-    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
-    {
-        Bundle bundle = new Bundle();
-        if (newsItemDTO != null)
-        {
-            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, newsItemDTO.getDiscussionKey().getArgs());
-        }
-        getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
-    }
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
