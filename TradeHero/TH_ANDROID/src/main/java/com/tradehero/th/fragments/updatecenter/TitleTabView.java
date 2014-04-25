@@ -2,13 +2,11 @@ package com.tradehero.th.fragments.updatecenter;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import timber.log.Timber;
 
 /**
  * Created by tradehero on 14-4-3.
@@ -17,6 +15,7 @@ public class TitleTabView extends RelativeLayout
 {
     @InjectView(R.id.tab_title) TextView titleView;
     @InjectView(R.id.tab_title_number) TextView numberView;
+    private String title;
 
     public TitleTabView(Context context)
     {
@@ -46,27 +45,41 @@ public class TitleTabView extends RelativeLayout
 
     public void setTitleNumber(int number)
     {
-        if (number > 100)
+        if (number > 0)
         {
-            //when message count is greater 100, just show red background
-            //this is not the best way
-            numberView.setText(" ");
-            numberView.setVisibility(View.VISIBLE);
-        }
-        else if (number > 0)
-        {
-            numberView.setText(String.valueOf(number));
-            numberView.setVisibility(View.VISIBLE);
+            String titleWithNumber = title + "(" + number + ")";
+            titleView.setText(titleWithNumber);
         }
         else
         {
-            numberView.setText("");
-            numberView.setVisibility(View.INVISIBLE);
+            titleView.setText(title);
         }
     }
+
+    //public void setTitleNumber(int number)
+    //{
+    //    //if (number > 100)
+    //    //{
+    //    //    //when message count is greater 100, just show red background
+    //    //    //this is not the best way
+    //    //    numberView.setText(" ");
+    //    //    numberView.setVisibility(View.VISIBLE);
+    //    //}
+    //    if (number > 0)
+    //    {
+    //        numberView.setText(String.valueOf(number));
+    //        numberView.setVisibility(View.VISIBLE);
+    //    }
+    //    else
+    //    {
+    //        numberView.setText("");
+    //        numberView.setVisibility(View.INVISIBLE);
+    //    }
+    //}
 
     public void setTitle(String title)
     {
         titleView.setText(title);
+        this.title = title;
     }
 }

@@ -40,8 +40,8 @@
       android:src="@drawable/image_icon_validation_valid"
       android:scaleType="fitXY"
       android:contentDescription="@null"
-      android:visibility="visible"
-    />
+      android:visibility="invisible"
+      />
 
   <LinearLayout
       android:orientation="vertical"

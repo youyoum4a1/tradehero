@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -33,6 +33,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     @InjectView(R.id.message_item_sub_title) TextView subTitleView;
     @InjectView(R.id.message_item_date) TextView dateView;
     @InjectView(R.id.message_item_content) TextView contentView;
+    @InjectView(R.id.message_unread_flag) View unreadFlag;
 
     private MessageHeaderDTO messageHeaderDTO;
 
@@ -64,16 +65,17 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     @Override public void display(MessageHeaderId dto)
     {
         this.messageHeaderDTO = messageHeaderCache.get(dto);
-        if(messageHeaderDTO != null)
+        if (messageHeaderDTO != null)
         {
-            if(messageHeaderDTO.discussionType == DiscussionType.BROADCAST_MESSAGE)
-            {
-                setBackgroundColor(getResources().getColor(R.color.broadcast_message_item_bg));
-            }
-            else if (messageHeaderDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
-            {
-                setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
-            }
+            setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            //if(messageHeaderDTO.discussionType == DiscussionType.BROADCAST_MESSAGE)
+            //{
+            //    setBackgroundColor(getResources().getColor(R.color.broadcast_message_item_bg));
+            //}
+            //else if (messageHeaderDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
+            //{
+            //    setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            //}
 
         }
         displayData();
@@ -87,6 +89,8 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
             subTitleView.setText(messageHeaderDTO.subTitle);
             contentView.setText(messageHeaderDTO.latestMessage);
             dateView.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
+            unreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.INVISIBLE);
+
             if (messageHeaderDTO.imageUrl != null && iconView != null)
             {
                 picasso.load(messageHeaderDTO.imageUrl)

@@ -23,6 +23,7 @@ import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>, View.OnClickListener
@@ -70,6 +71,7 @@ public class HeroListItemView extends RelativeLayout
                     .transform(peopleIconTransformation)
                     .into(userIcon);
         }
+        Timber.d("HeroListItemView onFinishInflate hashCode:%d", this.hashCode());
     }
 
     private void initViews()
