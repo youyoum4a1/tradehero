@@ -37,7 +37,6 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
@@ -210,14 +209,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.menu_settings:
-                DashboardNavigator navigator =
-                        ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-                navigator.pushFragment(SettingsFragment.class);
-                return true;
-        }
+        //switch (item.getItemId())
+        //{
+            //case R.id.menu_settings:
+            //    DashboardNavigator navigator =
+            //            ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            //    navigator.pushFragment(SettingsFragment.class);
+            //    return true;
+        //}
         return super.onOptionsItemSelected(item);
     }
 
