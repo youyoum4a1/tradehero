@@ -32,7 +32,7 @@ public class NotificationOpenedHandler implements PushNotificationHandler
 
         //UAirship.shared().getApplicationContext().startActivity(createLaunchIntent(intent));
 
-        // TODO is this is better??
+        // TODO is this better??
         context.startActivity(createLaunchIntent(intent));
         return true;
     }
