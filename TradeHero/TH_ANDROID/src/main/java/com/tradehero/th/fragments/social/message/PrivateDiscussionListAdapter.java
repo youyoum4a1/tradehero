@@ -41,17 +41,28 @@ public class PrivateDiscussionListAdapter extends DiscussionListAdapter
 
     @Override public int getItemViewType(int position)
     {
-        return isMine(discussionCache.get((DiscussionKey) getItem(position))) ? ITEM_TYPE_MINE : ITEM_TYPE_OTHER;
+        return isMine(discussionCache.get((DiscussionKey) getItem(position))) ? ITEM_TYPE_MINE
+                : ITEM_TYPE_OTHER;
     }
 
     protected int getItemViewResId(int position)
     {
-        return isMine(discussionCache.get((DiscussionKey) getItem(position))) ? mineResId : otherResId;
+        return isMine(discussionCache.get((DiscussionKey) getItem(position))) ? mineResId
+                : otherResId;
     }
 
     protected boolean isMine(AbstractDiscussionDTO discussionDTO)
     {
-        return discussionDTO != null && currentUserId.toUserBaseKey().key.equals(discussionDTO.userId);
+
+        if (discussionDTO == null)
+        {
+            return true;
+        }
+        else
+        {
+            return discussionDTO != null && currentUserId.toUserBaseKey().key.equals(
+                    discussionDTO.userId);
+        }
     }
 
     @Override protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
