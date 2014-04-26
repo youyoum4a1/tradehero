@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
  */
 public class NotificationKey extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY_KEY = NotificationKey.class.getName() + ".key";
+    public static final String BUNDLE_KEY_KEY = NotificationKey.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
     public NotificationKey(Integer key)
