@@ -107,19 +107,34 @@ public class HeroListItemView extends RelativeLayout
         Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
-    @Override protected void onDetachedFromWindow()
+    private void resetIcon()
     {
-
         if (statusIcon != null)
         {
             statusIcon.setImageDrawable(null);
-            statusIcon.setOnClickListener(null);
         }
         if (userIcon != null)
         {
             userIcon.setImageDrawable(null);
+        }
+    }
+
+    private void removeCallback()
+    {
+        if (statusIcon != null)
+        {
+            statusIcon.setOnClickListener(null);
+        }
+        if (userIcon != null)
+        {
             userIcon.setOnClickListener(null);
         }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        resetIcon();
+        removeCallback();
         //ButterKnife.reset(this);
         Timber.d("HeroListItemView onDetachedFromWindow hashCode:%d", this.hashCode());
 
@@ -159,6 +174,8 @@ public class HeroListItemView extends RelativeLayout
 
     public void display(HeroDTO heroDTO)
     {
+        //resetIcon();
+        displayDefaultUserIcon();
         linkWith(heroDTO, true);
     }
 

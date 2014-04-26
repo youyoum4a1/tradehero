@@ -281,8 +281,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         //}
 
         launchActions();
-
         localyticsSession.get().open();
+        Timber.d("onResume");
     }
 
     @Override protected void onPause()
@@ -293,8 +293,16 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             PushManager.activityStarted(this);
         }
+        Timber.d("onPause");
 
         super.onPause();
+    }
+
+    @Override protected void onStart()
+    {
+        super.onStart();
+
+        Timber.d("onStart");
     }
 
     @Override protected void onStop()
@@ -303,6 +311,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             PushManager.activityStoped(this);
         }
+        Timber.d("onStop");
 
         super.onStop();
     }
@@ -329,6 +338,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         purchaseRestorerFinishedListener = null;
 
         detachUserProfileFetchTask();
+        Timber.d("onDestroy");
+
         super.onDestroy();
     }
 
