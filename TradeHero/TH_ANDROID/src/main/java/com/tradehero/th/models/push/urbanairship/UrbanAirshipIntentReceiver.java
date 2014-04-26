@@ -39,7 +39,6 @@ public class UrbanAirshipIntentReceiver extends BroadcastReceiver
         }
     }
 
-
     public static class IntentLogger
     {
         private final Intent intent;

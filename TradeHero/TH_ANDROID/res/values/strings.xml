@@ -71,4 +71,5 @@
   <string name="about_screen_secure_by">Secure by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
+  <string name="send_fake_push">Send a fake PushNotification</string>
 </resources>

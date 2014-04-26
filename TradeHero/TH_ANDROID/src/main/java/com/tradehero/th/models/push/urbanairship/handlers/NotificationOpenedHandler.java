@@ -5,19 +5,20 @@ import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.persistence.notification.NotificationCache;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 26/4/14.
  */
-public class NotificationOpenedHandler implements PushNotificationHandler
+public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
     private final Context context;
 
-    @Inject public NotificationOpenedHandler(Context context)
+    @Inject public NotificationOpenedHandler(Context context, NotificationCache notificationCache)
     {
+        super(notificationCache);
         this.context = context;
     }
 
@@ -28,12 +29,12 @@ public class NotificationOpenedHandler implements PushNotificationHandler
 
     @Override public boolean handle(Intent intent)
     {
-        Timber.i("User clicked notification. Message: %s", intent.getStringExtra(PushManager.EXTRA_ALERT));
+        super.handle(intent);
 
-        //UAirship.shared().getApplicationContext().startActivity(createLaunchIntent(intent));
+        Intent launchIntent = createLaunchIntent(intent);
 
-        // TODO is this better??
-        context.startActivity(createLaunchIntent(intent));
+        context.startActivity(launchIntent);
+
         return true;
     }
 
@@ -41,7 +42,7 @@ public class NotificationOpenedHandler implements PushNotificationHandler
     {
         Intent launch = new Intent(Intent.ACTION_MAIN);
         launch.setClass(context, DashboardActivity.class);
-        launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        launch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         String deepLink = (String) intent.getExtras().get(context.getString(R.string.push_notification_deep_link_url));
         if (deepLink != null)
         {

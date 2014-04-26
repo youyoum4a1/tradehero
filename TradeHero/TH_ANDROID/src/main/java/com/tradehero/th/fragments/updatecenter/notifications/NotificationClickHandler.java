@@ -18,17 +18,18 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFrag
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import timber.log.Timber;
 
 /**
  * Created by tho on 4/17/2014.
  */
-class NotificationClickHandler
+public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
     private final Navigator navigator;
     private final Context context;
 
-    NotificationClickHandler(Context context, NotificationDTO notificationDTO)
+    public NotificationClickHandler(Context context, NotificationDTO notificationDTO)
     {
         this.context = context;
         this.notificationDTO = notificationDTO;
@@ -47,8 +48,9 @@ class NotificationClickHandler
      * Handle click event on NotificationItemView
      * @return true if handled, false otherwise
      */
-    boolean handleNotificationItemClicked()
+    public boolean handleNotificationItemClicked()
     {
+        Timber.d("Handling notification (%d)", notificationDTO.pushId);
         NotificationType notificationType = NotificationType.fromType(notificationDTO.pushTypeId);
 
         switch (notificationType)
