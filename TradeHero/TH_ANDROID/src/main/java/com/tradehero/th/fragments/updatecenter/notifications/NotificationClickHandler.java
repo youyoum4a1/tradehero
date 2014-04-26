@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.PrivateMessageKey;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -10,12 +11,14 @@ import com.tradehero.th.api.notification.NotificationTradeDTO;
 import com.tradehero.th.api.notification.NotificationType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import timber.log.Timber;
@@ -134,11 +137,10 @@ public class NotificationClickHandler
 
                 case PRIVATE_MESSAGE:
                 {
-                    //NewsItemDTOKey newsItemDTOKey = new NewsItemDTOKey(notificationDTO.replyableId);
-                    //
-                    //Bundle bundle = new Bundle();
-                    //bundle.putBundle(PrivateMessageFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
-                    //navigator.pushFragment(PrivateMessageFragment.class, bundle);
+                    Bundle args = new Bundle();
+                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                    ReplyPrivateMessageFragment.putDiscussionKey(args, new PrivateMessageKey(notificationDTO.replyableId));
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                 }
                 break;
 
