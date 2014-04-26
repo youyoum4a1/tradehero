@@ -15,12 +15,18 @@ import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -81,6 +87,14 @@ import javax.inject.Singleton;
     @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
 
+    @Inject Lazy<MessageHeaderListCache> messageListCache;
+    @Inject Lazy<MessageHeaderCache> messageHeaderCache;
+    @Inject Lazy<DiscussionListCache> discussionListCache;
+    @Inject Lazy<DiscussionCache> discussionCache;
+
+    @Inject Lazy<NotificationCache> notificationCache;
+    @Inject Lazy<NotificationListCache> notificationListCache;
+
     @Inject public DTOCacheUtil()
     {
     }
@@ -120,6 +134,14 @@ import javax.inject.Singleton;
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
+
+        messageHeaderCache.get().invalidateAll();
+        messageListCache.get().invalidateAll();
+        discussionCache.get().invalidateAll();
+        discussionListCache.get().invalidateAll();
+
+        notificationCache.get().invalidateAll();
+        notificationListCache.get().invalidateAll();
     }
 
     public void initialPrefetches()

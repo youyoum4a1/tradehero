@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge>
+  <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/discussion_share_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/timeline_action_buttons_vertical_padding_big"
+      android:paddingBottom="@dimen/timeline_action_buttons_vertical_padding_big"
+      android:background="@drawable/timeline_action_buttons_background"
+      >
+
+      <include layout="@layout/vote_pair_big"/>
+
+    <ImageView
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:paddingTop="@dimen/common_margin_4"
+        android:paddingBottom="@dimen/common_margin_4"
+        android:background="@color/gray_normal"/>
+
+      <TextView
+          android:id="@+id/discussion_action_button_comment_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding_big"
+          android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding_big"
+          android:drawableLeft="@drawable/icn_comment"
+          android:textColor="@drawable/timeline_action_button_text_color_xml"
+          android:textStyle="bold"
+          android:shadowColor="@color/timeline_action_button_text_color_shadow"
+          android:shadowDy="1"
+          android:shadowRadius="1"
+          android:drawablePadding="@dimen/comment_count_drawable_padding"
+          android:text="0"
+          tools:text="200"/>
+
+    <TextView
+        android:id="@+id/discussion_action_button_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding_big"
+        android:layout_marginRight="@dimen/timeline_action_buttons_horizontal_padding_big"
+        android:textColor="@drawable/timeline_action_button_more_color_xml"
+        android:textStyle="bold"
+        android:text="@string/more_character"
+        android:gravity="center_vertical|right"
+        />
+  </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>
+</merge>
