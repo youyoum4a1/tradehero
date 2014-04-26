@@ -5,6 +5,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -16,8 +17,7 @@ import retrofit.http.Query;
 public interface MessageService
 {
     //<editor-fold desc="Get Message Headers">
-    @GET("/messages")
-    PaginatedDTO<MessageHeaderDTO> getMessageHeaders(
+    @GET("/messages") MessagePaginatedDTO<MessageHeaderDTO> getMessageHeaders(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 

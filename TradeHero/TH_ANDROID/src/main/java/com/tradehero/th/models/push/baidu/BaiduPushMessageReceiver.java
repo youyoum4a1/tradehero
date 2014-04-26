@@ -6,6 +6,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,7 +43,6 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
             return;
         }
         //  Bind success
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
         pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
     }
 
@@ -82,9 +82,17 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         nm.notify(msgId, notification);
     }
 
-    private void handleRecevieMessage(Context context, String customContentString)
+    private void handleRecevieMessage(Context context, String message)
     {
-        showNotification(context, customContentString);
+        PushMessageDTO pushMessageDTO  = PushMessageHandler.parseNotification(message);
+        if (pushMessageDTO != null)
+        {
+            if (pushMessageDTO.discussionType == DiscussionType.BROADCAST_MESSAGE || pushMessageDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
+            {
+                PushMessageHandler.notifyMessageReceived(context);
+            }
+        }
+        showNotification(context, message);
     }
 
     /**

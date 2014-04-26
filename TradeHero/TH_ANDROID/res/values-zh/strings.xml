@@ -52,9 +52,9 @@
   <string name="social_followers">粉丝</string>
   <string name="social_heroes">英雄</string>
   <string name="common_loading_error">对不起，发生了点问题</string>
-  <string name="no_message">无消息</string>
-  <string name="message_fetch_error">对不起，发生了点问题。 \n请点击重试</string>
-  <string name="notification_list_empty">您还没有任何通知。 \n请下拉刷新通知列表!</string>
+  <string name="no_message">您还没有任何消息。\n请下拉刷新通知列表!</string>
+  <string name="message_fetch_error">对不起，发生了点问题。\n请点击重试</string>
+  <string name="notification_list_empty">您还没有任何通知。\n请下拉刷新通知列表!</string>
   <string name="security_discussion_add">+ 开始新的讨论</string>
   <string name="post">发送</string>
   <string name="discussion_new_post_hint">我感觉 %s 会涨/跌</string>
