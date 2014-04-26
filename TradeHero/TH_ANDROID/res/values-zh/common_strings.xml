@@ -5,7 +5,7 @@
   <string name="na">无</string>
   <string name="empty"/>
   <string name="action_menu_settings">设置</string>
-  <string name="network_error">请检查您的网络连接!</string>
+  <string name="network_error">@string/error_network_connection</string>
   <!-- data format-->
   <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年 MM月 d日 HH:mm</string>
