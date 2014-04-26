@@ -168,11 +168,11 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
     {
-        if (this.securityCompactDTO != null && securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
-        {
-            return;
-            // Note that this prevents updating values inside the securityCompactDTO
-        }
+        //if (this.securityCompactDTO != null && securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
+        //{
+        //    return;
+        //    // Note that this prevents updating values inside the securityCompactDTO
+        //}
 
         this.securityCompactDTO = securityCompactDTO;
 
@@ -399,7 +399,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
             }
             //just for test
-            if(BuildConfig.DEBUG && securityCompactDTO.name.contains("Cannabis")){
+            if(BuildConfig.DEBUG && (securityCompactDTO.name.contains("International") || securityCompactDTO.name.contains("Ichitan"))){
                 Log.d(securityCompactDTO.name,"testKey");
                 callback.setTest(true);
                 callback.setTestKey(securityCompactDTO.name);
@@ -449,10 +449,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         exchangeImageCallback.setTest(true);
                         exchangeImageCallback.setTestKey(callback.getTestKey());
                     }
-                    if(exchangeImageCallback.isTest()){
-                        Log.d(securityCompactDTO.name,"testKey ,loading exchange");
-                    }
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+                    if(exchangeImageCallback.isTest()){
+                        Log.d(securityCompactDTO.name,"testKey ,loading exchange "+securityCompactDTO.exchange +"("+exchange+")"+" "+Exchange.SHA.logoId);
+                    }
                     //stockLogo.setImageResource(exchange.logoId);
                     mPicasso.load(exchange.logoId)
                             //.transform(foregroundTransformation)
@@ -697,7 +697,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         @Override
         public void onError() {
             if(isTest()){
-                Log.d(securityCompactDTO.name,"testKey ,load loadDefaultImage ");
+                Log.d(securityCompactDTO.name,"testKey, load loadDefaultImage ");
             }
             //load default image if failed to load exchange image
             loadDefaultImage();
@@ -735,6 +735,9 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
         @Override
         public Bitmap onOriginalBitmapLoaded(ImageView target, Bitmap bmp) {
+            if(isTest()){
+                Log.d(securityCompactDTO.name,"testKey, onOriginalBitmapLoaded ");
+            }
             return processTransformation(target, bmp);
         }
 

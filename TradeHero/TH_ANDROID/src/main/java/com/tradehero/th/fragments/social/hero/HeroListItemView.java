@@ -208,6 +208,7 @@ public class HeroListItemView extends RelativeLayout
             {
                 picasso.get().load(heroDTO.picture)
                         .transform(peopleIconTransformation)
+                        // TODO if this view is reused, userIcon.getDrawable() may returns the different drawable
                         .placeholder(userIcon.getDrawable())
                         .into(userIcon, new Callback()
                         {
