@@ -291,6 +291,7 @@ public class DiscussionView extends FrameLayout
         if (discussionListAdapter != null)
         {
             discussionListAdapter.addItem(newDiscussionKey);
+            discussionCache.put(newDiscussionKey, newDiscussion);
             discussionListAdapter.notifyDataSetChanged();
         }
         discussionListCache.invalidateAllPagesFor(discussionKey);
