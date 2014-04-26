@@ -137,10 +137,13 @@ public class NotificationClickHandler
 
                 case PRIVATE_MESSAGE:
                 {
-                    Bundle args = new Bundle();
-                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
-                    ReplyPrivateMessageFragment.putDiscussionKey(args, new PrivateMessageKey(notificationDTO.replyableId));
-                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        Bundle args = new Bundle();
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, new PrivateMessageKey(notificationDTO.replyableId));
+                        navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                    }
                 }
                 break;
 
