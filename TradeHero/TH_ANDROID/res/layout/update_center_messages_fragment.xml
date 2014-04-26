@@ -40,16 +40,17 @@
   <TextView
       style="@style/TH.Loading_Empty_Text"
       android:id="@android:id/empty"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_centerInParent="true"
+      android:gravity="center"
       android:text="@string/no_message"/>
 
   <TextView
       style="@style/TH.Loading_Error_Text"
       android:id="@+id/error"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_gravity="center"
       android:gravity="center"
       android:layout_centerInParent="true"

@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.message;
 
+import com.sun.tools.internal.ws.processor.model.Message;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -8,9 +9,13 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +28,18 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 {
     private MessageHeaderCache messageHeaderCache;
     private MessageServiceWrapper messageServiceWrapper;
+    private UserProfileCache userProfileCache;
+    private CurrentUserId currentUserId;
 
     @Inject
     public MessageHeaderListCache(@ListCacheMaxSize IntPreference maxSize, MessageHeaderCache messageHeaderCache,
-            MessageServiceWrapper messageServiceWrapper)
+            MessageServiceWrapper messageServiceWrapper,UserProfileCache userProfileCache,CurrentUserId currentUserId)
     {
         super(maxSize.get());
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
+        this.userProfileCache = userProfileCache;
+        this.currentUserId = currentUserId;
     }
 
     @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
@@ -41,6 +50,8 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 
     private MessageHeaderIdList putInternal(PaginatedDTO<MessageHeaderDTO> data)
     {
+        //updateUnreadMessageThreadCount(data);
+
         if (data != null && data.getData() != null)
         {
             List<MessageHeaderDTO> list = data.getData();
@@ -57,6 +68,28 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @param data
+     */
+    private void updateUnreadMessageThreadCount(PaginatedDTO<MessageHeaderDTO> data)
+    {
+        if (data == null || !(data instanceof MessagePaginatedDTO))
+        {
+            return;
+        }
+
+        MessagePaginatedDTO messagePaginatedDTO = (MessagePaginatedDTO)data;
+        if (userProfileCache != null && currentUserId != null)
+        {
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if (userProfileDTO != null)
+            {
+                userProfileDTO.unreadMessageThreadsCount =  messagePaginatedDTO.unread;
+            }
+        }
     }
 
     public void invalidateWithRecipient(UserBaseKey userBaseKey)

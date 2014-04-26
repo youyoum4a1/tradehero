@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -32,6 +35,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
+import com.tradehero.th.models.push.baidu.PushMessageHandler;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -76,12 +80,15 @@ public class MessagesCenterFragment extends DashboardFragment
     private MessageListAdapter messageListAdapter;
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
+    private BroadcastReceiver broadcastReceiver;
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         middleCallbackMap = new HashMap<>();
+        registerMessageReceiver();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
 
@@ -140,12 +147,14 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onResume();
 
+        registerMessageReceiver();
         Timber.d("onResume");
     }
 
     @Override public void onPause()
     {
         Timber.d("onPause");
+        unregisterMessageReceiver();
         super.onPause();
     }
 
@@ -153,6 +162,63 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         Timber.d("onStop");
         super.onStop();
+    }
+
+    private void refreshUserProfile()
+    {
+
+    }
+
+    private void registerMessageReceiver()
+    {
+        if (broadcastReceiver == null)
+        {
+            broadcastReceiver = new BroadcastReceiver()
+            {
+                @Override public void onReceive(Context context, Intent intent)
+                {
+                    if (PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
+                    {
+                        refreshUserProfile();
+
+                        Timber.d("onReceive message doRefreshContent");
+                        if (messagesView != null
+                                && messagesView.pullToRefreshSwipeListView.isRefreshing())
+                        {
+                            //the better way is to start service to refresh at the background
+                            if (messageListCache != null && messageListCache.get() != null)
+                            {
+                                messageListCache.get().invalidateAll();
+                            }
+                            if (messageListCache != null && messageListCache.get() != null)
+                            {
+                                messageListCache.get().invalidateAll();
+                            }
+                            return;
+                        }
+
+                        doRefreshContent();
+
+                    }
+                }
+            };
+
+            LocalBroadcastManager.getInstance(getActivity())
+                    .registerReceiver(broadcastReceiver,
+                            new IntentFilter(PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED));
+
+        }
+    }
+
+    private void unregisterMessageReceiver()
+    {
+
+        if (broadcastReceiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity())
+                    .unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -181,6 +247,7 @@ public class MessagesCenterFragment extends DashboardFragment
         alreadyFetched = null;
         nextMoreRecentMessageListKey = null;
         unsetMiddleCallback();
+        unregisterMessageReceiver();
 
         super.onDestroy();
         Timber.d("onDestroy");
@@ -385,6 +452,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.clearDeletedSet();
         adapter.appendMore(messageKeys);
     }
 
@@ -518,6 +586,10 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 hasMorePage = false;
             }
+            if (!fromCache)
+            {
+                requestUpdateTabCounter();
+            }
             displayContent(value);
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
                     fromCache);
@@ -560,6 +632,10 @@ public class MessagesCenterFragment extends DashboardFragment
             resetContent(value);
             resetPageNumber();
             onRefreshCompleted();
+            if (!fromCache)
+            {
+                requestUpdateTabCounter();
+            }
             if (value.size() == 0)
             {
                 hasMorePage = false;

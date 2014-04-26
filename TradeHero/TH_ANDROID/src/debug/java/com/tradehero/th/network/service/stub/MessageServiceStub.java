@@ -7,6 +7,7 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,10 +24,12 @@ public class MessageServiceStub implements MessageService
         super();
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
+
+    @Override
+    public MessagePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
     {
         Timber.d("Returning stub messages");
-        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        MessagePaginatedDTO<MessageHeaderDTO> paginatedDTO = new MessagePaginatedDTO<>();
         List<MessageHeaderDTO> messageDTOList = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
