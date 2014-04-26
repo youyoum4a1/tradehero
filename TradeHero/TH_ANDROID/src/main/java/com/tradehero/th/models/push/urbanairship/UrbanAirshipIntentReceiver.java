@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.tradehero.th.models.push.urbanairship.handlers.PushNotificationHandler;
+import com.tradehero.th.models.push.handlers.PushNotificationHandler;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.Set;
 import javax.inject.Inject;

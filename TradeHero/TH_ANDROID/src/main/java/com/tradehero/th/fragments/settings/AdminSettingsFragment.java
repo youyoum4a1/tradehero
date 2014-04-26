@@ -18,7 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.urbanairship.PushConstants;
-import com.tradehero.th.models.push.urbanairship.handlers.NotificationOpenedHandler;
+import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
