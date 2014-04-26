@@ -179,6 +179,15 @@
     <item name="android:textStyle">bold</item>
   </style>
 
+  <style name="TH_VoteView_big">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginLeft">@dimen/timeline_action_buttons_horizontal_padding_big</item>
+    <item name="android:layout_marginRight">@dimen/timeline_action_buttons_horizontal_padding_big</item>
+    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
   <style name="TH.Btn_BuySell_Action">
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">match_parent</item>
