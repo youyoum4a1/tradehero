@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
+import com.tradehero.th.models.push.urbanairship.PushConstants;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -28,6 +30,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public static final int MESSAGE_ID = 100;
 
     @Inject Provider<PushSender> pushSender;
+    @Inject static Provider<NotificationOpenedHandler> notificationOpenedHandler;
 
     public BaiduPushMessageReceiver()
     {
@@ -106,10 +109,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         String description = intent.getStringExtra(KEY_NOTIFICATION_CONTENT);
         Timber.d("action %s, id:%s, description:%s",action,id,description);
 
-        //Intent fakeIntent = new Intent();
-        //fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
-        //NotificationOpenedHandler notificationOpenedHandler = new NotificationOpenedHandler();
-        //notificationOpenedHandler.handle(fakeIntent);
+        Intent fakeIntent = new Intent();
+        fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
+        notificationOpenedHandler.get().handle(fakeIntent);
 
         return intent;
     }
