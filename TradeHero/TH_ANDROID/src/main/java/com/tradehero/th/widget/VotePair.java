@@ -168,10 +168,13 @@ public class VotePair extends LinearLayout
     class VoteCallback implements Callback<DiscussionDTO>
     {
         private AbstractDiscussionDTO discussionDTO;
+        private VoteDirection targetVoteDirection;
 
-        public VoteCallback()
+
+        public VoteCallback(VoteDirection voteDirection)
         {
             this.discussionDTO = VotePair.this.discussionDTO;
+            this.targetVoteDirection = voteDirection;
         }
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
@@ -186,9 +189,15 @@ public class VotePair extends LinearLayout
                 Timber.e("VoteCallback success but id is not the same");
                 return;
             }
+            VoteDirection returnedVoteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
             if (this.discussionDTO.id == VotePair.this.discussionDTO.id)
             {
                 //means the same item
+                if (targetVoteDirection != returnedVoteDirection)
+                {   //server may return the wrong voteDirection
+                    discussionDTO.voteDirection = targetVoteDirection.value;
+                    Timber.e("targetVoteDirection(%s) and returnedVoteDirection(%s) not the same",targetVoteDirection,returnedVoteDirection);
+                }
                 discussionDTO.populateVote(VotePair.this.discussionDTO);
                 Timber.d("VoteCallback success and item is the same. voteDirection:%s",VotePair.this.discussionDTO.voteDirection);
                 display(VotePair.this.discussionDTO);
@@ -202,6 +211,11 @@ public class VotePair extends LinearLayout
             }
             else
             {
+                if (targetVoteDirection != returnedVoteDirection)
+                {   //server ma
+                    discussionDTO.voteDirection = targetVoteDirection.value;
+                    Timber.e("targetVoteDirection(%s) and returnedVoteDirection(%s) not the same",targetVoteDirection,returnedVoteDirection);
+                }
                 discussionDTO.populateVote(this.discussionDTO);
                 //do nothing
                 Timber.e("VoteCallback success and item is not the same");
@@ -226,7 +240,7 @@ public class VotePair extends LinearLayout
                 discussionType,
                 discussionDTO.id,
                 voteDirection);
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey,new VoteCallback());
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey,new VoteCallback(voteDirection));
     }
 
     public boolean hasDownVote()
