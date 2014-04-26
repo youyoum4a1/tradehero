@@ -143,6 +143,18 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onResume");
     }
 
+    @Override public void onPause()
+    {
+        Timber.d("onPause");
+        super.onPause();
+    }
+
+    @Override public void onStop()
+    {
+        Timber.d("onStop");
+        super.onStop();
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
         super.onDestroyOptionsMenu();

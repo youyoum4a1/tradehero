@@ -106,6 +106,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             loadImage();
         }
+        Timber.d("onAttachedToWindow %s",this.hashCode());
     }
 
     @Override protected void onDetachedFromWindow()
@@ -132,6 +133,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         Timber.d("onDetachedFromWindow %s",this.hashCode());
         super.onDetachedFromWindow();
     }
+
+    @Override public void onWindowFocusChanged(boolean hasWindowFocus)
+    {
+        super.onWindowFocusChanged(hasWindowFocus);
+
+        Timber.d("onWindowFocusChanged %s",this.hashCode());
+    }
+
 
     protected void clearHandler()
     {
