@@ -359,7 +359,8 @@ import javax.inject.Singleton;
                         PrivateMessageBubbleOtherView.class,
                         AbstractDiscussionFragment.class,
                         AbstractPrivateMessageFragment.class,
-                        
+
+                        SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                 },
         staticInjections =

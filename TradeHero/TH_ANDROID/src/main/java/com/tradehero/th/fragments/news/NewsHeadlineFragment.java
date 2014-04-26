@@ -191,4 +191,13 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
     {
         return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
+
+    @Override public void onDestroy()
+    {
+        if (newsTitleCache != null)
+        {
+            newsTitleCache.invalidateAll();
+        }
+        super.onDestroy();
+    }
 }
