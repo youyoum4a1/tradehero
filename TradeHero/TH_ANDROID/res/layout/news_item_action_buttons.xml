@@ -15,8 +15,8 @@
       android:paddingLeft="@dimen/news_item_action_padding_l_r"
       android:paddingRight="@dimen/news_item_action_padding_l_r"
       >
-
-    <include layout="@layout/vote_pair"/>
+    <!--<include layout="@layout/vote_pair"/>-->
+    <include layout="@layout/vote_pair_big"/>
 
     <TextView
         android:id="@+id/discussion_action_button_comment_count"
