@@ -30,12 +30,13 @@
       android:layout_height="match_parent"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
-      android:paddingTop="48dp"
-      android:paddingBottom="@dimen/discussion_comment_box_height"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:paddingBottom="60dp"
       android:clipToPadding="false"
       android:layout_above="@+id/discussion_comment_widget"
       android:transcriptMode="alwaysScroll"
       />
+      <!--android:paddingTop="48dp"-->
 
   <include
       layout="@layout/private_post_comment_widget"

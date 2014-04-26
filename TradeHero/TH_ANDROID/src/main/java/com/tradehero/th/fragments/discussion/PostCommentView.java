@@ -3,17 +3,18 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
@@ -27,6 +28,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -86,16 +88,19 @@ public class PostCommentView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
+        commentText.requestFocus();
+        //DeviceUtil.showKeyboard(getContext(), commentText);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachSubmitCommentMiddleCallback();
-
         resetView();
-
+        commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
 
+        DeviceUtil.dismissKeyboard(getContext(), commentText);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -270,6 +275,22 @@ public class PostCommentView extends RelativeLayout
             setPosted();
             THToast.show(new THException(retrofitError));
             notifyCommentPostFailed(retrofitError);
+        }
+    }
+
+    protected OnFocusChangeListener createEditTextFocusChangeListener()
+    {
+        return new PostCommentViewEditTextFocusChangeListener();
+    }
+
+    protected class PostCommentViewEditTextFocusChangeListener implements OnFocusChangeListener
+    {
+        @Override public void onFocusChange(View v, boolean hasFocus)
+        {
+            if (hasFocus)
+            {
+                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
         }
     }
 

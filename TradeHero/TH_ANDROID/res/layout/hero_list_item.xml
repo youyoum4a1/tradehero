@@ -18,7 +18,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
-    />
+      />
 
   <ImageView
       android:id="@+id/hint_open_follower_info"
@@ -29,7 +29,7 @@
       android:src="@drawable/settings_forward_light"
       android:scaleType="center"
       android:contentDescription="@null"
-    />
+      />
 
   <ImageView
       android:id="@+id/ic_status"
@@ -37,10 +37,11 @@
       android:layout_height="48dp"
       android:layout_toLeftOf="@id/hint_open_follower_info"
       android:layout_centerVertical="true"
-      android:src="@drawable/image_icon_validation_valid"
-      android:scaleType="fitXY"
+      android:src="@drawable/cross_red"
+      android:scaleType="fitCenter"
       android:contentDescription="@null"
-      android:visibility="invisible"
+      android:visibility="visible"
+      android:padding="10dp"
       />
 
   <LinearLayout
@@ -53,26 +54,26 @@
       android:paddingBottom="2dp"
       android:paddingLeft="5dp"
       android:layout_centerVertical="true"
-    >
+      >
 
-      <TextView
-          android:id="@+id/hero_title"
-          android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:maxLines="1"
-          android:layout_weight="3"
-          android:textStyle="bold"
-          android:text=""
+    <TextView
+        android:id="@+id/hero_title"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:maxLines="1"
+        android:layout_weight="3"
+        android:textStyle="bold"
+        android:text=""
         />
 
-      <TextView
-          android:id="@+id/hero_date_info"
-          android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:layout_weight="2"
-          android:maxLines="1"
-          android:text=""
-          android:textSize="10dp"
+    <TextView
+        android:id="@+id/hero_date_info"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:maxLines="1"
+        android:text=""
+        android:textSize="10dp"
         />
 
   </LinearLayout>

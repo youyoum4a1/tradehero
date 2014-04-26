@@ -12,8 +12,9 @@
   <!--com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
   com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
   -->
-  <com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
-      android:id="@android:id/list"
+  <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/message_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"
@@ -29,18 +30,23 @@
       app:swipeOffsetLeft="250dp"
       swipe:swipeDrawableUnchecked="@drawable/ic_info"
       android:listSelector="#00000000"
+      ptr:ptrMode="pullFromStart"
+      ptr:ptrScrollingWhileRefreshingEnabled="true"
+      ptr:ptrListViewExtrasEnabled="false"
+      android:fadingEdge="none"
+      android:scrollbars="none"
       />
 
-
   <TextView
+      style="@style/TH.Loading_Empty_Text"
       android:id="@android:id/empty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:textStyle="italic"
-      android:text="@string/no_message" />
+      android:text="@string/no_message"/>
 
   <TextView
+      style="@style/TH.Loading_Error_Text"
       android:id="@+id/error"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

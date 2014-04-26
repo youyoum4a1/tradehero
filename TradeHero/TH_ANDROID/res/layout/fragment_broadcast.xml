@@ -55,6 +55,7 @@
       android:id="@+id/message_input_edittext"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minHeight="80dp"
       android:textSize="@dimen/stock_symbol_header"
       android:paddingLeft="5dp"
       tools:text="NASDAQ:GOOG"

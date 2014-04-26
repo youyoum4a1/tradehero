@@ -15,6 +15,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
@@ -50,7 +51,8 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, MessageListAdapter.MessageOnClickListener
+        implements AdapterView.OnItemClickListener, MessageListAdapter.MessageOnClickListener,
+        PullToRefreshBase.OnRefreshListener2<SwipeListView>
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -117,8 +119,8 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
+        //menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("onCreateOptionsMenu");
     }
 
@@ -139,7 +141,6 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         Timber.d("onResume");
-
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -191,6 +192,24 @@ public class MessagesCenterFragment extends DashboardFragment
         pushMessageFragment(position);
     }
 
+    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    {
+        doRefreshContent();
+    }
+
+    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    {
+
+    }
+
+    private void onRefreshCompleted()
+    {
+        if (messagesView != null && messagesView.pullToRefreshSwipeListView != null)
+        {
+            messagesView.pullToRefreshSwipeListView.onRefreshComplete();
+        }
+    }
+
     public UpdateCenterTabType getTabType()
     {
         return UpdateCenterTabType.Messages;
@@ -198,7 +217,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     protected void pushMessageFragment(int position)
     {
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(getListAdapter().getItem(position));
+        MessageHeaderDTO messageHeaderDTO =
+                messageHeaderCache.get(getListAdapter().getItem(position));
         pushMessageFragment(
                 discussionKeyFactory.create(messageHeaderDTO),
                 messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
@@ -211,39 +231,47 @@ public class MessagesCenterFragment extends DashboardFragment
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
         getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
-
     }
 
     private void initViews(View view)
     {
         DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
-        messagesView = (MessagesView) view;
+        this.messagesView = (MessagesView) view;
         ListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemClickListener(this);
         SwipeListView swipeListView = (SwipeListView) listView;
 
-        swipeListener = new SwipeListener();
+        this.swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);
+
+        messagesView.pullToRefreshSwipeListView.setOnRefreshListener(this);
 
         if (nextMoreRecentMessageListKey == null)
         {
-            nextMoreRecentMessageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+            nextMoreRecentMessageListKey =
+                    new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         }
     }
 
     private void getOrFetchMessages()
     {
         detachFetchMessageTask();
-        fetchMessageTask = messageListCache.get().getOrFetch(nextMoreRecentMessageListKey, false, createMessageHeaderIdListCacheListener());
+        fetchMessageTask = messageListCache.get()
+                .getOrFetch(nextMoreRecentMessageListKey, false,
+                        createMessageHeaderIdListCacheListener());
         fetchMessageTask.execute();
     }
 
     private void refreshContent()
     {
         displayLoadingView(false);
+        doRefreshContent();
+    }
 
+    private void doRefreshContent()
+    {
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
         MessageListKey messageListKey =
@@ -271,7 +299,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void resetPageNumber()
     {
-        nextMoreRecentMessageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        nextMoreRecentMessageListKey =
+                new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
     }
 
     private void increasePageNumber()
@@ -309,7 +338,8 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             listView.setAdapter(messageListAdapter);
         }
-        MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
+        MessageListAdapter adapter =
+                messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
         adapter.appendMore(messageKeys);
     }
@@ -335,11 +365,13 @@ public class MessagesCenterFragment extends DashboardFragment
         }
         else
         {
-            MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
+            MessageListAdapter adapter =
+                    messageListAdapter;// (MessageListAdapter) listView.getAdapter();
             adapter.clear();
             adapter.notifyDataSetChanged();
         }
-        MessageListAdapter adapter = (MessageListAdapter) listView.getAdapter();
+        MessageListAdapter adapter =
+                messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
         adapter.appendMore(messageKeys);
     }
@@ -354,10 +386,11 @@ public class MessagesCenterFragment extends DashboardFragment
 
         @Override public void onClickBackView(final int position)
         {
-            Timber.d("SwipeListener onClickBackView %s", position);
             final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            int count = swipeListView.getHeaderViewsCount();
+            Timber.d("SwipeListener onClickBackView %s,header count:%s", position, count);
             //TODO it's quite difficult to use
-            swipeListView.dismiss(position);
+            swipeListView.dismiss(position - swipeListView.getHeaderViewsCount());
             swipeListView.closeOpenedItems();
         }
 
@@ -453,7 +486,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void refreshCache(MessageHeaderIdList data)
     {
-        MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+        MessageListKey messageListKey =
+                new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
         messageListCache.get().invalidateAll();
         messageListCache.get().put(messageListKey, data);
     }
@@ -499,7 +533,8 @@ public class MessagesCenterFragment extends DashboardFragment
         return new RefreshMessageFetchListener();
     }
 
-    class RefreshMessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
+    class RefreshMessageFetchListener
+            implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
         public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
@@ -512,6 +547,7 @@ public class MessagesCenterFragment extends DashboardFragment
             refreshCache(value);
             resetContent(value);
             resetPageNumber();
+            onRefreshCompleted();
             if (value.size() == 0)
             {
                 hasMorePage = false;
@@ -528,6 +564,7 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void onErrorThrown(MessageListKey key, Throwable error)
         {
             hasMorePage = true;
+            onRefreshCompleted();
             Timber.d("refresh onErrorThrown");
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
@@ -626,7 +663,8 @@ public class MessagesCenterFragment extends DashboardFragment
         if (messageHeaderId != null)
         {
             MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-            Timber.d("updateReadStatus :%d,unread:%s,title:%s",position,messageHeaderDTO.unread,messageHeaderDTO.title);
+            Timber.d("updateReadStatus :%d,unread:%s,title:%s", position, messageHeaderDTO.unread,
+                    messageHeaderDTO.title);
             if (messageHeaderDTO != null && messageHeaderDTO.unread)
             {
                 reportMessageRead(messageHeaderDTO);

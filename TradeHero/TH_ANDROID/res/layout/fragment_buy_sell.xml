@@ -79,12 +79,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/common_margin_50"
+        android:layout_marginRight="@dimen/common_margin_50"
         android:textSize="18sp"
         android:gravity="center"
         android:maxLines="1"
-        android:ellipsize="marquee"
+        android:ellipsize="end"
         android:textStyle="bold"
-        tools:text="UOB Mb"
+        tools:text="UOB Mb 1234567890UOB Mb 1234567890UOB Mb 1234567890"
         />
 
     <TextView

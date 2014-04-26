@@ -130,7 +130,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         }
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.message_center_title);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setLogo(R.drawable.icon_menu);
@@ -333,6 +335,11 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
     {
         TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        if (tabType == UpdateCenterTabType.Notifications)
+        {
+            //Notifications' unread count does not show
+            return;
+        }
         tabView.setTitleNumber(number);
         //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }

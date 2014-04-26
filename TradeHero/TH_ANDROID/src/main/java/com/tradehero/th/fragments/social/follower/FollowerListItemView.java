@@ -89,11 +89,18 @@ public class FollowerListItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        super.onDetachedFromWindow();
         if (userIcon != null)
         {
+            userIcon.setImageDrawable(null);
             userIcon.setOnClickListener(null);
         }
+        if (country != null)
+        {
+            country.setOnClickListener(this);
+        }
+        //ButterKnife.reset(this);
+
+        super.onDetachedFromWindow();
     }
 
     @Override public void onClick(View v)

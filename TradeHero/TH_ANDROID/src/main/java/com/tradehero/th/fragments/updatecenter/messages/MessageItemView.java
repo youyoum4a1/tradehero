@@ -58,8 +58,15 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
 
     @Override protected void onDetachedFromWindow()
     {
+
+        if (iconView != null)
+        {
+            iconView.setImageDrawable(null);
+        }
+        //ButterKnife.reset(this);
+
         super.onDetachedFromWindow();
-        ButterKnife.reset(this);
+
     }
 
     @Override public void display(MessageHeaderId dto)
