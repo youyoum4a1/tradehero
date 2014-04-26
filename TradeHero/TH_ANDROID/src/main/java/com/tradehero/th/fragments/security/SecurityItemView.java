@@ -129,6 +129,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             countryLogo.setImageDrawable(null);
         }
 
+        Timber.d("onDetachedFromWindow %s",this.hashCode());
         super.onDetachedFromWindow();
     }
 
