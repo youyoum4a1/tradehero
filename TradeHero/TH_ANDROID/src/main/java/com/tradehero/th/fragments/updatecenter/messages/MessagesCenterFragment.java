@@ -385,6 +385,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.clearDeletedSet();
         adapter.appendMore(messageKeys);
     }
 

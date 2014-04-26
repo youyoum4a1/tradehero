@@ -110,6 +110,14 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         return items != null && items.contains(messageId);
     }
 
+    public void clearDeletedSet()
+    {
+        if (markedDeletedIds != null)
+        {
+            markedDeletedIds.clear();
+        }
+    }
+
     public void markDeleted(MessageHeaderId messageId, boolean markDeleted)
     {
         if (markDeleted)
