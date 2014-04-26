@@ -70,13 +70,6 @@
         />
 
     <Preference
-        android:enabled="true"
-        android:key="@string/key_settings_primary_restore_purchases"
-        android:title="@string/settings_primary_restore_purchases"
-        android:icon="@drawable/settings_recover_purchase"
-        />
-
-    <Preference
         android:key="@string/key_settings_misc_sign_out"
         android:title="@string/settings_misc_sign_out"
         android:icon="@drawable/settings_sign_out"
