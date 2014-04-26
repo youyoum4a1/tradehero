@@ -397,12 +397,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
     {
-        //switch (item.getItemId())
-        //{
-        //    case R.id.buy_sell_menu_market_status:
-        //        handleMarketCloseClicked();
-        //        break;
-        //}
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
@@ -961,13 +955,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             THSignedNumber sthSignedNumber;
             if (quoteDTO == null)
             {
-                bPrice =  "-";
-                sPrice =  "-";
+                return;
             }
             else if (quoteDTO.ask == null)
             {
-                bPrice =  getResources().getString(R.string.buy_sell_ask_price_not_available);
-                sPrice =  getResources().getString(R.string.buy_sell_ask_price_not_available);
+                bPrice = getString(R.string.buy_sell_ask_price_not_available);
+                sPrice = getString(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
@@ -976,10 +969,10 @@ public class BuySellFragment extends AbstractBuySellFragment
                 bPrice = bthSignedNumber.toString();
                 sPrice = sthSignedNumber.toString();
             }
-            String buyPrice = getString(R.string.buy_sell_button_buy) + String.format(" @ %s %s", display, bPrice);
-            String suyPrice = getString(R.string.buy_sell_button_sell) + String.format(" @ %s %s", display, sPrice);
-            mBuyPrice.setText(buyPrice);
-            mSellPrice.setText(suyPrice);
+            String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
+            String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
+            mBuyPrice.setText(buyPriceText);
+            mSellPrice.setText(sellPriceText);
         }
     }
 

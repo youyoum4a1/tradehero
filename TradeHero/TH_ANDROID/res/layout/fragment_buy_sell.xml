@@ -151,7 +151,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_toRightOf="@id/logo_layout"
-        tools:text="US$ 4.60"
+        android:text="@string/buy_sell_loading_ask_price"
         android:textSize="16sp"
         android:textColor="@color/font_roi"
         />
@@ -165,9 +165,9 @@
         android:layout_below="@id/buy_price"
         android:layout_marginTop="-5dp"
         android:layout_marginLeft="@dimen/common_margin_10"
-        tools:text="US$ 4.61"
         android:textSize="16sp"
         android:textColor="@color/red"
+        android:text="@string/buy_sell_loading_ask_price"
         />
     <TextView
         android:id="@+id/vprice_as_of"

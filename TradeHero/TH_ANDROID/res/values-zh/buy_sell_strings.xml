@@ -17,8 +17,8 @@
   <string name="buy_sell_p10k">$10K</string>
   <string name="buy_sell_p25k">$25K</string>
   <string name="buy_sell_p50k">$50K</string>
-  <string name="buy_sell_button_buy">买入</string>
-  <string name="buy_sell_button_sell">卖出</string>
+  <string name="buy_sell_button_buy">买入 @ %1$s %2$s</string>
+  <string name="buy_sell_button_sell">卖出 @ %1$s %2$s</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
   <string name="buy_sell_buy_details_unavailable">信息准备中…</string>
