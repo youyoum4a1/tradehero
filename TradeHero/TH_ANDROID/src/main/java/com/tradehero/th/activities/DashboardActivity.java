@@ -289,12 +289,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
+            progressDialog = progressDialogUtil.get().show(this, "", "");
             detachNotificationFetchTask();
             notificationFetchListener = new NotificationFetchListener();
             notificationFetchTask = notificationCache.get().getOrFetch(new NotificationKey(extras), false, notificationFetchListener);
             notificationFetchTask.execute();
-
-            progressDialog = progressDialogUtil.get().show(this, "", "");
         }
     }
 

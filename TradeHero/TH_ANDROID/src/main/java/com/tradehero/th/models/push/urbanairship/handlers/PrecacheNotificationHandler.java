@@ -13,6 +13,13 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
 {
     protected final NotificationCache notificationCache;
 
+    protected NotificationKey getNotificationKey()
+    {
+        return notificationKey;
+    }
+
+    private NotificationKey notificationKey;
+
     public PrecacheNotificationHandler(NotificationCache notificationCache)
     {
         this.notificationCache = notificationCache;
@@ -33,10 +40,8 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
             {
                 int notificationId = Integer.parseInt(notificationIdValue);
 
-                NotificationKey notificationKey = new NotificationKey(notificationId);
+                notificationKey = new NotificationKey(notificationId);
                 notificationCache.autoFetch(notificationKey);
-
-                notificationKey.putParameters(intent.getExtras());
             }
             catch (Exception ex)
             {

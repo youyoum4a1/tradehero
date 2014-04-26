@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
@@ -32,6 +33,12 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         super.handle(intent);
 
         Intent launchIntent = createLaunchIntent(intent);
+
+        NotificationKey notificationKey = getNotificationKey();
+        if (notificationKey != null)
+        {
+            launchIntent.putExtras(notificationKey.getArgs());
+        }
 
         context.startActivity(launchIntent);
 
