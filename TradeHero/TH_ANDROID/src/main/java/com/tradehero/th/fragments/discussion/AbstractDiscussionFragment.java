@@ -37,7 +37,10 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @Override protected void initViews(View view)
     {
-        discussionView.setCommentPostedListener(createCommentPostedListener());
+        if (discussionView != null)
+        {
+            discussionView.setCommentPostedListener(createCommentPostedListener());
+        }
     }
 
     @Override public void onDestroyView()
