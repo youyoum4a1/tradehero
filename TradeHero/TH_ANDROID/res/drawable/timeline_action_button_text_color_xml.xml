@@ -5,6 +5,10 @@
       android:state_pressed="true"
       android:color="@color/timeline_action_button_text_color_pressed"
       />
+  <item
+      android:state_checked="true"
+      android:color="@color/timeline_action_button_text_color_pressed"
+      />
   <item android:color="@color/timeline_action_button_text_color"
       />
 </selector>

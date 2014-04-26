@@ -54,6 +54,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.wxapi.WeChatDTO;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -419,10 +421,18 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     socialNetworkEnum = SocialNetworkEnum.LN;
                     ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
                     break;
-                //case R.id.timeline_popup_menu_share_we_chat:
-                    //ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
-                    //wechatSharerLazy.get().share(getContext(), discussionKey);
-                    //break;
+                case R.id.timeline_popup_menu_share_we_chat:
+                    WeChatDTO weChatDTO = new WeChatDTO();
+                    weChatDTO.id = timelineItemDTO.id;
+                    weChatDTO.title = timelineItemDTO.text;
+                    SecurityMediaDTO firstMediaWithLogo = timelineItemDTO.getFlavorSecurityForDisplay();
+                    if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
+                    {
+                        weChatDTO.imageURL = firstMediaWithLogo.url;
+                    }
+                    weChatDTO.type = WeChatMessageType.Timeline.getType();
+                    wechatSharerLazy.get().share(getContext(), weChatDTO);
+                    return true;
             }
             if (socialNetworkEnum == null)
             {

@@ -39,6 +39,19 @@ public class VotePair extends LinearLayout
     private AbstractDiscussionDTO discussionDTO;
     private boolean downVote = true;
 
+
+    public interface OnVoteListener
+    {
+        void onVoteSuccess(DiscussionDTO discussionDTO);
+    }
+
+    private OnVoteListener onVoteListener;
+
+    public void setOnVoteListener(OnVoteListener onVoteListener)
+    {
+        this.onVoteListener = onVoteListener;
+    }
+
     //<editor-fold desc="Constructors">
     public VotePair(Context context)
     {
@@ -112,9 +125,9 @@ public class VotePair extends LinearLayout
                 Timber.d("voteUp: %b", voteUp.isChecked());
                 if (voteUp.isChecked())
                 {
-                    voteDown.setChecked(false);
+                    //voteDown.setChecked(false);
                 }
-                updateVoting(voteUp.isChecked() ? VoteDirection.UpVote : VoteDirection.UnVote);
+                updateVoting(voteUp.isChecked() ? VoteDirection.UnVote : VoteDirection.UpVote);
                 break;
             case R.id.timeline_action_button_vote_down:
                 if (voteDown.isChecked())
@@ -146,6 +159,10 @@ public class VotePair extends LinearLayout
                         discussionDTO.populateVote(VotePair.this.discussionDTO);
                         // TODO update cached timeline item
                         Timber.d("Success");
+                        if (onVoteListener != null)
+                        {
+                            onVoteListener.onVoteSuccess(discussionDTO);
+                        }
                     }
 
                     @Override public void failure(RetrofitError error)
@@ -212,6 +229,7 @@ public class VotePair extends LinearLayout
                     voteUp.setChecked(true);
                     break;
                 case UnVote:
+                    voteUp.setChecked(false);
                     // do nothing
                     break;
             }

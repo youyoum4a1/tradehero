@@ -1,10 +1,10 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import com.tradehero.th.models.push.urbanairship.handlers.GcmDeletedHandler;
-import com.tradehero.th.models.push.urbanairship.handlers.NotificationOpenedHandler;
-import com.tradehero.th.models.push.urbanairship.handlers.PushNotificationHandler;
-import com.tradehero.th.models.push.urbanairship.handlers.PushReceivedHandler;
-import com.tradehero.th.models.push.urbanairship.handlers.RegistrationFinishedHandler;
+import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
+import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
+import com.tradehero.th.models.push.handlers.PushNotificationHandler;
+import com.tradehero.th.models.push.handlers.PushReceivedHandler;
+import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;

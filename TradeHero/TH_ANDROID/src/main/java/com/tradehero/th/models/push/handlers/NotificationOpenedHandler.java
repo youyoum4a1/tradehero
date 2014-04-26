@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship.handlers;
+package com.tradehero.th.models.push.handlers;
 
 import android.content.Context;
 import android.content.Intent;

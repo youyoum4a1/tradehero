@@ -37,7 +37,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     {
         Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%s", appId, userId, channelId,
                 requestId);
-        // 绑定成功，设置已绑定flag，可以有效的减少不必要的绑定请求
+        //if bind successfully, don't have to bind again
         if (!isRequestSuccess(errorCode))
         {
             return;
@@ -91,8 +91,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
             {
                 PushMessageHandler.notifyMessageReceived(context);
             }
+            showNotification(context, pushMessageDTO.description);
         }
-        showNotification(context, message);
+
     }
 
     /**

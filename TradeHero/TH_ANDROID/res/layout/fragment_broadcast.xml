@@ -60,6 +60,7 @@
       android:paddingLeft="5dp"
       tools:text="NASDAQ:GOOG"
       android:gravity="left|top"
+      android:inputType="text"
       />
 
   <RelativeLayout android:layout_width="match_parent"
