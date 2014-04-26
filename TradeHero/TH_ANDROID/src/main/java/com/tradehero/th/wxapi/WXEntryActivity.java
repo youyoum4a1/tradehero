@@ -116,6 +116,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
         initBitmap();
         weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
+        mBitmap.recycle();
 
         return weChatMsg;
     }
@@ -133,7 +134,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                         mBitmap = Bitmap.createBitmap(picassoLazy.get().load(mMsgImageURL).get());
                         if (mBitmap != null)
                         {
-                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 100, 100, false);
+                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 50, 50, false);
                         }
                     } catch (IOException e)
                     {
