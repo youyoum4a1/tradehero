@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
@@ -75,6 +76,21 @@ public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, Dis
         for (DiscussionListKey discussionListKey : new ArrayList<>(snapshot().keySet()))
         {
             if (discussionListKey.equivalentFields(discussionKey))
+            {
+                invalidate(discussionListKey);
+            }
+        }
+    }
+
+    /**
+     * TODO right
+     * @param discussionType
+     */
+    public void invalidateAllForDiscussionType(DiscussionType discussionType)
+    {
+        for (DiscussionListKey discussionListKey : new ArrayList<>(snapshot().keySet()))
+        {
+            if (discussionListKey.inReplyToType == discussionType)
             {
                 invalidate(discussionListKey);
             }

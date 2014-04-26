@@ -55,7 +55,7 @@ public class VoteView extends CompoundButton
         if (oldValue != checked)
         {
             //Timber.d("Original value: %d", originalValue);
-            setValue(originalValue);
+            //setValue(originalValue);
         }
     }
 }
