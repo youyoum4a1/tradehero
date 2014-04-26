@@ -57,7 +57,8 @@ public class ProviderTileView extends ImageView
         super.onAttachedToWindow();
 
         ProviderIdList providerList = providerListCache.get().get(new ProviderListKey());
-        if (providerList.size() > 0)
+
+        if (providerList != null && providerList.size() > 0)
         {
             int randomProviderId = (int) Math.floor(Math.random() * providerList.size());
             display(providerCache.get().get(providerList.get(randomProviderId)));
