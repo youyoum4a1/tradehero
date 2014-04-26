@@ -1,14 +1,12 @@
 package com.tradehero.th.utils;
 
 import android.content.Context;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.wxapi.WeChatDTO;
 
 /**
  * Created by alex on 14-4-8.
  */
 public interface SocialSharer
 {
-    void share(Context context, DTOKey shareDtoKey);
-    void share(Context context, SecurityCompactDTO securityCompactDTO);
+    void share(Context context, WeChatDTO weChatDTO);
 }

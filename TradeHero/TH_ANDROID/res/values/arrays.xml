@@ -76,4 +76,11 @@
        <item>@drawable/img_placeholder_news_23</item>
        <item>@drawable/img_placeholder_news_24</item>
    </array>
+
+  <string-array name="share_to">
+    <item>@string/wechat</item>
+    <item>@string/linkedin</item>
+    <item>@string/facebook</item>
+    <item>@string/twitter</item>
+  </string-array>
 </resources>

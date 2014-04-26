@@ -45,6 +45,8 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialSharer;
+import com.tradehero.th.wxapi.WeChatDTO;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -358,7 +360,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             if (mWeChatShareButton.isChecked())
             {
-                weChatSharer.share(getActivity(), discussionDTO.getDiscussionKey());
+                WeChatDTO weChatDTO = new WeChatDTO();
+                weChatDTO.id = discussionDTO.getDiscussionKey().id;
+                weChatDTO.type = WeChatMessageType.CreateDiscussion.getType();
+                weChatDTO.title = discussionDTO.text;
+                weChatSharer.share(getActivity(), weChatDTO);
             }
 
             isPosted = true;

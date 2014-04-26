@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 /**
  * Created by alex on 14-4-4.
  */
-public enum WXMessageType
+public enum WeChatMessageType
 {
     News(1, R.string.share_to_wechat_timeline_news),
     CreateDiscussion(2, R.string.share_to_wechat_timeline_create_discussion),
@@ -16,7 +16,7 @@ public enum WXMessageType
     private final int type;
     private final int titleResId;
 
-    WXMessageType(int type, int titleResId)
+    WeChatMessageType(int type, int titleResId)
     {
         this.type = type;
         this.titleResId = titleResId;
@@ -32,9 +32,9 @@ public enum WXMessageType
         return type;
     }
 
-    static WXMessageType fromType(int type)
+    static WeChatMessageType fromType(int type)
     {
-        for (WXMessageType wxType: values())
+        for (WeChatMessageType wxType: values())
         {
             if (wxType.type == type)
             {

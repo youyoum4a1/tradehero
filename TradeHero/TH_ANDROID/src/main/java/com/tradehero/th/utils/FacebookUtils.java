@@ -3,11 +3,10 @@ package com.tradehero.th.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -37,12 +36,7 @@ public class FacebookUtils implements SocialSharer
         }
     }
 
-    @Override public void share(Context context, DTOKey shareDtoKey)
-    {
-        // TODO implement way to share to facebook
-    }
-
-    @Override public void share(Context context, SecurityCompactDTO securityCompactDTO)
+    @Override public void share(Context context, WeChatDTO weChatDTO)
     {
         // TODO implement way to share to facebook
     }

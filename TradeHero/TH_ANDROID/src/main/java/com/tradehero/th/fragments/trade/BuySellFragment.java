@@ -88,6 +88,8 @@ import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.wxapi.WeChatDTO;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;
@@ -1574,7 +1576,14 @@ public class BuySellFragment extends AbstractBuySellFragment
                 publishToWe = !publishToWe;
                 if (publishToWe)
                 {
-                    wechatSharerLazy.get().share(getActivity(), securityCompactDTO);
+                    WeChatDTO weChatDTO = new WeChatDTO();
+                    weChatDTO.id = securityCompactDTO.id;
+                    weChatDTO.type = WeChatMessageType.Trade.getType();
+                    if (isMyUrlOk())
+                    {
+                        weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;
+                    }
+                    wechatSharerLazy.get().share(getActivity(), weChatDTO);
                 }
             }
         });
