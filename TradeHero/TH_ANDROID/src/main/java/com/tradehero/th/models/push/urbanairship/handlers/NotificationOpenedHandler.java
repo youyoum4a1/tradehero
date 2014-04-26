@@ -41,7 +41,6 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         }
 
         context.startActivity(launchIntent);
-
         return true;
     }
 
@@ -50,10 +49,13 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         Intent launch = new Intent(Intent.ACTION_MAIN);
         launch.setClass(context, DashboardActivity.class);
         launch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        String deepLink = (String) intent.getExtras().get(context.getString(R.string.push_notification_deep_link_url));
-        if (deepLink != null)
+        if (intent.getExtras() != null)
         {
-            launch.setData(Uri.parse(deepLink));
+            String deepLink = (String) intent.getExtras().get(context.getString(R.string.push_notification_deep_link_url));
+            if (deepLink != null)
+            {
+                launch.setData(Uri.parse(deepLink));
+            }
         }
         return launch;
     }
