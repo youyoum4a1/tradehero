@@ -44,5 +44,6 @@
   <string name="alert_dialog_buy_sell_returned_null_title">喔喔</string>
   <string name="alert_dialog_buy_sell_returned_null_message">服务器返回无效信息.\n请再尝试一次.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">好的</string>
+  <string name="buy_sell_share_count">支股票</string>
 
 </resources>
