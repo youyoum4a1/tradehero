@@ -24,6 +24,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.widget.VotePair;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -86,7 +87,8 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         super.onDetachedFromWindow();
     }
 
-    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    @Override
+    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
 
@@ -124,17 +126,19 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
     {
         Bundle args = new Bundle();
-        args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+        args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY,
+                discussionKey.getArgs());
         getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 
     //TODO very bad way
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.sharing_translation_dialog_layout, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id,
-                discussionDTO.text, discussionDTO.getDiscussionKey(), true);
+                WeChatMessageType.Discussion.getType());
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
 

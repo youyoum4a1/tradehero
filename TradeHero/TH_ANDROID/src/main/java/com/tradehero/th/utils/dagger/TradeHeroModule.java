@@ -132,6 +132,7 @@ import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;

@@ -2,8 +2,6 @@ package com.tradehero.th.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.text.TextUtils;
-import android.view.Window;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -30,15 +28,10 @@ public class ProgressDialogUtil
         }
         else
         {
-            if(TextUtils.isEmpty(title))
-            {
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            }
-            else {
-                dialog.setTitle(title);
-            }
+            dialog.setTitle(title);
             dialog.setMessage(message);
         }
+
         return dialog;
     }
 

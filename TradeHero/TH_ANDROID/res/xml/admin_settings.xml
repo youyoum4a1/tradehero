@@ -9,4 +9,9 @@
       android:entries="@array/servers"
       android:entryValues="@array/server_values"
       />
+
+  <Preference
+      android:key="send_fake_push"
+      android:title="@string/send_fake_push"
+      />
 </PreferenceScreen>
