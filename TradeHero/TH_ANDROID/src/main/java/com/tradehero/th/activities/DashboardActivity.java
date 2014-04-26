@@ -277,8 +277,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onResume();
 
         launchActions();
-
         localyticsSession.get().open();
+        Timber.d("onResume");
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -314,8 +314,16 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             PushManager.activityStarted(this);
         }
+        Timber.d("onPause");
 
         super.onPause();
+    }
+
+    @Override protected void onStart()
+    {
+        super.onStart();
+
+        Timber.d("onStart");
     }
 
     @Override protected void onStop()
@@ -324,6 +332,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             PushManager.activityStoped(this);
         }
+        Timber.d("onStop");
 
         super.onStop();
     }
@@ -351,6 +360,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         detachUserProfileFetchTask();
         detachNotificationFetchTask();
+        
         super.onDestroy();
     }
 

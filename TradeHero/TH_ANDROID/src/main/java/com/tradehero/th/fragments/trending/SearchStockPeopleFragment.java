@@ -247,9 +247,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             if (mSearchType == TrendingSearchType.PEOPLE)
             {
                 listView.setAdapter(peopleItemViewAdapter);
+                searchEmptyView.setText(R.string.trending_search_empty_result_for_people);
             }
             else if (mSearchType == TrendingSearchType.STOCKS)
             {
+                searchEmptyView.setText(R.string.trending_search_empty_result_for_stock);
                 listView.setAdapter(securityItemViewAdapter);
             }
         }

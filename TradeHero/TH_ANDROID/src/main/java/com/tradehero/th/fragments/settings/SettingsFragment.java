@@ -112,11 +112,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
-    @Inject Lazy<MessageHeaderListCache> messageListCache;
-    @Inject Lazy<MessageHeaderCache> messageHeaderCache;
-    @Inject Lazy<DiscussionListCache> discussionListCache;
-    @Inject Lazy<DiscussionCache> discussionCache;
-
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
 
@@ -1028,13 +1023,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(getActivity()));
     }
 
-    private void clearMessagesCache()
-    {
-        messageHeaderCache.get().invalidateAll();
-        messageListCache.get().invalidateAll();
-        discussionCache.get().invalidateAll();
-        discussionListCache.get().invalidateAll();
-    }
 
     private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
     {
@@ -1044,7 +1032,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                clearMessagesCache();
                 progressDialog.dismiss();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);

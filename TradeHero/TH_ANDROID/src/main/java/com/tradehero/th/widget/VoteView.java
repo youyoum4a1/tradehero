@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
-import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 3/14/14 Time: 2:44 PM Copyright (c) TradeHero
@@ -55,7 +54,7 @@ public class VoteView extends CompoundButton
         super.setChecked(checked);
         if (oldValue != checked)
         {
-            Timber.d("Original value: %d", originalValue);
+            //Timber.d("Original value: %d", originalValue);
             setValue(originalValue);
         }
     }

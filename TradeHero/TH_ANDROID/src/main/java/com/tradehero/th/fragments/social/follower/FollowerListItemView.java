@@ -162,6 +162,7 @@ public class FollowerListItemView extends RelativeLayout
             {
                 picasso.get().load(userFollowerDTO.picture)
                         .transform(peopleIconTransformation)
+                         //TODO if this view is reused, userIcon.getDrawable() may returns the different drawable
                         .placeholder(userIcon.getDrawable())
                         .into(userIcon);
             }

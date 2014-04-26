@@ -100,7 +100,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id)
                         {
-                            handleFollowerItemClicked(view, position, id);
+                            ListView listView = (ListView)parent;
+                            handleFollowerItemClicked(view, position - listView.getHeaderViewsCount(), id);
                         }
                     }
             );
