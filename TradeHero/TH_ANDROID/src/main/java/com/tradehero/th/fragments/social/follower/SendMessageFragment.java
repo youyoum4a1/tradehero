@@ -172,8 +172,9 @@ public class SendMessageFragment extends DashboardFragment
                     Context.INPUT_METHOD_SERVICE);
             if (shown)
             {
-                imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
-                imm.showSoftInput(inputText, 0);
+                //imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
+                imm.showSoftInput(inputText, InputMethodManager.SHOW_FORCED);
+                //imm.showSoftInput(inputText, 0);
             }
             else
             {
