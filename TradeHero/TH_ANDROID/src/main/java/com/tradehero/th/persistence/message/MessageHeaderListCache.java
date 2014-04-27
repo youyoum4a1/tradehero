@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.message;
 
-import com.sun.tools.internal.ws.processor.model.Message;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
