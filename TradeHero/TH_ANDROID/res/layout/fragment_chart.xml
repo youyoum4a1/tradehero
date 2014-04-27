@@ -53,8 +53,90 @@
           android:layout_weight="1">
 
         <TableRow
+            android:id="@+id/row_warrant_type"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_type"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_type"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="left"
+              tools:text="Put"
+              android:textSize="13sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_warrant_code"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_code"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_code"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="left"
+              tools:text="T1IW"
+              android:textSize="13sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_warrant_expiry"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_expiry"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_expiry"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="left"
+              tools:text="1 Apr 14"
+              android:textSize="13sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             >
 
           <TextView
@@ -75,7 +157,8 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp" />
+              android:textSize="13sp"
+              tools:text="US$ 567.8"/>
         </TableRow>
 
         <TableRow
@@ -101,7 +184,8 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp" />
+              android:textSize="13sp"
+              tools:text="US$ 564.1"/>
         </TableRow>
 
         <TableRow
@@ -127,7 +211,8 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp" />
+              android:textSize="13sp"
+              tools:text="US$ 571.9"/>
         </TableRow>
 
         <TableRow
@@ -153,7 +238,8 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp" />
+              android:textSize="13sp"
+              tools:text="US$ 563.9"/>
         </TableRow>
 
       </TableLayout>
@@ -165,8 +251,92 @@
           >
 
         <TableRow
+            android:id="@+id/row_warrant_strike_price"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_strike_price"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_strike_price"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="right"
+              tools:text="SG$ 2.000"
+              android:textSize="13sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_warrant_underlying"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_underlying"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_underlying"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="right"
+              tools:text="Ascendas REOT"
+              android:textSize="13sp"
+              />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_warrant_issuer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+          <TextView
+              style="@style/TH.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/warrant_info_issuer"
+              android:textSize="13sp"
+              android:gravity="left"
+              />
+
+          <TextView
+              android:id="@+id/vwarrant_issuer"
+              style="@style/TH.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:gravity="right"
+              tools:text="MB"
+              android:textSize="13sp"
+              />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             >
 
           <TextView
@@ -187,7 +357,8 @@
               android:layout_weight="1"
               android:gravity="right"
               android:text=""
-              android:textSize="13sp" />
+              android:textSize="13sp"
+              tools:text="14.11"/>
         </TableRow>
 
         <TableRow
@@ -214,6 +385,7 @@
               android:gravity="right"
               android:text=""
               android:textSize="13sp"
+              tools:text="40.23"
               />
         </TableRow>
 
@@ -239,8 +411,8 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:text="@string/na"
               android:textSize="13sp"
+              tools:text="13,938,402"
               />
         </TableRow>
 
@@ -266,8 +438,8 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:text="@string/na"
               android:textSize="13sp"
+              tools:text="10,840,800"
               />
         </TableRow>
 
