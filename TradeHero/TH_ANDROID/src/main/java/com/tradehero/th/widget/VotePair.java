@@ -26,12 +26,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/14/14 Time: 4:21 PM Copyright (c) TradeHero
- */
 public class VotePair extends LinearLayout
 {
-
     @InjectView(R.id.timeline_action_button_vote_up) VoteView voteUp;
     @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
 
@@ -41,8 +37,7 @@ public class VotePair extends LinearLayout
     private AbstractDiscussionDTO discussionDTO;
     private boolean downVote = false;
 
-
-    public interface OnVoteListener
+    public static interface OnVoteListener
     {
         void onVoteSuccess(DiscussionDTO discussionDTO);
     }
@@ -105,14 +100,20 @@ public class VotePair extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        if (voteCallback != null)
-        {
-            voteCallback.setPrimaryCallback(null);
-        }
+        detachVoteMiddleCallback();
 
         ButterKnife.reset(this);
 
         super.onDetachedFromWindow();
+    }
+
+    protected void detachVoteMiddleCallback()
+    {
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
+        }
+        voteCallback = null;
     }
 
     @OnClick({
@@ -128,14 +129,19 @@ public class VotePair extends LinearLayout
         }
         if (discussionDTO == null)
         {
+            // TODO inform player about lack of information
             return;
         }
         switch (view.getId())
         {
             case R.id.timeline_action_button_vote_up:
                 boolean targetVoteUp = voteUp.isChecked();
-                Timber.d("%s onItemClicked voteDirection:%s voteUp checked:%s, content:%s",discussionDTO.hashCode(),discussionDTO.voteDirection,voteUp.isChecked(),discussionDTO.text);
-                fakeUpateForVoteUp(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
+                Timber.d("%s onItemClicked voteDirection:%s voteUp checked:%s, content:%s",
+                        discussionDTO.hashCode(),
+                        discussionDTO.voteDirection,
+                        voteUp.isChecked(),
+                        discussionDTO.text);
+                fakeUpdateForVoteUp(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
                 updateVoting(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
 
                 break;
@@ -149,7 +155,7 @@ public class VotePair extends LinearLayout
         }
     }
 
-    private void fakeUpateForVoteUp(VoteDirection targetVoteDirection)
+    private void fakeUpdateForVoteUp(VoteDirection targetVoteDirection)
     {
         if (targetVoteDirection == VoteDirection.UpVote)
         {
@@ -165,11 +171,10 @@ public class VotePair extends LinearLayout
         }
     }
 
-    class VoteCallback implements Callback<DiscussionDTO>
+    protected class VoteCallback implements Callback<DiscussionDTO>
     {
         private AbstractDiscussionDTO discussionDTO;
         private VoteDirection targetVoteDirection;
-
 
         public VoteCallback(VoteDirection voteDirection)
         {
@@ -207,7 +212,6 @@ public class VotePair extends LinearLayout
                 {
                     onVoteListener.onVoteSuccess(discussionDTO);
                 }
-
             }
             else
             {
@@ -240,7 +244,8 @@ public class VotePair extends LinearLayout
                 discussionType,
                 discussionDTO.id,
                 voteDirection);
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey,new VoteCallback(voteDirection));
+        detachVoteMiddleCallback();
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
     }
 
     public boolean hasDownVote()
@@ -265,47 +270,10 @@ public class VotePair extends LinearLayout
         throw new IllegalStateException("Unknown discussion type");
     }
 
-    private void resetVoting()
-    {
-        if (voteUp != null)
-        {
-            voteUp.setChecked(false);
-        }
-        if (voteDown != null)
-        {
-            voteDown.setChecked(false);
-        }
-    }
-
     public void display(AbstractDiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
-
-        resetVoting();
-
-        if (discussionDTO != null)
-        {
-            voteUp.setValue(discussionDTO.upvoteCount);
-            voteDown.setValue(discussionDTO.downvoteCount);
-            Timber.d("display %s upvoteCount:%s",discussionDTO.hashCode(),discussionDTO.upvoteCount);
-            VoteDirection voteDirection = VoteDirection.fromValue(discussionDTO.voteDirection);
-            //Timber.d("voteDirection: %s", voteDirection.description);
-            switch (voteDirection)
-            {
-                case DownVote:
-                    voteDown.setChecked(true);
-                    Timber.d("%s voteDown checked :%s,voteDirection:%s",discussionDTO.hashCode(),voteUp.isChecked(),voteDirection);
-                    break;
-                case UpVote:
-                    voteUp.setChecked(true);
-                    Timber.d("%s voteUp checked :%s,voteDirection:%s",discussionDTO.hashCode(),voteUp.isChecked(),voteDirection);
-                    break;
-                case UnVote:
-                    voteUp.setChecked(false);
-                    Timber.d("%s UnVote checked :%s,voteDirection:%s",discussionDTO.hashCode(),voteUp.isChecked(),voteDirection);
-                    // do nothing
-                    break;
-            }
-        }
+        voteUp.display(discussionDTO);
+        voteDown.display(discussionDTO);
     }
 }
