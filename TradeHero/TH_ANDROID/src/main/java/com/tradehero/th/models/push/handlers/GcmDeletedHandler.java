@@ -5,9 +5,6 @@ import com.urbanairship.push.GCMMessageHandler;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public class GcmDeletedHandler implements PushNotificationHandler
 {
     @Inject public GcmDeletedHandler()

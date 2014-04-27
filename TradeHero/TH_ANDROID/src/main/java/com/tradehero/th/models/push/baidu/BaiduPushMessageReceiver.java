@@ -17,11 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
 
-/**
- */
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 {
-    public static final String TAG = BaiduPushMessageReceiver.class.getSimpleName();
     public static final String ACTION_NOTIFICATION_CLICKED = "com.tradehero.th.ACTION_NOTIFICATION_CLICKED";
     public static final String KEY_NOTIFICATION_ID = "com.tradehero.th.NOTIFICATION_ID";
     public static final String KEY_NOTIFICATION_CONTENT = "com.tradehero.th.NOTIFICATION_CONTENT";

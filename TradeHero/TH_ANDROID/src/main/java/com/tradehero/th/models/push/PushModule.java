@@ -4,9 +4,6 @@ import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
 import dagger.Module;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 @Module(
         includes = {
                 BaiduPushModule.class,

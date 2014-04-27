@@ -6,9 +6,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 @Module(
         injects = {
                 BaiduPushMessageReceiver.class,

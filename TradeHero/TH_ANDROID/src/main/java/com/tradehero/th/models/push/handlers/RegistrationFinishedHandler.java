@@ -7,9 +7,6 @@ import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public class RegistrationFinishedHandler implements PushNotificationHandler
 {
     public static String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";

@@ -2,9 +2,6 @@ package com.tradehero.th.models.push.baidu;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 
-/**
- * Created by wangliang on 14-4-26.
- */
 public class PushMessageDTO
 {
     public String title;

@@ -9,9 +9,6 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.QueryMap;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public interface NotificationService
 {
     @GET("/notifications")

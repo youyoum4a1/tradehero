@@ -6,9 +6,6 @@ import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public class PushReceivedHandler extends PrecacheNotificationHandler
 {
     @Inject public PushReceivedHandler(NotificationCache notificationCache)
