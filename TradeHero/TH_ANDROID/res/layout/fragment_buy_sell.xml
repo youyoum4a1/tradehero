@@ -169,6 +169,7 @@
         android:textColor="@color/red"
         android:text="@string/buy_sell_loading_ask_price"
         />
+
     <TextView
         android:id="@+id/vprice_as_of"
         style="@style/TH.SmallValue"

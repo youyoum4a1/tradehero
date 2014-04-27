@@ -103,8 +103,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         WithTutorial
 
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED =
-            BuySellFragment.class.getName() + ".chartButtonClicked";
+    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;

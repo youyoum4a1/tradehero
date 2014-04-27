@@ -11,15 +11,27 @@
       android:layout_height="wrap_content"
       android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/chart_imageView"
+    <com.tradehero.common.widget.BetterViewAnimator
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        />
+        android:id="@+id/chart_image_wrapper"
+        >
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="@string/chart_loading_image"
+          />
+      <ImageView
+          android:id="@+id/chart_imageView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginRight="20dp"
+          android:layout_marginLeft="20dp"
+          android:scaleType="fitXY"
+          android:adjustViewBounds="true"
+          android:contentDescription="@null"/>
+    </com.tradehero.common.widget.BetterViewAnimator>
 
     <com.tradehero.th.widget.news.TimeSpanButtonSet
         android:id="@+id/chart_time_span_button_set"

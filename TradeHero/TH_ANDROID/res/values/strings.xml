@@ -77,4 +77,5 @@
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
   <string name="sell">Sell</string>
   <string name="buy">Buy</string>
+  <string name="chart_loading_image">Loading chart image…</string>
 </resources>

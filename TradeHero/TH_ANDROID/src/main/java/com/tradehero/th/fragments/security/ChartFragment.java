@@ -12,8 +12,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.LiveDTOCache;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -32,6 +34,7 @@ import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -47,6 +50,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
     @InjectView(R.id.close) @Optional protected Button mCloseButton;
+
+    @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
 
     // Warrant specific
     @InjectView(R.id.row_warrant_type) @Optional protected View rowWarrantType;
@@ -76,6 +81,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Inject protected ChartDTOFactory chartDTOFactory;
     @Inject protected THLocalyticsSession localyticsSession;
     private Runnable chooseChartImageSizeTask;
+    private Callback chartImageCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -156,6 +162,21 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             });
         }
 
+        chartImageCallback = new Callback()
+        {
+            @Override public void onSuccess()
+            {
+                if (chartImageWrapper != null)
+                {
+                    chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
+                }
+            }
+
+            @Override public void onError()
+            {
+                Timber.d("Load chartImage error");
+            }
+        };
         return view;
     }
 
@@ -193,6 +214,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             mCloseButton.setOnClickListener(null);
             mCloseButton = null;
         }
+        chartImageCallback = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -292,7 +315,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
-            this.picasso.load(imageURL).skipMemoryCache().into(image);
+            this.picasso.load(imageURL).skipMemoryCache()
+                    .into(image, chartImageCallback);
+
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             {
                 postChooseOtherSize();
