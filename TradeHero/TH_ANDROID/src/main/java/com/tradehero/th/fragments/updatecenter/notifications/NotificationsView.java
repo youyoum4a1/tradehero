@@ -258,7 +258,7 @@ public class NotificationsView extends BetterViewAnimator
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
         if (middleCallback == null)
         {
-            middleCallback = notificationServiceWrapper.markAsRead(pushId, getCallback(pushId));
+            middleCallback = notificationServiceWrapper.markAsRead(new NotificationKey(pushId), getCallback(pushId));
             middleCallbackMap.put(pushId, middleCallback);
         }
     }
