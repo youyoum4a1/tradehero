@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -68,8 +70,9 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements PortfolioRequestListener, UserProfileDetailView.OnHeroClickListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID =
-            TimelineFragment.class.getName() + ".showUserId";
+    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
+    private View loadingView;
+    private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
 
     public static enum TabType
     {
@@ -149,6 +152,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
         userProfileView.setHeroClickListener(this);
+
+        loadingView = new ProgressBar(getActivity());
+
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
@@ -240,6 +246,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.getRefreshableView().addHeaderView(userProfileView);
         }
 
+        if (loadingView != null)
+        {
+            timelineListView.addFooterView(loadingView);
+        }
+
         displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
         displayablePortfolioFetchAssistant.setFetchedListener(
                 new DisplayablePortfolioFetchAssistant.OnFetchedListener()
@@ -249,6 +260,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         displayPortfolios();
                     }
                 });
+
+        lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
 
     private class FollowerSummaryListener
@@ -352,6 +365,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileView.setPortfolioRequestListener(null);
         }
         this.userProfileView = null;
+        this.loadingView = null;
+
         super.onDestroyView();
     }
 
@@ -374,6 +389,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnLastItemVisibleListener(null);
         }
         timelineListView = null;
+        lastItemVisibleListener = null;
     }
 
     private void detachFreeFollowMiddleCallback()
@@ -498,7 +514,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (timelineScreen != null)
         {
             timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view_container);
-            //timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
         }
         if (userProfileView != null)
         {
@@ -579,7 +594,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 });
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(mainTimelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(mainTimelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
         timelineListView.setRefreshing();
         timelineListView.setAdapter(mainTimelineAdapter);
         timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -681,6 +696,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (timelineListView != null)
         {
             timelineListView.onRefreshComplete();
+            loadingView.setVisibility(View.GONE);
             cancelRefreshingOnResume = true;
         }
     }
@@ -964,6 +980,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 // There is just no existing thread
             }
+        }
+    }
+
+    private class TimelineLastItemVisibleListener implements PullToRefreshBase.OnLastItemVisibleListener
+    {
+        @Override public void onLastItemVisible()
+        {
+            mainTimelineAdapter.getTimelineLoader().loadPrevious();
+            loadingView.setVisibility(View.VISIBLE);
         }
     }
 }
