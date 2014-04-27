@@ -13,22 +13,34 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 public class SecurityDiscussionFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionFragment.class.getName() + ".securityId";
+
     @Inject DiscussionListCache discussionListCache;
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
     private SecurityId securityId;
 
+    public static void putSecurityId(Bundle args, SecurityId securityId)
+    {
+        args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
+    }
+
+    public static SecurityId getSecurityId(Bundle args)
+    {
+        SecurityId extracted = null;
+        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
+        {
+            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+        }
+        return extracted;
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.security_discussion, container, false);
-        DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
         return view;
     }
@@ -37,14 +49,10 @@ public class SecurityDiscussionFragment extends DashboardFragment
     {
         super.onResume();
 
-        Bundle args = getArguments();
-        if (args != null)
+        SecurityId fromArgs = getSecurityId(getArguments());
+        if (fromArgs != null)
         {
-            Bundle securityIdBundle = args.getBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            if (securityIdBundle != null)
-            {
-                linkWith(new SecurityId(securityIdBundle), true);
-            }
+            linkWith(fromArgs, true);
         }
     }
 
@@ -53,7 +61,7 @@ public class SecurityDiscussionFragment extends DashboardFragment
         if (securityId != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            DiscussionEditPostFragment.putSecurityId(bundle, securityId);
             getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
         }
     }

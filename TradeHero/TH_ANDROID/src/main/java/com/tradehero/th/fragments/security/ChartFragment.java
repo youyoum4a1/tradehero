@@ -26,9 +26,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 9/10/13
- */
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";

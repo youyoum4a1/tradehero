@@ -6,20 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    public static final String TAG = BuySellBottomStockPagerAdapter.class.getSimpleName();
-
     private final Context context;
     private SecurityCompactDTO securityCompactDTO;
     private ProviderId providerId;
@@ -80,7 +76,6 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     {
         Fragment fragment;
         Bundle args = new Bundle();
-        args.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 
         if (false && securityCompactDTO instanceof WarrantDTO && position == 0)//hide Warrant Info temp
         {
@@ -102,13 +97,15 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
                     break;
                 case 1:
                     fragment = new SecurityDiscussionFragment();
+                    populateForSecurityDiscussionFragment(args);
                     break;
                 case 2:
                     fragment = new NewsHeadlineFragment();
+                    populateForNewsHeadlineFragment(args);
                     break;
 
                 default:
-                    THLog.w(TAG, "Not supported index " + position);
+                    Timber.w("Not supported index " + position);
                     throw new UnsupportedOperationException("Not implemented");
             }
         }
@@ -120,6 +117,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForWarrantInfoFragment(Bundle args)
     {
+        WarrantInfoValueFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
         if (providerId != null)
         {
             args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
@@ -128,8 +126,19 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForChartFragment(Bundle args)
     {
+        ChartFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
         args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
         args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
+    }
+
+    private void populateForSecurityDiscussionFragment(Bundle args)
+    {
+        SecurityDiscussionFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+    }
+
+    private void populateForNewsHeadlineFragment(Bundle args)
+    {
+        NewsHeadlineFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
     }
 
     @Override public int getItemPosition(Object object)

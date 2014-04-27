@@ -4,13 +4,10 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class SecurityId implements Comparable, DTOKey, DTO
 {
-    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityId.class.getName() + ".securityId";
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
-    private final static String BUNDLE_KEY_ID = SecurityId.class.getName() + ".id";
 
     public final String exchange;
     public final String securitySymbol;
@@ -47,18 +44,18 @@ public class SecurityId implements Comparable, DTOKey, DTO
                 (securitySymbol == null ? other.securitySymbol == null : securitySymbol.equals(other.securitySymbol));
     }
 
-    @Override public int compareTo(Object o)
+    @Override public int compareTo(Object other)
     {
-        if (o == null)
+        if (other == null)
         {
             return 1;
         }
 
-        if (o.getClass() == getClass())
+        if (other.getClass() == getClass())
         {
-            return compareTo(getClass().cast(o));
+            return compareTo(getClass().cast(other));
         }
-        return o.getClass().getName().compareTo(getClass().getName());
+        return other.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(SecurityId other)

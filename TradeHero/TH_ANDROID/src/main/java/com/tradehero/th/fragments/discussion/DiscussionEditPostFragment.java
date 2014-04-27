@@ -53,11 +53,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by tho on 4/21/2014.
- */
 public class DiscussionEditPostFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_SECURITY_ID = DiscussionEditPostFragment.class.getName() + ".securityId";
     private static final String SECURITY_TAG_FORMAT = "<$$%s,%d$>";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
@@ -85,6 +83,21 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private SearchStockPeopleFragment searchStockPeopleFragment;
     private DiscussionKey discussionKey;
     private boolean isPosted;
+
+    public static void putSecurityId(Bundle args, SecurityId securityId)
+    {
+        args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
+    }
+
+    public static SecurityId getSecurityId(Bundle args)
+    {
+        SecurityId extracted = null;
+        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
+        {
+            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+        }
+        return extracted;
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -242,16 +255,15 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         isPosted = false;
 
+        SecurityId fromArgs = getSecurityId(getArguments());
+        if (fromArgs != null)
+        {
+            linkWith(fromArgs, true);
+        }
+
         Bundle args = getArguments();
         if (args != null)
         {
-            if (args.containsKey(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE))
-            {
-                Bundle securityBundle = args.getBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE);
-                SecurityId securityId = new SecurityId(securityBundle);
-                linkWith(securityId, true);
-            }
-
             if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
             {
                 DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));

@@ -29,8 +29,6 @@ import javax.inject.Inject;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    private final static String TAG = WarrantInfoValueFragment.class.getSimpleName();
-
     public final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
 
     @InjectView(R.id.warrant_help_video_link) protected View mHelpVideoLink;
