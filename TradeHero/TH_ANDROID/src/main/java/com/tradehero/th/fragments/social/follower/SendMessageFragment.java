@@ -1,15 +1,12 @@
 package com.tradehero.th.fragments.social.follower;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -40,6 +37,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -51,14 +49,11 @@ import timber.log.Timber;
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE =
-            SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE =
-            SendMessageFragment.class.getName() + ".messageType";
+    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
 
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
-    private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
     /** ProgressDialog to show progress when sending message */
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
@@ -80,12 +75,6 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        showInput(true);
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -149,38 +138,17 @@ public class SendMessageFragment extends DashboardFragment
 
     private void initView()
     {
-        inputText.setFocusable(true);
-        inputText.requestFocus();
-        showInput(true);
+        DeviceUtil.showKeyboard(getActivity(), inputText);
+
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);
     }
 
     @Override public void onDestroy()
     {
-        showInput(false);
+        DeviceUtil.dismissKeyboard(getActivity(), inputText);
         sendMessageDiscussionCallback = null;
         super.onDestroy();
-    }
-
-    private void showInput(boolean shown)
-    {
-        if (inputText != null)
-        {
-
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            if (shown)
-            {
-                //imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
-                imm.showSoftInput(inputText, InputMethodManager.SHOW_FORCED);
-                //imm.showSoftInput(inputText, 0);
-            }
-            else
-            {
-                imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
-            }
-        }
     }
 
     private void changeHeroType(MessageType messageType)

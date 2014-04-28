@@ -58,9 +58,10 @@
       android:minHeight="80dp"
       android:textSize="@dimen/stock_symbol_header"
       android:paddingLeft="5dp"
-      tools:text="NASDAQ:GOOG"
       android:gravity="left|top"
       android:inputType="text"
+      android:focusable="true"
+      tools:text="NASDAQ:GOOG"
       >
     <requestFocus/>
   </EditText>
