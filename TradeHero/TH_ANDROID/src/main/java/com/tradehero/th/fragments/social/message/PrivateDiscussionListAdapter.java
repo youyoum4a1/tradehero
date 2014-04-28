@@ -12,6 +12,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
+@Deprecated // Use PrivateDiscussionSetAdapter
 public class PrivateDiscussionListAdapter extends DiscussionListAdapter
 {
     public static final int ITEM_TYPE_MINE = 0;

@@ -30,6 +30,7 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
@@ -344,6 +345,7 @@ import javax.inject.Singleton;
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
                         PrivateDiscussionListAdapter.class,
+                        PrivateDiscussionSetAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
                         AbstractDiscussionFragment.class,

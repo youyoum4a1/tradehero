@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.AppendableArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 
+@Deprecated // Use DiscussionSetAdapter
 public class DiscussionListAdapter extends AppendableArrayDTOAdapter<DiscussionKey, AbstractDiscussionItemView<DiscussionKey>>
 {
     public DiscussionListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)

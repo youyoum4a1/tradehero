@@ -18,9 +18,10 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.fragments.discussion.DiscussionListAdapter;
+import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
+import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 
@@ -56,9 +57,9 @@ public class PrivateDiscussionView extends DiscussionView
     }
     //</editor-fold>
 
-    @Override protected DiscussionListAdapter createDiscussionListAdapter()
+    @Override protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        PrivateDiscussionListAdapter discussionListAdapter = new PrivateDiscussionListAdapter(
+        PrivateDiscussionSetAdapter discussionListAdapter = new PrivateDiscussionSetAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
                 R.layout.private_message_bubble_mine,
@@ -161,11 +162,11 @@ public class PrivateDiscussionView extends DiscussionView
         int topicId;
         if (currentUserId.toUserBaseKey().equals(discussionDTO.getSenderKey()))
         {
-            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).mineResId;
+            topicId = ((PrivateDiscussionSetAdapter) discussionListAdapter).mineResId;
         }
         else
         {
-            topicId = ((PrivateDiscussionListAdapter) discussionListAdapter).otherResId;
+            topicId = ((PrivateDiscussionSetAdapter) discussionListAdapter).otherResId;
         }
         setTopicLayout(topicId);
         inflateDiscussionTopic();
