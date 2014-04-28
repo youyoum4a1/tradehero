@@ -18,7 +18,7 @@
   <string name="user_profile_optional">可选项</string>
   <string name="user_profile_first_name">名</string>
   <string name="user_profile_last_name">姓</string>
-  <string name="user_profile_roi">"回报率: "</string>
+  <string name="user_profile_roi">回报率: </string>
   <string name="user_profile_member_since">会员至</string>
   <string name="user_profile_trade_profit">交易中所获利</string>
   <string name="user_profile_total_wealth">总资产</string>
