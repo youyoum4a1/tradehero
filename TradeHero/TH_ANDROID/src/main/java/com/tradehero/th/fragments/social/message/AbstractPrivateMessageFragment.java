@@ -97,10 +97,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
-        ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
-        ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
-                new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
-        ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
+        if (discussionView != null)
+        {
+            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
+            ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
+                    new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
+            ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
