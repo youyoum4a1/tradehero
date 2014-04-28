@@ -90,17 +90,6 @@ public class THSignedNumber
             case TYPE_MONEY:
                 formattedNumber = signedFormattedMoney(precision);
         }
-        
-        if (formattedNumber != null && formattedNumber.contains("."))
-        {
-            int length = formattedNumber.length();
-            do
-            {
-                length--;
-            }
-            while (length > 0 && formattedNumber.charAt(length) == '0');
-            formattedNumber = formattedNumber.substring(0, length + 1);
-        }
 
         return formattedNumber;
     }
@@ -140,9 +129,25 @@ public class THSignedNumber
         color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%." + precision + "f";
 
-        return String.format(numberFormat,
-                sign,
-                Math.abs(number)) + "%";
+        String trailingZeroRemovedNumber = String.format(numberFormat, sign, Math.abs(number));
+        trailingZeroRemovedNumber = removeTrailingZeros(trailingZeroRemovedNumber);
+
+        return  trailingZeroRemovedNumber + "%";
+    }
+
+    private String removeTrailingZeros(String formattedNumber)
+    {
+        if (formattedNumber != null && formattedNumber.contains("."))
+        {
+            int length = formattedNumber.length();
+            do
+            {
+                length--;
+            }
+            while (length > 0 && formattedNumber.charAt(length) == '0');
+            formattedNumber = formattedNumber.substring(0, length + 1);
+        }
+        return formattedNumber;
     }
 
     private String signedFormattedMoney(int precision)
@@ -167,10 +172,14 @@ public class THSignedNumber
         color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%s %s";
 
+        String trailingZeroRemovedNumber = df.format(Math.abs(number));
+        trailingZeroRemovedNumber = removeTrailingZeros(trailingZeroRemovedNumber);
+
         return String.format(numberFormat,
                 sign,
                 currency,
-                df.format(Math.abs(number)));
+                trailingZeroRemovedNumber
+                );
     }
 
     private int precisionFromNumber()
