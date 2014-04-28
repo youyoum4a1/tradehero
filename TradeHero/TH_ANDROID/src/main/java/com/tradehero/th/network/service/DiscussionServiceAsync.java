@@ -17,9 +17,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
-/**
- * Created by xavier on 3/7/14.
- */
 public interface DiscussionServiceAsync
 {
     //<editor-fold desc="Get Comment">

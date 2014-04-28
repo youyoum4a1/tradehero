@@ -19,7 +19,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     {
         super();
         this.context = context;
-        set = new LinkedHashSet<>();
+        set = createSet(null);
         items = new ArrayList<>();
     }
 
@@ -73,7 +73,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         int afterCount = beforeCount;
         if (newOnes != null)
         {
-            LinkedHashSet<T> replacement = new LinkedHashSet<>(newOnes);
+            Set<T> replacement = createSet(newOnes);
             replacement.addAll(set);
             set = replacement;
             items = new ArrayList<>(set);
