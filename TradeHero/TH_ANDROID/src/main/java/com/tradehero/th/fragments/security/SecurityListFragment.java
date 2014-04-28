@@ -157,7 +157,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        //THLog.d(TAG, "onDestroyView");
         if (securityListView != null)
         {
             securityListView.setOnItemClickListener(null);
@@ -255,8 +254,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Listeners">
     protected class SecurityListFlagNearEndScrollListener extends FlagNearEndScrollListener
     {
-        public final String TAG = SecurityListFlagNearEndScrollListener.class.getSimpleName();
-
         public SecurityListFlagNearEndScrollListener(int visibleThreshold)
         {
             super(visibleThreshold);
@@ -267,11 +264,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             super.raiseFlag();
             loadNextPage();
         }
-
-        @Override public void onScrollStateChanged(AbsListView view, int scrollState)
-        {
-            super.onScrollStateChanged(view, scrollState);
-        }
     }
 
     private class SecurityListOnGestureListener extends GestureDetector.SimpleOnGestureListener
@@ -279,16 +271,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
             return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-        {
-            //if (mFilterViewPager != null && Math.abs(velocityY) > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
-            //{
-            //    mFilterViewPager.setVisibility(View.GONE);
-            //}
-            //THLog.d(TAG, "VelocityY " + velocityY);
-            return super.onFling(e1, e2, velocityX, velocityY);
         }
     }
 
