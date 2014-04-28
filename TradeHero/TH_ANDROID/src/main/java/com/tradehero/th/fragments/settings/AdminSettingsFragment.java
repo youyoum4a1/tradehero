@@ -14,6 +14,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.Application;
@@ -105,13 +106,22 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         View view = layoutInflater.inflate(R.layout.debug_ask_for_notification_id, null);
         final EditText input = (EditText) view.findViewById(R.id.pushNotification);
         alert.setView(view);
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 Editable value = input.getText();
-                sendFakePushNotification(Integer.parseInt(value.toString()));
+                int notificationId = 0;
+                try
+                {
+                    notificationId = Integer.parseInt(value.toString());
+                }
+                catch (NumberFormatException ex)
+                {
+                    THToast.show("Not a number");
+                }
+                sendFakePushNotification(notificationId);
             }
         });
         alert.show();
