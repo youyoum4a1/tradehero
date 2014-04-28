@@ -10,7 +10,7 @@ public class NotificaionReceiver extends BroadcastReceiver
     {
         if (BaiduPushMessageReceiver.ACTION_NOTIFICATION_CLICKED.equals(intent.getAction()))
         {
-            BaiduPushMessageReceiver.handle(intent);
+            BaiduPushMessageReceiver.handleIntent(intent);
         }
     }
 }

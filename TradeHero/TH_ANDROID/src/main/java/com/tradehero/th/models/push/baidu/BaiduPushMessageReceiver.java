@@ -99,7 +99,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
 
-    public static Intent handle(Intent intent)
+    public static Intent handleIntent(Intent intent)
     {
         String action = intent.getAction();
         int id = intent.getIntExtra(KEY_NOTIFICATION_ID,-1);
@@ -157,7 +157,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * setTags() 的回调函数。
+     * Callback for setTags()
      */
     @Override
     public void onSetTags(Context context, int errorCode,
@@ -168,7 +168,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * delTags() 的回调函数。
+     *  Callback for delTags()
      */
     @Override
     public void onDelTags(Context context, int errorCode,
@@ -179,7 +179,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * listTags() 的回调函数。
+     * Callback for listTags()
      */
     @Override
     public void onListTags(Context context, int errorCode,
@@ -189,7 +189,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * PushManager.stopWork() 的回调函数。
+     * Callback for PushManager.stopWork()
      */
     @Override
     public void onUnbind(Context context, int errorCode, String requestId)

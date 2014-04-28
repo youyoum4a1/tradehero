@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.updatecenter;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,9 +34,12 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
@@ -44,7 +48,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
-        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
+        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener, TabHost.OnTabChangeListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
@@ -53,6 +57,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+
+    @Inject MessageHeaderListCache messageListCache;
+    @Inject MessageHeaderCache messageHeaderCache;
 
     private FragmentTabHost mTabHost;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
@@ -67,7 +74,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
 
         fetchUserProfileListener = new FetchUserProfileListener();
         initBroadcastReceiver();
-
         Timber.d("onCreate");
     }
 
@@ -93,15 +99,19 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver(broadcastReceiver,
                         new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
+        addOnTabChangeListener();
     }
 
     @Override public void onPause()
     {
         super.onPause();
 
+        Timber.d("onPause");
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(broadcastReceiver);
+        removeOnTabChangeListener();
     }
+
 
     private void fetchUserProfile()
     {
@@ -246,6 +256,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
                 SendMessageFragment.class, args);
     }
 
+    @Override public void onStop()
+    {
+        super.onStop();
+        Timber.d("onStop");
+    }
+
+
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
@@ -261,8 +278,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     {
         Timber.d("onDestroy");
         fetchUserProfileListener = null;
-        clearTabs();
-
+        //clearTabs();
+        //removeOnTabChangeListener();
         super.onDestroy();
     }
 
@@ -310,8 +327,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
                 }
                 //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
                 //TODO this will crash when onDestroy alex
-                //ft.commitAllowingStateLoss();
-                //fm.executePendingTransactions();
+                ft.commitAllowingStateLoss();
+                fm.executePendingTransactions();
             }
 
             mTabHost.clearAllTabs();
@@ -392,4 +409,52 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
             }
         };
     }
+
+    @Override public void onTabChanged(String tabId)
+    {
+        Timber.d("onTabChanged %s",tabId);
+        String tab = getString(DashboardTabType.UPDATE_CENTER.stringResId);
+        if (tab.equals(tabId))
+        {
+            //switch to current tab,do nothing
+            return;
+        }
+        clearTabs();
+        invalidateMessageCache();
+    }
+
+    private void invalidateMessageCache()
+    {
+        if (messageListCache != null)
+        {
+            messageListCache.invalidateAll();
+        }
+        if (messageHeaderCache != null)
+        {
+            messageHeaderCache.invalidateAll();
+        }
+        //TODO some cache like notification should also be invalide?
+        Timber.d("onTabChanged invalidateMessageCache %s",messageListCache);
+    }
+
+    private void addOnTabChangeListener()
+    {
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof DashboardActivity)
+        {
+            DashboardActivity a = (DashboardActivity)activity;
+            a.addOnTabChangeListener(this);
+        }
+    }
+
+    private void removeOnTabChangeListener()
+    {
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof DashboardActivity)
+        {
+            DashboardActivity a = (DashboardActivity)activity;
+            a.removeOnTabChangeListener(this);
+        }
+    }
+
 }
