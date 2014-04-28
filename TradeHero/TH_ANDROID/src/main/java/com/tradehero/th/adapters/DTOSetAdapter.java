@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
     protected final Context context;
-    protected LinkedHashSet<T> set;
+    protected Set<T> set;
     private ArrayList<T> items;
 
     //<editor-fold desc="Constructors">
@@ -26,19 +27,23 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     {
         super();
         this.context = context;
-        if (objects == null)
-        {
-            set = new LinkedHashSet<>();
-            items = new ArrayList<>();
-        }
-        else
-        {
-            set = new LinkedHashSet<>(objects);
-            items = new ArrayList<>(set);
-        }
+        set = createSet(objects);
+        items = new ArrayList<>(set);
 
     }
     //</editor-fold>
+
+    protected Set<T> createSet(Collection<T> objects)
+    {
+        if (objects == null)
+        {
+            return new LinkedHashSet<>();
+        }
+        else
+        {
+            return new LinkedHashSet<>(objects);
+        }
+    }
 
     /**
      *

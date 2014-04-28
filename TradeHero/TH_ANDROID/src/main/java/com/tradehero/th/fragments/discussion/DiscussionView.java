@@ -30,8 +30,6 @@ import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -45,7 +43,7 @@ public class DiscussionView extends FrameLayout
     private int topicLayout;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject DiscussionListCache discussionListCache;
+    @Inject protected DiscussionListCache discussionListCache;
     @Inject protected DiscussionCache discussionCache;
     @Inject protected DiscussionKeyFactory discussionKeyFactory;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
@@ -59,7 +57,6 @@ public class DiscussionView extends FrameLayout
     protected DiscussionSetAdapter discussionListAdapter;
     private DiscussionListKey discussionListKey;
     private int nextPageDelta;
-    private PaginatedDiscussionListKey paginatedDiscussionListKey;
     private View topicView;
 
     //<editor-fold desc="Constructors">
@@ -97,13 +94,7 @@ public class DiscussionView extends FrameLayout
 
     protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        return new DiscussionSetAdapter(getContext(), LayoutInflater.from(getContext()))
-        {
-            @Override protected int getViewResId(int position)
-            {
-                return listItemLayout;
-            }
-        };
+        return new SingleViewDiscussionSetAdapter(getContext(), LayoutInflater.from(getContext()), listItemLayout);
     }
 
     private void init(AttributeSet attrs)
@@ -219,6 +210,21 @@ public class DiscussionView extends FrameLayout
         }
     }
 
+    public int getNextPageDelta()
+    {
+        return nextPageDelta;
+    }
+
+    public DiscussionListKey getDiscussionListKey()
+    {
+        return discussionListKey;
+    }
+
+    protected void setDiscussionListKey(DiscussionListKey discussionListKey)
+    {
+        this.discussionListKey = discussionListKey;
+    }
+
     protected DiscussionListKey createListKey()
     {
         if (discussionKey != null)
@@ -233,8 +239,28 @@ public class DiscussionView extends FrameLayout
         prepareDiscussionListKey();
         setLoading();
         detachDiscussionFetchTask();
+        Timber.d("DiscussionListKey %s", discussionListKey);
         discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, force, createDiscussionListListener());
         discussionFetchTask.execute();
+    }
+
+    protected DiscussionListKey getNextDiscussionListKey(DiscussionKeyList latest)
+    {
+        if (discussionListKey != null && latest != null && !latest.isEmpty())
+        {
+            return ((PaginatedDiscussionListKey) discussionListKey).next(1);
+        }
+        return null;
+    }
+
+    protected DiscussionListKey getPrevDiscussionListKey(DiscussionKeyList latest)
+    {
+        if (discussionListKey != null && latest != null && !latest.isEmpty() &&
+                ((PaginatedDiscussionListKey) discussionListKey).page > 1)
+        {
+            return ((PaginatedDiscussionListKey) discussionListKey).next(-1);
+        }
+        return null;
     }
 
     protected void prepareDiscussionListKey()
@@ -267,10 +293,12 @@ public class DiscussionView extends FrameLayout
             nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
 
             // Most recent at bottom
-            List<DiscussionKey> reversedList = new ArrayList<>(discussionKeyList);
-            Collections.reverse(reversedList);
-            discussionListAdapter.appendTail(reversedList);
+            discussionListAdapter.appendHead(discussionKeyList);
             discussionListAdapter.notifyDataSetChanged();
+            if (nextPageDelta > 0)
+            {
+                //fetchDiscussionListIfNecessary(false);
+            }
         }
 
         if (andDisplay)

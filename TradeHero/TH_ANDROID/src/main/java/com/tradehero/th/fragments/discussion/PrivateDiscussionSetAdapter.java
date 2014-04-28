@@ -3,9 +3,14 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 
 public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
@@ -25,6 +30,16 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
         this.mineResId = mineResId;
         this.otherResId = otherResId;
         DaggerUtils.inject(this);
+    }
+
+    @Override protected Set<DiscussionKey> createSet(Collection<DiscussionKey> objects)
+    {
+        Set<DiscussionKey> created = new TreeSet<>(new DiscussionKeyComparatorIdAsc());
+        if (objects != null)
+        {
+            created.addAll(objects);
+        }
+        return created;
     }
 
     @Override public int getViewTypeCount()
