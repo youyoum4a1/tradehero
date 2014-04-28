@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -26,23 +29,23 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class HeroListItemView extends RelativeLayout
-        implements DTOView<HeroDTO>, View.OnClickListener
+        implements DTOView<HeroDTO>
 {
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
     public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
     public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
 
-    private ImageView userIcon;
-    private TextView title;
-    private TextView dateInfo;
-    private ImageView statusIcon;
+    @InjectView(R.id.follower_profile_picture) ImageView userIcon;
+    @InjectView(R.id.hero_title) TextView title;
+    @InjectView(R.id.hero_date_info) TextView dateInfo;
+    @InjectView(R.id.ic_status) ImageView statusIcon;
 
     private HeroDTO heroDTO;
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener =
-            new WeakReference<>(null);
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+
+    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -64,117 +67,77 @@ public class HeroListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
+        ButterKnife.inject(this);
         DaggerUtils.inject(this);
-        Timber.d("HeroListItemView onFinishInflate hashCode:%d", this.hashCode());
-    }
-
-    private void initViews()
-    {
-        userIcon = (ImageView) findViewById(R.id.follower_profile_picture);
-        title = (TextView) findViewById(R.id.hero_title);
-        dateInfo = (TextView) findViewById(R.id.hero_date_info);
-        statusIcon = (ImageView) findViewById(R.id.ic_status);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
 
-        if (userIcon != null)
-        {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(userIcon);
-        }
-        if (statusIcon != null)
-        {
-            statusIcon.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    OnHeroStatusButtonClickedListener heroStatusButtonClickedListener =
-                            HeroListItemView.this.heroStatusButtonClickedListener.get();
-                    if (heroStatusButtonClickedListener != null)
-                    {
-                        heroStatusButtonClickedListener.onHeroStatusButtonClicked(
-                                HeroListItemView.this, heroDTO);
-                    }
-                }
-            });
-        }
-        userIcon.setOnClickListener(this);
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(userIcon);
         Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
-    private void resetIcon()
+    @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
-        if (statusIcon != null)
+        OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
+        if (heroStatusButtonClickedListener != null)
         {
-            statusIcon.setImageDrawable(null);
-        }
-        if (userIcon != null)
-        {
-            userIcon.setImageDrawable(null);
+            heroStatusButtonClickedListener.onHeroStatusButtonClicked(HeroListItemView.this, heroDTO);
         }
     }
 
-    private void removeCallback()
+    //<editor-fold desc="Reset views">
+    private void resetIcons()
     {
-        if (statusIcon != null)
-        {
-            statusIcon.setOnClickListener(null);
-        }
-        if (userIcon != null)
-        {
-            userIcon.setOnClickListener(null);
-        }
+        resetStatusIcon();
+
+        resetUserIcon();
     }
+
+    private void resetUserIcon()
+    {
+        picasso.get().cancelRequest(userIcon);
+        userIcon.setImageDrawable(null);
+    }
+
+    private void resetStatusIcon()
+    {
+        picasso.get().cancelRequest(statusIcon);
+        statusIcon.setImageDrawable(null);
+    }
+    //</editor-fold>
 
     @Override protected void onDetachedFromWindow()
     {
-        resetIcon();
-        removeCallback();
-        //ButterKnife.reset(this);
-        Timber.d("HeroListItemView onDetachedFromWindow hashCode:%d", this.hashCode());
+        resetIcons();
 
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void onClick(View v)
+    @OnClick(R.id.follower_profile_picture) void onFollowerProfilePictureClicked(View v)
     {
-        if (v.getId() == R.id.follower_profile_picture)
+        if (heroDTO != null)
         {
-            if (heroDTO != null)
-            {
-                handleUserIconClicked();
-            }
+            Bundle bundle = new Bundle();
+            DashboardNavigator navigator =
+                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 
-    private void handleUserIconClicked()
-    {
-        Bundle bundle = new Bundle();
-        DashboardNavigator navigator =
-                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
-    }
-
-    public void setHeroStatusButtonClickedListener(
-            OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
+    public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
         this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
     }
 
-    public HeroDTO getHeroDTO()
-    {
-        return heroDTO;
-    }
-
     public void display(HeroDTO heroDTO)
     {
-        //resetIcon();
         displayDefaultUserIcon();
         linkWith(heroDTO, true);
     }
@@ -202,94 +165,75 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayUserIcon()
     {
-        if (userIcon != null)
+        if (heroDTO != null)
         {
-            if (heroDTO != null)
-            {
-                picasso.get().load(heroDTO.picture)
-                        .transform(peopleIconTransformation)
-                        // TODO if this view is reused, userIcon.getDrawable() may returns the different drawable
-                        .placeholder(userIcon.getDrawable())
-                        .into(userIcon, new Callback()
+            resetUserIcon();
+            picasso.get().load(heroDTO.picture)
+                    .transform(peopleIconTransformation)
+                    .error(R.drawable.superman_facebook)
+                    .into(userIcon, new Callback()
+                    {
+                        @Override public void onSuccess()
                         {
-                            @Override
-                            public void onSuccess()
-                            {
-                            }
 
-                            @Override
-                            public void onError()
-                            {
-                                displayDefaultUserIcon();
-                            }
-                        });
-            }
-            else
-            {
-                displayDefaultUserIcon();
-            }
+                        }
+
+                        @Override public void onError()
+                        {
+                            displayDefaultUserIcon();
+                        }
+                    });
+        }
+        else
+        {
+            displayDefaultUserIcon();
         }
     }
 
     public void displayDefaultUserIcon()
     {
-        if (userIcon != null)
-        {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(userIcon);
-        }
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(userIcon);
     }
 
     public void displayTitle()
     {
-        if (title != null)
-        {
-            title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
-        }
+        title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
     }
 
     public void displayDateInfo()
     {
-        if (dateInfo != null)
+        if (heroDTO != null)
         {
-            if (heroDTO != null)
+            SimpleDateFormat df = new SimpleDateFormat(
+                    getResources().getString(R.string.manage_heroes_datetime_format));
+            if (heroDTO.active && heroDTO.followingSince != null)
             {
-                SimpleDateFormat df = new SimpleDateFormat(
-                        getResources().getString(R.string.manage_heroes_datetime_format));
-                if (heroDTO.active && heroDTO.followingSince != null)
-                {
-                    dateInfo.setText(String.format(
-                            getResources().getString(R.string.manage_heroes_following_since),
-                            df.format(heroDTO.followingSince)));
-                }
-                else if (!heroDTO.active && heroDTO.stoppedFollowingOn != null)
-                {
-                    dateInfo.setText(String.format(
-                            getResources().getString(R.string.manage_heroes_not_following_since),
-                            df.format(heroDTO.stoppedFollowingOn)));
-                }
-                else
-                {
-                    dateInfo.setText(R.string.na);
-                }
+                dateInfo.setText(String.format(
+                        getResources().getString(R.string.manage_heroes_following_since),
+                        df.format(heroDTO.followingSince)));
+            }
+            else if (!heroDTO.active && heroDTO.stoppedFollowingOn != null)
+            {
+                dateInfo.setText(String.format(
+                        getResources().getString(R.string.manage_heroes_not_following_since),
+                        df.format(heroDTO.stoppedFollowingOn)));
             }
             else
             {
                 dateInfo.setText(R.string.na);
             }
         }
+        else
+        {
+            dateInfo.setText(R.string.na);
+        }
     }
 
     public void displayStatus()
     {
-        if (statusIcon != null)
-        {
-            //statusIcon.setImageResource(
-            //        (heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
-
-            statusIcon.setImageResource(RES_ID_CROSS_RED);
-        }
+        statusIcon.setImageResource(RES_ID_CROSS_RED);
     }
 
     //</editor-fold>
