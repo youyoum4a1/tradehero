@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -151,6 +152,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             pushNotificationManager.get().enablePush();
         }
+    }
+
+    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (navigator != null && onTabChangeListener != null)
+        {
+            navigator.addOnTabChangeListener(onTabChangeListener);
+        }
+
+    }
+
+    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (navigator != null && onTabChangeListener != null)
+        {
+            navigator.removeOnTabChangeListener(onTabChangeListener);
+        }
+
     }
 
     @Override

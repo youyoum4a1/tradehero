@@ -90,6 +90,18 @@ public class THSignedNumber
             case TYPE_MONEY:
                 formattedNumber = signedFormattedMoney(precision);
         }
+        
+        if (formattedNumber != null && formattedNumber.contains("."))
+        {
+            int length = formattedNumber.length();
+            do
+            {
+                length--;
+            }
+            while (length > 0 && formattedNumber.charAt(length) == '0');
+            formattedNumber = formattedNumber.substring(0, length + 1);
+        }
+
         return formattedNumber;
     }
 

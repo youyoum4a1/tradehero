@@ -15,21 +15,22 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
+import java.util.Collection;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 public class SecurityDiscussionView extends BetterViewAnimator
     implements DTOView<SecurityId>
 {
@@ -40,7 +41,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Inject SecurityCompactCache securityCompactCache;
     @Inject DiscussionListCache discussionListCache;
 
-    private SecurityDiscussionAdapter securityDiscussionAdapter;
+    private DiscussionSetAdapter securityDiscussionAdapter;
     private AbsListView.OnScrollListener securityDiscussionListScrollListener;
     private PaginatedDiscussionListKey paginatedSecurityDiscussionListKey;
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> securityDiscussionFetchTask;
@@ -75,9 +76,15 @@ public class SecurityDiscussionView extends BetterViewAnimator
         securityDiscussionFetchListener = new SecurityDiscussionFetchListener(false);
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
 
-        securityDiscussionAdapter = new SecurityDiscussionAdapter(
+        securityDiscussionAdapter = createDiscussionAdapter(null);
+    }
+
+    protected DiscussionSetAdapter createDiscussionAdapter(Collection<DiscussionKey> initial)
+    {
+        return new SingleViewDiscussionSetAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
+                initial,
                 R.layout.security_discussion_item_view);
     }
 
@@ -190,12 +197,13 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
                 if (shouldAppend)
                 {
-                    securityDiscussionAdapter.appendMore(discussionKeyList);
+                    securityDiscussionAdapter.appendTail(discussionKeyList);
+                    securityDiscussionAdapter.notifyDataSetChanged();
                 }
                 else
                 {
-                    securityDiscussionAdapter.setItems(discussionKeyList);
-                    securityDiscussionAdapter.notifyDataSetChanged();
+                    securityDiscussionAdapter = createDiscussionAdapter(discussionKeyList);
+                    securityDiscussionList.setAdapter(securityDiscussionAdapter);
                     shouldAppend = true;
                 }
             }

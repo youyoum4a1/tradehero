@@ -22,7 +22,7 @@
   <string name="user_profile_first_name">First Name</string>
   <string name="user_profile_last_name">Last Name</string>
 
-  <string name="user_profile_roi">ROI:</string>
+  <string name="user_profile_roi">"ROI: "</string>
   <string name="user_profile_member_since">member since </string>
   <string name="user_profile_trade_profit">Profit from Trades</string>
   <string name="user_profile_total_wealth">Total Wealth</string>

@@ -56,7 +56,7 @@ public class DiscussionView extends FrameLayout
     private PostCommentView.CommentPostedListener commentPostedListener;
 
     private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
-    protected DiscussionListAdapter discussionListAdapter;
+    protected DiscussionSetAdapter discussionListAdapter;
     private DiscussionListKey discussionListKey;
     private int nextPageDelta;
     private PaginatedDiscussionListKey paginatedDiscussionListKey;
@@ -95,12 +95,15 @@ public class DiscussionView extends FrameLayout
         discussionListAdapter = createDiscussionListAdapter();
     }
 
-    protected DiscussionListAdapter createDiscussionListAdapter()
+    protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        return new DiscussionListAdapter(
-                getContext(),
-                LayoutInflater.from(getContext()),
-                listItemLayout);
+        return new DiscussionSetAdapter(getContext(), LayoutInflater.from(getContext()))
+        {
+            @Override protected int getViewResId(int position)
+            {
+                return listItemLayout;
+            }
+        };
     }
 
     private void init(AttributeSet attrs)
@@ -207,7 +210,8 @@ public class DiscussionView extends FrameLayout
 
     protected void initialFetchDiscussion(boolean force)
     {
-        discussionListAdapter.setItems(null);
+        discussionListAdapter = createDiscussionListAdapter();
+        discussionList.setAdapter(discussionListAdapter);
         this.discussionListKey = createListKey();
         if (discussionListKey != null)
         {
@@ -265,7 +269,8 @@ public class DiscussionView extends FrameLayout
             // Most recent at bottom
             List<DiscussionKey> reversedList = new ArrayList<>(discussionKeyList);
             Collections.reverse(reversedList);
-            discussionListAdapter.appendMore(reversedList);
+            discussionListAdapter.appendTail(reversedList);
+            discussionListAdapter.notifyDataSetChanged();
         }
 
         if (andDisplay)
@@ -290,7 +295,9 @@ public class DiscussionView extends FrameLayout
 
         if (discussionListAdapter != null)
         {
-            discussionListAdapter.addItem(newDiscussionKey);
+            ArrayList<DiscussionKey> newElement = new ArrayList<>();
+            newElement.add(newDiscussionKey);
+            discussionListAdapter.appendTail(newElement);
             discussionCache.put(newDiscussionKey, newDiscussion);
             discussionListAdapter.notifyDataSetChanged();
         }
