@@ -23,7 +23,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
@@ -32,21 +32,19 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SecurityDiscussionView extends BetterViewAnimator
-    implements DTOView<SecurityId>
+    implements DTOView<SecurityId>, DiscussionListCacheNew.DiscussionKeyListListener
 {
     @InjectView(android.R.id.list) AbsListView securityDiscussionList;
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
 
     @Inject SecurityCompactCache securityCompactCache;
-    @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionListCacheNew discussionListCache;
 
     private DiscussionSetAdapter securityDiscussionAdapter;
     private AbsListView.OnScrollListener securityDiscussionListScrollListener;
     private PaginatedDiscussionListKey paginatedSecurityDiscussionListKey;
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> securityDiscussionFetchTask;
     private DiscussionListKey discussionListKey;
-    private SecurityDiscussionFetchListener securityDiscussionFetchListener;
 
     private boolean loading;
     private int nextPageDelta;
@@ -73,7 +71,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
         DaggerUtils.inject(this);
 
         securityCompactCacheListener = new SecurityCompactCacheListener();
-        securityDiscussionFetchListener = new SecurityDiscussionFetchListener(false);
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
 
         securityDiscussionAdapter = createDiscussionAdapter(null);
@@ -102,14 +99,17 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Override protected void onDetachedFromWindow()
     {
         detachSecurityCompactCacheTask();
-        detachSecurityDiscussionFetchTask();
+        discussionListCache.unregister(this);
 
         super.onDetachedFromWindow();
     }
 
     private void fetchNextPageIfNecessary(boolean force)
     {
-        detachSecurityDiscussionFetchTask();
+        if (paginatedSecurityDiscussionListKey != null)
+        {
+            discussionListCache.unregister(paginatedSecurityDiscussionListKey, this);
+        }
 
         if (paginatedSecurityDiscussionListKey == null)
         {
@@ -120,18 +120,9 @@ public class SecurityDiscussionView extends BetterViewAnimator
         {
             paginatedSecurityDiscussionListKey = paginatedSecurityDiscussionListKey.next(nextPageDelta);
 
-            securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, force, securityDiscussionFetchListener);
-            securityDiscussionFetchTask.execute();
+            discussionListCache.register(paginatedSecurityDiscussionListKey, this);
+            discussionListCache.getOrFetchAsync(paginatedSecurityDiscussionListKey, force);
         }
-    }
-
-    private void detachSecurityDiscussionFetchTask()
-    {
-        if (securityDiscussionFetchTask != null)
-        {
-            securityDiscussionFetchTask.setListener(null);
-        }
-        securityDiscussionFetchTask = null;
     }
 
     @Override public void display(SecurityId securityId)
@@ -171,59 +162,51 @@ public class SecurityDiscussionView extends BetterViewAnimator
         }
     }
 
-    private class SecurityDiscussionFetchListener implements DTOCache.Listener<DiscussionListKey,DiscussionKeyList>
+    private boolean shouldAppend = false;
+
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
     {
-        private boolean shouldAppend;
-
-        public SecurityDiscussionFetchListener(boolean shouldAppend)
+        if (fromCache)
         {
-            this.shouldAppend = shouldAppend;
+            return;
         }
 
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
+        onFinish();
+
+        if (discussionKeyList != null)
         {
-            if (fromCache)
+            nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+            Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page, discussionKeyList.size());
+
+            if (shouldAppend)
             {
-                return;
+                securityDiscussionAdapter.appendTail(discussionKeyList);
+                securityDiscussionAdapter.notifyDataSetChanged();
             }
-
-            onFinish();
-
-            if (discussionKeyList != null)
+            else
             {
-                nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
-
-                Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page, discussionKeyList.size());
-
-                if (shouldAppend)
-                {
-                    securityDiscussionAdapter.appendTail(discussionKeyList);
-                    securityDiscussionAdapter.notifyDataSetChanged();
-                }
-                else
-                {
-                    securityDiscussionAdapter = createDiscussionAdapter(discussionKeyList);
-                    securityDiscussionList.setAdapter(securityDiscussionAdapter);
-                    shouldAppend = true;
-                }
+                securityDiscussionAdapter = createDiscussionAdapter(discussionKeyList);
+                securityDiscussionList.setAdapter(securityDiscussionAdapter);
+                shouldAppend = true;
             }
         }
+    }
 
-        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
-        {
-            onFinish();
+    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+    {
+        onFinish();
 
-            nextPageDelta = 0;
+        nextPageDelta = 0;
 
-            THToast.show(new THException(error));
-        }
+        THToast.show(new THException(error));
+    }
 
-        private void onFinish()
-        {
-            loading = false;
+    private void onFinish()
+    {
+        loading = false;
 
-            setDisplayedChildByLayoutId(securityDiscussionList.getId());
-        }
+        setDisplayedChildByLayoutId(securityDiscussionList.getId());
     }
 
     private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId,SecurityCompactDTO>

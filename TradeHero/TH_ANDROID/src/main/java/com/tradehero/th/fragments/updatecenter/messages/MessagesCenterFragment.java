@@ -39,7 +39,7 @@ import com.tradehero.th.models.push.baidu.PushMessageHandler;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -64,7 +64,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject Lazy<DiscussionListCache> discussionListCache;
+    @Inject Lazy<DiscussionListCacheNew> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;

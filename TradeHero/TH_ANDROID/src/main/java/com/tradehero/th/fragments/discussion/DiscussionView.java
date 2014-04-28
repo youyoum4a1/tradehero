@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
@@ -27,7 +26,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
-    implements DTOView<DiscussionKey>
+    implements DTOView<DiscussionKey>, DiscussionListCacheNew.DiscussionKeyListListener
 {
     @InjectView(android.R.id.list) protected ListView discussionList;
     private FlagNearEndScrollListener scrollListener;
@@ -45,7 +44,7 @@ public class DiscussionView extends FrameLayout
     private int topicLayout;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected DiscussionListCache discussionListCache;
+    @Inject protected DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
     @Inject protected DiscussionKeyFactory discussionKeyFactory;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
@@ -55,9 +54,6 @@ public class DiscussionView extends FrameLayout
 
     private PostCommentView.CommentPostedListener commentPostedListener;
 
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> prevDiscussionFetchTask;
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> startingDiscussionFetchTask;
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> nextDiscussionFetchTask;
     protected DiscussionSetAdapter discussionListAdapter;
     protected DiscussionListKey prevDiscussionListKey;
     protected DiscussionListKey startingDiscussionListKey;
@@ -167,42 +163,13 @@ public class DiscussionView extends FrameLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachStartingDiscussionFetchTask();
-        detachPrevDiscussionFetchTask();
-        detachNextDiscussionFetchTask();
+        discussionListCache.unregister(this);
         postCommentView.setCommentPostedListener(null);
         discussionList.setAdapter(null);
         discussionList.setOnScrollListener(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    private void detachPrevDiscussionFetchTask()
-    {
-        if (prevDiscussionFetchTask != null)
-        {
-            prevDiscussionFetchTask.setListener(null);
-        }
-        prevDiscussionFetchTask = null;
-    }
-
-    private void detachStartingDiscussionFetchTask()
-    {
-        if (startingDiscussionFetchTask != null)
-        {
-            startingDiscussionFetchTask.setListener(null);
-        }
-        startingDiscussionFetchTask = null;
-    }
-
-    private void detachNextDiscussionFetchTask()
-    {
-        if (nextDiscussionFetchTask != null)
-        {
-            nextDiscussionFetchTask.setListener(null);
-        }
-        nextDiscussionFetchTask = null;
     }
 
     @Override public void display(DiscussionKey discussionKey)
@@ -240,6 +207,7 @@ public class DiscussionView extends FrameLayout
     {
         discussionListAdapter = createDiscussionListAdapter();
         discussionList.setAdapter(discussionListAdapter);
+        discussionListCache.unregister(this);
         this.startingDiscussionListKey = createStartingDiscussionListKey();
         if (startingDiscussionListKey != null)
         {
@@ -259,10 +227,9 @@ public class DiscussionView extends FrameLayout
     private void fetchStartingDiscussionListIfNecessary(boolean force)
     {
         setLoading();
-        detachStartingDiscussionFetchTask();
         Timber.d("DiscussionListKey %s", startingDiscussionListKey);
-        startingDiscussionFetchTask = discussionListCache.getOrFetch(startingDiscussionListKey, force, createInitialDiscussionListListener());
-        startingDiscussionFetchTask.execute();
+        discussionListCache.register(startingDiscussionListKey, this);
+        discussionListCache.getOrFetchAsync(startingDiscussionListKey, force);
     }
 
     protected DiscussionListKey getNextDiscussionListKey(DiscussionKeyList latestDiscussionKeys)
@@ -301,9 +268,8 @@ public class DiscussionView extends FrameLayout
     {
         if (nextDiscussionListKey != null)
         {
-            detachNextDiscussionFetchTask();
-            nextDiscussionFetchTask = discussionListCache.getOrFetch(nextDiscussionListKey, createNextDiscussionListListener());
-            nextDiscussionFetchTask.execute();
+            discussionListCache.register(nextDiscussionListKey, this);
+            discussionListCache.getOrFetchAsync(nextDiscussionListKey, false);
         }
     }
 
@@ -344,9 +310,8 @@ public class DiscussionView extends FrameLayout
     {
         if (prevDiscussionListKey != null)
         {
-            detachPrevDiscussionFetchTask();
-            prevDiscussionFetchTask = discussionListCache.getOrFetch(prevDiscussionListKey, createPrevDiscussionListListener());
-            prevDiscussionFetchTask.execute();
+            discussionListCache.register(prevDiscussionListKey, this);
+            discussionListCache.getOrFetchAsync(prevDiscussionListKey, false);
         }
     }
 
@@ -378,21 +343,6 @@ public class DiscussionView extends FrameLayout
         {
             discussionStatus.setText(R.string.discussion_loaded);
         }
-    }
-
-    protected DTOCache.Listener<DiscussionListKey, DiscussionKeyList> createInitialDiscussionListListener()
-    {
-        return new StartingDiscussionFetchListener();
-    }
-
-    protected DTOCache.Listener<DiscussionListKey, DiscussionKeyList> createNextDiscussionListListener()
-    {
-        return new NextDiscussionFetchListener();
-    }
-
-    protected DTOCache.Listener<DiscussionListKey, DiscussionKeyList> createPrevDiscussionListListener()
-    {
-        return new PrevDiscussionFetchListener();
     }
 
     /**
@@ -472,33 +422,36 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    protected class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
-        {
-            onFinish();
-            linkWith(value, true);
-        }
+        onFinish();
 
-        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
-        {
-            onFinish();
-            THToast.show(new THException(error));
-        }
+        linkWith(value, true);
 
-        private void onFinish()
+        if (key.equals(startingDiscussionListKey))
         {
-            setLoaded();
+            handleStartingDTOReceived(key, value, fromCache);
+        }
+        else if (key.equals(prevDiscussionListKey))
+        {
+            handlePrevDTOReceived(key, value, fromCache);
+        }
+        else if (key.equals(nextDiscussionListKey))
+        {
+            handleNextDTOReceived(key, value, fromCache);
         }
     }
 
-    protected class StartingDiscussionFetchListener extends DiscussionFetchListener
+    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
     {
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
-        {
-            super.onDTOReceived(key, value, fromCache);
-            handleStartingDTOReceived(key, value, fromCache);
-        }
+        onFinish();
+
+        THToast.show(new THException(error));
+    }
+
+    private void onFinish()
+    {
+        setLoaded();
     }
 
     protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
@@ -507,32 +460,12 @@ public class DiscussionView extends FrameLayout
         fetchDiscussionListPrevIfValid(value);
     }
 
-    protected class NextDiscussionFetchListener extends DiscussionFetchListener
-    {
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value,
-                boolean fromCache)
-        {
-            super.onDTOReceived(key, value, fromCache);
-            handleNextDTOReceived(key, value, fromCache);
-        }
-    }
-
     protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
         if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
         {
         }
         fetchDiscussionListNextIfValid(value);
-    }
-
-    protected class PrevDiscussionFetchListener extends DiscussionFetchListener
-    {
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value,
-                boolean fromCache)
-        {
-            super.onDTOReceived(key, value, fromCache);
-            handlePrevDTOReceived(key, value, fromCache);
-        }
     }
 
     protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)

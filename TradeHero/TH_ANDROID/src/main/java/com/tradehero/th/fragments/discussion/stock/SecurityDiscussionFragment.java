@@ -12,14 +12,14 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import javax.inject.Inject;
 
 public class SecurityDiscussionFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionFragment.class.getName() + ".securityId";
 
-    @Inject DiscussionListCache discussionListCache;
+    @Inject DiscussionListCacheNew discussionListCache;
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
     private SecurityId securityId;
 
