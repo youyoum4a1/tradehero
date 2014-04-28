@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
@@ -133,9 +132,6 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.push.baidu.BaiduPushManager;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.models.user.MiddleCallbackFollowUser;
@@ -164,10 +160,6 @@ import dagger.Provides;
 import java.util.Locale;
 import javax.inject.Singleton;
 
-//import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
-//import com.tradehero.th.fragments.trade.view.TradeQuantityView;
-
-/** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         includes = {
                 CacheModule.class,
@@ -210,13 +202,10 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
-                        //BuySellConfirmFragment.class,
                         BuySellFragment.BuySellAsyncTask.class,
-                        //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -354,7 +343,6 @@ import javax.inject.Singleton;
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
-                        //PrivateMessageBubbleAdapter.class,
                         PrivateDiscussionListAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
@@ -398,32 +386,4 @@ public class TradeHeroModule
     {
         return application;
     }
-
-    @Provides @Singleton PushNotificationManager providePushNotificationManager(BaiduPushManager baiduPushManager)
-    {
-        boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
-        if (isChineseLocale)
-        {
-            return baiduPushManager;
-        }
-        else
-        {
-            return new UrbanAirshipPushNotificationManager();
-        }
-    }
-
-    //@Provides @Singleton @ForDeviceToken String provideDeviceToken(@SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
-    //{
-    //    boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
-    //    if (isChineseLocale)
-    //    {
-    //        String token = savedPushDeviceIdentifier.get();
-    //        return token;
-    //    }
-    //    else
-    //    {
-    //        return PushManager.shared().getAPID();
-    //    }
-    //}
-
 }
