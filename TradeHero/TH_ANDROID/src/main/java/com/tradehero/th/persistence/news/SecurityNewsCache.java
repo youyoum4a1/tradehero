@@ -1,17 +1,19 @@
 package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 /**
  * Created by tradehero on 14-3-7.
@@ -42,9 +44,12 @@ public class SecurityNewsCache extends StraightDTOCache<SecurityId, PaginatedDTO
 
     private PaginatedDTO<NewsItemDTO> fetchSecurityNews(SecurityId securityId) throws Throwable
     {
-        SecurityCompactDTO security = securityCompactCache.get().getOrFetch(securityId);
-        PaginatedDTO<NewsItemDTO> paginatedSecurityNews = newsServiceWrapper.get().getSecurityNews(security.id);
 
+        SecurityCompactDTO security = securityCompactCache.get().getOrFetch(securityId);
+        Timber.d("%s fetchSecurityNews consume: %s", NewsHeadlineFragment.TEST_KEY,(System.currentTimeMillis() - NewsHeadlineFragment.start));
+        long start = System.currentTimeMillis();
+        PaginatedDTO<NewsItemDTO> paginatedSecurityNews = newsServiceWrapper.get().getSecurityNews(security.id);
+        Timber.d("%s request consume: %s", NewsHeadlineFragment.TEST_KEY,(System.currentTimeMillis() - start));
         // populate to NewsCache
         List<NewsItemDTO> newsList = paginatedSecurityNews.getData();
         if (newsList != null)

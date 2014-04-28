@@ -65,6 +65,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             private Throwable error = null;
             private boolean shouldNotifyListenerOnCacheUpdated = true;
 
+            long start = 0;
             @Override protected void onPreExecute()
             {
                 DTOType cached = PartialDTOCache.this.get(key);
@@ -74,6 +75,9 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                     currentListener.onDTOReceived(key, cached, true);
                     shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
                 }
+                start = System.currentTimeMillis();
+
+
             }
 
             @Override protected DTOType doInBackground(Void... voids)
@@ -93,7 +97,6 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             @Override protected void onPostExecute(DTOType value)
             {
                 super.onPostExecute(value);
-
                 if (!isCancelled())
                 {
                     // We retrieve the callback right away to avoid having it vanish between the 2 usages.
