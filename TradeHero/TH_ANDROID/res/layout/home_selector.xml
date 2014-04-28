@@ -50,7 +50,6 @@
           android:shadowColor="@color/black"
           android:shadowDy="1"
           android:shadowRadius="1"
-          android:singleLine="true"
           android:ellipsize="end"
           tools:text="Tho Nguyen Truong"
           />
@@ -74,6 +73,7 @@
           android:layout_height="wrap_content"
           android:textStyle="bold"
           android:paddingLeft="1sp"
+          android:singleLine="true"
           />
 
       <ImageView
