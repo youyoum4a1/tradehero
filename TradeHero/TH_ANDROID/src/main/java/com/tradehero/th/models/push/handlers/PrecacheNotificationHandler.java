@@ -6,9 +6,6 @@ import com.tradehero.th.models.push.urbanairship.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public abstract class PrecacheNotificationHandler implements PushNotificationHandler
 {
     protected final NotificationCache notificationCache;

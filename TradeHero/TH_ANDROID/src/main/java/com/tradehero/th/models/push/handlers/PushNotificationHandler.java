@@ -2,9 +2,6 @@ package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public interface PushNotificationHandler
 {
     String getAction();

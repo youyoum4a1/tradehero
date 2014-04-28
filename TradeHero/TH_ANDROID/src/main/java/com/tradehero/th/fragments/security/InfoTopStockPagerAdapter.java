@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
@@ -70,11 +69,6 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
     {
         Fragment fragment;
         Bundle args = new Bundle();
-        if (securityCompactDTO != null)
-        {
-            args.putBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-        }
-
         if (securityCompactDTO instanceof WarrantDTO && position == 0)
         {
             fragment = new WarrantInfoValueFragment();
@@ -95,6 +89,7 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
                     break;
                 case 1:
                     fragment = new StockInfoValueFragment();
+                    populateForStockInfoFragment(args);
                     break;
 
                 default:
@@ -110,6 +105,10 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForWarrantInfoFragment(Bundle args)
     {
+        if (securityCompactDTO != null)
+        {
+            WarrantInfoValueFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        }
         if (providerId != null)
         {
             args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
@@ -118,8 +117,20 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 
     private void populateForChartFragment(Bundle args)
     {
+        if (securityCompactDTO != null)
+        {
+            ChartFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        }
         args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
         args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, ChartTimeSpan.MONTH_3);
+    }
+
+    private void populateForStockInfoFragment(Bundle args)
+    {
+        if (securityCompactDTO != null)
+        {
+            StockInfoValueFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        }
     }
 
     @Override public int getItemPosition(Object object)

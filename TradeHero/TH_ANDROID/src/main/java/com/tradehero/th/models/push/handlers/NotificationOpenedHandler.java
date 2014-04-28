@@ -10,9 +10,6 @@ import com.tradehero.th.persistence.notification.NotificationCache;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
     private final Context context;

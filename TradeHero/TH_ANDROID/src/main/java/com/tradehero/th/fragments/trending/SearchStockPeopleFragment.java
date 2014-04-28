@@ -50,7 +50,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
     public final static String BUNDLE_KEY_RESTRICT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".restrictSearchType";

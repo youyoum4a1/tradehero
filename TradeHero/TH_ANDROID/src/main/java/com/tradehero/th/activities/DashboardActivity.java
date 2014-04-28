@@ -151,7 +151,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             pushNotificationManager.get().enablePush();
         }
-
     }
 
     @Override

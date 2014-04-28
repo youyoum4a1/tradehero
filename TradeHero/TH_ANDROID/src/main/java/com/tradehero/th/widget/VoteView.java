@@ -3,11 +3,9 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/14/14 Time: 2:44 PM Copyright (c) TradeHero
- */
-public class VoteView extends CompoundButton
+abstract public class VoteView extends CompoundButton
 {
     private int originalValue;
 
@@ -28,6 +26,8 @@ public class VoteView extends CompoundButton
     }
     //</editor-fold>
 
+    abstract public void display(AbstractDiscussionDTO discussionDTO);
+
     @Override public void setText(CharSequence text, BufferType type)
     {
         try
@@ -39,7 +39,7 @@ public class VoteView extends CompoundButton
             throw new IllegalStateException("Text should be an integer");
         }
 
-        setValue(originalValue);
+        super.setText(text, type);
     }
 
     public void setValue(int value)

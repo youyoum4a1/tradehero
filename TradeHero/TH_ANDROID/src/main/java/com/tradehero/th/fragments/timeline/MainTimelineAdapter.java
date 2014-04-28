@@ -31,8 +31,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 public class MainTimelineAdapter extends ArrayAdapter
     implements StickyListHeadersAdapter,
         AbsListView.OnScrollListener,
-        PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>,
-        PullToRefreshBase.OnLastItemVisibleListener
+        PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>
 {
     public static final String TAG = MainTimelineAdapter.class.getSimpleName();
 
@@ -141,10 +140,6 @@ public class MainTimelineAdapter extends ArrayAdapter
     //</editor-fold>
 
     //<editor-fold desc="PullToRefreshBase.OnLastItemVisibleListener">
-    @Override public void onLastItemVisible()
-    {
-        getTimelineLoader().loadPrevious();
-    }
     //</editor-fold>
 
     //<editor-fold desc="StickyListHeadersAdapter">

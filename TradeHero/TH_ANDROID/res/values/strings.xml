@@ -52,7 +52,7 @@
   <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
   <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
   <string name="broadcast_message_sending_hint">Sending message…</string>
-  <string name="broadcast_message_waiting">Waitting</string>
+  <string name="broadcast_message_waiting">Waiting</string>
   <string name="social_followers">Followers</string>
   <string name="social_heroes">Heroes</string>
 
@@ -77,4 +77,5 @@
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
   <string name="sell">Sell</string>
   <string name="buy">Buy</string>
+  <string name="chart_loading_image">Loading chart image…</string>
 </resources>

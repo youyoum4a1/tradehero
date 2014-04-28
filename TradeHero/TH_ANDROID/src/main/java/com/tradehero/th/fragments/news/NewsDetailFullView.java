@@ -164,6 +164,11 @@ public class NewsDetailFullView extends LinearLayout
             @Override
             public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
             {
+                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null ||
+                        simpleSecurityItemViewAdapter == null)
+                {
+                    return; // TODO proper handling of middle callback
+                }
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
                 lp.width = 510 * securityCompactDTOList.size();
