@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:orientation="horizontal"
-    tools:background="@color/number_green"
     android:id="@+id/message_item_front"
     android:tag="message_item_front"
     android:background="@color/white"
     android:padding="@dimen/timeline_item_padding"
+    tools:background="@color/number_green"
     >
 
   <LinearLayout android:layout_width="wrap_content"
