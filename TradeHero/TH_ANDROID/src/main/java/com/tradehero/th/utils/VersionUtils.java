@@ -10,7 +10,10 @@ import android.view.Display;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 4:55 PM To change this template use File | Settings | File Templates. */
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 4:55 PM To change this template use
+ * File | Settings | File Templates.
+ */
 public class VersionUtils
 {
     public static Intent getSupportEmailIntent(Context context)
@@ -23,7 +26,7 @@ public class VersionUtils
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
 
-   public static Intent getSupportEmailIntent(List<String> infoStrings)
+    public static Intent getSupportEmailIntent(List<String> infoStrings)
     {
         String deviceDetails = "\n\n-----\n" +
                 StringUtils.join("\n", infoStrings) +
@@ -56,7 +59,8 @@ public class VersionUtils
         return parameters;
     }
 
-    public static List<String> getExceptionStringsAndTraceParameters(Context context, Exception exception)
+    public static List<String> getExceptionStringsAndTraceParameters(Context context,
+            Exception exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
         reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
@@ -87,8 +91,7 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        }
-        catch (PackageManager.NameNotFoundException e)
+        } catch (PackageManager.NameNotFoundException e)
         {
         }
         return v;
@@ -100,8 +103,7 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        }
-        catch (PackageManager.NameNotFoundException e)
+        } catch (PackageManager.NameNotFoundException e)
         {
             // Huh? Really?
         }
@@ -125,12 +127,12 @@ public class VersionUtils
     public static void logScreenMeasurements(Activity activity)
     {
         Display display = activity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics ();
+        DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-        float density  = activity.getResources().getDisplayMetrics().density;
+        float density = activity.getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
-        float dpWidth  = outMetrics.widthPixels / density;
+        float dpWidth = outMetrics.widthPixels / density;
     }
 
     private static String capitalize(String s)

@@ -9,6 +9,7 @@
   <!-- data format-->
   <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年 MM月 d日 HH:mm</string>
+  <string name="data_format_d_mmm_yyyy_kk_mm">更新时间 yyyy-MM-dd kk点</string>
   <string name="data_format_dd_mmm_yyyy">yyyy年 MM月 dd日</string>
   <string name="data_format_dd_mmm_hh_mm">MM月 dd日 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年 MM月 dd日 kk:mm z</string>

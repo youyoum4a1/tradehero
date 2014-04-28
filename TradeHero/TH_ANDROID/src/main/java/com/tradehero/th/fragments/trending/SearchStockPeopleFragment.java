@@ -1,15 +1,18 @@
 package com.tradehero.th.fragments.trending;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,12 +55,18 @@ import timber.log.Timber;
 
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
-    public final static String BUNDLE_KEY_RESTRICT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".restrictSearchType";
-    public final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".currentSearchString";
-    public final static String BUNDLE_KEY_CURRENT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".currentSearchType";
-    public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
-    public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
-    public final static String BUNDLE_KEY_FROM_WATCHLIST = SearchStockPeopleFragment.class.getName() + ".fromWatchlist";
+    public final static String BUNDLE_KEY_RESTRICT_SEARCH_TYPE =
+            SearchStockPeopleFragment.class.getName() + ".restrictSearchType";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_STRING =
+            SearchStockPeopleFragment.class.getName() + ".currentSearchString";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_TYPE =
+            SearchStockPeopleFragment.class.getName() + ".currentSearchType";
+    public final static String BUNDLE_KEY_PAGE =
+            SearchStockPeopleFragment.class.getName() + ".page";
+    public final static String BUNDLE_KEY_PER_PAGE =
+            SearchStockPeopleFragment.class.getName() + ".perPage";
+    public final static String BUNDLE_KEY_FROM_WATCHLIST =
+            SearchStockPeopleFragment.class.getName() + ".fromWatchlist";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
@@ -68,6 +77,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject LocalyticsSession localyticsSession;
 
+    @InjectView(R.id.search_empty_container) RelativeLayout serchEmptyContainer;
     @InjectView(R.id.search_empty_view) TextView searchEmptyView;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
@@ -111,7 +121,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         collectParameters(savedInstanceState);
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         collectParameters(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search_stock, container, false);
@@ -126,15 +137,17 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityIdListCacheListener = new SecurityIdListCacheListener();
         peopleListCacheListener = new PeopleListCacheListener();
 
-        securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater, R.layout.search_security_item);
-        peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
+        securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater,
+                R.layout.search_security_item);
+        peopleItemViewAdapter =
+                new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
 
         if (listView != null)
         {
             listView.setAdapter(securityItemViewAdapter);
             listView.setOnItemClickListener(new SearchOnItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
-            listView.setEmptyView(searchEmptyView);
+            listView.setEmptyView(serchEmptyContainer);
         }
     }
 
@@ -169,7 +182,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         MenuItem securitySearchElements = menu.findItem(R.id.security_search_menu_elements);
 
         mSearchTextWatcher = new SearchTextWatcher();
-        mSearchTextField = (EditText) securitySearchElements.getActionView().findViewById(R.id.search_field);
+        mSearchTextField =
+                (EditText) securitySearchElements.getActionView().findViewById(R.id.search_field);
         if (mSearchTextField != null)
         {
             mSearchTextField.addTextChangedListener(mSearchTextWatcher);
@@ -263,6 +277,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         populateSearchActionBar();
         initialPopulateOnCreate();
+        if (mSearchTextField != null)
+        {
+            mSearchTextField.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(mSearchTextField, InputMethodManager.SHOW_FORCED);
+        }
     }
 
     protected void startAnew()
@@ -398,11 +419,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (newPage != lastLoadedPage + 1)
         {
-            Timber.e("Will not load newPage %d, lastLoadedPage %d", newPage, lastLoadedPage, new Exception());
+            Timber.e("Will not load newPage %d, lastLoadedPage %d", newPage, lastLoadedPage,
+                    new Exception());
         }
         if (currentlyLoadingPage != FIRST_PAGE - 1 && currentlyLoadingPage != newPage)
         {
-            Timber.e("This page is already loading another one %d, will not load %d", currentlyLoadingPage, newPage, new Exception());
+            Timber.e("This page is already loading another one %d, will not load %d",
+                    currentlyLoadingPage, newPage, new Exception());
         }
         cancelSearchTasks();
         currentlyLoadingPage = newPage;
@@ -434,10 +457,12 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchText != null && !mSearchText.isEmpty())
         {
             cancelSearchTasks();
-            SecurityListType searchSecurityListType = makeSearchSecurityListType(lastLoadedPage + 1);
+            SecurityListType searchSecurityListType =
+                    makeSearchSecurityListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            securitySearchTask = securityCompactListCache.get().getOrFetch(searchSecurityListType, securityIdListCacheListener);
+            securitySearchTask = securityCompactListCache.get()
+                    .getOrFetch(searchSecurityListType, securityIdListCacheListener);
             securitySearchTask.execute();
         }
     }
@@ -450,12 +475,14 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             UserListType searchUserListType = makeSearchUserListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            peopleSearchTask = userBaseKeyListCache.get().getOrFetch(searchUserListType, peopleListCacheListener);
+            peopleSearchTask = userBaseKeyListCache.get()
+                    .getOrFetch(searchUserListType, peopleListCacheListener);
             peopleSearchTask.execute();
         }
     }
 
-    private void linkWith(List<SecurityId> securityIds, boolean andDisplay, SecurityId typeQualifier)
+    private void linkWith(List<SecurityId> securityIds, boolean andDisplay,
+            SecurityId typeQualifier)
     {
         this.securityIds = securityIds;
 
@@ -523,8 +550,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         if (args != null)
         {
-            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_CURRENT_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
-            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_RESTRICT_SEARCH_TYPE, mSearchType.name()));
+            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_CURRENT_SEARCH_TYPE,
+                    TrendingSearchType.STOCKS.name()));
+            mSearchType = TrendingSearchType.valueOf(
+                    args.getString(BUNDLE_KEY_RESTRICT_SEARCH_TYPE, mSearchType.name()));
             mSearchText = args.getString(BUNDLE_KEY_CURRENT_SEARCH_STRING);
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
             lastLoadedPage = args.getInt(BUNDLE_KEY_PAGE, FIRST_PAGE);
@@ -617,7 +646,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         {
             selectedItem = parent.getItemAtPosition(position);
 
-            if (getArguments() != null && getArguments().containsKey(Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+            if (getArguments() != null && getArguments().containsKey(
+                    Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
             {
                 getNavigator().popFragment();
                 return;
@@ -633,8 +663,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     // pop out current fragment and push in watchlist edit fragment
                     // TODO remove this hack
                     Bundle args = new Bundle();
-                    args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
-                    args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
+                    args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
+                            clickedItem.getSecurityId().getArgs());
+                    args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT,
+                            WatchlistPositionFragment.class.getName());
                     getNavigator().pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
@@ -655,11 +687,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         {
         }
 
-        @Override public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
         {
         }
 
-        @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count)
         {
             mSearchText = charSequence.toString();
             if (mSearchText == null || mSearchText.isEmpty())
@@ -674,13 +708,18 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private class SecurityIdListCacheListener implements DTOCache.Listener<SecurityListType, SecurityIdList>
+    private class SecurityIdListCacheListener
+            implements DTOCache.Listener<SecurityListType, SecurityIdList>
     {
-        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
+        @Override
+        public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
         {
             if (lastLoadedPage + 1 != key.getPage())
             {
-                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
+                throw new IllegalStateException("We just got a wrong page; last: "
+                        + lastLoadedPage
+                        + ", received page: "
+                        + key.getPage());
             }
             Timber.d("Page loaded: %d", lastLoadedPage);
             lastLoadedPage = key.getPage();
@@ -716,14 +755,19 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private class PeopleListCacheListener implements DTOCache.Listener<UserListType, UserBaseKeyList>
+    private class PeopleListCacheListener
+            implements DTOCache.Listener<UserListType, UserBaseKeyList>
     {
-        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserListType key, UserBaseKeyList value, boolean fromCache)
         {
             SearchUserListType castedKey = (SearchUserListType) key;
             if (lastLoadedPage + 1 != castedKey.page)
             {
-                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + castedKey.page);
+                throw new IllegalStateException("We just got a wrong page; last: "
+                        + lastLoadedPage
+                        + ", received page: "
+                        + castedKey.page);
             }
             lastLoadedPage = castedKey.page;
             currentlyLoadingPage = FIRST_PAGE - 1;
