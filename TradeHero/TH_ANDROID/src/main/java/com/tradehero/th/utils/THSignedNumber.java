@@ -145,7 +145,13 @@ public class THSignedNumber
                 length--;
             }
             while (length > 0 && formattedNumber.charAt(length) == '0');
+
             formattedNumber = formattedNumber.substring(0, length + 1);
+
+            if (formattedNumber.endsWith("."))
+            {
+                formattedNumber = formattedNumber.substring(0, length);
+            }
         }
         return formattedNumber;
     }
