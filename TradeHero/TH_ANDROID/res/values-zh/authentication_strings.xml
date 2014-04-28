@@ -18,7 +18,6 @@
   <string name="authentication_thank_you_message_email">谢谢您 ! 请查看你的邮箱</string>
   <string name="authentication_confirm">确认</string>
   <string name="authentication_cancel">取消</string>
-  <string name="authentication_ok">好的</string>
   <string name="authentication_not_registered">请返回登陆页面</string>
   <string name="authentication_forgot_password">忘记密码?</string>
   <string name="authentication_forgot_password_email">电子邮件</string>

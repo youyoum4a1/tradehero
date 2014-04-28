@@ -18,7 +18,6 @@
   <string name="authentication_thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="authentication_confirm">Confirm</string>
   <string name="authentication_cancel">Cancel</string>
-  <string name="authentication_ok">OK</string>
   <string name="authentication_not_registered">You need to go back and sign up</string>
 
   <string name="authentication_forgot_password">forgot your password ?</string>

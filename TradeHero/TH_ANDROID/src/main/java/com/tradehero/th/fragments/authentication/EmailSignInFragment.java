@@ -154,7 +154,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                         dialogInterface.cancel();
                     }
                 })
-                .setPositiveButton(R.string.authentication_ok, new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(final DialogInterface dialogInterface, int which)
