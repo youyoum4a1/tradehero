@@ -1,18 +1,16 @@
 package com.tradehero.th.persistence.discussion;
 
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import java.util.ArrayList;
@@ -40,8 +38,15 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
 
     @Override public DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
     {
-        Timber.e(new Exception("here"), "");
-        return putInternal(discussionServiceWrapper.getPaginatedDiscussions(discussionListKey));
+        if (discussionListKey instanceof MessageDiscussionListKey)
+        {
+            return putInternal(discussionServiceWrapper.getMessageThread((MessageDiscussionListKey) discussionListKey));
+        }
+        else if (discussionListKey instanceof PaginatedDiscussionListKey)
+        {
+            return putInternal(discussionServiceWrapper.getDiscussions((PaginatedDiscussionListKey) discussionListKey));
+        }
+        throw new IllegalStateException("Unhandled key " + discussionListKey);
     }
 
     private DiscussionKeyList putInternal(PaginatedDTO<DiscussionDTO> paginatedDTO)
