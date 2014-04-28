@@ -135,6 +135,24 @@ public class MessageDiscussionListKey extends DiscussionListKey
         }
     }
 
+    public MessageDiscussionListKey next()
+    {
+        return new MessageDiscussionListKey(
+                inReplyToType, inReplyToId,
+                senderUser, recipientUser,
+                maxCount,
+                null, maxId);
+    }
+
+    public MessageDiscussionListKey prev()
+    {
+        return new MessageDiscussionListKey(
+                inReplyToType, inReplyToId,
+                senderUser, recipientUser,
+                maxCount,
+                minId, null);
+    }
+
     @Override public Map<String, Object> toMap()
     {
         Map<String, Object> generatedMap = super.toMap();
@@ -162,4 +180,15 @@ public class MessageDiscussionListKey extends DiscussionListKey
         return generatedMap;
     }
 
+    @Override public String toString()
+    {
+        return "MessageDiscussionListKey{" +
+                super.toString() +
+                ", senderUser=" + senderUser +
+                ", recipientUser=" + recipientUser +
+                ", maxCount=" + maxCount +
+                ", maxId=" + maxId +
+                ", minId=" + minId +
+                '}';
+    }
 }
