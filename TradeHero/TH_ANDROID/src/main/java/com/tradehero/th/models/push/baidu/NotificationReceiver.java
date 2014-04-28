@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class NotificaionReceiver extends BroadcastReceiver
+public class NotificationReceiver extends BroadcastReceiver
 {
     public void onReceive(Context context, Intent intent)
     {
