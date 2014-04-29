@@ -51,4 +51,35 @@ public class DiscussionDTO extends AbstractDiscussionDTO
         // The assumption here is that this was the first comment of the discussion
         return getDiscussionKey();
     }
+
+    @Override public String toString()
+    {
+        return "DiscussionDTO{" +
+                "AbstractDiscussionDTO{" +
+                "id=" + id +
+                ", createdAtUtc=" + createdAtUtc +
+                ", userId=" + userId +
+                ", text='" + text + '\'' +
+                ", upvoteCount=" + upvoteCount +
+                ", downvoteCount=" + downvoteCount +
+                ", voteDirection=" + voteDirection +
+                ", commentCount=" + commentCount +
+                ", langCode='" + langCode + '\'' +
+                ", stubKey=" + stubKey +
+                '}' +
+                ", type=" + type +
+                ", user=" + user +
+                ", inReplyToId=" + inReplyToId +
+                ", inReplyToType=" + inReplyToType +
+                ", url='" + url + '\'' +
+                ", sentToCount=" + sentToCount +
+                ", publishToFb=" + publishToFb +
+                ", publishToLi=" + publishToLi +
+                ", publishToTw=" + publishToTw +
+                ", geo_alt='" + geo_alt + '\'' +
+                ", geo_lat='" + geo_lat + '\'' +
+                ", geo_long='" + geo_long + '\'' +
+                ", isPublic=" + isPublic +
+                '}';
+    }
 }

@@ -46,6 +46,6 @@ public class RequestHeaders implements RequestInterceptor
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
         //request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
-        Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
+        //Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
     }
 }
