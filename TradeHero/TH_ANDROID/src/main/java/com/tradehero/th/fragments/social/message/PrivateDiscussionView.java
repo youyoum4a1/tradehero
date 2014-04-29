@@ -331,7 +331,8 @@ public class PrivateDiscussionView extends DiscussionView
         {
             if (position == 0)
             {
-                scrollListener.raiseStartFlag();
+                // TODO do something similar better
+                //scrollListener.raiseStartFlag();
             }
             return super.getView(position, convertView, parent);
         }
