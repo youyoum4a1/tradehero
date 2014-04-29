@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -62,7 +67,14 @@ public class RelationsListItemView extends RelativeLayout
 
     private void initViews()
     {
-
+        if (upgradeNow != null)
+        {
+            upgradeNow.setOnClickListener(this);
+        }
+        if (avatar != null)
+        {
+            avatar.setOnClickListener(this);
+        }
     }
 
     @Override protected void onAttachedToWindow()
@@ -77,12 +89,24 @@ public class RelationsListItemView extends RelativeLayout
 
     @Override public void onClick(View v)
     {
-        //if (v.getId() == R.id.follower_profile_picture)
-        //{
-        //    if (userProfileCompactDTO != null) {
-        //        handleUserIconClicked();
-        //    }
-        //}
+        switch (v.getId())
+        {
+            case R.id.user_profile_avatar:
+            case R.id.upgrade_now:
+                handleOpenProfileButtonClicked();
+                break;
+        }
+    }
+
+    private void handleOpenProfileButtonClicked()
+    {
+        int userId = allowableRecipientDTO.user.id;
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+        DashboardNavigator navigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     public AllowableRecipientDTO getAllowableRecipientDTO()
@@ -164,10 +188,12 @@ public class RelationsListItemView extends RelativeLayout
         }
         else if (allowableRecipientDTO.relationship.isHero)
         {
-            messageLeft.setVisibility(allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
+            messageLeft.setVisibility(
+                    allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
             if (upgradeNow != null)
             {
-                upgradeNow.setVisibility(allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
+                upgradeNow.setVisibility(
+                        allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
             }
         }
         else
@@ -175,7 +201,6 @@ public class RelationsListItemView extends RelativeLayout
             messageLeft.setVisibility(INVISIBLE);
             upgradeNow.setVisibility(INVISIBLE);
         }
-
     }
 
     public void updateUserType()
