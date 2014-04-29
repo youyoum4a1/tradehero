@@ -43,6 +43,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.push.IntentLogger;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -304,6 +305,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onNewIntent(intent);
         Timber.d("Received new intent: %s", intent);
 
+        IntentLogger intentLogger = new IntentLogger(intent);
+        Timber.d("Intent: %s", intentLogger);
+
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
@@ -389,6 +393,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             return;
         }
+
         switch (intent.getAction())
         {
             case Intent.ACTION_VIEW:
@@ -453,11 +458,12 @@ public class DashboardActivity extends SherlockFragmentActivity
             default:
                 break;
         }
-        if (currentTab != tabType) {
+
+        if (currentTab != tabType)
+        {
             navigator.replaceTab(currentTab,tabType);
             currentTab = tabType;
         }
-
     }
 
     private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
