@@ -17,9 +17,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -39,6 +42,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.relations_list) ListView mRelationsListView;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
+    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new AllRelationsUserFollowedListener();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -52,6 +60,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         mRelationsListItemAdapter = new RelationsListItemAdapter(getActivity(),
                 getActivity().getLayoutInflater(), R.layout.relations_list_item);
+        mRelationsListItemAdapter.setFollowRequestedListener(createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
     }
@@ -85,6 +94,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListView.setOnItemClickListener(null);
         mRelationsListView = null;
         mRelationsListItemAdapter.setItems(null);
+        mRelationsListItemAdapter.setFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
         super.onDestroyView();
@@ -129,6 +139,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
+    protected void handleFollowRequested(UserBaseKey userBaseKey)
+    {
+        followUser(userBaseKey);
+    }
+
     protected class AllRelationAllowableRecipientCacheListener
         implements DTOCache.Listener<
             SearchAllowableRecipientListType,
@@ -148,6 +163,29 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         {
             THToast.show(new THException(error));
             alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    protected RelationsListItemView.OnFollowRequestedListener createFollowRequestedListener()
+    {
+        return new AllRelationsFollowRequestedListener();
+    }
+
+    protected class AllRelationsFollowRequestedListener implements RelationsListItemView.OnFollowRequestedListener
+    {
+        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        {
+            handleFollowRequested(userBaseKey);
+        }
+    }
+
+    protected class AllRelationsUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
+                UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            downloadRelations();
         }
     }
 }
