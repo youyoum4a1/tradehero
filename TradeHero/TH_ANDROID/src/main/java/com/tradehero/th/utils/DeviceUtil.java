@@ -27,9 +27,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public final class DeviceUtil
 {
+    public static final long DEFAULT_DELAY = 998;
+
     public static InputMethodManager getInputMethodManager(Context ctx)
     {
         return (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -40,43 +45,6 @@ public final class DeviceUtil
     {
         InputMethodManager imm = getInputMethodManager(ctx);
         return imm != null && imm.isAcceptingText();
-    }
-
-    public static void showKeyboard(Context ctx)
-    {
-        InputMethodManager imm = getInputMethodManager(ctx);
-        if (!imm.isAcceptingText())
-        {
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-    }
-
-    //public static void showKeyboard(Window window)
-    //{
-    //    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-    //}
-
-    public static void hideKeyboard(Context ctx)
-    {
-        InputMethodManager imm = getInputMethodManager(ctx);
-        if (imm.isAcceptingText())
-        {
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-    }
-
-    //public static void hideKeyboard(Window window)
-    //{
-    //    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    //}
-
-    public static void showKeyboard(Context ctx, View v)
-    {
-        InputMethodManager imm = getInputMethodManager(ctx);
-        if (imm != null && v != null)
-        {
-            imm.showSoftInputFromInputMethod(v.getWindowToken(), InputMethodManager.SHOW_FORCED);
-        }
     }
 
     public static void dismissKeyboard(Context ctx, View v)
@@ -94,5 +62,27 @@ public final class DeviceUtil
         {
             dismissKeyboard(activity, activity.getCurrentFocus());
         }
+    }
+
+    public static void showKeyboardDelayed(View view)
+    {
+        showKeyboardDelayed(view, DEFAULT_DELAY);
+    }
+
+    public static void showKeyboardDelayed(View view, long delayMilliSec)
+    {
+        final WeakReference<View> viewRef = new WeakReference<>(view);
+        new Timer().schedule(new TimerTask()
+        {
+            public void run()
+            {
+                View viewToUse = viewRef.get();
+                if (viewToUse != null)
+                {
+                    InputMethodManager inputManager = getInputMethodManager(viewToUse.getContext());
+                    inputManager.showSoftInput(viewToUse, 0);
+                }
+            }
+        }, delayMilliSec);
     }
 }

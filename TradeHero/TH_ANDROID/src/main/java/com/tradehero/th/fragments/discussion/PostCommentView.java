@@ -91,6 +91,7 @@ public class PostCommentView extends RelativeLayout
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
         postCommentMiddleCallbacks = new ArrayList<>();
+        DeviceUtil.showKeyboardDelayed(commentText);
     }
 
     @Override protected void onAttachedToWindow()

@@ -157,7 +157,6 @@ public class DiscussionView extends FrameLayout
         scrollListener = createFlagNearEndScrollListener();
         discussionList.setOnScrollListener(scrollListener);
         postCommentView.setCommentPostedListener(createCommentPostedListener());
-        DeviceUtil.showKeyboard(getContext());
     }
 
     @Override protected void onDetachedFromWindow()

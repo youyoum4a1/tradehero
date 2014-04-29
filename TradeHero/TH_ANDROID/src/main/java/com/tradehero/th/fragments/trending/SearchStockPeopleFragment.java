@@ -191,20 +191,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             mSearchTextField.setFocusable(true);
             mSearchTextField.setFocusableInTouchMode(true);
             mSearchTextField.requestFocus();
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask()
-            {
-                public void run()
-                {
-                    if (mSearchTextField != null)
-                    {
-                        InputMethodManager inputManager =
-                                (InputMethodManager) mSearchTextField.getContext()
-                                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputManager.showSoftInput(mSearchTextField, 0);
-                    }
-                }
-            }, 998);
+            DeviceUtil.showKeyboardDelayed(mSearchTextField);
         }
 
         if (mSearchType == TrendingSearchType.PEOPLE && searchPeople != null)
