@@ -48,7 +48,7 @@
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 
   <string name="leaderboard_community_followers">Followers</string>
-  <string name="leaderboard_community_heros">Heros</string>
+  <string name="leaderboard_community_heros">Heroes</string>
 
   <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>

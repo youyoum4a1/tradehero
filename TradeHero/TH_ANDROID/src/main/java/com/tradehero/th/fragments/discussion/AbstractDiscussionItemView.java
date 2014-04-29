@@ -3,12 +3,8 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.Optional;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -17,7 +13,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -25,16 +20,12 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearLayout
         implements DTOView<T>
 {
-    @InjectView(R.id.discussion_content) TextView content;
-    @InjectView(R.id.vote_pair) @Optional VotePair votePair;
-    @InjectView(R.id.discussion_time) TextView time;
-
     @Inject DiscussionCache discussionCache;
     @Inject Provider<PrettyTime> prettyTime;
-
+    protected AbstractDiscussionItemViewHolder viewHolder;
     protected T discussionKey;
+    protected AbstractDiscussionDTO abstractDiscussionDTO;
 
-    private DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> discussionFetchListener;
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
 
     //<editor-fold desc="Constructors">
@@ -58,20 +49,24 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        discussionFetchListener = new DiscussionFetchListener();
+        viewHolder = createViewHolder();
+        viewHolder.initView(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        discussionFetchListener = new DiscussionFetchListener();
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachFetchDiscussionTask();
-        discussionFetchListener = null;
         super.onDetachedFromWindow();
+    }
+
+    protected AbstractDiscussionItemViewHolder createViewHolder()
+    {
+        return new AbstractDiscussionItemViewHolder();
     }
 
     @Override public void display(T discussionKey)
@@ -91,7 +86,7 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         detachFetchDiscussionTask();
 
         discussionFetchTask =
-                discussionCache.getOrFetch(discussionKey, force, discussionFetchListener);
+                discussionCache.getOrFetch(discussionKey, force, createDiscussionFetchListener());
         discussionFetchTask.execute();
     }
 
@@ -104,42 +99,23 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         discussionFetchTask = null;
     }
 
+    public void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    {
+        linkWith(abstractDiscussionDTO, true);
+    }
+
     protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        if (andDisplay && abstractDiscussionDTO != null)
+        this.abstractDiscussionDTO = abstractDiscussionDTO;
+        viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
+        if (andDisplay)
         {
-            display(abstractDiscussionDTO);
         }
     }
 
-    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionFetchListener()
     {
-        // markup text
-        displayContent(abstractDiscussionDTO);
-
-        // timeline time
-        displayTime(abstractDiscussionDTO);
-
-        if (votePair != null)
-        {
-            votePair.display(abstractDiscussionDTO);
-        }
-    }
-
-    private void displayContent(AbstractDiscussionDTO item)
-    {
-        if (content != null)
-        {
-            content.setText(item.text);
-        }
-    }
-
-    private void displayTime(AbstractDiscussionDTO abstractDiscussionDTO)
-    {
-        if (abstractDiscussionDTO.createdAtUtc != null && time != null)
-        {
-            time.setText(prettyTime.get().formatUnrounded(abstractDiscussionDTO.createdAtUtc));
-        }
+        return new DiscussionFetchListener();
     }
 
     private class DiscussionFetchListener
@@ -148,7 +124,7 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         @Override
         public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
         {
-            linkWith(value, true);
+            display(value);
         }
 
         @Override public void onErrorThrown(DiscussionKey key, Throwable error)

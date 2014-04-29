@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -16,6 +17,12 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     public int voteDirection; //-1: down, 0: cancel, 1: up
     public int commentCount;
     public String langCode;
+
+    /**
+     * Identifies the stub discussion that this discussion replaces.
+     */
+    @JsonIgnore
+    public DiscussionKey stubKey;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionDTO()
@@ -42,4 +49,9 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     }
 
     public abstract DiscussionKey getDiscussionKey();
+
+    public boolean isInProcess()
+    {
+        return stubKey != null && stubKey.id.equals(id);
+    }
 }
