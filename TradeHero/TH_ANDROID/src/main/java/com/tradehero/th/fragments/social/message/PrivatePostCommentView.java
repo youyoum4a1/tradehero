@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
@@ -42,6 +43,11 @@ public class PrivatePostCommentView extends PostCommentView
     {
         this.messageNotAllowedToSendListener = null;
         super.onDetachedFromWindow();
+    }
+
+    @Override protected DiscussionType getDefaultDiscussionType()
+    {
+        return DiscussionType.PRIVATE_MESSAGE;
     }
 
     public void setMessageNotAllowedToSendListener(
