@@ -11,7 +11,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.FlagNearEndScrollListener;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -29,7 +29,6 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -37,7 +36,7 @@ public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>, DiscussionListCacheNew.DiscussionKeyListListener
 {
     @InjectView(android.R.id.list) protected ListView discussionList;
-    private FlagNearEndScrollListener scrollListener;
+    protected FlagNearEdgeScrollListener scrollListener;
     @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
 
     private int listItemLayout;
@@ -433,11 +432,11 @@ public class DiscussionView extends FrameLayout
         }
         else if (key.equals(prevDiscussionListKey))
         {
-            handlePrevDTOReceived(key, value, fromCache);
+            postHandlePrevDTOReceived(key, value, fromCache);
         }
         else if (key.equals(nextDiscussionListKey))
         {
-            handleNextDTOReceived(key, value, fromCache);
+            postHandleNextDTOReceived(key, value, fromCache);
         }
     }
 
@@ -459,20 +458,42 @@ public class DiscussionView extends FrameLayout
         fetchDiscussionListPrevIfValid(value);
     }
 
+    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    {
+        post(new Runnable()
+        {
+            @Override public void run()
+            {
+                handleNextDTOReceived(key, value, fromCache);
+            }
+        });
+    }
+
     protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
         if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
         {
+            fetchDiscussionListNextIfValid(value);
         }
-        fetchDiscussionListNextIfValid(value);
+    }
+
+    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    {
+        post(new Runnable()
+        {
+            @Override public void run()
+            {
+                handlePrevDTOReceived(key, value, fromCache);
+            }
+        });
     }
 
     protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
         if (discussionList.getFirstVisiblePosition() == 0)
         {
+            fetchDiscussionListPrevIfValid(value);
         }
-        fetchDiscussionListPrevIfValid(value);
     }
 
     protected class DiscussionViewCommentPostedListener implements PostCommentView.CommentPostedListener
@@ -490,21 +511,27 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected FlagNearEndScrollListener createFlagNearEndScrollListener()
+    protected FlagNearEdgeScrollListener createFlagNearEndScrollListener()
     {
-        return new DiscussionViewFlagNearEndScrollListener();
+        return new DiscussionViewFlagNearEdgeScrollListener();
     }
 
-    protected class DiscussionViewFlagNearEndScrollListener extends FlagNearEndScrollListener
+    protected class DiscussionViewFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
-        public DiscussionViewFlagNearEndScrollListener()
+        public DiscussionViewFlagNearEdgeScrollListener()
         {
             super();
         }
 
-        @Override public void raiseFlag()
+        @Override public void raiseStartFlag()
         {
-            super.raiseFlag();
+            super.raiseStartFlag();
+            fetchDiscussionListPrev();
+        }
+
+        @Override public void raiseEndFlag()
+        {
+            super.raiseEndFlag();
             fetchDiscussionListNext();
         }
     }

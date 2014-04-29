@@ -23,7 +23,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.FlagNearEndScrollListener;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -85,7 +85,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @InjectView(R.id.progress) ProgressBar mProgress;
 
     private int perPage = DEFAULT_PER_PAGE;
-    private FlagNearEndScrollListener nearEndScrollListener;
+    private FlagNearEdgeScrollListener nearEndScrollListener;
 
     private TrendingSearchType mSearchType = TrendingSearchType.STOCKS;
     private EditText mSearchTextField;
@@ -135,7 +135,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void initViews(View view, LayoutInflater inflater)
     {
-        nearEndScrollListener = new SearchFlagNearEndScrollListener();
+        nearEndScrollListener = new SearchFlagNearEdgeScrollListener();
         securityIdListCacheListener = new SecurityIdListCacheListener();
         peopleListCacheListener = new PeopleListCacheListener();
 
@@ -302,8 +302,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         this.userBaseKeys = new ArrayList<>();
         if (nearEndScrollListener != null)
         {
-            nearEndScrollListener.lowerFlag();
-            nearEndScrollListener.activate();
+            nearEndScrollListener.lowerEndFlag();
+            nearEndScrollListener.activateEnd();
         }
     }
 
@@ -639,11 +639,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
-    private class SearchFlagNearEndScrollListener extends FlagNearEndScrollListener
+    private class SearchFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
-        @Override public void raiseFlag()
+        @Override public void raiseEndFlag()
         {
-            super.raiseFlag();
+            super.raiseEndFlag();
             loadNewPage(lastLoadedPage + 1);
         }
     }
@@ -732,10 +732,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             Timber.d("Page loaded: %d", lastLoadedPage);
             lastLoadedPage = key.getPage();
             currentlyLoadingPage = FIRST_PAGE - 1;
-            nearEndScrollListener.lowerFlag();
+            nearEndScrollListener.lowerEndFlag();
             if (value == null || value.size() == 0)
             {
-                nearEndScrollListener.deactivate();
+                nearEndScrollListener.deactivateEnd();
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
@@ -779,10 +779,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             }
             lastLoadedPage = castedKey.page;
             currentlyLoadingPage = FIRST_PAGE - 1;
-            nearEndScrollListener.lowerFlag();
+            nearEndScrollListener.lowerEndFlag();
             if (value == null || value.size() == 0)
             {
-                nearEndScrollListener.deactivate();
+                nearEndScrollListener.deactivateEnd();
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.setItems(null);

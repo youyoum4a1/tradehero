@@ -20,7 +20,7 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.widget.FlagNearEndScrollListener;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -666,13 +666,13 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    class OnScrollListener extends FlagNearEndScrollListener
+    class OnScrollListener extends FlagNearEdgeScrollListener
     {
         AbsListView.OnScrollListener onScrollListener;
 
         public OnScrollListener(AbsListView.OnScrollListener onScrollListener)
         {
-            activate();
+            activateEnd();
             this.onScrollListener = onScrollListener;
         }
 
@@ -699,9 +699,9 @@ public class MessagesCenterFragment extends DashboardFragment
             super.onScrollStateChanged(view, state);
         }
 
-        @Override public void raiseFlag()
+        @Override public void raiseEndFlag()
         {
-            Timber.d("raiseFlag");
+            Timber.d("raiseEndFlag");
             if (hasMorePage)
             {
                 loadNextMessages();

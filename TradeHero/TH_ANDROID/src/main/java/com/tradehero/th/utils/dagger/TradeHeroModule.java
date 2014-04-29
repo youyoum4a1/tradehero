@@ -344,6 +344,7 @@ import javax.inject.Singleton;
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
                         PrivateDiscussionSetAdapter.class,
+                        PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,
                         PrivateMessageBubbleView.class,
                         AbstractDiscussionFragment.class,
                         AbstractPrivateMessageFragment.class,
