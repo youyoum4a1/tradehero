@@ -33,6 +33,7 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     @Inject Provider<PrettyTime> prettyTime;
 
     protected T discussionKey;
+    protected AbstractDiscussionDTO abstractDiscussionDTO;
 
     private DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> discussionFetchListener;
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
@@ -104,25 +105,25 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         discussionFetchTask = null;
     }
 
-    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    public void display(AbstractDiscussionDTO abstractDiscussionDTO)
     {
-        if (andDisplay && abstractDiscussionDTO != null)
-        {
-            display(abstractDiscussionDTO);
-        }
+        linkWith(abstractDiscussionDTO, true);
     }
 
-    private void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        // markup text
-        displayContent(abstractDiscussionDTO);
-
-        // timeline time
-        displayTime(abstractDiscussionDTO);
-
-        if (votePair != null)
+        this.abstractDiscussionDTO = abstractDiscussionDTO;
+        if (andDisplay)
         {
-            votePair.display(abstractDiscussionDTO);
+            // markup text
+            displayContent(abstractDiscussionDTO);
+            // timeline time
+            displayTime(abstractDiscussionDTO);
+
+            if (votePair != null)
+            {
+                votePair.display(abstractDiscussionDTO);
+            }
         }
     }
 
@@ -148,7 +149,7 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
         @Override
         public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
         {
-            linkWith(value, true);
+            display(value);
         }
 
         @Override public void onErrorThrown(DiscussionKey key, Throwable error)
