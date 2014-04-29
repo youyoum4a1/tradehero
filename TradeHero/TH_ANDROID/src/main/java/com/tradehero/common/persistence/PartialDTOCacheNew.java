@@ -110,7 +110,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
             super();
         }
 
-        public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(DTOKeyType key, boolean force)
+        public void getOrFetch(DTOKeyType key, boolean force)
         {
             GetOrFetchTask<DTOKeyType, DTOType> myFetchTask = fetchTask.get();
             if (needsRecreate(myFetchTask))
@@ -119,7 +119,6 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
                 fetchTask = new WeakReference<>(myFetchTask);
                 myFetchTask.execute();
             }
-            return myFetchTask;
         }
     }
 
