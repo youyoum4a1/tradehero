@@ -95,7 +95,6 @@ import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
@@ -344,7 +343,6 @@ import javax.inject.Singleton;
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
-                        PrivateDiscussionListAdapter.class,
                         PrivateDiscussionSetAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
