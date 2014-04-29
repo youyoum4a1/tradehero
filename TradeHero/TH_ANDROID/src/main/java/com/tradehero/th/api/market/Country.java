@@ -2,7 +2,6 @@ package com.tradehero.th.api.market;
 
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/16/13 Time: 11:52 AM To change this template use File | Settings | File Templates. */
 public enum Country
 {
     // United Kingdom

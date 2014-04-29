@@ -209,7 +209,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         try
         {
-            Timber.d("getConutryLogoId country:%s",country);
+            Timber.d("getCountryLogoId country:%s",country);
             return Country.valueOf(country).logoId;
         } catch (IllegalArgumentException ex)
         {
