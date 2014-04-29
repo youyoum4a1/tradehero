@@ -15,12 +15,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -37,8 +39,8 @@ import retrofit.client.Response;
 public class PostCommentView extends RelativeLayout
 {
     /**
-     * If true, then we wait for a return from the server before adding the discussion.
-     * If false, we add it right away.
+     * If false, then we wait for a return from the server before adding the discussion.
+     * If true, we add it right away.
      */
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
 
@@ -56,9 +58,11 @@ public class PostCommentView extends RelativeLayout
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject DiscussionCache discussionCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     private CommentPostedListener commentPostedListener;
+    private DiscussionKey nextStubKey;
 
     //<editor-fold desc="Constructors">
     public PostCommentView(Context context)
@@ -105,6 +109,28 @@ public class PostCommentView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    protected DiscussionType getDefaultDiscussionType()
+    {
+        return DiscussionType.COMMENT;
+    }
+
+    public synchronized DiscussionKey moveNextStubKey()
+    {
+        if (nextStubKey != null)
+        {
+            nextStubKey = discussionKeyFactory.create(nextStubKey.getType(), nextStubKey.id + 1);
+        }
+        else if (discussionKey != null)
+        {
+            nextStubKey = discussionKeyFactory.create(discussionKey.getType(), Integer.MAX_VALUE - 10000);
+        }
+        else
+        {
+            nextStubKey = discussionKeyFactory.create(getDefaultDiscussionType(), Integer.MAX_VALUE - 10000);
+        }
+        return nextStubKey;
+    }
+
     @OnClick(R.id.post_comment_action_submit)
     protected void postComment()
     {
@@ -144,16 +170,29 @@ public class PostCommentView extends RelativeLayout
         setPosting();
         postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(
                 discussionFormDTO,
-                createCommentSubmitCallback(),
-                USE_QUICK_STUB_DISCUSSION);
+                createCommentSubmitCallback());
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
     {
-        DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionKey.getType());
+        DiscussionFormDTO discussionFormDTO = createEmptyCommentFormDTO();
+        populateFormDTO(discussionFormDTO);
+        return discussionFormDTO;
+    }
+
+    protected DiscussionFormDTO createEmptyCommentFormDTO()
+    {
+        return discussionFormDTOFactory.createEmpty(discussionKey.getType());
+    }
+
+    protected void populateFormDTO(DiscussionFormDTO discussionFormDTO)
+    {
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
-        return discussionFormDTO;
+        if (USE_QUICK_STUB_DISCUSSION)
+        {
+            discussionFormDTO.stubKey = moveNextStubKey();
+        }
     }
 
     protected void submitAsNewDiscussion()
