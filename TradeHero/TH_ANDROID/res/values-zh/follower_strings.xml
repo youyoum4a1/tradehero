@@ -6,7 +6,9 @@
   <string name="not_follow_msg_title">你需要关注\n%1$s\n之后才可以发送私信. 请选择关注类型:
   </string>
   <string name="not_follow_subtitle">免费关注</string>
+  <string name="not_follow_subtitle2">免费关注</string>
   <string name="not_follow_premium_subtitle">高级关注（一个关注点数）</string>
+  <string name="not_follow_premium_subtitle2">高级关注</string>
   <string name="free_follow_title">关注中</string>
   <string name="free_follow_content1">只要一个关注点数（6元/月），即可高级关注此用户，获得下列特权:
   </string>
@@ -17,4 +19,6 @@
   <string name="continue_free_follow">以后再说</string>
   <string name="upgrade">升级</string>
   <string name="following_this_hero">正在关注这个英雄...</string>
+  <string name="free_message_left">剩余 %1$s 条免费消息</string>
+  <string name="upgrade_to_message_more">升级可发送更多消息!</string>
 </resources>

@@ -15,7 +15,7 @@ public class UserMessagingRelationshipDTO implements DTO
 
     public Date followerSince;
     public Date heroSince;
-    public Boolean freeFollow;
+    public boolean freeFollow;
 
     public boolean isUnlimited()
     {
@@ -37,6 +37,7 @@ public class UserMessagingRelationshipDTO implements DTO
                 ", friendDesc='" + friendDesc + '\'' +
                 ", followerSince=" + followerSince +
                 ", heroSince=" + heroSince +
+                ", freeFollow=" + freeFollow +
                 '}';
     }
 }

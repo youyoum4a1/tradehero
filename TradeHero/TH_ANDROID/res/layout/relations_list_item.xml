@@ -31,12 +31,60 @@
         android:paddingBottom="2dp"
         android:paddingLeft="5dp">
 
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <ImageView
+            android:id="@+id/country_logo"
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            android:layout_marginRight="@dimen/common_margin_10"
+            android:layout_alignParentRight="true"/>
+
+      </RelativeLayout>
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textSize="15sp"
+            android:textColor="@color/gray_normal"/>
+
+        <TextView
+            android:id="@+id/upgrade_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/common_margin_10"
+            android:text="@string/upgrade_now"
+            android:textSize="15sp"
+            android:textColor="@color/number_green"/>
+
+      </RelativeLayout>
+
       <TextView
-          android:id="@+id/user_name"
+          android:id="@+id/user_message_left"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
-          android:textSize="18sp"/>
+          android:layout_gravity="left"
+          android:textSize="15sp"
+          android:textColor="@color/gray_normal"/>
 
     </LinearLayout>
 

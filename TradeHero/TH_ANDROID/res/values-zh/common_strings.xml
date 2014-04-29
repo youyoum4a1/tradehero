@@ -71,4 +71,5 @@
 
   <string name="ok">好的</string>
   <string name="downloading_relations">正在加载联系人...</string>
+  <string name="upgrade_now">现在升级!</string>
 </resources>

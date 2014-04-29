@@ -8,7 +8,9 @@
     tier below:
   </string>
   <string name="not_follow_subtitle">FREE Follow</string>
+  <string name="not_follow_subtitle">Free</string>
   <string name="not_follow_premium_subtitle">PREMIUM Follow</string>
+  <string name="not_follow_premium_subtitle2">Premium</string>
   <string name="free_follow_title">You are now following</string>
   <string name="free_follow_content1">Upgrade to Premium follow for US$1.99/month and
     get the following perks:
@@ -22,4 +24,6 @@
   <string name="continue_free_follow">Continue with\nFree Follow</string>
   <string name="upgrade">Upgrade</string>
   <string name="following_this_hero">Following this hero...</string>
+  <string name="free_message_left">%1$s free message left</string>
+  <string name="upgrade_to_message_more">Upgrade to message more!</string>
 </resources>

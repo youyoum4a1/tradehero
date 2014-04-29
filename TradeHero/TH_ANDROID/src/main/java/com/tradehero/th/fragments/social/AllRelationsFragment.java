@@ -15,9 +15,8 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -31,10 +30,10 @@ import javax.inject.Inject;
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
 {
-    List<UserProfileCompactDTO> mRelationsList;
+    List<AllowableRecipientDTO> mRelationsList;
     @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
-    private DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>> allowableRecipientCacheTask;
+    private DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>> allowableRecipientCacheTask;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
@@ -126,19 +125,20 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment(int position)
     {
         Bundle args = new Bundle();
-        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, mRelationsList.get(position).getBaseKey());
+        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, mRelationsList.get(position).user.getBaseKey());
         getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected class AllRelationAllowableRecipientCacheListener
         implements DTOCache.Listener<
             SearchAllowableRecipientListType,
-            PaginatedDTO<UserBaseKey>>
+            PaginatedDTO<AllowableRecipientDTO>>
     {
         @Override public void onDTOReceived(SearchAllowableRecipientListType key,
-                PaginatedDTO<UserBaseKey> value, boolean fromCache)
+                PaginatedDTO<AllowableRecipientDTO> value, boolean fromCache)
         {
-            mRelationsList = userProfileCompactCache.get(value.getData());
+            //mRelationsList = userProfileCompactCache.get(value.getData());
+            mRelationsList = value.getData();
             alertDialogUtilLazy.get().dismissProgressDialog();
             mRelationsListItemAdapter.setItems(mRelationsList);
             mRelationsListItemAdapter.notifyDataSetChanged();
