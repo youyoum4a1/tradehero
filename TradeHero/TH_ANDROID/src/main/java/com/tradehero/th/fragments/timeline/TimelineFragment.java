@@ -847,7 +847,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void freeFollow(Callback<UserProfileDTO> followCallback)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity());
+        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get().freeFollow(shownUserBaseKey, followCallback);

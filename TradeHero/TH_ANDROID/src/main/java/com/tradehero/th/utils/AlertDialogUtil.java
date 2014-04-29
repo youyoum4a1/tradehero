@@ -230,6 +230,19 @@ public class AlertDialogUtil
         mProgressDialog.show();
     }
 
+    public void showProgressDialog(Context context, String content)
+    {
+        if (mProgressDialog != null)
+        {
+            mProgressDialog.dismiss();
+        }
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(content);
+        mProgressDialog.show();
+    }
+
     public void dismissProgressDialog()
     {
         if (mProgressDialog != null)

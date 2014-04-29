@@ -47,8 +47,10 @@ public class FollowUserAssistant implements
     protected final OwnedPortfolioId applicablePortfolioId;
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
-    @Inject protected CurrentActivityHolder currentActivityHolder;
+    @Inject protected Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject protected Lazy<HeroListCache> heroListCacheLazy;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
@@ -90,7 +92,6 @@ public class FollowUserAssistant implements
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        //heroListCacheLazy.get().invalidate(new HeroKey(userProfileDTO.getBaseKey(), HeroType.ALL));
         heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
         updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
@@ -148,8 +149,9 @@ public class FollowUserAssistant implements
     {
         if (this.currentUserProfile.ccBalance > 0)
         {
-            alertDialogUtilLazy.get()
-                    .showProgressDialog(currentActivityHolder.getCurrentActivity());
+            alertDialogUtilLazy.get().showProgressDialog(currentActivityHolderLazy.get()
+                    .getCurrentContext(), currentActivityHolderLazy.get().getCurrentContext()
+                    .getString(R.string.following_this_hero));
             userServiceWrapper.follow(userToFollow, this);
         }
         else
@@ -191,7 +193,7 @@ public class FollowUserAssistant implements
     public void alipayPopBuy(int type)
     {
         AlertDialog.Builder builder =
-                new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
+                new AlertDialog.Builder(currentActivityHolderLazy.get().getCurrentActivity());
         int array = 0;
         switch (type)
         {
@@ -210,7 +212,7 @@ public class FollowUserAssistant implements
         }
         final int type1 = type;
         builder.setTitle(R.string.app_name)
-                .setItems(currentActivityHolder.getCurrentActivity()
+                .setItems(currentActivityHolderLazy.get().getCurrentActivity()
                         .getResources()
                         .getStringArray(array),
                         new DialogInterface.OnClickListener()
@@ -220,20 +222,17 @@ public class FollowUserAssistant implements
                                 if (checkAlertsPlan(which, type1))
                                 {
                                     Intent intent =
-                                            new Intent(currentActivityHolder.getCurrentActivity(),
+                                            new Intent(currentActivityHolderLazy.get().getCurrentActivity(),
                                                     AlipayActivity.class);
                                     intent.putExtra(AlipayActivity.ALIPAY_TYPE_KEY, type1);
                                     intent.putExtra(AlipayActivity.ALIPAY_POSITION_KEY, which);
-                                    currentActivityHolder.getCurrentActivity()
+                                    currentActivityHolderLazy.get().getCurrentActivity()
                                             .startActivity(intent);
                                 }
                             }
                         });
         builder.create().show();
     }
-
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject protected Lazy<SecurityAlertCountingHelper> securityAlertCountingHelperLazy;
 
     //TODO refactor
     private boolean checkAlertsPlan(int which, int type1)
@@ -252,7 +251,7 @@ public class FollowUserAssistant implements
                 {
                     alertDialogUtilLazy.get()
                             .showDefaultDialog(
-                                    currentActivityHolder.getCurrentContext(),
+                                    currentActivityHolderLazy.get().getCurrentContext(),
                                     R.string.store_billing_error_buy_alerts);
                     return false;
                 }
@@ -262,7 +261,7 @@ public class FollowUserAssistant implements
                 {
                     alertDialogUtilLazy.get()
                             .showDefaultDialog(
-                                    currentActivityHolder.getCurrentContext(),
+                                    currentActivityHolderLazy.get().getCurrentContext(),
                                     R.string.store_billing_error_buy_alerts);
                     return false;
                 }
