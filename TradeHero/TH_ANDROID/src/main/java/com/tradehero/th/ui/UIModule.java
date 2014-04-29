@@ -19,6 +19,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
@@ -64,7 +65,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 DiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
 
-                FollowDialogView.class
+                FollowDialogView.class,
+
+                NotificationClickHandler.class
         },
         complete = false,
         library = true
