@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
@@ -92,7 +93,6 @@ public class RelationsListItemView extends RelativeLayout
     public void linkWith(AllowableRecipientDTO allowableRecipientDTO, boolean andDisplay)
     {
         this.allowableRecipientDTO = allowableRecipientDTO;
-        //Timber.d("lyl relationship=%s", allowableRecipientDTO.relationship.toString());
         if (andDisplay)
         {
             displayPicture();
@@ -140,6 +140,10 @@ public class RelationsListItemView extends RelativeLayout
         {
             name.setText(allowableRecipientDTO.user.displayName);
         }
+        if (countryLogo != null && allowableRecipientDTO.user.countryCode != null)
+        {
+            countryLogo.setImageResource(getConutryLogoId(allowableRecipientDTO.user.countryCode));
+        }
         if (messageLeft != null)
         {
             int count = allowableRecipientDTO.relationship.freeSendsRemaining;
@@ -150,14 +154,26 @@ public class RelationsListItemView extends RelativeLayout
             else
             {
                 messageLeft.setText(getContext().getString(R.string.upgrade_to_message_more));
-
             }
-            messageLeft.setVisibility(allowableRecipientDTO.relationship.isFriend ? INVISIBLE : VISIBLE);
-            messageLeft.setVisibility(allowableRecipientDTO.relationship.isFollower ? INVISIBLE : VISIBLE);
         }
-        if (upgradeNow != null)
+
+        if (allowableRecipientDTO.relationship.isFollower)
         {
-            upgradeNow.setVisibility(allowableRecipientDTO.relationship.isHero && allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
+            messageLeft.setVisibility(INVISIBLE);
+            upgradeNow.setVisibility(INVISIBLE);
+        }
+        else if (allowableRecipientDTO.relationship.isHero)
+        {
+            messageLeft.setVisibility(allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
+            if (upgradeNow != null)
+            {
+                upgradeNow.setVisibility(allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
+            }
+        }
+        else
+        {
+            messageLeft.setVisibility(INVISIBLE);
+            upgradeNow.setVisibility(INVISIBLE);
         }
 
     }
@@ -171,16 +187,20 @@ public class RelationsListItemView extends RelativeLayout
                 userType.setText(getContext().getString(
                         R.string.user_profile_count_followers));
             }
-            else
+            else if (allowableRecipientDTO.relationship.isHero)
             {
                 userType.setText(getContext().getString(R.string.user_profile_count_heroes));
+            }
+            else
+            {
+                userType.setText(getContext().getString(R.string.leaderboard_community_friends));
             }
             if (allowableRecipientDTO.relationship.freeFollow)
             {
                 userType.setText(userType.getText() + "(" + getContext().getString(
                         R.string.not_follow_subtitle2) + ")");
             }
-            else
+            else if (allowableRecipientDTO.relationship.isHero)
             {
                 userType.setText(userType.getText() + "(" + getContext().getString(
                         R.string.not_follow_premium_subtitle2) + ")");
@@ -191,5 +211,16 @@ public class RelationsListItemView extends RelativeLayout
     @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
     {
         linkWith(allowableRecipientDTO, true);
+    }
+
+    public int getConutryLogoId(String country)
+    {
+        try
+        {
+            return Country.valueOf(country).logoId;
+        } catch (IllegalArgumentException ex)
+        {
+            return 0;
+        }
     }
 }
