@@ -2,6 +2,7 @@ package com.tradehero.th.models.discussion;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -14,21 +15,28 @@ public class MiddleCallbackDiscussion extends MiddleCallback<DiscussionDTO>
     private final DiscussionDTOFactory discussionDTOFactory;
     private final UserMessagingRelationshipCache userMessagingRelationshipCache;
     private final DiscussionCache discussionCache;
+    private final DiscussionKey stubKey;
 
     public MiddleCallbackDiscussion(
             Callback<DiscussionDTO> primaryCallback,
             DiscussionDTOFactory discussionDTOFactory,
             UserMessagingRelationshipCache userMessagingRelationshipCache,
-            DiscussionCache discussionCache)
+            DiscussionCache discussionCache,
+            DiscussionKey stubKey)
     {
         super(primaryCallback);
         this.discussionDTOFactory = discussionDTOFactory;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.discussionCache = discussionCache;
+        this.stubKey = stubKey;
     }
 
     @Override public void success(DiscussionDTO discussionDTO, Response response)
     {
+        if (stubKey != null)
+        {
+            discussionCache.invalidate(stubKey);
+        }
         if (discussionDTO != null)
         {
             userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
@@ -37,6 +45,10 @@ public class MiddleCallbackDiscussion extends MiddleCallback<DiscussionDTO>
         if (discussionDTOFactory != null)
         {
             discussionDTO = discussionDTOFactory.createChildClass(discussionDTO);
+        }
+        if (discussionDTO != null)
+        {
+            discussionDTO.stubKey = stubKey;
         }
         super.success(discussionDTO, response);
     }

@@ -196,7 +196,8 @@ public class MessageServiceWrapper
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache.get(),
-                discussionCache.get());
+                discussionCache.get(),
+                null);
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }

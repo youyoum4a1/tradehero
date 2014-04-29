@@ -22,8 +22,6 @@ import retrofit.Callback;
 
 @Singleton public class DiscussionServiceWrapper
 {
-    public final static boolean DEFAULT_USE_QUICK_STUB_RESPONSE = false;
-
     private final DiscussionService discussionService;
     private final DiscussionServiceAsync discussionServiceAsync;
     private final DiscussionDTOFactory discussionDTOFactory;
@@ -66,7 +64,8 @@ import retrofit.Callback;
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache,
-                discussionCache.get());
+                discussionCache.get(),
+                null);
         discussionServiceAsync.getComment(discussionKey.id, middleCallback);
         return middleCallback;
     }
@@ -87,26 +86,16 @@ import retrofit.Callback;
             DiscussionFormDTO discussionFormDTO,
             Callback<DiscussionDTO> callback)
     {
-        return createDiscussion(discussionFormDTO, callback, DEFAULT_USE_QUICK_STUB_RESPONSE);
-    }
-
-    public MiddleCallbackDiscussion createDiscussion(
-            DiscussionFormDTO discussionFormDTO,
-            Callback<DiscussionDTO> callback,
-            boolean useQuickStubResponse)
-    {
         MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache,
-                discussionCache.get());
-        if (useQuickStubResponse)
+                discussionCache.get(),
+                discussionFormDTO.stubKey);
+        if (discussionFormDTO.stubKey != null)
         {
             DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
             middleCallback.success(stub, null);
-
-            // TODO nullifying here is debatable
-            middleCallback.setPrimaryCallback(null);
         }
         discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
@@ -175,7 +164,8 @@ import retrofit.Callback;
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache,
-                discussionCache.get());
+                discussionCache.get(),
+                null);
         discussionServiceAsync.vote(
                 discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
@@ -209,7 +199,8 @@ import retrofit.Callback;
                 callback,
                 discussionDTOFactory,
                 userMessagingRelationshipCache,
-                discussionCache.get());
+                discussionCache.get(),
+                null);
         discussionServiceAsync.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,
