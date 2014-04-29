@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView
+<com.tradehero.th.fragments.social.message.PrivateMessageBubbleView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -44,4 +44,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView>
+</com.tradehero.th.fragments.social.message.PrivateMessageBubbleView>

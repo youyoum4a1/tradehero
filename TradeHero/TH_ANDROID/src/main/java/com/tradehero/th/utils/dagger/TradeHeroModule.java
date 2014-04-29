@@ -30,6 +30,7 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
@@ -96,8 +97,7 @@ import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleView;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -339,13 +339,12 @@ import javax.inject.Singleton;
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
-
+                        AbstractDiscussionItemViewHolder.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
                         PrivateDiscussionSetAdapter.class,
-                        PrivateMessageBubbleMineView.class,
-                        PrivateMessageBubbleOtherView.class,
+                        PrivateMessageBubbleView.class,
                         AbstractDiscussionFragment.class,
                         AbstractPrivateMessageFragment.class,
 
