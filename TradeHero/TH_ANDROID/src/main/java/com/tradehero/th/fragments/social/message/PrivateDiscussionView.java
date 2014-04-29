@@ -9,12 +9,15 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
@@ -29,6 +32,7 @@ public class PrivateDiscussionView extends DiscussionView
 {
     @Inject protected MessageHeaderCache messageHeaderCache;
     @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
+    @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
@@ -141,14 +145,9 @@ public class PrivateDiscussionView extends DiscussionView
         discussionFetchTask.execute();
     }
 
-    @Override protected DiscussionListKey createListKey()
+    @Override protected DiscussionListKey createStartingDiscussionListKey()
     {
         return discussionListKeyFactory.create(messageHeaderDTO);
-    }
-
-    @Override protected void prepareDiscussionListKey()
-    {
-        // Do nothing TODO something
     }
 
     protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
@@ -257,6 +256,32 @@ public class PrivateDiscussionView extends DiscussionView
         MessageHeaderDTO stub = messageHeaderDTOFactory.create(from);
         stub.recipientUserId = recipient.key;
         return stub;
+    }
+
+    @Override protected DiscussionListKey getNextDiscussionListKey(DiscussionListKey currentNext,
+            DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey next = messageDiscussionListKeyFactory.next((MessageDiscussionListKey) currentNext, latestDiscussionKeys);
+        if (next != null && next.equals(currentNext))
+        {
+            // This situation where next is equal to currentNext may happen
+            // when the server is still returning the same values
+            next = null;
+        }
+        return next;
+    }
+
+    @Override protected DiscussionListKey getPrevDiscussionListKey(DiscussionListKey currentPrev,
+            DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey prev = messageDiscussionListKeyFactory.prev((MessageDiscussionListKey) currentPrev, latestDiscussionKeys);
+        if (prev != null && prev.equals(currentPrev))
+        {
+            // This situation where next is equal to currentNext may happen
+            // when the server is still returning the same values
+            prev = null;
+        }
+        return prev;
     }
 
     @Override protected PostCommentView.CommentPostedListener createCommentPostedListener()
