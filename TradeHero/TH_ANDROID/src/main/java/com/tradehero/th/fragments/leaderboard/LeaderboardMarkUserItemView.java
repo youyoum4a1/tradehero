@@ -41,11 +41,11 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -479,7 +479,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected void freeFollow()
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext());
+        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
+                R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()

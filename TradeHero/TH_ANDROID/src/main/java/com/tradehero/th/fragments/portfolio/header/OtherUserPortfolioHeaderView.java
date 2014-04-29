@@ -133,7 +133,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     protected void freeFollow()
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext());
+        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()

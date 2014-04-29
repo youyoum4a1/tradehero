@@ -100,7 +100,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     public void downloadRelations()
     {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity());
+        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.downloading_relations));
         detachAllowableRecipientTask();
 
         allowableRecipientCacheTask = allowableRecipientPaginatedCache

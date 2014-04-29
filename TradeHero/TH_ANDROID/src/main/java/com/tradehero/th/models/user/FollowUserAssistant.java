@@ -4,6 +4,8 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -15,6 +17,7 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -37,10 +40,13 @@ public class FollowUserAssistant implements
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
     @Inject protected Lazy<HeroListCache> heroListCacheLazy;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
+    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
 
-    public FollowUserAssistant(OnUserFollowedListener userFollowedListener, UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
+    public FollowUserAssistant(OnUserFollowedListener userFollowedListener,
+            UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
     {
         this.userFollowedListener = userFollowedListener;
         this.userToFollow = userToFollow;
@@ -76,6 +82,7 @@ public class FollowUserAssistant implements
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
+        alertDialogUtilLazy.get().dismissProgressDialog();
         heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
         updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
@@ -95,6 +102,7 @@ public class FollowUserAssistant implements
 
     @Override public void failure(RetrofitError error)
     {
+        alertDialogUtilLazy.get().dismissProgressDialog();
         notifyFollowFailed(userToFollow, error);
     }
 
@@ -124,13 +132,16 @@ public class FollowUserAssistant implements
         {
             billingInteractor.forgetRequestCode(requestCode);
         }
-        requestCode =  null;
+        requestCode = null;
     }
 
     protected void follow()
     {
         if (this.currentUserProfile.ccBalance > 0)
         {
+            alertDialogUtilLazy.get().showProgressDialog(currentActivityHolderLazy.get()
+                    .getCurrentContext(), currentActivityHolderLazy.get().getCurrentContext()
+                    .getString(R.string.following_this_hero));
             userServiceWrapper.follow(userToFollow, this);
         }
         else
@@ -167,13 +178,15 @@ public class FollowUserAssistant implements
         billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
         {
             @Override
-            public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                    UserProfileDTO updatedUserPortfolio)
             {
                 notifyFollowSuccess(userToFollow, updatedUserPortfolio);
             }
 
             @Override
-            public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+            public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
+                    BillingException error)
             {
                 notifyFollowFailed(userToFollow, error);
                 Timber.e(error, "Failed to report purchase");
@@ -185,6 +198,7 @@ public class FollowUserAssistant implements
     public static interface OnUserFollowedListener
     {
         void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO);
+
         void onUserFollowFailed(UserBaseKey userFollowed, Throwable error);
     }
 }
