@@ -44,9 +44,17 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         {
             detachGetPositionsTask();
             fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
-            displayProgress(true);
+            //displayProgress(true);
             fetchGetPositionsDTOTask.execute();
         }
+    }
+
+    @Override protected void refreshSimplePage()
+    {
+        detachGetPositionsTask();
+        DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
+        //displayProgress(true);
+        fetchGetPositionsDTOTask.execute();
     }
 
     @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
@@ -59,14 +67,46 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, getPositionsCacheListener);
     }
 
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
+    {
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, true, new RefreshPositionsListener());
+    }
+
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
     {
         @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
         {
             if (key.equals(shownOwnedPortfolioId))
             {
-                displayProgress(false);
+                //displayProgress(false);
                 linkWith(value, true);
+                showResultIfNecessary();
+            }
+            else
+            {
+                showErrorView();
+            }
+        }
+    }
+
+    protected class RefreshPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
+        {
+            if (!fromCache)
+            {
+                linkWith(value, true);
+                showResultIfNecessary();
+            }
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            //super.onErrorThrown(key, error);
+            boolean loaded = checkLoadingSuccess();
+            if (!loaded)
+            {
+                showErrorView();
             }
         }
     }

@@ -9,9 +9,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
 
 /**
- * Listens for item clicks and expands or collapses the selected view depending on
- * its current state.
- * Created by julien on 24/10/13
+ * Listens for item clicks and expands or collapses the selected view depending on its current
+ * state. Created by julien on 24/10/13
  */
 public class ExpandingListView extends ListView
 {
@@ -42,7 +41,7 @@ public class ExpandingListView extends ListView
         super.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
-            public void onItemClick (AdapterView<?> parent, View view, int position, long id)
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 if (expandingListItemListener != null)
                 {
@@ -106,10 +105,96 @@ public class ExpandingListView extends ListView
         this.expandingListItemListener = expandingListItemListener;
     }
 
+    public static class ExpandableItemClickHandler implements OnItemClickListener
+    {
+
+        private ListView listView;
+        private OnItemClickListener originalOnItemClickListener;
+        private ExpandingListItemListener expandingListItemListener;
+
+        public ExpandableItemClickHandler(ListView listView)
+        {
+            this.listView = listView;
+            if (listView != null)
+            {
+                this.originalOnItemClickListener = listView.getOnItemClickListener();
+                listView.setOnItemClickListener(this);
+            }
+        }
+
+        public void setExpandingListItemListener(
+                ExpandingListItemListener expandingListItemListener)
+        {
+            this.expandingListItemListener = expandingListItemListener;
+        }
+
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            if (listView != null)
+            {
+                if (expandingListItemListener != null)
+                {
+                    expandingListItemListener.onItemClick(parent, view, position, id);
+                }
+
+                Object o = listView.getItemAtPosition(listView.getPositionForView(view));
+                if (o == null || !(o instanceof ExpandableItem))
+                {
+                    return;
+                }
+
+                ExpandableItem viewObject = (ExpandableItem) o;
+                if (!viewObject.isExpanded())
+                {
+                    expandView(view);
+                    viewObject.setExpanded(true);
+                    if (expandingListItemListener != null)
+                    {
+                        expandingListItemListener.onItemExpanded(parent, view, position, id);
+                    }
+                }
+                else
+                {
+                    collapseView(view);
+                    viewObject.setExpanded(false);
+                    if (expandingListItemListener != null)
+                    {
+                        expandingListItemListener.onItemCollapsed(parent, view, position, id);
+                    }
+                }
+            }
+
+            if (originalOnItemClickListener != null)
+            {
+                originalOnItemClickListener.onItemClick(parent,view,position,id);
+            }
+        }
+
+        private void expandView(View view)
+        {
+            final View expandingLayout = view.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
+            {
+                expandingLayout.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void collapseView(View view)
+        {
+            final View expandingLayout = view.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
+            {
+                expandingLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
     public static interface ExpandingListItemListener extends OnItemClickListener
     {
-        public void onItemClick (AdapterView<?> parent, View view, int position, long id);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id);
+
         public void onItemExpanded(AdapterView<?> parent, View view, int position, long id);
+
         public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id);
     }
 }

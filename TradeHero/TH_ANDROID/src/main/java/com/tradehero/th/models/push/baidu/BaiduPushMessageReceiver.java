@@ -41,15 +41,53 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public void onBind(Context context, int errorCode, String appId,
             String userId, String channelId, String requestId)
     {
-        Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%s", appId, userId, channelId,
-                requestId);
+        Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%s", appId, userId, channelId, requestId);
         //if bind successfully, don't have to bind again
         if (!isRequestSuccess(errorCode))
         {
             return;
         }
-        //  Bind success
         pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
+    }
+
+    /**
+     * Callback for PushManager.stopWork()
+     */
+    @Override
+    public void onUnbind(Context context, int errorCode, String requestId)
+    {
+        Timber.d("onUnbind errorCode:%s", errorCode);
+        if (!isRequestSuccess(errorCode))
+        {
+            return;
+        }
+        // onUnbind success
+        pushSender.get().setPushDeviceIdentifierSentFlag(false);
+        // do your own logic
+    }
+
+
+    public static Intent composeIntent(PushMessageDTO pushMessageDTO)
+    {
+        Intent intent = new Intent(ACTION_NOTIFICATION_CLICKED);
+        intent.putExtra(KEY_NOTIFICATION_ID, pushMessageDTO.id);
+        intent.putExtra(KEY_NOTIFICATION_CONTENT, pushMessageDTO.description);
+        return intent;
+    }
+
+
+    public static Intent handleIntent(Intent intent)
+    {
+        String action = intent.getAction();
+        int id = intent.getIntExtra(KEY_NOTIFICATION_ID,-1);
+        String description = intent.getStringExtra(KEY_NOTIFICATION_CONTENT);
+        Timber.d("action %s, id:%s, description:%s",action,id,description);
+
+        Intent fakeIntent = new Intent();
+        fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
+        notificationOpenedHandler.get().handle(fakeIntent);
+
+        return intent;
     }
 
     private boolean isRequestSuccess(int errorCode)
@@ -76,6 +114,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         cBuilder.setNotificationTitle(context.getString(R.string.app_name));
         cBuilder.setNotificationText(pushMessageDTO.description);
         Notification notification = cBuilder.construct(context);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         notification.contentIntent = PendingIntent.getBroadcast(context, 0,composeIntent(pushMessageDTO), 0);
 
@@ -90,28 +129,6 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         nm.notify(msgId, notification);
     }
 
-    public static Intent composeIntent(PushMessageDTO pushMessageDTO)
-    {
-        Intent intent = new Intent(ACTION_NOTIFICATION_CLICKED);
-        intent.putExtra(KEY_NOTIFICATION_ID, pushMessageDTO.id);
-        intent.putExtra(KEY_NOTIFICATION_CONTENT, pushMessageDTO.description);
-        return intent;
-    }
-
-
-    public static Intent handleIntent(Intent intent)
-    {
-        String action = intent.getAction();
-        int id = intent.getIntExtra(KEY_NOTIFICATION_ID,-1);
-        String description = intent.getStringExtra(KEY_NOTIFICATION_CONTENT);
-        Timber.d("action %s, id:%s, description:%s",action,id,description);
-
-        Intent fakeIntent = new Intent();
-        fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
-        notificationOpenedHandler.get().handle(fakeIntent);
-
-        return intent;
-    }
 
     private void handleRecevieMessage(Context context, String message)
     {
@@ -127,7 +144,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     }
 
+
     /**
+     * when user receive message
      */
     @Override
     public void onMessage(Context context, String message, String customContentString)
@@ -139,25 +158,23 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
     }
 
-    private void handleMessageClick()
-    {
 
-    }
 
     /**
      * when user click the notification
+     * currently it's useless
      */
     @Override
     public void onNotificationClicked(Context context, String title,
             String description, String customContentString)
     {
-        Timber.d("onNotificationClicked title:%s description:%s customContentString:%s", title,
-                description, customContentString);
-        handleMessageClick();
+        Timber.d("onNotificationClicked title:%s description:%s customContentString:%s", title, description, customContentString);
+        //handleMessageClick();
     }
 
     /**
      * Callback for setTags()
+     * currently it's useless
      */
     @Override
     public void onSetTags(Context context, int errorCode,
@@ -188,23 +205,5 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         Timber.d("onListTags tags:%s", tags);
     }
 
-    /**
-     * Callback for PushManager.stopWork()
-     */
-    @Override
-    public void onUnbind(Context context, int errorCode, String requestId)
-    {
-        Timber.d("onUnbind errorCode:%s", errorCode);
 
-        // 解绑定成功，设置未绑定flag，
-        if (!isRequestSuccess(errorCode))
-        {
-            return;
-        }
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-    }
-
-    private void updateContent(Context context, String content)
-    {
-    }
 }

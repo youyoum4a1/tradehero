@@ -136,6 +136,7 @@ public class NotificationClickHandler
                 break;
 
                 case PRIVATE_MESSAGE:
+                case BROADCAST_MESSAGE:
                 {
                     if (notificationDTO.referencedUserId != null)
                     {

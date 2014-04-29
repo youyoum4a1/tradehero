@@ -56,18 +56,23 @@ public class PushSender
         sessionServiceWrapper.get().updateDevice(deviceMode,new UpdateDeviceIdentifierCallback());
     }
 
+    public void setPushDeviceIdentifierSentFlag(boolean bind)
+    {
+        pushDeviceIdentifierSentFlag.set(bind);
+    }
+
     class UpdateDeviceIdentifierCallback implements Callback<UserProfileDTO>
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             Timber.d("UpdateDeviceIdentifierCallback send success");
-            pushDeviceIdentifierSentFlag.set(true);
+            setPushDeviceIdentifierSentFlag(true);
         }
 
         @Override public void failure(RetrofitError error)
         {
             Timber.e(error,"UpdateDeviceIdentifierCallback send failure");
-            pushDeviceIdentifierSentFlag.set(false);
+            setPushDeviceIdentifierSentFlag(false);
         }
     }
 }
