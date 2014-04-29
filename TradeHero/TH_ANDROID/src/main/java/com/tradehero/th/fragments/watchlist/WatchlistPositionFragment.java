@@ -363,25 +363,30 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private void displayWatchlist(SecurityIdList securityIds)
     {
-        watchListAdapter = createWatchlistAdapter();
-        watchListAdapter.setItems(securityIds);
+        WatchlistAdapter newAdapter = createWatchlistAdapter();
+        newAdapter.setItems(securityIds);
+        watchlistListView.setAdapter(newAdapter);
+        watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
-        watchlistListView.setAdapter(watchListAdapter);
     }
 
     private void openWatchlistItemEditor(int position)
     {
-        SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
-        Bundle args = new Bundle();
-        if (securityId != null)
+        // TODO discover why sometimes we would get a mismatch
+        if (position < watchListAdapter.getCount())
         {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            if (watchlistPositionCache.get(securityId) != null)
+            SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
+            Bundle args = new Bundle();
+            if (securityId != null)
             {
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                if (watchlistPositionCache.get(securityId) != null)
+                {
+                    args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                }
             }
+            getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private WatchlistAdapter createWatchlistAdapter()
