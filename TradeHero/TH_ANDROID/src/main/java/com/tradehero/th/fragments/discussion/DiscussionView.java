@@ -356,10 +356,8 @@ public class DiscussionView extends FrameLayout
 
         if (discussionListAdapter != null)
         {
-            ArrayList<DiscussionKey> newElement = new ArrayList<>();
-            newElement.add(newDiscussionKey);
-            discussionListAdapter.appendTail(newElement);
             discussionCache.put(newDiscussionKey, newDiscussion);
+            discussionListAdapter.appendTail(newDiscussion);
             discussionListAdapter.notifyDataSetChanged();
         }
         discussionListCache.invalidateAllPagesFor(discussionKey);
@@ -367,6 +365,7 @@ public class DiscussionView extends FrameLayout
 
     private void updateCommentCount()
     {
+        // TODO review in light of the stubKey
         if (discussionKey != null)
         {
             AbstractDiscussionDTO discussionDTO = discussionCache.get(discussionKey);
