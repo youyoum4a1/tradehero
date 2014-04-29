@@ -45,6 +45,12 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         }
     }
 
+    public void remove(T element)
+    {
+        set.remove(element);
+        items = new ArrayList<>(set);
+    }
+
     /**
      *
      * @param newOnes
