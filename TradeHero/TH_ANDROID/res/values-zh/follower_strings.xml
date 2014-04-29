@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="relation_follower">粉丝</string>
+  <string name="relation_friend">朋友</string>
   <string name="error_fetch_follower">获取粉丝信息发生了点错误</string>
   <string name="not_follow_title">尚未关注</string>
   <string name="not_follow_msg_title">你需要关注\n%1$s\n之后才可以发送私信. 请选择关注类型:
