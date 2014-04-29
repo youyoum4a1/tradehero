@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.tradehero.th.models.push;
 
 public class PushConstants
 {
