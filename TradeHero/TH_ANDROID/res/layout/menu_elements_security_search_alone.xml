@@ -15,7 +15,6 @@
       android:inputType="text"
       android:textColor="@color/white"
       android:layout_centerVertical="true"
-      android:hint="@string/trending_search_stock_hint"
       android:textColorHint="@color/light_grey"
       >
 

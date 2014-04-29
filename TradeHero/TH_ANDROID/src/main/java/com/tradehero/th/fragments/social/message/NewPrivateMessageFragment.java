@@ -46,8 +46,11 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     @Override protected void initViews(View view)
     {
         super.initViews(view);
-        ((PrivateDiscussionView) discussionView).setUserMessagingRelationshipDTO(
-                userMessagingRelationshipDTO);
+        if (discussionView != null)
+        {
+            ((PrivateDiscussionView) discussionView).setUserMessagingRelationshipDTO(
+                    userMessagingRelationshipDTO);
+        }
     }
 
     @Override public void onResume()
@@ -100,7 +103,8 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(correspondentId, createMessageThreadHeaderCacheListener());
+        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(correspondentId,
+                createMessageThreadHeaderCacheListener());
         messageThreadHeaderFetchTask.execute();
     }
 
@@ -217,7 +221,8 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         return new NewPrivateMessageFragmentThreadHeaderCacheListener();
     }
 
-    protected class NewPrivateMessageFragmentThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class NewPrivateMessageFragmentThreadHeaderCacheListener
+            implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
     {
         @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value,
                 boolean fromCache)
