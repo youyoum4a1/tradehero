@@ -196,10 +196,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             {
                 public void run()
                 {
-                    InputMethodManager inputManager =
-                            (InputMethodManager) mSearchTextField.getContext()
-                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.showSoftInput(mSearchTextField, 0);
+                    if (mSearchTextField != null)
+                    {
+                        InputMethodManager inputManager =
+                                (InputMethodManager) mSearchTextField.getContext()
+                                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.showSoftInput(mSearchTextField, 0);
+                    }
                 }
             }, 998);
         }
