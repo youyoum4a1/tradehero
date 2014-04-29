@@ -31,6 +31,9 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -49,7 +52,7 @@ public class PostCommentView extends RelativeLayout
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
-    private MiddleCallback<DiscussionDTO> postCommentMiddleCallback;
+    private List<WeakReference<MiddleCallback<DiscussionDTO>>> postCommentMiddleCallbacks;
 
     @Inject MessageServiceWrapper messageServiceWrapper;
     private MessageType messageType = null;
@@ -87,6 +90,7 @@ public class PostCommentView extends RelativeLayout
 
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+        postCommentMiddleCallbacks = new ArrayList<>();
     }
 
     @Override protected void onAttachedToWindow()
@@ -99,7 +103,7 @@ public class PostCommentView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachSubmitCommentMiddleCallback();
+        detachSubmitCommentMiddleCallbacks();
         resetView();
         commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
@@ -134,8 +138,6 @@ public class PostCommentView extends RelativeLayout
     @OnClick(R.id.post_comment_action_submit)
     protected void postComment()
     {
-        detachSubmitCommentMiddleCallback();
-
         if (!validate())
         {
             THToast.show(R.string.error_empty_comment);
@@ -168,9 +170,11 @@ public class PostCommentView extends RelativeLayout
     {
         DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
         setPosting();
-        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(
+        postCommentMiddleCallbacks.add(
+                new WeakReference<MiddleCallback<DiscussionDTO>>(
+                discussionServiceWrapper.createDiscussion(
                 discussionFormDTO,
-                createCommentSubmitCallback());
+                createCommentSubmitCallback())));
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
@@ -199,7 +203,10 @@ public class PostCommentView extends RelativeLayout
     {
         MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
         setPosting();
-        postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback());
+        postCommentMiddleCallbacks.add(
+                new WeakReference<MiddleCallback<DiscussionDTO>>(
+                messageServiceWrapper.createMessage(messageCreateFormDTO,
+                createCommentSubmitCallback())));
     }
 
     protected MessageCreateFormDTO buildMessageCreateFormDTO()
@@ -215,13 +222,17 @@ public class PostCommentView extends RelativeLayout
         this.commentPostedListener = listener;
     }
 
-    private void detachSubmitCommentMiddleCallback()
+    private void detachSubmitCommentMiddleCallbacks()
     {
-        if (postCommentMiddleCallback != null)
+        for (WeakReference<MiddleCallback<DiscussionDTO>> ref : postCommentMiddleCallbacks)
         {
-            postCommentMiddleCallback.setPrimaryCallback(null);
+            MiddleCallback<DiscussionDTO> callback = ref.get();
+            if (callback != null)
+            {
+                callback.setPrimaryCallback(null);
+            }
         }
-        postCommentMiddleCallback = null;
+        postCommentMiddleCallbacks.clear();
     }
 
     private void resetCommentText()
