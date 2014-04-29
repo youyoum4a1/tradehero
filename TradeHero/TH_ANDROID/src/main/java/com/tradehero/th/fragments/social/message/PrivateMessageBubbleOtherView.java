@@ -7,9 +7,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-/**
- * Created by xavier2 on 2014/4/10.
- */
 public class PrivateMessageBubbleOtherView extends PrivateMessageBubbleView
 {
     @InjectView(android.R.id.empty) @Optional View fakePlaceHolder;

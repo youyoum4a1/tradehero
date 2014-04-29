@@ -15,9 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier2 on 2014/4/10.
- */
 public class PrivateMessageBubbleAdapter extends ArrayAdapter<PrivateDiscussionDTO>
 {
     public static final int ITEM_TYPE_MINE = 0;

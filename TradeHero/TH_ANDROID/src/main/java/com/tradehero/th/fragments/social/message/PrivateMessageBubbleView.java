@@ -2,10 +2,7 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 
@@ -37,9 +34,9 @@ public class PrivateMessageBubbleView extends AbstractDiscussionItemView<Private
         viewHolder.initView(this);
     }
 
-    public void display(PrivateDiscussionDTO discussionDTO)
+    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        display(discussionDTO.getDiscussionKey());
-        viewHolder.linkWith(discussionDTO, true);
+        super.linkWith(abstractDiscussionDTO, andDisplay);
+        viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
     }
 }
