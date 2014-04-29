@@ -50,6 +50,8 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -178,7 +180,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
-
         MenuItem securitySearchElements = menu.findItem(R.id.security_search_menu_elements);
 
         mSearchTextWatcher = new SearchTextWatcher();
@@ -187,6 +188,20 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchTextField != null)
         {
             mSearchTextField.addTextChangedListener(mSearchTextWatcher);
+            mSearchTextField.setFocusable(true);
+            mSearchTextField.setFocusableInTouchMode(true);
+            mSearchTextField.requestFocus();
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask()
+            {
+                public void run()
+                {
+                    InputMethodManager inputManager =
+                            (InputMethodManager) mSearchTextField.getContext()
+                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(mSearchTextField, 0);
+                }
+            }, 998);
         }
 
         if (mSearchType == TrendingSearchType.PEOPLE && searchPeople != null)
@@ -277,13 +292,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         populateSearchActionBar();
         initialPopulateOnCreate();
-        if (mSearchTextField != null)
-        {
-            mSearchTextField.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(mSearchTextField, InputMethodManager.SHOW_FORCED);
-        }
     }
 
     protected void startAnew()
