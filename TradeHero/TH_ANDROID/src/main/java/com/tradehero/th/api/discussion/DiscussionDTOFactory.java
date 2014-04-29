@@ -88,6 +88,7 @@ public class DiscussionDTOFactory
         {
             created.id = fromForm.stubKey.id;
         }
+        created.stubKey = fromForm.stubKey;
         created.inReplyToType = DiscussionType.PRIVATE_MESSAGE;
         created.type = DiscussionType.PRIVATE_MESSAGE;
         created.inReplyToId = fromForm.inReplyToId;

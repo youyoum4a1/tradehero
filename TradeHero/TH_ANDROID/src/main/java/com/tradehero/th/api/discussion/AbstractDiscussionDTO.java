@@ -49,4 +49,9 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     }
 
     public abstract DiscussionKey getDiscussionKey();
+
+    public boolean isInProcess()
+    {
+        return stubKey != null && stubKey.id.equals(id);
+    }
 }
