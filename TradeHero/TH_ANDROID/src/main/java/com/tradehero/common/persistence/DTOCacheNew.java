@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -83,10 +82,9 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         public void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
         {
             Listener<DTOKeyType, DTOType> listener;
-            Iterator<Listener<DTOKeyType, DTOType>> iterator = Collections.unmodifiableSet(listeners).iterator();
-            while (iterator.hasNext())
+            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : Collections.unmodifiableSet(listeners))
             {
-                listener = iterator.next();
+                listener = dtoKeyTypeDTOTypeListener;
                 if (listener != null)
                 {
                     listener.onDTOReceived(key, value, fromCache);
@@ -98,10 +96,9 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         public void notifyListenersFailed(DTOKeyType key, Throwable error)
         {
             Listener<DTOKeyType, DTOType> listener;
-            Iterator<Listener<DTOKeyType, DTOType>> iterator = Collections.unmodifiableSet(listeners).iterator();
-            while (iterator.hasNext())
+            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : Collections.unmodifiableSet(listeners))
             {
-                listener = iterator.next();
+                listener = dtoKeyTypeDTOTypeListener;
                 if (listener != null)
                 {
                     listener.onErrorThrown(key, error);
