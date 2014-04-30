@@ -399,7 +399,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
             }
             //just for test
-            if(BuildConfig.DEBUG && (securityCompactDTO.name.contains("International") || securityCompactDTO.name.contains("Ichitan"))){
+            if(BuildConfig.DEBUG && (securityCompactDTO.name.contains("Yuyang") || securityCompactDTO.name.contains("Ichitan"))){
                 Log.d(securityCompactDTO.name,"testKey");
                 callback.setTest(true);
                 callback.setTestKey(securityCompactDTO.name);
