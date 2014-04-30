@@ -121,6 +121,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new TimelinePremiumUserFollowedListener();
     }
 
+    @Override protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
+    {
+        return new FreeUserFollowedCallback();
+    }
+
     protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedForMessageListener()
     {
         return new TimelinePremiumUserForMessageFollowedListener();
@@ -136,14 +141,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new TimelineFollowForMessageRequestedListener();
     }
 
-    protected Callback<UserProfileDTO> createFreeFollowCallback()
-    {
-        return new FreeFollowCallback();
-    }
-
     protected Callback<UserProfileDTO> createFreeFollowForMessageCallback()
     {
-        return new FreeFollowForMessageCallback();
+        return new FreeUserFollowedForMessageCallback();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -862,11 +862,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         };
     }
 
-    public class FreeFollowCallback implements Callback<UserProfileDTO>
+    public class FreeUserFollowedCallback extends BasePurchaseManagerFreeUserFollowedCallback
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }
@@ -878,7 +877,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public class FreeFollowForMessageCallback extends FreeFollowCallback
+    public class FreeUserFollowedForMessageCallback extends FreeUserFollowedCallback
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
@@ -891,7 +890,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow(heroId, createFreeFollowCallback());
+            freeFollow(heroId, createFreeUserFollowedCallback());
         }
 
         @Override public void premiumFollowRequested(UserBaseKey heroId)

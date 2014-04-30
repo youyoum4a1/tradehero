@@ -59,6 +59,12 @@ public class FixedPullToRefreshSwipeListView extends PullToRefreshSwipeListView
         super(context, mode, style);
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     * @return
+     */
     protected FixedSwipeListView createListView(Context context, AttributeSet attrs)
     {
         final FixedSwipeListView lv;

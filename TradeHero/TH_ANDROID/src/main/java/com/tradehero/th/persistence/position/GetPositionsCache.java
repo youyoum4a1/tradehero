@@ -14,15 +14,12 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 @Singleton public class GetPositionsCache extends PartialDTOCache<OwnedPortfolioId, GetPositionsDTO>
 {
-    public static final String TAG = GetPositionsCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.

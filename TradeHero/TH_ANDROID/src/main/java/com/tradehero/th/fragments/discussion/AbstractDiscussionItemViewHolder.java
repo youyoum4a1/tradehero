@@ -11,6 +11,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import timber.log.Timber;
 
 public class AbstractDiscussionItemViewHolder
 {
@@ -20,6 +21,7 @@ public class AbstractDiscussionItemViewHolder
     @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
     @InjectView(R.id.vote_pair) @Optional VotePair votePair;
     @InjectView(R.id.discussion_time) TextView time;
+    @InjectView(R.id.discussion_action_button_comment_count) @Optional TextView commentCountView;
 
     @Inject protected PrettyTime prettyTime;
 
@@ -49,6 +51,11 @@ public class AbstractDiscussionItemViewHolder
             if (votePair != null)
             {
                 votePair.display(discussionDTO);
+            }
+            if (commentCountView != null)
+            {
+                Timber.d("commentCountView %d",discussionDTO.commentCount);
+                commentCountView.setText(String.valueOf(discussionDTO.commentCount));
             }
         }
     }
