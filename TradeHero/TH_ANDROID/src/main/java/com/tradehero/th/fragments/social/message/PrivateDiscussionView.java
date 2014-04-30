@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -63,12 +64,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        PrivateDiscussionSetAdapter discussionListAdapter = new PrivateDiscussionSetAdapter(
-                getContext(),
-                LayoutInflater.from(getContext()),
-                R.layout.private_message_bubble_mine,
-                R.layout.private_message_bubble_other);
-        return discussionListAdapter;
+        return new PrivateDiscussionViewDiscussionSetAdapter();
     }
 
     @Override protected void onFinishInflate()
@@ -318,6 +314,27 @@ public class PrivateDiscussionView extends DiscussionView
         {
             putMessageHeaderStub(discussionDTO);
             super.success(discussionDTO);
+        }
+    }
+
+    public class PrivateDiscussionViewDiscussionSetAdapter extends PrivateDiscussionSetAdapter
+    {
+        protected PrivateDiscussionViewDiscussionSetAdapter()
+        {
+            super(getContext(),
+                    LayoutInflater.from(getContext()),
+                    R.layout.private_message_bubble_mine,
+                    R.layout.private_message_bubble_other);
+        }
+
+        @Override public View getView(int position, View convertView, ViewGroup parent)
+        {
+            if (position == 0)
+            {
+                // TODO do something similar better
+                //scrollListener.raiseStartFlag();
+            }
+            return super.getView(position, convertView, parent);
         }
     }
 }

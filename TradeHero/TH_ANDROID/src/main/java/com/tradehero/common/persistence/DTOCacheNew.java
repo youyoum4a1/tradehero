@@ -72,7 +72,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             listeners.remove(listener);
         }
 
-        abstract public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(final DTOKeyType key, boolean force);
+        abstract public void getOrFetch(final DTOKeyType key, boolean force);
 
         protected boolean needsRecreate(GetOrFetchTask<DTOKeyType, DTOType> fetchTask)
         {

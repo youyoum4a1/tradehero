@@ -54,4 +54,20 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     {
         return stubKey != null && stubKey.id.equals(id);
     }
+
+    @Override public String toString()
+    {
+        return "AbstractDiscussionDTO{" +
+                "id=" + id +
+                ", createdAtUtc=" + createdAtUtc +
+                ", userId=" + userId +
+                ", text='" + text + '\'' +
+                ", upvoteCount=" + upvoteCount +
+                ", downvoteCount=" + downvoteCount +
+                ", voteDirection=" + voteDirection +
+                ", commentCount=" + commentCount +
+                ", langCode='" + langCode + '\'' +
+                ", stubKey=" + stubKey +
+                '}';
+    }
 }

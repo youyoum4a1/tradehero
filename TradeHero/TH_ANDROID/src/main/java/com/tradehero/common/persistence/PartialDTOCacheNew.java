@@ -90,9 +90,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public void getOrFetchAsync(final DTOKeyType key, final boolean forceUpdateCache)
     {
-        GetOrFetchTask<DTOKeyType, DTOType> currentTask = getOrCreateCacheValue(key)
-                .getOrFetch(key, forceUpdateCache);
-        currentTask.execute();
+        getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
     protected void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
@@ -112,15 +110,15 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
             super();
         }
 
-        public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(DTOKeyType key, boolean force)
+        public void getOrFetch(DTOKeyType key, boolean force)
         {
             GetOrFetchTask<DTOKeyType, DTOType> myFetchTask = fetchTask.get();
             if (needsRecreate(myFetchTask))
             {
                 myFetchTask = createGetOrFetchTask(key, force);
                 fetchTask = new WeakReference<>(myFetchTask);
+                myFetchTask.execute();
             }
-            return myFetchTask;
         }
     }
 

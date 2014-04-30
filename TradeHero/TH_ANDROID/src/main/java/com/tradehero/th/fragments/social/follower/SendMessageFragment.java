@@ -138,7 +138,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private void initView()
     {
-        DeviceUtil.showKeyboard(getActivity(), inputText);
+        DeviceUtil.showKeyboardDelayed(inputText);
 
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);

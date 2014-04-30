@@ -80,4 +80,11 @@ abstract public class DiscussionKey implements DTOKey
         return other != null &&
                 (id == null ? other.id == null : id.equals(other.id));
     }
+
+    @Override public String toString()
+    {
+        return "DiscussionKey{" +
+                "id=" + id +
+                '}';
+    }
 }

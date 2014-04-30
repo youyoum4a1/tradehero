@@ -90,7 +90,10 @@ public class PrivatePostCommentView extends PostCommentView
     @Override protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO message = super.buildMessageCreateFormDTO();
-        ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;
+        if (recipient != null)
+        {
+            ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;
+        }
         return message;
     }
 

@@ -9,12 +9,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -27,15 +30,13 @@ import javax.inject.Inject;
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener
 {
-    public static final String TAG = RelationsListItemView.class.getName();
-
     @InjectView(R.id.user_name) TextView name;
     @InjectView(R.id.user_profile_avatar) ImageView avatar;
     @InjectView(R.id.country_logo) ImageView countryLogo;
     @InjectView(R.id.user_type) TextView userType;
     @InjectView(R.id.upgrade_now) TextView upgradeNow;
-    @InjectView(R.id.user_message_left) TextView messageLeft;
     private AllowableRecipientDTO allowableRecipientDTO;
+    private OnFollowRequestedListener followRequestedListener;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -67,23 +68,13 @@ public class RelationsListItemView extends RelativeLayout
 
     private void initViews()
     {
-        if (upgradeNow != null)
-        {
-            upgradeNow.setOnClickListener(this);
-        }
-        if (avatar != null)
-        {
-            avatar.setOnClickListener(this);
-        }
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
+        upgradeNow.setOnClickListener(this);
+        avatar.setOnClickListener(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        followRequestedListener = null;
         super.onDetachedFromWindow();
     }
 
@@ -92,8 +83,10 @@ public class RelationsListItemView extends RelativeLayout
         switch (v.getId())
         {
             case R.id.user_profile_avatar:
-            case R.id.upgrade_now:
                 handleOpenProfileButtonClicked();
+                break;
+            case R.id.upgrade_now:
+                handleUpgradeNowButtonClicked();
                 break;
         }
     }
@@ -109,9 +102,19 @@ public class RelationsListItemView extends RelativeLayout
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
-    public AllowableRecipientDTO getAllowableRecipientDTO()
+    private void handleUpgradeNowButtonClicked()
     {
-        return allowableRecipientDTO;
+        notifyFollowRequested();
+    }
+
+    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListener = followRequestedListener;
+    }
+
+    @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
+    {
+        linkWith(allowableRecipientDTO, true);
     }
 
     public void linkWith(AllowableRecipientDTO allowableRecipientDTO, boolean andDisplay)
@@ -121,7 +124,9 @@ public class RelationsListItemView extends RelativeLayout
         {
             displayPicture();
             displayTitle();
-            updateUserType();
+            displayUpgradeNow();
+            displayUserType();
+            displayCountryLogo();
         }
     }
 
@@ -130,7 +135,9 @@ public class RelationsListItemView extends RelativeLayout
     {
         displayPicture();
         displayTitle();
-        updateUserType();
+        displayUpgradeNow();
+        displayUserType();
+        displayCountryLogo();
     }
 
     public void displayPicture()
@@ -143,7 +150,17 @@ public class RelationsListItemView extends RelativeLayout
                 picassoLazy.get().load(allowableRecipientDTO.user.picture)
                         .transform(peopleIconTransformationLazy.get())
                         .placeholder(avatar.getDrawable())
-                        .into(avatar);
+                        .into(avatar, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadDefaultPicture();
+                            }
+                        });
             }
         }
     }
@@ -162,90 +179,132 @@ public class RelationsListItemView extends RelativeLayout
     {
         if (name != null)
         {
-            name.setText(allowableRecipientDTO.user.displayName);
-        }
-        if (countryLogo != null && allowableRecipientDTO.user.countryCode != null)
-        {
-            countryLogo.setImageResource(getConutryLogoId(allowableRecipientDTO.user.countryCode));
-        }
-        if (messageLeft != null)
-        {
-            int count = allowableRecipientDTO.relationship.freeSendsRemaining;
-            if (count > 0)
+            if (allowableRecipientDTO != null && allowableRecipientDTO.user != null)
             {
-                messageLeft.setText(getContext().getString(R.string.free_message_left, count));
+                name.setText(allowableRecipientDTO.user.displayName);
             }
             else
             {
-                messageLeft.setText(getContext().getString(R.string.upgrade_to_message_more));
+                name.setText(R.string.na);
             }
         }
+    }
 
-        if (allowableRecipientDTO.relationship.isFollower)
+    public void displayUpgradeNow()
+    {
+        if (upgradeNow != null)
         {
-            messageLeft.setVisibility(INVISIBLE);
-            upgradeNow.setVisibility(INVISIBLE);
-        }
-        else if (allowableRecipientDTO.relationship.isHero)
-        {
-            messageLeft.setVisibility(
-                    allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
-            if (upgradeNow != null)
+            if (allowableRecipientDTO == null || allowableRecipientDTO.relationship == null)
+            {
+                upgradeNow.setVisibility(INVISIBLE);
+            }
+            else if (allowableRecipientDTO.relationship.isFollower)
+            {
+                upgradeNow.setVisibility(INVISIBLE);
+            }
+            else if (allowableRecipientDTO.relationship.isHero)
             {
                 upgradeNow.setVisibility(
                         allowableRecipientDTO.relationship.freeFollow ? VISIBLE : INVISIBLE);
             }
-        }
-        else
-        {
-            messageLeft.setVisibility(INVISIBLE);
-            upgradeNow.setVisibility(INVISIBLE);
+            else
+            {
+                upgradeNow.setVisibility(INVISIBLE);
+            }
         }
     }
 
-    public void updateUserType()
+    public void displayUserType()
     {
         if (userType != null)
         {
-            if (allowableRecipientDTO.relationship.isFollower)
-            {
-                userType.setText(getContext().getString(
-                        R.string.user_profile_count_followers));
-            }
-            else if (allowableRecipientDTO.relationship.isHero)
-            {
-                userType.setText(getContext().getString(R.string.user_profile_count_heroes));
-            }
-            else
-            {
-                userType.setText(getContext().getString(R.string.leaderboard_community_friends));
-            }
-            if (allowableRecipientDTO.relationship.freeFollow)
-            {
-                userType.setText(userType.getText() + "(" + getContext().getString(
-                        R.string.not_follow_subtitle2) + ")");
-            }
-            else if (allowableRecipientDTO.relationship.isHero)
-            {
-                userType.setText(userType.getText() + "(" + getContext().getString(
-                        R.string.not_follow_premium_subtitle2) + ")");
-            }
+            userType.setText(getUserTypeText());
         }
     }
 
-    @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
+    protected String getUserTypeText()
     {
-        linkWith(allowableRecipientDTO, true);
+        if (allowableRecipientDTO == null || allowableRecipientDTO.relationship == null)
+        {
+            return getContext().getString(R.string.na);
+        }
+
+        int userTypeTextResId;
+        if (allowableRecipientDTO.relationship.isFollower)
+        {
+            userTypeTextResId = R.string.relation_follower;
+        }
+        else if (allowableRecipientDTO.relationship.isHero)
+        {
+            userTypeTextResId = R.string.relation_following;
+        }
+        else
+        {
+            userTypeTextResId = R.string.relation_follower;
+        }
+
+        int subtitleresId = 0;
+
+        if (allowableRecipientDTO.relationship.freeFollow)
+        {
+            subtitleresId = R.string.not_follow_subtitle2;
+        }
+        else if (allowableRecipientDTO.relationship.isHero)
+        {
+            subtitleresId = R.string.not_follow_premium_subtitle2;
+        }
+
+        if (subtitleresId > 0)
+        {
+            return getContext().getString(
+                    R.string.follower_item_with_subtitle,
+                    getContext().getString(userTypeTextResId),
+                    getContext().getString(subtitleresId));
+        }
+        return getContext().getString(userTypeTextResId);
     }
 
-    public int getConutryLogoId(String country)
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null &&
+                allowableRecipientDTO != null &&
+                allowableRecipientDTO.user != null &&
+                allowableRecipientDTO.user.countryCode != null)
+        {
+            countryLogo.setImageResource(getCountryLogoId(allowableRecipientDTO.user.countryCode));
+        }
+    }
+
+    public int getCountryLogoId(String country)
     {
         try
         {
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
+        }
+        catch (IllegalArgumentException ex)
         {
             return 0;
         }
+    }
+
+    protected void notifyFollowRequested()
+    {
+        OnFollowRequestedListener listener = followRequestedListener;
+        if (listener != null)
+        {
+            if (allowableRecipientDTO == null || allowableRecipientDTO.user == null)
+            {
+                THToast.show(R.string.error_incomplete_info_title);
+            }
+            else
+            {
+                listener.onFollowRequested(allowableRecipientDTO.user.getBaseKey());
+            }
+        }
+    }
+
+    public static interface OnFollowRequestedListener
+    {
+        void onFollowRequested(UserBaseKey userBaseKey);
     }
 }
