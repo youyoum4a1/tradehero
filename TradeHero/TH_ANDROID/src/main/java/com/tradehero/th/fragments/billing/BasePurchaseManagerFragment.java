@@ -22,11 +22,11 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * It expects its Activity to implement THIABInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
@@ -61,6 +61,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new BasePurchaseManagerPremiumUserFollowedListener();
+    }
+
+    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
+    {
+        return new BasePurchaseManagerFreeUserFollowedCallback();
     }
 
     @Override public void onResume()
@@ -248,6 +253,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
             Timber.e(throwable, "Failed to download portfolio compacts");
+        }
+    }
+
+    protected class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            // Children classes should update the display
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            // Anything to do?
         }
     }
 
