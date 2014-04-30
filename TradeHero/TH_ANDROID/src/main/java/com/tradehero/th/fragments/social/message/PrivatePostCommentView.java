@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -54,5 +55,12 @@ public class PrivatePostCommentView extends PostCommentView
             ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;
         }
         return message;
+    }
+
+    @Override protected DiscussionFormDTO buildCommentFormDTO()
+    {
+        DiscussionFormDTO discussionFormDTO = super.buildCommentFormDTO();
+        discussionFormDTO.recipientUserId = recipient.key;
+        return discussionFormDTO;
     }
 }

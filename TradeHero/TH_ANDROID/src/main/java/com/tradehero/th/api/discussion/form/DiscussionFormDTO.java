@@ -17,6 +17,7 @@ abstract public class DiscussionFormDTO extends PublishableFormDTO
     public String langCode;
     public int inReplyToId;
     public String url; // to post a link
+    public Integer recipientUserId;
 
     public DiscussionFormDTO()
     {

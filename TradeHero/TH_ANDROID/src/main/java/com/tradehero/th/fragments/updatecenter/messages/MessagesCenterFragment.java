@@ -840,6 +840,12 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if(userProfileDTO == null)
+        {
+            //TODO may be null, why?
+            Timber.e("userProfileDTO is null");
+            return;
+        }
         if (userProfileDTO.unreadMessageThreadsCount > 0)
         {
             --userProfileDTO.unreadMessageThreadsCount;
