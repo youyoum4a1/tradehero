@@ -86,6 +86,7 @@ public class THDialog {
         dlg.show();
         return dlg;
     }
+
     public static Dialog showUpDialog(final Context context,final View contentView,final DialogCallback callback) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,contentView);
         setDialogAttribute(dlg,null);

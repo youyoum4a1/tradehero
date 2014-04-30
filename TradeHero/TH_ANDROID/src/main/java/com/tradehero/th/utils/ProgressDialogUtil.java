@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/29/14 Time: 4:14 PM Copyright (c) TradeHero
- */
 public class ProgressDialogUtil
 {
     private static Map<Context, ProgressDialog> dialogs = new HashMap<>();
