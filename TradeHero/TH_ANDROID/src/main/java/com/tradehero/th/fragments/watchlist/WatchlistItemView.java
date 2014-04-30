@@ -38,7 +38,6 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
@@ -55,7 +54,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private static final String INTENT_KEY_DELETED_SECURITY_ID = WatchlistItemView.class.getName() + ".deletedSecurityId";
 
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
@@ -138,6 +136,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             @Override public void onClick(View v)
             {
+                setEnabledDeleteButton(false);
                 deleteSelf();
             }
         };
@@ -204,6 +203,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
             {
+                onFinish();
                 if (watchlistPositionDTO != null)
                 {
                     Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
@@ -216,10 +216,16 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
             @Override protected void failure(THException ex)
             {
+                onFinish();
                 if (watchlistPositionDTOCopy != null)
                 {
                     Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, ex);
                 }
+            }
+
+            private void onFinish()
+            {
+                setEnabledDeleteButton(true);
             }
         };
     }
@@ -273,6 +279,15 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             displayCompanyName();
 
             displayLastPrice();
+        }
+    }
+
+    protected void setEnabledDeleteButton(boolean enabled)
+    {
+        View deleteButtonCopy = deleteButton;
+        if (deleteButtonCopy != null)
+        {
+            deleteButtonCopy.setEnabled(enabled);
         }
     }
 
