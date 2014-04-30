@@ -78,6 +78,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
     //</editor-fold>
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.followerId = getFollowerId(getArguments());
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -121,6 +127,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 R.layout.hero_list_header);
         this.heroListAdapter.setHeroStatusButtonClickedListener(
                 this.heroStatusButtonClickedListener);
+        this.heroListAdapter.setFollowerId(followerId);
         this.heroListAdapter.setMostSkilledClicked(this.heroListMostSkilledClickedListener);
         if (this.viewContainer.pullToRefreshListView != null)
         {

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
@@ -20,12 +19,10 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
-    public static final String TAG = SimpleOwnPortfolioListItemAdapter.class.getSimpleName();
-
     private List<Object> orderedItems;
 
     @Inject CurrentUserId currentUserId;
@@ -122,7 +119,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                     }
                     else
                     {
-                        THLog.w(TAG, "type " + itemType + ", item not DisplayablePortfolioDTO " + item);
+                        Timber.w("type %d, item not DisplayablePortfolioDTO %s", itemType, item);
                     }
                     break;
 
