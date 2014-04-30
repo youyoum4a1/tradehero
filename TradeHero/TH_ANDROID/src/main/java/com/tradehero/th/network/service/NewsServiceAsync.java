@@ -10,9 +10,6 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 3:55 PM Copyright (c) TradeHero
- */
 public interface NewsServiceAsync
 {
     //countries

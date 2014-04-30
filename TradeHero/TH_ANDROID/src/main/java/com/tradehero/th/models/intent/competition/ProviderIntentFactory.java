@@ -6,13 +6,8 @@ import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/20/14.
- */
 public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
 {
-    public static final String TAG = ProviderIntentFactory.class.getSimpleName();
-
     @Inject public ProviderIntentFactory()
     {
     }

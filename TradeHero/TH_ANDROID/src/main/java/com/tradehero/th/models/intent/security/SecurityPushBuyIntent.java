@@ -11,13 +11,8 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 
-/**
- * Created by xavier on 1/23/14.
- */
 public class SecurityPushBuyIntent extends THIntent
 {
-    public static final String TAG = SecurityPushBuyIntent.class.getSimpleName();
-
     public SecurityPushBuyIntent(SecurityIntegerId securityIntegerId, SecurityId securityId)
     {
         super();

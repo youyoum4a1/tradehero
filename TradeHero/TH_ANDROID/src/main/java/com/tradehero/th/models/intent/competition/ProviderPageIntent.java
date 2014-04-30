@@ -9,12 +9,8 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.Server;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public class ProviderPageIntent extends OneProviderIntent
 {
-    public static final String TAG = ProviderPageIntent.class.getSimpleName();
     @Inject Server apiServer;
 
     //<editor-fold desc="Constructors">

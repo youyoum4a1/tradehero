@@ -5,9 +5,6 @@ import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentFactory;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/24/14 Time: 5:57 PM Copyright (c) TradeHero
- */
 public abstract class InteractorIntentFactory extends THIntentFactory<InteractorIntent>
 {
     public InteractorIntentFactory()

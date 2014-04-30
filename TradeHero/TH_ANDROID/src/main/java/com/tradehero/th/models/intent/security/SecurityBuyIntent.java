@@ -5,13 +5,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public class SecurityBuyIntent extends SecurityTradeIntent
 {
-    public static final String TAG = SecurityBuyIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public SecurityBuyIntent(SecurityId securityId)
     {

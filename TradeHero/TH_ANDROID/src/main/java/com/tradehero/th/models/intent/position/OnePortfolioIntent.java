@@ -9,13 +9,8 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntent;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class OnePortfolioIntent extends PortfolioIntent
 {
-    public static final String TAG = OnePortfolioIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected OnePortfolioIntent(PortfolioId portfolioId)
     {

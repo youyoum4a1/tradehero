@@ -8,13 +8,8 @@ import com.tradehero.th.models.intent.position.OpenPortfolioIntent;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public class PortfolioIntentFactory extends THIntentSubFactory<PortfolioIntent>
 {
-    public static final String TAG = PortfolioIntentFactory.class.getSimpleName();
-
     @Inject public PortfolioIntentFactory()
     {
     }
