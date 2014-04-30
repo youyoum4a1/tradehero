@@ -273,7 +273,16 @@ public class VotePair extends LinearLayout
     public void display(AbstractDiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
-        voteUp.display(discussionDTO);
-        voteDown.display(discussionDTO);
+        if (voteUp != null)
+        {
+            // We need to make these tests because view are detached from window in
+            // disparate order
+            // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/5360b347e3de5099ba24841d
+            voteUp.display(discussionDTO);
+        }
+        if (voteDown != null)
+        {
+            voteDown.display(discussionDTO);
+        }
     }
 }
