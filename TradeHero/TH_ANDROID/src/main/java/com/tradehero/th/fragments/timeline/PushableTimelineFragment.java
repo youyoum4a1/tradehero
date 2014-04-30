@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.content.DialogInterface;
 import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -94,7 +93,7 @@ public class PushableTimelineFragment extends TimelineFragment
         //{
         //    @Override public void onClick(DialogInterface dialog, int which)
         //    {
-                followUser(shownUserBaseKey);
+                premiumFollowUser(shownUserBaseKey);
             //}
         //});
     }

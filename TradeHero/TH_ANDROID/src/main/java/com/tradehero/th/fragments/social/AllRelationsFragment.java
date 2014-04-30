@@ -22,8 +22,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.social.PremiumFollowRequestedListener;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -43,9 +43,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.relations_list) ListView mRelationsListView;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new AllRelationsUserFollowedListener();
+        return new AllRelationsPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,7 +142,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)
     {
-        followUser(userBaseKey);
+        premiumFollowUser(userBaseKey);
     }
 
     protected class AllRelationAllowableRecipientCacheListener
@@ -167,12 +167,12 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected PremiumFollowRequestedListener createFollowRequestedListener()
+    protected OnPremiumFollowRequestedListener createFollowRequestedListener()
     {
         return new AllRelationsFollowRequestedListener();
     }
 
-    protected class AllRelationsFollowRequestedListener implements PremiumFollowRequestedListener
+    protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
     {
         @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
         {
@@ -180,7 +180,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class AllRelationsUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class AllRelationsPremiumUserFollowedListener
+            extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

@@ -11,7 +11,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import javax.inject.Inject;
@@ -38,9 +38,9 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         return new AbstractPrivateMessageFragmentMessageStatusListener();
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new NewPrivateMessageFragmentUserFollowedListener();
+        return new NewPrivateMessageFragmentPremiumUserFollowedListener();
     }
 
     @Override protected void initViews(View view)
@@ -205,8 +205,8 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         }
     }
 
-    protected class NewPrivateMessageFragmentUserFollowedListener
-            extends AbstractPrivateMessageFragmentUserFollowedListener
+    protected class NewPrivateMessageFragmentPremiumUserFollowedListener
+            extends AbstractPrivateMessageFragmentPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

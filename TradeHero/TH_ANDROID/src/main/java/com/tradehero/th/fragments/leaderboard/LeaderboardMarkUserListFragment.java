@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +22,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.loaders.ListLoader;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
@@ -67,9 +66,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         currentLeaderboardKey = getInitialLeaderboardKey();
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new LeaderboardMarkUserListUserFollowedListener();
+        return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -322,8 +321,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         //{
         //    @Override public void onClick(DialogInterface dialog, int which)
         //    {
-                followUser(userBaseKey);
-            //}
+                premiumFollowUser(userBaseKey);
+        //    }
         //});
     }
 
@@ -370,7 +369,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected class LeaderboardMarkUserListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {

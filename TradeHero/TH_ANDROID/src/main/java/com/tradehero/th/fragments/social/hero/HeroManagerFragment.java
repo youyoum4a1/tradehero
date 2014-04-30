@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -25,12 +27,10 @@ import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-import com.tradehero.th.models.user.FollowUserAssistant;
-import java.util.List;
-import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -59,9 +59,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new HeroManagerUserFollowedListener();
+        return new HeroManagerPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -190,7 +190,8 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class HeroManagerPremiumUserFollowedListener
+            extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

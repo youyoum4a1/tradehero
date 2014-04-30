@@ -35,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class FollowUserAssistant implements
+public class PremiumFollowUserAssistant implements
         Callback<UserProfileDTO>,
         DTOCache.Listener<UserBaseKey, UserProfileDTO>
 {
@@ -54,7 +54,7 @@ public class FollowUserAssistant implements
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
-    public FollowUserAssistant(OnUserFollowedListener userFollowedListener,
+    public PremiumFollowUserAssistant(OnUserFollowedListener userFollowedListener,
             UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
     {
         this.userFollowedListener = userFollowedListener;

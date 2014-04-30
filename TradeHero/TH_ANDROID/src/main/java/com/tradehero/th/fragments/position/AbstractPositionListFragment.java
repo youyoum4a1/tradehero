@@ -42,7 +42,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -104,9 +104,9 @@ abstract public class AbstractPositionListFragment<
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> refreshPortfolioCacheListener;
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new AbstractPositionListUserFollowedListener();
+        return new AbstractPositionListPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -785,8 +785,8 @@ abstract public class AbstractPositionListFragment<
         //{
         //    @Override public void onClick(DialogInterface dialog, int which)
         //    {
-                followUser(userBaseKey);
-        //    }
+                premiumFollowUser(userBaseKey);
+            //}
         //});
     }
 
@@ -873,7 +873,8 @@ abstract public class AbstractPositionListFragment<
         return R.layout.tutorial_position_list;
     }
 
-    protected class AbstractPositionListUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class AbstractPositionListPremiumUserFollowedListener
+            extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
