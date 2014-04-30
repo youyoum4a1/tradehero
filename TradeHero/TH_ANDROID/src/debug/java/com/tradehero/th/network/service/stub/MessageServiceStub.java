@@ -88,7 +88,6 @@ public class MessageServiceStub implements MessageService
     @Override public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(int recipientUserId)
     {
         UserMessagingRelationshipDTO statusDTO = new UserMessagingRelationshipDTO();
-        statusDTO.freeSendsRemaining = 1;
         return statusDTO;
     }
 

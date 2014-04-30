@@ -29,7 +29,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import java.lang.ref.WeakReference;
@@ -59,7 +58,6 @@ public class PostCommentView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;

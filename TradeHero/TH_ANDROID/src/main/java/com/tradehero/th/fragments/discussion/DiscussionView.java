@@ -18,7 +18,6 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
@@ -28,7 +27,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -45,7 +43,6 @@ public class DiscussionView extends FrameLayout
     @Inject protected CurrentUserId currentUserId;
     @Inject protected DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
-    @Inject protected DiscussionKeyFactory discussionKeyFactory;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;

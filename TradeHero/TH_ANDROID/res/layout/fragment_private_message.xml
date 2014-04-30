@@ -42,37 +42,4 @@
       layout="@layout/private_post_comment_widget"
       />
 
-  <RelativeLayout
-      android:id="@+id/private_message_status_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:padding="8dp"
-      android:background="@color/follow_button_green_overlay"
-      android:visibility="gone"
-      >
-
-    <ImageView
-        android:id="@+id/private_icn_white_star"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/icn_star_white"
-        />
-
-    <TextView
-        android:id="@+id/private_message_status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/private_icn_white_star"
-        android:layout_centerHorizontal="true"
-        tools:text="0 messages left.\nPremium-follow now for unlimited messaging!"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        />
-
-  </RelativeLayout>
-
 </com.tradehero.th.fragments.social.message.PrivateDiscussionView>

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.message;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -27,9 +25,7 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -45,8 +41,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected UserBaseDTOUtil userBaseDTOUtil;
     @Inject protected Picasso picasso;
     @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
-
     @Inject protected UserProfileCache userProfileCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
     protected UserBaseKey correspondentId;
@@ -74,11 +68,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new AbstractPrivateMessageFragmentPremiumUserFollowedListener();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -100,8 +89,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (discussionView != null)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
-            ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
-                    new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
             ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
         }
     }
@@ -242,27 +229,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected void showNotEnoughMessagesLeftDialog()
-    {
-        String heroName = userBaseDTOUtil.getLongDisplayName(getActivity(), correspondentProfile);
-        heroAlertDialogUtil.popAlertNoMoreMessageFollow(
-                getActivity(),
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        showPaidFollow();
-                    }
-                },
-                heroName);
-    }
-
-    @OnClick(R.id.private_message_status_container) protected void showPaidFollow()
-    {
-        //it's better premium follow than always let user pay
-        premiumFollowUser(correspondentId, createPremiumUserFollowedListener());
-    }
-
     @Override public boolean isTabBarVisible()
     {
         return false;
@@ -286,30 +252,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             Timber.e(error, "");
-        }
-    }
-
-    protected class AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener
-            implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
-    {
-        @Override public void onMessageNotAllowedToSend()
-        {
-            showNotEnoughMessagesLeftDialog();
-        }
-    }
-
-    protected class AbstractPrivateMessageFragmentPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
-        {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-        }
-
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
-        {
-            super.onUserFollowFailed(userFollowed, error);
         }
     }
 }

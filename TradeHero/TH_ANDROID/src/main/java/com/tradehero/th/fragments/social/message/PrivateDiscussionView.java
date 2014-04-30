@@ -21,7 +21,6 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
@@ -41,8 +40,6 @@ public class PrivateDiscussionView extends DiscussionView
 
     protected MessageType messageType;
     private UserBaseKey recipient;
-    private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
-    private PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
     private boolean hasAddedHeader = false;
 
     //<editor-fold desc="Constructors">
@@ -70,23 +67,13 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        setMessageNotAllowedListenerOnPostCommentView(new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
         setRecipientOnPostCommentView();
-        setMessageStatusOnPostCommentView();
         setLoaded();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        setMessageNotAllowedListenerOnPostCommentView(
-                new PrivateDiscussionViewOnMessageNotAllowedToSendListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachDiscussionFetchTask();
-        setMessageNotAllowedListenerOnPostCommentView(null);
         super.onDetachedFromWindow();
     }
 
@@ -204,43 +191,6 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    public void setUserMessagingRelationshipDTO(UserMessagingRelationshipDTO userMessagingRelationshipDTO)
-    {
-        this.userMessagingRelationshipDTO = userMessagingRelationshipDTO;
-        setMessageStatusOnPostCommentView();
-    }
-
-    public void setMessageNotAllowedToSendListener(PrivatePostCommentView.OnMessageNotAllowedToSendListener messageNotAllowedToSendListener)
-    {
-        this.messageNotAllowedToSendListener = messageNotAllowedToSendListener;
-    }
-
-    private void setMessageStatusOnPostCommentView()
-    {
-        if (postCommentView != null)
-        {
-            ((PrivatePostCommentView) postCommentView).setUserMessagingRelationshipDTO(
-                    userMessagingRelationshipDTO);
-        }
-    }
-
-    private void setMessageNotAllowedListenerOnPostCommentView(PrivatePostCommentView.OnMessageNotAllowedToSendListener listener)
-    {
-        if (postCommentView != null)
-        {
-            ((PrivatePostCommentView) postCommentView).setMessageNotAllowedToSendListener(listener);
-        }
-    }
-
-    private void notifyPreSubmissionInterceptListener()
-    {
-        PrivatePostCommentView.OnMessageNotAllowedToSendListener listener = messageNotAllowedToSendListener;
-        if (listener != null)
-        {
-            listener.onMessageNotAllowedToSend();
-        }
-    }
-
     protected void putMessageHeaderStub(DiscussionDTO from)
     {
         messageHeaderCache.put(new MessageHeaderId(from.id),
@@ -283,15 +233,6 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected PostCommentView.CommentPostedListener createCommentPostedListener()
     {
         return new PrivateDiscussionViewCommentPostedListener();
-    }
-
-    protected class PrivateDiscussionViewOnMessageNotAllowedToSendListener
-            implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
-    {
-        @Override public void onMessageNotAllowedToSend()
-        {
-            notifyPreSubmissionInterceptListener();
-        }
     }
 
     protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
