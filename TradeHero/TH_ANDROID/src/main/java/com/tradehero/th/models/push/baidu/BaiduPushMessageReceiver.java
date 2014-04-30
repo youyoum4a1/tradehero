@@ -127,6 +127,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
         int msgId = hashCode % 1000;
         nm.notify(msgId, notification);
+
     }
 
 

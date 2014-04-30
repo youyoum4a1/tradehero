@@ -22,6 +22,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.PremiumFollowRequestedListener;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
@@ -60,7 +61,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         mRelationsListItemAdapter = new RelationsListItemAdapter(getActivity(),
                 getActivity().getLayoutInflater(), R.layout.relations_list_item);
-        mRelationsListItemAdapter.setFollowRequestedListener(createFollowRequestedListener());
+        mRelationsListItemAdapter.setPremiumFollowRequestedListener(createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
     }
@@ -94,7 +95,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListView.setOnItemClickListener(null);
         mRelationsListView = null;
         mRelationsListItemAdapter.setItems(null);
-        mRelationsListItemAdapter.setFollowRequestedListener(null);
+        mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
         super.onDestroyView();
@@ -166,14 +167,14 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected RelationsListItemView.OnFollowRequestedListener createFollowRequestedListener()
+    protected PremiumFollowRequestedListener createFollowRequestedListener()
     {
         return new AllRelationsFollowRequestedListener();
     }
 
-    protected class AllRelationsFollowRequestedListener implements RelationsListItemView.OnFollowRequestedListener
+    protected class AllRelationsFollowRequestedListener implements PremiumFollowRequestedListener
     {
-        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
         }

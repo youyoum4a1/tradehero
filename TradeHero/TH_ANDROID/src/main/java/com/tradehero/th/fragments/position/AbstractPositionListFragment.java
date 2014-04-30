@@ -54,7 +54,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 abstract public class AbstractPositionListFragment<
         CacheQueryIdType,
         PositionDTOType extends PositionDTO,

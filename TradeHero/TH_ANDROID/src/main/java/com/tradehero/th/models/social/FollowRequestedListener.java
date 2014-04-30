@@ -1,7 +1,5 @@
 package com.tradehero.th.models.social;
 
-public interface FollowRequestedListener
+public interface FollowRequestedListener extends FreeFollowRequestedListener, PremiumFollowRequestedListener
 {
-    void freeFollowRequested();
-    void followRequested();
 }

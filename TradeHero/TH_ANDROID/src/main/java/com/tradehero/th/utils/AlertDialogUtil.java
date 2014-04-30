@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequestedListener;
@@ -199,16 +200,16 @@ public class AlertDialogUtil
 
         followDialogView.setFollowRequestedListener(new FollowRequestedListener()
         {
-            @Override public void freeFollowRequested()
+            @Override public void freeFollowRequested(UserBaseKey heroId)
             {
                 onFinish();
-                followRequestedListener.freeFollowRequested();
+                followRequestedListener.freeFollowRequested(heroId);
             }
 
-            @Override public void followRequested()
+            @Override public void premiumFollowRequested(UserBaseKey heroId)
             {
                 onFinish();
-                followRequestedListener.followRequested();
+                followRequestedListener.premiumFollowRequested(heroId);
             }
 
             private void onFinish()

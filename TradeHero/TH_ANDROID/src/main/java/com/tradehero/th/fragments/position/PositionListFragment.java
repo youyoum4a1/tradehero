@@ -9,9 +9,6 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/3/14.
- */
 public class PositionListFragment extends AbstractPositionListFragment<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
 {
     @Inject Lazy<GetPositionsCache> getPositionsCache;

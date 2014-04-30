@@ -444,14 +444,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public class LeaderBoardFollowRequestedListener implements FollowRequestedListener
     {
-        @Override public void freeFollowRequested()
+        @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow();
+            freeFollow(heroId);
         }
 
-        @Override public void followRequested()
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow();
+            follow(heroId);
         }
     }
 
@@ -477,19 +477,19 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow()
+    protected void freeFollow(UserBaseKey heroId)
     {
         alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
-                        .freeFollow(leaderboardItem.getBaseKey(), new FreeFollowCallback());
+                        .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow()
+    protected void follow(UserBaseKey heroId)
     {
-        notifyFollowRequested();
+        notifyFollowRequested(heroId);
     }
 
     private void handleOpenPositionListClicked()
@@ -554,12 +554,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested()
+    protected void notifyFollowRequested(UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(leaderboardItem.getBaseKey());
+            followRequestedListenerCopy.onFollowRequested(heroId);
         }
     }
 
