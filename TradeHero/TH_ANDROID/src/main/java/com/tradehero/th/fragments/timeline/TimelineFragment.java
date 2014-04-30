@@ -857,17 +857,17 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    protected void freeFollow(Callback<UserProfileDTO> followCallback)
+    protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
     {
         alertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
-                userServiceWrapperLazy.get().freeFollow(shownUserBaseKey, followCallback);
+                userServiceWrapperLazy.get().freeFollow(heroId, followCallback);
     }
 
-    protected void follow(FollowUserAssistant.OnUserFollowedListener followedListener)
+    protected void follow(UserBaseKey heroId, FollowUserAssistant.OnUserFollowedListener followedListener)
     {
-        followUser(shownUserBaseKey, followedListener);
+        followUser(heroId, followedListener);
     }
 
     protected TimelineProfileClickListener createTimelineProfileClickListener()
@@ -908,27 +908,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     public class TimelineFollowRequestedListener implements FollowRequestedListener
     {
-        @Override public void freeFollowRequested()
+        @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow(createFreeFollowCallback());
+            freeFollow(heroId, createFreeFollowCallback());
         }
 
-        @Override public void followRequested()
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow(createUserFollowedListener());
+            follow(heroId, createUserFollowedListener());
         }
     }
 
     public class TimelineFollowForMessageRequestedListener implements FollowRequestedListener
     {
-        @Override public void freeFollowRequested()
+        @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow(createFreeFollowForMessageCallback());
+            freeFollow(heroId, createFreeFollowForMessageCallback());
         }
 
-        @Override public void followRequested()
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow(createUserFollowedForMessageListener());
+            follow(heroId, createUserFollowedForMessageListener());
         }
     }
 

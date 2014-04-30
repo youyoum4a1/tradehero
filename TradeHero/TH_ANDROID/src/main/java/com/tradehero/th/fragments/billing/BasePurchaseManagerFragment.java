@@ -216,22 +216,22 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return request;
     }
 
-    public void followUser(UserBaseKey userToFollow)
+    public void followUser(UserBaseKey heroId)
     {
-        followUser(userToFollow, createUserFollowedListener());
+        followUser(heroId, createUserFollowedListener());
     }
 
-    public void followUser(UserBaseKey userToFollow, FollowUserAssistant.OnUserFollowedListener followedListener)
+    public void followUser(UserBaseKey heroId, FollowUserAssistant.OnUserFollowedListener followedListener)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(followedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchFollow();
     }
 
-    public void unfollowUser(UserBaseKey userToUnFollow)
+    public void unfollowUser(UserBaseKey heroId)
     {
         detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(createUserFollowedListener(), userToUnFollow, purchaseApplicableOwnedPortfolioId);
+        followUserAssistant = new FollowUserAssistant(createUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
         followUserAssistant.launchUnFollow();
     }
 

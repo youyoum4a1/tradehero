@@ -120,31 +120,31 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public class OtherUserPortfolioFollowRequestedListener implements FollowRequestedListener
     {
-        @Override public void freeFollowRequested()
+        @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow();
+            freeFollow(heroId);
         }
 
-        @Override public void followRequested()
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow();
+            follow(heroId);
         }
     }
 
-    protected void freeFollow()
+    protected void freeFollow(UserBaseKey heroId)
     {
         alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
-                        .freeFollow(userProfileDTO.getBaseKey(), new FreeFollowCallback());
+                        .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow()
+    protected void follow(UserBaseKey heroId)
     {
         if (userProfileDTO != null)
         {
-            notifyFollowRequested(userProfileDTO.getBaseKey());
+            notifyFollowRequested(heroId);
         }
     }
 

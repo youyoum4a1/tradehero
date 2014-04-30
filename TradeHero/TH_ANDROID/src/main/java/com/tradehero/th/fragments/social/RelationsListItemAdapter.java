@@ -5,10 +5,11 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.social.PremiumFollowRequestedListener;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipientDTO, RelationsListItemView>
 {
-    private RelationsListItemView.OnFollowRequestedListener followRequestedListener;
+    private PremiumFollowRequestedListener premiumFollowRequestedListener;
 
     public RelationsListItemAdapter(Context context, LayoutInflater inflater, int layoutResId)
     {
@@ -18,32 +19,32 @@ public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipient
     @Override protected void fineTune(int position, AllowableRecipientDTO allowableRecipientDTO,
             RelationsListItemView relationsListItemView)
     {
-        relationsListItemView.setFollowRequestedListener(createFollowRequestedListener());
+        relationsListItemView.setPremiumFollowRequestedListener(createFollowRequestedListener());
     }
 
-    public void setFollowRequestedListener(
-            RelationsListItemView.OnFollowRequestedListener followRequestedListener)
+    public void setPremiumFollowRequestedListener(
+            PremiumFollowRequestedListener premiumFollowRequestedListener)
     {
-        this.followRequestedListener = followRequestedListener;
+        this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
 
     protected void notifyFollowRequested(UserBaseKey userBaseKey)
     {
-        RelationsListItemView.OnFollowRequestedListener listener = followRequestedListener;
+        PremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
         {
-            listener.onFollowRequested(userBaseKey);
+            listener.premiumFollowRequested(userBaseKey);
         }
     }
 
-    protected RelationsListItemView.OnFollowRequestedListener createFollowRequestedListener()
+    protected PremiumFollowRequestedListener createFollowRequestedListener()
     {
         return new RelationsListItemAdapterFollowRequestedListener();
     }
 
-    protected class RelationsListItemAdapterFollowRequestedListener implements RelationsListItemView.OnFollowRequestedListener
+    protected class RelationsListItemAdapterFollowRequestedListener implements PremiumFollowRequestedListener
     {
-        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
         {
             notifyFollowRequested(userBaseKey);
         }

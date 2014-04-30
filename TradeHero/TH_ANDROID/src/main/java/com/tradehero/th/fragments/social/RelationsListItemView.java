@@ -17,12 +17,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.PremiumFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class RelationsListItemView extends RelativeLayout
     @InjectView(R.id.user_type) TextView userType;
     @InjectView(R.id.upgrade_now) TextView upgradeNow;
     private AllowableRecipientDTO allowableRecipientDTO;
-    private OnFollowRequestedListener followRequestedListener;
+    private PremiumFollowRequestedListener premiumFollowRequestedListener;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -74,7 +74,7 @@ public class RelationsListItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        followRequestedListener = null;
+        premiumFollowRequestedListener = null;
         super.onDetachedFromWindow();
     }
 
@@ -107,9 +107,10 @@ public class RelationsListItemView extends RelativeLayout
         notifyFollowRequested();
     }
 
-    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    public void setPremiumFollowRequestedListener(
+            PremiumFollowRequestedListener premiumFollowRequestedListener)
     {
-        this.followRequestedListener = followRequestedListener;
+        this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
 
     @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
@@ -289,7 +290,7 @@ public class RelationsListItemView extends RelativeLayout
 
     protected void notifyFollowRequested()
     {
-        OnFollowRequestedListener listener = followRequestedListener;
+        PremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
         {
             if (allowableRecipientDTO == null || allowableRecipientDTO.user == null)
@@ -298,13 +299,8 @@ public class RelationsListItemView extends RelativeLayout
             }
             else
             {
-                listener.onFollowRequested(allowableRecipientDTO.user.getBaseKey());
+                listener.premiumFollowRequested(allowableRecipientDTO.user.getBaseKey());
             }
         }
-    }
-
-    public static interface OnFollowRequestedListener
-    {
-        void onFollowRequested(UserBaseKey userBaseKey);
     }
 }

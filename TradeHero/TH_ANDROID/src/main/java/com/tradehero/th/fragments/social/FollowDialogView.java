@@ -87,7 +87,6 @@ public class FollowDialogView extends LinearLayout
         displayUserPhoto();
 
         displayUserName();
-
     }
 
     @OnClick({
@@ -97,7 +96,7 @@ public class FollowDialogView extends LinearLayout
     {
         if (followRequestedListener != null)
         {
-            followRequestedListener.freeFollowRequested();
+            followRequestedListener.freeFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
@@ -109,7 +108,7 @@ public class FollowDialogView extends LinearLayout
     {
         if (followRequestedListener != null)
         {
-            followRequestedListener.followRequested();
+            followRequestedListener.premiumFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
