@@ -9,9 +9,6 @@ import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-16.
- */
 public class DeviceTokenHelper
 {
     @Inject @SavedBaiduPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;

@@ -15,12 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-16.
- */
 @Singleton public class BaiduPushManager extends UrbanAirshipPushNotificationManager
 {
-
     private final Context context;
     private final String appKey;
 
@@ -43,7 +39,7 @@ import timber.log.Timber;
         super.enablePush();
 
         Timber.d("enablePush(PushManager.startWork) context:%s, appKey:%s", context, appKey);
-        PushSettings.enableDebugMode(context,true);
+        PushSettings.enableDebugMode(context, true);
         PushManager.setNotificationBuilder(context, BaiduPushMessageReceiver.MESSAGE_ID,
                 createDefaultNotificationBuilder());
         //PushManager.disableLbs(context);

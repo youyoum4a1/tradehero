@@ -53,7 +53,6 @@ import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
-import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -207,7 +206,6 @@ import javax.inject.Singleton;
                         WarrantInfoValueFragment.class,
                         StockInfoFragment.class,
                         PortfolioListFragment.class,
-                        PushablePortfolioListFragment.class,
                         PortfolioListItemView.class,
                         PortfolioListItemAdapter.class,
                         DisplayablePortfolioFetchAssistant.class,

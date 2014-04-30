@@ -17,8 +17,6 @@ import javax.inject.Singleton;
  * underlyingName null type P
  * underlyingName null type null
  * null
- *
- * Created by xavier on 1/23/14.
  */
 @Singleton public class WarrantDTOUnderlyerTypeComparator implements Comparator<WarrantDTO>
 {

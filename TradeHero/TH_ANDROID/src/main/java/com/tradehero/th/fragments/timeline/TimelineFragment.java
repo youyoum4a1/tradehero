@@ -62,6 +62,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -89,6 +90,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -250,7 +252,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.addFooterView(loadingView);
         }
 
-        displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
+        displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(
                 new DisplayablePortfolioFetchAssistant.OnFetchedListener()
                 {

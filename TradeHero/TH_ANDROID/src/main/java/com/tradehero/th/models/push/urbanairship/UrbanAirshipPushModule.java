@@ -12,9 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 26/4/14.
- */
 @Module(
         injects = {
                 UrbanAirshipIntentReceiver.class

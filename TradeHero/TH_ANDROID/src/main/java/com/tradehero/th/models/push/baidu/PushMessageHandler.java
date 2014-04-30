@@ -6,13 +6,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.json.JSONObject;
 
-/**
- * Created by wangliang on 14-4-26.
- */
 public class PushMessageHandler
 {
-
-    public static final String BROADCAST_ACTION_MESSAGE_RECEIVED = "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
+    public static final String BROADCAST_ACTION_MESSAGE_RECEIVED =
+            "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
 
     public static final String KEY_TITLE = "title";
     public static final String KEY_DESCRIPTION = "description";
@@ -34,9 +31,9 @@ public class PushMessageHandler
             int id = Integer.parseInt(customObj.getString(KEY_CUSTOM_ID));
 
             return new PushMessageDTO(title, description, discussionType, id);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
-
         }
         return null;
     }

@@ -7,13 +7,8 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/**
- * Created by xavier on 1/27/14.
- */
 public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequence
 {
-    public static final String TAG = MenuOwnedPortfolioId.class.getSimpleName();
-
     public final String title;
 
     //<editor-fold desc="Constructors">

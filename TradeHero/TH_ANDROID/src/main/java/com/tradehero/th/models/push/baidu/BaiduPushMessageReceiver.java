@@ -145,7 +145,6 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     }
 
-
     /**
      * when user receive message
      */
@@ -158,8 +157,6 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
             handleRecevieMessage(context, message);
         }
     }
-
-
 
     /**
      * when user click the notification
@@ -205,6 +202,4 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     {
         Timber.d("onListTags tags:%s", tags);
     }
-
-
 }

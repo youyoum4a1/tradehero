@@ -10,9 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/10/14.
- */
 @Singleton public class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
     @Inject public UrbanAirshipPushNotificationManager()
