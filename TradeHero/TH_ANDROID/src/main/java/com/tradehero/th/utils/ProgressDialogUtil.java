@@ -51,4 +51,13 @@ public class ProgressDialogUtil
     {
         return show(context, context.getString(titleResId), context.getString(messageResId));
     }
+
+    public void dismiss(Context context)
+    {
+        ProgressDialog dialog = dialogs.get(context);
+        if (dialog != null)
+        {
+            dialog.dismiss();
+        }
+    }
 }
