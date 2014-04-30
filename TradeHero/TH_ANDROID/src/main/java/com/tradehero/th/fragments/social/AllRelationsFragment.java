@@ -37,13 +37,16 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     List<AllowableRecipientDTO> mRelationsList;
     @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
-    private DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>> allowableRecipientCacheTask;
+    private
+    DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+            allowableRecipientCacheTask;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @Override
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AllRelationsPremiumUserFollowedListener();
     }
@@ -61,7 +64,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         mRelationsListItemAdapter = new RelationsListItemAdapter(getActivity(),
                 getActivity().getLayoutInflater(), R.layout.relations_list_item);
-        mRelationsListItemAdapter.setPremiumFollowRequestedListener(createFollowRequestedListener());
+        mRelationsListItemAdapter.setPremiumFollowRequestedListener(
+                createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
     }
@@ -98,6 +102,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
+        //we need update this page every time when user come in for we don't know whether others follow him during this time
+        allowableRecipientPaginatedCache.invalidateAll();
         super.onDestroyView();
     }
 
@@ -110,7 +116,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     public void downloadRelations()
     {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.downloading_relations));
+        alertDialogUtilLazy.get()
+                .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
         detachAllowableRecipientTask();
 
         allowableRecipientCacheTask = allowableRecipientPaginatedCache
@@ -136,7 +143,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void pushPrivateMessageFragment(int position)
     {
         Bundle args = new Bundle();
-        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, mRelationsList.get(position).user.getBaseKey());
+        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
+                mRelationsList.get(position).user.getBaseKey());
         getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
@@ -146,7 +154,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
 
     protected class AllRelationAllowableRecipientCacheListener
-        implements DTOCache.Listener<
+            implements DTOCache.Listener<
             SearchAllowableRecipientListType,
             PaginatedDTO<AllowableRecipientDTO>>
     {
