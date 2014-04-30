@@ -2,12 +2,8 @@ package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
 
-/**
- * Created by xavier on 2/14/14.
- */
 public class SkipCacheSecurityPerPagedWatchlistKey extends SecurityPerPagedWatchlistKey
 {
-    public static final String TAG = SkipCacheSecurityPerPagedWatchlistKey.class.getSimpleName();
     public static final String BUNDLE_KEY_SKIP_CACHE = SkipCacheSecurityPerPagedWatchlistKey.class.getName() + ".skipCache";
 
     public final Boolean skipCache;
