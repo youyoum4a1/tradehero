@@ -2,6 +2,7 @@ package com.tradehero.th.loaders;
 
 import android.content.Context;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 5:02 PM Copyright (c) TradeHero
@@ -31,6 +32,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
     // load next items
     public void loadNext(Object...params)
     {
+        Timber.d("loadNext ");
         if (loadMode != LoadMode.IDLE)
         {
             onBusy();
@@ -51,6 +53,7 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
 
     public void loadPrevious(Object...params)
     {
+        Timber.d("loadPrevious ");
         if (loadMode != LoadMode.IDLE)
         {
             onBusy();

@@ -27,5 +27,13 @@ public class MiddleCallbackLogout extends MiddleCallback<UserProfileDTO>
     {
         super.success(userProfileDTO, response);
         dtoCacheUtil.clearUserRelatedCaches();
+        //TODO also has to clear notification
     }
+
+    //public void clearNotification()
+    //{
+    //    NotificationManager nm = (NotificationManager) context
+    //            .getSystemService(Context.NOTIFICATION_SERVICE);
+    //    nm.cancelAll();
+    //}
 }

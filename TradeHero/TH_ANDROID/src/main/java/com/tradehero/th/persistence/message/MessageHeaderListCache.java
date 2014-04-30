@@ -49,7 +49,8 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 
     private MessageHeaderIdList putInternal(PaginatedDTO<MessageHeaderDTO> data)
     {
-        //updateUnreadMessageThreadCount(data);
+        // update user profile cache
+        updateUnreadMessageThreadCount(data);
 
         if (data != null && data.getData() != null)
         {
@@ -79,7 +80,6 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
         {
             return;
         }
-
         MessagePaginatedDTO messagePaginatedDTO = (MessagePaginatedDTO)data;
         if (userProfileCache != null && currentUserId != null)
         {

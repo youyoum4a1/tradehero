@@ -230,6 +230,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
     {
+        if(followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
+        {
+            displayProgress(true);
+        }
+
         doRefreshContent();
     }
 
@@ -336,7 +341,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             {
                 return;
             }
-
             displayProgress(false);
             onRefreshCompleted();
             handleFollowerSummaryDTOReceived(value);

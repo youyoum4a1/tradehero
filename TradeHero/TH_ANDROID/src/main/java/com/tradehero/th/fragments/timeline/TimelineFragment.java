@@ -595,7 +595,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(mainTimelineAdapter);
         timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
-        timelineListView.setRefreshing();
+        //timelineListView.setRefreshing();
         timelineListView.setAdapter(mainTimelineAdapter);
         timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {

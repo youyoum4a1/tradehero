@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.models.push.PushConstants;
+import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -127,6 +127,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
         int msgId = hashCode % 1000;
         nm.notify(msgId, notification);
+
     }
 
 
