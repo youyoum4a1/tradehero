@@ -80,13 +80,12 @@ import retrofit.RetrofitError;
                 userFormDTO.website);
     }
 
-    // TODO use MiddleCallback
-    @Deprecated
-    public void signUpWithEmail(
+    public MiddleCallbackUpdateUserProfile signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
+        MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
         userServiceAsync.signUpWithEmail(
                 authorization,
                 userFormDTO.biography,
@@ -102,7 +101,8 @@ import retrofit.RetrofitError;
                 userFormDTO.pushNotificationsEnabled,
                 userFormDTO.username,
                 userFormDTO.website,
-                callback);
+                middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -204,8 +204,7 @@ import retrofit.RetrofitError;
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
-    public List<UserSearchResultDTO> searchUsers(SearchUserListType key)
-            throws RetrofitError
+    protected List<UserSearchResultDTO> searchUsers(SearchUserListType key)
     {
         if (key.searchString == null)
         {

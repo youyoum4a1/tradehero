@@ -93,7 +93,7 @@ public interface UserService
 
     @Multipart
     @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture();
+    Response signUpWithEmailWithProfilePicture();
 
     //<editor-fold desc="Signup">
     @POST("/users")

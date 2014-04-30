@@ -78,7 +78,7 @@ interface UserServiceAsync
 
     @Multipart
     @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture();
+    void signUpWithEmailWithProfilePicture(Callback<Response> callback);
 
     //<editor-fold desc="Signup">
     @POST("/users")
