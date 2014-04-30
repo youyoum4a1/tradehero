@@ -4,22 +4,25 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
-import com.tradehero.th.models.discussion.MiddleCallbackMessageDeleted;
-import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
-import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
-import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
+import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
+import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,27 +38,65 @@ public class MessageServiceWrapper
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
     private Lazy<MessageHeaderListCache> messageHeaderListCache;
+    private Lazy<MessageHeaderCache> messageHeaderCache;
     private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     private Lazy<DiscussionCache> discussionCache;
+    private Lazy<UserProfileCache> userProfileCache;
 
     @Inject MessageServiceWrapper(
             MessageService messageService,
             MessageServiceAsync messageServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
             Lazy<MessageHeaderListCache> messageHeaderListCache,
+            Lazy<MessageHeaderCache> messageHeaderCache,
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
-            Lazy<DiscussionCache> discussionCache)
+            Lazy<DiscussionCache> discussionCache,
+            Lazy<UserProfileCache> userProfileCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
         this.messageHeaderListCache = messageHeaderListCache;
+        this.messageHeaderCache = messageHeaderCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.discussionCache = discussionCache;
+        this.userProfileCache = userProfileCache;
     }
 
+    //<editor-fold desc="DTO Processors">
+    protected DTOProcessor<DiscussionDTO> createDiscussionCreateProcessor(DiscussionKey stubKey)
+    {
+        return new DTOProcessorDiscussionCreate(
+                discussionDTOFactory,
+                discussionCache.get(),
+                stubKey);
+    }
+
+    protected DTOProcessor<Response> createMessageHeaderReadProcessor(
+            MessageHeaderId messageHeaderId,
+            UserBaseKey readerId)
+    {
+        return new DTOProcessorMessageRead(messageHeaderCache.get(),
+                userProfileCache.get(),
+                messageHeaderId,
+                readerId);
+    }
+
+    protected DTOProcessor<Response> createMessageHeaderDeletedProcessor(
+            MessageHeaderId messageHeaderId,
+            UserBaseKey readerId)
+    {
+        return new DTOProcessorMessageDeleted(
+                messageHeaderCache.get(),
+                userProfileCache.get(),
+                messageHeaderListCache.get(),
+                messageHeaderId,
+                readerId);
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Get Message Headers">
-    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey)
+    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
@@ -66,7 +107,7 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(TypedMessageListKey messageListKey)
+    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(TypedMessageListKey messageListKey)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
@@ -79,7 +120,7 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(
+    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(
             RecipientTypedMessageListKey messageListKey)
     {
         return messageService.getMessageHeaders(
@@ -89,14 +130,14 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(MessageListKey messageListKey,
-            Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(MessageListKey messageListKey,
+            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
             return getMessageHeaders((TypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
+        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.page,
                 messageListKey.perPage,
@@ -104,14 +145,14 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(
-            TypedMessageListKey messageListKey, Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(
+            TypedMessageListKey messageListKey, Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
             return getMessageHeaders((RecipientTypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
+        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 null,
@@ -121,11 +162,11 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallbackMessagePaginatedHeader getMessageHeaders(
+    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(
             RecipientTypedMessageListKey messageListKey,
-            Callback<PaginatedDTO<MessageHeaderDTO>> callback)
+            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
     {
-        MiddleCallbackMessagePaginatedHeader middleCallback = new MiddleCallbackMessagePaginatedHeader(callback);
+        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 messageListKey.recipientId.key,
@@ -142,9 +183,9 @@ public class MessageServiceWrapper
         return messageService.getMessageHeader(commentId);
     }
 
-    public MiddleCallbackMessageHeader getMessageHeader(int commentId, Callback<MessageHeaderDTO> callback)
+    public MiddleCallback<MessageHeaderDTO> getMessageHeader(int commentId, Callback<MessageHeaderDTO> callback)
     {
-        MiddleCallbackMessageHeader middleCallback = new MiddleCallbackMessageHeader(callback);
+        MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageHeader(commentId, middleCallback);
         return middleCallback;
     }
@@ -154,9 +195,9 @@ public class MessageServiceWrapper
         return messageService.getMessageThread(correspondentId.key);
     }
 
-    public MiddleCallbackMessageHeader getMessageThread(UserBaseKey correspondentId, Callback<MessageHeaderDTO> callback)
+    public MiddleCallback<MessageHeaderDTO> getMessageThread(UserBaseKey correspondentId, Callback<MessageHeaderDTO> callback)
     {
-        MiddleCallbackMessageHeader middleCallback = new MiddleCallbackMessageHeader(callback);
+        MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageThread(correspondentId.key, middleCallback);
         return middleCallback;
     }
@@ -168,12 +209,12 @@ public class MessageServiceWrapper
         return messageService.getMessagingRelationgshipStatus(recipient.key);
     }
 
-    public MiddleCallbackMessagingRelationship getMessagingRelationgshipStatus(
+    public MiddleCallback<UserMessagingRelationshipDTO> getMessagingRelationgshipStatus(
             UserBaseKey recipient,
             Callback<UserMessagingRelationshipDTO> callback)
     {
-        MiddleCallbackMessagingRelationship
-                middleCallback = new MiddleCallbackMessagingRelationship(callback);
+        MiddleCallback<UserMessagingRelationshipDTO>
+                middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessagingRelationshipStatus(recipient.key, middleCallback);
         return middleCallback;
     }
@@ -190,53 +231,65 @@ public class MessageServiceWrapper
         return discussionDTO;
     }
 
-    public MiddleCallbackDiscussion createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
-                discussionDTOFactory,
-                userMessagingRelationshipCache.get(),
-                discussionCache.get(),
-                null);
+                createDiscussionCreateProcessor(null));
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    public Response deleteMessage(MessageHeaderId messageHeaderId, int senderUserId, int recipientUserId)
+    public Response deleteMessage(
+            MessageHeaderId messageHeaderId,
+            int senderUserId,
+            int recipientUserId,
+            UserBaseKey readerId)
     {
-        Response response = messageService.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId);
-        messageHeaderListCache.get().invalidateKeysThatList(messageHeaderId);
-        return response;
+        return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
+                messageService.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId));
     }
 
-    public MiddleCallbackMessageDeleted deleteMessage(final MessageHeaderId messageHeaderId, int senderUserId, int recipientUserId, Callback<Response> callback)
+    public MiddleCallback<Response> deleteMessage(
+            final MessageHeaderId messageHeaderId,
+            int senderUserId,
+            int recipientUserId,
+            UserBaseKey readerId,
+            Callback<Response> callback)
     {
-        MiddleCallbackMessageDeleted middleCallback = new MiddleCallbackMessageDeleted(messageHeaderId, callback, messageHeaderListCache.get());
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
         messageServiceAsync.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
-    public Response readMessage(int commentId, int senderUserId, int recipientUserId)
+    public Response readMessage(
+            int commentId,
+            int senderUserId,
+            int recipientUserId,
+            MessageHeaderId messageHeaderId,
+            UserBaseKey readerId)
     {
-        return messageService.readMessage(commentId, senderUserId, recipientUserId);
+        return createMessageHeaderReadProcessor(messageHeaderId, readerId).process(
+                messageService.readMessage(commentId, senderUserId, recipientUserId));
     }
 
-    public BaseMiddleCallback<Response> readMessage(int commentId, int senderUserId, int recipientUserId, Callback<Response> callback)
+    public MiddleCallback<Response> readMessage(
+            int commentId,
+            int senderUserId,
+            int recipientUserId,
+            final MessageHeaderId messageHeaderId,
+            final UserBaseKey readerId,
+            Callback<Response> callback)
     {
-        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<Response>(callback)
-        {
-            @Override public void success(Response response, Response response2)
-            {
-                super.success(response, response2);
-                //TODO when MessagesCenterFragment is destroy, callback is removed, data will not be refreshed
-                //TODO how to refresh
-            }
-
-        };
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createMessageHeaderReadProcessor(messageHeaderId, readerId));
         messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }

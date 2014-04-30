@@ -508,7 +508,10 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
-                messageHeaderId, messageHeaderDTO.senderUserId, messageHeaderDTO.recipientUserId,
+                messageHeaderId,
+                messageHeaderDTO.senderUserId,
+                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
                 new MessageDeletionCallback(messageHeaderId));
     }
 
@@ -788,10 +791,15 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             middleCallback.setPrimaryCallback(null);
         }
-        middleCallbackMap.put(messageHeaderDTO.id, messageServiceWrapper.get()
-                .readMessage(messageHeaderDTO.id, messageHeaderDTO.senderUserId
-                        , messageHeaderDTO.recipientUserId.intValue()
-                        , createMessageAsReadCallback(messageHeaderDTO.id)));
+        middleCallbackMap.put(
+                messageHeaderDTO.id,
+                messageServiceWrapper.get().readMessage(
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.senderUserId,
+                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        currentUserId.toUserBaseKey(),
+                        createMessageAsReadCallback(messageHeaderDTO.id)));
     }
 
     private Callback<Response> createMessageAsReadCallback(int pushId)
@@ -823,7 +831,7 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.unread = false;
                     messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
 
-                    updateUnreadStatusInUserProfileCache();
+                    requestUpdateTabCounter();
                 }
                 middleCallbackMap.remove(messageId);
             }
@@ -833,26 +841,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             Timber.d("Report failure for Message: %d", messageId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if(userProfileDTO == null)
-        {
-            //TODO may be null, why?
-            Timber.e("userProfileDTO is null");
-            return;
-        }
-        if (userProfileDTO.unreadMessageThreadsCount > 0)
-        {
-            --userProfileDTO.unreadMessageThreadsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
@@ -882,13 +870,7 @@ public class MessagesCenterFragment extends DashboardFragment
                     alreadyFetched.remove(messageId);
                 }
 
-                //if the unread message is deleted, update unread counter
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageId);
-                if (messageHeaderDTO != null && messageHeaderDTO.unread)
-                {
-                    messageHeaderDTO.unread = false;
-                    updateUnreadStatusInUserProfileCache();
-                }
+                requestUpdateTabCounter();
                 getListAdapter().notifyDataSetChanged();
                 //MessageListAdapter adapter = getListAdapter();
             }

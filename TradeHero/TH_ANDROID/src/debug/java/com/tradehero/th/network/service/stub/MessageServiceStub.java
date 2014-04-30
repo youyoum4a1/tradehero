@@ -4,10 +4,9 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
+import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,10 +25,10 @@ public class MessageServiceStub implements MessageService
 
 
     @Override
-    public MessagePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
+    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
     {
         Timber.d("Returning stub messages");
-        MessagePaginatedDTO<MessageHeaderDTO> paginatedDTO = new MessagePaginatedDTO<>();
+        ReadablePaginatedDTO<MessageHeaderDTO> paginatedDTO = new ReadablePaginatedDTO<>();
         List<MessageHeaderDTO> messageDTOList = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
@@ -45,13 +44,13 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(
+    @Override public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(
             String discussionType,
             Integer senderId,
             Integer page,
             Integer perPage)
     {
-        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        ReadablePaginatedDTO<MessageHeaderDTO> paginatedDTO = new ReadablePaginatedDTO<>();
         List<MessageHeaderDTO> data = new ArrayList<>();
         data.add(createMessageHeaderNeerajToOscarAguilar());
         paginatedDTO.setData(data);

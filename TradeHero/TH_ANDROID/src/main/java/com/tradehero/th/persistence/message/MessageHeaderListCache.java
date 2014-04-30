@@ -7,11 +7,10 @@ import com.tradehero.th.api.discussion.MessageHeaderIdList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -43,11 +42,11 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
 
     @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
     {
-        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
+        ReadablePaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
         return putInternal(data);
     }
 
-    private MessageHeaderIdList putInternal(PaginatedDTO<MessageHeaderDTO> data)
+    private MessageHeaderIdList putInternal(ReadablePaginatedDTO<MessageHeaderDTO> data)
     {
         // update user profile cache
         updateUnreadMessageThreadCount(data);
@@ -74,19 +73,14 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      *
      * @param data
      */
-    private void updateUnreadMessageThreadCount(PaginatedDTO<MessageHeaderDTO> data)
+    private void updateUnreadMessageThreadCount(ReadablePaginatedDTO<MessageHeaderDTO> data)
     {
-        if (data == null || !(data instanceof MessagePaginatedDTO))
-        {
-            return;
-        }
-        MessagePaginatedDTO messagePaginatedDTO = (MessagePaginatedDTO)data;
         if (userProfileCache != null && currentUserId != null)
         {
             UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
             if (userProfileDTO != null)
             {
-                userProfileDTO.unreadMessageThreadsCount =  messagePaginatedDTO.unread;
+                userProfileDTO.unreadMessageThreadsCount =  data.unread;
             }
         }
     }
