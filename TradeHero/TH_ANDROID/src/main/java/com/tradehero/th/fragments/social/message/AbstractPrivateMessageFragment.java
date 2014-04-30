@@ -29,7 +29,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -74,9 +74,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new AbstractPrivateMessageFragmentUserFollowedListener();
+        return new AbstractPrivateMessageFragmentPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -260,7 +260,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @OnClick(R.id.private_message_status_container) protected void showPaidFollow()
     {
         //it's better premium follow than always let user pay
-        followUser(correspondentId, createUserFollowedListener());
+        premiumFollowUser(correspondentId, createPremiumUserFollowedListener());
     }
 
     @Override public boolean isTabBarVisible()
@@ -298,8 +298,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected class AbstractPrivateMessageFragmentUserFollowedListener
-            extends BasePurchaseManagerUserFollowedListener
+    protected class AbstractPrivateMessageFragmentPremiumUserFollowedListener
+            extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

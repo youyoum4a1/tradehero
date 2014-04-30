@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.social.PremiumFollowRequestedListener;
+import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class RelationsListItemView extends RelativeLayout
     @InjectView(R.id.user_type) TextView userType;
     @InjectView(R.id.upgrade_now) TextView upgradeNow;
     private AllowableRecipientDTO allowableRecipientDTO;
-    private PremiumFollowRequestedListener premiumFollowRequestedListener;
+    private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -109,7 +109,7 @@ public class RelationsListItemView extends RelativeLayout
     }
 
     public void setPremiumFollowRequestedListener(
-            PremiumFollowRequestedListener premiumFollowRequestedListener)
+            OnPremiumFollowRequestedListener premiumFollowRequestedListener)
     {
         this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
@@ -290,7 +290,7 @@ public class RelationsListItemView extends RelativeLayout
 
     protected void notifyFollowRequested()
     {
-        PremiumFollowRequestedListener listener = premiumFollowRequestedListener;
+        OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
         {
             if (allowableRecipientDTO == null || allowableRecipientDTO.user == null)

@@ -29,7 +29,7 @@ import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
@@ -232,9 +232,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         super.onDestroyView();
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new FollowUserAssistant.OnUserFollowedListener()
+        return new PremiumFollowUserAssistant.OnUserFollowedListener()
         {
             @Override
             public void onUserFollowSuccess(UserBaseKey userFollowed,
@@ -281,7 +281,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            followUser(clickedHeroDTO.getBaseKey());
+                            premiumFollowUser(clickedHeroDTO.getBaseKey());
                         }
                     }
             );

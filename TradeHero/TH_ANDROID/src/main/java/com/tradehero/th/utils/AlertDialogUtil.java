@@ -17,7 +17,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
-import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
 
 /**
@@ -179,7 +179,7 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType, final FollowRequestedListener followRequestedListener)
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType, final OnFollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -198,7 +198,7 @@ public class AlertDialogUtil
         final AlertDialog mFollowDialog = builder.create();
         mFollowDialog.show();
 
-        followDialogView.setFollowRequestedListener(new FollowRequestedListener()
+        followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
         {
             @Override public void freeFollowRequested(UserBaseKey heroId)
             {

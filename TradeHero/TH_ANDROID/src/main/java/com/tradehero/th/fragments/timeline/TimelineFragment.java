@@ -47,8 +47,8 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
-import com.tradehero.th.models.social.FollowRequestedListener;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.social.OnFollowRequestedListener;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
@@ -116,22 +116,22 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private boolean mIsHero = false;//whether the showUser follow the user
     public TabType currentTab = TabType.TIMELINE;
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new TimelineUserFollowedListener();
+        return new TimelinePremiumUserFollowedListener();
     }
 
-    protected FollowUserAssistant.OnUserFollowedListener createUserFollowedForMessageListener()
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedForMessageListener()
     {
-        return new TimelineUserForMessageFollowedListener();
+        return new TimelinePremiumUserForMessageFollowedListener();
     }
 
-    protected FollowRequestedListener createFollowRequestedListener()
+    protected OnFollowRequestedListener createFollowRequestedListener()
     {
         return new TimelineFollowRequestedListener();
     }
 
-    protected FollowRequestedListener createFollowForMessageRequestedListener()
+    protected OnFollowRequestedListener createFollowForMessageRequestedListener()
     {
         return new TimelineFollowForMessageRequestedListener();
     }
@@ -146,8 +146,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new FreeFollowForMessageCallback();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
@@ -264,8 +263,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
 
-    private class FollowerSummaryListener
-            implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+    private class FollowerSummaryListener implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
         public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
@@ -865,11 +863,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 userServiceWrapperLazy.get().freeFollow(heroId, followCallback);
     }
 
-    protected void follow(UserBaseKey heroId, FollowUserAssistant.OnUserFollowedListener followedListener)
-    {
-        followUser(heroId, followedListener);
-    }
-
     protected TimelineProfileClickListener createTimelineProfileClickListener()
     {
         return new TimelineProfileClickListener()
@@ -906,7 +899,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public class TimelineFollowRequestedListener implements FollowRequestedListener
+    public class TimelineFollowRequestedListener implements OnFollowRequestedListener
     {
         @Override public void freeFollowRequested(UserBaseKey heroId)
         {
@@ -915,11 +908,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow(heroId, createUserFollowedListener());
+            premiumFollowUser(heroId);
         }
     }
 
-    public class TimelineFollowForMessageRequestedListener implements FollowRequestedListener
+    public class TimelineFollowForMessageRequestedListener implements OnFollowRequestedListener
     {
         @Override public void freeFollowRequested(UserBaseKey heroId)
         {
@@ -928,11 +921,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow(heroId, createUserFollowedForMessageListener());
+            premiumFollowUser(heroId, createPremiumUserFollowedForMessageListener());
         }
     }
 
-    protected class TimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class TimelinePremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
@@ -946,7 +939,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class TimelineUserForMessageFollowedListener extends TimelineUserFollowedListener
+    protected class TimelinePremiumUserForMessageFollowedListener extends TimelinePremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

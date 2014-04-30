@@ -17,7 +17,7 @@ import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
@@ -42,7 +42,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
     protected Integer showProductDetailRequestCode;
 
-    protected FollowUserAssistant followUserAssistant;
+    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     abstract protected void initViews(View view);
@@ -58,9 +58,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return new BasePurchaseManagementPortfolioCompactListRetrievedListener();
     }
 
-    protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new BasePurchaseManagerUserFollowedListener();
+        return new BasePurchaseManagerPremiumUserFollowedListener();
     }
 
     @Override public void onResume()
@@ -87,7 +87,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachPortfolioRetrievedMilestone();
-        detachUserFollowAssistant();
+        detachPremiumFollowUserAssistant();
         super.onDestroyView();
     }
 
@@ -160,13 +160,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedListener = null;
     }
 
-    private void detachUserFollowAssistant()
+    private void detachPremiumFollowUserAssistant()
     {
-        if (followUserAssistant != null)
+        if (premiumFollowUserAssistant != null)
         {
-            followUserAssistant.setUserFollowedListener(null);
+            premiumFollowUserAssistant.setUserFollowedListener(null);
         }
-        followUserAssistant = null;
+        premiumFollowUserAssistant = null;
     }
 
     protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
@@ -216,23 +216,25 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return request;
     }
 
-    public void followUser(UserBaseKey heroId)
+    public void premiumFollowUser(UserBaseKey heroId)
     {
-        followUser(heroId, createUserFollowedListener());
+        premiumFollowUser(heroId, createPremiumUserFollowedListener());
     }
 
-    public void followUser(UserBaseKey heroId, FollowUserAssistant.OnUserFollowedListener followedListener)
+    public void premiumFollowUser(UserBaseKey heroId,
+            PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
     {
-        detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
-        followUserAssistant.launchFollow();
+        detachPremiumFollowUserAssistant();
+        premiumFollowUserAssistant = new PremiumFollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
+        premiumFollowUserAssistant.launchFollow();
     }
 
     public void unfollowUser(UserBaseKey heroId)
     {
-        detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(createUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
-        followUserAssistant.launchUnFollow();
+        detachPremiumFollowUserAssistant();
+        premiumFollowUserAssistant = new PremiumFollowUserAssistant(
+                createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
+        premiumFollowUserAssistant.launchUnFollow();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
@@ -249,7 +251,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagerUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
+    protected class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override
         public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)

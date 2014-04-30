@@ -34,7 +34,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -442,7 +441,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public class LeaderBoardFollowRequestedListener implements FollowRequestedListener
+    public class LeaderBoardFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
         @Override public void freeFollowRequested(UserBaseKey heroId)
         {

@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.social.PremiumFollowRequestedListener;
+import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipientDTO, RelationsListItemView>
 {
-    private PremiumFollowRequestedListener premiumFollowRequestedListener;
+    private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
 
     public RelationsListItemAdapter(Context context, LayoutInflater inflater, int layoutResId)
     {
@@ -23,26 +23,27 @@ public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipient
     }
 
     public void setPremiumFollowRequestedListener(
-            PremiumFollowRequestedListener premiumFollowRequestedListener)
+            OnPremiumFollowRequestedListener premiumFollowRequestedListener)
     {
         this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
 
     protected void notifyFollowRequested(UserBaseKey userBaseKey)
     {
-        PremiumFollowRequestedListener listener = premiumFollowRequestedListener;
+        OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
         {
             listener.premiumFollowRequested(userBaseKey);
         }
     }
 
-    protected PremiumFollowRequestedListener createFollowRequestedListener()
+    protected OnPremiumFollowRequestedListener createFollowRequestedListener()
     {
         return new RelationsListItemAdapterFollowRequestedListener();
     }
 
-    protected class RelationsListItemAdapterFollowRequestedListener implements PremiumFollowRequestedListener
+    protected class RelationsListItemAdapterFollowRequestedListener implements
+            OnPremiumFollowRequestedListener
     {
         @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
         {
