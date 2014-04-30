@@ -136,7 +136,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             @Override public void onClick(View v)
             {
-                setEnabledDeleteButton(false);
+                setEnabledSwipeButtons(false);
                 deleteSelf();
             }
         };
@@ -203,7 +203,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
             {
-                onFinish();
                 if (watchlistPositionDTO != null)
                 {
                     Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
@@ -216,16 +215,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
             @Override protected void failure(THException ex)
             {
-                onFinish();
+                setEnabledSwipeButtons(true);
                 if (watchlistPositionDTOCopy != null)
                 {
                     Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, ex);
                 }
-            }
-
-            private void onFinish()
-            {
-                setEnabledDeleteButton(true);
             }
         };
     }
@@ -282,12 +276,17 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         }
     }
 
-    protected void setEnabledDeleteButton(boolean enabled)
+    protected void setEnabledSwipeButtons(boolean enabled)
     {
-        View deleteButtonCopy = deleteButton;
-        if (deleteButtonCopy != null)
+        setEnabled(moreButton, enabled);
+        setEnabled(deleteButton, enabled);
+    }
+
+    protected void setEnabled(View button, boolean enabled)
+    {
+        if (button != null)
         {
-            deleteButtonCopy.setEnabled(enabled);
+            button.setEnabled(enabled);
         }
     }
 
