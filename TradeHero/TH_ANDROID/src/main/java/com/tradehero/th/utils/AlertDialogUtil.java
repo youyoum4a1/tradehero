@@ -179,7 +179,7 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType, final OnFollowRequestedListener followRequestedListener)
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, final int followType, final OnFollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -203,7 +203,10 @@ public class AlertDialogUtil
             @Override public void freeFollowRequested(UserBaseKey heroId)
             {
                 onFinish();
-                followRequestedListener.freeFollowRequested(heroId);
+                if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                {
+                    followRequestedListener.freeFollowRequested(heroId);
+                }
             }
 
             @Override public void premiumFollowRequested(UserBaseKey heroId)
