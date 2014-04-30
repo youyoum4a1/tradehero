@@ -70,6 +70,7 @@ public class RelationsListItemView extends RelativeLayout
     {
         upgradeNow.setOnClickListener(this);
         avatar.setOnClickListener(this);
+        loadDefaultPicture();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -145,7 +146,6 @@ public class RelationsListItemView extends RelativeLayout
     {
         if (avatar != null)
         {
-            loadDefaultPicture();
             if (allowableRecipientDTO != null && allowableRecipientDTO.user.picture != null)
             {
                 picassoLazy.get().load(allowableRecipientDTO.user.picture)
@@ -241,7 +241,7 @@ public class RelationsListItemView extends RelativeLayout
         }
         else
         {
-            userTypeTextResId = R.string.relation_follower;
+            userTypeTextResId = R.string.relation_friend;
         }
 
         int subtitleresId = 0;

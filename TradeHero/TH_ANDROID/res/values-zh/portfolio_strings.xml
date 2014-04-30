@@ -7,8 +7,8 @@
   <string name="portfolio_recently_viewed_heroes">最近查看的英雄</string>
   <string name="portfolio_recently_viewed_others">最近查看的用户</string>
   <string name="portfolio_loading_count">读取 %1$,d/%2$,d 投资组合..</string>
-  <string name="portfolio_description_count_open_positions">您当前有 %1$d 持仓</string>
-  <string name="portfolio_description_count_closed_positions">您当前有 %1$d 平仓</string>
+  <string name="portfolio_description_count_open_positions_you">您当前有 %1$d 持仓</string>
+  <string name="portfolio_description_count_closed_positions_you">您当前有 %1$d 平仓</string>
   <string name="portfolio_description_count_watch_positions_you">您正在关注 %1$d 只股票</string>
   <string name="portfolio_description_count_open_positions_other">%2$s 有 %1$d 持仓</string>
   <string name="portfolio_description_count_closed_positions_other">%2$s 有 %1$d 平仓</string>
