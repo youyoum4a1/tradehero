@@ -268,6 +268,10 @@ public interface UserService
             Callback<UserProfileDTO> callback);
 
     @POST("/users/{userId}/follow/free")
+    UserProfileDTO freeFollow(
+            @Path("userId") int userId);
+
+    @POST("/users/{userId}/follow/free")
     void freeFollow(
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);

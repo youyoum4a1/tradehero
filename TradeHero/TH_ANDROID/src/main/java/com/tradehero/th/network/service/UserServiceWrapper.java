@@ -21,7 +21,11 @@ import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,16 +36,25 @@ import retrofit.RetrofitError;
 {
     private final UserService userService;
     private final UserServiceAsync userServiceAsync;
+    private final UserProfileCache userProfileCache;
     private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    private final Lazy<HeroListCache> heroListCache;
+    private final GetPositionsCache getPositionsCache;
 
     @Inject public UserServiceWrapper(
             UserService userService,
             UserServiceAsync userServiceAsync,
-            UserMessagingRelationshipCache userMessagingRelationshipCache)
+            UserProfileCache userProfileCache,
+            UserMessagingRelationshipCache userMessagingRelationshipCache,
+            Lazy<HeroListCache> heroListCache,
+            GetPositionsCache getPositionsCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
+        this.userProfileCache = userProfileCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
+        this.heroListCache = heroListCache;
+        this.getPositionsCache = getPositionsCache;
     }
 
     //<editor-fold desc="Sign-Up With Email">
@@ -294,7 +307,10 @@ import retrofit.RetrofitError;
     public UserProfileDTO follow(UserBaseKey userBaseKey)
     {
         UserProfileDTO myProfile = userService.follow(userBaseKey.key);
+        userProfileCache.put(myProfile.getBaseKey(), myProfile);
         userMessagingRelationshipCache.invalidate(userBaseKey);
+        heroListCache.get().invalidate(userBaseKey);
+        getPositionsCache.invalidate(userBaseKey);
         return myProfile;
     }
 
@@ -303,6 +319,16 @@ import retrofit.RetrofitError;
         MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
         userServiceAsync.follow(userBaseKey.key, middleCallbackFollowUser);
         return middleCallbackFollowUser;
+    }
+
+    public UserProfileDTO freeFollow(UserBaseKey userBaseKey)
+    {
+        UserProfileDTO myProfile = userService.freeFollow(userBaseKey.key);
+        userProfileCache.put(myProfile.getBaseKey(), myProfile);
+        userMessagingRelationshipCache.invalidate(userBaseKey);
+        heroListCache.get().invalidate(userBaseKey);
+        getPositionsCache.invalidate(userBaseKey);
+        return myProfile;
     }
 
     public MiddleCallbackFollowUser freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
@@ -315,7 +341,10 @@ import retrofit.RetrofitError;
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
     {
         UserProfileDTO myProfile = userService.follow(userBaseKey.key, purchaseDTO);
+        userProfileCache.put(myProfile.getBaseKey(), myProfile);
         userMessagingRelationshipCache.invalidate(userBaseKey);
+        heroListCache.get().invalidate(userBaseKey);
+        getPositionsCache.invalidate(userBaseKey);
         return myProfile;
     }
 
