@@ -36,8 +36,7 @@ import retrofit.http.Query;
 interface UserServiceAsync
 {
     //<editor-fold desc="Sign-Up With Email">
-    @FormUrlEncoded
-    @POST("/SignupWithEmail")
+    @FormUrlEncoded @POST("/SignupWithEmail")
     void signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -56,8 +55,7 @@ interface UserServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
+    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     void updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
@@ -73,11 +71,11 @@ interface UserServiceAsync
             @Field("biography") String biography,
             @Field("location") String location,
             @Field("website") String website,
+            @Field("profilePicture") byte[] profilePicture,
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
-    @Multipart
-    @POST("/SignupWithEmail")
+    @Multipart @POST("/SignupWithEmail")
     void signUpWithEmailWithProfilePicture(Callback<Response> callback);
 
     //<editor-fold desc="Signup">

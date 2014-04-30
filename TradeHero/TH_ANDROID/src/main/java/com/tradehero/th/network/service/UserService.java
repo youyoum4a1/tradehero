@@ -51,8 +51,7 @@ public interface UserService
     //        "username": null,
     //        "website": null
     //}
-    @FormUrlEncoded
-    @POST("/SignupWithEmail")
+    @FormUrlEncoded @POST("/SignupWithEmail")
     UserProfileDTO signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -71,8 +70,7 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
+    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     UserProfileDTO updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
@@ -87,12 +85,12 @@ public interface UserService
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("biography") String biography,
             @Field("location") String location,
-            @Field("website") String website)
+            @Field("website") String website,
+            @Field("profilePicture") byte[] profilePicture)
             throws RetrofitError;
     //</editor-fold>
 
-    @Multipart
-    @POST("/SignupWithEmail")
+    @Multipart @POST("/SignupWithEmail")
     Response signUpWithEmailWithProfilePicture();
 
     //<editor-fold desc="Signup">
