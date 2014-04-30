@@ -1,5 +1,7 @@
 package com.tradehero.th.models.user;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -16,6 +18,7 @@ public class MiddleCallbackLogout extends MiddleCallback<UserProfileDTO>
     public static final String TAG = MiddleCallbackLogout.class.getSimpleName();
 
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject Context context;
 
     public MiddleCallbackLogout(Callback<UserProfileDTO> primaryCallback)
     {
@@ -28,12 +31,13 @@ public class MiddleCallbackLogout extends MiddleCallback<UserProfileDTO>
         super.success(userProfileDTO, response);
         dtoCacheUtil.clearUserRelatedCaches();
         //TODO also has to clear notification
+        clearNotification();
     }
 
-    //public void clearNotification()
-    //{
-    //    NotificationManager nm = (NotificationManager) context
-    //            .getSystemService(Context.NOTIFICATION_SERVICE);
-    //    nm.cancelAll();
-    //}
+    public void clearNotification()
+    {
+        NotificationManager nm = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancelAll();
+    }
 }
