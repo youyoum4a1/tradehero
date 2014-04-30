@@ -49,7 +49,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -92,8 +91,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject SocialServiceWrapper socialServiceWrapper;
-    private MiddleCallbackUpdateUserProfile middleCallbackConnect;
-    private MiddleCallbackUpdateUserProfile middleCallbackDisconnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
@@ -112,7 +111,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
-    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
+    private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;

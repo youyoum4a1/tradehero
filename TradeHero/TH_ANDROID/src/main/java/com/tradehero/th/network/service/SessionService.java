@@ -14,7 +14,6 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.Header;
 import retrofit.http.POST;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 8:05 PM To change this template use File | Settings | File Templates. */
 public interface SessionService
 {
     //<editor-fold desc="Login">
@@ -54,6 +53,10 @@ public interface SessionService
             Callback<UserProfileDTO> callback);
 
     @POST("/updateDevice")
+    UserProfileDTO updateDevice(
+            @Body BaiduDeviceMode deviceMode);
+
+    @POST("/updateDevice")
     void updateDevice(
             @Body BaiduDeviceMode deviceMode,
             Callback<UserProfileDTO> callback);
@@ -63,7 +66,6 @@ public interface SessionService
     void updateDevice(
             @Field("token") String deviceToken,
             Callback<UserProfileDTO> callback);
-
     //</editor-fold>
 
     //<editor-fold desc="Logout">

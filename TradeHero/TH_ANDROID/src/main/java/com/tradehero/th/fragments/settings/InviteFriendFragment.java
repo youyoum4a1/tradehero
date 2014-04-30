@@ -40,7 +40,7 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserService;
@@ -91,7 +91,7 @@ public class InviteFriendFragment extends DashboardFragment
     private ToggleButton liToggle;
     private ToggleButton contactToggle;
 
-    private MiddleCallbackUpdateUserProfile middleCallbackConnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
 
     private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
     private THCallback<Response> inviteFriendCallback;

@@ -4,9 +4,16 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.user.DTOProcessorAddCash;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -15,14 +22,27 @@ import retrofit.Callback;
 {
     private final PortfolioService portfolioService;
     private final PortfolioServiceAsync portfolioServiceAsync;
+    private final UserProfileCache userProfileCache;
+    private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    private final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    private final Lazy<PortfolioCache> portfolioCache;
+
 
     @Inject public PortfolioServiceWrapper(
             PortfolioService portfolioService,
-            PortfolioServiceAsync portfolioServiceAsync)
+            PortfolioServiceAsync portfolioServiceAsync,
+            UserProfileCache userProfileCache,
+            Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            Lazy<PortfolioCompactCache> portfolioCompactCache,
+            Lazy<PortfolioCache> portfolioCache)
     {
         super();
         this.portfolioService = portfolioService;
         this.portfolioServiceAsync = portfolioServiceAsync;
+        this.userProfileCache = userProfileCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.portfolioCompactCache = portfolioCompactCache;
+        this.portfolioCache = portfolioCache;
     }
 
     private void basicCheck(OwnedPortfolioId ownedPortfolioId)
@@ -40,6 +60,22 @@ import retrofit.Callback;
             throw new NullPointerException("ownedPortfolioId.portfolioId cannot be null");
         }
     }
+
+    //<editor-fold desc="DTO Processors">
+    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
+    }
+
+    protected DTOProcessor<UserProfileDTO> createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
+    {
+        return new DTOProcessorAddCash(userProfileCache,
+                portfolioCompactListCache.get(),
+                portfolioCompactCache.get(),
+                portfolioCache.get(),
+                ownedPortfolioId);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
     public PortfolioDTO getPortfolio(OwnedPortfolioId ownedPortfolioId)
@@ -61,13 +97,13 @@ import retrofit.Callback;
     public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
     {
         basicCheck(ownedPortfolioId);
-        return this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+        return createUpdateProfileProcessor().process(this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
-    public MiddleCallbackUpdateUserProfile resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
         basicCheck(ownedPortfolioId);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         this.portfolioServiceAsync.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallback);
         return middleCallback;
     }
@@ -77,15 +113,15 @@ import retrofit.Callback;
     public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
     {
         basicCheck(ownedPortfolioId);
-        return this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO);
+        return createAddCashProcessor(ownedPortfolioId).process(this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
-    public MiddleCallbackAddCash addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
         basicCheck(ownedPortfolioId);
-        MiddleCallbackAddCash middleCallbackAddCash = new MiddleCallbackAddCash(ownedPortfolioId, callback);
-        this.portfolioServiceAsync.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallbackAddCash);
-        return middleCallbackAddCash;
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCashProcessor(ownedPortfolioId));
+        this.portfolioServiceAsync.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 

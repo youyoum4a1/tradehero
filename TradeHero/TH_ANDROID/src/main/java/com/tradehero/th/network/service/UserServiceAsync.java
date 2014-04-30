@@ -173,7 +173,7 @@ interface UserServiceAsync
             Callback<UpdatePayPalEmailDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Update Alipay Email">
+    //<editor-fold desc="Update Alipay Account">
     @POST("/users/{userId}/updateAlipayAccount")
     void updateAlipayAccount(
             @Path("userId") int userId,

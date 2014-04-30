@@ -16,11 +16,13 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.models.user.MiddleCallbackFollowUser;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
-import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
-import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.user.DTOProcessorFollowUser;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
+import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -57,13 +59,37 @@ import retrofit.RetrofitError;
         this.getPositionsCache = getPositionsCache;
     }
 
+    //<editor-fold desc="DTO Processors">
+    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
+    }
+
+    protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(UserBaseKey userToFollow)
+    {
+        return new DTOProcessorFollowUser(userProfileCache,
+                heroListCache.get(), getPositionsCache, userMessagingRelationshipCache,
+                userToFollow);
+    }
+
+    protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
+    }
+
+    protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Sign-Up With Email">
     public UserProfileDTO signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO)
             throws RetrofitError
     {
-        return userService.signUpWithEmail(
+        return createUpdateProfileProcessor().process(userService.signUpWithEmail(
                 authorization,
                 userFormDTO.biography,
                 userFormDTO.deviceToken,
@@ -77,15 +103,15 @@ import retrofit.RetrofitError;
                 userFormDTO.passwordConfirmation,
                 userFormDTO.pushNotificationsEnabled,
                 userFormDTO.username,
-                userFormDTO.website);
+                userFormDTO.website));
     }
 
-    public MiddleCallbackUpdateUserProfile signUpWithEmail(
+    public MiddleCallback<UserProfileDTO> signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallback = new MiddleCallbackUpdateUserProfile(callback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         userServiceAsync.signUpWithEmail(
                 authorization,
                 userFormDTO.biography,
@@ -112,7 +138,7 @@ import retrofit.RetrofitError;
             UserFormDTO userFormDTO,
             byte[] profilePicture)
     {
-        return userService.updateProfile(
+        return createUpdateProfileProcessor().process(userService.updateProfile(
                 userBaseKey.key,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,
@@ -127,18 +153,16 @@ import retrofit.RetrofitError;
                 userFormDTO.biography,
                 userFormDTO.location,
                 userFormDTO.website,
-                profilePicture
-        );
+                profilePicture));
     }
 
-    public MiddleCallbackUpdateUserProfile updateProfile(
+    public MiddleCallback<UserProfileDTO> updateProfile(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO,
             byte[] profilePicture,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackUpdateUserProfile middleCallback =
-                new MiddleCallbackUpdateUserProfile(callback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         userServiceAsync.updateProfile(
                 userBaseKey.key,
                 userFormDTO.deviceToken,
@@ -170,7 +194,7 @@ import retrofit.RetrofitError;
         return this.updateProfile(userBaseKey, userFormDTO, (byte[]) null);
     }
 
-    public MiddleCallbackUpdateUserProfile updateProfilePropertyEmailNotifications(
+    public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled,
             Callback<UserProfileDTO> callback)
@@ -190,7 +214,7 @@ import retrofit.RetrofitError;
         return this.updateProfile(userBaseKey, userFormDTO, (byte[]) null);
     }
 
-    public MiddleCallbackUpdateUserProfile updateProfilePropertyPushNotifications(
+    public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
             UserBaseKey userBaseKey,
             Boolean pushNotificationsEnabled,
             Callback<UserProfileDTO> callback)
@@ -282,100 +306,93 @@ import retrofit.RetrofitError;
     public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
             UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
-        return userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
+        return createUpdatePaypalEmailProcessor(userBaseKey).process(
+                userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO));
     }
 
-    public MiddleCallbackUpdatePayPalEmail updatePayPalEmail(UserBaseKey userBaseKey,
+    public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(UserBaseKey userBaseKey,
             UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
             Callback<UpdatePayPalEmailDTO> callback)
     {
-        MiddleCallbackUpdatePayPalEmail
-                middleCallbackUpdatePayPalAccount = new MiddleCallbackUpdatePayPalEmail(callback);
+        MiddleCallback<UpdatePayPalEmailDTO>
+                middleCallback = new BaseMiddleCallback<>(callback, createUpdatePaypalEmailProcessor(userBaseKey));
         userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO,
-                middleCallbackUpdatePayPalAccount);
-        return middleCallbackUpdatePayPalAccount;
+                middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
-    public MiddleCallbackUpdateAlipayAccount updateAlipayAccount(UserBaseKey userBaseKey,
+    public UpdateAlipayAccountDTO updateAlipayAccount(
+            UserBaseKey userBaseKey,
+            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
+    {
+        return createUpdateAlipayAccountProcessor(userBaseKey).process(
+                userService.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO));
+    }
+
+    public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
+            UserBaseKey userBaseKey,
             UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
             Callback<UpdateAlipayAccountDTO> callback)
     {
-        MiddleCallbackUpdateAlipayAccount
-                middleCallbackUpdateAlipayAccount = new MiddleCallbackUpdateAlipayAccount(callback);
+        MiddleCallback<UpdateAlipayAccountDTO>
+                middleCallback = new BaseMiddleCallback<>(callback, createUpdateAlipayAccountProcessor(userBaseKey));
         userServiceAsync.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO,
-                middleCallbackUpdateAlipayAccount);
-        return middleCallbackUpdateAlipayAccount;
+                middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
     public UserProfileDTO follow(UserBaseKey userBaseKey)
     {
-        UserProfileDTO myProfile = userService.follow(userBaseKey.key);
-        userProfileCache.put(myProfile.getBaseKey(), myProfile);
-        userMessagingRelationshipCache.invalidate(userBaseKey);
-        heroListCache.get().invalidate(userBaseKey);
-        getPositionsCache.invalidate(userBaseKey);
-        return myProfile;
+        return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
     }
 
-    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userServiceAsync.follow(userBaseKey.key, middleCallbackFollowUser);
-        return middleCallbackFollowUser;
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
+        userServiceAsync.follow(userBaseKey.key, middleCallback);
+        return middleCallback;
     }
 
     public UserProfileDTO freeFollow(UserBaseKey userBaseKey)
     {
-        UserProfileDTO myProfile = userService.freeFollow(userBaseKey.key);
-        userProfileCache.put(myProfile.getBaseKey(), myProfile);
-        userMessagingRelationshipCache.invalidate(userBaseKey);
-        heroListCache.get().invalidate(userBaseKey);
-        getPositionsCache.invalidate(userBaseKey);
-        return myProfile;
+        return createFollowUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
     }
 
-    public MiddleCallbackFollowUser freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackFollowUser middleCallback = new MiddleCallbackFollowUser(userBaseKey, callback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userService.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 
     public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
     {
-        UserProfileDTO myProfile = userService.follow(userBaseKey.key, purchaseDTO);
-        userProfileCache.put(myProfile.getBaseKey(), myProfile);
-        userMessagingRelationshipCache.invalidate(userBaseKey);
-        heroListCache.get().invalidate(userBaseKey);
-        getPositionsCache.invalidate(userBaseKey);
-        return myProfile;
+        return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
     }
 
-    public MiddleCallbackFollowUser follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallbackFollowUser);
-        return middleCallbackFollowUser;
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
+        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
     public UserProfileDTO unfollow(UserBaseKey userBaseKey)
     {
-        UserProfileDTO myProfile = userService.unfollow(userBaseKey.key);
-        userMessagingRelationshipCache.invalidate(userBaseKey);
-        return myProfile;
+        return createFollowUserProcessor(userBaseKey).process(userService.unfollow(userBaseKey.key));
     }
 
-    public MiddleCallbackFollowUser unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
-        MiddleCallbackFollowUser middleCallbackFollowUser = new MiddleCallbackFollowUser(userBaseKey, callback);
-        userServiceAsync.unfollow(userBaseKey.key, middleCallbackFollowUser);
-        return middleCallbackFollowUser;
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
+        userServiceAsync.unfollow(userBaseKey.key, middleCallback);
+        return middleCallback;
 
     }
     //</editor-fold>

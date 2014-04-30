@@ -24,14 +24,13 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,7 +47,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     private Button submitButton;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private MiddleCallbackUpdateAlipayAccount middleCallbackUpdateAlipayAccount;
+    private MiddleCallback<UpdateAlipayAccountDTO> middleCallbackUpdateAlipayAccount;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
@@ -148,7 +147,6 @@ public class SettingsAlipayFragment extends DashboardFragment
                 if (!isDetached())
                 {
                     THToast.show(getString(R.string.settings_alipay_successful_update));
-                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
                     progressDialog.hide();
                     Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                     navigator.popFragment();
