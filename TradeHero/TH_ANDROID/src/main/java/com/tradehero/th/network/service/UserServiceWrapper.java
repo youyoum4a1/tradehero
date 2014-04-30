@@ -20,7 +20,7 @@ import com.tradehero.th.models.user.MiddleCallbackFollowUser;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -247,9 +247,10 @@ import retrofit.RetrofitError;
         return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
-    public MiddleCallback<PaginatedDTO<AllowableRecipientDTO>> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedDTO<AllowableRecipientDTO>> callback)
+    public BaseMiddleCallback<PaginatedDTO<AllowableRecipientDTO>> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedDTO<AllowableRecipientDTO>> callback)
     {
-        MiddleCallback<PaginatedDTO<AllowableRecipientDTO>> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<PaginatedDTO<AllowableRecipientDTO>>
+                middleCallback = new BaseMiddleCallback<>(callback);
         if (key == null)
         {
             userServiceAsync.searchAllowableRecipients(middleCallback);
@@ -385,9 +386,9 @@ import retrofit.RetrofitError;
         return userService.getHeroes(heroKey.key);
     }
 
-    public MiddleCallback<HeroDTOList> getHeroes(UserBaseKey heroKey, Callback<HeroDTOList> callback)
+    public BaseMiddleCallback<HeroDTOList> getHeroes(UserBaseKey heroKey, Callback<HeroDTOList> callback)
     {
-        MiddleCallback<HeroDTOList> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getHeroes(heroKey.key, middleCallback);
         return middleCallback;
     }

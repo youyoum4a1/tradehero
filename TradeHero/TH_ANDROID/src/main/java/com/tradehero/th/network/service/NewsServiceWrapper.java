@@ -5,7 +5,7 @@ import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.models.news.MiddleCallbackPaginationNewsItem;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -50,9 +50,9 @@ public class NewsServiceWrapper
         return newsServiceSync.getNewsDetails(newsId);
     }
 
-    public MiddleCallback<NewsItemDTO> getSecurityNewsDetail(long newsId, Callback<NewsItemDTO> callback) throws RetrofitError
+    public BaseMiddleCallback<NewsItemDTO> getSecurityNewsDetail(long newsId, Callback<NewsItemDTO> callback) throws RetrofitError
     {
-        MiddleCallback<NewsItemDTO> middleCallback = new MiddleCallback<NewsItemDTO>(callback);
+        BaseMiddleCallback<NewsItemDTO> middleCallback = new BaseMiddleCallback<NewsItemDTO>(callback);
         newsServiceAsync.getNewsDetails(newsId, middleCallback);
         return middleCallback;
     }
@@ -62,9 +62,10 @@ public class NewsServiceWrapper
      *
      * @throws RetrofitError
      */
-    public MiddleCallback getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback) throws RetrofitError
+    public BaseMiddleCallback getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback) throws RetrofitError
     {
-        MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>>(callback);
+        BaseMiddleCallback<PaginatedDTO<CountryLanguagePairDTO>>
+                middleCallback = new BaseMiddleCallback<PaginatedDTO<CountryLanguagePairDTO>>(callback);
         newsServiceAsync.getCountryLanguagePairs(middleCallback);
         return middleCallback;
     }
@@ -84,9 +85,10 @@ public class NewsServiceWrapper
      *
      * @throws RetrofitError
      */
-    public MiddleCallback getNewsCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback) throws RetrofitError
+    public BaseMiddleCallback getNewsCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback) throws RetrofitError
     {
-        MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>> middleCallback = new MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>(callback);
+        BaseMiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>
+                middleCallback = new BaseMiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>(callback);
         newsServiceAsync.getCategories(middleCallback);
         return middleCallback;
     }

@@ -16,7 +16,7 @@ import com.tradehero.th.models.discussion.MiddleCallbackMessageDeleted;
 import com.tradehero.th.models.discussion.MiddleCallbackMessageHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagePaginatedHeader;
 import com.tradehero.th.models.discussion.MiddleCallbackMessagingRelationship;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -225,9 +225,9 @@ public class MessageServiceWrapper
         return messageService.readMessage(commentId, senderUserId, recipientUserId);
     }
 
-    public MiddleCallback<Response> readMessage(int commentId, int senderUserId, int recipientUserId, Callback<Response> callback)
+    public BaseMiddleCallback<Response> readMessage(int commentId, int senderUserId, int recipientUserId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<Response>(callback)
+        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<Response>(callback)
         {
             @Override public void success(Response response, Response response2)
             {

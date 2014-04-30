@@ -3,7 +3,7 @@ package com.tradehero.th.models.user;
 import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import retrofit.client.Response;
 /**
  * Created by xavier on 3/5/14.
  */
-public class MiddleCallbackLogout extends MiddleCallback<UserProfileDTO>
+public class MiddleCallbackLogout extends BaseMiddleCallback<UserProfileDTO>
 {
     public static final String TAG = MiddleCallbackLogout.class.getSimpleName();
 

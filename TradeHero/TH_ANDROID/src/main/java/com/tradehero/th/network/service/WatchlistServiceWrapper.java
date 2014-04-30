@@ -13,7 +13,7 @@ import com.tradehero.th.api.watchlist.key.SkipCacheSecurityPerPagedWatchlistKey;
 import com.tradehero.th.models.watchlist.MiddleCallbackWatchlistCreate;
 import com.tradehero.th.models.watchlist.MiddleCallbackWatchlistDelete;
 import com.tradehero.th.models.watchlist.MiddleCallbackWatchlistUpdate;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -48,7 +48,7 @@ import retrofit.Callback;
         this.portfolioCompactListCache = portfolioCompactListCache;
     }
 
-    //<editor-fold desc="Add/Edit a watch item">
+    //<editor-fold desc="Add a watch item">
     public WatchlistPositionDTO createWatchlistEntry(WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         WatchlistPositionDTO created = watchlistService.createWatchlistEntry(
@@ -67,13 +67,13 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Add/Edit a watch item">
+    //<editor-fold desc="Edit a watch item">
     public WatchlistPositionDTO updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO);
     }
 
-    public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    public BaseMiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO, callback);
     }
@@ -108,7 +108,7 @@ import retrofit.Callback;
         return watchlistService.getAllByUser(pagedWatchlistKey.page);
     }
 
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PagedWatchlistKey pagedWatchlistKey,
+    public BaseMiddleCallback<WatchlistPositionDTOList> getAllByUser(PagedWatchlistKey pagedWatchlistKey,
             Callback<WatchlistPositionDTOList> callback)
     {
         if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
@@ -117,7 +117,7 @@ import retrofit.Callback;
         }
         else
         {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new MiddleCallback<>(callback);
+            BaseMiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
             if (pagedWatchlistKey.page == null)
             {
                 watchlistServiceAsync.getAllByUser(middleCallback);
@@ -150,7 +150,7 @@ import retrofit.Callback;
                 perPagedWatchlistKey.perPage);
     }
 
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey,
+    public BaseMiddleCallback<WatchlistPositionDTOList> getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey,
             Callback<WatchlistPositionDTOList> callback)
     {
         if (perPagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
@@ -159,7 +159,7 @@ import retrofit.Callback;
         }
         else
         {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new MiddleCallback<>(callback);
+            BaseMiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
             if (perPagedWatchlistKey.page == null)
             {
                 watchlistServiceAsync.getAllByUser(middleCallback);
@@ -206,7 +206,7 @@ import retrofit.Callback;
                 securityPerPagedWatchlistKey.securityId);
     }
 
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey,
+    public BaseMiddleCallback<WatchlistPositionDTOList> getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey,
             Callback<WatchlistPositionDTOList> callback)
     {
         if (securityPerPagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
@@ -215,7 +215,7 @@ import retrofit.Callback;
         }
         else
         {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new MiddleCallback<>(callback);
+            BaseMiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
             if (securityPerPagedWatchlistKey.page == null)
             {
                 watchlistServiceAsync.getAllByUser(middleCallback);
@@ -273,10 +273,10 @@ import retrofit.Callback;
                 skipCacheSecurityPerPagedWatchlistKey.skipCache);
     }
 
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey,
+    public BaseMiddleCallback<WatchlistPositionDTOList> getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey,
             Callback<WatchlistPositionDTOList> callback)
     {
-        MiddleCallback<WatchlistPositionDTOList> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (skipCacheSecurityPerPagedWatchlistKey.page == null)
         {
             watchlistServiceAsync.getAllByUser(middleCallback);

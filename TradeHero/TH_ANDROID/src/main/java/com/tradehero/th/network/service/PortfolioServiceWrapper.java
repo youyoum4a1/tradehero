@@ -6,7 +6,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
 import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -48,10 +48,10 @@ import retrofit.Callback;
         return this.portfolioService.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
     }
 
-    public MiddleCallback<PortfolioDTO> getPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
+    public BaseMiddleCallback<PortfolioDTO> getPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
     {
         basicCheck(ownedPortfolioId);
-        MiddleCallback<PortfolioDTO> middleCallback = new MiddleCallback<PortfolioDTO>(callback);
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<PortfolioDTO>(callback);
         this.portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
     }
@@ -96,9 +96,9 @@ import retrofit.Callback;
         return this.portfolioService.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
     }
 
-    public MiddleCallback<PortfolioDTO> markPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
+    public BaseMiddleCallback<PortfolioDTO> markPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
     {
-        MiddleCallback<PortfolioDTO> middleCallback = new MiddleCallback<PortfolioDTO>(callback);
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<PortfolioDTO>(callback);
         basicCheck(ownedPortfolioId);
         this.portfolioServiceAsync.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;

@@ -1,12 +1,12 @@
 package com.tradehero.th.models.discussion;
 
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-public class MiddleCallbackMessageDeleted extends MiddleCallback<Response>
+public class MiddleCallbackMessageDeleted extends BaseMiddleCallback<Response>
 {
     private final MessageHeaderId messageHeaderId;
     private final MessageHeaderListCache messageHeaderListCache;

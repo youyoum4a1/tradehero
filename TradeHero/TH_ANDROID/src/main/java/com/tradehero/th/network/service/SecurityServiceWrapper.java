@@ -23,7 +23,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;

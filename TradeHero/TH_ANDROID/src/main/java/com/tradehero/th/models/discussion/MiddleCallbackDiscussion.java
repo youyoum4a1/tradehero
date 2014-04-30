@@ -4,13 +4,13 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-public class MiddleCallbackDiscussion extends MiddleCallback<DiscussionDTO>
+public class MiddleCallbackDiscussion extends BaseMiddleCallback<DiscussionDTO>
 {
     private final DiscussionDTOFactory discussionDTOFactory;
     private final UserMessagingRelationshipCache userMessagingRelationshipCache;

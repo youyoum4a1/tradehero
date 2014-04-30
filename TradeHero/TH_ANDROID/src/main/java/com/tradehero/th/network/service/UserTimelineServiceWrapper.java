@@ -3,7 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -29,9 +29,9 @@ import retrofit.client.Response;
         return userTimelineService.getGlobalTimeline();
     }
 
-    public MiddleCallback<TimelineDTO> getGlobalTimeline(Callback<TimelineDTO> callback)
+    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(middleCallback);
         return middleCallback;
     }
@@ -41,9 +41,9 @@ import retrofit.client.Response;
         return userTimelineService.getGlobalTimeline(maxCount);
     }
 
-    public MiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Callback<TimelineDTO> callback)
+    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(maxCount, middleCallback);
         return middleCallback;
     }
@@ -53,9 +53,9 @@ import retrofit.client.Response;
         return userTimelineService.getGlobalTimeline(maxCount, maxId);
     }
 
-    public MiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
+    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, middleCallback);
         return middleCallback;
     }
@@ -65,9 +65,9 @@ import retrofit.client.Response;
         return userTimelineService.getGlobalTimeline(maxCount, maxId, minId);
     }
 
-    public MiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
+    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
@@ -79,9 +79,9 @@ import retrofit.client.Response;
         return userTimelineService.getTimeline(userId.key);
     }
 
-    MiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, Callback<TimelineDTO> callback)
+    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getTimeline(userId.key, middleCallback);
         return middleCallback;
     }
@@ -91,9 +91,9 @@ import retrofit.client.Response;
         return userTimelineService.getTimeline(userId.key, maxCount);
     }
 
-    MiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Callback<TimelineDTO> callback)
+    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getTimeline(userId.key, maxCount, middleCallback);
         return middleCallback;
     }
@@ -103,9 +103,9 @@ import retrofit.client.Response;
         return userTimelineService.getTimeline(userId.key, maxCount, maxId);
     }
 
-    MiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
+    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, middleCallback);
         return middleCallback;
     }
@@ -115,9 +115,9 @@ import retrofit.client.Response;
         return userTimelineService.getTimeline(userId.key, maxCount, maxId, minId);
     }
 
-    MiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
+    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
     {
-        MiddleCallback<TimelineDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
@@ -129,9 +129,9 @@ import retrofit.client.Response;
         return userTimelineService.shareTimelineItem(userId.key, timelineItemId, timelineItemShareRequestDTO);
     }
 
-    public MiddleCallback<Response> shareTimelineItem(UserBaseKey userId, int timelineItemId, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<Response> callback)
+    public BaseMiddleCallback<Response> shareTimelineItem(UserBaseKey userId, int timelineItemId, TimelineItemShareRequestDTO timelineItemShareRequestDTO, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.shareTimelineItem(userId.key, timelineItemId, timelineItemShareRequestDTO, middleCallback);
         return middleCallback;
     }
@@ -143,9 +143,9 @@ import retrofit.client.Response;
         return userTimelineService.deleteTimelineItem(userId.key, timelineItemId);
     }
 
-    public MiddleCallback<Response>  deleteTimelineItem(UserBaseKey userId, int timelineItemId, Callback<Response> callback)
+    public BaseMiddleCallback<Response> deleteTimelineItem(UserBaseKey userId, int timelineItemId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.deleteTimelineItem(userId.key, timelineItemId, middleCallback);
         return middleCallback;
     }

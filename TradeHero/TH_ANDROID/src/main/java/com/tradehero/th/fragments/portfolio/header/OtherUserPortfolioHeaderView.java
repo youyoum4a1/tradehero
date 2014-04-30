@@ -32,9 +32,6 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by julien on 21/10/13
- */
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
     public static final String TAG = OtherUserPortfolioHeaderView.class.getSimpleName();
