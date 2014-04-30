@@ -2,9 +2,6 @@ package com.tradehero.th.fragments.trending;
 
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/7/14 Time: 1:50 PM Copyright (c) TradeHero
- */
 public enum TileType
 {
     Normal(0, false),

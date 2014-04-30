@@ -63,7 +63,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;

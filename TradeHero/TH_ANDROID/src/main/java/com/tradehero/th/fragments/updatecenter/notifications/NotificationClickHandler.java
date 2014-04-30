@@ -25,9 +25,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by tho on 4/17/2014.
- */
 public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;

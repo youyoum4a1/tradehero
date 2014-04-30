@@ -11,9 +11,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/7/14 Time: 5:35 PM Copyright (c) TradeHero
- */
 public class ExtraCashTileView extends ImageView
 {
     @Inject protected Lazy<Picasso> picasso;

@@ -6,9 +6,6 @@ import android.widget.TextView;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/14/14 Time: 12:04 PM Copyright (c) TradeHero
- */
 public class WatchlistHeaderItem extends TwoStateView
 {
     private TextView title;

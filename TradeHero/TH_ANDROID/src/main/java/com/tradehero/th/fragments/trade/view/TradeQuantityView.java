@@ -23,11 +23,8 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 public class TradeQuantityView extends TableLayout
 {
-    private static final String TAG = TradeQuantityView.class.getSimpleName();
-
     public static final int COLOR_ID_PL_NEUTRAL = R.color.black;
     public static final int COLOR_ID_PL_GAIN = R.color.projected_pl_gain;
     public static final int COLOR_ID_PL_LOSS = R.color.projected_pl_loss;

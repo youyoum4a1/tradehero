@@ -8,7 +8,6 @@ import java.util.List;
 
 public class MySwipeListViewTouchListener extends SwipeListViewTouchListener
 {
-
     AbsListView.OnScrollListener onScrollListener;
 
     /**

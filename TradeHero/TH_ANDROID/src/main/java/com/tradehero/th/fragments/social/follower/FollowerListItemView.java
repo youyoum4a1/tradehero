@@ -27,15 +27,9 @@ import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template
- * use File | Settings | File Templates.
- */
 public class FollowerListItemView extends RelativeLayout
         implements DTOView<UserFollowerDTO>, View.OnClickListener
 {
-    public static final String TAG = FollowerListItemView.class.getName();
-
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
     @InjectView(R.id.follower_revenue) TextView revenueInfo;

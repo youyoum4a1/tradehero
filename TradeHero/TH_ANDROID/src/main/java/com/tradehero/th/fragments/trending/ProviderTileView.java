@@ -17,9 +17,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/3/14 Time: 3:14 PM Copyright (c) TradeHero
- */
 public class ProviderTileView extends ImageView
     implements DTOView<ProviderDTO>
 {

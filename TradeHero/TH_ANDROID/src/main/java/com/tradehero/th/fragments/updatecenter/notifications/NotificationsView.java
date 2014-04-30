@@ -44,9 +44,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class NotificationsView extends BetterViewAnimator
 {
     @InjectView(android.R.id.empty) View emptyView;

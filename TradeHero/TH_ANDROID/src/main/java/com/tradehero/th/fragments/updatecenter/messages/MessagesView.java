@@ -13,9 +13,6 @@ import com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView;
 import com.tradehero.th.R;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-4.
- */
 public class MessagesView extends RelativeLayout
 {
     static final String TAG = "MessagesView";

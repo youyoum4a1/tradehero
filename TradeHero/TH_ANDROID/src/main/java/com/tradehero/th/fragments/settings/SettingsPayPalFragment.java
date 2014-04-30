@@ -33,13 +33,6 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 22/10/13
- * Time: 12:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SettingsPayPalFragment extends DashboardFragment
 {
     private View view;

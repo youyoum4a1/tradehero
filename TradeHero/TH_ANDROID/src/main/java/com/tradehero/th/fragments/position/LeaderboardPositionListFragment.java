@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.position;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -14,12 +13,9 @@ import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositions
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
 public class LeaderboardPositionListFragment
         extends AbstractPositionListFragment<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
 {
-    public static final String TAG = LeaderboardPositionListFragment.class.getSimpleName();
-
     @Inject GetLeaderboardPositionsCache getLeaderboardPositionsCache;
 
     private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
@@ -73,7 +69,7 @@ public class LeaderboardPositionListFragment
         this.leaderboardMarkUserId = new LeaderboardMarkUserId((int) getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
 
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
-        THLog.d(TAG, "Period Start: " + periodStart);
+        Timber.d("Period Start: %s" + periodStart);
 
         super.onResume();
     }

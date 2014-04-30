@@ -5,16 +5,11 @@ import android.util.AttributeSet;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 
-/**
- * Created by xavier on 2/5/14.
- */
 public class PositionPartialBottomOpenView
         extends AbstractPositionPartialBottomOpenView<
             PositionDTO,
             ExpandableListItem<PositionDTO>>
 {
-    public static final String TAG = PositionPartialBottomOpenView.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public PositionPartialBottomOpenView(Context context)
     {

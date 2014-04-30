@@ -5,9 +5,6 @@ import android.util.AttributeSet;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 
-/**
- * Created by julien on 30/10/13
- */
 public class PositionOpenView extends AbstractPositionView<
             PositionDTO,
             ExpandableListItem<PositionDTO>>

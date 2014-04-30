@@ -11,13 +11,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-/**
- * Created by xavier on 3/6/14.
- */
 public class TimelineHeaderButtonView extends LinearLayout
 {
-    public static final String TAG = TimelineHeaderButtonView.class.getSimpleName();
-
     @InjectView(R.id.btn_profile_timeline) Button btnTimeline;
     @InjectView(R.id.btn_profile_portfolios) Button btnPortfolioList;
     @InjectView(R.id.btn_profile_stats) Button btnStats;

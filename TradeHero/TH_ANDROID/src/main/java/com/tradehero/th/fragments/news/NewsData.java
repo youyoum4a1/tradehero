@@ -11,12 +11,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tradehero on 14-3-14.
- */
-public class NewsData {
-
-
+public class NewsData
+{
     /**
      * Regions of news
      */
@@ -396,63 +392,69 @@ public class NewsData {
             "        }" +
             "    ]";
 
-
-    public static final List<CountryLanguagePairDTO> buildCountriesPair() {
+    public static final List<CountryLanguagePairDTO> buildCountriesPair()
+    {
         List<CountryLanguagePairDTO> languagePairDTOList = null;
-        try {
+        try
+        {
 
             JSONArray jsonArray = new JSONArray(countriesPairString);
             int len = jsonArray.length();
             languagePairDTOList = new ArrayList<CountryLanguagePairDTO>(len);
-            for(int i=0;i<len;i++) {
+            for (int i = 0; i < len; i++)
+            {
                 JSONObject o = jsonArray.getJSONObject(i);
                 String name = o.getString("name");
                 String countryCode = o.getString("countryCode");
                 String languageCode = o.getString("languageCode");
 
-                CountryLanguagePairDTO dto = new CountryLanguagePairDTO(name,countryCode,languageCode);
+                CountryLanguagePairDTO dto =
+                        new CountryLanguagePairDTO(name, countryCode, languageCode);
                 languagePairDTOList.add(dto);
             }
-
-        }catch (JSONException e) {
+        } catch (JSONException e)
+        {
 
         }
         return languagePairDTOList;
     }
 
-
-
-    public static final List<NewsItemCategoryDTO> buildSocialCategories() {
+    public static final List<NewsItemCategoryDTO> buildSocialCategories()
+    {
         List<NewsItemCategoryDTO> list = null;
-        try {
+        try
+        {
 
             JSONArray jsonArray = new JSONArray(categoriesString);
             int len = jsonArray.length();
             list = new ArrayList<NewsItemCategoryDTO>(len);
-            for(int i=0;i<len;i++) {
+            for (int i = 0; i < len; i++)
+            {
                 JSONObject o = jsonArray.getJSONObject(i);
                 int id = o.getInt("id");
                 String name = o.getString("name");
 
-                NewsItemCategoryDTO dto = new NewsItemCategoryDTO(id,name);
+                NewsItemCategoryDTO dto = new NewsItemCategoryDTO(id, name);
                 list.add(dto);
             }
-
-        }catch (JSONException e) {
+        } catch (JSONException e)
+        {
 
         }
         return list;
-
     }
 
     /**
      * News filter
      */
-    public static enum  PageTab {
+    public static enum PageTab
+    {
 
-        REGION_NEWS(0,"Regional",null,true, R.layout.trending_filter_spinner_dropdown_item),
-        MY_HEADLINE_NEWS(1,"My Headline","From Portfolios and Watchlist",false,R.layout.trending_filter_spinner_dropdown_item),
-        SOCIAL_NEWS(2,"Social","From Social Media",true,R.layout.trending_filter_spinner_dropdown_item);
+        REGION_NEWS(0, "Regional", null, true, R.layout.trending_filter_spinner_dropdown_item),
+        MY_HEADLINE_NEWS(1, "My Headline", "From Portfolios and Watchlist", false,
+                R.layout.trending_filter_spinner_dropdown_item),
+        SOCIAL_NEWS(2, "Social", "From Social Media", true,
+                R.layout.trending_filter_spinner_dropdown_item);
 
         public final int page;
         public final String title;
@@ -461,7 +463,9 @@ public class NewsData {
         public final int spinnerItemLayout;
         public final boolean haveDesc;
 
-        private PageTab(int page,String title,String desc, boolean haveSubFilter, int spinnerItemLayout) {
+        private PageTab(int page, String title, String desc, boolean haveSubFilter,
+                int spinnerItemLayout)
+        {
             this.page = page;
             this.title = title;
             this.desc = desc;

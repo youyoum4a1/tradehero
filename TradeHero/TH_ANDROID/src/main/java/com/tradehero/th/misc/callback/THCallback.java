@@ -5,7 +5,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 5:18 PM Copyright (c) TradeHero */
 public abstract class THCallback<T> implements Callback<T>
 {
     @Override public void success(T t, Response response)

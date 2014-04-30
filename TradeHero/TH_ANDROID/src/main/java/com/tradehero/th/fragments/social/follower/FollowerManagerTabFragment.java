@@ -31,7 +31,6 @@ import timber.log.Timber;
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         implements PullToRefreshBase.OnRefreshListener2<ListView>
 {
-
     public static final int ITEM_ID_REFRESH_MENU = 0;
     private static final String HERO_ID_BUNDLE_KEY =
             FollowerManagerTabFragment.class.getName() + ".heroId";

@@ -77,10 +77,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use
- * File | Settings | File Templates.
- */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THBillingInteractor billingInteractor;

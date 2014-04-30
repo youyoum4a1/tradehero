@@ -24,9 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/7/14.
- */
 public class ProfileInfoView extends LinearLayout
 {
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;

@@ -6,9 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/20/14 Time: 3:26 PM Copyright (c) TradeHero
- */
 public class PositionListView extends PullToRefreshListView
 {
     //<editor-fold desc="Constructors">

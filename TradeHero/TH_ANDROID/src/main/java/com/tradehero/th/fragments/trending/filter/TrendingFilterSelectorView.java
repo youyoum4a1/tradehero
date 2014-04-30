@@ -22,13 +22,8 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/15/14.
- */
 public class TrendingFilterSelectorView extends RelativeLayout
 {
-    public static final String TAG = TrendingFilterSelectorView.class.getSimpleName();
-
     public ImageButton mPrevious;
     public ImageButton mNext;
     public TextView mTitle;

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:38 PM To change this template use File | Settings | File Templates. */
 public class QuickPriceButtonSet extends LinearLayout
 {
     private List<QuickPriceButton> buttons;

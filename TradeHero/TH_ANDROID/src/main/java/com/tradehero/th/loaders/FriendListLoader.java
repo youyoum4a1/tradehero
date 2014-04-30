@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -17,13 +16,8 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/24/14 Time: 11:16 AM Copyright (c) TradeHero
- */
 public class FriendListLoader extends ListLoader<UserFriendsDTO>
 {
-    private static final String TAG = FriendListLoader.class.getName();
-
     private static final String[] CONTACT_PROJECTIONS =
             {
                     Contacts._ID,
@@ -153,7 +147,8 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
                     while (contactQueryCursor.moveToNext())
                     {
                         int contactIdFromContactTable = contactQueryCursor.getInt(CONTACT_ID_COLUMN);
-                        THLog.d(TAG, String.format("contactId from Contact/Email table: %d/%d", contactIdFromContactTable, contactIdFromEmailTable));
+                        Timber.d("contactId from Contact/Email table: %d/%d",
+                                contactIdFromContactTable, contactIdFromEmailTable);
                         if (contactIdFromContactTable > contactIdFromEmailTable)
                         {
                             break;

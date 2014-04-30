@@ -2,9 +2,6 @@ package com.tradehero.th.models.chart.yahoo;
 
 import java.util.List;
 
-/**
- * Created by xavier on 1/30/14.
- */
 public enum YahooMovingAverageInterval
 {
     m5("m5", 5),

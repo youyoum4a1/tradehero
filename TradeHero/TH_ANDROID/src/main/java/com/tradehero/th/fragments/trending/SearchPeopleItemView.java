@@ -22,10 +22,8 @@ import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
-    private static final String TAG = SearchPeopleItemView.class.getSimpleName();
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject @ForSearchPeopleItemBackground Transformation backgroundTransformation;
 

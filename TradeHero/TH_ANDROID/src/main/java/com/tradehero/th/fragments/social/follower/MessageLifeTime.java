@@ -1,8 +1,5 @@
 package com.tradehero.th.fragments.social.follower;
 
-/**
- * Created by tho on 4/14/2014.
- */
 public enum MessageLifeTime
 {
     LIFETIME_FOREVER(0),

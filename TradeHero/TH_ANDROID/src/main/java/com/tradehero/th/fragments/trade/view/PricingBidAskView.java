@@ -13,10 +13,8 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utils.THSignedNumber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
 public class PricingBidAskView extends LinearLayout
 {
-    private static final String TAG = PricingBidAskView.class.getSimpleName();
     private TextView mLastPrice;
     private TextView mLastPriceUSD;
     private TableRow mRowBidAskPrice;

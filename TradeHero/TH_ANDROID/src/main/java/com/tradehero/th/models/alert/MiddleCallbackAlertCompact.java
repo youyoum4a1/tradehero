@@ -9,13 +9,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import retrofit.Callback;
 
-/**
- * Created by xavier on 3/5/14.
- */
 abstract public class MiddleCallbackAlertCompact extends BaseMiddleCallback<AlertCompactDTO>
 {
-    public static final String TAG = MiddleCallbackAlertCompact.class.getSimpleName();
-
     @Inject protected AlertCompactListCache alertCompactListCache;
     @Inject protected AlertCompactCache alertCompactCache;
     @Inject protected AlertCache alertCache;

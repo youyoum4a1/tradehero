@@ -15,9 +15,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/25/14 Time: 12:03 PM Copyright (c) TradeHero
- */
 public class NewsDetailSummaryView extends FrameLayout
     implements DTOView<NewsItemDTO>
 {

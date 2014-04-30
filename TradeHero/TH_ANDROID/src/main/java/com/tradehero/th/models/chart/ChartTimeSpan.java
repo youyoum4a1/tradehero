@@ -2,12 +2,9 @@ package com.tradehero.th.models.chart;
 
 /**
  * Indicates a duration in seconds
- * Created by xavier on 8/2/14.
  */
 public class ChartTimeSpan
 {
-    public static final String TAG = ChartTimeSpan.class.getSimpleName();
-
     public static final long DAY_1 =     86400;
     public static final long DAY_5 =    432000;
     public static final long MONTH_3 = 2629800;

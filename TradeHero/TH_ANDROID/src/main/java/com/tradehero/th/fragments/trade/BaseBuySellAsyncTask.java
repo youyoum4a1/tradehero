@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, SecurityPositionDetailDTO>
 {
     protected static final int CODE_OK = 0;

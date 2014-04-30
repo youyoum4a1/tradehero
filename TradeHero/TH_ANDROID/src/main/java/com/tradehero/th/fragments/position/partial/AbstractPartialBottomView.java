@@ -11,17 +11,12 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/5/14.
- */
 abstract public class AbstractPartialBottomView<
             PositionDTOType extends PositionDTO,
             ExpandableListItemType extends ExpandableListItem<PositionDTOType>
             >
         extends RelativeLayout
 {
-    public static final String TAG = AbstractPartialBottomView.class.getSimpleName();
-
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
 

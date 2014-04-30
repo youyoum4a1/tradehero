@@ -5,15 +5,10 @@ import android.util.AttributeSet;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
-/**
- * Created by julien on 1/11/13
- */
 public class PositionInPeriodClosedView extends AbstractPositionView<
             PositionInPeriodDTO,
         LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
-    public static final String TAG = PositionInPeriodClosedView.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public PositionInPeriodClosedView(Context context)
     {

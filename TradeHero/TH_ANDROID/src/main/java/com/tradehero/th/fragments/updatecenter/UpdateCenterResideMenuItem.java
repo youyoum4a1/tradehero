@@ -20,9 +20,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 12/4/14.
- */
 public class UpdateCenterResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
 {

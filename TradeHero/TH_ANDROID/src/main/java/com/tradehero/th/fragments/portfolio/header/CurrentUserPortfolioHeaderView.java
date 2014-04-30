@@ -9,7 +9,6 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
- * Created by julien on 21/10/13
  * Header displayed on aPortfolio owned by the authenticated user.
  */
 public class CurrentUserPortfolioHeaderView extends LinearLayout implements PortfolioHeaderView

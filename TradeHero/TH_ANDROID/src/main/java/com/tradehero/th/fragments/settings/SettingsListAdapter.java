@@ -7,16 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 4:06 PM To change this template use File | Settings | File Templates. */
 public class SettingsListAdapter extends BaseAdapter
 {
-    public static final String TAG = SettingsListAdapter.class.getSimpleName();
-
     protected final LayoutInflater inflater;
     protected final Context context;
     private final int layoutResourceId;
@@ -60,26 +57,26 @@ public class SettingsListAdapter extends BaseAdapter
 
     @Override public int getCount()
     {
-        THLog.d(TAG, "getCount");
+        Timber.d("getCount");
         return items != null ? items.size() : 0;
     }
 
     @Override public Object getItem(int i)
     {
-        THLog.d(TAG, "getItem " + i);
+        Timber.d("getItem %d", i);
         return items != null ? items.get(i) : null;
     }
 
     @Override public long getItemId(int i)
     {
-        THLog.d(TAG, "getItemId " + i);
+        Timber.d("getItemId %d", i);
         return i;
     }
 
     @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        THLog.d(TAG, "getView " + position);
+        Timber.d("getView %d", position);
         if (convertView == null)
         {
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);
@@ -99,7 +96,7 @@ public class SettingsListAdapter extends BaseAdapter
 
     @Override public void notifyDataSetChanged()
     {
-        THLog.d(TAG, "notifyDataSetChanged");
+        Timber.d("notifyDataSetChanged");
         super.notifyDataSetChanged();
     }
 }

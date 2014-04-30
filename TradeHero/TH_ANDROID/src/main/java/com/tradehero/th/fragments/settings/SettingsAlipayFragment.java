@@ -32,13 +32,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA.
- * User: alex
- * Date: 22/10/13
- * Time: 12:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SettingsAlipayFragment extends DashboardFragment
 {
     private View view;

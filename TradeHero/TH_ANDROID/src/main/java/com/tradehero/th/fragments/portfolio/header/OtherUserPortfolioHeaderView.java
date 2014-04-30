@@ -34,8 +34,6 @@ import retrofit.client.Response;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
-    public static final String TAG = OtherUserPortfolioHeaderView.class.getSimpleName();
-
     @InjectView(R.id.portfolio_person_container) View userViewContainer;
     @InjectView(R.id.portfolio_header_avatar) ImageView userImageView;
     @InjectView(R.id.header_portfolio_username) TextView usernameTextView;

@@ -27,9 +27,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/6/14 Time: 5:38 PM Copyright (c) TradeHero
- */
 public class ExtraTileAdapter extends BaseAdapter
         implements WrapperListAdapter
 {

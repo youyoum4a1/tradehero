@@ -13,8 +13,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 
 public class PeopleItemViewAdapter extends ArrayDTOAdapter<UserBaseKey, SearchPeopleItemView>
 {
-    private final static String TAG = PeopleItemViewAdapter.class.getSimpleName();
-
     public PeopleItemViewAdapter(Context context, LayoutInflater inflater, int peopleItemLayoutResId)
     {
         super(context, inflater, peopleItemLayoutResId);

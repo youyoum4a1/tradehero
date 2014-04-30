@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Created by julien on 22/10/13
  * Singleton Class creating instances of PortfolioHeaderView based on which arguments are passed to the PositionListFragment
  */
 @Singleton public class PortfolioHeaderFactory
