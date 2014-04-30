@@ -2,19 +2,15 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
-import java.lang.ref.WeakReference;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
 public class UserProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
 {
     protected UserProfileCompactViewHolder userProfileCompactViewHolder;
     protected UserProfileDTO userProfileDTO;
-    private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
+    private UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener;
 
     //<editor-fold desc="Constructors">
     public UserProfileCompactView(Context context)
@@ -42,25 +38,21 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (userProfileCompactViewHolder != null && userProfileCompactViewHolder.btnDefaultPortfolio != null)
-        {
-            userProfileCompactViewHolder.btnDefaultPortfolio.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    notifyDefaultPortfolioRequested();
-                }
-            });
-        }
+        userProfileCompactViewHolder.initViews(this);
+        userProfileCompactViewHolder.setProfileClickedListener(createProfileClickListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (userProfileCompactViewHolder != null && userProfileCompactViewHolder.btnDefaultPortfolio != null)
-        {
-            userProfileCompactViewHolder.btnDefaultPortfolio.setOnClickListener(null);
-        }
+        userProfileCompactViewHolder.detachViews();
+        userProfileCompactViewHolder.setProfileClickedListener(null);
         super.onDetachedFromWindow();
+    }
+
+    public void setProfileClickedListener(
+            UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener)
+    {
+        this.profileClickedListener = profileClickedListener;
     }
 
     @Override public void display(UserProfileDTO dto)
@@ -72,20 +64,53 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
         }
     }
 
-    /**
-     * Listeners should be strongly referenced elsewhere
-     */
-    public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)
-    {
-        this.portfolioRequestListener = new WeakReference<>(portfolioRequestListener);
-    }
-
     private void notifyDefaultPortfolioRequested()
     {
-        PortfolioRequestListener listener = portfolioRequestListener.get();
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
         if (listener != null)
         {
-            listener.onDefaultPortfolioRequested();
+            listener.onDefaultPortfolioClicked();
+        }
+    }
+
+    private void notifyHeroClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onHeroClicked();
+        }
+    }
+
+    private void notifyFollowerClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onFollowerClicked();
+        }
+    }
+
+    protected UserProfileCompactViewHolder.OnProfileClickedListener createProfileClickListener()
+    {
+        return new UserProfileCompactProfileClickedListener();
+    }
+
+    protected class UserProfileCompactProfileClickedListener implements UserProfileCompactViewHolder.OnProfileClickedListener
+    {
+        @Override public void onHeroClicked()
+        {
+            notifyHeroClicked();
+        }
+
+        @Override public void onFollowerClicked()
+        {
+            notifyFollowerClicked();
+        }
+
+        @Override public void onDefaultPortfolioClicked()
+        {
+            notifyDefaultPortfolioRequested();
         }
     }
 }
