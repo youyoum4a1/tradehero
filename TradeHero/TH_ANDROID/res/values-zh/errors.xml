@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_unknown">发生了错误. 请重试</string>
+  <string name="error_canceled">操作已取消</string>
+  <string name="error_network_connection">请检查网络连接</string>
+  <string name="error_cache_flush">清理缓存时发生了错误</string>
+  <string name="error_incomplete_info_title">没有足够信息</string>
+  <string name="error_incomplete_info_message">请过会再试</string>
+  <string name="error_incomplete_info_cancel">好的</string>
+</resources>

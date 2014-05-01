@@ -13,8 +13,10 @@ import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.Callback;
@@ -22,9 +24,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 3/24/14.
- */
 public class FollowUserAssistant implements
         Callback<UserProfileDTO>,
         DTOCache.Listener<UserBaseKey, UserProfileDTO>
@@ -37,6 +36,7 @@ public class FollowUserAssistant implements
     protected final OwnedPortfolioId applicablePortfolioId;
     @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
+    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
     private OnUserFollowedListener userFollowedListener;
     protected Integer requestCode;
 
@@ -76,7 +76,21 @@ public class FollowUserAssistant implements
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
+        heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
+        updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
+    }
+
+    /**
+     * newly added method
+     */
+    private void updateUserProfileCache(UserProfileDTO userProfileDTO)
+    {
+        if (userProfileCache != null && currentUserId != null)
+        {
+            UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+            userProfileCache.put(userBaseKey, userProfileDTO);
+        }
     }
 
     @Override public void failure(RetrofitError error)

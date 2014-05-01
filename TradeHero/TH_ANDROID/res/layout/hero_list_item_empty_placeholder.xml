@@ -32,6 +32,7 @@
       android:layout_below="@id/empty_follow_description"
       android:layout_marginTop="16dp"
       android:text="@string/manage_heroes_empty_leaderboard_link"
+      android:background="@drawable/authentication_sign_in_button"
       />
 
 </RelativeLayout>

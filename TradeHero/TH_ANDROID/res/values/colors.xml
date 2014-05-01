@@ -14,7 +14,7 @@
   <color name="timeline_action_button_text_color">#80929292</color>
   <color name="timeline_action_button_text_color_shadow">#000000</color>
   <color name="timeline_action_button_text_color_pressed">#007aff</color>
-  <color name="notification_background_color">@color/white</color>
+  <color name="notification_background_color">#181818</color>
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
   <color name="profile_view_gradient_bottom">#ffffff</color>
@@ -40,5 +40,9 @@
 
   <color name="follow_button_green">#a0dc50</color>
   <color name="follow_button_green_overlay">#eea0dc50</color>
+  <color name="notification_text_color">@color/white</color>
+
+  <color name="broadcast_message_item_bg">#dfefff</color>
+  <color name="private_message_item_bg">@color/white</color>
 
 </resources>

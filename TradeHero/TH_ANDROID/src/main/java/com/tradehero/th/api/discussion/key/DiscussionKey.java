@@ -4,13 +4,11 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 6:05 PM Copyright (c) TradeHero
- */
 abstract public class DiscussionKey implements DTOKey
 {
     static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";
     static final String BUNDLE_KEY_ID = DiscussionKey.class.getName() + ".id";
+    public static final String BUNDLE_KEY_DISCUSSION_KEY_BUNDLE = DiscussionKey.class.getName() + ".bundle";
 
     public final Integer id;
 
@@ -39,7 +37,7 @@ abstract public class DiscussionKey implements DTOKey
 
     protected void putParameters(Bundle args)
     {
-        args.putString(BUNDLE_KEY_TYPE, getType().description);
+        args.putString(BUNDLE_KEY_TYPE, getType().name());
         args.putInt(BUNDLE_KEY_ID, id);
     }
 

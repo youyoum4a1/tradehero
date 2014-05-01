@@ -17,8 +17,8 @@
   <string name="buy_sell_p10k">$10K</string>
   <string name="buy_sell_p25k">$25K</string>
   <string name="buy_sell_p50k">$50K</string>
-  <string name="buy_sell_button_buy">Buy</string>
-  <string name="buy_sell_button_sell">Sell</string>
+  <string name="buy_sell_button_buy">Buy @ %1$s %2$s</string>
+  <string name="buy_sell_button_sell">Sell @ %1$s %2$s</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
   <string name="buy_sell_buy_details_unavailable">Preparing information…</string>
@@ -27,7 +27,7 @@
   <string name="buy_sell_sell_details">Sell %1$,d %2$s:%3$s @ %4$s %5$,.2f\nTransaction fee: virtual %6$s %7$,.2f\nNet proceeds: %8$s %9$,.2f</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
-  <string name="buy_sell_confirm_buy_comment">Add a comment...</string>
+  <string name="buy_sell_confirm_buy_comment">Add a comment…</string>
   <string name="buy_sell_confirm_share_on">Share:</string>
   <string name="buy_sell_switch_buy">Buy</string>
   <string name="buy_sell_switch_sell">Sell</string>
@@ -48,6 +48,6 @@
   <string name="alert_dialog_buy_sell_returned_null_title">We are sorry</string>
   <string name="alert_dialog_buy_sell_returned_null_message">The server returned invalid information.\nYou may confirm the trade did not go through and try again.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
-
+  <string name="buy_sell_share_count"></string>
 
 </resources>

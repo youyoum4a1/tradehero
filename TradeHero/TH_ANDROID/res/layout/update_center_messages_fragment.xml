@@ -9,14 +9,19 @@
     android:layout_height="match_parent"
     >
 
-  <!--com.fortysevendeg.android.swipelistview.SwipeListView
-  swipe:swipeFrontView="@id/message_item_front"
+  <!--com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
+  com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
   -->
-  <com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
-      android:id="@android:id/list"
+  <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/message_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"
+      android:layout_marginLeft="@dimen/message_center_horizontal_margin"
+      android:layout_marginRight="@dimen/message_center_horizontal_margin"
+      android:layout_marginTop="@dimen/message_center_vertical_margin"
+      android:layout_marginBottom="@dimen/message_center_vertical_margin"
       swipe:swipeFrontView="@id/message_item_front"
       swipe:swipeBackView="@id/message_item_back"
       swipe:swipeCloseAllItemsWhenMoveList="true"
@@ -25,25 +30,31 @@
       app:swipeOffsetLeft="250dp"
       swipe:swipeDrawableUnchecked="@drawable/ic_info"
       android:listSelector="#00000000"
+      ptr:ptrMode="pullFromStart"
+      ptr:ptrScrollingWhileRefreshingEnabled="true"
+      ptr:ptrListViewExtrasEnabled="false"
+      android:fadingEdge="none"
+      android:scrollbars="none"
       />
 
-
   <TextView
+      style="@style/TH.Loading_Empty_Text"
       android:id="@android:id/empty"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_centerInParent="true"
-      android:textStyle="italic"
-      android:text="No Message" />
+      android:gravity="center"
+      android:text="@string/no_message"/>
 
   <TextView
+      style="@style/TH.Loading_Error_Text"
       android:id="@+id/error"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_gravity="center"
       android:gravity="center"
       android:layout_centerInParent="true"
-      android:text="Sorry,there is something wrong."
+      android:text="@string/message_fetch_error"
       android:visibility="gone"/>
 
   <ProgressBar

@@ -7,12 +7,8 @@
     android:orientation="horizontal"
     tools:background="@color/number_green"
     >
+  <include layout="@layout/message_list_item_back"/>
 
-  <include
-      layout="@layout/message_list_item_back"
-     />
-
-  <include
-      layout="@layout/message_list_item"/>
+  <include layout="@layout/message_list_item"/>
 </com.tradehero.th.fragments.updatecenter.messages.MessageItemViewWrapper>
 

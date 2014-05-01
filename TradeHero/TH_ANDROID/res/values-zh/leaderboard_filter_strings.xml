@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Full page elements -->
+  <string name="leaderboard_filter_top_ranking_reminder">至少要有 2 个持仓才可上榜</string>
+  <string name="leaderboard_filter_reset_filter">重置筛选</string>
+  <string name="leaderboard_filter_menu_title">筛选选项</string>
+  <string name="leaderboard_filter_menu_button_done">完成</string>
+
+  <!-- For individual LeaderboardFilterValueSlider -->
+  <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
+  <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
+
+  <!-- For Monthly Activity -->
+  <string name="leaderboard_filter_monthly_activity_header">月活跃度</string>
+  <string name="leaderboard_filter_monthly_activity_value_unit">交易 (平均值)</string>
+  <string name="leaderboard_filter_monthly_activity_description">平均月交易</string>
+  <string name="leaderboard_filter_monthly_activity_min_description">被动</string>
+  <string name="leaderboard_filter_monthly_activity_max_description">活跃</string>
+
+  <!-- For Win Ratio -->
+  <string name="leaderboard_filter_win_ratio_header">胜率</string>
+  <string name="leaderboard_filter_win_ratio_value_unit">%</string>
+  <string name="leaderboard_filter_win_ratio_description">输赢比例，越高越好！</string>
+  <string name="leaderboard_filter_win_ratio_min_description">常败</string>
+  <string name="leaderboard_filter_win_ratio_max_description">常胜</string>
+
+  <!-- For Holding Period -->
+  <string name="leaderboard_filter_holding_period_header">持有期</string>
+  <string name="leaderboard_filter_holding_period_value_unit">日</string>
+  <string name="leaderboard_filter_holding_period_description">平均持有时间</string>
+  <string name="leaderboard_filter_holding_period_min_description">短</string>
+  <string name="leaderboard_filter_holding_period_max_description">长</string>
+
+</resources>

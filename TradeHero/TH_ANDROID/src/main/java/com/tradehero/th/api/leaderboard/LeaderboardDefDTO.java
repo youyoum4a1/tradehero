@@ -6,7 +6,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import java.util.Date;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
 public class LeaderboardDefDTO extends ExtendedDTO
 {
     // TODO HARDCODED
@@ -21,8 +20,6 @@ public class LeaderboardDefDTO extends ExtendedDTO
     //my followers
     public static final int LEADERBOARD_FOLLOWER_ID = -5;
     public static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
-
-
 
     public int id;
     public String name;

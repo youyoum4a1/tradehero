@@ -66,7 +66,7 @@
       <TextView
           android:id="@+id/lbmu_followers_count"
           android:layout_width="wrap_content"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           android:textStyle="bold"
           />
@@ -127,8 +127,8 @@
           android:textSize="12dp"
           android:gravity="center"
           android:textStyle="bold"
-          android:paddingBottom="10dp"
-          android:layout_marginLeft="10dp"
+          android:paddingBottom="@dimen/common_margin_10"
+          android:layout_marginLeft="@dimen/common_margin_10"
           android:shadowColor="@color/light_grey"
           android:shadowDy="1"
           android:shadowRadius="1"
@@ -152,7 +152,7 @@
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           />
     </LinearLayout>
@@ -174,7 +174,7 @@
           android:id="@+id/lbmu_period"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           />
     </LinearLayout>

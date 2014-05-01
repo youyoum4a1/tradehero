@@ -78,15 +78,20 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     {
         this.discussionKey = discussionKey;
 
-        fetchDiscussionDetail();
+        fetchDiscussionDetail(false);
     }
 
-    private void fetchDiscussionDetail()
+    public void refresh()
+    {
+        fetchDiscussionDetail(true);
+    }
+
+    private void fetchDiscussionDetail(boolean force)
     {
         detachFetchDiscussionTask();
 
         discussionFetchTask =
-                discussionCache.getOrFetch(discussionKey, false, discussionFetchListener);
+                discussionCache.getOrFetch(discussionKey, force, discussionFetchListener);
         discussionFetchTask.execute();
     }
 

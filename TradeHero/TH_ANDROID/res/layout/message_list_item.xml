@@ -8,46 +8,74 @@
     tools:background="@color/number_green"
     android:id="@+id/message_item_front"
     android:tag="message_item_front"
-    android:background="@color/timeline_background_color"
+    android:background="@color/white"
+    android:padding="@dimen/timeline_item_padding"
     >
 
-  <!--android:id="@+id/message_item_front"-->
-  <!--android:tag="message_item_front"-->
-  <ImageView
-      android:id="@+id/message_item_icon"
-      android:layout_width="60dp"
-      android:layout_height="60dp"
-      android:background="@drawable/layout_oval_gray"
-      android:padding="1dp"
-      android:src="@drawable/avatar"
-      android:layout_gravity="center_vertical"
-      android:contentDescription="@null"
-      />
+  <LinearLayout android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal">
 
-  <RelativeLayout android:id="@+id/main_content_wrapper"
+
+    <ImageView
+        android:id="@+id/message_item_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/layout_oval_gray"
+        android:padding="1dp"
+        android:src="@drawable/avatar"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@null"
+        />
+
+    <ImageView
+        android:id="@+id/message_unread_flag"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/blue_circle"
+        android:contentDescription="@null"
+        android:layout_marginTop="8dp"
+
+        />
+  </LinearLayout>
+
+
+  <RelativeLayout
+      android:id="@+id/main_content_wrapper"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="center_vertical"
-      android:background="@drawable/timeline_list_item_background"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
-      android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:layout_marginTop="@dimen/timeline_side_spacing"
-      android:padding="@dimen/timeline_item_padding"
       android:layout_toRightOf="@id/message_item_icon"
       >
+    <!--android:background="@drawable/timeline_list_item_background"-->
 
     <com.tradehero.th.widget.MarkdownTextView
         android:id="@+id/message_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:layout_marginTop="5dip"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
         android:textStyle="normal"
         tools:text="From me!"
-       android:maxLines="2"
+        android:maxLines="2"
+        />
+
+    <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/message_item_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:textColorLink="@color/timeline_item_link"
+        android:textColor="@color/text_gray_normal"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        android:layout_below="@id/message_item_title"
+        tools:text="Subtitle"
+        android:maxLines="2"
         />
 
     <com.tradehero.th.widget.MarkdownTextView
@@ -60,7 +88,7 @@
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
         android:textStyle="normal"
-        android:layout_below="@id/message_item_title"
+        android:layout_below="@id/message_item_sub_title"
         tools:text="Hello world!"
         android:maxLines="2"
         />
@@ -72,11 +100,12 @@
         android:layout_marginLeft="10dp"
         android:textColor="@color/text_gray_normal"
         android:textSize="@dimen/timeline_item_date"
-        android:layout_below="@id/message_item_content"
+        android:layout_alignParentRight="true"
         tools:text="A moment ago"
-        android:layout_marginTop="3dip"
+        android:layout_marginTop="0dip"
         android:maxLines="2"
         />
+
   </RelativeLayout>
 
 </com.tradehero.th.fragments.updatecenter.messages.MessageItemView>

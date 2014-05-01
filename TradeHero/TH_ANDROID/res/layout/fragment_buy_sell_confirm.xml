@@ -21,7 +21,7 @@
       android:layout_alignParentBottom="true"
       android:layout_marginTop="15dp"
       android:layout_marginBottom="15dp"
-      android:padding="10dp"
+      android:padding="@dimen/common_margin_10"
       android:text=""
       android:textColor="@color/white"
       android:layout_centerVertical="true"
@@ -40,61 +40,32 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="10dp"
+          android:layout_marginRight="@dimen/common_margin_10"
           android:text="@string/buy_sell_confirm_share_on"
           android:textColor="@color/gray_2" />
+    <ToggleButton
+        android:id="@+id/btn_share_fb"
+        style="@style/TH.ShareButtons"
+        android:background="@drawable/ic_share_fb"
+        />
 
-      <ToggleButton
-          android:id="@+id/btn_share_fb"
-          android:layout_width="32dp"
-          android:layout_height="32dp"
-          android:layout_marginRight="8dp"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:background="@drawable/ic_share_fb"
-          android:checked="false"
-          android:textOff=""
-          android:textOn=""
-          />
+    <ToggleButton
+        android:id="@+id/btn_share_tw"
+        style="@style/TH.ShareButtons"
+        android:background="@drawable/ic_share_tw"
+        />
 
-      <ToggleButton
-          android:id="@+id/btn_share_tw"
-          android:layout_width="32dp"
-          android:layout_height="32dp"
-          android:layout_marginRight="8dp"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:background="@drawable/ic_share_tw"
-          android:checked="false"
-          android:textOff=""
-          android:textOn=""
-          />
+    <ToggleButton
+        android:id="@+id/btn_share_li"
+        style="@style/TH.ShareButtons"
+        android:background="@drawable/ic_share_li"
+        />
 
-      <ToggleButton
-          android:id="@+id/btn_share_li"
-          android:layout_width="30dp"
-          android:layout_height="32dp"
-          android:layout_marginRight="8dp"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:background="@drawable/ic_share_li"
-          android:checked="false"
-          android:textOff=""
-          android:textOn=""
-          />
-
-      <ToggleButton
-          android:id="@+id/btn_location"
-          android:layout_width="32dp"
-          android:layout_height="32dp"
-          android:layout_marginRight="20dp"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:background="@drawable/ic_location"
-          android:checked="false"
-          android:textOff=""
-          android:textOn=""
-          />
+    <ToggleButton
+        android:id="@+id/btn_location"
+        style="@style/TH.ShareButtons"
+        android:background="@drawable/ic_location"
+        />
 
       <View
           android:layout_width="wrap_content"

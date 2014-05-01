@@ -10,25 +10,20 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: alex Date: 10/14/13 Time: 12:28 PM To change this template use
- * File | Settings | File Templates.
- */
 public class RelationsListItemView extends RelativeLayout
-        implements DTOView<UserBaseDTO>, View.OnClickListener
+        implements DTOView<UserProfileCompactDTO>, View.OnClickListener
 {
     public static final String TAG = RelationsListItemView.class.getName();
 
     private ImageView avatar;
     private TextView title;
-    private UserBaseDTO userBaseDTO;
+    private UserProfileCompactDTO userProfileCompactDTO;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -77,25 +72,25 @@ public class RelationsListItemView extends RelativeLayout
     {
         //if (v.getId() == R.id.follower_profile_picture)
         //{
-        //    if (userBaseDTO != null) {
+        //    if (userProfileCompactDTO != null) {
         //        handleUserIconClicked();
         //    }
         //}
     }
 
-    public UserBaseDTO getUserBaseDTO()
+    public UserProfileCompactDTO getUserProfileCompactDTO()
     {
-        return userBaseDTO;
+        return userProfileCompactDTO;
     }
 
-    public void display(UserBaseDTO userBaseDTO)
+    public void display(UserProfileCompactDTO userProfileCompactDTO)
     {
-        linkWith(userBaseDTO, true);
+        linkWith(userProfileCompactDTO, true);
     }
 
-    public void linkWith(UserBaseDTO userBaseDTO, boolean andDisplay)
+    public void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
     {
-        this.userBaseDTO = userBaseDTO;
+        this.userProfileCompactDTO = userProfileCompactDTO;
         if (andDisplay)
         {
             displayPicture();
@@ -115,9 +110,9 @@ public class RelationsListItemView extends RelativeLayout
         if (avatar != null)
         {
             loadDefaultPicture();
-            if (userBaseDTO != null && userBaseDTO.picture != null)
+            if (userProfileCompactDTO != null && userProfileCompactDTO.picture != null)
             {
-                picassoLazy.get().load(userBaseDTO.picture)
+                picassoLazy.get().load(userProfileCompactDTO.picture)
                         .transform(peopleIconTransformationLazy.get())
                         .placeholder(avatar.getDrawable())
                         .into(avatar);
@@ -139,7 +134,7 @@ public class RelationsListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(userBaseDTO.displayName);
+            title.setText(userProfileCompactDTO.displayName);
         }
     }
 }

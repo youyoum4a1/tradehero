@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="validation_please_correct">请修改标示为无效的输入框内容</string>
+  <string name="validation_size_too_short">最少需要 %d 字符</string>
+  <string name="validation_size_too_long">不能超过 %d 字符</string>
+  <string name="validation_size_in_between">必须在 %1$d 和 %2$d 字符之间</string>
+  <string name="validation_incorrect_pattern">看起来不正确</string>
+  <string name="validation_server_username_not_available">该昵称已被使用</string>
+  <string name="password_validation_confirm_fail_string">密码不匹配</string>
+  <string name="validation_incorrect_pattern_email">该邮件地址不是有效邮箱</string>
+  <string name="forgot_email_incorrect_input_email">您需要提供邮件地址</string>
+  <string name="wrong_number_format">请提供有效数字</string>
+</resources>

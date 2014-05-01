@@ -3,9 +3,6 @@ package com.tradehero.th.api.discussion.key;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/**
- * Created by xavier2 on 2014/4/10.
- */
 public class RecipientTypedMessageListKey extends TypedMessageListKey
 {
     public final UserBaseKey recipientId;
@@ -46,6 +43,14 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
     {
         return super.equalFields(other) &&
                 (this.recipientId == null ? other.recipientId == null : this.recipientId.equals(other.recipientId));
+    }
+
+    @Override public boolean equalListing(MessageListKey other)
+    {
+        return super.equalListing(other) &&
+                (recipientId == null ?
+                        ((RecipientTypedMessageListKey) other).recipientId == null :
+                        recipientId.equals(((RecipientTypedMessageListKey) other).recipientId));
     }
 
     @Override public RecipientTypedMessageListKey prev()

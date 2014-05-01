@@ -10,7 +10,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -25,6 +27,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -38,6 +41,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
@@ -69,10 +73,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
         actionBar.setSubtitle(userInteractor.getName());
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setLogo(R.drawable.icon_menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
@@ -195,7 +212,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
@@ -207,7 +224,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
+        FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

@@ -14,9 +14,6 @@ import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
 
-/**
- * Created by tho on 4/1/2014.
- */
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     implements WrapperListAdapter
 {
@@ -192,7 +189,12 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         }
         else
         {
-            return leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
+            View view = leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
+            if (view instanceof CompetitionLeaderboardMarkUserItemView)
+            {
+                ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
+            }
+            return view;
         }
     }
 }

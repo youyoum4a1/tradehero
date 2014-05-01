@@ -3,12 +3,9 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
-import timber.log.Timber;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/14/14 Time: 2:44 PM Copyright (c) TradeHero
- */
-public class VoteView extends CompoundButton
+abstract public class VoteView extends CompoundButton
 {
     private int originalValue;
 
@@ -29,6 +26,8 @@ public class VoteView extends CompoundButton
     }
     //</editor-fold>
 
+    abstract public void display(AbstractDiscussionDTO discussionDTO);
+
     @Override public void setText(CharSequence text, BufferType type)
     {
         try
@@ -40,12 +39,12 @@ public class VoteView extends CompoundButton
             throw new IllegalStateException("Text should be an integer");
         }
 
-        setValue(originalValue);
+        super.setText(text, type);
     }
 
     public void setValue(int value)
     {
-        String toDisplay = "" + (value + (isChecked() ? 1 : 0));
+        String toDisplay = "" + value ;//(value + (isChecked() ? 1 : 0));
         super.setText(toDisplay, BufferType.NORMAL);
     }
 
@@ -55,8 +54,8 @@ public class VoteView extends CompoundButton
         super.setChecked(checked);
         if (oldValue != checked)
         {
-            Timber.d("Original value: %d", originalValue);
-            setValue(originalValue);
+            //Timber.d("Original value: %d", originalValue);
+            //setValue(originalValue);
         }
     }
 }

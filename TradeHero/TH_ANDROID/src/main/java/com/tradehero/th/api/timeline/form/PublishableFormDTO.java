@@ -3,7 +3,6 @@ package com.tradehero.th.api.timeline.form;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 10:09 AM To change this template use File | Settings | File Templates. */
 public class PublishableFormDTO
 {
     public static final String POST_KEY_PUBLISH_TO_FACEBOOK = "publishToFb";

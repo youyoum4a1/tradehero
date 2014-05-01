@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="watchlist_not_enough_info">信息不够</string>
+  <string name="watchlist_title">自选股</string>
+  <string name="watchlist_add_title">添加到自选股</string>
+  <string name="watchlist_edit_title">编辑自选股</string>
+  <string name="watchlist_button_done">完成</string>
+  <string name="watchlist_button_delete">删除</string>
+  <string name="watchlist_average_price_header">平均价格 (US$)</string>
+  <string name="watchlist_quantity_header">数量</string>
+  <string name="watchlist_quantity_initial">1</string>
+  <string name="watchlist_view_graph">查看图表</string>
+  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> 股 @ <b>%2$s</b>]]></string>
+  <string name="watchlist_pl_percentage_format">%s %%</string>
+  <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>
+  <string name="watchlist_current_value">当前值</string>
+  <string name="watchlist_original_value">原始值</string>
+  <string name="watchlist_gain_loss">获利/亏损</string>
+  <string name="watchlist_updating">更新中 …</string>
+  <string name="watchlist_delete">删除</string>
+  <string name="watchlist_item_deleted_successfully">%d 已从自选股删除</string>
+  <string name="watchlist_item_deleted_failed">从自选股中删除 %d 失败</string>
+  <string name="watchlist_more">更多</string>
+  <string name="watchlist_quantity_should_not_be_zero">数量最少为 1</string>
+  <string name="watchlist_empty_view">点击上方的 \'+\' 按钮，添加至自选股</string>
+  <string name="watchlist_new_discussion">新讨论</string>
+  <string name="watchlist_not_yet_implemented">暂未开放. 请保持关注</string>
+  <string name="error_fetch_portfolio_watchlist">获取自选股列表发生错误</string>
+  <string name="watchlist_marking_date_format">yyyy年 MM月 dd日 HH:mm</string>
+  <string name="watchlist_marking_date">最近更新: %1$s</string>
+
+</resources>

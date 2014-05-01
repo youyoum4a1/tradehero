@@ -11,7 +11,7 @@ import javax.inject.Singleton;
  * Created with IntelliJ IDEA. User: tho Date: 3/5/14 Time: 4:04 PM Copyright (c) TradeHero
  */
 @Module(
-        addsTo = UIModule.class,
+        //addsTo = UIModule.class,
         injects = {
                 DashboardActivity.class
         },

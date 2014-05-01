@@ -12,11 +12,45 @@
     <item>https://www.tradehero.mobi/api/</item>
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
     <item>http://truongtho.noip.me/api/</item>
-    <item>http://192.168.1.106/api</item>
+    <item>http://192.168.20.49/api</item>
     <item>http://192.168.1.10/api</item>
   </string-array>
 
-   <array name="news_item_background_list">
+  <string-array name="staffs">
+    <item>Dinesh Bhatia|High Frequency TradeHero</item>
+    <item>Dominic Morris|GW2310FB-1</item>
+    <item>Jeff Tang|Captain China</item>
+    <item>David Qi|Hardcore Player</item>
+    <item>Brendan Gribben|Warden of the West</item>
+    <item>Chin Tai Low|Master of Coin</item>
+    <item>Arup Ray|International Man of Mystery</item>
+    <item>Maddy Mangipudi|The One</item>
+    <item>Nia Mutiara|Ghost in the Machine</item>
+    <item>Cary Yang|(^_^)</item>
+    <item>Xavier Lepretre|Code Landscapist</item>
+    <item>Tho Nguyen|(╯°□°）╯︵ ┻━┻</item>
+    <item>Alex Li|Bricklayer</item>
+    <item>Liang|Code Farmer</item>
+    <item>Gary Gan|Utility Player</item>
+    <item>Cody Nash|Hyper Product Man</item>
+    <item>Albert Camacho|Protector of Pixels</item>
+    <item>Echo Sun|Pocket Monster</item>
+    <item>Sam|Omega Supreme</item>
+    <item>Sebastian Kramer|Toast Provisioner</item>
+    <item>Sammi|Baby-sitter</item>
+    <item>Peter Wang|Luck Seeker</item>
+    <item>Jason Zhao|Fireman (!)</item>
+    <item>Reyna Jung|Propaganda Agent 1</item>
+    <item>Samar Sen|Master Handshaker</item>
+    <item>Eric Cao|Market Wolf</item>
+    <item>Eva Deng|Ads Addict</item>
+    <item>Sai Heng Pei|Postman</item>
+    <item>Arno Luo|Rain Maker</item>
+    <item>Mirsat Murutoglu|Image Hunter</item>
+    <item>Sathya Prakash|The Imp</item>
+  </string-array>
+
+  <array name="news_item_background_list">
        <item>@drawable/img_placeholder_news_1</item>
        <item>@drawable/img_placeholder_news_2</item>
        <item>@drawable/img_placeholder_news_3</item>
@@ -42,4 +76,11 @@
        <item>@drawable/img_placeholder_news_23</item>
        <item>@drawable/img_placeholder_news_24</item>
    </array>
+
+  <string-array name="share_to">
+    <item>@string/wechat</item>
+    <item>@string/linkedin</item>
+    <item>@string/facebook</item>
+    <item>@string/twitter</item>
+  </string-array>
 </resources>

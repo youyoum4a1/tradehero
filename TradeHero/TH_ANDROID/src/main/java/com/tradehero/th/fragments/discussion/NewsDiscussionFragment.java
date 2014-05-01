@@ -19,11 +19,9 @@ import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.widget.VotePair;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/11/14 Time: 11:48 AM Copyright (c) TradeHero
- */
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
@@ -33,8 +31,23 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @Inject NewsCache newsCache;
 
+    @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
+
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
+    private DiscussionEditPostFragment discussionEditPostFragment;
+
+    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
+    {
+        Bundle bundle = new Bundle();
+        if (newsItemDTOKey != null)
+        {
+            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                    newsItemDTOKey.getArgs());
+        }
+        discussionEditPostFragment = (DiscussionEditPostFragment) getNavigator().pushFragment(
+                DiscussionEditPostFragment.class, bundle);
+    }
 
     // Action buttons
     @InjectView(R.id.vote_pair) VotePair votePair;
@@ -65,11 +78,27 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         newsCacheFetchListener = new NewsFetchListener();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        if (discussionEditPostFragment != null && discussionEditPostFragment.isPosted())
+        {
+            newsDiscussionView.refresh();
+        }
+    }
+
     @Override public void onDetach()
     {
         newsCacheFetchListener = null;
 
         super.onDetach();
+    }
+
+    @Override public void onDestroy()
+    {
+        discussionEditPostFragment = null;
+        super.onDestroy();
     }
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
@@ -157,9 +186,9 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         View contentView = LayoutInflater.from(getSherlockActivity())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO.title,
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO.text,
                 mDetailNewsItemDTO.description, mDetailNewsItemDTO.langCode, mDetailNewsItemDTO.id,
-                mDetailNewsItemDTO.text, mDetailNewsItemDTO.getDiscussionKey(), false);
+                WeChatMessageType.CreateDiscussion.getType());
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
     //</editor-fold>

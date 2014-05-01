@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="app_name">股货英雄</string>
+  <string name="na">无</string>
+  <string name="empty"/>
+  <string name="action_menu_settings">设置</string>
+  <string name="network_error">@string/error_network_connection</string>
+  <!-- data format-->
+  <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
+  <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年 MM月 d日 HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy">yyyy年 MM月 dd日</string>
+  <string name="data_format_dd_mmm_hh_mm">MM月 dd日 HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年 MM月 dd日 kk:mm z</string>
+  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">MM月 dd日 HH:mm \'GMT\'</string>
+
+  <!-- TEMP stuff -->
+  <string name="test_email">neeraj@eatechnologies.com</string>
+  <string name="test_password">asd123</string>
+
+  <!-- Splash screen -->
+  <string name="splash_copyright_2">新加坡总公司执照号 201003309N</string>
+  <string name="splash_copyright_3">专利申请中</string>
+
+  <!-- Dashboard -->
+  <string name="dashboard_trending">交易中心</string>
+  <string name="dashboard_community">社交中心</string>
+  <string name="dashboard_home">首页</string>
+  <string name="dashboard_portfolio">投资组合</string>
+  <string name="dashboard_store">商店</string>
+  <string name="dashboard_headline">头条</string>
+  <string name="message_center">消息中心</string>
+  <string name="dashboard_admin_settings">Admin Settings</string>
+
+  <!-- To get rid of? -->
+  <string name="image_url">image_url</string>
+  <string name="key_price">价格</string>
+
+  <!-- Number presentation -->
+  <string name="number_presentation_unit_suffix"/>
+  <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_trillion_suffix">Tr</string>
+  <string name="arrow_prefix_positive">▲</string>
+  <string name="arrow_prefix_negative">▼</string>
+  <string name="arrow_prefix_zero"/>
+  <string name="sign_prefix_positive">+</string>
+  <string name="sign_prefix_negative">-</string>
+  <string name="sign_prefix_zero"/>
+
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
+  <string name="th_help_url">http://www.tradehero.mobi/about</string>
+  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
+  <string name="plus">+</string>
+
+  <!-- TimeDisplayViewHolder -->
+  <string name="time_display_view_holder_format_day">%02d</string>
+  <string name="time_display_view_holder_format_hour">%02d</string>
+  <string name="time_display_view_holder_format_minute">%02d</string>
+  <string name="time_display_view_holder_format_second">%02d</string>
+  <string name="help">帮助</string>
+  <string name="tab_to_dismiss">点击取消</string>
+  <string name="sharing">分享</string>
+  <string name="translation">翻译</string>
+  <string name="translating">翻译中...</string>
+  <string name="translation_result">翻译结果:</string>
+
+</resources>

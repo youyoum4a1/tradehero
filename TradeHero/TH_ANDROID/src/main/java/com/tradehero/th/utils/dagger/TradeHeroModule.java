@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
@@ -17,8 +18,11 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -77,12 +81,14 @@ import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
-import com.tradehero.th.fragments.social.hero.PrimiumHeroFragment;
+import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
+import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
 import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
-import com.tradehero.th.fragments.social.message.PrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
@@ -117,7 +123,9 @@ import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.user.FollowUserAssistant;
 import com.tradehero.th.models.user.MiddleCallbackAddCash;
@@ -127,6 +135,7 @@ import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
@@ -142,6 +151,7 @@ import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Locale;
 import javax.inject.Singleton;
 
 //import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
@@ -162,10 +172,7 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 BillingModule.class,
                 NewsModule.class,
-                FilterModule.class,
-                IntentDaggerModule.class,
-                CompetitionModule.class,
-                TransformationModule.class,
+                PushModule.class,
         },
         injects =
                 {
@@ -194,7 +201,7 @@ import javax.inject.Singleton;
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
                         //BuySellConfirmFragment.class,
-                        //BuySellConfirmFragment.BuySellAsyncTask.class,
+                        BuySellFragment.BuySellAsyncTask.class,
                         //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
@@ -271,6 +278,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
+                        CompetitionLeaderboardMarkUserItemView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
@@ -286,7 +294,7 @@ import javax.inject.Singleton;
                         UserProfileRetrievedMilestone.class,
                         HeroManagerInfoFetcher.class,
                         HeroesTabContentFragment.class,
-                        PrimiumHeroFragment.class,
+                        PremiumHeroFragment.class,
                         FreeHeroFragment.class,
                         AllHeroFragment.class,
                         HeroManagerInfoFetcher.class,
@@ -319,13 +327,17 @@ import javax.inject.Singleton;
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
 
-                        PrivateMessageFragment.class,
+                        NewPrivateMessageFragment.class,
+                        ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
                         //PrivateMessageBubbleAdapter.class,
                         PrivateDiscussionListAdapter.class,
                         PrivateMessageBubbleMineView.class,
                         PrivateMessageBubbleOtherView.class,
-                        
+                        AbstractDiscussionFragment.class,
+                        AbstractPrivateMessageFragment.class,
+
+                        SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                 },
         staticInjections =
@@ -352,13 +364,42 @@ public class TradeHeroModule
         return application.getApplicationContext();
     }
 
+    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
+    {
+        Locale locale = context.getResources().getConfiguration().locale;
+        return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
+    }
+
     @Provides @Singleton Application provideApplication()
     {
         return application;
     }
 
-    @Provides @Singleton PushNotificationManager providePushNotificationManager()
+    @Provides @Singleton PushNotificationManager providePushNotificationManager(BaiduPushManager baiduPushManager)
     {
-        return new UrbanAirshipPushNotificationManager();
+        boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+        if (isChineseLocale)
+        {
+            return baiduPushManager;
+        }
+        else
+        {
+            return new UrbanAirshipPushNotificationManager();
+        }
     }
+
+    //@Provides @Singleton @ForDeviceToken String provideDeviceToken(@SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
+    //{
+    //    boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
+    //    if (isChineseLocale)
+    //    {
+    //        String token = savedPushDeviceIdentifier.get();
+    //        return token;
+    //    }
+    //    else
+    //    {
+    //        return PushManager.shared().getAPID();
+    //    }
+    //}
+
 }

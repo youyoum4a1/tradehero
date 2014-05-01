@@ -12,21 +12,19 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -35,11 +33,10 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 10:46 AM To change this template use File | Settings | File Templates. */
 public class StockInfoFragment extends DashboardFragment
 {
-    public static final String TAG = StockInfoFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
 
@@ -86,7 +83,7 @@ public class StockInfoFragment extends DashboardFragment
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                 {
-                    handleNewsClicked((YahooNewsHeadline) adapterView.getItemAtPosition(position));
+                    handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position));
                 }
             });
         }
@@ -229,7 +226,7 @@ public class StockInfoFragment extends DashboardFragment
                 @Override public void onErrorThrown(SecurityId key, Throwable error)
                 {
                     THToast.show(R.string.error_fetch_security_info);
-                    THLog.e(TAG, "Failed to fetch SecurityCompact for " + securityId, error);
+                    Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
                 }
             };
 
@@ -261,7 +258,7 @@ public class StockInfoFragment extends DashboardFragment
                 @Override public void onErrorThrown(SecurityId key, Throwable error)
                 {
                     THToast.show(R.string.error_fetch_news_list);
-                    THLog.e(TAG, "Failed to fetch NewsHeadlineList for " + securityId, error);
+                    Timber.e(error, "Failed to fetch NewsHeadlineList for %s", securityId, error);
                 }
             };
 
@@ -335,21 +332,7 @@ public class StockInfoFragment extends DashboardFragment
             {
                 topViewPagerAdapter.linkWith(providerId);
                 topViewPagerAdapter.linkWith(securityCompactDTO);
-
-                if (topPager != null)
-                {
-                    topPager.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            if (topViewPagerAdapter != null)
-                            {
-                                topViewPagerAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
+                topViewPagerAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -377,15 +360,14 @@ public class StockInfoFragment extends DashboardFragment
         alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
-    protected void handleNewsClicked(YahooNewsHeadline news)
+    protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
     {
-        if (news != null && news.getUrl() != null)
-        {
-            Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            Bundle bundle = new Bundle();
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
-            navigator.pushFragment(WebViewFragment.class, bundle);
-        }
+        Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+        int resId = newsHeadlineAdapter.getBackgroundRes(position);
+        bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+        navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

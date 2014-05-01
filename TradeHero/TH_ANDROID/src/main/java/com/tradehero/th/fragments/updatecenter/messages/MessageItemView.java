@@ -2,11 +2,13 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -19,23 +21,23 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created by wangliang on 14-4-4.
- */
 public class MessageItemView extends LinearLayout implements DTOView<MessageHeaderId>
 {
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
-
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+
     @InjectView(R.id.message_item_icon) ImageView iconView;
     @InjectView(R.id.message_item_title) TextView titleView;
+    @InjectView(R.id.message_item_sub_title) TextView subTitleView;
     @InjectView(R.id.message_item_date) TextView dateView;
     @InjectView(R.id.message_item_content) TextView contentView;
+    @InjectView(R.id.message_unread_flag) View unreadFlag;
 
     private MessageHeaderDTO messageHeaderDTO;
 
+    //<editor-fold desc="Constructors">
     public MessageItemView(Context context)
     {
         super(context);
@@ -45,6 +47,7 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
     {
         super(context, attrs);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -53,21 +56,35 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
     @Override protected void onDetachedFromWindow()
     {
+
+        if (iconView != null)
+        {
+            iconView.setImageDrawable(null);
+        }
+        //ButterKnife.reset(this);
+
         super.onDetachedFromWindow();
-        ButterKnife.reset(this);
 
     }
 
     @Override public void display(MessageHeaderId dto)
     {
         this.messageHeaderDTO = messageHeaderCache.get(dto);
+        if (messageHeaderDTO != null)
+        {
+            setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            //if(messageHeaderDTO.discussionType == DiscussionType.BROADCAST_MESSAGE)
+            //{
+            //    setBackgroundColor(getResources().getColor(R.color.broadcast_message_item_bg));
+            //}
+            //else if (messageHeaderDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
+            //{
+            //    setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            //}
+
+        }
         displayData();
     }
 
@@ -76,11 +93,26 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         if (messageHeaderDTO != null)
         {
             titleView.setText(messageHeaderDTO.title);
-            contentView.setText(messageHeaderDTO.message);
-            dateView.setText(prettyTime.format(messageHeaderDTO.createdAtUtc));
-            if (messageHeaderDTO.imageUrl != null)
+            subTitleView.setText(messageHeaderDTO.subTitle);
+            contentView.setText(messageHeaderDTO.latestMessage);
+            dateView.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
+            unreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.INVISIBLE);
+
+            if (messageHeaderDTO.imageUrl != null && iconView != null)
             {
-                picasso.load(messageHeaderDTO.imageUrl).transform(userPhotoTransformation).into(iconView);
+                picasso.load(messageHeaderDTO.imageUrl)
+                        .transform(userPhotoTransformation)
+                        .into(iconView, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                setDefaultIcon();
+                            }
+                        });
             }
             else
             {
@@ -91,9 +123,13 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
 
     private void setDefaultIcon()
     {
-        picasso.cancelRequest(iconView);
-        picasso.load(R.drawable.superman_facebook)
-                .transform(userPhotoTransformation)
-                .into(iconView);
+        ImageView iconViewCopy = iconView;
+        if (iconViewCopy != null)
+        {
+            picasso.cancelRequest(iconViewCopy);
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(iconViewCopy);
+        }
     }
 }

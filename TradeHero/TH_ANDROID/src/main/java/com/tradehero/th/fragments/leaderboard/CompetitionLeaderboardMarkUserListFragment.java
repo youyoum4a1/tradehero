@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
-import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -27,9 +26,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/23/14.
- */
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
@@ -98,23 +94,22 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_competition_mode);
     }
 
-    protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
-    {
-        if (leaderboardMarkUserListAdapter != null)
-        {
-            leaderboardMarkUserListAdapter.setDTOLoaderCallback(new CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback());
-        }
-        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), providerDTO, leaderboardMarkUserListAdapter);
-    }
-
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        if (competitionAdapter == null)
-        {
-            competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
-        }
+        setupCompetitionAdapter();
+    }
+
+    protected void setupCompetitionAdapter()
+    {
+        competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
         leaderboardMarkUserListView.setAdapter(competitionAdapter);
+    }
+
+    protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
+    {
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback());
+        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), providerDTO, leaderboardMarkUserListAdapter);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

@@ -43,9 +43,14 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
         return position == POSITION_HEADER ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
 
+    private int getHeaderCount()
+    {   //
+        return 1;
+        //return 0;
+    }
     @Override public int getCount()
     {
-        return super.getCount() + 1;
+        return super.getCount() + getHeaderCount();
     }
 
     @Override public long getItemId(int position)

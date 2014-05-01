@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="stock_alerts">股市预警</string>
+  <string name="stock_alert_active">激活股市预警</string>
+  <string name="stock_alert_inactive_title">未激活股市预警</string>
+  <string name="stock_alert_active_until_date">激活至 <b>%s</b></string>
+  <string name="stock_alert_inactive">未激活</string>
+  <string name="stock_alert_target_price">目标价格</string>
+  <string name="stock_alert_active_until">激活至</string>
+  <string name="stock_alert_current_price">现价</string>
+  <string name="stock_alert_price_info_as_of_date">至 %s</string>
+  <string name="stock_alert_price_info_as_of_date_format">@string/data_format_d_mmm_yyyy_hh_mm</string>
+  <string name="stock_alert_notification_received">收到通知</string>
+  <string name="stock_alert_edit">编辑</string>
+  <string name="stock_alert_edit_menu_save">保存</string>
+  <string name="stock_alert_trigger_conditions">触发状态</string>
+  <string name="stock_alert_target_price_help_text">当证券价格上升或下降到你设定的价格时，你将收到提醒</string>
+  <string name="stock_alert_price_change_help_text">当特定股票的价格变动超过你设定的百分比时，你将收到提醒</string>
+  <string name="stock_alert_edit_note">请注意：股市预警会在每15分钟执行一次价格检查，某些信息源可能会延迟超过15分钟以上</string>
+  <string name="stock_alert_target_price_change_format"><![CDATA[目标价 <b>%s</b>]]></string>
+  <string name="stock_alert_percentage_change_format"><![CDATA[价格变动 <b>%s</b>]]></string>
+  <string name="stock_alert_percentage_change_target_value_format"><![CDATA[(预警价 <b>%s</b>)]]></string>
+  <string name="stock_alert_edit_alert">编辑预警</string>
+  <string name="stock_alert_add_alert">添加预警</string>
+  <string name="stock_alert_percentage_movement">% 变动</string>
+  <string name="stock_alert_when_price_move">当价格变动到<b>%s</b>时通知我</string>
+  <string name="stock_alert_when_price_raises"><![CDATA[当价格涨至 <b>%s</b> 时通知我]]></string>
+  <string name="stock_alert_when_price_falls"><![CDATA[当价格跌至 <b>%s</b> 时通知我]]></string>
+  <string name="stock_alerts_no_alerts">不使用预警</string>
+  <string name="stock_alert_count_alert_format">%d 预警</string>
+  <string name="stock_alert_plan_unlimited">无限制</string>
+  <string name="stock_alert_manage_subscriptions">管理您的订阅</string>
+  <string name="error_fetch_alert">获取预警信息时发生错误</string>
+  <string name="error_alert_insufficient_info">设置股市预警信息不全</string>
+
+</resources>

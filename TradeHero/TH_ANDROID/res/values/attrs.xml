@@ -41,4 +41,7 @@
     <attr name="topicLayout" format="reference"/>
   </declare-styleable>
 
+  <declare-styleable name="VotePair">
+    <attr name="downVote" format="boolean"/>
+  </declare-styleable>
 </resources>

@@ -25,6 +25,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 4/4/14.
@@ -71,13 +72,13 @@ public class SecurityDiscussionView extends BetterViewAnimator
         DaggerUtils.inject(this);
 
         securityCompactCacheListener = new SecurityCompactCacheListener();
-        securityDiscussionFetchListener = new SecurityDiscussionFetchListener(true);
+        securityDiscussionFetchListener = new SecurityDiscussionFetchListener(false);
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
 
         securityDiscussionAdapter = new SecurityDiscussionAdapter(
                 getContext(),
                 LayoutInflater.from(getContext()),
-                R.layout.security_discussion_item);
+                R.layout.security_discussion_item_view);
     }
 
     @Override protected void onAttachedToWindow()
@@ -99,7 +100,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         super.onDetachedFromWindow();
     }
 
-    private void fetchNextPageIfNecessary()
+    private void fetchNextPageIfNecessary(boolean force)
     {
         detachSecurityDiscussionFetchTask();
 
@@ -112,7 +113,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         {
             paginatedSecurityDiscussionListKey = paginatedSecurityDiscussionListKey.next(nextPageDelta);
 
-            securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, false, securityDiscussionFetchListener);
+            securityDiscussionFetchTask = discussionListCache.getOrFetch(paginatedSecurityDiscussionListKey, force, securityDiscussionFetchListener);
             securityDiscussionFetchTask.execute();
         }
     }
@@ -158,14 +159,14 @@ public class SecurityDiscussionView extends BetterViewAnimator
             {
                 loading = true;
 
-                fetchNextPageIfNecessary();
+                fetchNextPageIfNecessary(true);
             }
         }
     }
 
     private class SecurityDiscussionFetchListener implements DTOCache.Listener<DiscussionListKey,DiscussionKeyList>
     {
-        private final boolean shouldAppend;
+        private boolean shouldAppend;
 
         public SecurityDiscussionFetchListener(boolean shouldAppend)
         {
@@ -174,11 +175,18 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
         @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
         {
+            if (fromCache)
+            {
+                return;
+            }
+
             onFinish();
 
             if (discussionKeyList != null)
             {
                 nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+                Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page, discussionKeyList.size());
 
                 if (shouldAppend)
                 {
@@ -188,6 +196,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
                 {
                     securityDiscussionAdapter.setItems(discussionKeyList);
                     securityDiscussionAdapter.notifyDataSetChanged();
+                    shouldAppend = true;
                 }
             }
         }
@@ -215,7 +224,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
         {
             discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
 
-            fetchNextPageIfNecessary();
+            nextPageDelta = 0;
+            fetchNextPageIfNecessary(true);
         }
 
         @Override public void onErrorThrown(SecurityId key, Throwable error)

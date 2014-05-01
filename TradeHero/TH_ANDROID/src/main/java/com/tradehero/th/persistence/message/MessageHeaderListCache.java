@@ -2,73 +2,55 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
-import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
-import java.util.HashSet;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import timber.log.Timber;
 
-/**
- * Created by WangLiang on 14-4-4.
- */
 @Singleton
 public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, MessageHeaderIdList>
 {
     private MessageHeaderCache messageHeaderCache;
     private MessageServiceWrapper messageServiceWrapper;
-    private Set<Integer> deletedMessageIds;
+    private UserProfileCache userProfileCache;
+    private CurrentUserId currentUserId;
 
     @Inject
     public MessageHeaderListCache(@ListCacheMaxSize IntPreference maxSize, MessageHeaderCache messageHeaderCache,
-            MessageServiceWrapper messageServiceWrapper)
+            MessageServiceWrapper messageServiceWrapper,UserProfileCache userProfileCache,CurrentUserId currentUserId)
     {
         super(maxSize.get());
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
-    }
-
-    /**
-     * filter the deleted message before returning the data.
-     * @param key
-     * @return
-     */
-    @Override public MessageHeaderIdList get(MessageListKey key)
-    {
-        MessageHeaderIdList messageHeaderIds = super.get(key);
-        Timber.d("get message original:%s", messageHeaderIds);
-        if (messageHeaderIds != null && deletedMessageIds != null && deletedMessageIds.size() > 0)
-        {
-            MessageHeaderIdList filteredMessageHeaderIdList = new MessageHeaderIdList();
-                for(MessageHeaderId id:messageHeaderIds)
-            {
-                if (!deletedMessageIds.contains(id.key))
-                {
-                    filteredMessageHeaderIdList.add(id);
-                }
-
-            }
-            Timber.d("get message filteredMessageHeaderIdList:%s", filteredMessageHeaderIdList);
-            return filteredMessageHeaderIdList;
-        }
-        return messageHeaderIds;
+        this.userProfileCache = userProfileCache;
+        this.currentUserId = currentUserId;
     }
 
     @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
     {
-        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessages(key);
+        PaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
         return putInternal(data);
     }
 
     private MessageHeaderIdList putInternal(PaginatedDTO<MessageHeaderDTO> data)
     {
+        //updateUnreadMessageThreadCount(data);
+
         if (data != null && data.getData() != null)
         {
             List<MessageHeaderDTO> list = data.getData();
@@ -88,25 +70,66 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
     }
 
     /**
-     * Save the id of message that has been deleted.
-     * @param messageId
+     *
+     * @param data
      */
-    public void markMessageDeleted(int messageId)
+    private void updateUnreadMessageThreadCount(PaginatedDTO<MessageHeaderDTO> data)
     {
-        if (deletedMessageIds == null)
+        if (data == null || !(data instanceof MessagePaginatedDTO))
         {
-            deletedMessageIds = new HashSet<>();
+            return;
         }
-        deletedMessageIds.add(messageId);
-        Timber.d("markMessageDeleted deletedMessageIds:%s", deletedMessageIds);
+
+        MessagePaginatedDTO messagePaginatedDTO = (MessagePaginatedDTO)data;
+        if (userProfileCache != null && currentUserId != null)
+        {
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if (userProfileDTO != null)
+            {
+                userProfileDTO.unreadMessageThreadsCount =  messagePaginatedDTO.unread;
+            }
+        }
+    }
+
+    public void invalidateWithRecipient(UserBaseKey userBaseKey)
+    {
+        for (MessageListKey messageListKey : new ArrayList<>(snapshot().keySet()))
+        {
+            if (messageListKey instanceof RecipientTypedMessageListKey &&
+                    ((RecipientTypedMessageListKey) messageListKey).recipientId.equals(userBaseKey))
+            {
+                invalidate(messageListKey);
+            }
+        }
     }
 
     /**
-     * Get the id list of messages which have been deleted.
-     * @return
+     * Invalidate the keys where the parameter is listed in the value.
+     * @param messageHeaderId
      */
-    public Set<Integer> getDeletedMessageIds()
+    public void invalidateKeysThatList(MessageHeaderId messageHeaderId)
     {
-        return deletedMessageIds;
+        for (Map.Entry<MessageListKey, MessageHeaderIdList> entry : new HashMap<>(snapshot()).entrySet())
+        {
+            if (entry.getValue().contains(messageHeaderId))
+            {
+                invalidateSameListing(entry.getKey());
+            }
+        }
+    }
+
+    /**
+     * Invalidates the keys that are part of the same listing as the key.
+     * @param key
+     */
+    public void invalidateSameListing(MessageListKey key)
+    {
+        for (MessageListKey entry : new ArrayList<MessageListKey>(snapshot().keySet()))
+        {
+            if (key.equalListing(entry))
+            {
+                invalidate(entry);
+            }
+        }
     }
 }

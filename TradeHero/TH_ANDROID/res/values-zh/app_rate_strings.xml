@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="apprate_later">晚点提醒我</string>
+  <string name="apprate_no_thanks">不，谢了</string>
+  <string name="apprate_message">请给我们的软件评级</string>
+  <string name="apprate">评价我</string>
+  <string name="apprate_dialog_title">评级股货英雄</string>
+
+</resources>

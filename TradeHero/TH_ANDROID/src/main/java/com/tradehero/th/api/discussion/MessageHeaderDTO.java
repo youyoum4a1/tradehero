@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
 import java.util.Random;
 
@@ -24,6 +25,9 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     public DiscussionType discussionType;
     public String imageUrl;
     public boolean unread;
+
+    public String latestMessage;
+    public Date latestMessageAtUtc;
 
     public MessageHeaderDTO()
     {
@@ -50,6 +54,31 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     @Override public MessageHeaderId getDTOKey()
     {
         return new MessageHeaderId(id);
+    }
+
+    public UserBaseKey getSenderId()
+    {
+        return new UserBaseKey(senderUserId);
+    }
+
+    public UserBaseKey getRecipientId()
+    {
+        return new UserBaseKey(recipientUserId);
+    }
+
+    /**
+     * Returns the user id that is not the currentUserId parameter.
+     * @param currentUserId
+     * @return
+     */
+    public UserBaseKey getCorrespondentId(UserBaseKey currentUserId)
+    {
+        UserBaseKey senderId = getSenderId();
+        if (!senderId.equals(currentUserId))
+        {
+            return senderId;
+        }
+        return getRecipientId();
     }
 
     @Override public String toString()

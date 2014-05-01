@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:listItemLayout="@layout/private_message_bubble_mine"
-    app:topicLayout="@layout/private_message_list_header">
+    app:topicLayout="@null">
 
   <TextView
       android:id="@+id/private_message_empty"
@@ -30,14 +30,16 @@
       android:layout_height="match_parent"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
-      android:paddingTop="48dp"
-      android:paddingBottom="@dimen/discussion_comment_box_height"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:paddingBottom="60dp"
       android:clipToPadding="false"
       android:layout_above="@+id/discussion_comment_widget"
+      android:transcriptMode="alwaysScroll"
       />
+      <!--android:paddingTop="48dp"-->
 
   <include
-      layout="@layout/post_comment_widget"
+      layout="@layout/private_post_comment_widget"
       />
 
   <RelativeLayout
@@ -46,7 +48,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:padding="8dp"
-      android:background="@color/follow_button_green_overlay">
+      android:background="@color/follow_button_green_overlay"
+      android:visibility="gone"
+      >
 
     <ImageView
         android:id="@+id/private_icn_white_star"
@@ -64,7 +68,7 @@
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/private_icn_white_star"
         android:layout_centerHorizontal="true"
-        tools:text="0 messages left.\nUpgrade now for unlimited messaging!"
+        tools:text="0 messages left.\nPremium-follow now for unlimited messaging!"
         android:textColor="@color/white"
         android:textSize="14sp"
         />

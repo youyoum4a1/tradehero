@@ -3,9 +3,6 @@ package com.tradehero.th.models.provider.macquarie;
 import com.tradehero.th.R;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 
-/**
- * Created by xavier on 2/19/14.
- */
 public class MacquarieProviderSpecificResourcesDTO extends ProviderSpecificResourcesDTO
 {
     public MacquarieProviderSpecificResourcesDTO()

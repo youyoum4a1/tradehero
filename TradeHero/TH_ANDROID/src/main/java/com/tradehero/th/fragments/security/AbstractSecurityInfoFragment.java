@@ -8,13 +8,29 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 7:04 PM To change this template use File | Settings | File Templates. */
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends SherlockFragment
         implements DTOCache.Listener<SecurityId, InfoType>
 {
+    private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + ".securityId";
+
     protected SecurityId securityId;
     protected InfoType value;
+
+    public static void putSecurityId(Bundle args, SecurityId securityId)
+    {
+        args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
+    }
+
+    public static SecurityId getSecurityId(Bundle args)
+    {
+        SecurityId extracted = null;
+        if (args != null)
+        {
+            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+        }
+        return extracted;
+    }
 
     @Override public void onResume()
     {
@@ -22,7 +38,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new SecurityId(getArguments().getBundle(SecurityId.BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+            linkWith(getSecurityId(args), true);
         }
     }
 

@@ -38,4 +38,15 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 R.string.manage_heroes_alert_unfollow_cancel,
                 okClickListener);
     }
+
+    public AlertDialog popAlertNoMoreMessageFollow(Context context, DialogInterface.OnClickListener okClickListener, String heroName)
+    {
+        return popWithOkCancelButton(
+                context,
+                context.getString(R.string.private_message_expired_free_message_title),
+                context.getString(R.string.private_message_expired_free_message_description, heroName),
+                R.string.private_message_expired_free_message_ok,
+                R.string.private_message_expired_free_message_cancel,
+                okClickListener);
+    }
 }

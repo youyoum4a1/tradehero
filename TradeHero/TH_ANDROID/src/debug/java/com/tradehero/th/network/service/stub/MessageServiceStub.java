@@ -3,10 +3,11 @@ package com.tradehero.th.network.service.stub;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.MessageStatusDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.tradehero.th.fragments.updatecenter.messages.MessagePaginatedDTO;
 import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,9 +17,6 @@ import retrofit.client.Response;
 import retrofit.http.Path;
 import timber.log.Timber;
 
-/**
- * Created by xavier2 on 2014/4/9.
- */
 public class MessageServiceStub implements MessageService
 {
     @Inject public MessageServiceStub()
@@ -26,10 +24,12 @@ public class MessageServiceStub implements MessageService
         super();
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(Integer page, Integer perPage)
+
+    @Override
+    public MessagePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
     {
         Timber.d("Returning stub messages");
-        PaginatedDTO<MessageHeaderDTO> paginatedDTO = new PaginatedDTO<>();
+        MessagePaginatedDTO<MessageHeaderDTO> paginatedDTO = new MessagePaginatedDTO<>();
         List<MessageHeaderDTO> messageDTOList = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < perPage; i++)
@@ -45,7 +45,7 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public PaginatedDTO<MessageHeaderDTO> getMessages(
+    @Override public PaginatedDTO<MessageHeaderDTO> getMessageHeaders(
             String discussionType,
             Integer senderId,
             Integer page,
@@ -61,6 +61,11 @@ public class MessageServiceStub implements MessageService
     @Override public MessageHeaderDTO getMessageHeader(int commentId)
     {
         return createMessageHeader(commentId, null, new Date());
+    }
+
+    @Override public MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId)
+    {
+        return null;
     }
 
     private MessageHeaderDTO createMessageHeaderNeerajToOscarAguilar()
@@ -80,11 +85,10 @@ public class MessageServiceStub implements MessageService
         return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date, true);
     }
 
-    @Override public MessageStatusDTO getStatus(int recipientUserId)
+    @Override public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(int recipientUserId)
     {
-        MessageStatusDTO statusDTO = new MessageStatusDTO();
-        statusDTO.recipientUserId = recipientUserId;
-        statusDTO.privateFreeRemainingCount = 1;
+        UserMessagingRelationshipDTO statusDTO = new UserMessagingRelationshipDTO();
+        statusDTO.freeSendsRemaining = 1;
         return statusDTO;
     }
 
@@ -93,13 +97,15 @@ public class MessageServiceStub implements MessageService
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public Response deleteMessage(@Path("commentId") int commentId)
+    @Override public Response deleteMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId)
     {
         return null;
     }
 
-    @Override public Response readMessage(@Path("commentId") int commentId)
+    @Override public Response readMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
+            @Path("recipientUserId") int recipientUserId)
     {
-        return null;
+        throw new RuntimeException("Not implemented");
     }
 }

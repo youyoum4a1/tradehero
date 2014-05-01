@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
+    android:background="@color/white"
+    >
 
   <TableLayout
       android:id="@+id/manage_followers_header"
@@ -14,7 +15,7 @@
       android:layout_alignParentTop="true"
       android:background="@color/gray_3"
       android:visibility="gone"
-    >
+      >
 
     <TableRow
         android:weightSum="3">
@@ -48,52 +49,68 @@
     <TableRow
         android:weightSum="3">
 
-        <TextView
-            android:id="@+id/manage_followers_total_revenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="US$ 0.70"
+      <TextView
+          android:id="@+id/manage_followers_total_revenue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.70"
           />
 
-        <TextView
-            android:id="@+id/manage_followers_total_amount_paid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="US$ 0.00"
+      <TextView
+          android:id="@+id/manage_followers_total_amount_paid"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.00"
           />
 
-        <TextView
-            android:id="@+id/manage_followers_number_followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            tools:text="1"
+      <TextView
+          android:id="@+id/manage_followers_number_followers"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="1"
           />
 
     </TableRow>
 
   </TableLayout>
 
-  <com.tradehero.th.fragments.social.follower.FollowerListView
+
+  <com.handmark.pulltorefresh.library.PullToRefreshListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/followers_list"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:clipToPadding="false"
+      ptr:ptrMode="pullFromStart"
+      ptr:ptrScrollingWhileRefreshingEnabled="true"
+      android:fadingEdge="none"
+      android:scrollbars="none"
       android:layout_below="@id/manage_followers_header"
       android:background="@null"
-    />
+      android:layout_marginBottom="50dp"
+      />
 
-
+  <!--<com.tradehero.th.fragments.social.follower.FollowerListView-->
+  <!--android:id="@+id/followers_list"-->
+  <!--android:layout_width="match_parent"-->
+  <!--android:layout_height="match_parent"-->
+  <!--android:layout_below="@id/manage_followers_header"-->
+  <!--android:background="@null"-->
+  <!--android:layout_marginBottom="50dp"-->
+  <!--/>-->
 
   <ProgressBar
-      android:id="@android:id/empty"
+      android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"

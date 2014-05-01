@@ -5,54 +5,58 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import javax.inject.Inject;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import timber.log.Timber;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
-public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
+public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
+        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener
 {
-    public static final String KEY_PAGE = "page";
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private FragmentTabHost mTabHost;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
-    private MenuItem mMenuFollow;
     private ImageButton mNewMsgButton;
 
     private BroadcastReceiver broadcastReceiver;
@@ -63,10 +67,14 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
         fetchUserProfileListener = new FetchUserProfileListener();
         initBroadcastReceiver();
+
+        Timber.d("onCreate");
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
+        Timber.d("onCreateView");
         return addTabs();
     }
 
@@ -79,10 +87,12 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         super.onResume();
 
+        Timber.d("onResume fetchUserProfile");
         fetchUserProfile();
 
         LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(broadcastReceiver, new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
+                .registerReceiver(broadcastReceiver,
+                        new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
     }
 
     @Override public void onPause()
@@ -97,7 +107,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         detachUserProfileTask();
 
-        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, fetchUserProfileListener);
+        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
+                fetchUserProfileListener);
         fetchUserProfileTask.execute();
     }
 
@@ -112,14 +123,24 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+        }
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        actionBar.setTitle(R.string.update_center_title);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_USE_LOGO);
+        actionBar.setTitle(R.string.message_center_title);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setLogo(R.drawable.icon_menu);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
-        mMenuFollow = menu.findItem(R.id.btn_new_message);
+        MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
         mNewMsgButton =
-                (ImageButton) mMenuFollow.getActionView().findViewById(R.id.new_message_button);
+                (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
         if (mNewMsgButton != null)
         {
             mNewMsgButton.setOnClickListener(new View.OnClickListener()
@@ -130,8 +151,61 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
                 }
             });
         }
+        Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            boolean handled = ((SherlockFragment) getCurrentFragment()).onOptionsItemSelected(item);
+            if (handled)
+            {
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override public void onOptionsMenuClosed(android.view.Menu menu)
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
+        }
+        super.onOptionsMenuClosed(menu);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            f.onDestroyOptionsMenu();
+        }
+        Timber.d("onDestroyOptionsMenu");
+
+        super.onDestroyOptionsMenu();
     }
 
     private void showPopup(View v)
@@ -164,8 +238,10 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Broadcast);
         Bundle args = new Bundle();
-        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, DiscussionType.BROADCAST_MESSAGE.value);
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
+        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
+                DiscussionType.BROADCAST_MESSAGE.value);
+        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
+                MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
     }
@@ -173,8 +249,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
-        clearTabs();
-
+        Timber.d("onDestroyView");
+        //don't have to clear sub fragment to refresh data
+        //clearTabs();
         detachUserProfileTask();
 
         super.onDestroyView();
@@ -182,7 +259,9 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     @Override public void onDestroy()
     {
+        Timber.d("onDestroy");
         fetchUserProfileListener = null;
+        clearTabs();
 
         super.onDestroy();
     }
@@ -190,30 +269,25 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        //mTabHost.setOnTabChangedListener(new MyOnTouchListener());
-
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(),
+                FRAGMENT_LAYOUT_ID);
+        //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
         {
             args = new Bundle();
         }
-
         UpdateCenterTabType[] types = UpdateCenterTabType.values();
         for (UpdateCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
-            args.putInt(KEY_PAGE, tabTitle.pageIndex);
-
             TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
                     .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
             String title = getString(tabTitle.titleRes, 0);
             tabView.setTitle(title);
-
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
-
         return mTabHost;
     }
 
@@ -221,15 +295,51 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (mTabHost != null)
         {
+            android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+            List<Fragment> fragmentList = fm.getFragments();
+            Timber.d("fragmentList %s", fragmentList);
+            if (fragmentList != null && fragmentList.size() > 0)
+            {
+                FragmentTransaction ft = fm.beginTransaction();
+                for (Fragment f : fragmentList)
+                {
+                    if (f != null)
+                    {
+                        ft.remove(f);
+                    }
+                }
+                //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+                //TODO this will crash when onDestroy alex
+                //ft.commitAllowingStateLoss();
+                //fm.executePendingTransactions();
+            }
+
             mTabHost.clearAllTabs();
+            int tabCount = mTabHost.getTabWidget().getTabCount();
             mTabHost = null;
         }
+    }
 
+    private Fragment getCurrentFragment()
+    {
+        if (mTabHost == null)
+        {
+            return null;
+        }
+        String tag = mTabHost.getCurrentTabTag();
+        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(tag);
+        return fragment;
     }
 
     private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
     {
         TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        if (tabType == UpdateCenterTabType.Notifications)
+        {
+            //Notifications' unread count does not show
+            return;
+        }
         tabView.setTitleNumber(number);
         //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
@@ -241,7 +351,8 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
 
     private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -256,8 +367,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/ imp
     {
         if (andDisplay)
         {
-            changeTabTitleNumber(UpdateCenterTabType.Messages, userProfileDTO.unreadMessageThreadsCount);
-            changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
+            Timber.d(
+                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
+                    userProfileDTO.unreadMessageThreadsCount,
+                    userProfileDTO.unreadNotificationsCount);
+            changeTabTitleNumber(UpdateCenterTabType.Messages,
+                    userProfileDTO.unreadMessageThreadsCount);
+            //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }
     }
 

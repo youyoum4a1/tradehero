@@ -10,52 +10,60 @@
     android:background="@color/white"
     tools:layout_height="120dp"
     >
-  <LinearLayout android:layout_width="match_parent"
+  <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:gravity="center"
-      android:layout_margin="10dp">
-    <TextView android:layout_height="wrap_content"
-        android:text="Sending to:"
+      android:layout_margin="@dimen/common_margin_10">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:text="@string/message_center_sending_to"
         android:gravity="center_vertical|right"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:paddingRight="3dp"/>
 
-    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/message_type_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:id="@+id/message_type_wrapper"
         android:gravity="center_vertical">
 
-
-      <TextView android:layout_height="wrap_content"
+      <TextView
           android:id="@+id/message_type"
+          android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          tools:text="Free User"
           android:textColor="@android:color/holo_blue_dark"
           android:minWidth="70dp"
-
+          tools:text="Free User"
           />
 
-      <TextView android:layout_width="20dp" android:layout_height="20dp"
+      <TextView
+          android:layout_width="20dp"
+          android:layout_height="20dp"
           android:text="@string/arrow_prefix_negative"
           android:gravity="center"
           android:textColor="@android:color/holo_blue_dark"/>
     </LinearLayout>
-    <!--<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-    <!--android:src="@android:drawable/ic_media_pause"/>-->
-
   </LinearLayout>
+
   <EditText
       android:id="@+id/message_input_edittext"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="80dp"
       android:textSize="@dimen/stock_symbol_header"
       android:paddingLeft="5dp"
       tools:text="NASDAQ:GOOG"
       android:gravity="left|top"
-      />
+      android:inputType="text"
+      >
+    <requestFocus/>
+  </EditText>
 
   <RelativeLayout android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -63,29 +71,35 @@
       android:paddingLeft="5dp"
       android:paddingRight="5dp"
       android:layout_marginBottom="15dp"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="@dimen/common_margin_10"
       android:visibility="gone">
 
     <TextView
-        android:id="@+id/message_lifetime_hint" android:layout_width="wrap_content"
+        android:id="@+id/message_lifetime_hint"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="message life"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        />
 
-    <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="left"
-
         android:id="@+id/message_spinner_lifetime"
         android:layout_toRightOf="@id/message_lifetime_hint"/>
 
-    <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
         android:id="@+id/message_spinner_target_user"
         />
 
+    <!--android:id="@+id/message_lifetime_hint"-->
     <TextView
-        android:id="@+id/message_lifetime_hint" android:layout_width="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="message life"/>
   </RelativeLayout>

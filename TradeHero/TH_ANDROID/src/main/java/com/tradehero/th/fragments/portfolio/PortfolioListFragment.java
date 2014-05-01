@@ -26,6 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
+@Deprecated
 public class PortfolioListFragment extends DashboardFragment
     implements WithTutorial
 {
@@ -172,7 +173,7 @@ public class PortfolioListFragment extends DashboardFragment
 
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
-                args.putBundle(WatchlistPositionFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, displayablePortfolioDTO.ownedPortfolioId.getArgs());
+                WatchlistPositionFragment.putOwnedPortfolioId(args, displayablePortfolioDTO.ownedPortfolioId);
                 getNavigator().pushFragment(WatchlistPositionFragment.class, args);
             }
             else

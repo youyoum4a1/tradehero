@@ -27,7 +27,6 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
     @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        //THLog.d(TAG, "getView " + position);
         convertView = conditionalInflate(position, convertView, viewGroup);
 
         V dtoView = (V) convertView;

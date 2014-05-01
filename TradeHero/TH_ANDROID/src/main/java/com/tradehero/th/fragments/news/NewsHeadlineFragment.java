@@ -28,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Created by julien on 10/10/13 Display a ListView of News object for a given SecurityId - It uses
+ * Display a ListView of News object for a given SecurityId - It uses
  * the NewsHeadlineCache to get or fetch the news from an abstract provider as needed. In case the
  * news are not in the cache, the download is done in the background using the `fetchNewsTask`
  * AsyncTask. The task is cancelled when the fragment is paused.
@@ -190,5 +190,14 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
     private Navigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+    }
+
+    @Override public void onDestroy()
+    {
+        if (newsTitleCache != null)
+        {
+            newsTitleCache.invalidateAll();
+        }
+        super.onDestroy();
     }
 }

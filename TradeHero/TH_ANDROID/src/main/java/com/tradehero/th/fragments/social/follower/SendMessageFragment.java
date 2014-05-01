@@ -1,12 +1,15 @@
 package com.tradehero.th.fragments.social.follower;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -23,6 +26,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -30,10 +34,12 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -42,9 +48,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-1.
- */
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
@@ -53,10 +56,15 @@ public class SendMessageFragment extends DashboardFragment
     public static final String KEY_MESSAGE_TYPE =
             SendMessageFragment.class.getName() + ".messageType";
 
-
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
+    /** ProgressDialog to show progress when sending message */
+    private Dialog progressDialog;
+    /** Dialog to change different type of follower */
+    private Dialog chooseDialog;
+    /** callback for sending broadcast */
+    private SendMessageDiscussionCallback sendMessageDiscussionCallback;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
@@ -71,9 +79,13 @@ public class SendMessageFragment extends DashboardFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
-    private Dialog progressDialog;
-    private Dialog chooseDialog;
-    private SendMessageDiscussionCallback sendMessageDiscussionCallback;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        showInput(true);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -83,7 +95,6 @@ public class SendMessageFragment extends DashboardFragment
         int discussionTypeValue = args.getInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
                 DiscussionType.BROADCAST_MESSAGE.value);
         this.discussionType = DiscussionType.fromValue(discussionTypeValue);
-
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
         this.messageType = MessageType.fromId(messageTypeInt);
 
@@ -96,11 +107,19 @@ public class SendMessageFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle("Broadcast Message");
-
-        MenuItem menuItem = menu.add(0, 100, 0, "Send");
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle(getString(R.string.broadcast_message_title));
+        MenuItem menuItem = menu.add(0, 100, 0, getString(R.string.broadcast_message_action_send));
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        Timber.d("onCreateOptionsMenu");
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        super.onDestroyOptionsMenu();
+        Timber.d("onDestroyOptionsMenu");
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -130,14 +149,38 @@ public class SendMessageFragment extends DashboardFragment
 
     private void initView()
     {
+        inputText.setFocusable(true);
+        inputText.requestFocus();
+        showInput(true);
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);
     }
 
     @Override public void onDestroy()
     {
+        showInput(false);
         sendMessageDiscussionCallback = null;
         super.onDestroy();
+    }
+
+    private void showInput(boolean shown)
+    {
+        if (inputText != null)
+        {
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            if (shown)
+            {
+                //imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
+                imm.showSoftInput(inputText, InputMethodManager.SHOW_FORCED);
+                //imm.showSoftInput(inputText, 0);
+            }
+            else
+            {
+                imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
+            }
+        }
     }
 
     private void changeHeroType(MessageType messageType)
@@ -149,23 +192,24 @@ public class SendMessageFragment extends DashboardFragment
 
     private void showHeroTypeDialog()
     {
-        //R.layout.message_type_dialog_layout
         ListView listView = new ListView(getActivity());
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         TextView headerView = new TextView(getActivity());
         headerView.setPadding(0, 20, 0, 20);
         headerView.setGravity(Gravity.CENTER);
-        headerView.setText("Choose follower to send message"); //TODO
+        headerView.setText(getString(R.string.broadcast_message_change_type_hint)); //TODO
         headerView.setClickable(false);
         headerView.setBackgroundColor(getResources().getColor(android.R.color.white));
-        listView.addHeaderView(headerView);
+        listView.addHeaderView(headerView, null, false);
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter =
-                new ArrayAdapter(getActivity(), R.layout.common_dialog_item_layout, R.id.popup_text,
-                        MessageType.getShowingTypes());
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(
+                getActivity(),
+                R.layout.common_dialog_item_layout,
+                R.id.popup_text,
+                MessageType.getShowingTypes());
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -188,20 +232,24 @@ public class SendMessageFragment extends DashboardFragment
     private void sendMessage()
     {
         int count = getFollowerCount(messageType);
+        //TODO
+        //Needn't to checkout for this, we don't know a user is following or unfollowing me unless we get the flesh data from server.
         if (count <= 0)
         {
-            THToast.show("Sorry,you cannot send message because you don't have such type follower");
+            THToast.show(getString(R.string.broadcast_message_no_follower_hint));
             return;
         }
 
         String text = inputText.getText().toString();
         if (TextUtils.isEmpty(text))
         {
-            THToast.show("The message cannot be empty");
+            THToast.show(getString(R.string.broadcast_message_content_length_hint));
             return;
         }
         this.progressDialog =
-                progressDialogUtil.show(getActivity(), "Waiting", "Sending message...");
+                progressDialogUtil.show(getActivity(),
+                        getString(R.string.broadcast_message_waiting),
+                        getString(R.string.broadcast_message_sending_hint));
 
         // TODO not sure about this implementation yet
         messageServiceWrapper.get()
@@ -216,11 +264,43 @@ public class SendMessageFragment extends DashboardFragment
         return messageCreateFormDTO;
     }
 
+    private int getFollowerCountByUserProfile(MessageType messageType)
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        int allFollowerCount = userProfileDTO.allFollowerCount;
+        int followerCountFree = userProfileDTO.freeFollowerCount;
+        int followerCountPaid = userProfileDTO.paidFollowerCount;
+        Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d", allFollowerCount,
+                followerCountFree, followerCountPaid);
+        int result = 0;
+        switch (messageType)
+        {
+            case BROADCAST_FREE_FOLLOWERS:
+                result = followerCountFree;
+                break;
+            case BROADCAST_PAID_FOLLOWERS:
+                result = followerCountPaid;
+                break;
+            case BROADCAST_ALL_FOLLOWERS:
+                result = allFollowerCount;
+                break;
+            default:
+                throw new IllegalStateException("unknown messageType");
+        }
+        return result;
+    }
+
     /**
      * return how many followers whom you will send message to
      */
     private int getFollowerCount(MessageType messageType)
     {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
+            return getFollowerCountByUserProfile(messageType);
+        }
+
         FollowerSummaryDTO followerSummaryDTO =
                 followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
@@ -258,8 +338,7 @@ public class SendMessageFragment extends DashboardFragment
                 dialog.dismiss();
                 dialog = null;
             }
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
 
         }
@@ -286,21 +365,26 @@ public class SendMessageFragment extends DashboardFragment
     {
     }
 
+    private void closeMe()
+    {
+        ((DashboardActivity) getActivity()).getDashboardNavigator().popFragment();
+    }
+
     private class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
     {
         @Override public void failure(RetrofitError error)
         {
             dismissDialog(progressDialog);
-            THToast.show("Send message error!");
+            THToast.show(getString(R.string.broadcast_error));
         }
 
         @Override public void success(DiscussionDTO response, Response response2)
         {
             dismissDialog(progressDialog);
             invalidateMessageCache();
-            THToast.show("Send message Successfully!");
+            THToast.show(getActivity().getString(R.string.broadcast_success));
             //TODO close me?
-            //closeMe();
+            closeMe();
         }
     }
 

@@ -23,10 +23,14 @@
   <string name="competition_leaderboard_to_be_won">to be won!</string>
 
   <string name="competition_enrollment_web_view_done">Done</string>
+  <string name="competition_portfolio_unsure">Unnamed Competition</string>
 
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
+
+  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
+  <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
 
 </resources>

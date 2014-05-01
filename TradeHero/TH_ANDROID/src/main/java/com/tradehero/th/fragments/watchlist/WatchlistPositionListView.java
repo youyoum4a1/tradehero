@@ -7,9 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/16/14 Time: 5:58 PM Copyright (c) TradeHero
- */
 public class WatchlistPositionListView extends PullToRefreshListView
 {
     //<editor-fold desc="Constructors">

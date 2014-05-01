@@ -31,6 +31,7 @@ public class ProgressDialogUtil
             dialog.setTitle(title);
             dialog.setMessage(message);
         }
+
         return dialog;
     }
 

@@ -7,8 +7,6 @@
       android:id="@+id/discussion_share_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/timeline_side_spacing"
-      android:layout_marginRight="@dimen/timeline_side_spacing"
       android:paddingTop="@dimen/timeline_action_buttons_vertical_padding"
       android:paddingBottom="@dimen/timeline_action_buttons_vertical_padding"
       android:background="@drawable/timeline_action_buttons_background"
@@ -29,7 +27,7 @@
         android:shadowColor="@color/timeline_action_button_text_color_shadow"
         android:shadowDy="1"
         android:shadowRadius="1"
-        android:drawablePadding="10dp"
+        android:drawablePadding="@dimen/comment_count_drawable_padding"
         android:text="0"
         tools:text="200"
         />

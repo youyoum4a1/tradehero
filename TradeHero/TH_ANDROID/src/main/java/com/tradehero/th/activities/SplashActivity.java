@@ -1,5 +1,7 @@
 package com.tradehero.th.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -16,15 +18,16 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
-import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +37,8 @@ import retrofit.RetrofitError;
 public class SplashActivity extends SherlockActivity
 {
     public static final String TAG = SplashActivity.class.getSimpleName();
+    public static final String KEY_PREFS = SplashActivity.class.getName();
+    private static final String KEY_FIRST_BOOT = "key_first_boot";
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
@@ -81,7 +86,8 @@ public class SplashActivity extends SherlockActivity
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(Void aVoid)
+            {
                 super.onPostExecute(aVoid);
             }
         };
@@ -89,15 +95,23 @@ public class SplashActivity extends SherlockActivity
 
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
-
+        switch (Constants.VERSION)
+        {
+            case 0:
+                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
+                break;
+            case 1:
+                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_BAIDU, false));
+                break;
+            case 2:
+                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_TENCENT, false));
+                break;
+        }
 
         if (!Constants.RELEASE)
         {
             VersionUtils.logScreenMeasurements(this);
         }
-
-        tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
     }
 
     @Override protected void onPause()
@@ -111,23 +125,33 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
-        if (canLoadApp())
+        SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
+
+        if (preferences.getBoolean(KEY_FIRST_BOOT, true))
         {
-            ActivityHelper.launchDashboard(SplashActivity.this);
-            finish();
+            ActivityHelper.launchGuide(SplashActivity.this);
+            preferences.edit().putBoolean(KEY_FIRST_BOOT, false).apply();
         }
         else
         {
-            timerToShiftActivity = new Timer();
-            timerToShiftActivity.schedule(new TimerTask()
+            if (canLoadApp())
             {
-                public void run()
+                ActivityHelper.launchDashboard(SplashActivity.this);
+                finish();
+            }
+            else
+            {
+                timerToShiftActivity = new Timer();
+                timerToShiftActivity.schedule(new TimerTask()
                 {
-                    timerToShiftActivity.cancel();
-                    ActivityHelper.launchAuthentication(SplashActivity.this);
-                    finish();
-                }
-            }, 1500);
+                    public void run()
+                    {
+                        timerToShiftActivity.cancel();
+                        ActivityHelper.launchAuthentication(SplashActivity.this);
+                        finish();
+                    }
+                }, 1500);
+            }
         }
     }
 
@@ -142,22 +166,20 @@ public class SplashActivity extends SherlockActivity
             try
             {
                 exchangeListCache.getOrFetch(new ExchangeListType());
-            }
-            catch (Throwable throwable)
+            } catch (Throwable throwable)
             {
                 throwable.printStackTrace();
             }
-        }
-        catch (RetrofitError retrofitError)
+        } catch (RetrofitError retrofitError)
         {
             canLoad = false;
-            if(retrofitError.isNetworkError()) {
+            if (retrofitError.isNetworkError())
+            {
                 //THToast.show(R.string.network_error);
             }
         }
         return canLoad;
     }
-
 
     @Override protected void onDestroy()
     {

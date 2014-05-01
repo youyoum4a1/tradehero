@@ -22,12 +22,12 @@ public interface FollowerService
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    @GET("/followersSummary/all/{heroId}/{followerId}")
+    @GET("/followersSummary/{heroId}/{followerId}")
     UserFollowerDTO getFollowerSubscriptionDetail(
             @Path("heroId") int heroId,
             @Path("followerId") int followerId);
 
-    @GET("/followersSummary/all/{heroId}/{followerId}")
+    @GET("/followersSummary/{heroId}/{followerId}")
     void getFollowerSubscriptionDetail(
             @Path("heroId") int heroId,
             @Path("followerId") int followerId,

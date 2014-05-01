@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -31,6 +32,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -62,6 +65,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -274,11 +278,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        inflater.inflate(R.menu.menu_search_button, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.dashboard_community));
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setLogo(R.drawable.icon_menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -286,6 +293,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+
+            case R.id.btn_search:
+                pushSearchFragment();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -409,6 +423,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         (LeaderboardDefListKey.getExchange()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
         getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+    }
+
+    private void pushSearchFragment()
+    {
+        Bundle args = new Bundle();
+        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.PEOPLE.name());
+        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
     //</editor-fold>
 

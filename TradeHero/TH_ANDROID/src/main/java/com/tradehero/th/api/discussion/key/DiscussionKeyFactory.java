@@ -7,9 +7,6 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import javax.inject.Inject;
 
-/**
- * Created by thonguyen on 9/4/14.
- */
 public class DiscussionKeyFactory
 {
     @Inject public DiscussionKeyFactory()
@@ -21,7 +18,7 @@ public class DiscussionKeyFactory
     {
         ensureKeys(bundle);
 
-        DiscussionType discussionType = DiscussionType.fromDescription(bundle.getString(DiscussionKey.BUNDLE_KEY_TYPE));
+        DiscussionType discussionType = DiscussionType.valueOf(bundle.getString(DiscussionKey.BUNDLE_KEY_TYPE));
 
         switch (discussionType)
         {
@@ -74,11 +71,5 @@ public class DiscussionKeyFactory
         {
             throw new IllegalStateException("Discussion bundle should contain type of the discussion");
         }
-    }
-
-    public DiscussionListKey toListKey(DiscussionKey discussionKey)
-    {
-        // for more than one type
-        return new DiscussionListKey(discussionKey.getType(), discussionKey.id);
     }
 }

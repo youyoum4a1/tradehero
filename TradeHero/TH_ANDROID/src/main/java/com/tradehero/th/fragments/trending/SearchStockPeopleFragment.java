@@ -31,6 +31,7 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
@@ -49,14 +50,14 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
-    public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
-    public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
+    public final static String BUNDLE_KEY_RESTRICT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".restrictSearchType";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".currentSearchString";
+    public final static String BUNDLE_KEY_CURRENT_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".currentSearchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
-    public final static String BUNDLE_KEY_CALLER_FRAGMENT = SearchStockPeopleFragment.class.getName() + ".nextFragment";
+    public final static String BUNDLE_KEY_FROM_WATCHLIST = SearchStockPeopleFragment.class.getName() + ".fromWatchlist";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
@@ -100,6 +101,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private MenuItem searchPeople;
     private MenuItem searchStock;
     private Runnable requestDataTask;
+
+    private Object selectedItem;
+    private boolean mIsFromWatchList;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -146,15 +150,13 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         if (!shouldDisableSearchTypeOption)
         {
             inflater.inflate(R.menu.search_stock_people_menu, menu);
-        }
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (!shouldDisableSearchTypeOption)
-        {
+
             currentSearchMode = menu.findItem(R.id.current_search_mode);
             searchPeople = menu.findItem(R.id.search_people);
             searchStock = menu.findItem(R.id.search_stock);
         }
 
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_stock_menu, menu);
@@ -226,7 +228,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private void updateSearchType()
     {
         // check current search type
-        mSearchType = TrendingSearchType.STOCKS;
         if (searchPeople != null && searchPeople.isChecked())
         {
             mSearchType = TrendingSearchType.PEOPLE;
@@ -245,9 +246,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             if (mSearchType == TrendingSearchType.PEOPLE)
             {
                 listView.setAdapter(peopleItemViewAdapter);
+                searchEmptyView.setText(R.string.trending_search_empty_result_for_people);
             }
             else if (mSearchType == TrendingSearchType.STOCKS)
             {
+                searchEmptyView.setText(R.string.trending_search_empty_result_for_stock);
                 listView.setAdapter(securityItemViewAdapter);
             }
         }
@@ -260,16 +263,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         populateSearchActionBar();
         initialPopulateOnCreate();
-
-        Bundle arguments = getArguments();
-        if (arguments != null)
-        {
-            String callerClassName = arguments.getString(BUNDLE_KEY_CALLER_FRAGMENT);
-            if (callerClassName != null && callerClassName.equalsIgnoreCase(WatchlistPositionFragment.class.getName()))
-            {
-                shouldDisableSearchTypeOption = true;
-            }
-        }
     }
 
     protected void startAnew()
@@ -514,8 +507,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         if (args != null)
         {
-            args.putString(BUNDLE_KEY_SEARCH_TYPE, mSearchType.name());
-            args.putString(BUNDLE_KEY_SEARCH_STRING, mSearchText);
+            args.putString(BUNDLE_KEY_CURRENT_SEARCH_TYPE, mSearchType.name());
+            args.putString(BUNDLE_KEY_CURRENT_SEARCH_STRING, mSearchText);
             args.putInt(BUNDLE_KEY_PAGE, lastLoadedPage);
             args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
         }
@@ -523,12 +516,20 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void collectParameters(Bundle args)
     {
+        if (args == null)
+        {
+            args = getArguments();
+        }
+
         if (args != null)
         {
-            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
-            mSearchText = args.getString(BUNDLE_KEY_SEARCH_STRING);
+            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_CURRENT_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
+            mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_RESTRICT_SEARCH_TYPE, mSearchType.name()));
+            mSearchText = args.getString(BUNDLE_KEY_CURRENT_SEARCH_STRING);
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
             lastLoadedPage = args.getInt(BUNDLE_KEY_PAGE, FIRST_PAGE);
+            shouldDisableSearchTypeOption = args.containsKey(BUNDLE_KEY_RESTRICT_SEARCH_TYPE);
+            mIsFromWatchList = args.getBoolean(BUNDLE_KEY_FROM_WATCHLIST, false);
         }
     }
 
@@ -577,6 +578,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         return perPage;
     }
 
+    public Object getSelectedItem()
+    {
+        return selectedItem;
+    }
+
     public SecurityListType makeSearchSecurityListType(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
@@ -609,16 +615,26 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            if (mSearchType == TrendingSearchType.STOCKS)
-            {
-                SecurityCompactDTO clickedItem = (SecurityCompactDTO) parent.getItemAtPosition(position);
+            selectedItem = parent.getItemAtPosition(position);
 
-                if (shouldDisableSearchTypeOption)
+            if (getArguments() != null && getArguments().containsKey(Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+            {
+                getNavigator().popFragment();
+                return;
+            }
+
+            if (selectedItem instanceof SecurityCompactDTO)
+            {
+                SecurityCompactDTO clickedItem = (SecurityCompactDTO) selectedItem;
+
+                if (mIsFromWatchList)
+                //if (shouldDisableSearchTypeOption)
                 {
                     // pop out current fragment and push in watchlist edit fragment
+                    // TODO remove this hack
                     Bundle args = new Bundle();
                     args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
-                    args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
+                    args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
                     getNavigator().pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
@@ -626,9 +642,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     pushTradeFragmentIn(clickedItem.getSecurityId());
                 }
             }
-            else
+            else if (selectedItem instanceof UserBaseKey)
             {
-                pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
+                pushUserFragmentIn((UserBaseKey) selectedItem);
             }
         }
     }

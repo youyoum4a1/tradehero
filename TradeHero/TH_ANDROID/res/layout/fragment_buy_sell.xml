@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/transparent"
     >
 
   <ProgressBar
@@ -79,11 +79,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/common_margin_50"
+        android:layout_marginRight="@dimen/common_margin_50"
         android:textSize="18sp"
         android:gravity="center"
-        android:maxLines="2"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textStyle="bold"
-        tools:text="UOB Mb"
+        tools:text="UOB Mb 1234567890UOB Mb 1234567890UOB Mb 1234567890"
         />
 
     <TextView
@@ -146,9 +149,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_toRightOf="@id/logo_layout"
-        tools:text="US$ 4.60"
+        android:text="@string/buy_sell_loading_ask_price"
         android:textSize="16sp"
         android:textColor="@color/font_roi"
         />
@@ -161,11 +164,12 @@
         android:layout_toRightOf="@id/logo_layout"
         android:layout_below="@id/buy_price"
         android:layout_marginTop="-5dp"
-        android:layout_marginLeft="10dp"
-        tools:text="US$ 4.61"
+        android:layout_marginLeft="@dimen/common_margin_10"
         android:textSize="16sp"
         android:textColor="@color/red"
+        android:text="@string/buy_sell_loading_ask_price"
         />
+
     <TextView
         android:id="@+id/vprice_as_of"
         style="@style/TH.SmallValue"
@@ -173,7 +177,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sell_price"
         android:layout_toRightOf="@id/logo_layout"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/common_margin_10"
         tools:text="06 Feb 05:00"
         android:textSize="13sp"
         android:textColor="#4e4e4e"
@@ -187,8 +191,9 @@
         android:orientation="horizontal"
         android:id="@+id/buy_sell_action_buttons"
         android:layout_marginTop="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:layout_marginBottom="@dimen/common_margin_10"
+        android:paddingLeft="@dimen/common_margin_10"
+        android:paddingRight="@dimen/common_margin_10"
         >
       <Button
           android:id="@+id/btn_add_trigger"
@@ -210,44 +215,27 @@
     <LinearLayout
         android:id="@+id/belt"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/buy_sell_action_buttons"
+        android:padding="5dp"
+        android:background="@color/white"
         >
-
       <TextView
           android:id="@+id/info"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:layout_margin="10dp"
-          android:textColor="@color/btn_twitter_color_end"
           android:text="@string/security_info"
-          android:gravity="center"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
 
       <TextView
           android:id="@+id/discussions"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:gravity="center"
-          android:layout_margin="10dp"
           android:text="@string/security_discussions"
-          android:textColor="@color/btn_twitter_color_end"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
 
       <TextView
           android:id="@+id/news"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:layout_margin="10dp"
-          android:gravity="center"
           android:text="@string/security_news"
-          android:textColor="@color/btn_twitter_color_end"
-          android:background="@drawable/security_btn_buy"
+          style="@style/TH.BuySell_ViewPager_Button"
           />
     </LinearLayout>
 
@@ -258,46 +246,7 @@
         android:layout_below="@id/belt"
         />
 
-    <LinearLayout
-        android:id="@+id/bottom_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:paddingTop="10dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@drawable/buy_sell_action_buttons_background"
-        >
-
-      <Button
-          android:id="@+id/btn_buy"
-          style="@style/TH.Btn_Price_Bar"
-          android:layout_height="40dp"
-          android:layout_width="50dp"
-          android:layout_marginBottom="5dp"
-          android:text="@string/buy_sell_button_buy"
-          android:background="@drawable/btn_buy"
-          android:textSize="20sp"
-          android:textColor="@color/white"
-          />
-
-      <Button
-          android:id="@+id/btn_sell"
-          style="@style/TH.Btn_Price_Bar"
-          android:layout_height="40dp"
-          android:layout_width="50dp"
-          android:layout_marginLeft="10dp"
-          android:layout_marginBottom="5dp"
-          android:text="@string/buy_sell_button_sell"
-          android:background="@drawable/btn_buy"
-          android:textSize="20sp"
-          android:textColor="@color/white"
-          android:visibility="gone"
-          />
-
-    </LinearLayout>
+    <include layout="@layout/buy_sell_buttons"/>
   </RelativeLayout>
 
 </LinearLayout>

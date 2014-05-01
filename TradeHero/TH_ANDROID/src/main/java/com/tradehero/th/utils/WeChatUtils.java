@@ -2,10 +2,8 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.wxapi.WXEntryActivity;
-import com.tradehero.th.wxapi.WXMessageType;
+import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -19,17 +17,19 @@ public class WeChatUtils implements SocialSharer
     {
     }
 
-    @Override public void share(Context context, DTOKey shareDtoKey)
+    @Override public void share(Context context, WeChatDTO weChatDTO)
     {
-        if (shareDtoKey instanceof DiscussionKey)
+        Intent intent = new Intent(context, WXEntryActivity.class);
+        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, weChatDTO.type);
+        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, weChatDTO.id);
+        if (weChatDTO.title != null)
         {
-            DiscussionKey discussionKey = (DiscussionKey) shareDtoKey;
-
-            Intent intent = new Intent(context, WXEntryActivity.class);
-
-            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, WXMessageType.News.getType());
-            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, discussionKey.id);
-            context.startActivity(intent);
+            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TITLE_KEY, weChatDTO.title);
         }
+        if (weChatDTO.imageURL != null && !weChatDTO.imageURL.isEmpty())
+        {
+            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_IMAGE_URL_KEY, weChatDTO.imageURL);
+        }
+        context.startActivity(intent);
     }
 }

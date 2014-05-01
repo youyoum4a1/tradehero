@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.social.FollowDialogView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,7 +9,7 @@
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="10dp"
+      android:layout_margin="@dimen/common_margin_10"
       android:layout_marginTop="40dp"
       android:layout_marginBottom="40dp">
 
@@ -27,7 +27,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/common_margin_10"
         android:layout_toRightOf="@id/user_profile_avatar"/>
     <TextView
         android:id="@+id/user_name"
@@ -50,16 +50,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/free_follow_content1"
-        android:padding="10dp"/>
+        android:padding="@dimen/common_margin_10"/>
 
     <TextView
         android:id="@+id/content2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/free_follow_content2"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"/>
+        android:paddingLeft="@dimen/common_margin_10"
+        android:paddingRight="@dimen/common_margin_10"
+        android:paddingBottom="@dimen/common_margin_10"/>
 
     <ImageView
         android:layout_width="match_parent"
@@ -106,7 +106,7 @@
         android:id="@+id/free_follow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="@dimen/common_margin_10"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:background="#cacaca"
@@ -130,7 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#abe874"
-        android:padding="10dp"
+        android:padding="@dimen/common_margin_10"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:orientation="vertical">
@@ -150,4 +150,4 @@
 
   </LinearLayout>
 
-</LinearLayout>
+</com.tradehero.th.fragments.social.FollowDialogView>

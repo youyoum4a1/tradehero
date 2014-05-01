@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.news;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,15 +9,18 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.misc.callback.THCallback;
@@ -30,11 +32,11 @@ import com.tradehero.th.network.service.TranslationServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
+import com.tradehero.th.wxapi.WeChatDTO;
 import dagger.Lazy;
+import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /**
  * Created by tradehero on 14-3-7.
@@ -56,20 +58,16 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private THDialog.DialogInterface dialogCallback;
 
-    //private NewsItemDTO newsItemDTO;
-    private boolean mIsTranslateTitle;
-
     private int id;
     private String title;
     private String description;
     private String langCode;
-    private String text;
-    private DiscussionKey discussionKey;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
     @Inject Lazy<TranslationServiceWrapper> translationServiceWrapperLazy;
 
     @Inject @ForWeChat SocialSharer wechatSharer;
+    private int mShareType;
 
     public NewsDialogLayout(Context context, AttributeSet attrs)
     {
@@ -122,9 +120,9 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void fillData()
     {
-        //TODO
-        String[] dataForFirst = {"Sharing", "Translation"};
-        String[] dataForSecond = {"Facebook", "Twitter", "LinkedIn", "WeChat"};
+        String[] dataForFirst = {getContext().getString(R.string.sharing),
+                getContext().getString(R.string.translation)};
+        String[] dataForSecond = getContext().getResources().getStringArray(R.array.share_to);
         MyListAdapter adapterForFirst =
                 new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
                         dataForFirst);
@@ -159,8 +157,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void setShareTitle()
     {
-        //TODO
-        shareTitleView.setText("Share to...");
+        shareTitleView.setText(R.string.share_to);
     }
 
     private void showFirstChild()
@@ -187,17 +184,17 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         switch (position)
         {
             case 0:
-                socialNetworkEnum = SocialNetworkEnum.FB;
-                break;
-            case 1:
-                socialNetworkEnum = SocialNetworkEnum.TW;
-                break;
-            case 2:
-                socialNetworkEnum = SocialNetworkEnum.LN;
-                break;
-            case 3:
                 shareNewsToWeChat();
                 return;
+            case 1:
+                socialNetworkEnum = SocialNetworkEnum.LN;
+                break;
+            case 2:
+                socialNetworkEnum = SocialNetworkEnum.FB;
+                break;
+            case 3:
+                socialNetworkEnum = SocialNetworkEnum.TW;
+                break;
             default:
                 break;
         }
@@ -209,7 +206,11 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void shareNewsToWeChat()
     {
-        wechatSharer.share(getContext(), discussionKey);
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = id;
+        weChatDTO.type = mShareType;
+        weChatDTO.title = title;
+        wechatSharer.share(getContext(), weChatDTO);
     }
 
     private Callback<DiscussionDTO> createShareRequestCallback(
@@ -228,7 +229,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
             {
                 THToast.show("Share error " + socialNetworkEnum.getName());
                 Timber.e(ex, "Share error");
-                //THToast.show(ex);
             }
         };
     }
@@ -246,8 +246,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 super.onPreExecute();
                 dialog = new ProgressDialog(getContext());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                //TODO R.string
-                dialog.setMessage("Translating...");
+                dialog.setMessage(getContext().getString(R.string.translating));
                 dialog.show();
             }
 
@@ -260,8 +259,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                     Timber.d("serviceWrapper " + serviceWrapper);
                     //TODO zh enough ?
                     return translationServiceWrapperLazy.get()
-                            .translate(langCode, "zh",
-                                    mIsTranslateTitle ? title : text);
+                            .translate(langCode, "zh", title);
                 } catch (Exception e)
                 {
                     Timber.e(e, "Translation Error");
@@ -294,8 +292,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void showTranslationResult(String text)
     {
-        //TODO
-        Dialog dialog = THDialog.showCenterDialog(getContext(), "Translation result:", text, null,
+        THDialog.showCenterDialog(getContext(), getContext().getString(R.string.translation_result),
+                text, null,
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
         {
             @Override
@@ -357,24 +355,15 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         this.dialogCallback = listener;
     }
 
-    //public void setNewsData(NewsItemDTO data, boolean isTranslateTitle)
-    //{
-    //    this.newsItemDTO = data;
-    //    setNewsTitle();
-    //    mIsTranslateTitle = isTranslateTitle;
-    //}
-
-    public void setNewsData(String title, String description, String langCode, int id, String text,
-            DiscussionKey discussionKey, boolean isTranslateTitle)
+    public void setNewsData(String title, String description, String langCode, int id,
+            int shareType)
     {
         this.title = title;
         this.description = description;
         this.langCode = langCode;
         this.id = id;
-        this.text = text;
-        this.discussionKey = discussionKey;
         setNewsTitle();
-        mIsTranslateTitle = isTranslateTitle;
+        mShareType = shareType;
     }
 
     private class MyListAdapter extends ArrayAdapter<String>

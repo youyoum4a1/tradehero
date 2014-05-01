@@ -2,9 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
@@ -29,8 +31,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:01 PM Copyright (c) TradeHero */
 
 public interface UserService
 {
@@ -166,6 +166,26 @@ public interface UserService
         throws RetrofitError;
     //</editor-fold>
 
+    //<editor-fold desc="Search Allowable Recipients">
+    @GET("/users/allowableRecipients")
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients();
+
+    @GET("/users/allowableRecipients")
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
+            @Query("searchTerm") String searchString);
+
+    @GET("/users/allowableRecipients")
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page);
+
+    @GET("/users/allowableRecipients")
+    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage);
+    //</editor-fold>
+
     //<editor-fold desc="Get User">
     @GET("/users/{userId}")
     UserProfileDTO getUser(
@@ -268,7 +288,7 @@ public interface UserService
 
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes")
-    List<HeroDTO> getHeroes(
+    HeroDTOList getHeroes(
             @Path("userId") int userId)
         throws RetrofitError;
     //</editor-fold>

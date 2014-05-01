@@ -9,7 +9,7 @@
       android:id="@+id/authentication_guarantee"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
+      android:gravity="center_horizontal|left"
       android:textColor="@color/authentication_link_text"
       android:text="@string/authentication_guarantee"
       android:textSize="@dimen/authentication_text_size"

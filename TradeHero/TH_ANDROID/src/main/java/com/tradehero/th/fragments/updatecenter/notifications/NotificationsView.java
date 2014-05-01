@@ -7,9 +7,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -47,7 +51,7 @@ public class NotificationsView extends BetterViewAnimator
 {
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(android.R.id.list) AbsListView notificationList;
+    @InjectView(R.id.notification_pull_to_refresh_list) PullToRefreshListView notificationList;
 
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -66,6 +70,7 @@ public class NotificationsView extends BetterViewAnimator
     private DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> notificationFetchTask;
     private NotificationListKey notificationListKey;
     private NotificationListAdapter notificationListAdapter;
+    private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
 
     //<editor-fold desc="Constructors">
     public NotificationsView(Context context)
@@ -88,10 +93,10 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        notificationListAdapter = createNotificationAdapterListener();
+        notificationListAdapter = createNotificationListAdapter();
     }
 
-    private NotificationListAdapter createNotificationAdapterListener()
+    private NotificationListAdapter createNotificationListAdapter()
     {
         return new NotificationListAdapter(
                 getContext(),
@@ -116,10 +121,21 @@ public class NotificationsView extends BetterViewAnimator
         notificationListKey = new NotificationListKey();
 
         notificationList.setAdapter(notificationListAdapter);
+        notificationList.setOnItemClickListener(new NotificationListItemClickListener());
         notificationList.setEmptyView(emptyView);
 
         // scroll event will activate fetch task automatically
         notificationList.setOnScrollListener(new NotificationListOnScrollListener());
+
+        createOnRefreshListener();
+        notificationList.setOnRefreshListener(notificationPullToRefreshListener);
+
+        fetchNextPageIfNecessary();
+    }
+
+    private void createOnRefreshListener()
+    {
+        notificationPullToRefreshListener = new NotificationRefreshRequestListener();
     }
 
     private void initCallbackMap()
@@ -130,13 +146,19 @@ public class NotificationsView extends BetterViewAnimator
 
     private void unsetMiddleCallback()
     {
-        for (MiddleCallback<Response> middleCallback: middleCallbackMap.values())
+        if (middleCallbackMap != null)
         {
-            middleCallback.setPrimaryCallback(null);
+            for (MiddleCallback<Response> middleCallback: middleCallbackMap.values())
+            {
+                middleCallback.setPrimaryCallback(null);
+            }
+            middleCallbackMap.clear();
         }
 
-        callbackMap.clear();
-        middleCallbackMap.clear();
+        if (callbackMap != null)
+        {
+            callbackMap.clear();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -148,16 +170,21 @@ public class NotificationsView extends BetterViewAnimator
         notificationFetchListener = null;
 
         notificationListAdapter = null;
-
         notificationList.setAdapter(null);
-
         notificationList.setOnScrollListener(null);
+        notificationList.setOnRefreshListener((PullToRefreshBase.OnRefreshListener) null);
+        notificationList.setOnItemClickListener(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
     private void fetchNextPageIfNecessary()
+    {
+        fetchNextPageIfNecessary(false);
+    }
+
+    private void fetchNextPageIfNecessary(boolean force)
     {
         detachNotificationFetchTask();
 
@@ -170,7 +197,7 @@ public class NotificationsView extends BetterViewAnimator
         {
             paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
 
-            notificationFetchTask = notificationListCache.get().getOrFetch(paginatedNotificationListKey, false, notificationFetchListener);
+            notificationFetchTask = notificationListCache.get().getOrFetch(paginatedNotificationListKey, force, notificationFetchListener);
             notificationFetchTask.execute();
         }
     }
@@ -209,7 +236,8 @@ public class NotificationsView extends BetterViewAnimator
 
     private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
     {
-        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
+        int maxItemId = Math.min(firstVisibleItem + visibleItemCount, notificationListAdapter.getCount());
+        for (int i = firstVisibleItem; i < maxItemId; ++i)
         {
             Object o = notificationListAdapter.getItem(i);
             if (o instanceof NotificationKey)
@@ -230,7 +258,7 @@ public class NotificationsView extends BetterViewAnimator
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
         if (middleCallback == null)
         {
-            middleCallback = notificationServiceWrapper.markAsRead(pushId, getCallback(pushId));
+            middleCallback = notificationServiceWrapper.markAsRead(new NotificationKey(pushId), getCallback(pushId));
             middleCallbackMap.put(pushId, middleCallback);
         }
     }
@@ -286,6 +314,14 @@ public class NotificationsView extends BetterViewAnimator
         {
             loading = false;
 
+            // a bit hacky here to identify whether the list is forced to be refreshed
+            Integer currentPage = paginatedNotificationListKey.getPage();
+            if (currentPage != null && currentPage == 1)
+            {
+                notificationListAdapter.setItems(null);
+                notificationList.onRefreshComplete();
+            }
+
             setDisplayedChildByLayoutId(notificationList.getId());
         }
     }
@@ -304,7 +340,7 @@ public class NotificationsView extends BetterViewAnimator
         {
             if (response.getStatus() == 200)
             {
-                Timber.d("Notification %d is reported as read");
+                Timber.d("Notification %d is reported as read", pushId);
                 // TODO update title
 
                 // mark it as read in the cache
@@ -332,7 +368,10 @@ public class NotificationsView extends BetterViewAnimator
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        --userProfileDTO.unreadNotificationsCount;
+        if (userProfileDTO.unreadNotificationsCount > 0)
+        {
+            --userProfileDTO.unreadNotificationsCount;
+        }
         userProfileCache.put(userBaseKey, userProfileDTO);
 
         requestUpdateTabCounter();
@@ -343,5 +382,35 @@ public class NotificationsView extends BetterViewAnimator
         // TODO remove this hack after refactor messagecenterfragment
         Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(requestUpdateIntent);
+    }
+
+    private class NotificationRefreshRequestListener implements PullToRefreshBase.OnRefreshListener<ListView>
+    {
+        @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+        {
+            // reset initial data to get refresh list
+            nextPageDelta = 0;
+            paginatedNotificationListKey = null;
+
+            notificationList.setRefreshing();
+            fetchNextPageIfNecessary(true);
+        }
+    }
+
+    private class NotificationListItemClickListener implements android.widget.AdapterView.OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
+        {
+            Object o = parent.getItemAtPosition(position);
+            if (o instanceof NotificationKey)
+            {
+                NotificationDTO notificationDTO = notificationCache.get().get((NotificationKey) o);
+                if (notificationDTO != null)
+                {
+                    NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
+                    notificationClickHandler.handleNotificationItemClicked();
+                }
+            }
+        }
     }
 }

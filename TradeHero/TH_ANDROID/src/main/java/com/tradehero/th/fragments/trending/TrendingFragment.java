@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -48,12 +49,12 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +78,7 @@ public class TrendingFragment extends SecurityListFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
@@ -189,10 +191,14 @@ public class TrendingFragment extends SecurityListFragment
                     int height = filterSelectorView.getHeight();
                     if (listView != null && height > 0)
                     {
-                        getSecurityListView().setPadding((int)getResources().getDimension(R.dimen.trending_list_padding_left_and_right),
-                                height > 103 ? height + 10 : (int)getResources().getDimension(R.dimen.trending_list_padding_top),
-                                (int)getResources().getDimension(R.dimen.trending_list_padding_left_and_right),
-                                (int)getResources().getDimension(R.dimen.trending_list_padding_bottom));
+                        getSecurityListView().setPadding((int) getResources().getDimension(
+                                R.dimen.trending_list_padding_left_and_right),
+                                height > 103 ? height + 10 : (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_top),
+                                (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_left_and_right),
+                                (int) getResources().getDimension(
+                                        R.dimen.trending_list_padding_bottom));
                     }
                 }
             }
@@ -203,10 +209,14 @@ public class TrendingFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.trending_header);
+        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setHomeButtonEnabled(true);
+        inflater.inflate(R.menu.menu_search_button, menu);
 
-        inflater.inflate(R.menu.trending_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -216,6 +226,9 @@ public class TrendingFragment extends SecurityListFragment
         {
             case R.id.btn_search:
                 pushSearchIn();
+                return true;
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -264,8 +277,6 @@ public class TrendingFragment extends SecurityListFragment
         }
         exchangeListCacheFetchTask = null;
     }
-
-
 
     @Override public void onDestroy()
     {
@@ -352,7 +363,9 @@ public class TrendingFragment extends SecurityListFragment
 
     public void pushSearchIn()
     {
-        getNavigator().pushFragment(SearchStockPeopleFragment.class);
+        Bundle args = new Bundle();
+        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
+        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
@@ -410,7 +423,7 @@ public class TrendingFragment extends SecurityListFragment
             ProviderDTO providerDTO = providerCache.get().get(new ProviderId(providerId));
             switch (providerId)
             {
-                case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
+                case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
                     handleCompetitionItemClicked(providerDTO);
                     break;
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
@@ -478,7 +491,8 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock, securityCompactDTO.getSecurityId());
+        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock,
+                securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);

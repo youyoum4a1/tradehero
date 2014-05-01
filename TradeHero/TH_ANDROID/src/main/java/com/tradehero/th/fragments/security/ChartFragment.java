@@ -9,55 +9,79 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.LiveDTOCache;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/**
- * Created by julien on 9/10/13
- */
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    private final static String TAG = ChartFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
     public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
     public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
     public final static String BUNDLE_KEY_ARGUMENTS = ChartFragment.class.getName() + ".arguments";
 
-    private ImageView chartImage;
+    @InjectView(R.id.chart_imageView) protected ImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
+    private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
-    private Button mCloseButton;
+    @InjectView(R.id.close) @Optional protected Button mCloseButton;
 
-    private TextView mPreviousClose;
-    private TextView mOpen;
-    private TextView mDaysHigh;
-    private TextView mDaysLow;
-    private TextView mPERatio;
-    private TextView mEps;
-    private TextView mVolume;
-    private TextView mAvgVolume;
+    @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
+
+    // Warrant specific
+    @InjectView(R.id.row_warrant_type) @Optional protected View rowWarrantType;
+    @InjectView(R.id.vwarrant_type) @Optional protected TextView mWarrantType;
+    @InjectView(R.id.row_warrant_code) @Optional protected View rowWarrantCode;
+    @InjectView(R.id.vwarrant_code) @Optional protected TextView mWarrantCode;
+    @InjectView(R.id.row_warrant_expiry) @Optional protected View rowWarrantExpiry;
+    @InjectView(R.id.vwarrant_expiry) @Optional protected TextView mWarrantExpiry;
+    @InjectView(R.id.row_warrant_strike_price) @Optional protected View rowStrikePrice;
+    @InjectView(R.id.vwarrant_strike_price) @Optional protected TextView mStrikePrice;
+    @InjectView(R.id.row_warrant_underlying) @Optional protected View rowUnderlying;
+    @InjectView(R.id.vwarrant_underlying) @Optional protected TextView mUnderlying;
+    @InjectView(R.id.row_warrant_issuer) @Optional protected View rowIssuer;
+    @InjectView(R.id.vwarrant_issuer) @Optional protected TextView mIssuer;
+
+    @InjectView(R.id.vprevious_close) @Optional protected TextView mPreviousClose;
+    @InjectView(R.id.vopen) @Optional protected TextView mOpen;
+    @InjectView(R.id.vdays_high) @Optional protected TextView mDaysHigh;
+    @InjectView(R.id.vdays_low) @Optional protected TextView mDaysLow;
+    @InjectView(R.id.vpe_ratio) @Optional protected TextView mPERatio;
+    @InjectView(R.id.veps) @Optional protected TextView mEps;
+    @InjectView(R.id.vvolume) @Optional protected TextView mVolume;
+    @InjectView(R.id.vavg_volume) @Optional protected TextView mAvgVolume;
 
     @Inject protected SecurityCompactCache securityCompactCache;
     @Inject protected Picasso picasso;
     @Inject protected ChartDTOFactory chartDTOFactory;
     @Inject protected THLocalyticsSession localyticsSession;
     private Runnable chooseChartImageSizeTask;
+    private Callback chartImageCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -69,6 +93,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
+
+        ButterKnife.inject(this, view);
 
         Bundle args = getArguments();
         if (args != null)
@@ -98,7 +124,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
         }
 
-        chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
         if (chartImage != null)
         {
             chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -126,16 +151,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
         this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
-        mPreviousClose = (TextView) view.findViewById(R.id.vprevious_close);
-        mOpen = (TextView) view.findViewById(R.id.vopen);
-        mDaysHigh = (TextView) view.findViewById(R.id.vdays_high);
-        mDaysLow = (TextView) view.findViewById(R.id.vdays_low);
-        mPERatio = (TextView) view.findViewById(R.id.vpe_ratio);
-        mEps = (TextView) view.findViewById(R.id.veps);
-        mVolume = (TextView) view.findViewById(R.id.vvolume);
-        mAvgVolume = (TextView) view.findViewById(R.id.vavg_volume);
-
-        mCloseButton = (Button) view.findViewById(R.id.close);
         if (mCloseButton != null)
         {
             mCloseButton.setOnClickListener(new View.OnClickListener()
@@ -147,6 +162,21 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             });
         }
 
+        chartImageCallback = new Callback()
+        {
+            @Override public void onSuccess()
+            {
+                if (chartImageWrapper != null)
+                {
+                    chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
+                }
+            }
+
+            @Override public void onError()
+            {
+                Timber.d("Load chartImage error");
+            }
+        };
         return view;
     }
 
@@ -184,6 +214,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             mCloseButton.setOnClickListener(null);
             mCloseButton = null;
         }
+        chartImageCallback = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -209,17 +241,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (securityId != null)
         {
             linkWith(securityCompactCache.get(securityId), andDisplay);
-            if (andDisplay)
-            {
-                displayPreviousClose();
-                displayOpen();
-                displayDaysHigh();
-                displayDaysLow();
-                displayPERatio();
-                displayEps();
-                displayVolume();
-                displayAvgVolume();
-            }
+        }
+        if (andDisplay)
+        {
         }
     }
 
@@ -229,10 +253,19 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (value != null)
         {
             chartDTO.setSecurityCompactDTO(value);
+            linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null, andDisplay);
         }
         if (andDisplay)
         {
             displayChartImage();
+            displayPreviousClose();
+            displayOpen();
+            displayDaysHigh();
+            displayDaysLow();
+            displayPERatio();
+            displayEps();
+            displayVolume();
+            displayAvgVolume();
         }
     }
 
@@ -242,6 +275,21 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (andDisplay)
         {
             displayChartImage();
+        }
+    }
+
+    public void linkWith(WarrantDTO warrantDTO, boolean andDisplay)
+    {
+        this.warrantDTO = warrantDTO;
+        if (andDisplay)
+        {
+            displayWarrantRows();
+            displayWarrantType();
+            displayWarrantCode();
+            displayExpiry();
+            displayStrikePrice();
+            displayUnderlying();
+            displayIssuer();
         }
     }
 
@@ -267,7 +315,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
-            this.picasso.load(imageURL).skipMemoryCache().into(image);
+            this.picasso.load(imageURL).skipMemoryCache()
+                    .into(image, chartImageCallback);
+
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             {
                 postChooseOtherSize();
@@ -328,6 +378,145 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             getActivity().startActivity(intent);
         }
     };
+
+    public void displayWarrantRows()
+    {
+        if (rowWarrantType != null)
+        {
+            rowWarrantType.setVisibility(getWarrantVisibility());
+        }
+        if (rowWarrantCode != null)
+        {
+            rowWarrantCode.setVisibility(getWarrantVisibility());
+        }
+        if (rowWarrantExpiry != null)
+        {
+            rowWarrantExpiry.setVisibility(getWarrantVisibility());
+        }
+        if (rowStrikePrice != null)
+        {
+            rowStrikePrice.setVisibility(getWarrantVisibility());
+        }
+        if (rowUnderlying != null)
+        {
+            rowUnderlying.setVisibility(getWarrantVisibility());
+        }
+        if (rowIssuer != null)
+        {
+            rowIssuer.setVisibility(getWarrantVisibility());
+        }
+    }
+
+    private int getWarrantVisibility()
+    {
+        return (warrantDTO == null) ? View.GONE : View.VISIBLE;
+    }
+
+    public void displayWarrantType()
+    {
+        if (!isDetached() && mWarrantType != null)
+        {
+            if (warrantDTO == null || warrantDTO.warrantType == null)
+            {
+                mWarrantType.setText(R.string.na);
+            }
+            else
+            {
+                int warrantTypeStringResId;
+                switch(warrantDTO.getWarrantType())
+                {
+                    case CALL:
+                        warrantTypeStringResId = R.string.warrant_type_call;
+                        break;
+                    case PUT:
+                        warrantTypeStringResId = R.string.warrant_type_put;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unhandled warrant type " + warrantDTO.getWarrantType());
+                }
+                mWarrantType.setText(warrantTypeStringResId);
+            }
+        }
+    }
+
+    public void displayWarrantCode()
+    {
+        if (!isDetached() && mWarrantCode != null)
+        {
+            if (value == null || value.symbol == null)
+            {
+                mWarrantCode.setText(R.string.na);
+            }
+            else
+            {
+                mWarrantCode.setText(value.symbol);
+            }
+        }
+    }
+
+    public void displayExpiry()
+    {
+        if (!isDetached() && mWarrantExpiry != null)
+        {
+            if (warrantDTO == null || warrantDTO.expiryDate == null)
+            {
+                mWarrantExpiry.setText(R.string.na);
+            }
+            else
+            {
+                SimpleDateFormat df = new SimpleDateFormat("d MMM yy", Locale.US);
+                mWarrantExpiry.setText(df.format(warrantDTO.expiryDate));
+            }
+        }
+    }
+
+    public void displayStrikePrice()
+    {
+        if (!isDetached() && mStrikePrice != null)
+        {
+            if (warrantDTO == null || warrantDTO.strikePrice == null || warrantDTO.strikePriceCcy == null)
+            {
+                mStrikePrice.setText(R.string.na);
+            }
+            else
+            {
+                mStrikePrice.setText(getString(
+                        R.string.warrant_info_strike_price_value_display,
+                        warrantDTO.strikePriceCcy,
+                        NumberDisplayUtils.formatWithRelevantDigits(warrantDTO.strikePrice, 4)));
+            }
+        }
+    }
+
+    public void displayUnderlying()
+    {
+        if (!isDetached() && mUnderlying != null)
+        {
+            if (warrantDTO == null || warrantDTO.underlyingName == null)
+            {
+                mUnderlying.setText(R.string.na);
+            }
+            else
+            {
+                mUnderlying.setText(warrantDTO.underlyingName);
+            }
+        }
+    }
+
+    public void displayIssuer()
+    {
+        if (!isDetached() && mIssuer != null)
+        {
+            if (warrantDTO == null || warrantDTO.issuerName == null)
+            {
+                mIssuer.setText(R.string.na);
+            }
+            else
+            {
+                mIssuer.setText(warrantDTO.issuerName.toUpperCase()); // HACK upperCase
+            }
+        }
+    }
 
     public void displayPreviousClose()
     {

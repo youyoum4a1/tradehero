@@ -37,16 +37,22 @@
   <dimen name="timeline_vendor_logo_max_width">100dp</dimen>
   <dimen name="timeline_vendor_logo_height">40dp</dimen>
   <dimen name="timeline_action_buttons_horizontal_padding">10dp</dimen>
+  <dimen name="timeline_action_buttons_horizontal_padding_big">20dp</dimen>
   <dimen name="comment_action_buttons_horizontal_padding">3dp</dimen>
   <dimen name="timeline_action_buttons_padding">3dp</dimen>
   <dimen name="timeline_action_buttons_vertical_padding">3dp</dimen>
+  <dimen name="timeline_action_buttons_vertical_padding_big">10dp</dimen>
   <dimen name="leaderboard_fof_text_size">12sp</dimen>
   <dimen name="notification_margin">10dp</dimen>
-  <dimen name="notification_logo_width">24dp</dimen>
+  <dimen name="notification_logo_width">40dp</dimen>
   <dimen name="notification_padding_top">10dp</dimen>
   <dimen name="add_to_watch_list_padding">10dp</dimen>
   <dimen name="watchlist_item_button_width">80dp</dimen>
-  <dimen name="watch_list_header_height">50dp</dimen>
+
+  <dimen name="watch_list_header_height">80dp</dimen>
+  <dimen name="watch_list_header_height_value">50dp</dimen>
+  <dimen name="watch_list_header_height_marking">30dp</dimen>
+
   <dimen name="position_list_header_height">50dp</dimen>
   <dimen name="stock_alert_header_padding">5dp</dimen>
   <dimen name="trending_grid_padding_right">3dp</dimen>
@@ -94,7 +100,7 @@
   <dimen name="trending_list_padding_left_and_right">8dp</dimen>
   <dimen name="trending_list_padding_bottom">95dp</dimen>
   <dimen name="trending_list_padding_top">85dp</dimen>
-  <dimen name="discussion_comment_box_height">40dp</dimen>
+  <dimen name="discussion_comment_box_height">50dp</dimen>
 
   <dimen name="security_bg_padding_r_b">2px</dimen>
   <dimen name="security_bg_padding_t_l">1px</dimen>
@@ -109,7 +115,19 @@
   <dimen name="news_item_action_padding_t_b">10dp</dimen>
   <dimen name="news_item_action_padding_l_r">10dp</dimen>
   <dimen name="news_detail_date_size">11sp</dimen>
+
   <dimen name="notification_horizontal_margin">10dp</dimen>
   <dimen name="notification_vertical_margin">0dp</dimen>
+
+  <dimen name="message_center_horizontal_margin">10dp</dimen>
+  <dimen name="message_center_vertical_margin">0dp</dimen>
+
   <dimen name="timeline_belt_height">40dp</dimen>
+  <dimen name="comment_count_drawable_padding">4dp</dimen>
+  <dimen name="notification_logo_padding">5dp</dimen>
+  <!--common margin should not change-->
+  <dimen name="common_margin_2">2dp</dimen>
+  <dimen name="common_margin_4">4dp</dimen>
+  <dimen name="common_margin_10">10dp</dimen>
+  <dimen name="common_margin_50">50dp</dimen>
 </resources>

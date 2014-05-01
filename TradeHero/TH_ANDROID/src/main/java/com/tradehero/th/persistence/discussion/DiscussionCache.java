@@ -3,55 +3,59 @@ package com.tradehero.th.persistence.discussion;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 @Singleton
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final Lazy<NewsCache> newsCache;
+    private final NewsCache newsCache;
+    private final DiscussionDTOFactory discussionDTOFactory;
+    private final UserTimelineService timelineService;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            Lazy<NewsCache> newsCache,
-            DiscussionServiceWrapper discussionServiceWrapper)
+            NewsCache newsCache,
+            UserTimelineService userTimelineService,
+            DiscussionServiceWrapper discussionServiceWrapper,
+            DiscussionDTOFactory discussionDTOFactory)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
+        this.discussionDTOFactory = discussionDTOFactory;
 
         // very hacky, but server hacks it first :(
         this.newsCache = newsCache;
+        this.timelineService = userTimelineService;
     }
 
     @Override protected AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
-            // TODO
+            return timelineService.getTimelineDetail(discussionKey.id);
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsCache.get().getOrFetch((NewsItemDTOKey) discussionKey);
+            return newsCache.getOrFetch((NewsItemDTOKey) discussionKey);
         }
         else
         {
-            return discussionServiceWrapper.getComment(discussionKey);
+            return discussionDTOFactory.createChildClass(discussionServiceWrapper.getComment(discussionKey));
         }
-        throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
+        //throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }
 
     public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)

@@ -13,33 +13,74 @@
   <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
 
   <string name="store_billing_unavailable_window_title">No store account</string>
-  <string name="store_billing_unavailable_window_description">The %s will function properly when you have an account set up and you enable the billing function.</string>
+  <string name="store_billing_unavailable_window_description">The %s will function properly when you
+    have an account set up and you enable the billing function.
+  </string>
   <string name="store_billing_unavailable_cancel">Got it</string>
   <string name="store_billing_unavailable_act">Add an account now</string>
 
   <string name="store_billing_error_loading_window_title">Oh!</string>
-  <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load properly.</string>
+  <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load
+    properly.
+  </string>
   <string name="store_billing_error_loading_act">Reload Please</string>
 
   <string name="store_billing_loading_window_title">Loading&#8230;</string>
-  <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>
+  <string name="store_billing_loading_window_description">Please give us a moment as we are loading
+    some data
+  </string>
   <string name="store_billing_loading_cancel">Got it</string>
 
+  <string name="store_billing_verification_failed_window_title">Verification failed</string>
+  <string name="store_billing_verification_failed_window_description">This is embarassing, we could
+    not trust the communication with GooglePlay.
+  </string>
+  <!--string name="store_billing_verification_failed_ok">Sure</string-->
+  <string name="store_billing_verification_failed_cancel">No worry</string>
+
   <string name="store_billing_user_cancelled_window_title">You cancelled the purchase</string>
-  <string name="store_billing_user_cancelled_window_description">Anything you may want to let us know about?</string>
+  <string name="store_billing_user_cancelled_window_description">Anything you may want to let us
+    know about?
+  </string>
   <string name="store_billing_user_cancelled_ok">Sure</string>
   <string name="store_billing_user_cancelled_cancel">No need</string>
 
-  <string name="store_billing_sku_already_owned_window_title">You already own one of this object</string>
+  <string name="store_billing_sku_already_owned_window_title">You already own one of this object
+  </string>
   <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
-  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Attempt a Restore?</string>
+  <string name="store_billing_sku_already_owned_window_description">We need to account for it.
+    Attempt a Restore?
+  </string>
   <string name="store_billing_sku_already_owned_ok">I already restored</string>
   <string name="store_billing_sku_already_owned_cancel">Restore</string>
 
+  <string name="store_billing_bad_response_window_title">Huh?</string>
+  <string name="store_billing_bad_response_window_description">We received a bad response from
+    GooglePlay.
+  </string>
+  <!--string name="store_billing_bad_response_ok">Sure</string-->
+  <string name="store_billing_bad_response_cancel">OK</string>
+
+  <string name="store_billing_result_error_window_title">Huh?</string>
+  <string name="store_billing_result_error_window_description">We received a result error from
+    Google Play. You may need to clear the cache of the Google Play Store app.
+  </string>
+  <!--string name="store_billing_result_error_ok">Sure</string-->
+  <string name="store_billing_result_error_cancel">OK</string>
+
   <string name="store_billing_remote_error_window_title">Huh?</string>
-  <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>
+  <string name="store_billing_remote_error_window_description">We got an error when accessing a
+    remote service.
+  </string>
   <!--string name="store_billing_remote_error_ok">Sure</string-->
   <string name="store_billing_remote_error_cancel">OK</string>
+
+  <string name="store_billing_send_intent_error_window_title">Huh?</string>
+  <string name="store_billing_send_intent_error_window_description">We got an error when launching
+    GooglePlay.
+  </string>
+  <!--string name="store_billing_send_intent_error_ok">Sure</string-->
+  <string name="store_billing_send_intent_error_cancel">OK</string>
 
   <string name="store_billing_loading_info_window_title">Loading Required Information</string>
   <string name="store_billing_loading_info_window_message">Please wait&#8230;</string>
@@ -54,15 +95,20 @@
   <string name="store_billing_restoring_purchase_window_message">Please wait&#8230;</string>
 
   <string name="store_billing_report_api_error_window_title">This is embarrassing</string>
-  <string name="store_billing_report_api_error_window_description">We got an error when reporting your purchase to our TradeHero servers. You may want to relaunch TradeHero</string>
+  <string name="store_billing_report_api_error_window_description">We got an error when reporting
+    your purchase to our TradeHero servers. You may want to relaunch TradeHero
+  </string>
   <string name="store_billing_report_api_error_cancel">OK</string>
 
   <string name="store_billing_load_info_error_window_title">This is embarrassing</string>
-  <string name="store_billing_load_info_error_window_description">We got an error loading data required by TradeHero store. You may restart the application.</string>
+  <string name="store_billing_load_info_error_window_description">We got an error loading data
+    required by TradeHero store. You may restart the application.
+  </string>
   <string name="store_billing_load_info_error_cancel">Okay</string>
 
   <string name="store_billing_unknown_error_window_title">An unidentified error occurred</string>
-  <string name="store_billing_unknown_error_window_description">Care to let us know what happened?</string>
+  <string name="store_billing_unknown_error_window_description">Care to let us know what happened?
+  </string>
   <string name="store_billing_unknown_error_ok">Sure</string>
   <string name="store_billing_unknown_error_cancel">No need</string>
 
@@ -71,9 +117,13 @@
   <string name="store_buy_follow_credits_window_title">TradeHero Credits</string>
   <string name="store_buy_follow_credits_window_message">Use credits to follow other users!</string>
   <string name="store_buy_stock_alerts_window_title">Stock Alerts Subscription</string>
-  <string name="store_buy_stock_alerts_window_message">Get notified when a stock price changes. Charged monthly, cancel anytime.</string>
+  <string name="store_buy_stock_alerts_window_message">Get notified when a stock price changes.
+    Charged monthly, cancel anytime.
+  </string>
   <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
-  <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your portfolio!</string>
+  <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your
+    portfolio!
+  </string>
 
   <string name="store_buy_virtual_dollar_window_button_cancel">Cancel</string>
   <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
@@ -83,8 +133,10 @@
   <string name="manage_heroes_follows">Follows:</string>
 
   <string name="manage_heroes_empty_title">BUY CREDITS TO FOLLOW HEROES</string>
-  <string name="manage_heroes_empty_description">Following Heroes allows you to receive all their trades in real-time as well as their market commentary.
-      Keep ahead of the game: browse the Most Skilled traders now to pick your Heroes!</string>
+  <string name="manage_heroes_empty_description">Following Heroes allows you to receive all their
+    trades in real-time as well as their market commentary.
+    Keep ahead of the game: browse the Most Skilled traders now to pick your Heroes!
+  </string>
   <string name="manage_heroes_empty_leaderboard_link">Go to Most Skilled Traders</string>
 
   <string name="manage_heroes_following_since">following since %s</string>
@@ -94,22 +146,32 @@
   <string name="manage_heroes_inactive_header">INACTIVE HEROES</string>
 
   <string name="manage_heroes_alert_follow_title">Follow Hero</string>
-  <string name="manage_heroes_alert_follow_message">You are not currently following this Hero.\n\nWould you like to start following?</string>
+  <string name="manage_heroes_alert_follow_message">You are not currently following this
+    Hero.\n\nWould you like to start following?
+  </string>
   <string name="manage_heroes_alert_follow_cancel">Not Now</string>
   <string name="manage_heroes_alert_follow_ok">Follow!</string>
 
   <string name="manage_heroes_follow_progress_title">Processing</string>
   <string name="manage_heroes_follow_progress_message">Trying to follow this Hero.</string>
-  <string name="manage_heroes_follow_failed">There was an error when trying to un/follow this hero</string>
+  <string name="manage_heroes_follow_failed">There was an error when trying to un/follow this hero
+  </string>
 
   <string name="manage_heroes_alert_unfollow_title">Unfollow Hero</string>
-  <string name="manage_heroes_alert_unfollow_message">Are you sure you wish to stop receiving trade information and market comments from this Hero? You will also not be able to view this Hero\'s open positions and timeline.\n\nYour subscription to this Hero will stop with immediate effect upon confirmation. It will cost you extra TradeHero credits to follow this Hero again.</string>
+  <string name="manage_heroes_alert_unfollow_message">Are you sure you wish to stop receiving trade
+    information and market comments from this Hero? You will also not be able to view this Hero\'s
+    open positions and timeline.\n\nYour subscription to this Hero will stop with immediate effect
+    upon confirmation. It will cost you extra TradeHero credits to follow this Hero again.
+  </string>
   <string name="manage_heroes_alert_unfollow_cancel">Cancel</string>
   <string name="manage_heroes_alert_unfollow_ok">Stop Following</string>
 
   <string name="manage_heroes_unfollow_progress_title">Processing</string>
   <string name="manage_heroes_unfollow_progress_message">Trying to unfollow this Hero.</string>
-  <string name="manage_heroes_unfollow_failed">There was an error when trying to unfollow this hero</string>
+  <string name="manage_heroes_unfollow_failed">There was an error when trying to unfollow this
+    hero
+  </string>
+  <string name="manage_heroes_unfollow_success">Unfollow this hero successfully</string>
 
   <!-- Manage followers -->
   <string name="manage_followers_title">Followers</string>
@@ -119,9 +181,11 @@
 
   <string name="manage_followers_payout_none">There have been no payout.</string>
   <string name="manage_followers_payout_list_header">%d PAYOUTS</string>
-  <string name="manage_followers_payout_hero_datetime_format">@string/data_format_dd_mmm_yyyy_kk_mm_z</string>
+  <string name="manage_followers_payout_hero_datetime_format">
+    @string/data_format_dd_mmm_yyyy_kk_mm_z
+  </string>
 
-  <string name="manage_followers_follower_none">You have no follower.</string>
+  <string name="manage_followers_follower_none">No follower.</string>
   <string name="manage_followers_list_header">%d FOLLOWERS</string>
   <string name="manage_followers_revenue_follower">Revenue: %1$s %2$,.2f</string>
 
@@ -164,5 +228,56 @@
   <string name="iap_send_support_email_restore_fail_message">We could not restore your %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
   <string name="iap_send_support_email_restore_fail_ok">Sure</string>
   <string name="iap_send_support_email_restore_fail_cancel">Never Mind</string>
+
+  <!-- Google Play elements -->
+  <string name="google_play_send_support_email_chooser_title">Send an email to TradeHero support
+  </string>
+
+  <string name="google_play_send_support_email_report_fail_title">Purchase Report Failed</string>
+  <string name="google_play_send_support_email_report_fail_message">Do you mind reporting the
+    incident to TradeHero?
+  </string>
+  <string name="google_play_send_support_email_report_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_report_fail_cancel">Never Mind</string>
+
+  <string name="google_play_send_support_email_consume_fail_title">Purchase Consume Failed</string>
+  <string name="google_play_send_support_email_consume_fail_message">Do you mind reporting the
+    incident to TradeHero?
+  </string>
+  <string name="google_play_send_support_email_consume_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_consume_fail_cancel">Never Mind</string>
+
+  <string name="google_play_consumed_purchase_title">Purchased</string>
+  <string name="google_play_consumed_purchase_message">Your purchase went through OK</string>
+  <string name="google_play_consumed_purchase_message_info">Your "%s" went through OK</string>
+  <string name="google_play_consumed_purchase_cancel">Okay</string>
+
+  <string name="google_play_purchase_restored_none_title">No Purchase To Restore</string>
+  <string name="google_play_purchase_restored_none_message">All your purchases have been
+    processed.
+  </string>
+  <string name="google_play_purchase_restored_none_cancel">Okay</string>
+
+  <string name="google_play_purchase_restored_title">Purchases Restored</string>
+  <string name="google_play_purchase_restored_message">We have restored %1$d purchases of yours.
+  </string>
+  <string name="google_play_purchase_restored_cancel">Okay</string>
+
+  <string name="google_play_send_support_email_restore_fail_partial_title">Purchases Restored
+  </string>
+  <string name="google_play_send_support_email_restore_fail_partial_message">We have restored %1$d
+    purchases of yours, but %2$d could not be restored. \n\nDo you mind reporting the incident to
+    TradeHero?
+  </string>
+  <string name="google_play_send_support_email_restore_fail_partial_ok">Sure</string>
+  <string name="google_play_send_support_email_restore_fail_partial_cancel">Never Mind</string>
+
+  <string name="google_play_send_support_email_restore_fail_title">Purchases Failed To Restore
+  </string>
+  <string name="google_play_send_support_email_restore_fail_message">We could not restore your %1$d
+    purchases. \n\nDo you mind reporting the incident to TradeHero?
+  </string>
+  <string name="google_play_send_support_email_restore_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_restore_fail_cancel">Never Mind</string>
 
 </resources>

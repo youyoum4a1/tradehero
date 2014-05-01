@@ -2,44 +2,48 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.discussion.key.RangedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
-import com.tradehero.th.models.discussion.MiddleCallbackRangedDiscussion;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.discussion.MessageStatusCache;
+import com.tradehero.th.models.discussion.MiddleCallbackPaginatedDiscussion;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
 @Singleton public class DiscussionServiceWrapper
 {
-    public static final String TAG = DiscussionServiceWrapper.class.getSimpleName();
+    public final static boolean DEFAULT_USE_QUICK_STUB_RESPONSE = false;
 
     private final DiscussionService discussionService;
     private final DiscussionServiceAsync discussionServiceAsync;
     private final DiscussionDTOFactory discussionDTOFactory;
-    private final MessageStatusCache messageStatusCache;
+    private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+
+    // It has to be lazy to avoid infinite dependency
+    private final Lazy<DiscussionCache> discussionCache;
 
     @Inject public DiscussionServiceWrapper(
             DiscussionService discussionService,
             DiscussionServiceAsync discussionServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
-            MessageStatusCache messageStatusCache)
+            UserMessagingRelationshipCache userMessagingRelationshipCache,
+            Lazy<DiscussionCache> discussionCache)
     {
         this.discussionService = discussionService;
         this.discussionServiceAsync = discussionServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
-        this.messageStatusCache = messageStatusCache;
+        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
+        this.discussionCache = discussionCache;
     }
 
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
@@ -51,14 +55,18 @@ import retrofit.Callback;
         DiscussionDTO discussionDTO = discussionDTOFactory.createChildClass(discussionService.getComment(discussionKey.id));
         if (discussionDTO != null)
         {
-            messageStatusCache.invalidate(new UserBaseKey(discussionDTO.userId));
+            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
         }
         return discussionDTO;
     }
 
     public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
+                callback,
+                discussionDTOFactory,
+                userMessagingRelationshipCache,
+                discussionCache.get());
         discussionServiceAsync.getComment(discussionKey.id, middleCallback);
         return middleCallback;
     }
@@ -70,14 +78,36 @@ import retrofit.Callback;
         DiscussionDTO discussionDTO = discussionService.createDiscussion(discussionFormDTO);
         if (discussionDTO != null)
         {
-            messageStatusCache.invalidate(new UserBaseKey(discussionDTO.userId));
+            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
         }
         return discussionDTO;
     }
 
-    public MiddleCallback<DiscussionDTO> createDiscussion(DiscussionFormDTO discussionFormDTO, Callback<DiscussionDTO> callback)
+    public MiddleCallbackDiscussion createDiscussion(
+            DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache);
+        return createDiscussion(discussionFormDTO, callback, DEFAULT_USE_QUICK_STUB_RESPONSE);
+    }
+
+    public MiddleCallbackDiscussion createDiscussion(
+            DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback,
+            boolean useQuickStubResponse)
+    {
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
+                callback,
+                discussionDTOFactory,
+                userMessagingRelationshipCache,
+                discussionCache.get());
+        if (useQuickStubResponse)
+        {
+            DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
+            middleCallback.success(stub, null);
+
+            // TODO nullifying here is debatable
+            middleCallback.setPrimaryCallback(null);
+        }
         discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
     }
@@ -103,47 +133,23 @@ import retrofit.Callback;
                 discussionsKey.toMap());
     }
 
-    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(DiscussionListKey discussionsKey)
-    {
-        if (discussionsKey instanceof RangedDiscussionListKey)
-        {
-            return getDiscussions((RangedDiscussionListKey) discussionsKey);
-        }
-        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
-    }
-
-    public RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>> getDiscussions(RangedDiscussionListKey discussionsKey)
+    public PaginatedDTO<DiscussionDTO> getMessageThread(MessageDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
-                discussionsKey.maxCount,
-                discussionsKey.maxId,
-                discussionsKey.minId);
+                discussionsKey.toMap());
     }
 
-    public MiddleCallbackRangedDiscussion getDiscussions(
-            DiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
+    public MiddleCallbackPaginatedDiscussion getMessageThread(
+            MessageDiscussionListKey discussionsKey,
+            Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
-        if (discussionsKey instanceof RangedDiscussionListKey)
-        {
-            return getDiscussions((RangedDiscussionListKey) discussionsKey, callback);
-        }
-        throw new IllegalArgumentException("Unhandled type " + discussionsKey.getClass().getName());
-    }
-
-    public MiddleCallbackRangedDiscussion getDiscussions(
-            RangedDiscussionListKey discussionsKey,
-            Callback<RangedDTO<DiscussionDTO, DiscussionDTOList<DiscussionDTO>>> callback)
-    {
-        MiddleCallbackRangedDiscussion middleCallback = new MiddleCallbackRangedDiscussion(callback);
+        MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
         discussionServiceAsync.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
-                discussionsKey.maxCount,
-                discussionsKey.maxId,
-                discussionsKey.minId,
+                discussionsKey.toMap(),
                 middleCallback);
         return middleCallback;
     }
@@ -158,14 +164,18 @@ import retrofit.Callback;
                 discussionVoteKey.voteDirection);
         if (discussionDTO != null)
         {
-            messageStatusCache.invalidate(new UserBaseKey(discussionDTO.userId));
+            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
         }
         return discussionDTO;
     }
 
     public MiddleCallbackDiscussion vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache);
+        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(
+                callback,
+                discussionDTOFactory,
+                userMessagingRelationshipCache,
+                discussionCache.get());
         discussionServiceAsync.vote(
                 discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
@@ -184,7 +194,7 @@ import retrofit.Callback;
                 timelineItemShareRequestDTO);
         if (discussionDTO != null)
         {
-            messageStatusCache.invalidate(new UserBaseKey(discussionDTO.userId));
+            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
         }
 
         return discussionDTO;
@@ -195,7 +205,11 @@ import retrofit.Callback;
             TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(callback, discussionDTOFactory, messageStatusCache);
+        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
+                callback,
+                discussionDTOFactory,
+                userMessagingRelationshipCache,
+                discussionCache.get());
         discussionServiceAsync.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,

@@ -7,14 +7,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -24,7 +22,6 @@ import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 4:49 PM To change this template use File | Settings | File Templates. */
 public class FreshQuoteHolder
 {
     public final static long DEFAULT_MILLI_SEC_QUOTE_REFRESH = 30000;
@@ -33,13 +30,14 @@ public class FreshQuoteHolder
     private final SecurityId securityId;
     private final long milliSecQuoteRefresh;
     private final long millisecQuoteCountdownPrecision;
-    private final List<WeakReference<FreshQuoteListener>> listeners;
+    private FreshQuoteListener quoteListener;
     private CountDownTimer nextQuoteCountDownTimer;
     private boolean refreshing = false;
     public String identifier = "noId";
 
     @Inject Converter converter;
     @Inject Lazy<QuoteServiceWrapper> quoteServiceWrapper;
+    private MiddleCallback<Response> quoteMiddleCallback;
 
     //<editor-fold desc="Constructors">
     public FreshQuoteHolder(SecurityId securityId)
@@ -52,10 +50,29 @@ public class FreshQuoteHolder
         this.securityId = securityId;
         this.milliSecQuoteRefresh = milliSecQuoteRefresh;
         this.millisecQuoteCountdownPrecision = millisecQuoteCountdownPrecision;
-        this.listeners = new ArrayList<>();
         DaggerUtils.inject(this);
     }
     //</editor-fold>
+
+    public void destroy()
+    {
+        detachQuoteMiddleCallback();
+        if (nextQuoteCountDownTimer != null)
+        {
+            nextQuoteCountDownTimer.cancel();
+        }
+        nextQuoteCountDownTimer = null;
+        quoteListener = null;
+    }
+
+    private void detachQuoteMiddleCallback()
+    {
+        if (quoteMiddleCallback != null)
+        {
+            quoteMiddleCallback.setPrimaryCallback(null);
+        }
+        quoteMiddleCallback = null;
+    }
 
     //<editor-fold desc="Accessors">
     public long getMillisecQuoteCountdownPrecision()
@@ -80,81 +97,35 @@ public class FreshQuoteHolder
     //</editor-fold>
 
     //<editor-fold desc="Listener Handling">
-    public boolean hasListener(FreshQuoteListener listener)
+    public void setListener(FreshQuoteListener listener)
     {
+        this.quoteListener = listener;
+    }
+
+    private void notifyListenerCountDown(long milliSecToRefresh)
+    {
+        FreshQuoteListener listener = quoteListener;
         if (listener != null)
         {
-            for (WeakReference<FreshQuoteListener> weakListener : listeners)
-            {
-                if (weakListener != null && weakListener.get() == listener)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param listener
-     */
-    public void registerListener(FreshQuoteListener listener)
-    {
-        if (listener != null && !hasListener(listener))
-        {
-            listeners.add(new WeakReference<>(listener));
+            listener.onMilliSecToRefreshQuote(milliSecToRefresh);
         }
     }
 
-    public void unRegisterListener(FreshQuoteListener listener)
+    private void notifyListenerRefreshing()
     {
-        for (WeakReference<FreshQuoteListener> weakListener: listeners)
+        FreshQuoteListener listener = quoteListener;
+        if (listener != null)
         {
-            if (weakListener.get() == listener)
-            {
-                listeners.remove(weakListener);
-                break; // To avoid async
-            }
+            listener.onIsRefreshing(refreshing);
         }
     }
 
-    private void notifyListenersCountDown(long milliSecToRefresh)
+    private void notifyListenerOnFreshQuote(QuoteDTO quoteDTO)
     {
-        FreshQuoteListener listener;
-        for (WeakReference<FreshQuoteListener> weakListener: listeners)
+        FreshQuoteListener listener = quoteListener;
+        if (listener != null)
         {
-            listener = weakListener.get();
-            if (listener != null)
-            {
-                listener.onMilliSecToRefreshQuote(milliSecToRefresh);
-            }
-        }
-    }
-
-    private void notifyListenersRefreshing()
-    {
-        FreshQuoteListener listener;
-        for (WeakReference<FreshQuoteListener> weakListener: listeners)
-        {
-            listener = weakListener.get();
-            if (listener != null)
-            {
-                listener.onIsRefreshing(refreshing);
-            }
-        }
-    }
-
-    private void notifyListenersOnFreshQuote(QuoteDTO quoteDTO)
-    {
-        FreshQuoteListener listener;
-        for (WeakReference<FreshQuoteListener> weakListener: listeners)
-        {
-            listener = weakListener.get();
-            if (listener != null)
-            {
-                listener.onFreshQuote(quoteDTO);
-            }
+            listener.onFreshQuote(quoteDTO);
         }
     }
     //</editor-fold>
@@ -169,33 +140,15 @@ public class FreshQuoteHolder
         if (this.securityId != null && !refreshing)
         {
             refreshing = true;
-            notifyListenersRefreshing();
-            quoteServiceWrapper.get().getRawQuote(securityId, createCallbackForRawResponse());
+            notifyListenerRefreshing();
+            detachQuoteMiddleCallback();
+            quoteMiddleCallback = quoteServiceWrapper.get().getRawQuote(securityId, createCallbackForRawResponse());
         }
     }
 
     private Callback<Response> createCallbackForRawResponse()
     {
-        return  new retrofit.Callback<Response>()
-        {
-            @Override public void success(Response response, Response dumpResponse)
-            {
-                notifyNotRefreshing();
-                handleReceivedQuote(response);
-            }
-
-            @Override public void failure(RetrofitError error)
-            {
-                Timber.e("Failed to get quote", error);
-                notifyNotRefreshing();
-            }
-
-            private void notifyNotRefreshing()
-            {
-                refreshing = false;
-                notifyListenersRefreshing();
-            }
-        };
+        return new FreshQuoteHolderResponseCallback();
     }
 
     @SuppressWarnings("unchecked")
@@ -246,83 +199,9 @@ public class FreshQuoteHolder
             }
         }
 
-        notifyListenersOnFreshQuote(quoteDTO);
+        notifyListenerOnFreshQuote(quoteDTO);
         scheduleNextQuoteRequest();
     }
-
-    //<editor-fold desc="Handle callback from quote service which return SignatureContainer<QuoteDTO>">
-    //private Callback<SignatureContainer<QuoteDTO>> createCallback()
-    //{
-    //    return  new retrofit.Callback<SignatureContainer<QuoteDTO>>()
-    //    {
-    //        @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
-    //        {
-    //            notifyNotRefreshing();
-    //            handleReceivedQuote(signedQuoteDTO, response);
-    //        }
-    //
-    //        @Override public void failure(RetrofitError error)
-    //        {
-    //            Timber.e("Failed to get quote", error);
-    //            notifyNotRefreshing();
-    //        }
-    //
-    //        private void notifyNotRefreshing()
-    //        {
-    //            refreshing = false;
-    //            notifyListenersRefreshing();
-    //        }
-    //    };
-    //}
-    //
-    //private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
-    //{
-    //    QuoteDTO quoteDTO = null;
-    //    if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
-    //    {
-    //        quoteDTO = signedQuoteDTO.signedObject;
-    //
-    //        TypedInput body = response.getBody();
-    //
-    //        if (body instanceof TypedByteArray)
-    //        {
-    //            signedQuoteDTO.signedObject.rawResponse = new String(((TypedByteArray)body).getBytes());
-    //        }
-    //        else
-    //        {
-    //            InputStream is = null;
-    //            try
-    //            {
-    //                if (body != null && body.mimeType() != null)
-    //                {
-    //                    is = body.in();
-    //                    byte[] responseBytes = IOUtils.streamToBytes(is);
-    //                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
-    //                }
-    //            }
-    //            catch (IOException e)
-    //            {
-    //                Timber.e("Failed to get signature", e);
-    //            }
-    //            finally
-    //            {
-    //                if (is != null)
-    //                {
-    //                    try
-    //                    {
-    //                        is.close();
-    //                    }
-    //                    catch (IOException ignored)
-    //                    {
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //    notifyListenersOnFreshQuote(quoteDTO);
-    //    scheduleNextQuoteRequest();
-    //}
-    //</editor-fold>
 
     private void scheduleNextQuoteRequest()
     {
@@ -334,7 +213,7 @@ public class FreshQuoteHolder
         {
             @Override public void onTick(long millisUntilFinished)
             {
-                notifyListenersCountDown(millisUntilFinished);
+                notifyListenerCountDown(millisUntilFinished);
             }
 
             @Override public void onFinish()
@@ -343,16 +222,6 @@ public class FreshQuoteHolder
             }
         };
         nextQuoteCountDownTimer.start();
-    }
-
-    public void cancel()
-    {
-        if (nextQuoteCountDownTimer != null)
-        {
-            nextQuoteCountDownTimer.cancel();
-        }
-        nextQuoteCountDownTimer = null;
-        listeners.clear();
     }
 
     /**
@@ -366,4 +235,25 @@ public class FreshQuoteHolder
     }
 
     private static class QuoteSignatureContainer extends SignatureContainer<QuoteDTO> { }
+
+    protected class FreshQuoteHolderResponseCallback implements Callback<Response>
+    {
+        @Override public void success(Response response, Response dumpResponse)
+        {
+            notifyNotRefreshing();
+            handleReceivedQuote(response);
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            Timber.e("Failed to get quote", error);
+            notifyNotRefreshing();
+        }
+
+    private void notifyNotRefreshing()
+    {
+        refreshing = false;
+        notifyListenerRefreshing();
+    }
+}
 }

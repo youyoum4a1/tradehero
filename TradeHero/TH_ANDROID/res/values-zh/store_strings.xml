@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="store_option_menu_title">股货英雄商店</string>
+  <string name="store_header_in_app_purchases">应用内购</string>
+  <string name="store_buy_virtual_dollars">虚拟现金</string>
+  <string name="store_buy_follow_credits">关注点数</string>
+  <string name="store_buy_stock_alerts">股市预警</string>
+  <string name="store_buy_reset_portfolio">重置投资组合</string>
+  <string name="store_header_manage_purchases">管理订单</string>
+  <string name="store_manage_heroes">管理英雄</string>
+  <string name="store_manage_followers">管理粉丝</string>
+  <string name="store_manage_stock_alerts">管理股市预警</string>
+  <string name="store_billing_unavailable_window_title">无商店账号</string>
+  <string name="store_billing_unavailable_window_description">请到帐号设置中，开启支付功能，才能实现应用内购</string>
+  <string name="store_billing_unavailable_cancel">知道了</string>
+  <string name="store_billing_unavailable_act">现在添加账号</string>
+  <string name="store_billing_error_loading_window_title">啊哦!</string>
+  <string name="store_billing_error_loading_window_description">股货英雄商店无法读取</string>
+  <string name="store_billing_error_loading_act">刷新中</string>
+  <string name="store_billing_loading_window_title">读取中&#8230;</string>
+  <string name="store_billing_loading_window_description">请耐心等待，正在读取中</string>
+  <string name="store_billing_loading_cancel">知道了</string>
+  <string name="store_billing_verification_failed_window_title">验证失败</string>
+  <string name="store_billing_verification_failed_window_description">关键时刻掉链子，抱歉，与应用商店通讯失败</string>
+  <!--string name="store_billing_verification_failed_ok">Sure</string-->
+  <string name="store_billing_verification_failed_cancel">别担心</string>
+  <string name="store_billing_user_cancelled_window_title">你取消了订单</string>
+  <string name="store_billing_user_cancelled_window_description">是否愿意告诉我们取消订单的原因？</string>
+  <string name="store_billing_user_cancelled_ok">好的</string>
+  <string name="store_billing_user_cancelled_cancel">不了</string>
+  <string name="store_billing_sku_already_owned_window_title">这个物品你已经拥有了哦</string>
+  <string name="store_billing_sku_already_owned_name_window_title">你已经有一个%s</string>
+  <string name="store_billing_sku_already_owned_window_description">尝试恢复吗？</string>
+  <string name="store_billing_sku_already_owned_ok">好的</string>
+  <string name="store_billing_sku_already_owned_cancel">取消</string>
+  <string name="store_billing_bad_response_window_title">啊?</string>
+  <string name="store_billing_bad_response_window_description">我们从应用商店收到一条错误的响应</string>
+  <!--string name="store_billing_bad_response_ok">Sure</string-->
+  <string name="store_billing_bad_response_cancel">好的</string>
+  <string name="store_billing_result_error_window_title">啊?</string>
+  <string name="store_billing_result_error_window_description">我们从应用商店收到一条错误信息。你可能需要清理应用商店的缓存
+  </string>
+  <!--string name="store_billing_result_error_ok">Sure</string-->
+  <string name="store_billing_result_error_cancel">好的</string>
+  <string name="store_billing_remote_error_window_title">啊?</string>
+  <string name="store_billing_remote_error_window_description">远程服务请求，收到错误信息</string>
+  <!--string name="store_billing_remote_error_ok">Sure</string-->
+  <string name="store_billing_remote_error_cancel">好的</string>
+  <string name="store_billing_send_intent_error_window_title">啊哦！</string>
+  <string name="store_billing_send_intent_error_window_description">打开应用商店时，收到错误信息</string>
+  <!--string name="store_billing_send_intent_error_ok">Sure</string-->
+  <string name="store_billing_send_intent_error_cancel">好的</string>
+  <string name="store_billing_loading_info_window_title">登录信息</string>
+  <string name="store_billing_loading_info_window_message">请等待&#8230;</string>
+  <string name="store_billing_report_api_launching_window_title">交易进行中</string>
+  <string name="store_billing_report_api_launching_window_message">请等待&#8230;</string>
+  <string name="store_billing_report_api_finishing_window_title">交易完成</string>
+  <string name="store_billing_report_api_finishing_window_message">关闭&#8230;</string>
+  <string name="store_billing_restoring_purchase_window_title">恢复你的购物数据</string>
+  <string name="store_billing_restoring_purchase_window_message">请等待&#8230;</string>
+  <string name="store_billing_report_api_error_window_title">乌龙了</string>
+  <string name="store_billing_report_api_error_window_description">服务器通讯过程中发生错误，请退出股货英雄并重新开启
+  </string>
+  <string name="store_billing_report_api_error_cancel">好的</string>
+  <string name="store_billing_load_info_error_window_title">乌龙了</string>
+  <string name="store_billing_load_info_error_window_description">从股货英雄应用商店，收到错误的请求，可能需要你重启软件
+  </string>
+  <string name="store_billing_load_info_error_cancel">没问题</string>
+  <string name="store_billing_unknown_error_window_title">发生了未知错误</string>
+  <string name="store_billing_unknown_error_window_description">愿意告知我们详情吗？</string>
+  <string name="store_billing_unknown_error_ok">愿意</string>
+  <string name="store_billing_unknown_error_cancel">不了</string>
+  <string name="store_buy_virtual_dollar_window_title">额外虚拟股金</string>
+  <string name="store_buy_virtual_dollar_window_message">用虚拟股金</string>
+  <string name="store_buy_follow_credits_window_title">关注点数</string>
+  <string name="store_buy_follow_credits_window_message">使用关注点数，关注股市达人!</string>
+  <string name="store_buy_stock_alerts_window_title">股市闹钟</string>
+  <string name="store_buy_stock_alerts_window_message">在股票价格变动的时候，及时获得通知。按月支付，随时取消</string>
+  <string name="store_buy_reset_portfolio_window_title">数据重置</string>
+  <string name="store_buy_reset_portfolio_window_message">抹掉使用数据，一切从头开始</string>
+  <string name="store_buy_virtual_dollar_window_button_cancel">取消</string>
+  <string name="store_buy_virtual_dollar_window_button_buy">现在就买!</string>
+
+  <!-- Manage heroes -->
+  <string name="manage_heroes_title">英雄</string>
+  <string name="manage_heroes_follows">关注:</string>
+  <string name="manage_heroes_empty_title">购买关注点数，关注股市达人</string>
+  <string name="manage_heroes_empty_description">一旦高级关注了某位英雄，你都能第一时间获得英雄的交易及动态通知。
+    一马当先: 选择最牛股货英雄，做你的英雄!
+  </string>
+  <string name="manage_heroes_empty_leaderboard_link">查看最牛股货英雄</string>
+  <string name="manage_heroes_following_since">从%s开始关注</string>
+  <string name="manage_heroes_not_following_since">暂不关注%s</string>
+  <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
+  <string name="manage_heroes_active_header">关注中的英雄</string>
+  <string name="manage_heroes_inactive_header">曾经关注过的英雄</string>
+  <string name="manage_heroes_alert_follow_title">关注英雄</string>
+  <string name="manage_heroes_alert_follow_message">你目前尚未关注这位英雄。\n\n是否开始关注？</string>
+  <string name="manage_heroes_alert_follow_cancel">暂不</string>
+  <string name="manage_heroes_alert_follow_ok">关注</string>
+  <string name="manage_heroes_follow_progress_title">执行中</string>
+  <string name="manage_heroes_follow_progress_message">正在尝试关注这位英雄</string>
+  <string name="manage_heroes_follow_failed">关注英雄的过程中，发生了一点错误</string>
+  <string name="manage_heroes_alert_unfollow_title">取消关注</string>
+  <string name="manage_heroes_alert_unfollow_message">
+    您确定不想再收到这位英雄的交易信息以及对市场的评价？您将不能再查看该英雄的持仓与时间轴。一旦确认，您将立即停止对该用户的订阅。若要再次关注，将会重新扣除您的关注点数
+  </string>
+  <string name="manage_heroes_alert_unfollow_cancel">取消</string>
+  <string name="manage_heroes_alert_unfollow_ok">取消关注</string>
+  <string name="manage_heroes_unfollow_progress_title">执行中</string>
+  <string name="manage_heroes_unfollow_progress_message">正在尝试取消关注这位英雄</string>
+  <string name="manage_heroes_unfollow_failed">取消关注过程中，发生了一点错误</string>
+  <string name="manage_heroes_unfollow_success">已经取消关注这位英雄</string>
+
+  <!-- Manage followers -->
+  <string name="manage_followers_title">粉丝</string>
+  <string name="manage_followers_total_revenue">总收益</string>
+  <string name="manage_followers_total_amount_paid">总支出</string>
+  <string name="manage_followers_number_followers">粉丝</string>
+  <string name="manage_followers_payout_none">没有任何支出</string>
+  <string name="manage_followers_payout_list_header">%d 支出</string>
+  <string name="manage_followers_payout_hero_datetime_format">
+    @string/data_format_dd_mmm_yyyy_kk_mm_z
+  </string>
+  <string name="manage_followers_follower_none">没有粉丝数据</string>
+  <string name="manage_followers_list_header">%d 粉丝</string>
+  <string name="manage_followers_revenue_follower">收益: %1$s %2$,.2f</string>
+
+  <!-- Manage follower payments -->
+  <string name="manage_follower_payment_transaction_list_header">交易</string>
+  <string name="manage_follower_payment_duration">已支付 %d 日:</string>
+  <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
+
+  <!-- Manage Alerts -->
+  <string name="manage_alerts_plan">"计划: "</string>
+  <string name="manage_alerts_with_count">%d 预警</string>
+
+  <!-- Google Play elements -->
+  <string name="google_play_send_support_email_chooser_title">发送邮件给股货英雄客服</string>
+  <string name="google_play_send_support_email_report_fail_title">购物失败</string>
+  <string name="google_play_send_support_email_report_fail_message">你愿意告知我们错误详情吗？</string>
+  <string name="google_play_send_support_email_report_fail_ok">愿意</string>
+  <string name="google_play_send_support_email_report_fail_cancel">算了吧</string>
+  <string name="google_play_send_support_email_consume_fail_title">购物失败</string>
+  <string name="google_play_send_support_email_consume_fail_message">你愿意告知我们错误详情吗？</string>
+  <string name="google_play_send_support_email_consume_fail_ok">愿意</string>
+  <string name="google_play_send_support_email_consume_fail_cancel">算了吧</string>
+  <string name="google_play_consumed_purchase_title">已购</string>
+  <string name="google_play_consumed_purchase_message">你的交易已完成</string>
+  <string name="google_play_consumed_purchase_message_info">你已购买 "%s"</string>
+  <string name="google_play_consumed_purchase_cancel">好的</string>
+  <string name="google_play_purchase_restored_none_title">没有未处理的订单</string>
+  <string name="google_play_purchase_restored_none_message">所有的订单都已完成</string>
+  <string name="google_play_purchase_restored_none_cancel">好的</string>
+  <string name="google_play_purchase_restored_title">订单恢复</string>
+  <string name="google_play_purchase_restored_message">我们为你恢复了关于 %1$d 的订单</string>
+  <string name="google_play_purchase_restored_cancel">好的</string>
+  <string name="google_play_send_support_email_restore_fail_partial_title">订单恢复</string>
+  <string name="google_play_send_support_email_restore_fail_partial_message">我们为你恢复了%1$d的订单，但是 %2$d
+    无法恢复。\n\n你愿意告知我们错误详情吗？
+  </string>
+  <string name="google_play_send_support_email_restore_fail_partial_ok">愿意</string>
+  <string name="google_play_send_support_email_restore_fail_partial_cancel">算了吧</string>
+  <string name="google_play_send_support_email_restore_fail_title">订单恢复失败</string>
+  <string name="google_play_send_support_email_restore_fail_message">我们无法恢复%1$d的购物信息。
+    \n\n你愿意告知我们错误详情吗？
+  </string>
+  <string name="google_play_send_support_email_restore_fail_ok">愿意</string>
+  <string name="google_play_send_support_email_restore_fail_cancel">算了吧</string>
+
+</resources>

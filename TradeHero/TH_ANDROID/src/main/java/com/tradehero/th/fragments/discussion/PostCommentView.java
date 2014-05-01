@@ -3,12 +3,14 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -24,17 +26,22 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by thonguyen on 9/4/14.
- */
 public class PostCommentView extends RelativeLayout
 {
+    /**
+     * If true, then we wait for a return from the server before adding the discussion.
+     * If false, we add it right away.
+     */
+    public static final boolean USE_QUICK_STUB_DISCUSSION = true;
+
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
@@ -48,6 +55,7 @@ public class PostCommentView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
+    @Inject DiscussionCache discussionCache;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     private CommentPostedListener commentPostedListener;
@@ -80,22 +88,25 @@ public class PostCommentView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
+        commentText.requestFocus();
+        //DeviceUtil.showKeyboard(getContext(), commentText);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachSubmitCommentMiddleCallback();
-
         resetView();
-
+        commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
 
+        DeviceUtil.dismissKeyboard(getContext(), commentText);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
     @OnClick(R.id.post_comment_action_submit)
-    void postComment()
+    protected void postComment()
     {
         detachSubmitCommentMiddleCallback();
 
@@ -105,15 +116,11 @@ public class PostCommentView extends RelativeLayout
         }
         else if (discussionKey != null)
         {
-            DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
-            setPosting();
-            postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new CommentSubmitCallback());
+            submitAsDiscussionReply();
         }
         else if (messageType != null)
         {
-            MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
-            setPosting();
-            postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, new CommentSubmitCallback());
+            submitAsNewDiscussion();
         }
         else
         {
@@ -131,11 +138,14 @@ public class PostCommentView extends RelativeLayout
         return true;
     }
 
-    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    protected void submitAsDiscussionReply()
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
-        messageCreateFormDTO.message = commentText.getText().toString();
-        return messageCreateFormDTO;
+        DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
+        setPosting();
+        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(
+                discussionFormDTO,
+                createCommentSubmitCallback(),
+                USE_QUICK_STUB_DISCUSSION);
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
@@ -144,6 +154,21 @@ public class PostCommentView extends RelativeLayout
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
         return discussionFormDTO;
+    }
+
+    protected void submitAsNewDiscussion()
+    {
+        MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
+        setPosting();
+        postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback());
+    }
+
+    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    {
+        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        messageCreateFormDTO.message = commentText.getText().toString();
+        messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
+        return messageCreateFormDTO;
     }
 
     public void setCommentPostedListener(CommentPostedListener listener)
@@ -199,6 +224,13 @@ public class PostCommentView extends RelativeLayout
         commentSubmit.setEnabled(true);
     }
 
+    protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+        setPosted();
+        fixHackDiscussion(discussionDTO);
+        notifyCommentPosted(discussionDTO);
+    }
+
     // HACK
     protected void fixHackDiscussion(DiscussionDTO discussionDTO)
     {
@@ -208,25 +240,56 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    private class CommentSubmitCallback implements Callback<DiscussionDTO>
+    protected void notifyCommentPosted(DiscussionDTO discussionDTO)
+    {
+        CommentPostedListener commentPostedListenerCopy = commentPostedListener;
+        if (commentPostedListenerCopy != null)
+        {
+            commentPostedListenerCopy.success(discussionDTO);
+        }
+    }
+
+    protected void notifyCommentPostFailed(Exception exception)
+    {
+        CommentPostedListener commentPostedListenerCopy = commentPostedListener;
+        if (commentPostedListenerCopy != null)
+        {
+            commentPostedListenerCopy.failure(exception);
+        }
+    }
+
+    protected Callback<DiscussionDTO> createCommentSubmitCallback()
+    {
+        return new CommentSubmitCallback();
+    }
+
+    protected class CommentSubmitCallback implements Callback<DiscussionDTO>
     {
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            setPosted();
-            fixHackDiscussion(discussionDTO);
-            if (commentPostedListener != null)
-            {
-                commentPostedListener.success(discussionDTO);
-            }
+            handleCommentPosted(discussionDTO);
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             setPosted();
             THToast.show(new THException(retrofitError));
-            if (commentPostedListener != null)
+            notifyCommentPostFailed(retrofitError);
+        }
+    }
+
+    protected OnFocusChangeListener createEditTextFocusChangeListener()
+    {
+        return new PostCommentViewEditTextFocusChangeListener();
+    }
+
+    protected class PostCommentViewEditTextFocusChangeListener implements OnFocusChangeListener
+    {
+        @Override public void onFocusChange(View v, boolean hasFocus)
+        {
+            if (hasFocus)
             {
-                commentPostedListener.failure(retrofitError);
+                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         }
     }

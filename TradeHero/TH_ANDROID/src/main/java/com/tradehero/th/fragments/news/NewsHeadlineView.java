@@ -16,7 +16,7 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -88,8 +88,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(newsItemDTO.title, newsItemDTO.description,
-                newsItemDTO.langCode, newsItemDTO.id, newsItemDTO.text,
-                newsItemDTO.getDiscussionKey(), true);
+                newsItemDTO.langCode, newsItemDTO.id, WeChatMessageType.News.getType());
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
     //</editor-fold>

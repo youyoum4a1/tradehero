@@ -26,18 +26,17 @@ import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
-    public static final String TAG = FollowerPayoutManagerFragment.class.getSimpleName();
-
-    public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE = FollowerPayoutManagerFragment.class.getName() + ".followerId";
+    public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
+            FollowerPayoutManagerFragment.class.getName() + ".followerId";
 
     private ImageView followerPicture;
     private TextView followerName;
     private TextView totalRevenue;
     private ActionBar actionBar;
     private FollowerPaymentListView followerPaymentListView;
+    private View errorView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
     private FollowerHeroRelationId followerHeroRelationId;
@@ -57,9 +56,11 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_follower_revenue, container, false);
+        View view =
+                inflater.inflate(R.layout.fragment_store_manage_follower_revenue, container, false);
         initViews(view);
         return view;
     }
@@ -78,12 +79,16 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         }
 
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
-        followerPaymentListView = (FollowerPaymentListView) view.findViewById(R.id.follower_payments_list);
+        followerPaymentListView =
+                (FollowerPaymentListView) view.findViewById(R.id.follower_payments_list);
+
+        errorView = view.findViewById(R.id.error_view);
 
         if (followerPaymentListAdapter == null)
         {
             followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
-                    getActivity(), getActivity().getLayoutInflater(), R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
+                    getActivity(), getActivity().getLayoutInflater(),
+                    R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
         }
         if (followerPaymentListView != null)
         {
@@ -94,7 +99,9 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_HOME_AS_UP);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_HOME_AS_UP);
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -103,7 +110,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        followerHeroRelationId = new FollowerHeroRelationId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
+        followerHeroRelationId =
+                new FollowerHeroRelationId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
         fetchFollowerSummary();
     }
 
@@ -137,36 +145,65 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         {
             if (userFollowerListener == null)
             {
-                userFollowerListener = new DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO>()
-                {
-                    @Override public void onDTOReceived(FollowerHeroRelationId key, UserFollowerDTO value, boolean fromCache)
-                    {
-                        display(value);
-                    }
+                userFollowerListener =
+                        new DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO>()
+                        {
+                            @Override public void onDTOReceived(FollowerHeroRelationId key,
+                                    UserFollowerDTO value, boolean fromCache)
+                            {
+                                display(value);
+                            }
 
-                    @Override public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
-                    {
-                        THToast.show("There was an error fetching your follower information");
-                    }
-                };
+                            @Override
+                            public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
+                            {
+                                THToast.show(
+                                        "There was an error fetching your follower information");
+                                showErrorView();
+                            }
+                        };
             }
             if (userFollowerFetchTask != null)
             {
                 userFollowerFetchTask.setListener(null);
             }
-            userFollowerFetchTask = userFollowerCache.get().getOrFetch(followerHeroRelationId, userFollowerListener);
+            userFollowerFetchTask = userFollowerCache.get()
+                    .getOrFetch(followerHeroRelationId, userFollowerListener);
             userFollowerFetchTask.execute();
         }
     }
 
     protected String getDisplayName()
     {
+        if (userFollowerDTO == null)
+        {
+            if (followerHeroRelationId == null)
+            {
+                return "";
+            }
+            else
+            {
+                return followerHeroRelationId.followerName;
+            }
+        }
         return userBaseDTOUtil.getLongDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)
     {
         linkWith(summaryDTO, true);
+    }
+
+    private void showErrorView()
+    {
+        if (errorView != null)
+        {
+            errorView.setVisibility(View.VISIBLE);
+        }
+        if (followerPaymentListView != null)
+        {
+            followerPaymentListView.setVisibility(View.GONE);
+        }
     }
 
     public void linkWith(UserFollowerDTO summaryDTO, boolean andDisplay)
@@ -214,7 +251,9 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         {
             if (userFollowerDTO != null)
             {
-                totalRevenue.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, userFollowerDTO.totalRevenue));
+                totalRevenue.setText(String.format("%s %,.2f",
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        userFollowerDTO.totalRevenue));
             }
             else
             {

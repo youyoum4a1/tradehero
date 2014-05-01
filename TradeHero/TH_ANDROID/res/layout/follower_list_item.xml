@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.th.fragments.social.follower.FollowerListItemView
+    style="@style/TH.ListItem"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:background="@color/white"
+    android:padding="@dimen/common_margin_10"
     >
+  <!--android:background="@color/white"-->
 
   <ImageView
       android:id="@+id/follower_profile_picture"
@@ -49,15 +50,15 @@
           android:text=""
         />
 
-    <TextView
-        android:id="@+id/follower_time"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:maxLines="1"
-        android:layout_weight="3"
-        android:textStyle="bold"
-        android:text=""
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/follower_time"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:maxLines="1"-->
+        <!--android:layout_weight="3"-->
+        <!--android:textStyle="bold"-->
+        <!--android:text=""-->
+        <!--/>-->
 
   </LinearLayout>
 

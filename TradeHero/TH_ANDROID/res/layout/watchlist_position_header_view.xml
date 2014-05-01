@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
   <com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView
       android:id="@+id/watchlist_position_list_header"
       android:layout_width="match_parent"
       android:layout_height="@dimen/watch_list_header_height"
-      android:layout_weight="2"
-      android:orientation="horizontal"
-      android:background="@color/portfolio_header_background_color"
+      android:orientation="vertical"
       >
-    <include
-        layout="@layout/watchlist_position_header_view_item"/>
 
-    <include
-        layout="@layout/watchlist_position_header_view_item"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/watch_list_header_height_value"
+        android:orientation="horizontal"
+        android:background="@color/portfolio_header_background_color"
+        >
+
+      <include
+          layout="@layout/watchlist_position_header_view_item"/>
+
+      <include
+          layout="@layout/watchlist_position_header_view_item"
+          />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/watch_list_header_height_marking">
+
+      <TextView
+          android:id="@+id/watchlist_position_list_marking"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          tools:text="Last Updated: 16 Apr 2014 19:41"
+          />
+
+    </RelativeLayout>
+
   </com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView>
+
 </merge>

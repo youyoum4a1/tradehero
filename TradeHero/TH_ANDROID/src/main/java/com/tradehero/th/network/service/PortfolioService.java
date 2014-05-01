@@ -5,43 +5,26 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
 public interface PortfolioService
 {
     //<editor-fold desc="Get User Portfolio List">
     @GET("/users/{userId}/portfolios")
     List<PortfolioCompactDTO> getPortfolios(
             @Path("userId") int userId,
-            @Query("includeWatchlist") Boolean includeWatchList)
-        throws RetrofitError;
-
-    @GET("/users/{userId}/portfolios")
-    void getPortfolios(
-            @Path("userId") int userId,
-            @Query("includeWatchlist") Boolean includeWatchList,
-            Callback<List<PortfolioCompactDTO>> callback);
+            @Query("includeWatchlist") Boolean includeWatchList);
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
     @GET("/users/{userId}/portfolios/{portfolioId}")
     PortfolioDTO getPortfolio(
             @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId)
-        throws RetrofitError;
-
-    @GET("/users/{userId}/portfolios/{portfolioId}")
-    void getPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            Callback<PortfolioDTO> callback);
+            @Path("portfolioId") int portfolioId);
     //</editor-fold>
 
     //<editor-fold desc="Reset One User Portfolio">
@@ -49,16 +32,7 @@ public interface PortfolioService
     UserProfileDTO resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseReportDTO purchaseReportDTO)
-        throws RetrofitError;
-
-    @Deprecated // TODO move to Async
-    @POST("/users/{userId}/portfolios/{portfolioId}/reset")
-    void resetPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body PurchaseReportDTO purchaseReportDTO,
-            Callback<UserProfileDTO> callback);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
@@ -66,29 +40,13 @@ public interface PortfolioService
     UserProfileDTO addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseReportDTO purchaseReportDTO)
-        throws RetrofitError;
-
-    @Deprecated // TODO move to Async
-    @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
-    void addCash(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Body PurchaseReportDTO purchaseReportDTO,
-            Callback<UserProfileDTO> callback);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
     @POST("/users/{userId}/portfolios/{portfolioId}/mark")
     PortfolioDTO markPortfolio(
             @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId)
-        throws RetrofitError;
-
-    @POST("/users/{userId}/portfolios/{portfolioId}/mark")
-    void markPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            Callback<PortfolioDTO> callback);
+            @Path("portfolioId") int portfolioId);
     //</editor-fold>
 }

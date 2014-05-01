@@ -42,7 +42,8 @@ public class FontUtil
 
     public enum FontType
     {
-        AWESOME("FontAwesome.ttf");
+        AWESOME("FontAwesome.ttf"),
+        EightBitsWonder("8-BIT WONDER-1.TTF");
 
         final String embeddedFont;
 

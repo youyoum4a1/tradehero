@@ -31,7 +31,6 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
@@ -44,15 +43,19 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ForWeChat;
+import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.wxapi.WeChatDTO;
+import com.tradehero.th.wxapi.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -68,7 +71,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
-    @InjectView(R.id.discussion_action_button_comment_count) TextView comment;
+    @InjectView(R.id.discussion_action_button_comment_count) TextView commentCount;
     @InjectView(R.id.discussion_action_button_more) TextView more;
 
     @OnClick({
@@ -111,13 +114,15 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject Lazy<UserTimelineService> userTimelineService;
+    @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject Lazy<DiscussionCache> discussionCache;
     @Inject LocalyticsSession localyticsSession;
+    @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
 
     private TimelineItemDTOEnhanced timelineItemDTO;
     private PopupMenu sharePopupMenu;
+    private MiddleCallback<Response> shareMiddleCallback;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -176,10 +181,20 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     @Override protected void onDetachedFromWindow()
     {
+        detachShareMiddleCallback();
         displayDefaultUserProfilePicture();
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    protected void detachShareMiddleCallback()
+    {
+        if (shareMiddleCallback != null)
+        {
+            shareMiddleCallback.setPrimaryCallback(null);
+        }
+        shareMiddleCallback = null;
     }
 
     //<editor-fold desc="Action Buttons">
@@ -229,7 +244,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void updateActionButtons()
     {
-        comment.setText("" + timelineItemDTO.commentCount);
+        commentCount.setText("" + timelineItemDTO.commentCount);
 
         updateActionButtonsVisibility();
     }
@@ -406,6 +421,18 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     socialNetworkEnum = SocialNetworkEnum.LN;
                     ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
                     break;
+                case R.id.timeline_popup_menu_share_we_chat:
+                    WeChatDTO weChatDTO = new WeChatDTO();
+                    weChatDTO.id = timelineItemDTO.id;
+                    weChatDTO.title = timelineItemDTO.text;
+                    SecurityMediaDTO firstMediaWithLogo = timelineItemDTO.getFlavorSecurityForDisplay();
+                    if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
+                    {
+                        weChatDTO.imageURL = firstMediaWithLogo.url;
+                    }
+                    weChatDTO.type = WeChatMessageType.Timeline.getType();
+                    wechatSharerLazy.get().share(getContext(), weChatDTO);
+                    return true;
             }
             if (socialNetworkEnum == null)
             {
@@ -414,8 +441,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
             if (ableToShare)
             {
-                userTimelineService.get().shareTimelineItem(
-                        currentUserId.get(),
+                detachShareMiddleCallback();
+                shareMiddleCallback = userTimelineServiceWrapper.get().shareTimelineItem(
+                        currentUserId.toUserBaseKey(),
                         timelineItemDTO.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
                         createShareRequestCallback(socialNetworkEnum));
             }

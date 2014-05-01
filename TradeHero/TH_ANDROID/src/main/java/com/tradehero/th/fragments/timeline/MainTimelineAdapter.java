@@ -28,14 +28,10 @@ import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-/**
- * Created by xavier on 3/6/14.
- */
 public class MainTimelineAdapter extends ArrayAdapter
     implements StickyListHeadersAdapter,
         AbsListView.OnScrollListener,
-        PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>,
-        PullToRefreshBase.OnLastItemVisibleListener
+        PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>
 {
     public static final String TAG = MainTimelineAdapter.class.getSimpleName();
 
@@ -144,10 +140,6 @@ public class MainTimelineAdapter extends ArrayAdapter
     //</editor-fold>
 
     //<editor-fold desc="PullToRefreshBase.OnLastItemVisibleListener">
-    @Override public void onLastItemVisible()
-    {
-        getTimelineLoader().loadPrevious();
-    }
     //</editor-fold>
 
     //<editor-fold desc="StickyListHeadersAdapter">
@@ -195,10 +187,12 @@ public class MainTimelineAdapter extends ArrayAdapter
 
             case PORTFOLIO_LIST:
                 // TODO
+                notifyLoadFinished();
                 break;
 
             case STATS:
                 // TODO
+                notifyLoadFinished();
                 break;
 
             default:

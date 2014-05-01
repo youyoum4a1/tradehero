@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView
+<com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -155,8 +155,8 @@
           android:textSize="12dp"
           android:gravity="center"
           android:textStyle="bold"
-          android:paddingBottom="10dp"
-          android:layout_marginLeft="10dp"
+          android:paddingBottom="@dimen/common_margin_10"
+          android:layout_marginLeft="@dimen/common_margin_10"
           android:shadowColor="@color/light_grey"
           android:shadowDy="1"
           android:shadowRadius="1"
@@ -184,7 +184,7 @@
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           tools:text="US$ 92,579,534"
           />
@@ -210,7 +210,7 @@
           android:id="@+id/lbmu_period"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           tools:text="27 Jan 2014 - 3 Feb 2014"
           />
@@ -237,7 +237,7 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -252,7 +252,7 @@
             android:id="@+id/lbmu_volatility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
+            android:paddingLeft="@dimen/common_margin_10"
             android:textColor="@color/gray_1"
             />
 
@@ -279,7 +279,7 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -312,7 +312,7 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -345,7 +345,7 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -380,7 +380,7 @@
           android:id="@+id/lbmu_benchmark_roi"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           android:textColor="@color/gray_1"
           tools:text="0.11% (S&amp;P 500)"
@@ -406,7 +406,7 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -422,7 +422,7 @@
             android:id="@+id/lbmu_number_of_trades"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
+            android:paddingLeft="@dimen/common_margin_10"
             android:textColor="@color/gray_1"
             tools:text="(21 trades)"
             />
@@ -450,7 +450,7 @@
           android:id="@+id/lbmu_followers_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           android:textStyle="bold"
           tools:text="3"
@@ -477,7 +477,7 @@
           android:id="@+id/lbmu_comments_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
+          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           android:textStyle="bold"
           tools:text="1"
@@ -493,4 +493,4 @@
 
   </LinearLayout>
 
-</com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView>
+</com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView>

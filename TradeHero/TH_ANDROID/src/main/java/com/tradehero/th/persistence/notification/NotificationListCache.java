@@ -45,13 +45,15 @@ public class NotificationListCache extends StraightDTOCache<NotificationListKey,
         List<NotificationDTO> notificationsList = paginatedNotifications.getData();
         NotificationKeyList notificationKeyList = new NotificationKeyList();
 
-        for (NotificationDTO notificationDTO: notificationsList)
+        if (notificationsList != null)
         {
-            NotificationKey notificationDTOKey = notificationDTO.getDTOKey();
-            notificationKeyList.add(notificationDTOKey);
+            for (NotificationDTO notificationDTO: notificationsList)
+            {
+                NotificationKey notificationDTOKey = notificationDTO.getDTOKey();
+                notificationKeyList.add(notificationDTOKey);
 
-            //notificationDTO.unread = true;
-            notificationCache.get().put(notificationDTOKey, notificationDTO);
+                notificationCache.get().put(notificationDTOKey, notificationDTO);
+            }
         }
 
         return notificationKeyList;

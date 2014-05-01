@@ -18,6 +18,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by thonguyen on 12/4/14.
@@ -64,7 +65,8 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     private void fetchAndDisplayUserProfile()
     {
         detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileListener);
+        userProfileFetchTask = userProfileCache.get()
+                .getOrFetch(currentUserId.toUserBaseKey(), false, userProfileListener);
         userProfileFetchTask.execute();
     }
 
@@ -72,6 +74,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     {
         userProfileListener = new UserProfileFetchListener();
         fetchAndDisplayUserProfile();
+        Timber.d("UpdateCenterResideMenuItem onAttachedToWindow fetchAndDisplayUserProfile");
         super.onAttachedToWindow();
     }
 
@@ -93,22 +96,38 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     @Override public void display(UserProfileDTO dto)
     {
+        updateUserProfileCache();
         linkWith(dto, true);
+    }
+
+    /**
+     * update user profile cache
+     */
+    private void updateUserProfileCache()
+    {
+        // TODO synchronization problem
+        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        userProfileCache.get().put(userBaseKey, userProfileDTO);
     }
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         if (userProfileDTO != null && andDisplay)
         {
-            int totalUnreadItem = userProfileDTO.unreadNotificationsCount + userProfileDTO.unreadMessageThreadsCount;
+            int totalUnreadItem = /*userProfileDTO.unreadNotificationsCount +*/
+                    userProfileDTO.unreadMessageThreadsCount;
+            Timber.d("UpdateCenterResideMenuItem totalUnread count %d,allFollowerCount:%d",
+                    totalUnreadItem, userProfileDTO.allFollowerCount);
             unreadMessageCount.setText("" + totalUnreadItem);
-            unreadMessageCount.setVisibility(VISIBLE);
+            unreadMessageCount.setVisibility(totalUnreadItem == 0 ? GONE : VISIBLE);
         }
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             display(value);
         }

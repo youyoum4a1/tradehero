@@ -6,7 +6,6 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:05 PM Copyright (c) TradeHero */
 public class PortfolioCompactDTO implements DTO
 {
     public static final String DEFAULT_TITLE = "Default";
@@ -31,24 +30,24 @@ public class PortfolioCompactDTO implements DTO
     public PortfolioCompactDTO()
     {
     }
+    //</editor-fold>
 
-    public PortfolioId getPortfolioId()
+    @JsonIgnore public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
     }
-    //</editor-fold>
 
-    public ProviderId getProviderId()
+    @JsonIgnore public ProviderId getProviderId()
     {
         return new ProviderId(providerId);
     }
 
-    public boolean isDefault()
+    @JsonIgnore public boolean isDefault()
     {
         return providerId == null && !isWatchlist;
     }
 
-    public double getTotalExtraCash()
+    @JsonIgnore public double getTotalExtraCash()
     {
         return totalExtraCashGiven + totalExtraCashPurchased;
     }

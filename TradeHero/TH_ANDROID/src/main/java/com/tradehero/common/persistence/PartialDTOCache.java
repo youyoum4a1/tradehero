@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * The registered listeners are kept as weak references. So they should be strongly referenced elsewhere.
- * Created with IntelliJ IDEA. User: xavier Date: 10/24/13 Time: 4:51 PM To change this template use File | Settings | File Templates.
  */
 abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements LiveDTOCache<DTOKeyType, DTOType>

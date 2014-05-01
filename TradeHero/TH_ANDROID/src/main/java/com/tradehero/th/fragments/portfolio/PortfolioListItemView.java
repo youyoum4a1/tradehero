@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,47 +9,44 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.List;
+import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class PortfolioListItemView extends RelativeLayout implements DTOView<DisplayablePortfolioDTO>,View.OnClickListener
+public class PortfolioListItemView extends RelativeLayout
+        implements DTOView<DisplayablePortfolioDTO>, View.OnClickListener
 {
-    public static final String TAG = PortfolioListItemView.class.getSimpleName();
-    private static int countUp = 0;
-
-    @InjectView(R.id.follower_profile_picture) protected ImageView userIcon;
+    @InjectView(R.id.follower_profile_picture) @Optional protected ImageView userIcon;
     @InjectView(R.id.portfolio_title) protected TextView title;
     @InjectView(R.id.portfolio_description) protected TextView description;
-    @InjectView(R.id.following_image) protected ImageView followingStamp;
+    @InjectView(R.id.following_image) @Optional protected ImageView followingStamp;
+    @InjectView(R.id.roi_value) @Optional protected TextView roiValue;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     private GetPositionsDTO getPositionsDTO;
@@ -60,6 +58,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Inject GetPositionsCache getPositionsCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+    @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
 
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
@@ -100,18 +99,20 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     @Override protected void onAttachedToWindow()
     {
-        //THLog.d(TAG, "onAttachedToWindow ");
         super.onAttachedToWindow();
 
-        this.currentUserProfileRetrievedMilestoneListener = new PortfolioListItemViewUserProfileRetrievedListener();
+        this.currentUserProfileRetrievedMilestoneListener =
+                new PortfolioListItemViewUserProfileRetrievedListener();
         this.getPositionsListener = new PortfolioListItemViewGetPositionsListener();
         this.userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
-        this.userIcon.setOnClickListener(this);
+        if (this.userIcon != null)
+        {
+            this.userIcon.setOnClickListener(this);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        //THLog.d(TAG, "onDetachedFromWindow ");
         this.currentUserProfileRetrievedMilestoneListener = null;
         detachMilestone();
 
@@ -120,22 +121,32 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
         this.userWatchlistListener = null;
         detachUserWatchlistTask();
-        this.userIcon.setOnClickListener(null);
+        if (this.userIcon != null)
+        {
+            this.userIcon.setOnClickListener(null);
+        }
         super.onDetachedFromWindow();
     }
 
     @Override public void onClick(View v)
     {
-        if (v.getId() == R.id.follower_profile_picture){
-            if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null) {
+        if (v.getId() == R.id.follower_profile_picture)
+        {
+            if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
+            {
                 handleUserIconClicked();
             }
         }
     }
 
-    private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",displayablePortfolioDTO.userBaseDTO.displayName));
-        TimelineFragment.viewProfile((DashboardActivity) getContext(), displayablePortfolioDTO.userBaseDTO.id);
+    private void handleUserIconClicked()
+    {
+        Bundle bundle = new Bundle();
+        DashboardNavigator navigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID,
+                displayablePortfolioDTO.userBaseDTO.id);
+        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     protected void detachMilestone()
@@ -150,7 +161,8 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     protected void detachGetPositionsTask()
     {
-        DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> positionTaskCopy = this.getPositionsFetchTask;
+        DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> positionTaskCopy =
+                this.getPositionsFetchTask;
         if (positionTaskCopy != null)
         {
             positionTaskCopy.setListener(null);
@@ -160,7 +172,8 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     protected void detachUserWatchlistTask()
     {
-        DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> securityTaskCopy = this.userWatchlistFetchTask;
+        DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> securityTaskCopy =
+                this.userWatchlistFetchTask;
         if (securityTaskCopy != null)
         {
             securityTaskCopy.setListener(null);
@@ -175,7 +188,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
     {
-        //THLog.d(TAG, "display");
         linkWith(displayablePortfolioDTO, true);
     }
 
@@ -191,12 +203,14 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
             displayTitle();
             displayDescription();
             displayFollowingStamp();
+            displayRoiValue();
         }
     }
 
     protected void fetchNecessaryInfo()
     {
-        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
+        UserProfileRetrievedMilestone milestone =
+                new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         milestone.setOnCompleteListener(this.currentUserProfileRetrievedMilestoneListener);
         this.currentUserProfileRetrievedMilestone = milestone;
         milestone.launch();
@@ -215,19 +229,16 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         if (displayablePortfolioDTOCopy != null &&
                 displayablePortfolioDTOCopy.ownedPortfolioId != null &&
                 displayablePortfolioDTOCopy.portfolioDTO != null &&
-                !displayablePortfolioDTOCopy.portfolioDTO.isWatchlist&&
+                !displayablePortfolioDTOCopy.portfolioDTO.isWatchlist &&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
-                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserId.toUserBaseKey()))
+                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()
+                        .equals(currentUserId.toUserBaseKey()))
         {
-            THLog.d(TAG, "fetchGetPositions launching");
-            DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> task = this.getPositionsCache.getOrFetch(displayablePortfolioDTOCopy.ownedPortfolioId, getPositionsListener);
+            DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> task =
+                    this.getPositionsCache.getOrFetch(displayablePortfolioDTOCopy.ownedPortfolioId,
+                            getPositionsListener);
             this.getPositionsFetchTask = task;
             task.execute();
-        }
-        else
-        {
-            THLog.d(TAG, "fetchGetPositions nothing to launch");
-
         }
     }
 
@@ -240,23 +251,25 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 displayablePortfolioDTOCopy.portfolioDTO != null &&
                 displayablePortfolioDTOCopy.portfolioDTO.isWatchlist &&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
-                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserId.toUserBaseKey()))
+                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()
+                        .equals(currentUserId.toUserBaseKey()))
         {
             Timber.d("fetchWatchedSecurities launching");
-            DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> task = this.userWatchlistPositionCache.getOrFetch(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey(), userWatchlistListener);
+            DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> task =
+                    this.userWatchlistPositionCache.getOrFetch(
+                            displayablePortfolioDTOCopy.userBaseDTO.getBaseKey(),
+                            userWatchlistListener);
             this.userWatchlistFetchTask = task;
             task.execute();
         }
         else
         {
             Timber.d("fetchWatchedSecurities nothing to launch");
-
         }
     }
 
     protected void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
     {
-        THLog.d(TAG, "linkWith " + displayablePortfolioDTO + " with " + getPositionsDTO);
         this.getPositionsDTO = getPositionsDTO;
         if (andDisplay)
         {
@@ -280,6 +293,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         displayTitle();
         displayDescription();
         displayFollowingStamp();
+        displayRoiValue();
     }
 
     public void displayUserIcon()
@@ -311,7 +325,8 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     {
         if (title != null)
         {
-            title.setText(DisplayablePortfolioUtil.getLongTitle(getContext(), displayablePortfolioDTO));
+            title.setText(displayablePortfolioUtil.getLongTitleType(getContext(),
+                    displayablePortfolioDTO));
         }
     }
 
@@ -326,43 +341,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     public String getDescription()
     {
-        DisplayablePortfolioDTO displayablePortfolioDTOCopy = this.displayablePortfolioDTO;
-
-        if (displayablePortfolioDTOCopy == null || displayablePortfolioDTOCopy.userBaseDTO == null ||
-                displayablePortfolioDTOCopy.portfolioDTO == null)
-        {
-            return "";
-        }
-
-        // When this is another user
-        if (!currentUserId.toUserBaseKey().equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
-        {
-            return userBaseDTOUtil.getFirstLastName(getContext(), displayablePortfolioDTOCopy.userBaseDTO);
-        }
-
-        // When this is current user
-        GetPositionsDTO getPositionsDTOCopy = this.getPositionsDTO;
-        SecurityIdList watchedSecurityIdsCopy = this.watchedSecurityIds;
-
-        if (!displayablePortfolioDTOCopy.portfolioDTO.isWatchlist && getPositionsDTOCopy != null)
-        {
-            List<PositionDTO> openPositions = getPositionsDTOCopy.getOpenPositions();
-            if (openPositions != null && openPositions.size() > 0)
-            {
-                return getResources().getString(R.string.portfolio_description_count_open_positions, openPositions.size());
-            }
-
-            List<PositionDTO> closedPositions = getPositionsDTOCopy.getClosedPositions();
-            if (closedPositions != null && closedPositions.size() > 0)
-            {
-                return getResources().getString(R.string.portfolio_description_count_closed_positions, closedPositions.size());
-            }
-        }
-        if (displayablePortfolioDTOCopy.portfolioDTO.isWatchlist && watchedSecurityIdsCopy != null)
-        {
-            return getResources().getString(R.string.portfolio_description_count_watchlist, watchedSecurityIdsCopy.size());
-        }
-        return "";
+        return displayablePortfolioUtil.getLongSubTitle(getContext(), displayablePortfolioDTO);
     }
 
     public void displayFollowingStamp()
@@ -380,17 +359,48 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         }
     }
 
+    public void displayRoiValue()
+    {
+        if (roiValue != null)
+        {
+            if (displayablePortfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
+            {
+                THSignedNumber roi = new THSignedNumber(
+                        THSignedNumber.TYPE_PERCENTAGE,
+                        displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100,
+                        true,
+                        null,
+                        THSignedNumber.TYPE_SIGN_ARROW);
+                roiValue.setText(roi.toString(1));
+                roiValue.setTextColor(getResources().getColor(roi.getColor()));
+                roiValue.setVisibility(VISIBLE);
+            }
+            else if (displayablePortfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO != null &&
+                    displayablePortfolioDTO.portfolioDTO.isWatchlist)
+            {
+                roiValue.setVisibility(GONE);
+            }
+            else
+            {
+                roiValue.setVisibility(VISIBLE);
+                roiValue.setText(R.string.na);
+            }
+        }
+    }
+
     public boolean isThisUserFollowed()
     {
         UserProfileDTO currentUserProfile = userProfileCache.get(currentUserId.toUserBaseKey());
         return currentUserProfile != null && displayablePortfolioDTO != null &&
                 currentUserProfile.isFollowingUser(displayablePortfolioDTO.userBaseDTO);
     }
-
-
     //</editor-fold>
 
-    private class PortfolioListItemViewUserProfileRetrievedListener implements Milestone.OnCompleteListener
+    private class PortfolioListItemViewUserProfileRetrievedListener
+            implements Milestone.OnCompleteListener
     {
         @Override public void onComplete(Milestone milestone)
         {
@@ -400,69 +410,62 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
-            THLog.e(TAG, "Failed to fetch user profile", throwable);
             THToast.show(R.string.error_fetch_your_user_profile);
         }
     }
 
-    private class PortfolioListItemViewGetPositionsListener implements DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO>
+    private class PortfolioListItemViewGetPositionsListener
+            implements DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO>
     {
         public PortfolioListItemViewGetPositionsListener()
         {
         }
 
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value,
+                boolean fromCache)
         {
-            DisplayablePortfolioDTO displayablePortfolioDTOCopy = PortfolioListItemView.this.displayablePortfolioDTO;
-            if (key != null && displayablePortfolioDTOCopy != null && key.equals(displayablePortfolioDTOCopy.ownedPortfolioId))
+            DisplayablePortfolioDTO displayablePortfolioDTOCopy =
+                    PortfolioListItemView.this.displayablePortfolioDTO;
+            if (key != null && displayablePortfolioDTOCopy != null && key.equals(
+                    displayablePortfolioDTOCopy.ownedPortfolioId))
             {
-                THLog.d(TAG, "onDTOReceived getPositions passing on");
                 PortfolioListItemView.this.linkWith(value, true);
-            }
-            else
-            {
-                THLog.d(TAG, "onDTOReceived getPositions not passing on");
-                // Unrelated positions.
             }
         }
 
         @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
         {
-            THLog.e(TAG, "Failed to fetch get positions", error);
             // We do not inform the user as this is not critical
         }
     }
 
-    private class PortfolioListItemViewWatchedSecurityIdListListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    private class PortfolioListItemViewWatchedSecurityIdListListener
+            implements DTOCache.Listener<UserBaseKey, SecurityIdList>
     {
         public PortfolioListItemViewWatchedSecurityIdListListener()
         {
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value,
+                boolean fromCache)
         {
-            DisplayablePortfolioDTO displayablePortfolioDTOCopy = PortfolioListItemView.this.displayablePortfolioDTO;
+            DisplayablePortfolioDTO displayablePortfolioDTOCopy =
+                    PortfolioListItemView.this.displayablePortfolioDTO;
             if (key != null && displayablePortfolioDTOCopy != null &&
                     displayablePortfolioDTOCopy.userBaseDTO != null &&
                     key.equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
             {
-                THLog.d(TAG, "onDTOReceived watchedSecurities passing on");
                 PortfolioListItemView.this.linkWith(value, true);
             }
             else
             {
-                THLog.d(TAG, "onDTOReceived watchedSecurities not passing on");
                 // Unrelated positions.
             }
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THLog.e(TAG, "Failed to fetch watched securities", error);
             // We do not inform the user as this is not critical
         }
     }
-
-
-
 }

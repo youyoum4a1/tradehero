@@ -25,7 +25,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
@@ -37,29 +36,27 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.WatchlistService;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
-import retrofit.Callback;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/10/14 Time: 4:40 PM Copyright (c) TradeHero
- */
 public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
 {
     public static final String WATCHLIST_ITEM_DELETED = "watchlistItemDeleted";
-    public static final String BUNDLE_KEY_WATCHLIST_ITEM_INDEX = "watchlistItemId";
+    private static final String INTENT_KEY_DELETED_SECURITY_ID = WatchlistItemView.class.getName() + ".deletedSecurityId";
 
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject Lazy<WatchlistService> watchlistService;
+    @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
@@ -75,13 +72,25 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private WatchlistPositionDTO watchlistPositionDTO;
     private SecurityId securityId;
-    private OnClickListener watchlistItemDeleteClickHandler;
 
-    private Callback<WatchlistPositionDTO> watchlistDeletionCallback;
-    private OnClickListener watchlistItemMoreButtonClickHandler;
+    private MiddleCallback<WatchlistPositionDTO> middleCallbackWatchlistDelete;
 
     private PopupMenu morePopupMenu;
-    private PopupMenu.OnMenuItemClickListener moreButtonPopupMenuClickHandler;
+
+    public static void putDeletedSecurityId(Intent intent, SecurityId securityId)
+    {
+        intent.putExtra(INTENT_KEY_DELETED_SECURITY_ID, securityId.getArgs());
+    }
+
+    public static SecurityId getDeletedSecurityId(Intent intent)
+    {
+        SecurityId deleted = null;
+        if (intent != null && intent.hasExtra(INTENT_KEY_DELETED_SECURITY_ID))
+        {
+            deleted = new SecurityId(intent.getBundleExtra(INTENT_KEY_DELETED_SECURITY_ID));
+        }
+        return deleted;
+    }
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -111,20 +120,15 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         super.onAttachedToWindow();
 
-        watchlistItemDeleteClickHandler = createWatchlistItemDeleteClickHandler();
         if (deleteButton != null)
         {
-            deleteButton.setOnClickListener(watchlistItemDeleteClickHandler);
+            deleteButton.setOnClickListener(createWatchlistItemDeleteClickHandler());
         }
 
-        watchlistItemMoreButtonClickHandler = createWatchlistItemMoreButtonClickHandler();
         if (moreButton != null)
         {
-            moreButton.setOnClickListener(watchlistItemMoreButtonClickHandler);
+            moreButton.setOnClickListener(createWatchlistItemMoreButtonClickHandler());
         }
-
-        moreButtonPopupMenuClickHandler = createMoreButtonPopupMenuClickHandler();
-        watchlistDeletionCallback = createWatchlistDeletionCallback();
     }
 
     private OnClickListener createWatchlistItemDeleteClickHandler()
@@ -194,11 +198,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             // Make a copy here to sever links back to the origin class.
             final private Context contextCopy = WatchlistItemView.this.getContext();
-            final private CurrentUserId currentUserIdCopy = currentUserId;
             final private SecurityId securityIdCopy = securityId;
             final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
-            final private WatchlistPositionCache watchlistPositionCacheCopy = watchlistPositionCache.get();
-            final private UserWatchlistPositionCache userWatchlistPositionCacheCopy = userWatchlistPositionCache.get();
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
             {
@@ -206,14 +207,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                 {
                     Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
 
-                    // remove current security from the watchlist
-                    SecurityIdList securityIds = userWatchlistPositionCacheCopy.get(currentUserIdCopy.toUserBaseKey());
-
                     Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
-                    itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityIdCopy));
+                    putDeletedSecurityId(itemDeletionIntent, securityIdCopy);
                     LocalBroadcastManager.getInstance(contextCopy).sendBroadcast(itemDeletionIntent);
-                    securityIds.remove(securityIdCopy);
-                    watchlistPositionCacheCopy.invalidate(securityIdCopy);
                 }
             }
 
@@ -235,21 +231,27 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             deleteButton.setOnClickListener(null);
         }
-        watchlistItemDeleteClickHandler = null;
 
         if (moreButton != null)
         {
             moreButton.setOnClickListener(null);
         }
-        watchlistItemMoreButtonClickHandler = null;
 
         if (morePopupMenu != null)
         {
             morePopupMenu.setOnMenuItemClickListener(null);
         }
-        moreButtonPopupMenuClickHandler = null;
 
-        watchlistDeletionCallback = null;
+        detachMiddleCallbackDelete();
+    }
+
+    protected void detachMiddleCallbackDelete()
+    {
+        if (middleCallbackWatchlistDelete != null)
+        {
+            middleCallbackWatchlistDelete.setPrimaryCallback(null);
+        }
+        middleCallbackWatchlistDelete = null;
     }
 
     @Override public void display(SecurityId securityId)
@@ -308,18 +310,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                             new DecimalFormat("##.##").format(gainLoss));
                 }
 
-                if (pl > 0)
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
-                }
-                else if (pl < 0)
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
-                }
-                else
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_gray_normal));
-                }
+                gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
             }
             else
             {
@@ -357,11 +348,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
                 if (pl > 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_up));
                 }
                 else if (pl < 0)
                 {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_down));
                 }
                 else
                 {
@@ -482,8 +473,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private void deleteSelf()
     {
+        detachMiddleCallbackDelete();
         // not to show dialog but request deletion in background
-        watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
+        middleCallbackWatchlistDelete = watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO, createWatchlistDeletionCallback());
     }
 
     private PopupMenu createMoreOptionsPopupMenu()
@@ -491,7 +483,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         PopupMenu popupMenu = new PopupMenu(getContext(), moreButton);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
         menuInflater.inflate(R.menu.watchlist_more_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(moreButtonPopupMenuClickHandler);
+        popupMenu.setOnMenuItemClickListener(createMoreButtonPopupMenuClickHandler());
         return popupMenu;
     }
 

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <Preference
+      android:key="@string/key_preference_top_banner"
+      android:layout="@layout/preference_top_banner"
+      />
+
+  <PreferenceCategory
+      android:title="@string/settings_sharing">
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_sharing_linked_in"
+        android:title="@string/settings_sharing_linked_in"
+        android:icon="@drawable/settings_linkedin_normal"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/setting_general">
+
+    <Preference
+        android:key="@string/key_settings_primary_send_love"
+        android:title="@string/settings_primary_send_love"
+        android:icon="@drawable/settings_send_love"
+        />
+
+    <Preference
+        android:key="@string/key_settings_primary_send_feedback"
+        android:title="@string/settings_primary_send_feedback"
+        android:icon="@drawable/settings_send_feedback"
+        />
+
+    <Preference
+        android:key="@string/key_settings_primary_faq"
+        android:title="@string/settings_primary_faq"
+        android:icon="@drawable/settings_faq"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/setting_accounts"
+      >
+
+    <Preference
+        android:key="@string/key_settings_primary_profile"
+        android:title="@string/settings_primary_profile"
+        android:icon="@drawable/settings_profile"
+        />
+
+    <Preference
+        android:key="@string/key_settings_primary_paypal"
+        android:title="@string/settings_primary_paypal"
+        android:icon="@drawable/settings_paypal"
+        />
+
+    <Preference
+        android:key="@string/key_settings_primary_alipay"
+        android:title="@string/settings_primary_alipay"
+        android:icon="@drawable/mini_logo"/>
+
+    <Preference
+        android:key="@string/key_settings_primary_transaction_history"
+        android:title="@string/settings_primary_transaction_history"
+        android:icon="@drawable/settings_trans_history"
+        />
+
+    <Preference
+        android:key="@string/key_settings_misc_sign_out"
+        android:title="@string/settings_misc_sign_out"
+        android:icon="@drawable/settings_sign_out"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/settings_notifications">
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_notifications_email"
+        android:icon="@drawable/settings_email_noti"
+        android:title="@string/settings_notifications_email"/>
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_notifications_push"
+        android:title="@string/settings_notifications_push"
+        android:icon="@drawable/settings_push_noti"
+        />
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_notifications_push_alert_sound"
+        android:title="@string/settings_notifications_push_alert_sound"
+        android:icon="@drawable/settings_noti_sound"
+        />
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_notifications_push_alert_vibrate"
+        android:title="@string/settings_notifications_push_alert_vibrate"
+        android:icon="@drawable/settings_noti_vibrate"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/settings_misc">
+
+    <Preference
+        android:key="@string/key_settings_misc_reset_help_screens"
+        android:icon="@drawable/settings_reset_help_screen"
+        android:title="@string/settings_misc_reset_help_screens"
+        />
+
+    <Preference
+        android:key="@string/key_settings_misc_clear_cache"
+        android:icon="@drawable/settings_clear_cache"
+        android:title="@string/settings_misc_clear_cache"
+        />
+
+    <Preference
+        android:key="@string/key_settings_misc_about"
+        android:icon="@drawable/settings_about"
+        android:title="@string/settings_misc_about"
+        />
+
+  </PreferenceCategory>
+
+  <Preference
+      android:key="@string/key_settings_misc_version_server"
+      android:title="version"
+    />
+
+</PreferenceScreen>

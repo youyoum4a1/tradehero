@@ -6,7 +6,7 @@
   <item
       android:id="@+id/btn_new_message"
       android:actionLayout="@layout/menu_new_message_button"
-      android:showAsAction="ifRoom"
+      android:showAsAction="always"
       android:visible="true"/>
 
 </menu>

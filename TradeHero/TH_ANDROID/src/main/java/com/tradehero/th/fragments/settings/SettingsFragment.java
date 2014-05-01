@@ -17,7 +17,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -59,10 +61,10 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -73,7 +75,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
+/**
+ * Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use
+ * File | Settings | File Templates.
+ */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THBillingInteractor billingInteractor;
@@ -101,6 +106,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
@@ -115,7 +121,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference pushNotificationSound;
     private CheckBoxPreference pushNotificationVibrate;
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
-    private SettingsUserProfileRetrievedCompleteListener currentUserProfileRetrievedMilestoneListener;
+    private SettingsUserProfileRetrievedCompleteListener
+            currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -141,7 +148,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     restoreRequestCode = null;
                 }
-
             }
         };
     }
@@ -172,26 +178,34 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         createSocialConnectCallback());
                 if (!isDetached())
                 {
-                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
+                    progressDialog.setMessage(
+                            String.format(getString(R.string.authentication_connecting_tradehero),
+                                    currentSocialNetworkConnect.getName()));
                 }
                 return false;
             }
         };
     }
 
-    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
+    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
+            Bundle paramBundle)
     {
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
         detachCurrentUserProfileMilestone();
-        this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
-        currentUserProfileRetrievedMilestoneListener = new SettingsUserProfileRetrievedCompleteListener();
-        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(currentUserProfileRetrievedMilestoneListener);
+        this.currentUserProfileRetrievedMilestone =
+                new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
+        currentUserProfileRetrievedMilestoneListener =
+                new SettingsUserProfileRetrievedCompleteListener();
+        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(
+                currentUserProfileRetrievedMilestoneListener);
 
         if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null)
         {
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_required_information, R.string.alert_dialog_please_wait);
+            progressDialog =
+                    progressDialogUtil.show(getActivity(), R.string.loading_required_information,
+                            R.string.alert_dialog_please_wait);
         }
         this.currentUserProfileRetrievedMilestone.launch();
 
@@ -222,11 +236,27 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(
+                ActionBar.DISPLAY_SHOW_HOME
+                        | ActionBar.DISPLAY_SHOW_TITLE
+                        | ActionBar.DISPLAY_USE_LOGO);
+        actionBar.setTitle(getString(R.string.settings));
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setLogo(R.drawable.icon_menu);
     }
     //</editor-fold>
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override public void onDestroyView()
     {
@@ -302,7 +332,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
-            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases, List failedRestorePurchases, List failExceptions)
+            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases,
+                    List failedRestorePurchases, List failExceptions)
             {
                 Timber.d("onPurchaseRestoreFinished3");
                 thiabAlertDialogUtil.handlePurchaseRestoreFinished(
@@ -351,7 +382,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference sendLoveBlock = findPreference(getString(R.string.key_settings_primary_send_love));
+        Preference sendLoveBlock =
+                findPreference(getString(R.string.key_settings_primary_send_love));
         if (sendLoveBlock != null)
         {
             sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -364,17 +396,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference sendFeedbackBlock = findPreference(getString(R.string.key_settings_primary_send_feedback));
+        Preference sendFeedbackBlock =
+                findPreference(getString(R.string.key_settings_primary_send_feedback));
         if (sendFeedbackBlock != null)
         {
-            sendFeedbackBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleSendFeedbackClicked();
-                    return true;
-                }
-            });
+            sendFeedbackBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleSendFeedbackClicked();
+                            return true;
+                        }
+                    });
 
             // TODO
             //sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
@@ -426,46 +460,53 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference transactionHistoryBlock = findPreference(getString(R.string.key_settings_primary_transaction_history));
+        Preference transactionHistoryBlock =
+                findPreference(getString(R.string.key_settings_primary_transaction_history));
         if (transactionHistoryBlock != null)
         {
-            transactionHistoryBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleTransactionHistoryClicked();
-                    return true;
-                }
-            });
+            transactionHistoryBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleTransactionHistoryClicked();
+                            return true;
+                        }
+                    });
         }
 
-        Preference restorePurchaseBlock = findPreference(getString(R.string.key_settings_primary_restore_purchases));
+        Preference restorePurchaseBlock =
+                findPreference(getString(R.string.key_settings_primary_restore_purchases));
         if (restorePurchaseBlock != null)
         {
-            restorePurchaseBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleRestorePurchaseClicked();
-                    return true;
-                }
-            });
+            restorePurchaseBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleRestorePurchaseClicked();
+                            return true;
+                        }
+                    });
         }
 
-        Preference resetHelpScreensBlock = findPreference(getString(R.string.key_settings_misc_reset_help_screens));
+        Preference resetHelpScreensBlock =
+                findPreference(getString(R.string.key_settings_misc_reset_help_screens));
         if (resetHelpScreensBlock != null)
         {
-            resetHelpScreensBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleResetHelpScreensClicked();
-                    return true;
-                }
-            });
+            resetHelpScreensBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleResetHelpScreensClicked();
+                            return true;
+                        }
+                    });
         }
 
-        Preference clearCacheBlock = findPreference(getString(R.string.key_settings_misc_clear_cache));
+        Preference clearCacheBlock =
+                findPreference(getString(R.string.key_settings_misc_clear_cache));
         if (clearCacheBlock != null)
         {
             clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
@@ -505,18 +546,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         // Sharing
-        facebookSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_facebook));
+        facebookSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_facebook));
         if (facebookSharing != null)
         {
-            facebookSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
-                }
-            });
+            facebookSharing.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
+                        }
+                    });
         }
-        twitterSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_twitter));
+        twitterSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_twitter));
         if (twitterSharing != null)
         {
             twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -527,67 +572,82 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             });
         }
-        linkedInSharing = (CheckBoxPreference) findPreference(getString(R.string.key_settings_sharing_linked_in));
+        linkedInSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_linked_in));
         if (linkedInSharing != null)
         {
-            linkedInSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
-                }
-            });
+            linkedInSharing.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
+                        }
+                    });
         }
 
         // notification
-        pushNotification = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push));
+        pushNotification = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_notifications_push));
         if (pushNotification != null)
         {
-            pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changePushNotification((boolean) newValue);
-                }
-            });
+            pushNotification.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            return changePushNotification((boolean) newValue);
+                        }
+                    });
         }
 
-        emailNotification = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_email));
+        emailNotification = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_notifications_email));
         if (emailNotification != null)
         {
-            emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeEmailNotification((boolean) newValue);
-                }
-            });
+            emailNotification.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            return changeEmailNotification((boolean) newValue);
+                        }
+                    });
         }
 
-        pushNotificationSound = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push_alert_sound));
+        pushNotificationSound = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_notifications_push_alert_sound));
         if (pushNotificationSound != null)
         {
-            pushNotificationSound.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    pushNotificationManager.setSoundEnabled((boolean) newValue);
-                    return true;
-                }
-            });
+            pushNotificationSound.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            pushNotificationManager.setSoundEnabled((boolean) newValue);
+                            return true;
+                        }
+                    });
         }
 
-        pushNotificationVibrate = (CheckBoxPreference) findPreference(getString(R.string.key_settings_notifications_push_alert_vibrate));
+        pushNotificationVibrate = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_notifications_push_alert_vibrate));
         if (pushNotificationVibrate != null)
         {
-            pushNotificationVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    pushNotificationManager.setVibrateEnabled((boolean) newValue);
-                    return true;
-                }
-            });
+            pushNotificationVibrate.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue)
+                        {
+                            pushNotificationManager.setVibrateEnabled((boolean) newValue);
+                            return true;
+                        }
+                    });
         }
 
         if (this.currentUserProfileRetrievedMilestone.isComplete())
@@ -607,12 +667,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleTopBannerClicked()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class, null, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(InviteFriendFragment.class, null,
+                Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private void updateNotificationStatus()
     {
-        final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        final UserProfileDTO currentUserProfile =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (currentUserProfile != null)
         {
             if (emailNotification != null)
@@ -653,8 +715,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 R.string.settings_notifications_email_alert_message);
 
         detachCurrentUserProfileMilestone();
-        middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserId.toUserBaseKey(), enable,
-                createUserProfileCallback());
+        middleCallbackUpdateUserProfile =
+                userServiceWrapper.updateProfilePropertyEmailNotifications(
+                        currentUserId.toUserBaseKey(), enable,
+                        createUserProfileCallback());
         return false;
     }
 
@@ -665,7 +729,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 R.string.settings_notifications_push_alert_message);
 
         detachCurrentUserProfileMilestone();
-        middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyPushNotifications(currentUserId.toUserBaseKey(), enable,
+        middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyPushNotifications(
+                currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
     }
@@ -739,7 +804,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void updateSocialConnectStatus()
     {
-        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO updatedUserProfileDTO =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
             if (facebookSharing != null)
@@ -764,22 +830,26 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         final String appName = Constants.PLAYSTORE_APP_ID;
         try
         {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        }
-        catch (android.content.ActivityNotFoundException anfe)
+            startActivity(
+                    new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
+        } catch (android.content.ActivityNotFoundException anfe)
         {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
         }
     }
 
     private void handleSendFeedbackClicked()
     {
-        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity()), ""));
+        startActivity(
+                Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity()),
+                        ""));
     }
 
     private void handleSendFeedbackLongClicked()
     {
-        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity(), true), ""));
+        startActivity(Intent.createChooser(
+                VersionUtils.getSupportEmailIntent(getSherlockActivity(), true), ""));
     }
 
     private void handleFaqClicked()
@@ -916,20 +986,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alertDialogBuilder
                 .setTitle(R.string.settings_misc_sign_out_are_you_sure)
                 .setCancelable(true)
-                .setNegativeButton(R.string.settings_misc_sign_out_no, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton(R.string.settings_misc_sign_out_yes, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        effectSignOut();
-                    }
-                });
+                .setNegativeButton(R.string.settings_misc_sign_out_no,
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                dialog.cancel();
+                            }
+                        })
+                .setPositiveButton(R.string.settings_misc_sign_out_yes,
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                effectSignOut();
+                            }
+                        });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
@@ -947,6 +1019,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(getActivity()));
     }
 
+
     private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
     {
         return new Callback<UserProfileDTO>()
@@ -958,7 +1031,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 progressDialog.dismiss();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
-                Timber.d("After successful signout current user base key %s", currentUserId.toUserBaseKey());
+                Timber.d("After successful signout current user base key %s",
+                        currentUserId.toUserBaseKey());
             }
 
             @Override public void failure(RetrofitError error)
@@ -1002,7 +1076,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    private class SettingsUserProfileRetrievedCompleteListener implements Milestone.OnCompleteListener
+    private class SettingsUserProfileRetrievedCompleteListener
+            implements Milestone.OnCompleteListener
     {
         @Override public void onComplete(Milestone milestone)
         {

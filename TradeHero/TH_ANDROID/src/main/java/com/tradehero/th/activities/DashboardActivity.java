@@ -1,13 +1,12 @@
 package com.tradehero.th.activities;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,14 +14,17 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.baidu.android.pushservice.PushManager;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
-import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.R;
+import com.tradehero.th.api.notification.NotificationDTO;
+import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -32,24 +34,26 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.AppContainerImpl;
 import com.tradehero.th.ui.ViewWrapper;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -63,8 +67,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    @Inject protected Lazy<THBillingInteractor> billingInteractor;
-    @Inject protected Provider<THUIBillingRequest> emptyBillingRequestProvider;
+    @Inject Lazy<THBillingInteractor> billingInteractor;
+    @Inject Provider<THUIBillingRequest> emptyBillingRequestProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
@@ -77,12 +81,21 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+    @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
+    @Inject Lazy<NotificationCache> notificationCache;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
+
+    @Inject Lazy<PushNotificationManager> pushNotificationManager;
+
+    private boolean isChineseLocale = false;
+    private DTOCache.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
+    private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
+    private ProgressDialog progressDialog;
 
     // this need tobe early than super.onCreate or it will crash
         // when device scrool into landscape. by alex
@@ -103,7 +116,6 @@ public class DashboardActivity extends SherlockFragmentActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        // wrap main view inside a container, this container can be generic, which adds in view components like sidebar, slide-in widget ...
         ViewGroup dashboardWrapper = appContainer.get(this);
         // ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
 
@@ -132,10 +144,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        //navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.main_fragment);
 
-        //navigator.replaceTab(null,DashboardTabType.TRENDING);
-        //currentTab = DashboardTabType.TRENDING;
+        this.isChineseLocale = MetaHelper.isChineseLocale(getApplicationContext());
+        if (isChineseLocale)
+        {
+            pushNotificationManager.get().enablePush();
+        }
     }
 
     @Override
@@ -260,24 +274,67 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         super.onResume();
 
-        //if (navigator == null)
-        //{
-        //    //initialize tabs
-        //    navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        //}
-
         launchActions();
-
         localyticsSession.get().open();
+        Timber.d("onResume");
+    }
+
+    @Override protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        Timber.d("Received new intent: %s", intent);
+
+        Bundle extras = intent.getExtras();
+        if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
+        {
+            progressDialog = progressDialogUtil.get().show(this, "", "");
+            detachNotificationFetchTask();
+            notificationFetchListener = new NotificationFetchListener();
+            notificationFetchTask = notificationCache.get().getOrFetch(new NotificationKey(extras), false, notificationFetchListener);
+            notificationFetchTask.execute();
+        }
+    }
+
+    private void detachNotificationFetchTask()
+    {
+        if (notificationFetchTask != null)
+        {
+            notificationFetchTask.setListener(null);
+        }
+        notificationFetchTask = null;
     }
 
     @Override protected void onPause()
     {
         localyticsSession.get().close();
         localyticsSession.get().upload();
+        if (isChineseLocale)
+        {
+            PushManager.activityStarted(this);
+        }
+        Timber.d("onPause");
 
         super.onPause();
     }
+
+    @Override protected void onStart()
+    {
+        super.onStart();
+
+        Timber.d("onStart");
+    }
+
+    @Override protected void onStop()
+    {
+        if (isChineseLocale)
+        {
+            PushManager.activityStoped(this);
+        }
+        Timber.d("onStop");
+
+        super.onStop();
+    }
+
 
     @Override protected void onDestroy()
     {
@@ -300,6 +357,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         purchaseRestorerFinishedListener = null;
 
         detachUserProfileFetchTask();
+        detachNotificationFetchTask();
+        
         super.onDestroy();
     }
 
@@ -379,5 +438,30 @@ public class DashboardActivity extends SherlockFragmentActivity
             currentTab = tabType;
         }
 
+    }
+
+    private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
+    {
+        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        {
+            onFinish();
+
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
+            notificationClickHandler.handleNotificationItemClicked();
+        }
+
+        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        {
+            onFinish();
+            THToast.show(new THException(error));
+        }
+
+        private void onFinish()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+        }
     }
 }

@@ -12,8 +12,6 @@ public class THBaseIABInventoryFetcher
                         THIABProductDetail>
     implements THIABInventoryFetcher
 {
-    public static final String TAG = THBaseIABInventoryFetcher.class.getSimpleName();
-
     public THBaseIABInventoryFetcher()
     {
         super();

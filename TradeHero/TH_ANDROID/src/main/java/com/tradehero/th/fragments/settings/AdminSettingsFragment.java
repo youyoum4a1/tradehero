@@ -1,9 +1,15 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -11,9 +17,13 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.push.urbanairship.PushConstants;
+import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/19/14 Time: 1:08 PM Copyright (c) TradeHero
@@ -22,6 +32,9 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject Application app;
+    @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
+
+    @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -73,6 +86,43 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 }
             }
         }
+
+        Preference sendFakePush = findPreference("send_fake_push");
+        sendFakePush.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                return askForNotificationId();
+            }
+        });
+    }
+
+    private boolean askForNotificationId()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+        View view = layoutInflater.inflate(R.layout.debug_ask_for_notification_id, null);
+        final EditText input = (EditText) view.findViewById(R.id.pushNotification);
+        alert.setView(view);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                Editable value = input.getText();
+                sendFakePushNotification(Integer.parseInt(value.toString()));
+            }
+        });
+        alert.show();
+        return true;
+    }
+
+    private void sendFakePushNotification(int notificationId)
+    {
+        Intent fakeIntent = new Intent();
+        fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(notificationId));
+        notificationOpenedHandler.get().handle(fakeIntent);
     }
 
     private boolean onServerEndpointChanged(String serverEndpoint)

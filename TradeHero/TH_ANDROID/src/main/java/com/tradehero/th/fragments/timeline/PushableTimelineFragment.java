@@ -2,35 +2,24 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.DialogInterface;
 import android.view.View;
-import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 
 /**
- * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use File | Settings | File Templates.
- *
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject LocalyticsSession localyticsSession;
-
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
-    {
-        return new PushableTimelineUserFollowedListener();
-    }
 
     @Override protected void initViews(View view)
     {
@@ -42,7 +31,9 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
         this.actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE);
 
         //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
@@ -53,11 +44,11 @@ public class PushableTimelineFragment extends TimelineFragment
         Boolean isFollowing = isPurchaserFollowingUserShown();
         updateBottomButton();
 
-        MenuItem settingsButton = menu.findItem(R.id.menu_settings);
-        if (settingsButton != null)
-        {
-            settingsButton.setVisible(false);
-        }
+        //MenuItem settingsButton = menu.findItem(R.id.menu_settings);
+        //if (settingsButton != null)
+        //{
+        //    settingsButton.setVisible(false);
+        //}
 
         super.onPrepareOptionsMenu(menu);
     }
@@ -74,7 +65,6 @@ public class PushableTimelineFragment extends TimelineFragment
 
     /**
      * Null means unsure.
-     * @return
      */
     protected Boolean isPurchaserFollowingUserShown()
     {
@@ -114,12 +104,4 @@ public class PushableTimelineFragment extends TimelineFragment
         return false;
     }
     //</editor-fold>
-
-    protected class PushableTimelineUserFollowedListener extends BasePurchaseManagerUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
-        {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-        }
-    }
 }

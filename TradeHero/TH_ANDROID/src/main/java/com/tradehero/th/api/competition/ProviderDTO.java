@@ -123,11 +123,17 @@ public class ProviderDTO implements DTO
     @JsonIgnore
     public String getNiceCurrency()
     {
-        if (currencyDisplay != null && !currencyDisplay.isEmpty())
+        if (hasValidCurrencyDisplay())
         {
             return currencyDisplay;
         }
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+    }
+
+    @JsonIgnore
+    public boolean hasValidCurrencyDisplay()
+    {
+        return currencyDisplay != null && !currencyDisplay.isEmpty();
     }
 
     public static List<ProviderId> getProviderIds(List<ProviderDTO> providerDTOs)

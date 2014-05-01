@@ -1,13 +1,18 @@
 package com.tradehero.th.ui;
 
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
+import com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
+import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
@@ -52,6 +57,14 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 DiscussionView.class,
                 PostCommentView.class,
+                PrivatePostCommentView.class,
+
+                NewsDiscussionView.class,
+
+                DiscussionEditPostFragment.class,
+                DiscussionPostActionButtonsView.class,
+
+                FollowDialogView.class
         },
         complete = false,
         library = true

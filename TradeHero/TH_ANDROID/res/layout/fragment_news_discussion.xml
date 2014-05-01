@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.DiscussionView
+<com.tradehero.th.fragments.discussion.NewsDiscussionView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/discussion_view"
@@ -19,4 +19,4 @@
       />
 
   <include layout="@layout/post_comment_widget"/>
-</com.tradehero.th.fragments.discussion.DiscussionView>
+</com.tradehero.th.fragments.discussion.NewsDiscussionView>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="error_fetch_follower">获取粉丝信息发生了点错误</string>
+  <string name="not_follow_title">尚未关注</string>
+  <string name="not_follow_msg_title">你需要关注\n%1$s\n之后才可以发送私信. 请选择关注类型:
+  </string>
+  <string name="not_follow_subtitle">免费关注</string>
+  <string name="not_follow_premium_subtitle">高级关注（一个关注点数）</string>
+  <string name="free_follow_title">关注中</string>
+  <string name="free_follow_content1">只要一个关注点数（6元/月），即可高级关注此用户，获得下列特权:
+  </string>
+  <string name="free_follow_content2">查看英雄的持仓\n在您的时间轴上查看英雄的动态\n不受限的私信\n即时收到英雄的动态通知。
+  </string>
+  <string name="free_follow_content3">查看英雄的持仓\n在您的时间轴上查看英雄的动态\n受限制的私信
+  </string>
+  <string name="continue_free_follow">以后再说</string>
+  <string name="upgrade">升级</string>
+</resources>

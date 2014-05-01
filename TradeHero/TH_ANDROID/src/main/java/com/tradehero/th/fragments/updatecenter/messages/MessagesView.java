@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView;
 import com.tradehero.th.R;
 import timber.log.Timber;
 
@@ -19,7 +20,7 @@ public class MessagesView extends RelativeLayout
 {
     static final String TAG = "MessagesView";
 
-    @InjectView(android.R.id.list) ListView listView;
+    @InjectView(R.id.message_list) FixedPullToRefreshSwipeListView pullToRefreshSwipeListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
@@ -40,7 +41,7 @@ public class MessagesView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        listView.setEmptyView(emptyView);
+        pullToRefreshSwipeListView.setEmptyView(emptyView);
     }
 
     public void showErrorView()
@@ -50,7 +51,7 @@ public class MessagesView extends RelativeLayout
 
     public void showListView()
     {
-        showOnlyThis(listView);
+        showOnlyThis(pullToRefreshSwipeListView);
     }
 
     public void showEmptyView()
@@ -58,19 +59,26 @@ public class MessagesView extends RelativeLayout
         showOnlyThis(emptyView);
     }
 
-    public void showLoadingView()
+    /**
+     * Show progressabar or/and listview
+     */
+    public void showLoadingView(boolean onlyShowLoadingView)
     {
         showOnlyThis(progressBar);
+        if (!onlyShowLoadingView)
+        {
+            changeViewVisibility(pullToRefreshSwipeListView, true);
+        }
     }
 
     public ListView getListView()
     {
-        return listView;
+        return pullToRefreshSwipeListView.getRefreshableView();
     }
 
     private void showOnlyThis(View view)
     {
-        changeViewVisibility(listView, view == listView);
+        changeViewVisibility(pullToRefreshSwipeListView, view == pullToRefreshSwipeListView);
         changeViewVisibility(errorView, view == errorView);
         changeViewVisibility(progressBar, view == progressBar);
         changeViewVisibility(emptyView, view == emptyView);

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,27 +10,27 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>,View.OnClickListener
+public class HeroListItemView extends RelativeLayout
+        implements DTOView<HeroDTO>, View.OnClickListener
 {
-    public static final String TAG = HeroListItemView.class.getName();
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
     public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
+    public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
 
     private ImageView userIcon;
     private TextView title;
@@ -39,7 +40,8 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     private HeroDTO heroDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener =
+            new WeakReference<>(null);
     @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="Constructors">
@@ -64,12 +66,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
         super.onFinishInflate();
         initViews();
         DaggerUtils.inject(this);
-        if (userIcon != null)
-        {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(userIcon);
-        }
+        Timber.d("HeroListItemView onFinishInflate hashCode:%d", this.hashCode());
     }
 
     private void initViews()
@@ -83,30 +80,64 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+
+        if (userIcon != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(userIcon);
+        }
         if (statusIcon != null)
         {
             statusIcon.setOnClickListener(new OnClickListener()
             {
                 @Override public void onClick(View v)
                 {
-                    OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
+                    OnHeroStatusButtonClickedListener heroStatusButtonClickedListener =
+                            HeroListItemView.this.heroStatusButtonClickedListener.get();
                     if (heroStatusButtonClickedListener != null)
                     {
-                        heroStatusButtonClickedListener.onHeroStatusButtonClicked(HeroListItemView.this, heroDTO);
+                        heroStatusButtonClickedListener.onHeroStatusButtonClicked(
+                                HeroListItemView.this, heroDTO);
                     }
                 }
             });
         }
         userIcon.setOnClickListener(this);
+        Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
-    @Override protected void onDetachedFromWindow()
+    private void resetIcon()
+    {
+        if (statusIcon != null)
+        {
+            statusIcon.setImageDrawable(null);
+        }
+        if (userIcon != null)
+        {
+            userIcon.setImageDrawable(null);
+        }
+    }
+
+    private void removeCallback()
     {
         if (statusIcon != null)
         {
             statusIcon.setOnClickListener(null);
         }
-        userIcon.setOnClickListener(null);
+        if (userIcon != null)
+        {
+            userIcon.setOnClickListener(null);
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        resetIcon();
+        removeCallback();
+        //ButterKnife.reset(this);
+        Timber.d("HeroListItemView onDetachedFromWindow hashCode:%d", this.hashCode());
+
         super.onDetachedFromWindow();
     }
 
@@ -114,19 +145,24 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     {
         if (v.getId() == R.id.follower_profile_picture)
         {
-            if (heroDTO != null) {
+            if (heroDTO != null)
+            {
                 handleUserIconClicked();
             }
         }
     }
 
-    private void handleUserIconClicked(){
-        THToast.show(String.format("user icon click %s",
-                heroDTO.displayName));
-        TimelineFragment.viewProfile((DashboardActivity) getContext(), heroDTO.id);
+    private void handleUserIconClicked()
+    {
+        Bundle bundle = new Bundle();
+        DashboardNavigator navigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
+        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
-    public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
+    public void setHeroStatusButtonClickedListener(
+            OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
         this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
     }
@@ -138,6 +174,8 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
 
     public void display(HeroDTO heroDTO)
     {
+        //resetIcon();
+        displayDefaultUserIcon();
         linkWith(heroDTO, true);
     }
 
@@ -169,19 +207,22 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
             if (heroDTO != null)
             {
                 picasso.get().load(heroDTO.picture)
-                             .transform(peopleIconTransformation)
-                             .into(userIcon, new Callback() {
-                                 @Override
-                                 public void onSuccess()
-                                 {
-                                 }
+                        .transform(peopleIconTransformation)
+                        // TODO if this view is reused, userIcon.getDrawable() may returns the different drawable
+                        .placeholder(userIcon.getDrawable())
+                        .into(userIcon, new Callback()
+                        {
+                            @Override
+                            public void onSuccess()
+                            {
+                            }
 
-                                 @Override
-                                 public void onError()
-                                 {
-                                     displayDefaultUserIcon();
-                                 }
-                             });
+                            @Override
+                            public void onError()
+                            {
+                                displayDefaultUserIcon();
+                            }
+                        });
             }
             else
             {
@@ -214,14 +255,19 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
         {
             if (heroDTO != null)
             {
-                SimpleDateFormat df = new SimpleDateFormat(getResources().getString(R.string.manage_heroes_datetime_format));
+                SimpleDateFormat df = new SimpleDateFormat(
+                        getResources().getString(R.string.manage_heroes_datetime_format));
                 if (heroDTO.active && heroDTO.followingSince != null)
                 {
-                    dateInfo.setText(String.format(getResources().getString(R.string.manage_heroes_following_since), df.format(heroDTO.followingSince)));
+                    dateInfo.setText(String.format(
+                            getResources().getString(R.string.manage_heroes_following_since),
+                            df.format(heroDTO.followingSince)));
                 }
                 else if (!heroDTO.active && heroDTO.stoppedFollowingOn != null)
                 {
-                    dateInfo.setText(String.format(getResources().getString(R.string.manage_heroes_not_following_since), df.format(heroDTO.stoppedFollowingOn)));
+                    dateInfo.setText(String.format(
+                            getResources().getString(R.string.manage_heroes_not_following_since),
+                            df.format(heroDTO.stoppedFollowingOn)));
                 }
                 else
                 {
@@ -239,10 +285,12 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     {
         if (statusIcon != null)
         {
-            statusIcon.setImageResource((heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
+            //statusIcon.setImageResource(
+            //        (heroDTO != null && heroDTO.active) ? RES_ID_ACTIVE : RES_ID_INACTIVE);
+
+            statusIcon.setImageResource(RES_ID_CROSS_RED);
         }
     }
-
 
     //</editor-fold>
 

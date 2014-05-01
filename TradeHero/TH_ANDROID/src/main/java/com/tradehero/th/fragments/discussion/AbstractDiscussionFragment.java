@@ -8,28 +8,39 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
 
-/**
- * Created by tho on 3/27/2014.
- */
-public class AbstractDiscussionFragment extends DashboardFragment
+abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
     public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
+
+    public static void putDiscussionKey(Bundle args, DiscussionKey discussionKey)
+    {
+        args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         ButterKnife.inject(this, view);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override protected void initViews(View view)
+    {
+        if (discussionView != null)
+        {
+            discussionView.setCommentPostedListener(createCommentPostedListener());
+        }
     }
 
     @Override public void onDestroyView()
@@ -54,7 +65,15 @@ public class AbstractDiscussionFragment extends DashboardFragment
         {
             discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
-        linkWith(discussionKey, true);
+        if (discussionKey != null)
+        {
+            linkWith(discussionKey, true);
+        }
+    }
+
+    public DiscussionKey getDiscussionKey()
+    {
+        return discussionKey;
     }
 
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
@@ -69,5 +88,31 @@ public class AbstractDiscussionFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+    }
+
+    protected void handleCommentPostFailed(Exception exception)
+    {
+    }
+
+    protected PostCommentView.CommentPostedListener createCommentPostedListener()
+    {
+        return new AbstractDiscussionCommentPostedListener();
+    }
+
+    protected class AbstractDiscussionCommentPostedListener implements PostCommentView.CommentPostedListener
+    {
+        @Override public void success(DiscussionDTO discussionDTO)
+        {
+            handleCommentPosted(discussionDTO);
+        }
+
+        @Override public void failure(Exception exception)
+        {
+            handleCommentPostFailed(exception);
+        }
     }
 }

@@ -2,12 +2,13 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserRelationsDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
@@ -31,8 +32,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:01 PM Copyright (c) TradeHero */
 
 interface UserServiceAsync
 {
@@ -130,6 +129,30 @@ interface UserServiceAsync
             Callback<List<UserSearchResultDTO>> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Search Allowable Recipients">
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page,
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+
+    @GET("/users/allowableRecipients")
+    void searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Get User">
     @GET("/users/{userId}")
     void getUser(
@@ -214,12 +237,6 @@ interface UserServiceAsync
     @GET("/users/{userId}/heroes")
     void getHeroes(
             @Path("userId") int userId,
-            Callback<List<HeroDTO>> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Relations">
-    @GET("/users/allowablerecipients")
-    void getRelations(
-            Callback<UserRelationsDTO> callback);
+            Callback<HeroDTOList> callback);
     //</editor-fold>
 }

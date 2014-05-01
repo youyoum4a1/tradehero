@@ -20,7 +20,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 6:24 PM Copyright (c) TradeHero */
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
@@ -118,6 +117,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 pushFollowerFragment();
                 break;
             default:
+                Timber.d("LeaderboardMarkUserListFragment %s",bundle);
                 getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
@@ -127,7 +127,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
+        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
@@ -139,7 +139,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_HERO_ID, currentUserId.get());
+        FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
