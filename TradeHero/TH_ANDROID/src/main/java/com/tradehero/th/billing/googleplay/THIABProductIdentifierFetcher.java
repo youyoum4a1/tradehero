@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
 public class THIABProductIdentifierFetcher
     extends BaseProductIdentifierFetcher<
         IABSKUListKey,
@@ -26,8 +25,6 @@ public class THIABProductIdentifierFetcher
         IABSKUList,
         IABException>
 {
-    public static final String TAG = THIABProductIdentifierFetcher.class.getSimpleName();
-
     protected Map<IABSKUListKey, IABSKUList> availableProductIdentifiers;
 
     public THIABProductIdentifierFetcher()

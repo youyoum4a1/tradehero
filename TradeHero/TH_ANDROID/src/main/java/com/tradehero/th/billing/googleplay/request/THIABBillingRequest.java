@@ -13,9 +13,6 @@ import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THIABBillingRequest<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

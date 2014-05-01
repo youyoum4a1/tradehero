@@ -4,9 +4,6 @@ import com.tradehero.common.billing.googleplay.BaseIABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-/**
- * Created by xavier on 2/24/14.
- */
 public class THBaseIABPurchaserHolder
     extends BaseIABPurchaserHolder<
         IABSKU,

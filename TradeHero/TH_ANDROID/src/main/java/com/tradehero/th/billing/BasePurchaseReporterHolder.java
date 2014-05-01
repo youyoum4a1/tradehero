@@ -13,9 +13,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by xavier on 2/24/14.
- */
 abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,

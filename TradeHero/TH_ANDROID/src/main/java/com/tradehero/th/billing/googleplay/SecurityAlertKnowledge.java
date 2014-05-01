@@ -6,13 +6,8 @@ import com.tradehero.th.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 2/10/14.
- */
 @Singleton public class SecurityAlertKnowledge
 {
-    public static final String TAG = SecurityAlertKnowledge.class.getSimpleName();
-
     @Inject public SecurityAlertKnowledge()
     {
     }

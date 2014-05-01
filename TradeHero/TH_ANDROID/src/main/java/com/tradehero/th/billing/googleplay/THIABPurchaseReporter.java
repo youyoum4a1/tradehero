@@ -28,7 +28,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,

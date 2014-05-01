@@ -3,9 +3,6 @@ package com.tradehero.th.billing;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 
-/**
- * Created by xavier on 3/18/14.
- */
 public enum ProductIdentifierDomain
 {
     DOMAIN_VIRTUAL_DOLLAR(R.string.store_buy_virtual_dollar_window_title, LocalyticsConstants.BuyExtraCashDialog_Show),

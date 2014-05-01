@@ -1,12 +1,7 @@
 package com.tradehero.th.billing.googleplay.exception;
 
-/**
- * Created by xavier on 2/12/14.
- */
 public class PurchaseReportedToOtherUserException extends RuntimeException
 {
-    public static final String TAG = PurchaseReportedToOtherUserException.class.getSimpleName();
-
     public PurchaseReportedToOtherUserException()
     {
         super();

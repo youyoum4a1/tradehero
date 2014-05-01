@@ -38,9 +38,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * It expects its Activity to implement THIABInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 public class THIABBillingInteractor
     extends
         THBaseBillingInteractor<

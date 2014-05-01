@@ -2,9 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABConstants;
 
-/**
- * Created by xavier on 2/21/14.
- */
 public class THIABConstants extends IABConstants
 {
     public static final int UNHANDLED_DOMAIN = -2000;

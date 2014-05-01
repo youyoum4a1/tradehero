@@ -13,9 +13,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THUIIABBillingRequest
     extends THUIBillingRequest<
         IABSKUListKey,

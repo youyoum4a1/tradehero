@@ -5,9 +5,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.billing.googleplay.THIABConstants;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/21/14.
- */
 public class THIABExceptionFactory extends IABExceptionFactory
 {
     @Inject public THIABExceptionFactory()

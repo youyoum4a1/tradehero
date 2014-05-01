@@ -6,12 +6,8 @@ import com.tradehero.th.api.security.SecurityId;
 import java.util.List;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/24/14.
- */
 abstract public class SecurityIdFilter extends Filter
 {
-
     protected ListCharSequencePredicateFilter<SecurityId> securityIdPatternFilter;
 
     public SecurityIdFilter(ListCharSequencePredicateFilter<SecurityId> predicateFilter)
@@ -33,12 +29,14 @@ abstract public class SecurityIdFilter extends Filter
         return results;
     }
 
-    @Override final protected void publishResults(CharSequence charSequence, FilterResults filterResults)
+    @Override final protected void publishResults(CharSequence charSequence,
+            FilterResults filterResults)
     {
         publishResults(charSequence, (SecurityFilterResults) filterResults);
     }
 
-    abstract protected void publishResults(CharSequence charSequence, SecurityFilterResults filterResults);
+    abstract protected void publishResults(CharSequence charSequence,
+            SecurityFilterResults filterResults);
 
     protected class SecurityFilterResults extends FilterResults
     {

@@ -14,9 +14,6 @@ import com.tradehero.th.billing.OnFollowResultListener;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 
-/**
- * Created by xavier on 3/18/14.
- */
 public class THUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
