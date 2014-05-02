@@ -4,22 +4,36 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
 import java.util.Map;
+import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
@@ -32,6 +46,11 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.authentication_sign_up_username) ServerValidatedUsernameText displayName;
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
+    @InjectView(R.id.image_optional) @Optional ImageView profileImage;
+    @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
+    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation userPhotoTransformation;
     ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
@@ -55,7 +74,20 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onFinishInflate();
 
+        DaggerUtils.inject(this);
         ButterKnife.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
     }
 
     public void forceValidateFields()
@@ -190,6 +222,44 @@ public class ProfileInfoView extends LinearLayout
         this.lastName.setText(userBaseDTO.lastName);
         this.displayName.setText(userBaseDTO.displayName);
         this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
+        displayProfileImage(userBaseDTO);
+    }
+
+    public void displayProfileImage(UserBaseDTO userBaseDTO)
+    {
+        if (this.profileImage != null)
+        {
+            if (userBaseDTO.picture == null)
+            {
+                displayDefaultProfileImage();
+            }
+            else
+            {
+                picasso.load(userBaseDTO.picture)
+                        .transform(userPhotoTransformation)
+                        .into(profileImage, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                displayDefaultProfileImage();
+                            }
+                        });
+            }
+        }
+    }
+
+    public void displayDefaultProfileImage()
+    {
+        if (this.profileImage != null)
+        {
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(profileImage);
+        }
     }
 
     public void populateCredentials(JSONObject credentials)
@@ -221,6 +291,33 @@ public class ProfileInfoView extends LinearLayout
             this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
+        }
+    }
+
+    @OnClick(R.id.image_optional) @Optional
+    protected void showImageFromDialog()
+    {
+        ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
+                getContext(), LayoutInflater.from(getContext()),
+                R.layout.choose_from_item);
+        adapter.addItems(chooseImageFromDTOFactory.getAll());
+        alertDialogUtil.popWithNegativeButton(getContext(),
+                getContext().getString(R.string.user_profile_choose_image_from_choice),
+                null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
+                adapter, createChooseImageDialogClickListener(),
+                null);
+    }
+
+    protected AlertDialogUtil.OnClickListener<ChooseImageFromDTO> createChooseImageDialogClickListener()
+    {
+        return new ProfileInfoViewChooseImageDialogClickListener();
+    }
+
+    protected class ProfileInfoViewChooseImageDialogClickListener implements AlertDialogUtil.OnClickListener<ChooseImageFromDTO>
+    {
+        @Override public void onClick(ChooseImageFromDTO which)
+        {
+            // TODO
         }
     }
 }

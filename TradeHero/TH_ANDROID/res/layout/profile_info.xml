@@ -176,6 +176,7 @@
             android:inputType="text"
             android:drawableLeft="@drawable/accounts_glyph_name_default"
             style="@style/TradeHero.Authentication.EditText"/>
+
       </LinearLayout>
 
     </RelativeLayout>

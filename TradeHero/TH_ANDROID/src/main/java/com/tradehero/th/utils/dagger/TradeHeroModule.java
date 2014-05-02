@@ -74,6 +74,7 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
+import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
@@ -175,6 +176,7 @@ import javax.inject.Singleton;
                 {
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
+                        ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
                         AboutFragment.class,

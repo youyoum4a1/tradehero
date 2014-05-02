@@ -30,8 +30,10 @@
   <string name="user_profile_cash_on_hand">Cash on Hand</string>
   <string name="user_profile_first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localisations may swap those -->
 
+  <string name="user_profile_choose_image_from_choice">For Your Profile Photo, Pick:</string>
   <string name="user_profile_choose_image_from_camera">Image from Camera</string>
   <string name="user_profile_choose_image_from_library">Image from Library</string>
+  <string name="user_profile_choose_image_from_cancel">@string/cancel</string>
 
   <string name="error_fetch_user_profile">There was an error when fetching the user profile information</string>
   <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
