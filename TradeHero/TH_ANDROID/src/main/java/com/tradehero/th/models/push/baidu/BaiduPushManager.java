@@ -9,6 +9,7 @@ import com.baidu.android.pushservice.PushSettings;
 import com.baidu.frontia.FrontiaApplication;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.ForBaiduPush;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
@@ -18,10 +19,13 @@ import timber.log.Timber;
     private static final int NOTIFICATION_BUILDER_ID = 1;
 
     private final Context context;
-    private final CustomPushNotificationBuilder customPushNotificationBuilder;
+    private final Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder;
     private final String appKey;
 
-    @Inject public BaiduPushManager(Context context, CustomPushNotificationBuilder customPushNotificationBuilder, @ForBaiduPush String appKey)
+    @Inject public BaiduPushManager(
+            Context context,
+            Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder,
+            @ForBaiduPush String appKey)
     {
         this.context = context;
         this.customPushNotificationBuilder = customPushNotificationBuilder;
@@ -37,7 +41,7 @@ import timber.log.Timber;
     {
         Timber.d("enablePush(PushManager.startWork) context:%s, appKey:%s", context, appKey);
         PushSettings.enableDebugMode(context, true);
-        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder);
+        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder.get());
         PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY, appKey);
     }
 
@@ -53,8 +57,8 @@ import timber.log.Timber;
         {
             defaultVal |= Notification.DEFAULT_SOUND;
         }
-        customPushNotificationBuilder.setNotificationDefaults(defaultVal);
-        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder);
+        customPushNotificationBuilder.get().setNotificationDefaults(defaultVal);
+        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder.get());
     }
 
     @Override public void setVibrateEnabled(boolean enabled)
@@ -64,7 +68,7 @@ import timber.log.Timber;
         {
             defaultVal |= Notification.DEFAULT_VIBRATE;
         }
-        customPushNotificationBuilder.setNotificationDefaults(defaultVal);
-        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder);
+        customPushNotificationBuilder.get().setNotificationDefaults(defaultVal);
+        PushManager.setNotificationBuilder(context, NOTIFICATION_BUILDER_ID, customPushNotificationBuilder.get());
     }
 }

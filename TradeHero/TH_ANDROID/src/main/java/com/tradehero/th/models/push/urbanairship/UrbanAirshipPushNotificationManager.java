@@ -5,15 +5,16 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
 @Singleton public class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
-    private final CustomPushNotificationBuilder customPushNotificationBuilder;
+    private final Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder;
 
-    @Inject public UrbanAirshipPushNotificationManager(CustomPushNotificationBuilder customPushNotificationBuilder)
+    @Inject public UrbanAirshipPushNotificationManager(Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder)
     {
         this.customPushNotificationBuilder = customPushNotificationBuilder;
     }
@@ -23,7 +24,7 @@ import timber.log.Timber;
         UAirship.takeOff(Application.context());
 
         PushManager.enablePush();
-        PushManager.shared().setNotificationBuilder(customPushNotificationBuilder);
+        PushManager.shared().setNotificationBuilder(customPushNotificationBuilder.get());
         PushManager.shared().setIntentReceiver(UrbanAirshipIntentReceiver.class);
 
         Timber.d("My Application onCreate - App APID: %s", PushManager.shared().getAPID());
