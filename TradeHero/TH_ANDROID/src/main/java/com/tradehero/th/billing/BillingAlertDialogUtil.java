@@ -122,6 +122,7 @@ abstract public class BillingAlertDialogUtil<
             ProductIdentifierDomain skuDomain);
     abstract protected Comparator<THProductDetailType> createProductDetailComparator();
 
+    // TODO use parent's popWithNegativeButton
     public AlertDialog popBuyDialog(
             final int requestCode,
             final Context context,

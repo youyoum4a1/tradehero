@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -22,8 +23,10 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -52,6 +55,9 @@ public class ProfileInfoView extends LinearLayout
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     ProgressDialog progressDialog;
+    private UserBaseDTO userBaseDTO;
+    private Bitmap newImage;
+    private Listener listener;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context)
@@ -88,6 +94,11 @@ public class ProfileInfoView extends LinearLayout
     {
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    public void setListener(Listener listener)
+    {
+        this.listener = listener;
     }
 
     public void forceValidateFields()
@@ -197,6 +208,12 @@ public class ProfileInfoView extends LinearLayout
         progressDialog = null;
     }
 
+    public void setNewImage(Bitmap newImage)
+    {
+        this.newImage = newImage;
+        displayProfileImage();
+    }
+
     public void populateUserFormMap(Map<String, Object> map)
     {
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
@@ -205,7 +222,10 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
-        // TODO add profile picture
+        if (newImage != null)
+        {
+            // TODO add profile picture
+        }
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
@@ -218,11 +238,32 @@ public class ProfileInfoView extends LinearLayout
 
     public void populate(UserBaseDTO userBaseDTO)
     {
+        this.userBaseDTO = userBaseDTO;
         this.firstName.setText(userBaseDTO.firstName);
         this.lastName.setText(userBaseDTO.lastName);
         this.displayName.setText(userBaseDTO.displayName);
         this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
-        displayProfileImage(userBaseDTO);
+        displayProfileImage();
+    }
+
+    public void displayProfileImage()
+    {
+        if (newImage != null)
+        {
+            displayProfileImage(newImage);
+        }
+        else if (userBaseDTO != null)
+        {
+            displayProfileImage(userBaseDTO);
+        }
+    }
+
+    public void displayProfileImage(Bitmap newImage)
+    {
+        if (this.profileImage != null)
+        {
+            profileImage.setImageBitmap(userPhotoTransformation.transform(newImage));
+        }
     }
 
     public void displayProfileImage(UserBaseDTO userBaseDTO)
@@ -300,12 +341,37 @@ public class ProfileInfoView extends LinearLayout
         ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
                 getContext(), LayoutInflater.from(getContext()),
                 R.layout.choose_from_item);
-        adapter.addItems(chooseImageFromDTOFactory.getAll());
+        adapter.setItems(chooseImageFromDTOFactory.getAll());
         alertDialogUtil.popWithNegativeButton(getContext(),
                 getContext().getString(R.string.user_profile_choose_image_from_choice),
                 null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
                 adapter, createChooseImageDialogClickListener(),
                 null);
+    }
+
+    protected void handleChooseImage(ChooseImageFromDTO chooseImageFrom)
+    {
+        if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
+        {
+            // TODO
+        }
+        else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
+        {
+            notifyImageFromLibraryRequested();
+        }
+        else
+        {
+            Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
+        }
+    }
+
+    protected void notifyImageFromLibraryRequested()
+    {
+        Listener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onImageFromLibraryRequested();
+        }
     }
 
     protected AlertDialogUtil.OnClickListener<ChooseImageFromDTO> createChooseImageDialogClickListener()
@@ -317,7 +383,13 @@ public class ProfileInfoView extends LinearLayout
     {
         @Override public void onClick(ChooseImageFromDTO which)
         {
-            // TODO
+            handleChooseImage(which);
         }
+    }
+
+    public static interface Listener
+    {
+        void onUpdateRequested();
+        void onImageFromLibraryRequested();
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
-
 
 public class AlertDialogUtil
 {
@@ -70,13 +70,46 @@ public class AlertDialogUtil
             String descriptionRes, String cancelRes,
             DialogInterface.OnClickListener cancelListener)
     {
+        return popWithNegativeButton(context, titleRes,
+                descriptionRes, cancelRes,
+                null, null,
+                cancelListener);
+    }
+
+    public AlertDialog popWithNegativeButton(Context context, String titleRes,
+            String descriptionRes, String cancelRes,
+            final ListAdapter detailsAdapter,
+            final OnClickListener adapterListener,
+            DialogInterface.OnClickListener cancelListener)
+    {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
-                .setTitle(titleRes)
-                .setMessage(descriptionRes)
                 .setIcon(R.drawable.th_app_logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelRes, cancelListener);
+        if (titleRes != null)
+        {
+            alertDialogBuilder.setTitle(titleRes);
+        }
+        if (descriptionRes != null)
+        {
+            alertDialogBuilder.setMessage(descriptionRes);
+        }
+        if (detailsAdapter != null)
+        {
+            alertDialogBuilder
+                    .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            if (adapterListener != null)
+                            {
+                                adapterListener.onClick(detailsAdapter.getItem(i));
+                            }
+                            dialogInterface.cancel();
+                        }
+                    });
+        }
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
@@ -250,5 +283,10 @@ public class AlertDialogUtil
         {
             mProgressDialog.dismiss();
         }
+    }
+
+    public static interface OnClickListener<DTOType>
+    {
+        void onClick(DTOType which);
     }
 }

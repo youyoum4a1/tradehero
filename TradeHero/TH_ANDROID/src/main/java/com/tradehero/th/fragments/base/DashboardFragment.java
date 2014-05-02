@@ -14,7 +14,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
