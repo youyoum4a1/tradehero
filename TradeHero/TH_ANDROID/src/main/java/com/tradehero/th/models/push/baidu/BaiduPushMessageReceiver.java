@@ -84,9 +84,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public static Intent handleIntent(Intent intent)
     {
         String action = intent.getAction();
-        int id = intent.getIntExtra(KEY_NOTIFICATION_ID,-1);
+        int id = intent.getIntExtra(KEY_NOTIFICATION_ID, -1);
         String description = intent.getStringExtra(KEY_NOTIFICATION_CONTENT);
-        Timber.d("action %s, id:%s, description:%s",action,id,description);
+        Timber.d("action: %s, id: %s, description: %s", action, id, description);
 
         Intent fakeIntent = new Intent();
         fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
@@ -102,7 +102,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         Notification notification = customPushNotificationBuilder.construct(context);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), 0);
+        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         int hashCode = Math.abs(pushMessageDTO.description.hashCode());
@@ -127,6 +127,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     //<editor-fold desc="Not being used for the time being">
+
     /**
      * when user click the notification
      */
@@ -144,7 +145,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     *  Callback for delTags()
+     * Callback for delTags()
      */
     @Override public void onDelTags(Context context, int errorCode, List<String> successTags, List<String> failTags, String requestId)
     {
