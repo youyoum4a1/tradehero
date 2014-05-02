@@ -8,8 +8,7 @@ import org.json.JSONObject;
 
 public class PushMessageHandler
 {
-    public static final String BROADCAST_ACTION_MESSAGE_RECEIVED =
-            "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
+    public static final String BROADCAST_ACTION_MESSAGE_RECEIVED = "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
 
     public static final String KEY_TITLE = "title";
     public static final String KEY_DESCRIPTION = "description";
