@@ -297,7 +297,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
                     currentUserId.toUserBaseKey(),
                     userFormDTO,
-                    null, // TODO proper image
                     createUpdateUserProfileCallback());
         }
     }

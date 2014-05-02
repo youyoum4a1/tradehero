@@ -72,6 +72,11 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
+    @PUT("/users/{userId}/updateUser")
+    UserProfileDTO updateProfile(
+            @Path("userId") int userId,
+            @Body UserFormDTO userFormDTO);
+
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     UserProfileDTO updateProfile(
             @Path("userId") int userId,

@@ -19,6 +19,7 @@ public class UserFormDTO
     public String location;
     public String website;
     public String deviceToken;
+    public byte[] profilePicture;
 
     public UserFormDTO()
     {

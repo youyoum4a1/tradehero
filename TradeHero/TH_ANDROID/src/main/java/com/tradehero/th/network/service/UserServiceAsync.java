@@ -55,6 +55,12 @@ interface UserServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
+    @PUT("/users/{userId}/updateUser")
+    void updateProfile(
+            @Path("userId") int userId,
+            @Body UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> cb);
+
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     void updateProfile(
             @Path("userId") int userId,

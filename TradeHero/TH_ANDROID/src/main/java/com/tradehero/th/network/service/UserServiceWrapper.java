@@ -135,8 +135,7 @@ import retrofit.RetrofitError;
     //<editor-fold desc="Update Profile">
     public UserProfileDTO updateProfile(
             UserBaseKey userBaseKey,
-            UserFormDTO userFormDTO,
-            byte[] profilePicture)
+            UserFormDTO userFormDTO)
     {
         return createUpdateProfileProcessor().process(userService.updateProfile(
                 userBaseKey.key,
@@ -153,13 +152,12 @@ import retrofit.RetrofitError;
                 userFormDTO.biography,
                 userFormDTO.location,
                 userFormDTO.website,
-                profilePicture));
+                userFormDTO.profilePicture));
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO,
-            byte[] profilePicture,
             Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
@@ -178,9 +176,8 @@ import retrofit.RetrofitError;
                 userFormDTO.biography,
                 userFormDTO.location,
                 userFormDTO.website,
-                profilePicture,
-                middleCallback
-        );
+                userFormDTO.profilePicture,
+                middleCallback);
         return middleCallback;
     }
 
@@ -191,7 +188,7 @@ import retrofit.RetrofitError;
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, (byte[]) null);
+        return this.updateProfile(userBaseKey, userFormDTO);
     }
 
     public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
@@ -201,7 +198,7 @@ import retrofit.RetrofitError;
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, null, callback);
+        return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
 
     public UserProfileDTO updateProfilePropertyPushNotifications(
@@ -211,7 +208,7 @@ import retrofit.RetrofitError;
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, (byte[]) null);
+        return this.updateProfile(userBaseKey, userFormDTO);
     }
 
     public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
@@ -221,7 +218,7 @@ import retrofit.RetrofitError;
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, null, callback);
+        return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
     //</editor-fold>
 
