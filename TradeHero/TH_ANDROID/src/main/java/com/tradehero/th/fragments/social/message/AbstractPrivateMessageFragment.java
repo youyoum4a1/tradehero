@@ -68,8 +68,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         Bundle args = getArguments();
         if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
         {
-            correspondentId =
-                    new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+            correspondentId = new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
         }
     }
 
@@ -78,8 +77,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
     }
@@ -93,6 +91,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override protected void initViews(View view)
     {
         super.initViews(view);
+
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
@@ -228,8 +227,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
         {
-            String title =
-                    userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
             Timber.d("Display title " + title);
             actionBar.setTitle(title);
         }

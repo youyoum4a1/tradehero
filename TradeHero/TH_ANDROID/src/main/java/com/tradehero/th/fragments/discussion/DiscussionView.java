@@ -46,7 +46,7 @@ public class DiscussionView extends FrameLayout
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;
-    private DiscussionKey discussionKey;
+    protected DiscussionKey discussionKey;
 
     private PostCommentView.CommentPostedListener commentPostedListener;
 
