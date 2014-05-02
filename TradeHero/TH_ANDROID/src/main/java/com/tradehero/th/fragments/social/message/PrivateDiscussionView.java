@@ -125,10 +125,10 @@ public class PrivateDiscussionView extends DiscussionView
     {
         MessageHeaderId messageHeaderId = new MessageHeaderId(discussionKey.id);
         this.messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+        super.linkWith(discussionKey, andDisplay);
 
         if (messageHeaderDTO != null)
         {
-            super.linkWith(discussionKey, andDisplay);
             fetchDiscussion(discussionKey);
         }
         else
@@ -136,6 +136,7 @@ public class PrivateDiscussionView extends DiscussionView
             detachMessageHeaderFetchTask();
             messageHeaderFetchListener = new MessageHeaderFetchListener();
             messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false, messageHeaderFetchListener);
+            messageHeaderFetchTask.execute();
         }
     }
 
