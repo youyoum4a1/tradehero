@@ -1,8 +1,7 @@
-package com.tradehero.th.fragments.settings;
+package com.tradehero.th.fragments.settings.photo;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 
 public class ChooseImageFromAdapter extends ArrayAdapter<ChooseImageFromDTO>
 {
