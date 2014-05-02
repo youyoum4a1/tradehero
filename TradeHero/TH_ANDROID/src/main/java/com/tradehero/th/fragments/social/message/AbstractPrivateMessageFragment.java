@@ -59,8 +59,18 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        correspondentId =
-                new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+
+        collectCorrespondentId();
+    }
+
+    private void collectCorrespondentId()
+    {
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
+        {
+            correspondentId =
+                    new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+        }
     }
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
