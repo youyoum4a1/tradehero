@@ -26,7 +26,7 @@ import timber.log.Timber;
 import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
+
 public class LruMemFileCache extends LruCache
 {
     public static final String TAG = LruMemFileCache.class.getSimpleName();

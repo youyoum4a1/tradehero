@@ -2,7 +2,7 @@ package com.tradehero.common.billing.googleplay;
 
 import java.util.Comparator;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 1:23 PM To change this template use File | Settings | File Templates. */
+
 public class BaseIABProductDetailsDecreasingPriceComparator<
             BaseIABProductDetailType extends BaseIABProductDetail>
         implements Comparator<BaseIABProductDetailType>

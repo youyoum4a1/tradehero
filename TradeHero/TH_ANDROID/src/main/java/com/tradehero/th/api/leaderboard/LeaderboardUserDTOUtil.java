@@ -8,9 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 @Singleton public class LeaderboardUserDTOUtil
 {
     public static final String TAG = LeaderboardUserDTOUtil.class.getSimpleName();

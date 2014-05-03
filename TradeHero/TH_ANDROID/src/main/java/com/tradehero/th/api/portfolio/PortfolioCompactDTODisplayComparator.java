@@ -2,9 +2,7 @@ package com.tradehero.th.api.portfolio;
 
 import java.util.Comparator;
 
-/**
- * Created by xavier on 1/14/14.
- */
+
 public class PortfolioCompactDTODisplayComparator implements Comparator<PortfolioCompactDTO>
 {
     public static final String TAG = PortfolioCompactDTODisplayComparator.class.getSimpleName();

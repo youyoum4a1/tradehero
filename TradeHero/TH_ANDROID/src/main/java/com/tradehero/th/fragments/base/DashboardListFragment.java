@@ -6,7 +6,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/24/13 Time: 10:48 AM Copyright (c) TradeHero */
+
 public class DashboardListFragment extends BaseListFragment
 {
     private DashboardNavigator navigator;

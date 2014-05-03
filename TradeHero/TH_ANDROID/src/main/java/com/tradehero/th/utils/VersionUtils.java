@@ -10,10 +10,7 @@ import android.view.Display;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 4:55 PM To change this template use
- * File | Settings | File Templates.
- */
+
 public class VersionUtils
 {
     public static Intent getSupportEmailIntent(Context context)

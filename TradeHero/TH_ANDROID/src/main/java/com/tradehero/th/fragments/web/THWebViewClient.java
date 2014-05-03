@@ -17,9 +17,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/20/14.
- */
+
 public class THWebViewClient extends WebViewClient
 {
     @Inject THIntentFactory thIntentFactory;

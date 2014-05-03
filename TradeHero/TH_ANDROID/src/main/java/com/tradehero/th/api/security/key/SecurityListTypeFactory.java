@@ -6,9 +6,7 @@ import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/21/14.
- */
+
 @Singleton public class SecurityListTypeFactory
 {
     public static final String TAG = SecurityListTypeFactory.class.getSimpleName();

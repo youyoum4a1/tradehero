@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/7/13 Time: 4:26 PM To change this template use File | Settings | File Templates. */
+
 public class QuoteDTO
 {
     public int securityId;

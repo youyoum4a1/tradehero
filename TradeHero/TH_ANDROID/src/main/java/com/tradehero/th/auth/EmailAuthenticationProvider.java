@@ -5,7 +5,7 @@ import com.tradehero.th.api.form.UserFormFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 12:06 PM To change this template use File | Settings | File Templates. */
+
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
     public static final String TAG = EmailAuthenticationProvider.class.getSimpleName();

@@ -8,7 +8,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:40 PM To change this template use File | Settings | File Templates. */
+
 public class IABSKUListRetrievedAsyncMilestone
         extends ProductIdentifierListRetrievedAsyncMilestone<
         IABSKUListKey,

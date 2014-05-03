@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:05 PM To change this template use File | Settings | File Templates. */
+
 abstract public class ProductDetailCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductDetailsType extends ProductDetail<ProductIdentifierType>,

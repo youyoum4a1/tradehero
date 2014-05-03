@@ -3,7 +3,7 @@ package com.tradehero.common.milestone;
 import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 5:26 PM To change this template use File | Settings | File Templates. */
+
 abstract public class BaseAsyncTaskMilestone<KeyType, ProgressType, ValueType>
         implements Milestone
 {

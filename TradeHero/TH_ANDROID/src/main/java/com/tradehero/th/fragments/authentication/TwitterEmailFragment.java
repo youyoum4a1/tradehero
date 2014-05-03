@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 11:23 AM Copyright (c) TradeHero */
+
 public class TwitterEmailFragment extends AuthenticationFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

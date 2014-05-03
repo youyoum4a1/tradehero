@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 7:09 PM To change this template use File | Settings | File Templates. */
+
 public class StoreItemHeader extends LinearLayout
 {
     public static final String TAG = StoreItemHeader.class.getSimpleName();

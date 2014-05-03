@@ -1,9 +1,4 @@
-/**
- * BuySellConfirmFragment.java
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Aug 3, 2013
- */
+
 package com.tradehero.th.fragments.trade;
 
 import android.app.ProgressDialog;

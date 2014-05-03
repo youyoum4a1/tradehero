@@ -3,9 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:27 PM To change this template use File | Settings | File Templates.
- * */
+
 abstract public class ProductIdentifierListCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductIdentifierListKeyType extends ProductIdentifierListKey,

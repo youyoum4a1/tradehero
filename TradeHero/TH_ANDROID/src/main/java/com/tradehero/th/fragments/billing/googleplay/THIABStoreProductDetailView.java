@@ -6,9 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.fragments.billing.StoreProductDetailView;
 
-/**
- * Created by xavier on 3/26/14.
- */
+
 public class THIABStoreProductDetailView extends StoreProductDetailView<
         IABSKU,
         THIABProductDetail>

@@ -5,9 +5,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/27/14.
- */
+
 public class PositionDTOCompactListUtil
 {
     @Inject public PositionDTOCompactListUtil()

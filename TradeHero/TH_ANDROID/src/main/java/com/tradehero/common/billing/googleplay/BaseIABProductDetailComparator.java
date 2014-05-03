@@ -2,9 +2,7 @@ package com.tradehero.common.billing.googleplay;
 
 import java.util.Comparator;
 
-/**
- * Created by xavier on 2/10/14.
- */
+
 public class BaseIABProductDetailComparator<
         BaseIABProductDetailType extends BaseIABProductDetail>
         implements Comparator<BaseIABProductDetailType>

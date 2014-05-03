@@ -18,7 +18,7 @@ import java.util.Comparator;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
+
 public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItemView>
     implements StickyListHeadersAdapter
 {

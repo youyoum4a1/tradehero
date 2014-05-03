@@ -3,7 +3,7 @@ package com.tradehero.th.auth;
 import android.content.Context;
 import java.lang.ref.WeakReference;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/22/13 Time: 6:06 PM Copyright (c) TradeHero */
+
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
     protected static final String SCREEN_NAME_KEY = "screen_name";

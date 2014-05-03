@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
+
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";

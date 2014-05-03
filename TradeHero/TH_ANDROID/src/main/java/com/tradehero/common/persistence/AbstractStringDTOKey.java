@@ -2,9 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.os.Bundle;
 
-/**
- * Created by julien on 14/10/13
- */
+
 public abstract class AbstractStringDTOKey extends AbstractPrimitiveDTOKey<String>
 {
     public AbstractStringDTOKey(String key)

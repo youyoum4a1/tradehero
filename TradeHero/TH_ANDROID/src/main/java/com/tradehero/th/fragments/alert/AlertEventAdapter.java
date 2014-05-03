@@ -9,9 +9,7 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.alert.AlertEventDTO;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 3:33 PM Copyright (c) TradeHero
- */
+
 public class AlertEventAdapter extends ArrayDTOAdapter<AlertEventDTO, AlertEventItemView>
         implements StickyListHeadersAdapter
 {

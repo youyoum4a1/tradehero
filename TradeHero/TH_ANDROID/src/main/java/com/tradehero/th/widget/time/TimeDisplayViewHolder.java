@@ -15,9 +15,7 @@ import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 
-/**
- * Created by xavier on 1/23/14.
- */
+
 public class TimeDisplayViewHolder
 {
     public static final String TAG = TimeDisplayViewHolder.class.getSimpleName();

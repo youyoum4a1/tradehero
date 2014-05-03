@@ -7,7 +7,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:50 PM To change this template use File | Settings | File Templates. */
+
 public class OwnedPositionId extends OwnedPortfolioId implements DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";

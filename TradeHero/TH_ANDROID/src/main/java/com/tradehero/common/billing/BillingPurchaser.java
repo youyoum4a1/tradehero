@@ -2,7 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:16 PM To change this template use File | Settings | File Templates. */
+
 public interface BillingPurchaser<
         ProductIdentifierType extends ProductIdentifier,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
@@ -15,10 +15,7 @@ public interface BillingPurchaser<
     void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener);
     void purchase(int requestCode, PurchaseOrderType purchaseOrder);
 
-    /**
-     * Callback that notifies when a purchase is finished.
-     *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
-     *  */
+    
     public static interface OnPurchaseFinishedListener<
             ProductIdentifierType extends ProductIdentifier,
             PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,

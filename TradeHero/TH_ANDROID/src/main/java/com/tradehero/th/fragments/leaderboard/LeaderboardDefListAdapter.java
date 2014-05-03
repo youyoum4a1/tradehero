@@ -10,7 +10,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:08 PM Copyright (c) TradeHero */
+
 public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
 {
     private LeaderboardSortType sortType;

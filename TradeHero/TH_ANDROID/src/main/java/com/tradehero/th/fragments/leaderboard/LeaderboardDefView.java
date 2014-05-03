@@ -23,7 +23,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
+
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
 {
     @Inject protected CurrentUserId currentUserId;

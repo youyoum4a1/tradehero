@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/22/13 Time: 5:26 PM Copyright (c) TradeHero */
+
 public class RoundedImageView extends ImageView
 {
     //<editor-fold desc="Constructors">

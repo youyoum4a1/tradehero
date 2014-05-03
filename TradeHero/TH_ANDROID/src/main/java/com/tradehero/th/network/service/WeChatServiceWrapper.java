@@ -7,9 +7,7 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Created by alex on 14-4-4.
- */
+
 @Singleton public class WeChatServiceWrapper
 {
     private final WeChatService weChatService;

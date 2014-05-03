@@ -10,7 +10,7 @@ import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
+
 abstract public class BaseIABLogicHolder<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

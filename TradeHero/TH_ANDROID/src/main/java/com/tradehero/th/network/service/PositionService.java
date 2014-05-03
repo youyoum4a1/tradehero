@@ -7,7 +7,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 3:46 PM To change this template use File | Settings | File Templates. */
+
 public interface PositionService
 {
     //<editor-fold desc="Get One User Portfolio Positions List">

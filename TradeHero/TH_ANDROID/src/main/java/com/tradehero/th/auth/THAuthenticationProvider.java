@@ -2,7 +2,7 @@ package com.tradehero.th.auth;
 
 import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 2:45 PM Copyright (c) TradeHero */
+
 public interface THAuthenticationProvider
 {
     public void authenticate(THAuthenticationCallback callback);

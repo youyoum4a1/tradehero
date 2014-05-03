@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:41 PM Copyright (c) TradeHero */
+
 public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 {
     public static final String INCLUDE_FRIENDS_OF_FRIENDS = "includeFoF";

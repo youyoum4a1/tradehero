@@ -7,9 +7,7 @@ import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
 import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import dagger.Module;
 
-/**
- * Created by xavier on 1/13/14.
- */
+
 @Module(
         staticInjections =
                 {

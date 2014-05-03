@@ -49,9 +49,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 public class MainCompetitionFragment extends CompetitionFragment
 {
     private ActionBar actionBar;

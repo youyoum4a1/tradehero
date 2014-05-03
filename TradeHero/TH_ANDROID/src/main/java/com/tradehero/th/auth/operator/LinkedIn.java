@@ -17,7 +17,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:48 PM Copyright (c) TradeHero */
+
 public class LinkedIn extends SocialOperator
 {
     private static final String REQUEST_TOKEN_URL = "https://www.linkedin.com/uas/oauth/requestToken";

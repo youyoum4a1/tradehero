@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
+
 abstract public class BaseIABPurchaserHolder<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,

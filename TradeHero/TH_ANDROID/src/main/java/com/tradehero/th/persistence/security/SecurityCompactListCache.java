@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM */
+
 @Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
 {
     public static final String TAG = SecurityCompactListCache.class.getSimpleName();

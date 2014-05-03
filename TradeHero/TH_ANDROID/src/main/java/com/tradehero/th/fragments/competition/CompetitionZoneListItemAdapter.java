@@ -21,7 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
+
 public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZoneDTO, CompetitionZoneListItemView>
 {
     public static final int ITEM_TYPE_TRADE_NOW = 0;

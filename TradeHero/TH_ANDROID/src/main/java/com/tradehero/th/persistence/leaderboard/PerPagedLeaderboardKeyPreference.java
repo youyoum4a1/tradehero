@@ -5,9 +5,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 public class PerPagedLeaderboardKeyPreference extends PagedLeaderboardKeyPreference
 {
     public static final String TAG = PerPagedLeaderboardKeyPreference.class.getSimpleName();

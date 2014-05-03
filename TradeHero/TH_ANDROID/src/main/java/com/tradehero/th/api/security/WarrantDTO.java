@@ -2,7 +2,7 @@ package com.tradehero.th.api.security;
 
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 7:26 PM To change this template use File | Settings | File Templates. */
+
 public class WarrantDTO extends SecurityCompactDTO
 {
     public static final String TAG = WarrantDTO.class.getSimpleName();

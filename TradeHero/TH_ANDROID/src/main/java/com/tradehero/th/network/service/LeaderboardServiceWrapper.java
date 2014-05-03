@@ -14,9 +14,7 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 @Singleton public class LeaderboardServiceWrapper
 {
     private final LeaderboardService leaderboardService;

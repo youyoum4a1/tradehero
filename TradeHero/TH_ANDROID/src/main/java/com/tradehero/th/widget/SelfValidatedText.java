@@ -7,7 +7,7 @@ import android.view.View;
 import com.tradehero.th.R;
 import java.util.regex.Pattern;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 2:58 PM Copyright (c) TradeHero */
+
 public class SelfValidatedText extends ValidatedText
 {
     private final int DEFAULT_VALIDATE_DELAY = 200;

@@ -9,7 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:07 PM Copyright (c) TradeHero */
+
 public class TimelineManager
 {
     @Inject DatabaseCache dbCache;

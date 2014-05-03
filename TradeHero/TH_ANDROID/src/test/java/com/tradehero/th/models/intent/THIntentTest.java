@@ -16,9 +16,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
-/**
- * Created by xavier on 1/13/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 public class THIntentTest

@@ -4,7 +4,7 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.loaders.ContactEntry;
 import com.tradehero.th.utils.Constants;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 8:53 PM To change this template use File | Settings | File Templates. */
+
 public class UserFriendsDTO extends ExtendedDTO
 {
     public static final String TAG = UserFriendsDTO.class.getSimpleName();

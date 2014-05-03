@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:40 PM To change this template use File | Settings | File Templates. */
+
 abstract public class ProductIdentifierListRetrievedAsyncMilestone<
         ProductIdentifierListKey extends DTOKey,
         ProductIdentifierType extends ProductIdentifier,

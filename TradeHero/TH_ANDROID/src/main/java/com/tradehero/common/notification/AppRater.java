@@ -8,10 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA. User: nguyentruongtho.sg@gmail.com Date: 6/29/13 Time: 10:08 PM
- * Copyright @ tradehero All Rights reserved
- */
+
 
 public class AppRater
 {

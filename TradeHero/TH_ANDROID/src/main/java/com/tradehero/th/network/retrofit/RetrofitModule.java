@@ -49,9 +49,7 @@ import retrofit.RestAdapter;
 import retrofit.Server;
 import retrofit.converter.Converter;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:39 AM Copyright (c) TradeHero
- */
+
 
 @Module(
         includes = {

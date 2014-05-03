@@ -18,9 +18,7 @@ import retrofit.mime.TypedInput;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by xavier on 1/21/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class JacksonObjectMapperTest

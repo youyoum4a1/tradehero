@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 10:32 AM To change this template use File | Settings | File Templates. */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class JacksonConverterDeserialisationTest

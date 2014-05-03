@@ -3,10 +3,7 @@ package com.tradehero.common.application;
 import android.app.Application;
 import android.content.Context;
 
-/**
- * Created with IntelliJ IDEA. User: nguyentruongtho.sg@gmail.com Date: 6/29/13 Time: 9:10 PM
- * Copyright @ tradehero All Rights reserved
- */
+
 
 public class PApplication extends Application
 {

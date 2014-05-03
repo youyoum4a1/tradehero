@@ -3,9 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 
-/**
- * Created by tho on 4/25/2014.
- */
+
 public class NewsDiscussionView extends DiscussionView
 {
     //<editor-fold desc="Constructors">

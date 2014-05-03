@@ -8,7 +8,7 @@ import com.tradehero.common.billing.googleplay.exception.IABMissingTokenExceptio
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
+
 abstract public class IABPurchaseConsumer<
             IABSKUType extends IABSKU,
             IABOrderIdType extends IABOrderId,

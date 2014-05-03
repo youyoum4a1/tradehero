@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/28/13 Time: 4:24 PM Copyright (c) TradeHero */
+
 public abstract class AbstractUserAvailabilityRequester extends CallbackWithSpecificNotifiers<UserAvailabilityDTO>
 {
     protected String displayName;

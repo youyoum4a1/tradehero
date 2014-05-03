@@ -16,9 +16,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/25/14.
- */
+
 abstract public class BaseWebViewFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";

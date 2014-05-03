@@ -7,9 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 @Singleton public class CompetitionDTOUtil
 {
     public static final String TAG = CompetitionDTOUtil.class.getSimpleName();

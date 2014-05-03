@@ -3,9 +3,7 @@ package com.tradehero.th.api.trade;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-/**
- * Created by julien on 22/10/13
- */
+
 public class TradeId extends AbstractIntegerDTOKey
 {
     public final static String TAG = TradeId.class.getSimpleName();

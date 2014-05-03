@@ -6,9 +6,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 3:38 PM Copyright (c) TradeHero
- */
+
 
 public class TextHolder
 {

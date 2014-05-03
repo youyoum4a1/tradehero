@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:43 PM Copyright (c) TradeHero */
+
 public class UserStore extends AbstractUserStore
 {
     private Query query;

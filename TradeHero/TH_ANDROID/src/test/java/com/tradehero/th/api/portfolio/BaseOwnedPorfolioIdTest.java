@@ -1,8 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
-/**
- * Created by xavier on 2/17/14.
- */
+
 public class BaseOwnedPorfolioIdTest
 {
     protected OwnedPortfolioId get1n2()

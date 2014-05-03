@@ -52,9 +52,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 5:18 PM Copyright (c) TradeHero
- */
+
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
     @InjectView(R.id.stock_logo) ImageView stockLogo;

@@ -29,9 +29,7 @@ import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/17/14 Time: 4:00 PM Copyright (c) TradeHero
- */
+
 public class AlertItemView extends RelativeLayout
         implements DTOView<AlertId>
 {

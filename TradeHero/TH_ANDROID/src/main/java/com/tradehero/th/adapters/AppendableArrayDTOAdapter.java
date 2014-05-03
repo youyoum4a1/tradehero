@@ -6,9 +6,7 @@ import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by thonguyen on 9/4/14.
- */
+
 public class AppendableArrayDTOAdapter<T, V extends DTOView<T>> extends ArrayDTOAdapter<T, V>
 {
     public AppendableArrayDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)

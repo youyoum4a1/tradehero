@@ -13,7 +13,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 02/04/14 Time: 10:32 AM To change this template use File | Settings | File Templates. */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class JacksonConverterSerialisationTest

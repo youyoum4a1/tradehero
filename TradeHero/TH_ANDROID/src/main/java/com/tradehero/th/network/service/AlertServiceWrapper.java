@@ -12,10 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
-/**
- * Repurposes requests
- * Created by xavier on 12/12/13.
- */
+
 @Singleton public class AlertServiceWrapper
 {
     private final AlertService alertService;

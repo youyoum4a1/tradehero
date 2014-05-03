@@ -10,9 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by julien on 22/10/13
- */
+
 @Singleton public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
 {
     public static final String TAG = TradeListCache.class.getSimpleName();

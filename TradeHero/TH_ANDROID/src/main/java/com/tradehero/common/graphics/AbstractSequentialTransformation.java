@@ -5,7 +5,7 @@ import com.squareup.picasso.Transformation;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/19/13 Time: 11:58 AM To change this template use File | Settings | File Templates. */
+
 abstract public class AbstractSequentialTransformation implements Transformation
 {
     protected List<Transformation> transformationList;

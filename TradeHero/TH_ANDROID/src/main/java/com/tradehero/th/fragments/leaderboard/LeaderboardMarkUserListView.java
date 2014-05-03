@@ -8,7 +8,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
+
 public class LeaderboardMarkUserListView extends PullToRefreshListView
 {
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;

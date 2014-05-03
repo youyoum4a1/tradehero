@@ -10,7 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class AlertCache extends StraightDTOCache<AlertId, AlertDTO>
 {
     public static final String TAG = AlertCache.class.getSimpleName();

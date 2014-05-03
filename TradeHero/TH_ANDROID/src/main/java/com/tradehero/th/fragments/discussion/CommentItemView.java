@@ -24,9 +24,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/12/14 Time: 5:47 PM Copyright (c) TradeHero
- */
+
 public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;

@@ -3,8 +3,7 @@ package com.tradehero.common.thread;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/10/13 Time: 3:56 PM
- */
+
 public class KnownExecutorServices
 {
     public static final int DEFAULT_THREAD_COUNT = 1;

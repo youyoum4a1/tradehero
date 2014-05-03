@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:49 PM Copyright (c) TradeHero */
+
 @Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {

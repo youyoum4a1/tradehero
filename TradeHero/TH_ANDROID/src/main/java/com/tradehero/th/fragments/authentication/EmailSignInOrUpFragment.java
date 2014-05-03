@@ -18,7 +18,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 8:18 PM To change this template use File | Settings | File Templates. */
+
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
     protected Button signButton;

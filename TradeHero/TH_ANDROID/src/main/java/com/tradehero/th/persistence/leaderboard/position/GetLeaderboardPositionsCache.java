@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class GetLeaderboardPositionsCache extends PartialDTOCache<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;

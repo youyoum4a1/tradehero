@@ -17,7 +17,7 @@ import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedEx
 import org.json.JSONException;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
+
 abstract public class IABPurchaser<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,

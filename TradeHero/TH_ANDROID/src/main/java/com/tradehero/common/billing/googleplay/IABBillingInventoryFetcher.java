@@ -17,9 +17,7 @@ import java.util.Map;
 import org.json.JSONException;
 import timber.log.Timber;
 
-/**
- * Created by julien on 4/11/13
- */
+
 abstract public class IABBillingInventoryFetcher<
             IABSKUListKeyType extends IABSKUListKey,
             IABSKUType extends IABSKU,

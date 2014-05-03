@@ -9,9 +9,7 @@ import timber.log.Timber;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by tradehero on 14-3-8.
- */
+
 @Singleton
 public class TranslationServiceWrapper {
 

@@ -6,9 +6,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/26/14.
- */
+
 public class PortfolioCompactDTOUtil
 {
     @Inject public PortfolioCompactDTOUtil()

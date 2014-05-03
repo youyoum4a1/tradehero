@@ -9,10 +9,7 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Repurposes trade requests
- * Created by xavier on 12/12/13.
- */
+
 @Singleton public class TradeServiceWrapper
 {
     private final TradeService tradeService;

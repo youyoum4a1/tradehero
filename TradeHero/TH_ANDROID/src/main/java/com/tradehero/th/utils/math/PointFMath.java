@@ -3,7 +3,7 @@ package com.tradehero.th.utils.math;
 import android.graphics.Point;
 import android.graphics.PointF;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 12:08 PM To change this template use File | Settings | File Templates. */
+
 public class PointFMath extends PointF
 {
     public static final String TAG = PointFMath.class.getSimpleName();

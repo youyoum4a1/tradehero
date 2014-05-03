@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 7:40 PM To change this template use File | Settings | File Templates. */
+
 public class PrizeDTO
 {
     public static final String TAG = PrizeDTO.class.getSimpleName();

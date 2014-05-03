@@ -20,10 +20,7 @@ import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use
- * File | Settings | File Templates.
- */
+
 public class AlertDialogUtil
 {
     private ProgressDialog mProgressDialog;

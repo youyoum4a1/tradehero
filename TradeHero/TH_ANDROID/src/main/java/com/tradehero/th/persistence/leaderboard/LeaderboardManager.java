@@ -8,7 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:39 PM Copyright (c) TradeHero */
+
 @Singleton
 public class LeaderboardManager
 {

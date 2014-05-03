@@ -1,9 +1,4 @@
-/**
- * PeopleItemViewAdapter.java
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Aug 10, 2013
- */
+
 package com.tradehero.th.fragments.trending;
 
 import android.content.Context;

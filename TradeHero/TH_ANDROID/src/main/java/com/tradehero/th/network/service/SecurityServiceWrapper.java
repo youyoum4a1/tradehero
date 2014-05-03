@@ -29,10 +29,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Repurpose queries
- * Created by xavier on 12/5/13.
- */
+
 @Singleton public class SecurityServiceWrapper
 {
     private final SecurityService securityService;

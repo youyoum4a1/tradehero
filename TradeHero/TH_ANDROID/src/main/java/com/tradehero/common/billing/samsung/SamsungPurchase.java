@@ -4,9 +4,7 @@ import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 
-/**
- * Created by xavier on 3/26/14.
- */
+
 abstract public class SamsungPurchase<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId>

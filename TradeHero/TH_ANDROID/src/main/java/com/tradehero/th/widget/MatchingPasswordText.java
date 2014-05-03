@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 8/29/13 Time: 12:01 PM */
+
 public class MatchingPasswordText extends ValidatedPasswordText
 {
     private int targetId;

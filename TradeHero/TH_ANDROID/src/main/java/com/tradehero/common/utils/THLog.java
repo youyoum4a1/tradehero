@@ -11,9 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: thonguyen Date: 6/19/13 Time: 3:02 PM Special for debugging purpose
- */
+
 public class THLog
 {
     private static final String PREFIX = "TradeHero-";

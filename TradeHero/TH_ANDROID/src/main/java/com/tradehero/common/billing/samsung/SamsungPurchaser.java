@@ -4,9 +4,7 @@ import com.sec.android.iap.lib.listener.OnPaymentListener;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 
-/**
- * Created by xavier on 3/26/14.
- */
+
 public interface SamsungPurchaser<
         SamsungSKUType extends SamsungSKU,
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,

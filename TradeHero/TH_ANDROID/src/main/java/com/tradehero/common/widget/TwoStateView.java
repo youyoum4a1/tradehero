@@ -7,9 +7,7 @@ import android.widget.Checkable;
 import android.widget.RelativeLayout;
 import java.lang.ref.WeakReference;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/14/14 Time: 11:54 AM Copyright (c) TradeHero
- */
+
 public class TwoStateView extends RelativeLayout
     implements Checkable
 {

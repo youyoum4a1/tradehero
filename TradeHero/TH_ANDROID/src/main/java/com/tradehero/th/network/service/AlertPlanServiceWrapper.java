@@ -7,9 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
-/**
- * Created by xavier on 2/12/14.
- */
+
 @Singleton public class AlertPlanServiceWrapper
 {
     private final AlertPlanService alertPlanService;

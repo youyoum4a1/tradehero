@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by tradehero on 14-3-6.
- */
+
 public class THDialog {
 
     public interface OnDialogItemClickListener {

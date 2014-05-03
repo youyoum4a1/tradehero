@@ -3,9 +3,7 @@ package com.tradehero.th.api.discussion;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by xavier2 on 2014/4/9.
- */
+
 public class DiscussionDTOList<T extends AbstractDiscussionDTO> extends ArrayList<T>
 {
     //<editor-fold desc="Constructors">

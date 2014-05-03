@@ -6,9 +6,7 @@ import android.widget.RelativeLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.ColorUtils;
 
-/**
- * Created by julien on 31/10/13
- */
+
 public class ColorIndicator extends RelativeLayout
 {
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;

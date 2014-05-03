@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/3/13 Time: 12:57 PM Copyright (c) TradeHero */
+
 public class TimelineItemDTOEnhanced extends AbstractDiscussionDTO
 {
     public int type;

@@ -1,6 +1,6 @@
 package com.tradehero.th.api.misc;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/29/13 Time: 5:10 PM Copyright (c) TradeHero */
+
 public enum DeviceType
 {
     Unknown(0),

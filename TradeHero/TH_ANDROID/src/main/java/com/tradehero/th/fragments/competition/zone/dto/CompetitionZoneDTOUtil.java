@@ -14,9 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 @Singleton public class CompetitionZoneDTOUtil
 {
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;

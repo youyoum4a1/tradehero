@@ -3,7 +3,7 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:38 AM To change this template use File | Settings | File Templates. */
+
 public class PixelBitWiseMaskTransformation implements Transformation
 {
     // The default mask negates the colors and leaves alpha unchanged

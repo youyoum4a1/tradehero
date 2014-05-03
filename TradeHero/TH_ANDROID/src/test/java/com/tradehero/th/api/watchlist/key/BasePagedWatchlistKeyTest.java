@@ -1,8 +1,6 @@
 package com.tradehero.th.api.watchlist.key;
 
-/**
- * Created by xavier on 2/14/14.
- */
+
 abstract public class BasePagedWatchlistKeyTest
 {
     public static final String TAG = BasePagedWatchlistKeyTest.class.getSimpleName();

@@ -2,9 +2,7 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 5:44 PM Copyright (c) TradeHero
- */
+
 public abstract class AbstractPreference<T> implements TypePreference<T>
 {
     protected final T defaultValue;

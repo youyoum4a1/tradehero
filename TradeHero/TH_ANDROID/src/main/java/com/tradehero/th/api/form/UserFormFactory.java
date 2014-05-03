@@ -7,7 +7,7 @@ import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/2/13 Time: 3:21 PM To change this template use File | Settings | File Templates. */
+
 public class UserFormFactory
 {
     public static final String KEY_TYPE = "type";
