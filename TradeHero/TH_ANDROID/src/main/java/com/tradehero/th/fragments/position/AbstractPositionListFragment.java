@@ -431,6 +431,9 @@ abstract public class AbstractPositionListFragment<
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        detachGetPositionsTask();
+        detachUserProfileTask();
+        detachPortfolioTask();
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
         outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
     }
