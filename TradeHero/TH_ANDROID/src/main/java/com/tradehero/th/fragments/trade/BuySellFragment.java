@@ -998,19 +998,29 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 return;
             }
-            else if (quoteDTO.ask == null)
-            {
-                bPrice = getString(R.string.buy_sell_ask_price_not_available);
-                sPrice = getString(R.string.buy_sell_ask_price_not_available);
-            }
             else
             {
-                bthSignedNumber =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
-                sthSignedNumber =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
-                bPrice = bthSignedNumber.toString();
-                sPrice = sthSignedNumber.toString();
+                if (quoteDTO.ask == null)
+                {
+                    bPrice = getString(R.string.buy_sell_ask_price_not_available);
+                }
+                else
+                {
+                    bthSignedNumber =
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
+                    bPrice = bthSignedNumber.toString();
+                }
+
+                if (quoteDTO.bid == null)
+                {
+                    sPrice = getString(R.string.buy_sell_bid_price_not_available);
+                }
+                else
+                {
+                    sthSignedNumber =
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
+                    sPrice = sthSignedNumber.toString();
+                }
             }
             String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
             String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
