@@ -946,7 +946,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             if (!(error instanceof RetrofitError) ||
-                    ((RetrofitError) error).getResponse().getStatus() != 404)
+                    (((RetrofitError) error).getResponse() != null &&
+                        ((RetrofitError) error).getResponse().getStatus() != 404))
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(error, "Error while getting message thread");
