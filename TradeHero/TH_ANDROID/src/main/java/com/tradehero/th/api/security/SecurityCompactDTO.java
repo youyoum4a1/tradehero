@@ -7,7 +7,6 @@
     import java.util.Date;
     import java.util.List;
 
-    
 public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";

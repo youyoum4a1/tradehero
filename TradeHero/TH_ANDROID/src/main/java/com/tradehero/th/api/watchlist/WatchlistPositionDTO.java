@@ -32,4 +32,12 @@ public class WatchlistPositionDTO extends PositionDTO
         super(other, myClass);
     }
     //</editor-fold>
+
+    @Override public String toString()
+    {
+        return "WatchlistPositionDTO{" +
+                "watchlistPrice=" + watchlistPrice +
+                ", securityDTO=" + securityDTO +
+                '}';
+    }
 }
