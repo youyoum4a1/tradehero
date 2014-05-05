@@ -1963,12 +1963,12 @@ public class BuySellFragment extends AbstractBuySellFragment
                     }
                     else
                     {
-                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy),
-                                true);
+                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
                     }
                 }
 
-                mQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
+                Integer selectedQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
+                mQuantity = selectedQuantity != null ? selectedQuantity :0;
                 updateBuySellDialog();
             }
         };
