@@ -17,19 +17,22 @@ public class TimelineManager
 
     public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
     {
+        if (query == null)
+        {
+            Timber.e(new NullPointerException("query was null"), "");
+            return null;
+        }
         // TODO scope locking for current timeline of user
         TimelineStore timelineStore = allTimelineStores.get().under((Integer) query.getId());
         if (query.getId() == null)
         {
             Timber.e(new NullPointerException("query.getId was null"), "");
+            return null;
         }
         if (timelineStore == null)
         {
             Timber.e(new NullPointerException("timelineStore was null"), "");
-        }
-        if (query == null)
-        {
-            Timber.e(new NullPointerException("query was null"), "");
+            return null;
         }
         timelineStore.setQuery(query);
         return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);
