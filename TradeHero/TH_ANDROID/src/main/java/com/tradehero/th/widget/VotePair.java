@@ -80,7 +80,10 @@ public class VotePair extends LinearLayout
 
     private void updateDownVoteVisibility()
     {
-        voteDown.setVisibility(downVote ? VISIBLE : GONE);
+        if (voteDown != null)
+        {
+            voteDown.setVisibility(downVote ? VISIBLE : GONE);
+        }
     }
 
     @Override protected void onFinishInflate()
