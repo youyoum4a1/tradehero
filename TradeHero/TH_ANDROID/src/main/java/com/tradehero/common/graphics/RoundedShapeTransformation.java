@@ -7,10 +7,16 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import javax.inject.Inject;
 
 public class RoundedShapeTransformation implements RecyclerTransformation
 {
     private boolean recycleOriginal = true;
+
+    @Inject public RoundedShapeTransformation()
+    {
+        super();
+    }
 
     @Override public boolean isRecycleOriginal()
     {
