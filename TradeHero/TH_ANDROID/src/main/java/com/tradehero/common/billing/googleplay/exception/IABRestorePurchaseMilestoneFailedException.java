@@ -2,11 +2,8 @@ package com.tradehero.common.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class IABRestorePurchaseMilestoneFailedException extends IABException
 {
-    public static final String TAG = IABRestorePurchaseMilestoneFailedException.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public IABRestorePurchaseMilestoneFailedException(IABResult r)
     {

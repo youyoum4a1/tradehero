@@ -2,11 +2,8 @@ package com.tradehero.common.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 abstract public class IABOneResponseValueException extends IABException
 {
-    public static final String TAG = IABOneResponseValueException.class.getSimpleName();
-
     public IABOneResponseValueException(IABResult r)
     {
         super(r);

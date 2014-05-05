@@ -2,11 +2,8 @@ package com.tradehero.common.billing.googleplay;
 
 import java.util.Collection;
 
-
 public class IABSKUList extends BaseIABSKUList<IABSKU>
 {
-    public static final String TAG = IABSKUList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public IABSKUList()
     {

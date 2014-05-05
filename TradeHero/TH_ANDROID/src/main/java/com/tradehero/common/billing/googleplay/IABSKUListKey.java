@@ -4,10 +4,8 @@ import android.os.Bundle;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
-
 public class IABSKUListKey extends AbstractStringDTOKey implements ProductIdentifierListKey
 {
-    public static final String TAG = IABSKUListKey.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = IABSKUListKey.class.getName() + ".key";
     public static final String KEY_ALL = "ALL";
 

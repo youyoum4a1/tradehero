@@ -3,15 +3,12 @@ package com.tradehero.common.billing;
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.Map;
 
-
 abstract public class ProductIdentifierListCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductIdentifierListKeyType extends ProductIdentifierListKey,
             ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>>
         extends StraightDTOCache<ProductIdentifierListKeyType, ProductIdentifierListType>
 {
-    public static final String TAG = ProductIdentifierListCache.class.getSimpleName();
-
     public ProductIdentifierListCache(int maxSize)
     {
         super(maxSize);

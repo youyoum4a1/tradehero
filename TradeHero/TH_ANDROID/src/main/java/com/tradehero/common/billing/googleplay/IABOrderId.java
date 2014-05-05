@@ -2,11 +2,8 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.OrderId;
 
-
 public class IABOrderId implements OrderId
 {
-    public static final String TAG = IABOrderId.class.getSimpleName();
-
     public final String orderId;
     public String packageName;
     public String productId;

@@ -3,10 +3,8 @@ package com.tradehero.common.billing.googleplay.exception;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class IABItemUnavailableException extends IABOneResponseValueException
 {
-    public static final String TAG = IABItemUnavailableException.class.getSimpleName();
     public static final int VALID_RESPONSE = IABConstants.BILLING_RESPONSE_RESULT_ITEM_UNAVAILABLE;
 
     //<editor-fold desc="Constructors">

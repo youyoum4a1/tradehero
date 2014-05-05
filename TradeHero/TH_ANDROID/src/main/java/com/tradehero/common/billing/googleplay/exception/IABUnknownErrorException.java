@@ -3,10 +3,8 @@ package com.tradehero.common.billing.googleplay.exception;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class IABUnknownErrorException extends IABOneResponseValueException
 {
-    public static final String TAG = IABUnknownErrorException.class.getSimpleName();
     public static final int VALID_RESPONSE = IABConstants.IABHELPER_UNKNOWN_ERROR;
 
     public IABUnknownErrorException(IABResult r)

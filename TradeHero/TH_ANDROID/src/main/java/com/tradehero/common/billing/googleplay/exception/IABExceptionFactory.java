@@ -5,11 +5,8 @@ import com.tradehero.common.billing.googleplay.IABConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 public class IABExceptionFactory implements BillingExceptionFactory
 {
-    public static final String TAG = IABExceptionFactory.class.getSimpleName();
-
     public IABExceptionFactory()
     {
         super();

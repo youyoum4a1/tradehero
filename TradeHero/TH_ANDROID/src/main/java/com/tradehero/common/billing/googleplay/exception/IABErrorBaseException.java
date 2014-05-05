@@ -3,10 +3,8 @@ package com.tradehero.common.billing.googleplay.exception;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class IABErrorBaseException extends IABOneResponseValueException
 {
-    public static final String TAG = IABErrorBaseException.class.getSimpleName();
     public static final int VALID_RESPONSE = IABConstants.IABHELPER_ERROR_BASE;
 
     public IABErrorBaseException(IABResult r)

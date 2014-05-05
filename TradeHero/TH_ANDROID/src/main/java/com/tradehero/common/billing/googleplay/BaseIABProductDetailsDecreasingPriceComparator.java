@@ -2,13 +2,10 @@ package com.tradehero.common.billing.googleplay;
 
 import java.util.Comparator;
 
-
 public class BaseIABProductDetailsDecreasingPriceComparator<
             BaseIABProductDetailType extends BaseIABProductDetail>
         implements Comparator<BaseIABProductDetailType>
 {
-    public static final String TAG = BaseIABProductDetailsDecreasingPriceComparator.class.getSimpleName();
-
     @Override public int compare(BaseIABProductDetailType BaseIABProductDetail, BaseIABProductDetailType baseIABProductDetail2)
     {
         if (BaseIABProductDetail == null)

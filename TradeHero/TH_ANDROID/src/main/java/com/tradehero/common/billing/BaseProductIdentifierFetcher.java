@@ -4,7 +4,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
 
-
 abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
@@ -16,8 +15,6 @@ abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListType,
         BillingExceptionType>
 {
-    public static final String TAG = BaseProductIdentifierFetcher.class.getSimpleName();
-
     protected int requestCode;
     protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
 

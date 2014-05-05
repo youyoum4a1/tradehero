@@ -3,10 +3,8 @@ package com.tradehero.common.billing.googleplay.exception;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class IABInvalidConsumptionException extends IABOneResponseValueException
 {
-    public static final String TAG = IABInvalidConsumptionException.class.getSimpleName();
     public static final int VALID_RESPONSE = IABConstants.IABHELPER_INVALID_CONSUMPTION;
 
     public IABInvalidConsumptionException(IABResult r)
