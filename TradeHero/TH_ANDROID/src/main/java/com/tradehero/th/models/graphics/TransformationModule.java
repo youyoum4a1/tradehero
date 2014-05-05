@@ -31,9 +31,15 @@ public class TransformationModule
     }
 
     @Provides @ForUserPhoto
-    public Transformation provideUserImageTransformation()
+    public RecyclerTransformation provideUserImageRecyclerTransformation()
     {
         return new RoundedShapeTransformation();
+    }
+
+    @Provides @ForUserPhoto
+    public Transformation provideUserImageTransformation(@ForUserPhoto RecyclerTransformation transformation)
+    {
+        return transformation;
     }
 
     @Provides @ForUserPhoto

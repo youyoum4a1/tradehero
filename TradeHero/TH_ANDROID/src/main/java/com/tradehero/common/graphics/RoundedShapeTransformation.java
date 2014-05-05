@@ -8,9 +8,20 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-
-public class RoundedShapeTransformation implements com.squareup.picasso.Transformation
+public class RoundedShapeTransformation implements RecyclerTransformation
 {
+    private boolean recycleOriginal = true;
+
+    @Override public boolean isRecycleOriginal()
+    {
+        return recycleOriginal;
+    }
+
+    @Override public void setRecycleOriginal(boolean recycleOriginal)
+    {
+        this.recycleOriginal = recycleOriginal;
+    }
+
     @Override public Bitmap transform(Bitmap scaleBitmapImage)
     {
         int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
@@ -39,7 +50,7 @@ public class RoundedShapeTransformation implements com.squareup.picasso.Transfor
                 scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
                 targetHeight), paint);
 
-        if (targetBitmap != scaleBitmapImage)
+        if (recycleOriginal && targetBitmap != scaleBitmapImage)
         {
             scaleBitmapImage.recycle();
         }
