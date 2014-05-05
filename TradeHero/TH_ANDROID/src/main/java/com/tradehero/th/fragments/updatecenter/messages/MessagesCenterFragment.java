@@ -900,6 +900,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
 
                 requestUpdateTabCounter();
+
                 getListAdapter().notifyDataSetChanged();
                 //MessageListAdapter adapter = getListAdapter();
             }
