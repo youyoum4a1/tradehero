@@ -4,7 +4,6 @@ import com.tradehero.th.DebugModule;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
-import com.tradehero.th.models.graphics.TransformationModule;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import dagger.ObjectGraph;
@@ -30,8 +29,7 @@ public class DaggerUtils
                         new TradeHeroModule(app),
                         new IntentDaggerModule(),
                         new CompetitionModule(),
-                        new FilterModule(),
-                        new TransformationModule(),
+                        new FilterModule()
                 };
 
         if (!Constants.RELEASE)
