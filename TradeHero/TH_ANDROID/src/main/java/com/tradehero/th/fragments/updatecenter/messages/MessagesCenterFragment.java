@@ -231,8 +231,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        //we set a message unread when click the item, so don't remove callback at the moment.
-        //unsetMiddleCallback();
+        unsetMiddleCallback();
         detachFetchMessageTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
