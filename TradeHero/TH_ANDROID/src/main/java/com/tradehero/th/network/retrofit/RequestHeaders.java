@@ -1,7 +1,6 @@
 package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
-import android.text.TextUtils;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.prefs.LanguageCode;
@@ -10,8 +9,6 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
 import retrofit.RequestInterceptor;
-import timber.log.Timber;
-
 
 public class RequestHeaders implements RequestInterceptor
 {
@@ -39,7 +36,7 @@ public class RequestHeaders implements RequestInterceptor
         request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
     }
 
-    private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
+    private void buildAuthorizationHeader(RequestFacade request)
     {
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
