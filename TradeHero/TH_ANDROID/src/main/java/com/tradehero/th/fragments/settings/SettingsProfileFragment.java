@@ -258,6 +258,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             if (profileView != null)
             {
                 profileView.setNewImage(imageBmp);
+                profileView.setNewImagePath(selectedPath);
             }
         }
         else
@@ -309,9 +310,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
+            profileView.progressDialog.setCancelable(true);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
-            UserFormDTO userFormDTO = UserFormFactory.create(getUserFormJSON());
+            UserFormDTO userFormDTO = profileView.createForm();
             if (userFormDTO == null)
             {
                 return;

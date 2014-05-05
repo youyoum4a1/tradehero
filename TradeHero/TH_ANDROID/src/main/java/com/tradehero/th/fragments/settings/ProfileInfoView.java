@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -19,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
@@ -35,10 +37,12 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
+import java.io.File;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
+import retrofit.mime.TypedFile;
 import timber.log.Timber;
 
 public class ProfileInfoView extends LinearLayout
@@ -57,6 +61,7 @@ public class ProfileInfoView extends LinearLayout
     ProgressDialog progressDialog;
     private UserBaseDTO userBaseDTO;
     private Bitmap newImage;
+    private String newImagePath;
     private Listener listener;
 
     //<editor-fold desc="Constructors">
@@ -214,6 +219,27 @@ public class ProfileInfoView extends LinearLayout
         displayProfileImage();
     }
 
+    public void setNewImagePath(String newImagePath)
+    {
+        this.newImagePath = newImagePath;
+    }
+
+    public UserFormDTO createForm()
+    {
+        UserFormDTO created = new UserFormDTO();
+        created.email = getTextValue(email);
+        created.password = getTextValue(password);
+        created.passwordConfirmation = getTextValue(confirmPassword);
+        created.displayName = getTextValue(displayName);
+        created.firstName = getTextValue(firstName);
+        created.lastName = getTextValue(lastName);
+        if (newImagePath != null)
+        {
+            created.profilePicture = new TypedFile("image/jpeg", new File(newImagePath));
+        }
+        return created;
+    }
+
     public void populateUserFormMap(Map<String, Object> map)
     {
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
@@ -233,6 +259,18 @@ public class ProfileInfoView extends LinearLayout
         if (toPick != null)
         {
             toFill.put(key, toPick.toString());
+        }
+    }
+
+    private String getTextValue(TextView textView)
+    {
+        if (textView != null)
+        {
+            return textView.getText().toString();
+        }
+        else
+        {
+            return null;
         }
     }
 

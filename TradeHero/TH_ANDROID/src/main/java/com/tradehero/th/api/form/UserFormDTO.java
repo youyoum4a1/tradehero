@@ -1,5 +1,7 @@
 package com.tradehero.th.api.form;
 
+import retrofit.mime.TypedFile;
+
 public class UserFormDTO
 {
     public String email;
@@ -19,7 +21,7 @@ public class UserFormDTO
     public String location;
     public String website;
     public String deviceToken;
-    public byte[] profilePicture;
+    public TypedFile profilePicture;
 
     public UserFormDTO()
     {

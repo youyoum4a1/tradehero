@@ -7,7 +7,6 @@ import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class UserFormFactory
 {
     public static final String KEY_TYPE = "type";
