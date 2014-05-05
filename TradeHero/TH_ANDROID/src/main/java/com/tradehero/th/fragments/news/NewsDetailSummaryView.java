@@ -53,6 +53,7 @@ public class NewsDetailSummaryView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
