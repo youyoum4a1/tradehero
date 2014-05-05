@@ -72,9 +72,9 @@ public final class DeviceUtil
     public static void showKeyboardDelayed(View view, long delayMilliSec)
     {
         final WeakReference<View> viewRef = new WeakReference<>(view);
-        new Timer().schedule(new TimerTask()
+        view.postDelayed(new Runnable()
         {
-            public void run()
+            @Override public void run()
             {
                 View viewToUse = viewRef.get();
                 if (viewToUse != null)
