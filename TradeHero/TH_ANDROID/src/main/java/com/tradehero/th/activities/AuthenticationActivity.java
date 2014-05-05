@@ -206,7 +206,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         R.anim.slide_left_in, R.anim.slide_right_out)
                 .replace(R.id.fragment_content, currentFragment)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void authenticateWithEmail()
