@@ -30,8 +30,11 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.models.push.baidu.PushMessageHandler;
@@ -266,8 +269,16 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
-        updateReadStatus(position);
-        pushMessageFragment(position);
+        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
+        {
+            updateReadStatus(position);
+            pushMessageFragment(position);
+        }
+        else if (type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
+        {
+            pushHeroProfileFrgment(position);
+        }
+
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -297,9 +308,28 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO =
                 messageHeaderCache.get(getListAdapter().getItem(position));
-        pushMessageFragment(
-                discussionKeyFactory.create(messageHeaderDTO),
-                messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        if (messageHeaderDTO != null)
+        {
+            pushMessageFragment(
+                    discussionKeyFactory.create(messageHeaderDTO),
+                    messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        }
+    }
+
+    private void pushHeroProfileFrgment(int position)
+    {
+        MessageHeaderDTO messageHeaderDTO =
+                messageHeaderCache.get(getListAdapter().getItem(position));
+        if (messageHeaderDTO != null)
+        {
+            Bundle bundle = new Bundle();
+            DashboardNavigator navigator =
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, messageHeaderDTO.recipientUserId);
+            Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        }
+
     }
 
     protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)

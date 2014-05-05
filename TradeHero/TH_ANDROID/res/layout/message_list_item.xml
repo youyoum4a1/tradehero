@@ -48,6 +48,7 @@
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_toRightOf="@id/message_item_icon"
+      tools:background="@color/red"
       >
     <!--android:background="@drawable/timeline_list_item_background"-->
 
