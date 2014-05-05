@@ -37,6 +37,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+/**
+ * From version 2.1.0, we no longer use BuySellConfirmFragment, instead there is a BuySellDialog inside BuySellFragment
+ */
+@Deprecated
 public class BuySellConfirmFragment extends AbstractBuySellFragment
 {
     public final static String BUNDLE_KEY_SHARE_FACEBOOK = BuySellConfirmFragment.class.getName() + ".shareFacebook";
