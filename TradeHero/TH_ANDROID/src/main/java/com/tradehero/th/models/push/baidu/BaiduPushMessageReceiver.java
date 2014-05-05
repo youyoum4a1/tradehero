@@ -105,8 +105,17 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        int hashCode = Math.abs(pushMessageDTO.description.hashCode());
-        int msgId = hashCode % 1000;
+        int msgId;
+        if (pushMessageDTO.id > 0)
+        {
+            msgId = pushMessageDTO.id;
+        }
+        else
+        {
+            int hashCode = Math.abs(pushMessageDTO.description.hashCode());
+            msgId = hashCode % 1000;
+        }
+        Timber.d("Msg id:%d,content:%s",msgId,pushMessageDTO.description);
         nm.notify(msgId, notification);
     }
 
