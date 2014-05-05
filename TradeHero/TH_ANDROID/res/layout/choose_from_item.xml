@@ -11,9 +11,9 @@
       android:id="@+id/text_choose_from"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="8dp"
+      android:padding="16dp"
       android:gravity="center"
-      android:textSize="14sp"
+      android:textSize="16sp"
       tools:text="Image from Camera"
       />
 
