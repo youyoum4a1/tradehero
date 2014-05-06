@@ -217,6 +217,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 {
                     handleDataFromLibrary(data);
                 }
+                catch (OutOfMemoryError e)
+                {
+                    THToast.show(R.string.error_decode_image_memory);
+                }
                 catch (Exception e)
                 {
                     Timber.e(e, "Failed to extract image from library");
