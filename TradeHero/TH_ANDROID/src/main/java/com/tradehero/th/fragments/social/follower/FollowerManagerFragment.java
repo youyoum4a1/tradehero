@@ -79,17 +79,19 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        Fragment f = getCurrentFragment();
-        if (f != null)
-        {
-            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
-        }
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
 
         actionBar.setTitle(getString(R.string.social_followers));
+
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+        }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -154,6 +156,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         super.onViewCreated(view, savedInstanceState);
         setMessageLayoutShown(true);
+        showSendMessageLayoutIfNecessary();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -173,6 +176,28 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
         mTabHost = null;
         Timber.d("onDestroyView");
+    }
+
+    private boolean isCurrentUser()
+    {
+        UserBaseKey heroId = getHeroId(getArguments());
+        if (heroId != null && heroId.key != null && currentUserId != null)
+        {
+            return (heroId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+        }
+        return false;
+    }
+
+    private void showSendMessageLayoutIfNecessary()
+    {
+        if (isCurrentUser())
+        {
+            messageLayout.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            messageLayout.setVisibility(View.GONE);
+        }
     }
 
     private void setMessageLayoutShown(boolean shown)
@@ -267,10 +292,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             changeTabTitle(new FreeHeroTypeResourceDTO(), free);
             changeTabTitle(new AllHeroTypeResourceDTO(), paid + free);
 
-            //changeTabTitle(0, paid);
-            //changeTabTitle(1, free);
-            //changeTabTitle(2, (paid + free));
-
             updateUserProfileCache(value);
         }
     }
@@ -280,10 +301,14 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();
-        userProfileDTO.freeFollowerCount = value.getFreeFollowerCount();
-        userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
-        userProfileCache.get().put(userBaseKey, userProfileDTO);
+        if (userProfileDTO != null)
+        {
+            userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();
+            userProfileDTO.freeFollowerCount = value.getFreeFollowerCount();
+            userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
+            userProfileCache.get().put(userBaseKey, userProfileDTO);
+        }
+
 
     }
 
