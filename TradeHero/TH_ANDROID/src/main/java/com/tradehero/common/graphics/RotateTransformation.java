@@ -16,6 +16,11 @@ public class RotateTransformation implements Transformation
 
     @Override public Bitmap transform(Bitmap source)
     {
+        if (rotationDegree == 0)
+        {
+            return source;
+        }
+
         int width = source.getWidth();
         int height = source.getHeight();
 
