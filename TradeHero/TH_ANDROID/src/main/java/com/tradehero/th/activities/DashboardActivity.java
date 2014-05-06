@@ -21,7 +21,6 @@ import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -43,6 +42,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.IntentLogger;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -148,7 +148,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        this.isChineseLocale = MetaHelper.isChineseLocale(getApplicationContext());
+        this.isChineseLocale = DeviceTokenHelper.isChineseVersion();
         if (isChineseLocale)
         {
             pushNotificationManager.get().enablePush();

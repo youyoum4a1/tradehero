@@ -15,7 +15,7 @@ public class DeviceTokenHelper
     @Inject static Context context;
 
 
-    private static boolean isChineseVersion()
+    public static boolean isChineseVersion()
     {
         //TODO need to improve
         boolean flag = Constants.VERSION > 0;
