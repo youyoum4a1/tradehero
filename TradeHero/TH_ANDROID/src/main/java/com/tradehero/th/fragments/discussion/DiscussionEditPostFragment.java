@@ -42,6 +42,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialSharer;
@@ -111,6 +112,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         discussionEditTextWatcher = new DiscussionEditTextWatcher();
         discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
+        DeviceUtil.showKeyboardDelayed(discussionPostContent);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
