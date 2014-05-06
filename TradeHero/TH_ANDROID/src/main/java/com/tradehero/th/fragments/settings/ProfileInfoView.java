@@ -379,7 +379,7 @@ public class ProfileInfoView extends LinearLayout
         ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
                 getContext(), LayoutInflater.from(getContext()),
                 R.layout.choose_from_item);
-        adapter.setItems(chooseImageFromDTOFactory.getAll());
+        adapter.setItems(chooseImageFromDTOFactory.getAll(getContext()));
         alertDialogUtil.popWithNegativeButton(getContext(),
                 getContext().getString(R.string.user_profile_choose_image_from_choice),
                 null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
@@ -391,7 +391,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
         {
-            // TODO
+            notifyImageFromCameraRequested();
         }
         else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
         {
@@ -400,6 +400,15 @@ public class ProfileInfoView extends LinearLayout
         else
         {
             Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
+        }
+    }
+
+    protected void notifyImageFromCameraRequested()
+    {
+        Listener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onImageFromCameraRequested();
         }
     }
 
@@ -428,6 +437,7 @@ public class ProfileInfoView extends LinearLayout
     public static interface Listener
     {
         void onUpdateRequested();
+        void onImageFromCameraRequested();
         void onImageFromLibraryRequested();
     }
 }
