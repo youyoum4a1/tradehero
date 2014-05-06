@@ -184,7 +184,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     protected SecurityAlertAssistant securityAlertAssistant;
-    protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList>
             userWatchlistPositionCacheFetchTask;
 
@@ -196,14 +195,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    private MiddleCallback<SecurityPositionDetailDTO> buySellTask;
+    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     private ProgressDialog transactionDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
-        this.userWatchlistPositionCacheListener = new BuySellUserWatchlistCacheListener();
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -378,6 +376,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onSaveInstanceState(outState);
 
+        detachWatchlistFetchTask();
+        detachBuySellMiddleCallback();
+
         outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
@@ -456,6 +457,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         detachWatchlistFetchTask();
+        detachBuySellMiddleCallback();
 
         securityAlertAssistant.setOnPopulatedListener(null);
 
@@ -547,13 +549,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         mConfirmButton = null;
 
-        unsetBuySellMiddleCallback();
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        this.userWatchlistPositionCacheListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
     }
@@ -583,8 +583,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         detachWatchlistFetchTask();
         this.userWatchlistPositionCacheFetchTask =
-                userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(),
-                        userWatchlistPositionCacheListener);
+                userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(), createUserWatchlistCacheListener());
         this.userWatchlistPositionCacheFetchTask.execute();
     }
 
@@ -1820,7 +1819,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void launchBuySell()
     {
-        unsetBuySellMiddleCallback();
+        detachBuySellMiddleCallback();
 
         if (checkValidToBuyOrSell())
         {
@@ -1830,7 +1829,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 transactionDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
-                buySellTask = securityServiceWrapper.doTransaction(
+                buySellMiddleCallback = securityServiceWrapper.doTransaction(
                         securityId, transactionFormDTO, isTransactionTypeBuy, new BuySellCallback(isTransactionTypeBuy));
 
                 if (isTransactionTypeBuy)
@@ -1854,13 +1853,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         return securityId != null && securityId.exchange != null && securityId.securitySymbol != null;
     }
 
-    private void unsetBuySellMiddleCallback()
+    private void detachBuySellMiddleCallback()
     {
-        if (buySellTask != null)
+        if (buySellMiddleCallback != null)
         {
-            buySellTask.setPrimaryCallback(null);
+            buySellMiddleCallback.setPrimaryCallback(null);
         }
-        buySellTask = null;
+        buySellMiddleCallback = null;
     }
 
     private TransactionFormDTO getBuySellOrder(boolean isBuy)
@@ -2067,6 +2066,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             Timber.e("Failed to fetch list of compact portfolio", throwable);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
+    }
+
+    protected DTOCache.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    {
+        return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
