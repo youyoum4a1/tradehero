@@ -195,7 +195,6 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
-                        BuySellFragment.BuySellAsyncTask.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
