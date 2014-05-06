@@ -2,8 +2,8 @@ package com.tradehero.th.utils;
 
 import android.graphics.Color;
 import com.tradehero.common.application.PApplication;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 
 
 public class ColorUtils
@@ -17,7 +17,7 @@ public class ColorUtils
      */
     public static int getColorForPercentage(float percentage)
     {
-        if(MetaHelper.isChineseLocale(PApplication.context()))
+        if(DeviceTokenHelper.isChineseVersion()/*MetaHelper.isChineseLocale(PApplication.context()*/)
         {
             return PApplication.context().getResources().getColor(getColorResourceForNumber(percentage));
         }
