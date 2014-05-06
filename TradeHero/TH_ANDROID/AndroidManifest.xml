@@ -230,42 +230,43 @@
         android:theme="@style/Theme.Empty"
         android:configChanges="orientation|screenSize"/>
 
-    <!-- GCM -->
-    <!-- REQUIRED for Urban Airship GCM-->
-    <receiver android:name="com.urbanairship.CoreReceiver"/>
-    <receiver
-        android:name="com.urbanairship.push.GCMPushReceiver"
-        android:permission="com.google.android.c2dm.permission.SEND">
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+    <!-- remove gsm receiver for not used in china build and lead crash -->
+    <!--&lt;!&ndash; GCM &ndash;&gt;-->
+    <!--&lt;!&ndash; REQUIRED for Urban Airship GCM&ndash;&gt;-->
+    <!--<receiver android:name="com.urbanairship.CoreReceiver"/>-->
+    <!--<receiver-->
+        <!--android:name="com.urbanairship.push.GCMPushReceiver"-->
+        <!--android:permission="com.google.android.c2dm.permission.SEND">-->
+      <!--<intent-filter>-->
+        <!--<action android:name="com.google.android.c2dm.intent.RECEIVE"/>-->
+        <!--<action android:name="com.google.android.c2dm.intent.REGISTRATION"/>-->
 
-        <!-- MODIFICATION REQUIRED - Use your package name as the category -->
-        <category android:name="com.tradehero.th"/>
-      </intent-filter>
-      <!-- REQUIRED for detecting when the application is upgraded so it can request a new GCM ID -->
-      <intent-filter>
-        <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-        <data android:scheme="package"/>
-      </intent-filter>
-    </receiver>
+        <!--&lt;!&ndash; MODIFICATION REQUIRED - Use your package name as the category &ndash;&gt;-->
+        <!--<category android:name="com.tradehero.th"/>-->
+      <!--</intent-filter>-->
+      <!--&lt;!&ndash; REQUIRED for detecting when the application is upgraded so it can request a new GCM ID &ndash;&gt;-->
+      <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.PACKAGE_REPLACED"/>-->
+        <!--<data android:scheme="package"/>-->
+      <!--</intent-filter>-->
+    <!--</receiver>-->
 
-    <service
-        android:name="com.urbanairship.push.PushService"
-        android:label="Push Notification Service"/>
-    <service
-        android:name="com.urbanairship.analytics.EventService"
-        android:label="Event Service"/>
+    <!--<service-->
+        <!--android:name="com.urbanairship.push.PushService"-->
+        <!--android:label="Push Notification Service"/>-->
+    <!--<service-->
+        <!--android:name="com.urbanairship.analytics.EventService"-->
+        <!--android:label="Event Service"/>-->
 
-    <provider
-        android:name="com.urbanairship.UrbanAirshipProvider"
-        android:authorities="com.tradehero.th.urbanairship.provider"
-        android:exported="false"
-        android:multiprocess="true"/>
+    <!--<provider-->
+        <!--android:name="com.urbanairship.UrbanAirshipProvider"-->
+        <!--android:authorities="com.tradehero.th.urbanairship.provider"-->
+        <!--android:exported="false"-->
+        <!--android:multiprocess="true"/>-->
 
-    <!-- OPTIONAL (for segments support) -->
-    <service android:name="com.urbanairship.location.LocationService"
-        android:label="Segments Service"/>
+    <!--&lt;!&ndash; OPTIONAL (for segments support) &ndash;&gt;-->
+    <!--<service android:name="com.urbanairship.location.LocationService"-->
+        <!--android:label="Segments Service"/>-->
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
