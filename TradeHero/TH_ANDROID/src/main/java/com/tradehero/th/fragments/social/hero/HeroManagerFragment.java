@@ -112,7 +112,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.social_heroes);
+        actionBar.setTitle(getTitle());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -136,6 +136,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         THUIBillingRequest request = super.getShowProductDetailRequest(domain);
         request.purchaseReportedListener = new HeroManagerOnPurchaseReportedListener();
         return request;
+    }
+
+    private boolean isCurrentUser()
+    {
+        UserBaseKey followerId = getFollowerId(getArguments());
+        if (followerId != null && followerId.key != null && currentUserId != null)
+        {
+            return (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+        }
+        return false;
+    }
+
+    private int getTitle()
+    {
+        if (isCurrentUser())
+        {
+            return R.string.manage_my_heroes_title;
+        }
+        else
+        {
+            return R.string.manage_heroes_title;
+        }
     }
 
     /**

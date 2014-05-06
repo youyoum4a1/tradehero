@@ -106,7 +106,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         detachPortfolioRetrievedMilestone();
         detachPremiumFollowUserAssistant();
+        detachRequestCode();
         super.onDestroyView();
+    }
+
+    protected void detachRequestCode()
+    {
+        if (showProductDetailRequestCode != null && userInteractor != null)
+        {
+            userInteractor.forgetRequestCode(showProductDetailRequestCode);
+        }
     }
 
     @Override public void onDestroy()
@@ -215,10 +224,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
-            if (showProductDetailRequestCode != null)
-            {
-                userInteractor.forgetRequestCode(showProductDetailRequestCode);
-            }
+            detachRequestCode();
             showProductDetailRequestCode = showProductDetailListForPurchase(domain);
         }
     }

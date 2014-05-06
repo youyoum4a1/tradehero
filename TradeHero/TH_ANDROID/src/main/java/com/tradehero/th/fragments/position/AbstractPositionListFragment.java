@@ -95,14 +95,8 @@ abstract public class AbstractPositionListFragment<
     private boolean[] expandedPositions;
 
     protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> fetchGetPositionsDTOTask;
-    protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> getPositionsCacheListener;
-
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
-    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioCacheListener;
-    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> refreshPortfolioCacheListener;
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
@@ -126,64 +120,6 @@ abstract public class AbstractPositionListFragment<
 
     @Override protected void initViews(View view)
     {
-        //TODO why need to call so many APIs?
-        getPositionsCacheListener = createGetPositionsCacheListener();
-        userProfileCacheListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-            {
-                linkWith(value, true);
-                showResultIfNecessary();
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_user_profile);
-                //TODO not just toast
-                showErrorView();
-            }
-        };
-        portfolioCacheListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
-        {
-            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
-            {
-                Timber.d("portfolioCacheListener onDTOReceived");
-                linkWith(value, true);
-                showResultIfNecessary();
-            }
-
-            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_portfolio_info);
-                showErrorView();
-            }
-        };
-
-        refreshPortfolioCacheListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
-        {
-            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
-            {
-                if (!fromCache){
-                    Timber.d("refreshPortfolioCacheListener onDTOReceived");
-                    linkWith(value, true);
-                    //TODO not enougth
-                    showResultIfNecessary();
-                }
-
-            }
-
-            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
-            {
-                //THToast.show(R.string.error_fetch_portfolio_info);
-                //showErrorView();
-                boolean loaded = checkLoadingSuccess();
-                if (!loaded)
-                {
-                    showErrorView();
-                }
-            }
-        };
-
         if (view != null)
         {
             if (positionItemAdapter == null)
@@ -439,10 +375,6 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onDestroyView()
     {
-        getPositionsCacheListener = null;
-        userProfileCacheListener = null;
-        portfolioCacheListener = null;
-
         detachPortfolioTask();
         detachGetPositionsTask();
         detachUserProfileTask();
@@ -558,8 +490,8 @@ abstract public class AbstractPositionListFragment<
     abstract protected void fetchSimplePage();
     abstract protected void fetchSimplePage(boolean force);
 
-    protected void refreshSimplePage(){
-
+    protected void refreshSimplePage()
+    {
     }
 
     abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createGetPositionsCacheListener();
@@ -594,17 +526,17 @@ abstract public class AbstractPositionListFragment<
 
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> createUserProfileFetchTask(UserBaseKey userBaseKey)
     {
-        return userProfileCache.getOrFetch(userBaseKey, false, userProfileCacheListener);
+        return userProfileCache.getOrFetch(userBaseKey, false, createProfileCacheListener());
     }
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId, boolean force)
     {
-        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, portfolioCacheListener);
+        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, createPortfolioCacheListener());
     }
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createRefreshPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId, boolean force)
     {
-        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, refreshPortfolioCacheListener);
+        return portfolioCache.get().getOrFetch(ownedPortfolioId, force, createPortfolioRefreshCacheListener());
     }
 
     protected void rePurposeAdapter()
@@ -876,6 +808,21 @@ abstract public class AbstractPositionListFragment<
         return R.layout.tutorial_position_list;
     }
 
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    {
+        return new AbstractPositionListProfileCacheListener();
+    }
+
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
+    {
+        return new AbstractPositionListPortfolioCacheListener();
+    }
+
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioRefreshCacheListener()
+    {
+        return new AbstractPositionListPortfolioRefreshCacheListener();
+    }
+
     protected class AbstractPositionListPremiumUserFollowedListener
             extends BasePurchaseManagerPremiumUserFollowedListener
     {
@@ -884,6 +831,62 @@ abstract public class AbstractPositionListFragment<
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
+        }
+    }
+
+    protected class AbstractPositionListProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            linkWith(value, true);
+            showResultIfNecessary();
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_user_profile);
+            //TODO not just toast
+            showErrorView();
+        }
+    }
+
+    protected class AbstractPositionListPortfolioCacheListener implements DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+        {
+            Timber.d("portfolioCacheListener onDTOReceived");
+            linkWith(value, true);
+            showResultIfNecessary();
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_info);
+            showErrorView();
+        }
+    }
+
+    protected class AbstractPositionListPortfolioRefreshCacheListener implements DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+        {
+            if (!fromCache){
+                Timber.d("refreshPortfolioCacheListener onDTOReceived");
+                linkWith(value, true);
+                //TODO not enougth
+                showResultIfNecessary();
+            }
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            //THToast.show(R.string.error_fetch_portfolio_info);
+            //showErrorView();
+            boolean loaded = checkLoadingSuccess();
+            if (!loaded)
+            {
+                showErrorView();
+            }
         }
     }
 }

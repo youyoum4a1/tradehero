@@ -18,6 +18,10 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
+/**
+ * This class is very old already, we are now using MiddleCallback & DTOProcessor to handle retrofit call
+ */
+@Deprecated
 abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, SecurityPositionDetailDTO>
 {
     protected static final int CODE_OK = 0;
@@ -32,6 +36,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     protected final boolean isBuy;
     protected final SecurityId securityId;
     protected final TransactionFormDTO buySellOrder;
+
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected CurrentUserId currentUserId;
@@ -124,7 +129,6 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
                 if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
                 {
                     userProfileDTO.portfolio = returned.portfolio;
-                    userProfileCache.get().put(userBaseKey, userProfileDTO);
                 }
             }
         }

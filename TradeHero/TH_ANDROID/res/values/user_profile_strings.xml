@@ -35,6 +35,7 @@
   <string name="user_profile_choose_image_from_library">Image from Library</string>
   <string name="user_profile_choose_image_from_cancel">@string/cancel</string>
 
+  <string name="error_decode_image_memory">Not enough memory to decode the image</string>
   <string name="error_fetch_user_profile">There was an error when fetching the user profile information</string>
   <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
   <string name="error_fetch_people_list_info">There was an error when fetching the list of people</string>

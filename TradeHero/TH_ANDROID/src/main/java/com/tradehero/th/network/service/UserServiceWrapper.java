@@ -137,9 +137,10 @@ import retrofit.RetrofitError;
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO)
     {
+        UserProfileDTO updated;
         if (userFormDTO.profilePicture == null)
         {
-            return createUpdateProfileProcessor().process(userService.updateProfile(
+            updated = userService.updateProfile(
                     userBaseKey.key,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -153,11 +154,11 @@ import retrofit.RetrofitError;
                     userFormDTO.pushNotificationsEnabled,
                     userFormDTO.biography,
                     userFormDTO.location,
-                    userFormDTO.website));
+                    userFormDTO.website);
         }
         else
         {
-            return createUpdateProfileProcessor().process(userService.updateProfile(
+            updated = userService.updateProfile(
                     userBaseKey.key,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -172,8 +173,9 @@ import retrofit.RetrofitError;
                     userFormDTO.biography,
                     userFormDTO.location,
                     userFormDTO.website,
-                    userFormDTO.profilePicture));
+                    userFormDTO.profilePicture);
         }
+        return createUpdateProfileProcessor().process(updated);
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
