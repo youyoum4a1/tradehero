@@ -227,9 +227,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 Timber.e(new Exception("Got null data from library"), "");
             }
         }
-        else
+        else if (resultCode != Activity.RESULT_CANCELED)
         {
-            Timber.e(new Exception("Failed to get image from libray"), "");
+            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
