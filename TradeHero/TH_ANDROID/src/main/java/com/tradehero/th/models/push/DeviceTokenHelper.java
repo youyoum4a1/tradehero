@@ -45,7 +45,7 @@ public class DeviceTokenHelper
     {
         if (isChineseVersion())
         {
-            return DeviceType.Baidu;
+            return DeviceType.Chinese_Version;
         }
         return DeviceType.Android;
     }
