@@ -47,9 +47,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     /** parent layout of broadcastView and whisperView */
     @InjectView(R.id.send_message_layout) View messageLayout;
-    /** view to 'send broadcast' */
     @InjectView(R.id.send_message_broadcast) View broadcastView;
-    /** view to 'send whisper' */
     @InjectView(R.id.send_message_whisper) View whisperView;
 
     @Inject FollowerSummaryCache followerSummaryCache;
@@ -172,10 +170,11 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onDestroyView()
     {
-        super.onDestroyView();
-
+        broadcastView.setOnClickListener(null);
+        whisperView.setOnClickListener(null);
         mTabHost = null;
         Timber.d("onDestroyView");
+        super.onDestroyView();
     }
 
     private boolean isCurrentUser()
@@ -308,8 +307,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
             userProfileCache.get().put(userBaseKey, userProfileDTO);
         }
-
-
     }
 
     @Override public void onClick(View v)
