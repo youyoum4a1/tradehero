@@ -361,15 +361,19 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         LeaderboardDefKey key =
                 new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
         LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
+        Bundle bundle = new Bundle(getArguments());
         if (dto != null)
         {
-            Bundle bundle = new Bundle(getArguments());
             bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_ID, dto.id);
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
-
-            getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
         }
+        else
+        {
+            bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_ID, LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_leaderboards));
+        }
+        getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
     public void display(UserProfileDTO userProfileDTO)
