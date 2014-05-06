@@ -37,7 +37,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
@@ -62,13 +61,14 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements PortfolioRequestListener, UserProfileDetailView.OnHeroClickListener
+        implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
     public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
     private View loadingView;
@@ -89,6 +89,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -150,7 +151,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
-        userProfileView.setHeroClickListener(this);
 
         loadingView = new ProgressBar(getActivity());
 
@@ -159,14 +159,40 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    @Override public void onHeroClick()
+    @Override public void onHeroClicked()
     {
         pushHeroFragment();
     }
 
-    @Override public void onFollowerClick()
+    @Override public void onFollowerClicked()
     {
         pushFollowerFragment();
+    }
+
+    @Override public void onDefaultPortfolioClicked()
+    {
+        if (portfolioIdList == null || portfolioIdList.size() < 1 || portfolioIdList.get(0) == null)
+        {
+            // HACK, instead we should test for Default title on PortfolioDTO
+            THToast.show("Not enough data, try again");
+        }
+        else if (shownUserBaseKey == null)
+        {
+            Timber.e(new NullPointerException("shownUserBaseKey is null"), "");
+        }
+        else if (portfolioCompactListCache == null)
+        {
+            Timber.e(new NullPointerException("portfolioCompactListCache is null"), "");
+        }
+        else if (portfolioCompactListCache.get() == null)
+        {
+            Timber.e(new NullPointerException("portfolioCompactListCache.get() is null"), "");
+        }
+        else
+        {
+            pushPositionListFragment(
+                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
+        }
     }
 
     protected void pushHeroFragment()
@@ -230,18 +256,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (userProfileView != null)
         {
             //TODO now only one view, userProfileView useless, need cancel, alex
-            userProfileView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
-                    //                .setVisibility(View.GONE);
-                    //        userProfileView.showNext();
-                    //        userProfileView.getChildAt(userProfileView.getDisplayedChild())
-                    //                .setVisibility(View.VISIBLE);
-                }
-            });
-            userProfileView.setPortfolioRequestListener(this);
+
+            userProfileView.setProfileClickedListener(this);
             timelineListView.getRefreshableView().addHeaderView(userProfileView);
         }
 
@@ -250,7 +266,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.addFooterView(loadingView);
         }
 
-        displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
+        displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(
                 new DisplayablePortfolioFetchAssistant.OnFetchedListener()
                 {
@@ -360,7 +376,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (userProfileView != null)
         {
-            userProfileView.setPortfolioRequestListener(null);
+            userProfileView.setProfileClickedListener(null);
         }
         this.userProfileView = null;
         this.loadingView = null;
@@ -629,39 +645,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //<editor-fold desc="PortfolioRequestListener">
-    @Override public void onDefaultPortfolioRequested()
-    {
-        if (portfolioIdList == null || portfolioIdList.size() < 1 || portfolioIdList.get(0) == null)
-        {
-            // HACK, instead we should test for Default title on PortfolioDTO
-            THToast.show("Not enough data, try again");
-        }
-        else if (shownUserBaseKey == null)
-        {
-            Timber.e(new NullPointerException("shownUserBaseKey is null"), "");
-        }
-        else if (portfolioCompactListCache == null)
-        {
-            Timber.e(new NullPointerException("portfolioCompactListCache is null"), "");
-        }
-        else if (portfolioCompactListCache.get() == null)
-        {
-            Timber.e(new NullPointerException("portfolioCompactListCache.get() is null"), "");
-        }
-        else
-        {
-            pushPositionListFragment(
-                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
-        }
-    }
-
-    @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
-    {
-        pushPositionListFragment(ownedPortfolioId);
-    }
-    //</editor-fold>
-
     /**
      *
      * @param ownedPortfolioId
@@ -866,6 +849,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }
@@ -951,7 +935,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
             if (!(error instanceof RetrofitError) ||
-                    ((RetrofitError) error).getResponse().getStatus() != 404)
+                    (((RetrofitError) error).getResponse() != null &&
+                        ((RetrofitError) error).getResponse().getStatus() != 404))
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(error, "Error while getting message thread");

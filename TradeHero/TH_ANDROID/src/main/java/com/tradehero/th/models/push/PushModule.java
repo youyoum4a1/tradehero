@@ -8,6 +8,7 @@ import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Module(
@@ -22,16 +23,17 @@ public class PushModule
 {
     @Provides @Singleton PushNotificationManager providePushNotificationManager(
             Context context,
-            BaiduPushManager baiduPushManager)
+            Provider<BaiduPushManager> baiduPushManager,
+            Provider<UrbanAirshipPushNotificationManager> urbanAirshipPushNotificationManager)
     {
         boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
         if (isChineseLocale)
         {
-            return baiduPushManager;
+            return baiduPushManager.get();
         }
         else
         {
-            return new UrbanAirshipPushNotificationManager();
+            return urbanAirshipPushNotificationManager.get();
         }
     }
 }

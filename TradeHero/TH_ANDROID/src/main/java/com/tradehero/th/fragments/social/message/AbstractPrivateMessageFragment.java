@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.message;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -19,17 +17,21 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -40,13 +42,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY =
             AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
+    @Inject protected MessageHeaderCache messageHeaderCache;
     @Inject protected MessageHeaderListCache messageHeaderListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserBaseDTOUtil userBaseDTOUtil;
     @Inject protected Picasso picasso;
     @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
-
     @Inject protected UserProfileCache userProfileCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
     protected UserBaseKey correspondentId;
@@ -57,6 +58,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
+    private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
+
     public static void putCorrespondentUserBaseKey(Bundle args, UserBaseKey correspondentBaseKey)
     {
         args.putBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY, correspondentBaseKey.getArgs());
@@ -65,8 +68,17 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        correspondentId =
-                new UserBaseKey(getArguments().getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+
+        collectCorrespondentId();
+    }
+
+    private void collectCorrespondentId()
+    {
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
+        {
+            correspondentId = new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+        }
     }
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -74,13 +86,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new AbstractPrivateMessageFragmentPremiumUserFollowedListener();
-    }
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
     }
@@ -94,14 +100,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override protected void initViews(View view)
     {
         super.initViews(view);
+
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
         if (discussionView != null)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
-            ((PrivateDiscussionView) discussionView).setMessageNotAllowedToSendListener(
-                    new AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener());
             ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
         }
     }
@@ -152,6 +157,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroyView()
     {
+        detachMessageHeaderFetchTask();
         detachUserProfileTask();
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -169,6 +175,34 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onDestroy()
     {
         super.onDestroy();
+    }
+
+    @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    {
+        super.linkWith(discussionKey, andDisplay);
+
+        linkWith(new MessageHeaderId(discussionKey.id), true);
+    }
+
+    private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
+    {
+        detachMessageHeaderFetchTask();
+        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false, createMessageHeaderCacheListener());
+        messageHeaderFetchTask.execute();
+    }
+
+    private void detachMessageHeaderFetchTask()
+    {
+        if (messageHeaderFetchTask != null)
+        {
+            messageHeaderFetchTask.setListener(null);
+        }
+        messageHeaderFetchTask = null;
+    }
+
+    private DTOCache.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
+    {
+        return new MessageHeaderFetchListener();
     }
 
     protected void refresh()
@@ -231,8 +265,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (correspondentProfile != null)
         {
-            String title =
-                    userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
             Timber.d("Display title " + title);
             actionBar.setTitle(title);
         }
@@ -240,27 +273,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             actionBar.setTitle(R.string.loading_loading);
         }
-    }
-
-    protected void showNotEnoughMessagesLeftDialog()
-    {
-        String heroName = userBaseDTOUtil.getLongDisplayName(getActivity(), correspondentProfile);
-        heroAlertDialogUtil.popAlertNoMoreMessageFollow(
-                getActivity(),
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        showPaidFollow();
-                    }
-                },
-                heroName);
-    }
-
-    @OnClick(R.id.private_message_status_container) protected void showPaidFollow()
-    {
-        //it's better premium follow than always let user pay
-        premiumFollowUser(correspondentId, createPremiumUserFollowedListener());
     }
 
     @Override public boolean isTabBarVisible()
@@ -289,27 +301,17 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected class AbstractPrivateMessageFragmentOnMessageNotAllowedToSendListener
-            implements PrivatePostCommentView.OnMessageNotAllowedToSendListener
+    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
     {
-        @Override public void onMessageNotAllowedToSend()
+        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
-            showNotEnoughMessagesLeftDialog();
-        }
-    }
-
-    protected class AbstractPrivateMessageFragmentPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
-        {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            correspondentId = new UserBaseKey(value.recipientUserId);
+            fetchCorrespondentProfile();
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onErrorThrown(MessageHeaderId key, Throwable error)
         {
-            super.onUserFollowFailed(userFollowed, error);
+            THToast.show(new THException(error));
         }
     }
 }

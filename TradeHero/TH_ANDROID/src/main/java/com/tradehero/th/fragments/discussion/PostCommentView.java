@@ -25,14 +25,11 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -59,7 +56,6 @@ public class PostCommentView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
@@ -203,9 +199,8 @@ public class PostCommentView extends RelativeLayout
         MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
         setPosting();
         postCommentMiddleCallbacks.add(
-                new WeakReference<MiddleCallback<DiscussionDTO>>(
                 messageServiceWrapper.createMessage(messageCreateFormDTO,
-                createCommentSubmitCallback())));
+                createCommentSubmitCallback()));
     }
 
     protected MessageCreateFormDTO buildMessageCreateFormDTO()

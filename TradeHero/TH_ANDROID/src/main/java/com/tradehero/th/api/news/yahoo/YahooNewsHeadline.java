@@ -11,9 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import timber.log.Timber;
 
-/**
- * Created by julien on 10/10/13
- */
+
 public class YahooNewsHeadline implements NewsHeadline
 {
     private final static String TAG = YahooNewsHeadline.class.getSimpleName();

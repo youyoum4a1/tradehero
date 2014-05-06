@@ -126,7 +126,7 @@
     portfolio!
   </string>
 
-  <string name="store_buy_virtual_dollar_window_button_cancel">Cancel</string>
+  <string name="store_buy_virtual_dollar_window_button_cancel">@string/cancel</string>
   <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
 
   <!-- Manage heroes -->
@@ -164,7 +164,7 @@
     open positions and timeline.\n\nYour subscription to this Hero will stop with immediate effect
     upon confirmation. It will cost you extra TradeHero credits to follow this Hero again.
   </string>
-  <string name="manage_heroes_alert_unfollow_cancel">Cancel</string>
+  <string name="manage_heroes_alert_unfollow_cancel">@string/cancel</string>
   <string name="manage_heroes_alert_unfollow_ok">Stop Following</string>
 
   <string name="manage_heroes_unfollow_progress_title">Processing</string>

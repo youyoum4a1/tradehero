@@ -8,11 +8,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.json.JSONException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 12:35 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THIABOrderId, THIABPurchaseOrder, THIABPurchase, IABException>
 {
-    public static final String TAG = THIABPurchaser.class.getSimpleName();
-
     @Inject protected Lazy<THIABProductDetailCache> skuDetailCache;
 
     public THIABPurchaser()

@@ -54,7 +54,6 @@ import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
-import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -76,6 +75,7 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
+import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
@@ -133,10 +133,6 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
-import com.tradehero.th.models.user.MiddleCallbackFollowUser;
-import com.tradehero.th.models.user.MiddleCallbackLogout;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
@@ -181,12 +177,9 @@ import javax.inject.Singleton;
                 {
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
-                        MiddleCallbackUpdateUserProfile.class,
-                        MiddleCallbackAddCash.class,
-                        MiddleCallbackFollowUser.class,
+                        ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
-                        MiddleCallbackLogout.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.UserAvailabilityRequester.class,
@@ -217,7 +210,6 @@ import javax.inject.Singleton;
                         WarrantInfoValueFragment.class,
                         StockInfoFragment.class,
                         PortfolioListFragment.class,
-                        PushablePortfolioListFragment.class,
                         PortfolioListItemView.class,
                         PortfolioListItemAdapter.class,
                         DisplayablePortfolioFetchAssistant.class,

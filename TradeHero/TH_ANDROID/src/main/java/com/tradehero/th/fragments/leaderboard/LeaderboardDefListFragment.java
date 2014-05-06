@@ -19,7 +19,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
+
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;

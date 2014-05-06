@@ -14,6 +14,8 @@ import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
@@ -29,8 +31,10 @@ import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 public interface UserService
 {
@@ -51,8 +55,7 @@ public interface UserService
     //        "username": null,
     //        "website": null
     //}
-    @FormUrlEncoded
-    @POST("/SignupWithEmail")
+    @FormUrlEncoded @POST("/SignupWithEmail")
     UserProfileDTO signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -71,8 +74,7 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
+    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     UserProfileDTO updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
@@ -87,13 +89,29 @@ public interface UserService
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("biography") String biography,
             @Field("location") String location,
-            @Field("website") String website)
-            throws RetrofitError;
+            @Field("website") String website);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
+    UserProfileDTO updateProfile(
+            @Path("userId") int userId,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("username") String username,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("biography") String biography,
+            @Part("location") String location,
+            @Part("website") String website,
+            @Part("profilePicture") TypedFile profilePicture);
     //</editor-fold>
 
-    @Multipart
-    @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture();
+    @Multipart @POST("/SignupWithEmail")
+    Response signUpWithEmailWithProfilePicture();
 
     //<editor-fold desc="Signup">
     @POST("/users")
@@ -206,6 +224,13 @@ public interface UserService
             @Path("userId") int userId,
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
         throws RetrofitError;
+    //</editor-fold>
+
+    //<editor-fold desc="Update Alipay Account">
+    @POST("/users/{userId}/updateAlipayAccount")
+    UpdateAlipayAccountDTO updateAlipayAccount(
+            @Path("userId") int userId,
+            @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Delete User">

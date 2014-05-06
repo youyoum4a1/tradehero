@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 5:06 PM To change this template use File | Settings | File Templates. */
+
 public class StringUtils
 {
     public static String join(String glue, List<String> elements)

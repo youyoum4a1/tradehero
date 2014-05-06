@@ -10,7 +10,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.exception.THException;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/19/13 Time: 12:33 PM Copyright (c) TradeHero */
+
 public class THToast
 {
     public static Handler toastHandler = null;

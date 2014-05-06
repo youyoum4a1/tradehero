@@ -2,9 +2,6 @@ package com.tradehero.th.models.chart;
 
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2014/4/1.
- */
 public class ChartTimeSpanMetricsCodeFactory
 {
     @Inject public ChartTimeSpanMetricsCodeFactory()

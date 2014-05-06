@@ -13,7 +13,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/13/13 Time: 11:30 AM To change this template use File | Settings | File Templates. */
+
 public interface AlertPlanService
 {
     //<editor-fold desc="Get Alert Plans">

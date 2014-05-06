@@ -10,9 +10,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
 
-/**
- * Created by xavier on 1/23/14.
- */
+
 public class CompetitionLeaderboardTimedHeader extends LinearLayout
 {
     public static final String TAG = CompetitionLeaderboardTimedHeader.class.getSimpleName();

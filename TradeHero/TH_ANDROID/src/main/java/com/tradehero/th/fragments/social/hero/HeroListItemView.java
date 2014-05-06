@@ -16,7 +16,9 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -40,10 +42,12 @@ public class HeroListItemView extends RelativeLayout
     @InjectView(R.id.hero_date_info) TextView dateInfo;
     @InjectView(R.id.ic_status) ImageView statusIcon;
 
+    private UserBaseKey followerId;
     private HeroDTO heroDTO;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+    @Inject CurrentUserId currentUserId;
 
     private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
 
@@ -129,6 +133,11 @@ public class HeroListItemView extends RelativeLayout
             bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
+    }
+
+    public void setFollowerId(UserBaseKey followerId)
+    {
+        this.followerId = followerId;
     }
 
     public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
@@ -233,9 +242,17 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayStatus()
     {
-        statusIcon.setImageResource(RES_ID_CROSS_RED);
+        if (statusIcon != null)
+        {
+            statusIcon.setImageResource(RES_ID_CROSS_RED);
+            statusIcon.setVisibility(isFollowerCurrentUser() ? View.VISIBLE : View.GONE);
+        }
     }
 
+    public boolean isFollowerCurrentUser()
+    {
+        return followerId != null && followerId.equals(currentUserId.toUserBaseKey());
+    }
     //</editor-fold>
 
     public static interface OnHeroStatusButtonClickedListener

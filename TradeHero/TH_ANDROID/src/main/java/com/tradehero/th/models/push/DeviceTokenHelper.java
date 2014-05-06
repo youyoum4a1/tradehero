@@ -9,9 +9,6 @@ import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-16.
- */
 public class DeviceTokenHelper
 {
     @Inject @SavedBaiduPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;
@@ -28,11 +25,7 @@ public class DeviceTokenHelper
         {
             String token = savedPushDeviceIdentifier.get();
             Timber.d("get saved the token from baidu %s", token);
-            if (token != null)
-            {
-                return token;
-            }
-
+            return token;
         }
         return PushManager.shared().getAPID();
     }

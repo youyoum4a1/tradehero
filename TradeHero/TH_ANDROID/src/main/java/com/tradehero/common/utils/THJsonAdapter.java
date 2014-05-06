@@ -16,10 +16,6 @@ import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. Date: 7/1/13 Time: 12:49 PM Copyright (c) 2013 thonguyen. All rights
- * reserved.
- */
 public class THJsonAdapter implements Converter
 {
     private static ConverterType CONVERTER_TYPE = ConverterType.JACKSON;

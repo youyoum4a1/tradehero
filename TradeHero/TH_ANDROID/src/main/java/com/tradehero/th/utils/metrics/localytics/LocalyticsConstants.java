@@ -1,8 +1,6 @@
 package com.tradehero.th.utils.metrics.localytics;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/7/14 Time: 12:47 PM Copyright (c) TradeHero
- */
+
 public class LocalyticsConstants
 {
     public static final String AppLaunch = "AppLaunch";

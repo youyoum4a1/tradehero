@@ -15,7 +15,7 @@
   <string name="portfolio_description_count_watch_positions_other">%2$s 正在关注 %1$d 只股票</string>
   <string name="portfolio_description_count_watchlist">您有 %1$d 项目</string>
   <string name="portfolio_default_title">默认投资组合</string>
-  <string name="portfolio_item_title_loading">读取...</string>
+  <string name="portfolio_item_title_loading">读取中...</string>
   <string name="portfolio_header_total_value">总资产</string>
   <string name="portfolio_header_cash_value">现金</string>
   <string name="portfolio_title_unnamed">未命名的投资组合</string>

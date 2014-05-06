@@ -12,13 +12,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 2/10/14.
- */
 @Singleton public class SecurityAlertCountingHelper
 {
-    public static final String TAG = SecurityAlertCountingHelper.class.getSimpleName();
-
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected AlertCompactListCache alertCompactListCache;
     @Inject protected Lazy<AlertCompactCache> alertCompactCacheLazy;

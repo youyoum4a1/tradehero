@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/22/14 Time: 11:32 AM Copyright (c) TradeHero
- */
+
 public class IOUtils
 {
     private static final int BUFFER_SIZE = 0x1000;

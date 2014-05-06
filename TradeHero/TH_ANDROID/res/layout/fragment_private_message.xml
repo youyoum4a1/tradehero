@@ -2,7 +2,6 @@
 
 <com.tradehero.th.fragments.social.message.PrivateDiscussionView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/discussion_view"
     android:orientation="vertical"
@@ -20,59 +19,24 @@
       android:layout_centerHorizontal="true"
       android:text="@string/private_message_empty_list_hint"
       android:textSize="20sp"
-
       android:visibility="gone"
       />
 
-  <ListView
-      android:id="@android:id/list"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:listSelector="@color/transparent"
-      android:divider="@color/transparent"
-      android:layout_marginTop="@dimen/common_margin_10"
-      android:paddingBottom="60dp"
-      android:clipToPadding="false"
-      android:layout_above="@+id/discussion_comment_widget"
-      android:transcriptMode="alwaysScroll"
-      />
-      <!--android:paddingTop="48dp"-->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@color/transparent"
+        android:divider="@color/transparent"
+        android:layout_marginTop="@dimen/common_margin_10"
+        android:paddingBottom="60dp"
+        android:clipToPadding="false"
+        android:transcriptMode="alwaysScroll"
+        />
+    <!--android:paddingTop="48dp"-->
 
   <include
       layout="@layout/private_post_comment_widget"
       />
-
-  <RelativeLayout
-      android:id="@+id/private_message_status_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:padding="8dp"
-      android:background="@color/follow_button_green_overlay"
-      android:visibility="gone"
-      >
-
-    <ImageView
-        android:id="@+id/private_icn_white_star"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/icn_star_white"
-        />
-
-    <TextView
-        android:id="@+id/private_message_status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/private_icn_white_star"
-        android:layout_centerHorizontal="true"
-        tools:text="0 messages left.\nPremium-follow now for unlimited messaging!"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        />
-
-  </RelativeLayout>
 
 </com.tradehero.th.fragments.social.message.PrivateDiscussionView>

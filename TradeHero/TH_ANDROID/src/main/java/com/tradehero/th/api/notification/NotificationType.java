@@ -1,8 +1,6 @@
 package com.tradehero.th.api.notification;
 
-/**
- * Created by tho on 4/16/2014.
- */
+
 public enum NotificationType
 {
     None(0),

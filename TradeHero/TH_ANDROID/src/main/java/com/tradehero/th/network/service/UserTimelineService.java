@@ -11,7 +11,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/3/13 Time: 12:47 PM Copyright (c) TradeHero */
+
 public interface UserTimelineService
 {
     //<editor-fold desc="Get Global Timeline">

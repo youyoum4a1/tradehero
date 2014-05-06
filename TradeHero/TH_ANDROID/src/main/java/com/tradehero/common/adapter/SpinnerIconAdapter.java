@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/16/13 Time: 6:51 PM To change this template use File | Settings | File Templates. */
+
 public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 {
     private int textViewResourceId;

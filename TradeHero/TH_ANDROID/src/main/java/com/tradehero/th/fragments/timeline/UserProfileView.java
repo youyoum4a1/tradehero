@@ -9,21 +9,16 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
-import java.lang.ref.WeakReference;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 3:00 PM Copyright (c) TradeHero
- */
 public class UserProfileView extends BetterViewAnimator
     implements DTOView<UserProfileDTO>
 {
     @InjectView(R.id.user_profile_compact_view) @Optional protected UserProfileCompactView userProfileCompactView;
     @InjectView(R.id.user_profile_detail_view) @Optional protected UserProfileDetailView userProfileDetailView;
 
-    private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
+    private UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener;
 
-    //region Constructors
+    //<editor-fold desc="Constructors">
     public UserProfileView(Context context)
     {
         super(context);
@@ -33,7 +28,7 @@ public class UserProfileView extends BetterViewAnimator
     {
         super(context, attrs);
     }
-    //endregion
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -41,26 +36,22 @@ public class UserProfileView extends BetterViewAnimator
         ButterKnife.inject(this);
     }
 
-    public void setHeroClickListener(UserProfileDetailView.OnHeroClickListener onHeroClickListener)
+    public void setProfileClickedListener(
+            UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener)
     {
-        if(userProfileDetailView != null)
-        {
-            userProfileDetailView.setOnHeroClickListener(onHeroClickListener);
-        }
-
+        this.profileClickedListener = profileClickedListener;
     }
-
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
         if (userProfileCompactView != null)
         {
-            userProfileCompactView.setPortfolioRequestListener(portfolioRequestListener.get());
+            userProfileCompactView.setProfileClickedListener(createProfileClickListener());
         }
         if (userProfileDetailView != null)
         {
-            userProfileDetailView.setPortfolioRequestListener(portfolioRequestListener.get());
+            userProfileDetailView.setProfileClickedListener(createProfileClickListener());
         }
     }
 
@@ -68,11 +59,11 @@ public class UserProfileView extends BetterViewAnimator
     {
         if (userProfileCompactView != null)
         {
-            userProfileCompactView.setPortfolioRequestListener(null);
+            userProfileCompactView.setProfileClickedListener(null);
         }
         if (userProfileDetailView != null)
         {
-            userProfileDetailView.setPortfolioRequestListener(null);
+            userProfileDetailView.setProfileClickedListener(null);
         }
         super.onDetachedFromWindow();
     }
@@ -89,16 +80,53 @@ public class UserProfileView extends BetterViewAnimator
         }
     }
 
-    public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)
+    private void notifyDefaultPortfolioRequested()
     {
-        this.portfolioRequestListener = new WeakReference<>(portfolioRequestListener);
-        if (userProfileCompactView != null)
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
         {
-            userProfileCompactView.setPortfolioRequestListener(portfolioRequestListener);
+            listener.onDefaultPortfolioClicked();
         }
-        if (userProfileDetailView != null)
+    }
+
+    private void notifyHeroClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
         {
-            userProfileDetailView.setPortfolioRequestListener(portfolioRequestListener);
+            listener.onHeroClicked();
+        }
+    }
+
+    private void notifyFollowerClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onFollowerClicked();
+        }
+    }
+
+    protected UserProfileCompactViewHolder.OnProfileClickedListener createProfileClickListener()
+    {
+        return new UserProfileClickedListener();
+    }
+
+    protected class UserProfileClickedListener implements UserProfileCompactViewHolder.OnProfileClickedListener
+    {
+        @Override public void onHeroClicked()
+        {
+            notifyHeroClicked();
+        }
+
+        @Override public void onFollowerClicked()
+        {
+            notifyFollowerClicked();
+        }
+
+        @Override public void onDefaultPortfolioClicked()
+        {
+            notifyDefaultPortfolioRequested();
         }
     }
 }

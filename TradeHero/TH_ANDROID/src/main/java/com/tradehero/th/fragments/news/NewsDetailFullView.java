@@ -35,9 +35,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/24/14 Time: 5:36 PM Copyright (c) TradeHero
- */
 public class NewsDetailFullView extends LinearLayout
         implements DTOView<NewsItemDTO>
 {

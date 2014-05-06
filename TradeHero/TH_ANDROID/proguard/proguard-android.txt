@@ -136,6 +136,11 @@
 -keep public class com.tradehero.th.billing.** { *; }
 -keep public class com.tradehero.common.billing.** { *; }
 
+-keep public class com.tradehero.th.api.discussion.** { *; }
+-keep public class com.tradehero.th.api.pagination.** { *; }
+-keep public class com.tradehero.th.api.timeline.** { *; }
+-keep public class com.tradehero.th.models.graphics.** { *; }
+
 # We actually use public field instead of getter and setter for it.
 -keep public class com.tradehero.th.api.** {
   public <fields>;

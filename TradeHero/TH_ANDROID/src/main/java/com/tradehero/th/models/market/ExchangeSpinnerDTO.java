@@ -4,13 +4,8 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
 
-/**
- * Created by xavier on 1/16/14.
- */
 public class ExchangeSpinnerDTO extends ExchangeDTO implements CharSequence
 {
-    public static final String TAG = ExchangeSpinnerDTO.class.getSimpleName();
-
     private Context context;
 
     //<editor-fold desc="Constructors">

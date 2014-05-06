@@ -8,13 +8,8 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class OneProviderIntent extends ProviderIntent
 {
-    public static final String TAG = OneProviderIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected OneProviderIntent()
     {

@@ -24,14 +24,13 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 @Deprecated
 public class PortfolioListFragment extends DashboardFragment
     implements WithTutorial
 {
-    public static final String TAG = PortfolioListFragment.class.getSimpleName();
-
     private ProgressBar progressBar;
     private PortfolioListView portfolioListView;
 
@@ -40,6 +39,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
+    @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -56,7 +56,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        displayablePortfolioFetchAssistant = new DisplayablePortfolioFetchAssistant();
+        displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(new DisplayablePortfolioFetchAssistant.OnFetchedListener()
         {
             @Override public void onFetched()
@@ -184,7 +184,7 @@ public class PortfolioListFragment extends DashboardFragment
         }
         else
         {
-            THLog.d(TAG, "Not handling portfolioItemClicked " + view.getClass().getName());
+            Timber.d("Not handling portfolioItemClicked %s", view.getClass().getName());
         }
     }
 

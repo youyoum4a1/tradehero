@@ -23,17 +23,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Repurpose queries
- * Created by xavier on 12/5/13.
- */
+
 @Singleton public class SecurityServiceWrapper
 {
     private final SecurityService securityService;

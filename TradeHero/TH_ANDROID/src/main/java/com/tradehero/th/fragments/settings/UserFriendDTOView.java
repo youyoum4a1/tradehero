@@ -17,9 +17,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/22/14 Time: 11:53 AM Copyright (c) TradeHero
- */
 public class UserFriendDTOView extends RelativeLayout
         implements DTOView<UserFriendsDTO>, Checkable
 {

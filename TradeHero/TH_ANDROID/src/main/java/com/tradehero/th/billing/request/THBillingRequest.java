@@ -12,9 +12,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THPurchaseOrder;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

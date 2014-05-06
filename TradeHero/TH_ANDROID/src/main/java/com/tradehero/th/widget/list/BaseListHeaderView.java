@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 5:14 PM To change this template use File | Settings | File Templates. */
+
 public class BaseListHeaderView extends RelativeLayout
 {
     private TextView headerTextView;

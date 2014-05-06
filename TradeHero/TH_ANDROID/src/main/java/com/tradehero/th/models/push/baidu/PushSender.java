@@ -14,9 +14,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-16.
- */
 public class PushSender
 {
     private final Lazy<SessionServiceWrapper> sessionServiceWrapper;

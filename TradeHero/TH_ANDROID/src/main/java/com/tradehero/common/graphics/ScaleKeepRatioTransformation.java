@@ -3,7 +3,7 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 11:34 AM Copyright (c) TradeHero */
+
 public class ScaleKeepRatioTransformation implements Transformation
 {
     private final int width;

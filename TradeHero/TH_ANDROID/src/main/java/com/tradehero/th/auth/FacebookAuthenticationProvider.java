@@ -1,6 +1,6 @@
 package com.tradehero.th.auth;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 2:44 PM Copyright (c) TradeHero */
+
 
 import android.app.Activity;
 import android.content.Context;

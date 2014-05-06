@@ -5,13 +5,8 @@ import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/24/14.
- */
 @Singleton public class SecurityIdSymbolCIPredicate implements CharSequencePredicate<SecurityId>
 {
-    public static final String TAG = SecurityIdSymbolCIPredicate.class.getSimpleName();
-
     public CharSequence pattern;
 
     //<editor-fold desc="Constructors">

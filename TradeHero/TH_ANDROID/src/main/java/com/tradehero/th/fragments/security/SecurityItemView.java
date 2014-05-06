@@ -32,7 +32,6 @@ import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO> extends RelativeLayout
         implements DTOView<SecurityCompactDTOType>
 {
@@ -399,7 +398,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
             }
             //just for test
-            if(BuildConfig.DEBUG && (securityCompactDTO.name.contains("International") || securityCompactDTO.name.contains("Ichitan"))){
+            if(BuildConfig.DEBUG && (securityCompactDTO.name.contains("Yuyang") || securityCompactDTO.name.contains("Ichitan"))){
                 Log.d(securityCompactDTO.name,"testKey");
                 callback.setTest(true);
                 callback.setTestKey(securityCompactDTO.name);

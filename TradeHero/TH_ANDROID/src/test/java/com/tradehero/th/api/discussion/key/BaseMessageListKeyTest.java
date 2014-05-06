@@ -2,9 +2,7 @@ package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.th.api.discussion.key.MessageListKey;
 
-/**
- * Created by xavier2 on 2014/4/11.
- */
+
 public class BaseMessageListKeyTest
 {
     protected MessageListKey key1_1()

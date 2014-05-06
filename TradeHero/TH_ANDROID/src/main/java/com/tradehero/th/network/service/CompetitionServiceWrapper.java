@@ -12,9 +12,7 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 @Singleton public class CompetitionServiceWrapper
 {
     private final CompetitionService competitionService;

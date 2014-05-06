@@ -10,9 +10,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by xavier on 8/2/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class YahooTimeSpanTest

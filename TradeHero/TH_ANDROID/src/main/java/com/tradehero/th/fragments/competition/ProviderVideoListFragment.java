@@ -34,9 +34,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/16/14.
- */
+
 public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCache helpVideoListCache;

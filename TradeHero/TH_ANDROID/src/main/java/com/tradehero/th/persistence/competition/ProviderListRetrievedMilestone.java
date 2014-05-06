@@ -7,7 +7,7 @@ import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:13 PM To change this template use File | Settings | File Templates. */
+
 public class ProviderListRetrievedMilestone extends DTORetrievedAsyncMilestone<ProviderListKey, ProviderIdList, ProviderListCache>
 {
     public static final String TAG = ProviderListRetrievedMilestone.class.getSimpleName();

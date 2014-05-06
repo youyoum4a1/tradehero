@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
-/**
- * Created by alex on 14-4-18.
- */
+
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener, View.OnClickListener
 {
 

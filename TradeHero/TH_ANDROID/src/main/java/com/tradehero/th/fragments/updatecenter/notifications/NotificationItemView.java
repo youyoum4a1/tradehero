@@ -28,9 +28,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class NotificationItemView
         extends LinearLayout
         implements DTOView<NotificationKey>

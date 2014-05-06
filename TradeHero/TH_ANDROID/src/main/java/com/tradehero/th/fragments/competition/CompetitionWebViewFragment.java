@@ -8,9 +8,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 
-/**
- * Created by xavier on 2/25/14.
- */
+
 public class CompetitionWebViewFragment extends BaseWebViewFragment
 {
     @Override protected int getLayoutResId()

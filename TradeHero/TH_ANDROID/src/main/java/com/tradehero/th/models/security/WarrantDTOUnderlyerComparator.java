@@ -11,13 +11,9 @@ import javax.inject.Singleton;
  * underlyingName Z
  * underlyingName null
  * null
- *
- * Created by xavier on 1/23/14.
  */
 @Singleton public class WarrantDTOUnderlyerComparator implements Comparator<WarrantDTO>
 {
-    public static final String TAG = WarrantDTOUnderlyerComparator.class.getSimpleName();
-
     @Inject public WarrantDTOUnderlyerComparator()
     {
     }

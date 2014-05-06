@@ -13,7 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
+
 public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
     protected PagedLeaderboardKey pagedLeaderboardKey;

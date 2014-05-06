@@ -4,6 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -16,18 +20,21 @@ import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
 {
-    public ImageView avatar;
-    public TextView roiSinceInception;
-    public TextView profitValue;
-    public TextView followersCount;
-    public TextView heroesCount;
-    public TextView displayName;
-    public ImageView btnDefaultPortfolio;
+    @InjectView(R.id.user_profile_avatar) @Optional public ImageView avatar;
+    @InjectView(R.id.user_profile_roi) @Optional public TextView roiSinceInception;
+    @InjectView(R.id.user_profile_profit_value) @Optional public TextView profitValue;
+    @InjectView(R.id.user_profile_followers_count_wrapper) @Optional public View followersCountWrapper;
+    @InjectView(R.id.user_profile_followers_count) @Optional public TextView followersCount;
+    @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
+    @InjectView(R.id.user_profile_heroes_count)  @Optional public TextView heroesCount;
+    @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
+    @InjectView(R.id.btn_user_profile_default_portfolio) @Optional public ImageView btnDefaultPortfolio;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
     protected UserProfileDTO userProfileDTO;
+    private OnProfileClickedListener profileClickedListener;
 
     public UserProfileCompactViewHolder(View view)
     {
@@ -38,14 +45,17 @@ public class UserProfileCompactViewHolder
 
     public void initViews(View view)
     {
-        avatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
-        roiSinceInception = (TextView) view.findViewById(R.id.user_profile_roi);
-        profitValue = (TextView) view.findViewById(R.id.user_profile_profit_value);
-        followersCount = (TextView) view.findViewById(R.id.user_profile_followers_count);
-        heroesCount = (TextView) view.findViewById(R.id.user_profile_heroes_count);
-        displayName = (TextView) view.findViewById(R.id.user_profile_display_name);
-        btnDefaultPortfolio =
-                (ImageView) view.findViewById(R.id.btn_user_profile_default_portfolio);
+        ButterKnife.inject(this, view);
+    }
+
+    public void detachViews()
+    {
+        ButterKnife.reset(this);
+    }
+
+    public void setProfileClickedListener(OnProfileClickedListener profileClickedListener)
+    {
+        this.profileClickedListener = profileClickedListener;
     }
 
     public void display(UserProfileDTO dto)
@@ -181,5 +191,42 @@ public class UserProfileCompactViewHolder
                 displayName.setText(R.string.na);
             }
         }
+    }
+
+    @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Optional
+    protected void notifyHeroClicked()
+    {
+        OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onHeroClicked();
+        }
+    }
+
+    @OnClick({R.id.user_profile_followers_count, R.id.user_profile_followers_count_wrapper}) @Optional
+    protected void notifyFollowerClicked()
+    {
+        OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onFollowerClicked();
+        }
+    }
+
+    @OnClick(R.id.btn_user_profile_default_portfolio) @Optional
+    protected void notifyDefaultPortfolioClicked()
+    {
+        OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onDefaultPortfolioClicked();
+        }
+    }
+
+    public static interface OnProfileClickedListener
+    {
+        void onHeroClicked();
+        void onFollowerClicked();
+        void onDefaultPortfolioClicked();
     }
 }

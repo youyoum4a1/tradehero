@@ -6,7 +6,7 @@ import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 3:24 PM To change this template use File | Settings | File Templates. */
+
 public class ColorUtils
 {
     public static final int MAX_RED_VALUE = 255;

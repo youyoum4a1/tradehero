@@ -7,9 +7,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 31/10/13
- */
+
 public class PositionUtils
 {
     public static final String TAG = PositionUtils.class.getSimpleName();

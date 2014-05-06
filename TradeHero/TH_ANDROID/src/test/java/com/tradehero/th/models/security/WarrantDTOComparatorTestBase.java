@@ -6,9 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by xavier on 2/28/14.
- */
+
 public class WarrantDTOComparatorTestBase
 {
     public static final String TAG = WarrantDTOComparatorTestBase.class.getSimpleName();

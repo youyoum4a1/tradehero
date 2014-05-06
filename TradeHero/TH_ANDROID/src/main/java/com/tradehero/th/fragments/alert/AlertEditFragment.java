@@ -14,9 +14,7 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/7/14.
- */
+
 public class AlertEditFragment extends BaseAlertEditFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";

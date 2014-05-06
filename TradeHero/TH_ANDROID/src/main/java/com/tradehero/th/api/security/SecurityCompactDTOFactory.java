@@ -5,9 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/21/14.
- */
+
 @Singleton public class SecurityCompactDTOFactory
 {
     public static final String TAG = SecurityCompactDTOFactory.class.getSimpleName();

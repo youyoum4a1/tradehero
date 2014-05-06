@@ -6,9 +6,7 @@ import com.squareup.picasso.UrlConnectionDownloader;
 
 import java.io.IOException;
 
-/**
- * Created by tradehero on 14-2-21.
- */
+
 public class MyImageDownloader extends UrlConnectionDownloader {
 
     private Context context;

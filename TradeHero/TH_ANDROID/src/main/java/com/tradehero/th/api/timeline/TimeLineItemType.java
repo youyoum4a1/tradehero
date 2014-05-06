@@ -1,6 +1,6 @@
 package com.tradehero.th.api.timeline;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 7:21 PM To change this template use File | Settings | File Templates. */
+
 public enum TimeLineItemType
 {
     TLI_TRADE(1),

@@ -30,9 +30,11 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.models.push.baidu.PushMessageHandler;
@@ -229,8 +231,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        //we set a message unread when click the item, so don't remove callback at the moment.
-        //unsetMiddleCallback();
+        unsetMiddleCallback();
         detachFetchMessageTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
@@ -267,8 +268,16 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
-        updateReadStatus(position);
-        pushMessageFragment(position);
+        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
+        {
+            updateReadStatus(position);
+            pushMessageFragment(position);
+        }
+        else if (type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
+        {
+            pushHeroProfileFrgment(position);
+        }
+
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -298,9 +307,28 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO =
                 messageHeaderCache.get(getListAdapter().getItem(position));
-        pushMessageFragment(
-                discussionKeyFactory.create(messageHeaderDTO),
-                messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        if (messageHeaderDTO != null)
+        {
+            pushMessageFragment(
+                    discussionKeyFactory.create(messageHeaderDTO),
+                    messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        }
+    }
+
+    private void pushHeroProfileFrgment(int position)
+    {
+        MessageHeaderDTO messageHeaderDTO =
+                messageHeaderCache.get(getListAdapter().getItem(position));
+        if (messageHeaderDTO != null)
+        {
+            Bundle bundle = new Bundle();
+            DashboardNavigator navigator =
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, messageHeaderDTO.recipientUserId);
+            Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        }
+
     }
 
     protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)
@@ -508,7 +536,10 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
-                messageHeaderId, messageHeaderDTO.senderUserId, messageHeaderDTO.recipientUserId,
+                messageHeaderId,
+                messageHeaderDTO.senderUserId,
+                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
                 new MessageDeletionCallback(messageHeaderId));
     }
 
@@ -788,10 +819,15 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             middleCallback.setPrimaryCallback(null);
         }
-        middleCallbackMap.put(messageHeaderDTO.id, messageServiceWrapper.get()
-                .readMessage(messageHeaderDTO.id, messageHeaderDTO.senderUserId
-                        , messageHeaderDTO.recipientUserId.intValue()
-                        , createMessageAsReadCallback(messageHeaderDTO.id)));
+        middleCallbackMap.put(
+                messageHeaderDTO.id,
+                messageServiceWrapper.get().readMessage(
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.senderUserId,
+                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        currentUserId.toUserBaseKey(),
+                        createMessageAsReadCallback(messageHeaderDTO.id)));
     }
 
     private Callback<Response> createMessageAsReadCallback(int pushId)
@@ -823,7 +859,7 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.unread = false;
                     messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
 
-                    updateUnreadStatusInUserProfileCache();
+                    requestUpdateTabCounter();
                 }
                 middleCallbackMap.remove(messageId);
             }
@@ -833,20 +869,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             Timber.d("Report failure for Message: %d", messageId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.unreadMessageThreadsCount > 0)
-        {
-            --userProfileDTO.unreadMessageThreadsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
@@ -876,13 +898,8 @@ public class MessagesCenterFragment extends DashboardFragment
                     alreadyFetched.remove(messageId);
                 }
 
-                //if the unread message is deleted, update unread counter
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageId);
-                if (messageHeaderDTO != null && messageHeaderDTO.unread)
-                {
-                    messageHeaderDTO.unread = false;
-                    updateUnreadStatusInUserProfileCache();
-                }
+                requestUpdateTabCounter();
+
                 getListAdapter().notifyDataSetChanged();
                 //MessageListAdapter adapter = getListAdapter();
             }

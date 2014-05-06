@@ -7,14 +7,10 @@ import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/**
- * Created by xavier on 2/5/14.
- */
 public class TradeListInPeriodFragment extends AbstractTradeListFragment<PositionInPeriodDTO>
 {
-    public static final String TAG = TradeListInPeriodFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE = AbstractTradeListFragment.class.getName() + ".ownedLeaderboardPositionId";
 
     protected OwnedLeaderboardPositionId ownedLeaderboardPositionId;
@@ -38,12 +34,12 @@ public class TradeListInPeriodFragment extends AbstractTradeListFragment<Positio
             }
             else
             {
-                THLog.d(TAG, "ownedLeaderboardPositionIdBundle is null");
+                Timber.d("ownedLeaderboardPositionIdBundle is null");
             }
         }
         else
         {
-            THLog.d(TAG, "args is null");
+            Timber.d("args is null");
         }
     }
 

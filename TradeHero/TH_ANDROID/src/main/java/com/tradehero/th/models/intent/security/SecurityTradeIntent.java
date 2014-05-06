@@ -9,13 +9,8 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.trending.TrendingIntent;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class SecurityTradeIntent extends TrendingIntent
 {
-    public static final String TAG = SecurityTradeIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected SecurityTradeIntent(SecurityId securityId)
     {

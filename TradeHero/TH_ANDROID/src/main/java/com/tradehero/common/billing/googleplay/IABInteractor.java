@@ -7,7 +7,7 @@ import com.tradehero.common.billing.googleplay.request.UIIABBillingRequest;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
+
 public interface IABInteractor<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

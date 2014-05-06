@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 5:07 PM To change this template use File | Settings | File Templates. */
+
 public class ProductDetailQuickDescriptionView extends RelativeLayout
 {
     public static final String TAG = ProductDetailQuickDescriptionView.class.getSimpleName();

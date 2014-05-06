@@ -12,9 +12,7 @@ import retrofit.client.Request;
 import retrofit.client.UrlConnectionClient;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/17/14 Time: 12:30 PM Copyright (c) TradeHero
- */
+
 @Singleton
 public class FriendlyUrlConnectionClient extends UrlConnectionClient
 {

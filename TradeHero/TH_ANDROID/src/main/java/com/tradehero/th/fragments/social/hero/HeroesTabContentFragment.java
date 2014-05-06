@@ -47,8 +47,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private HeroManagerViewContainer viewContainer;
     private ProgressDialog progressDialog;
     private HeroListItemAdapter heroListAdapter;
-    private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
-    private HeroListMostSkilledClickedListener heroListMostSkilledClickedListener;
     // The follower whose heroes we are listing
     private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
@@ -78,6 +76,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
     //</editor-fold>
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.followerId = getFollowerId(getArguments());
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -101,17 +105,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             });
         }
 
-        this.heroStatusButtonClickedListener =
-                new HeroListItemView.OnHeroStatusButtonClickedListener()
-                {
-                    @Override
-                    public void onHeroStatusButtonClicked(HeroListItemView heroListItemView,
-                            HeroDTO heroDTO)
-                    {
-                        handleHeroStatusButtonClicked(heroDTO);
-                    }
-                };
-        this.heroListMostSkilledClickedListener = new HeroListMostSkilledClickedListener();
         this.heroListAdapter = new HeroListItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
@@ -119,9 +112,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 R.layout.hero_list_item,
                 R.layout.hero_list_header,
                 R.layout.hero_list_header);
-        this.heroListAdapter.setHeroStatusButtonClickedListener(
-                this.heroStatusButtonClickedListener);
-        this.heroListAdapter.setMostSkilledClicked(this.heroListMostSkilledClickedListener);
+        this.heroListAdapter.setHeroStatusButtonClickedListener(createHeroStatusButtonClickedListener());
+        this.heroListAdapter.setFollowerId(followerId);
+        this.heroListAdapter.setMostSkilledClicked(createHeroListMostSkiledClickedListener());
         if (this.viewContainer.pullToRefreshListView != null)
         {
             this.viewContainer.pullToRefreshListView.setOnRefreshListener(this);
@@ -145,6 +138,19 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         this.infoFetcher = new HeroManagerInfoFetcher(
                 new HeroManagerUserProfileCacheListener(),
                 new HeroManagerHeroListCacheListener());
+    }
+
+    protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
+    {
+        return new HeroListItemView.OnHeroStatusButtonClickedListener()
+        {
+            @Override
+            public void onHeroStatusButtonClicked(HeroListItemView heroListItemView,
+                    HeroDTO heroDTO)
+            {
+                handleHeroStatusButtonClicked(heroDTO);
+            }
+        };
     }
 
     private void setListShown(boolean shown)
@@ -189,6 +195,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             this.followerId = getFollowerId(getArguments());
         }
 
+        // TODO rework this part to handle the reload in a manner similar to the
+        // initial load, with passing the listener first.
         this.infoFetcher.reloadHeroes(this.followerId, new HeroManagerHeroListRefreshListener());
     }
 
@@ -216,7 +224,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
         this.infoFetcher = null;
 
-        this.heroStatusButtonClickedListener = null;
         if (this.heroListAdapter != null)
         {
             this.heroListAdapter.setHeroStatusButtonClickedListener(null);
@@ -421,8 +428,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     {
         Timber.d("onPullUpToRefresh");
     }
-
     //</editor-fold>
+
+    private HeroListMostSkilledClickedListener createHeroListMostSkiledClickedListener()
+    {
+        return new HeroListMostSkilledClickedListener();
+    }
 
     private class HeroManagerUserProfileCacheListener
             implements DTOCache.Listener<UserBaseKey, UserProfileDTO>

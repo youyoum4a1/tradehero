@@ -13,7 +13,6 @@ import java.util.List;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
-
     public String email;
     public String address;
     public String biography;

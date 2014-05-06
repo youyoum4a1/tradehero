@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:25 AM Copyright (c) TradeHero */
+
 public class ServerValidatedUsernameText extends ServerValidatedText
 {
     private boolean isValidInServer = true;

@@ -4,9 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 
-/**
- * Created by xavier on 1/14/14.
- */
+
 public class SimpleOneProviderIntent extends OneProviderIntent
 {
     public static final String TAG = SimpleOneProviderIntent.class.getSimpleName();

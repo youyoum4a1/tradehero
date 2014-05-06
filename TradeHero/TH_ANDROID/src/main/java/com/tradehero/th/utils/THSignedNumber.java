@@ -2,11 +2,8 @@ package com.tradehero.th.utils;
 
 import java.text.DecimalFormat;
 
-/** Created with IntelliJ IDEA. User: nia Date: 16/10/13 Time: 3:46 PM */
 public class THSignedNumber
 {
-    public static final String TAG = THSignedNumber.class.getSimpleName();
-
     public static final int TYPE_PERCENTAGE = 1;
     public static final int TYPE_MONEY = 2;
 

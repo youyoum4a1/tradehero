@@ -9,9 +9,6 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 3:54 PM Copyright (c) TradeHero
- */
 public interface NewsServiceSync
 {
     @GET("/news/countries") PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs();

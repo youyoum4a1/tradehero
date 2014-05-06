@@ -3,9 +3,7 @@ package com.tradehero.th.api.competition.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 public class CompetitionId extends AbstractIntegerDTOKey
 {
     public static final String TAG = CompetitionId.class.getSimpleName();

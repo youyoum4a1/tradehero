@@ -3,9 +3,7 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 public class LeaderboardUserId implements Comparable, DTOKey
 {
     public static final String TAG = LeaderboardUserId.class.getSimpleName();

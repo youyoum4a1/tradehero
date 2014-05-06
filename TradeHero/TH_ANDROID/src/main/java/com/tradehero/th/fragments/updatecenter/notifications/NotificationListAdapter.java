@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.AppendableArrayDTOAdapter;
 import com.tradehero.th.api.notification.NotificationKey;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class NotificationListAdapter extends AppendableArrayDTOAdapter<NotificationKey, NotificationItemView>
 {
 

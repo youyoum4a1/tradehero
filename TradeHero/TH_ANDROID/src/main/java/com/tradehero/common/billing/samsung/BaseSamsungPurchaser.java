@@ -6,9 +6,7 @@ import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 
-/**
- * Created by xavier on 3/26/14.
- */
+
 abstract public class BaseSamsungPurchaser<
         SamsungSKUType extends SamsungSKU,
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,

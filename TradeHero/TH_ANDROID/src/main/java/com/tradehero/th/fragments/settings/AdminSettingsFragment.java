@@ -26,9 +26,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/19/14 Time: 1:08 PM Copyright (c) TradeHero
- */
 public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;

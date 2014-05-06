@@ -6,10 +6,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
-/**
- * Created by tradehero on 14-3-5.
- * First step to request translation
- */
+
 public interface TranslationTokenService {
     @FormUrlEncoded
     @POST("/v2/OAuth2-13")

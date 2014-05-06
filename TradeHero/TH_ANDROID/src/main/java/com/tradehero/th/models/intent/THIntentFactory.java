@@ -6,9 +6,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class THIntentFactory<THIntentType extends THIntent>
 {
     public THIntentFactory()

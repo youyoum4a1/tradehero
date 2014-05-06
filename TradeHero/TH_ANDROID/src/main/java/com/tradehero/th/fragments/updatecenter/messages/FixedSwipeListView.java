@@ -8,9 +8,6 @@ import com.fortysevendeg.android.swipelistview.SwipeListViewTouchListener;
 import java.lang.reflect.Field;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-4-12.
- */
 public class FixedSwipeListView extends SwipeListView
 {
     public FixedSwipeListView(Context context, int swipeBackView, int swipeFrontView)

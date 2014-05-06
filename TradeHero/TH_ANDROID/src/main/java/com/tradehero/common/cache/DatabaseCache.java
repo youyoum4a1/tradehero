@@ -1,8 +1,6 @@
 package com.tradehero.common.cache;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 3:41 PM Copyright (c) TradeHero
- *  This class is originally from GitHub android client, modified to adapt dagger
- * */
+
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

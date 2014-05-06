@@ -4,7 +4,7 @@ import android.graphics.Typeface;
 import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 3:10 PM Copyright (c) TradeHero */
+
 public class ItalicTagProcessor extends RichSpanTextProcessor
 {
     /* "_xxx_" = xxx in italics */

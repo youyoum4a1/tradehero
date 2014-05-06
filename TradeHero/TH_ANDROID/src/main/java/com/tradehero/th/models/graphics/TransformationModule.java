@@ -13,9 +13,6 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/30/14.
- */
 @Module(
         staticInjections =
                 {
@@ -28,17 +25,21 @@ import javax.inject.Singleton;
 )
 public class TransformationModule
 {
-    public static final String TAG = TransformationModule.class.getSimpleName();
-
     public TransformationModule()
     {
         super();
     }
 
     @Provides @ForUserPhoto
-    public Transformation provideUserImageTransformation()
+    public RecyclerTransformation provideUserImageRecyclerTransformation(RoundedShapeTransformation roundedShapeTransformation)
     {
-        return new RoundedShapeTransformation();
+        return roundedShapeTransformation;
+    }
+
+    @Provides @ForUserPhoto
+    public Transformation provideUserImageTransformation(@ForUserPhoto RecyclerTransformation transformation)
+    {
+        return transformation;
     }
 
     @Provides @ForUserPhoto

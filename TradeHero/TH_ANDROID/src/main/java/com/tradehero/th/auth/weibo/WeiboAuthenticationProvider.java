@@ -21,9 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 
-/**
- * Created by tradehero on 14-3-21.
- */
+
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider {
 

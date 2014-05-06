@@ -7,7 +7,7 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 1:13 PM Copyright (c) TradeHero */
+
 @Singleton
 public final class TwitterUtils
 {

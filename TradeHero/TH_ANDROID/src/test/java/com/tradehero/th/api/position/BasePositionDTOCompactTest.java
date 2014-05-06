@@ -1,8 +1,6 @@
 package com.tradehero.th.api.position;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 abstract public class BasePositionDTOCompactTest
 {
     public static final String TAG = BasePositionDTOCompactTest.class.getSimpleName();

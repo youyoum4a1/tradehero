@@ -2,9 +2,7 @@ package com.tradehero.th.api.position;
 
 import java.util.Date;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 abstract public class BasePositionDTOTest extends BasePositionDTOCompactTest
 {
     public static final String TAG = BasePositionDTOTest.class.getSimpleName();

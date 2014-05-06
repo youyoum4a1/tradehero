@@ -28,9 +28,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:48 AM Copyright (c) TradeHero
- */
+
 @Module(
         includes = {
                 UIComponents.class

@@ -2,7 +2,7 @@ package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
+
 public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
 {
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardMarkUserId.class.getName() + ".perPage";

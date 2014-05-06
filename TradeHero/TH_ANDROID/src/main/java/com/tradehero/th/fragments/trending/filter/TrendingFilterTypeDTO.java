@@ -4,12 +4,8 @@ import android.os.Bundle;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 
-/**
- * Created by xavier on 1/15/14.
- */
 abstract public class TrendingFilterTypeDTO
 {
-    public static final String TAG = TrendingFilterTypeDTO.class.getSimpleName();
     public static final String BUNDLE_KEY_CLASS_TYPE = TrendingFilterTypeDTO.class.getName() + ".classType";
     public static final String BUNDLE_KEY_TITLE_RES_ID = TrendingFilterTypeDTO.class.getName() + ".titleResId";
     public static final String BUNDLE_KEY_TITLE_ICON_RES_ID = TrendingFilterTypeDTO.class.getName() + ".iconResId";

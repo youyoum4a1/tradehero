@@ -10,7 +10,7 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.utils.DaggerUtils;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 1:01 PM To change this template use File | Settings | File Templates. */
+
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId();

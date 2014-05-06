@@ -4,7 +4,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
@@ -16,8 +15,6 @@ abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListType,
         BillingExceptionType>
 {
-    public static final String TAG = BaseProductIdentifierFetcher.class.getSimpleName();
-
     protected int requestCode;
     protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
 

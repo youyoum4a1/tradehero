@@ -2,6 +2,7 @@ package com.tradehero.common.billing.alipay.service;
 
 import com.tradehero.th.api.alipay.OrderIdFormDTO;
 import com.tradehero.th.api.alipay.OrderStatusDTO;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,7 +24,7 @@ import retrofit.Callback;
     public MiddleCallback<String> getOrderId(OrderIdFormDTO orderIdFormDTO,
             Callback<String> callback)
     {
-        MiddleCallback<String> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallback<String> middleCallback = new BaseMiddleCallback<>(callback);
         alipayService.getOrderId(orderIdFormDTO, callback);
         return middleCallback;
     }
@@ -31,7 +32,7 @@ import retrofit.Callback;
     public MiddleCallback<OrderStatusDTO> checkWithServer(String orderId,
             Callback<OrderStatusDTO> callback)
     {
-        MiddleCallback<OrderStatusDTO> middleCallback = new MiddleCallback<>(callback);
+        MiddleCallback<OrderStatusDTO> middleCallback = new BaseMiddleCallback<>(callback);
         alipayService.checkWithServer(orderId, callback);
         return middleCallback;
     }

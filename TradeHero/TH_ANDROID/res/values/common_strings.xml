@@ -5,6 +5,7 @@
 
   <string name="na">N/A</string>
   <string name="empty"/>
+  <string name="cancel">Cancel</string>
   <string name="action_menu_settings">Settings</string>
 
   <string name="network_error">Please check your network connection!</string>

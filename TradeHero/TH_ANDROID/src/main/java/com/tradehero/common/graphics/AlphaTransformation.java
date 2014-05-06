@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
+
 public class AlphaTransformation implements com.squareup.picasso.Transformation
 {
 

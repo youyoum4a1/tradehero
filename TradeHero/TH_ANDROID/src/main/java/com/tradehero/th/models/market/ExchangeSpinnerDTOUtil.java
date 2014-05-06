@@ -11,9 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/16/14.
- */
 @Singleton public class ExchangeSpinnerDTOUtil
 {
     @Inject public ExchangeSpinnerDTOUtil()

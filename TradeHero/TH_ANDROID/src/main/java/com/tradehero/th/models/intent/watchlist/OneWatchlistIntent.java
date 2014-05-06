@@ -9,13 +9,8 @@ import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntent;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class OneWatchlistIntent extends PortfolioIntent
 {
-    public static final String TAG = OneWatchlistIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected OneWatchlistIntent(PortfolioId portfolioId)
     {

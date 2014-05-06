@@ -1,6 +1,7 @@
 package com.tradehero.th.api.form;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:04 PM Copyright (c) TradeHero */
+import retrofit.mime.TypedFile;
+
 public class UserFormDTO
 {
     public String email;
@@ -20,6 +21,7 @@ public class UserFormDTO
     public String location;
     public String website;
     public String deviceToken;
+    public TypedFile profilePicture;
 
     public UserFormDTO()
     {

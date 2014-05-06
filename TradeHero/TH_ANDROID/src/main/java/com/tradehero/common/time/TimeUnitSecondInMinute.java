@@ -1,8 +1,6 @@
 package com.tradehero.common.time;
 
-/**
- * Created by xavier on 1/23/14.
- */
+
 public class TimeUnitSecondInMinute extends TimeUnitSecond
 {
     public static final String TAG = TimeUnitSecondInMinute.class.getSimpleName();

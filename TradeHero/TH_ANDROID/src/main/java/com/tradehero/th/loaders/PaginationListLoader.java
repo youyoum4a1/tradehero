@@ -4,9 +4,6 @@ import android.content.Context;
 import java.util.List;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 5:02 PM Copyright (c) TradeHero
- */
 public abstract class PaginationListLoader<D> extends ListLoader<D>
 {
     private static final int DEFAULT_ITEM_PER_PAGE = 10;

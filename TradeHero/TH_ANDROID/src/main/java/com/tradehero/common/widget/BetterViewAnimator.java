@@ -5,9 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ViewAnimator;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 2:20 PM Copyright (c) TradeHero
- */
+
 public class BetterViewAnimator extends ViewAnimator
 {
     //region Constructors

@@ -27,9 +27,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by julien on 30/10/13
- */
 public class PositionPartialTopView extends LinearLayout
 {
     @Inject protected Lazy<Picasso> picasso;

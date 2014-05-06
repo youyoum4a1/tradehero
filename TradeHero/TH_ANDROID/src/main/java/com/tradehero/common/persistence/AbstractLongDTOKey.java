@@ -2,7 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.os.Bundle;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 22/01/14 Time: 5:13 PM To change this template use File | Settings | File Templates. */
+
 
 /**
  * Use single long as an identity

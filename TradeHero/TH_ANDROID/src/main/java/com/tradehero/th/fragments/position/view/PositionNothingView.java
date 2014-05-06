@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 12:53 PM To change this template use File | Settings | File Templates. */
 public class PositionNothingView extends RelativeLayout
 {
     private TextView description;

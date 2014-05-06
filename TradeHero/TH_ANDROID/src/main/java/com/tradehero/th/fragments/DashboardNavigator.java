@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
 {
     private static final boolean ENABLE_TABBAR_ANIMATION = false;

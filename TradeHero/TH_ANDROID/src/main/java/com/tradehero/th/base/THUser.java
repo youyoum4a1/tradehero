@@ -49,7 +49,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
     private static AuthenticationMode authenticationMode;

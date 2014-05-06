@@ -6,16 +6,11 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
-/**
- * Created by julien on 1/11/13
- */
 public class PositionPartialBottomInPeriodClosedView
         extends AbstractPositionPartialBottomClosedView<
             PositionInPeriodDTO,
             LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
-    public static final String TAG = PositionPartialBottomInPeriodClosedView.class.getSimpleName();
-
     private PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 
     //<editor-fold desc="Constructors">

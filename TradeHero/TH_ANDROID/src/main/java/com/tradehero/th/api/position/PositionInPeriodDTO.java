@@ -6,7 +6,7 @@ import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
+
 public class PositionInPeriodDTO extends PositionDTO
 {
     public static final String TAG = PositionInPeriodDTO.class.getSimpleName();

@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
+
 public class LruFileCache extends LruCache
 {
     public static final String DEFAULT_DIR_NAME = LruFileCache.class.getPackage().getName();

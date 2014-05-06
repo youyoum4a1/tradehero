@@ -9,7 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:07 PM Copyright (c) TradeHero */
+
 public class TimelineManager
 {
     @Inject DatabaseCache dbCache;
@@ -17,19 +17,22 @@ public class TimelineManager
 
     public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
     {
+        if (query == null)
+        {
+            Timber.e(new NullPointerException("query was null"), "");
+            return null;
+        }
         // TODO scope locking for current timeline of user
         TimelineStore timelineStore = allTimelineStores.get().under((Integer) query.getId());
         if (query.getId() == null)
         {
             Timber.e(new NullPointerException("query.getId was null"), "");
+            return null;
         }
         if (timelineStore == null)
         {
             Timber.e(new NullPointerException("timelineStore was null"), "");
-        }
-        if (query == null)
-        {
-            Timber.e(new NullPointerException("query was null"), "");
+            return null;
         }
         timelineStore.setQuery(query);
         return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);

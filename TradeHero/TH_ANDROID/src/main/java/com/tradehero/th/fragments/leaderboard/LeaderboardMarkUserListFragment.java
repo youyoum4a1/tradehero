@@ -34,7 +34,7 @@ import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
+
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     public static final String TAG = LeaderboardMarkUserListFragment.class.getSimpleName();

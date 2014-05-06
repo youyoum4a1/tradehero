@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
+
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";
@@ -50,13 +50,16 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
             {
 
                 List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
-                for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
+                if (timelineDTO.getEnhancedItems() != null)
                 {
-                    itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
-                    TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
-                    discussionCache.put(timelineKey, itemDTO);
-                    timelineItemDTOKeys.add(timelineKey);
+                    for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
+                    {
+                        itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
+                        TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
+                        discussionCache.put(timelineKey, itemDTO);
+                        timelineItemDTOKeys.add(timelineKey);
 
+                    }
                 }
 
                 return timelineItemDTOKeys;

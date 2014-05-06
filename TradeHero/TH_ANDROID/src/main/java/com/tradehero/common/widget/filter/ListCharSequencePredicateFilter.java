@@ -2,9 +2,7 @@ package com.tradehero.common.widget.filter;
 
 import java.util.List;
 
-/**
- * Created by xavier on 1/24/14.
- */
+
 public interface ListCharSequencePredicateFilter<T>
 {
     void setDefaultPredicate(CharSequencePredicate<? super T> predicate);

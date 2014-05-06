@@ -1,8 +1,6 @@
 package com.tradehero.common.time;
 
-/**
- * Created by xavier on 1/23/14.
- */
+
 public class TimeUnitMinuteInHour extends TimeUnitMinute
 {
     public static final String TAG = TimeUnitMinuteInHour.class.getSimpleName();

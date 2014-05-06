@@ -44,9 +44,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class NotificationsView extends BetterViewAnimator
 {
     @InjectView(android.R.id.empty) View emptyView;
@@ -202,6 +199,45 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
+    private void resetPage()
+    {
+        if (notificationListKey == null)
+        {
+            notificationListKey = new NotificationListKey();
+        }
+        nextPageDelta = 0;
+        paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
+    }
+
+    private void resetContent(NotificationKeyList notificationKeyList)
+    {
+        if (notificationListAdapter == null)
+        {
+            notificationListAdapter = createNotificationListAdapter();
+        }
+        notificationListAdapter.setItems(notificationKeyList);
+        notificationListAdapter.notifyDataSetChanged();
+        Timber.d("resetContent");
+    }
+
+    private void refreshCache(NotificationKeyList notificationKeyList)
+    {
+        notificationListCache.get().invalidateAll();
+        PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
+        notificationListCache.get().put(firstPage,notificationKeyList);
+    }
+
+
+    private void refresh()
+    {
+        detachNotificationFetchTask();
+        PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
+        DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> task = notificationListCache.get().getOrFetch(firstPage, true, new NotificationRefreshListener());
+        task.execute();
+
+    }
+
+
     private void detachNotificationFetchTask()
     {
         if (notificationFetchTask != null)
@@ -288,6 +324,7 @@ public class NotificationsView extends BetterViewAnimator
 
             if (notificationKeyList != null)
             {
+                //TODO right?
                 nextPageDelta = notificationKeyList.isEmpty() ? -1 : 1;
 
                 if (shouldAppend)
@@ -326,6 +363,40 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
+
+    private class NotificationRefreshListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
+    {
+
+
+        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList, boolean fromCache)
+        {
+            if (fromCache)
+            {
+                return;
+            }
+            Timber.d("NotificationRefreshListener onDTOReceived");
+            resetPage();
+            resetContent(notificationKeyList);
+            refreshCache(notificationKeyList);
+            onFinish();
+
+        }
+
+        @Override public void onErrorThrown(NotificationListKey key, Throwable error)
+        {
+            onFinish();
+            Timber.e("NotificationRefreshListener onErrorThrown");
+            //THToast.show(new THException(error));
+        }
+
+        private void onFinish()
+        {
+            if (notificationList != null)
+            {
+                notificationList.onRefreshComplete();
+            }
+        }
+    }
 
     private class NotificationMarkAsReadCallback implements Callback<Response>
     {
@@ -389,11 +460,13 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
         {
             // reset initial data to get refresh list
-            nextPageDelta = 0;
-            paginatedNotificationListKey = null;
+            //nextPageDelta = 0;
+            //paginatedNotificationListKey = null;
 
-            notificationList.setRefreshing();
-            fetchNextPageIfNecessary(true);
+            //wrong usage
+            //notificationList.setRefreshing();
+            //fetchNextPageIfNecessary(true);
+            refresh();
         }
     }
 

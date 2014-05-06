@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import timber.log.Timber;
 
 public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper>
         implements
@@ -41,6 +42,7 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
     @Override public void onClick(View v)
     {
+        Timber.d("MessageListAdapter onClick %s", v.getTag());
         if (v.getTag() != null && messageOnClickListener != null)
         {
             Integer position = (Integer) v.getTag();

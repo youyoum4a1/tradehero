@@ -7,9 +7,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.FragmentTestUtil;
 
-/**
- * Created by xavier on 3/7/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 //@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 @Config(manifest = Config.NONE)

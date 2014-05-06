@@ -10,16 +10,17 @@ import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
 import com.tradehero.th.fragments.trending.ResetPortfolioTileView;
 import com.tradehero.th.fragments.trending.SurveyTileView;
+import com.tradehero.th.models.graphics.TransformationModule;
 import com.tradehero.th.utils.Constants;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import java.io.File;
+import javax.inject.Singleton;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/27/14 Time: 11:47 AM Copyright (c) TradeHero
- */
 @Module(
+        includes = {
+                TransformationModule.class
+        },
         injects = {
                 AlertItemView.class,
 

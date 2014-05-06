@@ -14,9 +14,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-/**
- * Created by xavier on 1/24/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityIdSymbolPredicateFilterPaddedSymbolCITest extends AbstractSecurityIdPredicateFilterTest

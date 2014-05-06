@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
@@ -18,7 +19,6 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
@@ -28,7 +28,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -37,7 +36,7 @@ public class DiscussionView extends FrameLayout
 {
     @InjectView(android.R.id.list) protected ListView discussionList;
     protected FlagNearEdgeScrollListener scrollListener;
-    @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
+    @InjectView(R.id.discussion_comment_widget) @Optional protected PostCommentView postCommentView;
 
     private int listItemLayout;
     private int topicLayout;
@@ -45,11 +44,10 @@ public class DiscussionView extends FrameLayout
     @Inject protected CurrentUserId currentUserId;
     @Inject protected DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
-    @Inject protected DiscussionKeyFactory discussionKeyFactory;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;
-    private DiscussionKey discussionKey;
+    protected DiscussionKey discussionKey;
 
     private PostCommentView.CommentPostedListener commentPostedListener;
 
@@ -156,13 +154,19 @@ public class DiscussionView extends FrameLayout
         discussionList.setAdapter(discussionListAdapter);
         scrollListener = createFlagNearEndScrollListener();
         discussionList.setOnScrollListener(scrollListener);
-        postCommentView.setCommentPostedListener(createCommentPostedListener());
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(createCommentPostedListener());
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
         discussionListCache.unregister(this);
-        postCommentView.setCommentPostedListener(null);
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(null);
+        }
         discussionList.setAdapter(null);
         discussionList.setOnScrollListener(null);
 
@@ -178,7 +182,10 @@ public class DiscussionView extends FrameLayout
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        postCommentView.linkWith(discussionKey);
+        if (postCommentView != null)
+        {
+            postCommentView.linkWith(discussionKey);
+        }
 
         initialFetchDiscussion(false);
 
@@ -489,7 +496,7 @@ public class DiscussionView extends FrameLayout
 
     protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
-        if (discussionList.getFirstVisiblePosition() == 0)
+        if (discussionList != null && discussionList.getFirstVisiblePosition() == 0)
         {
             fetchDiscussionListPrevIfValid(value);
         }

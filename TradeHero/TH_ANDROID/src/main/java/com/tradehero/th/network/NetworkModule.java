@@ -7,9 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 2/20/14.
- */
+
 @Module(
         includes = {
                 RetrofitModule.class

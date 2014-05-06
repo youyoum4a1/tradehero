@@ -9,9 +9,7 @@ import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 
-/**
- * Created by tradehero on 14-3-24.
- */
+
 public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View.OnClickListener{
 
     //R.layout.authentication_sign_up;

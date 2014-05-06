@@ -9,9 +9,6 @@ import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THIABBillingRequestFull extends THIABBillingRequest<
         IABSKUListKey,
         IABSKU,

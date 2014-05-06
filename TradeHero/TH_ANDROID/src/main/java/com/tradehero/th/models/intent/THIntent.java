@@ -9,13 +9,8 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class THIntent extends Intent
 {
-    public static final String TAG = THIntent.class.getSimpleName();
-
     @Inject public static CurrentActivityHolder currentActivityHolder;
 
     //<editor-fold desc="Constructors">

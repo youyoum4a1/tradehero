@@ -9,7 +9,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:13 PM To change this template use File | Settings | File Templates. */
+
 public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, OwnedPortfolioIdList, PortfolioCompactListCache>
 {
     public static final String TAG = PortfolioCompactListRetrievedMilestone.class.getSimpleName();

@@ -44,9 +44,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
 abstract public class THBaseBillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

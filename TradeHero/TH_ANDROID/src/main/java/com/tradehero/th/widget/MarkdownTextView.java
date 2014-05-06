@@ -20,7 +20,7 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:18 AM Copyright (c) TradeHero */
+
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
     @Inject THIntentFactory thIntentFactory;

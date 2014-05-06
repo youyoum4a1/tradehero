@@ -10,13 +10,9 @@ import javax.inject.Singleton;
  * type C
  * type P
  * null
- *
- * Created by xavier on 1/23/14.
  */
 @Singleton public class WarrantDTOTypeComparator implements Comparator<WarrantDTO>
 {
-    public static final String TAG = WarrantDTOTypeComparator.class.getSimpleName();
-
     @Inject public WarrantDTOTypeComparator()
     {
     }

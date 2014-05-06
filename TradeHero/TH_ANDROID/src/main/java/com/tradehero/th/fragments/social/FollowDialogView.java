@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 /**
  * Refactor the code inside AlertDialogUtil
- * Created by tho on 4/25/2014.
  */
 public class FollowDialogView extends LinearLayout
     implements DTOView<UserBaseDTO>

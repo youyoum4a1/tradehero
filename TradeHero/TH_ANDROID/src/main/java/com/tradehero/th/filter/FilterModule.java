@@ -12,9 +12,6 @@ import com.tradehero.th.filter.security.WarrantPaddedSymbolOrUnderlyingCIPredica
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by xavier on 1/13/14.
- */
 @Module(
         staticInjections =
                 {

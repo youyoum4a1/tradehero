@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import org.json.JSONException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:48 PM To change this template use File | Settings | File Templates. */
 public class THIABBillingInventoryFetcher
         extends IABBillingInventoryFetcher<
         IABSKUListKey,

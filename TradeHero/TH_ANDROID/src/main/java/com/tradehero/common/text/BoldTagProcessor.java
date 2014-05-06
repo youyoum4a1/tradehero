@@ -3,7 +3,7 @@ package com.tradehero.common.text;
 import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 2:16 PM Copyright (c) TradeHero */
+
 public class BoldTagProcessor extends RichSpanTextProcessor
 {
     /* "**xxx**" = xxx in bold */

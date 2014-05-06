@@ -16,9 +16,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 6:31 PM Copyright (c) TradeHero
- */
+
 public class LeaderboardCompetitionView extends ImageView
         implements DTOView<ProviderId>
 {
