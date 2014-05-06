@@ -181,7 +181,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onDetachedFromWindow()
     {
         detachShareMiddleCallback();
-        displayDefaultUserProfilePicture();
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
