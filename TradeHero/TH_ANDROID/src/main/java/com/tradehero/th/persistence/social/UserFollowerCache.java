@@ -1,8 +1,8 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.network.service.FollowerServiceWrapper;
 import dagger.Lazy;
 import java.util.ArrayList;

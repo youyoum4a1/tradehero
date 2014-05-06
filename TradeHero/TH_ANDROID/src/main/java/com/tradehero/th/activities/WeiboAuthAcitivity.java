@@ -1,10 +1,7 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;

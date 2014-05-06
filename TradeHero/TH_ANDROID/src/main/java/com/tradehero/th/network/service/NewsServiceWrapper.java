@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;

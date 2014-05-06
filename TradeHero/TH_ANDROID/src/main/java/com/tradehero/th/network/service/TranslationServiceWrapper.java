@@ -3,11 +3,10 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.models.translation.TokenData;
 import com.tradehero.th.models.translation.TranslationResult;
 import com.tradehero.th.network.NetworkConstants;
-import retrofit.RetrofitError;
-import timber.log.Timber;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import retrofit.RetrofitError;
+import timber.log.Timber;
 
 
 @Singleton

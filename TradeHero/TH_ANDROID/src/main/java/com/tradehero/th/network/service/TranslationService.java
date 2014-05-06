@@ -2,14 +2,9 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.models.translation.TranslationResult;
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
-
-import java.net.URLDecoder;
 
 
 public interface TranslationService {

@@ -3,7 +3,6 @@ package com.tradehero.th.utils.metrics.localytics;
 import android.content.Context;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.api.security.SecurityId;
-
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;

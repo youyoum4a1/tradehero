@@ -6,7 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.PositionUtils;

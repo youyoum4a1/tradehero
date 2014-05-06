@@ -1,7 +1,6 @@
 package com.tradehero.th.models.intent;
 
 import android.content.Context;
-import android.os.Handler;
 import com.tradehero.th.activities.CurrentActivityHolder;
 
 

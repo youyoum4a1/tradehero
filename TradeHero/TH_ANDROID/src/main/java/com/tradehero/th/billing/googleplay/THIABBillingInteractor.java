@@ -27,7 +27,6 @@ import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioI
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.fragments.billing.StoreProductDetailView;
 import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
 import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.network.service.UserService;

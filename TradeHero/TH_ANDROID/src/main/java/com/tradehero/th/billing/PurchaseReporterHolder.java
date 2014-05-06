@@ -4,7 +4,6 @@ import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.users.UserProfileDTO;
 
 public interface PurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,

@@ -5,9 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
 abstract public class AbstractPositionPartialBottomOpenView<

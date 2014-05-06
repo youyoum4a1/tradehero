@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
-import timber.log.Timber;
 
 
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener, View.OnClickListener

@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Base64;
-import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.utils.THToast;
@@ -20,7 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import timber.log.Timber;
 
 import static android.content.Context.ACTIVITY_SERVICE;

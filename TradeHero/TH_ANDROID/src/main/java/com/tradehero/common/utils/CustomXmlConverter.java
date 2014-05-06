@@ -1,17 +1,16 @@
 package com.tradehero.common.utils;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-import retrofit.converter.ConversionException;
-import retrofit.converter.SimpleXMLConverter;
-import retrofit.mime.TypedInput;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.Scanner;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+import retrofit.converter.ConversionException;
+import retrofit.converter.SimpleXMLConverter;
+import retrofit.mime.TypedInput;
 
 
 public class CustomXmlConverter extends SimpleXMLConverter {

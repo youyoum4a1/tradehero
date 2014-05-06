@@ -3,13 +3,10 @@ package com.tradehero.th.fragments.trending.filter;
 import android.os.Bundle;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.SectorDTO;
-import com.tradehero.th.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 

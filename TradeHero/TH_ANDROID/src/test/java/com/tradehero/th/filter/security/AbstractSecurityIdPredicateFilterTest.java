@@ -1,6 +1,5 @@
 package com.tradehero.th.filter.security;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.widget.filter.BaseListCharSequencePredicateFilter;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;

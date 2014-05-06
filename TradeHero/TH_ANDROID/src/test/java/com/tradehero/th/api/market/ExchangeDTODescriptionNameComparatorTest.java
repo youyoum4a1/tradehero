@@ -1,7 +1,5 @@
 package com.tradehero.th.api.market;
 
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTODisplayComparator;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import java.util.Iterator;
 import java.util.SortedSet;

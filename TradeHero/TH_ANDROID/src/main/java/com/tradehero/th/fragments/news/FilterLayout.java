@@ -7,15 +7,20 @@ import android.support.v4.os.ParcelableCompat;
 import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
-import timber.log.Timber;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 public class FilterLayout extends RelativeLayout implements View.OnClickListener
 {

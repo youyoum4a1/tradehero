@@ -15,8 +15,6 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class UIBillingRequest<

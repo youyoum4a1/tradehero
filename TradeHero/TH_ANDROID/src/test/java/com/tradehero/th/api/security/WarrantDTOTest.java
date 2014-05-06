@@ -1,7 +1,6 @@
 package com.tradehero.th.api.security;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricTestRunner.class)

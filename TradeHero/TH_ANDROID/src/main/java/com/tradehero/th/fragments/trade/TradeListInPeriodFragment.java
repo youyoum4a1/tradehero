@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;

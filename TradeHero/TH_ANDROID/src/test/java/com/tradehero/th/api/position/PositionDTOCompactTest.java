@@ -1,6 +1,5 @@
 package com.tradehero.th.api.position;
 
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

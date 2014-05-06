@@ -4,7 +4,6 @@ import android.graphics.Color;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
-import timber.log.Timber;
 
 
 public class ColorUtils
