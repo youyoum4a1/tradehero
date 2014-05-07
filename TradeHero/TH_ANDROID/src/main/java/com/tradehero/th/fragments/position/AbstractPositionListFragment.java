@@ -709,8 +709,6 @@ abstract public class AbstractPositionListFragment<
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
-        Timber.d("lyl onFollowRequested %s", userBaseKey);
-
         premiumFollowUser(userBaseKey);
         //popFollowUser(userBaseKey);
     }
