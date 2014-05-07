@@ -1922,7 +1922,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         Bundle args = new Bundle();
         args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
                 ownedPortfolioId.getArgs());
-        getNavigator().pushFragment(PositionListFragment.class, args);
+        DashboardNavigator dashboardNavigator = getDashboardNavigator();
+        if (dashboardNavigator != null)
+        {
+            dashboardNavigator.pushFragment(PositionListFragment.class, args);
+        }
     }
 
     private void trackBuyClickEvent()
