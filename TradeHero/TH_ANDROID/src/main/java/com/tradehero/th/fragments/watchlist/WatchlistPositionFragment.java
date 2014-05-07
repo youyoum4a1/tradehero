@@ -141,13 +141,9 @@ public class WatchlistPositionFragment extends DashboardFragment
                     {
                         SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
-                        int deletedItemId = adapter.getIndexOf(deletedSecurityId);
-                        if (deletedItemId != -1)
-                        {
-                            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
-                            watchlistListView.dismiss(deletedItemId);
-                            watchlistListView.closeOpenedItems();
-                        }
+                        adapter.remove(deletedSecurityId);
+                        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
+                        watchlistListView.closeOpenedItems();
                     }
                 }
             }
@@ -379,7 +375,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     private void displayWatchlist(SecurityIdList securityIds)
     {
         WatchlistAdapter newAdapter = createWatchlistAdapter();
-        newAdapter.setItems(securityIds);
+        newAdapter.addAll(securityIds);
         watchlistPositionListView.setAdapter(newAdapter);
         watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
@@ -406,7 +402,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private WatchlistAdapter createWatchlistAdapter()
     {
-        return new WatchlistAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.watchlist_item_view);
+        return new WatchlistAdapter(getActivity(), R.layout.watchlist_item_view);
     }
 
     private void displayProgress(boolean show)
