@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    >
+
+  <TextView
+      android:id="@+id/empty_follow_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/empty_follow_title"
+      android:layout_marginTop="16dp"
+      android:text="@string/manage_heroes_empty_description_for_other"
+      />
+
+
+</RelativeLayout>

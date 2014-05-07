@@ -30,8 +30,10 @@ import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 interface UserServiceAsync
 {
@@ -55,12 +57,6 @@ interface UserServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @PUT("/users/{userId}/updateUser")
-    void updateProfile(
-            @Path("userId") int userId,
-            @Body UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> cb);
-
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     void updateProfile(
             @Path("userId") int userId,
@@ -77,7 +73,25 @@ interface UserServiceAsync
             @Field("biography") String biography,
             @Field("location") String location,
             @Field("website") String website,
-            @Field("profilePicture") byte[] profilePicture,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
+    void updateProfile(
+            @Path("userId") int userId,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("username") String username,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("biography") String biography,
+            @Part("location") String location,
+            @Part("website") String website,
+            @Part("profilePicture") TypedFile profilePicture,
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 

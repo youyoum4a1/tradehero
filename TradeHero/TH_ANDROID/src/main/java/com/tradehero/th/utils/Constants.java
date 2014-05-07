@@ -32,6 +32,7 @@ public class Constants
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String AUTHORIZATION = "Authorization";
     public static final String TH_LANGUAGE_CODE = "TH-Language-Code";
+    public static final String TH_CLIENT_TYPE = "TH-Client-Type";
 
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";

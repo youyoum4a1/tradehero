@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import timber.log.Timber;
 
@@ -50,7 +51,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     }
 
     private void checkLocale() {
-        boolean isChineseLocale = MetaHelper.isChineseLocale(getActivity());
+        boolean isChineseLocale = DeviceTokenHelper.isChineseVersion();
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s",language);
         if (isChineseLocale) {

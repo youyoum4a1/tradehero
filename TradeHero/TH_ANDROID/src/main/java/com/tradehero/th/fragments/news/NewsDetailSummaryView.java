@@ -66,8 +66,15 @@ public class NewsDetailSummaryView extends FrameLayout
     {
         if (dto != null)
         {
-            mNewsDetailTitle.setText(dto.title);
-            mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+            if (mNewsDetailTitle != null)
+            {
+                mNewsDetailTitle.setText(dto.title);
+            }
+
+            if (mNewsDetailDate != null)
+            {
+                mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+            }
         }
     }
 

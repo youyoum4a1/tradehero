@@ -22,6 +22,7 @@
       android:layout_above="@id/discussion_new_post_action_buttons"
       android:background="@color/transparent"
       android:inputType="text"
-      tools:text="Buy more security from TradeHero"
-      />
+      tools:text="Buy more security from TradeHero">
+      <requestFocus/>
+  </EditText>
 </RelativeLayout>

@@ -37,11 +37,13 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +56,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 {
     //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
+    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
     public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = SettingsProfileFragment.class.getName() + ".showButtonBack";
 
@@ -64,6 +67,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject GraphicUtil graphicUtil;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -211,11 +215,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         if (resultCode == Activity.RESULT_OK)
         {
-            if (requestCode == REQUEST_GALLERY && data != null)
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
             {
                 try
                 {
                     handleDataFromLibrary(data);
+                }
+                catch (OutOfMemoryError e)
+                {
+                    THToast.show(R.string.error_decode_image_memory);
                 }
                 catch (Exception e)
                 {
@@ -227,9 +235,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 Timber.e(new Exception("Got null data from library"), "");
             }
         }
-        else
+        else if (resultCode != Activity.RESULT_CANCELED)
         {
-            Timber.e(new Exception("Failed to get image from libray"), "");
+            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
@@ -237,27 +245,28 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Uri selectedImageUri = data.getData();
         String selectedPath = getPath(selectedImageUri);
+        File imageFile = new File(selectedPath);
         Bitmap imageBmp = BitmapFactory.decodeFile(selectedPath);
         BitmapFactory.Options options;
+        // TODO limit the size of the image
         if (imageBmp != null)
         {
+            options = new BitmapFactory.Options();
             if (selectedPath.length() > 1000000)
             {
-                options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
             }
             else
             {
-                options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
             }
 
-            imageBmp = BitmapFactory.decodeFile(
-                    selectedPath, options);
+            imageBmp  = graphicUtil.decodeFileWithinSize(imageFile, 400, 400); // For display only
 
             if (profileView != null)
             {
                 profileView.setNewImage(imageBmp);
+                profileView.setNewImagePath(selectedPath);
             }
         }
         else
@@ -309,9 +318,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
+            profileView.progressDialog.setCancelable(true);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
-            UserFormDTO userFormDTO = UserFormFactory.create(getUserFormJSON());
+            UserFormDTO userFormDTO = profileView.createForm();
             if (userFormDTO == null)
             {
                 return;
@@ -356,9 +366,16 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     protected void askImageFromLibrary()
     {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/jpeg");
-        startActivityForResult(intent, REQUEST_GALLERY);
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+        libraryIntent.setType("image/jpeg");
+        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+    }
+
+    protected void askImageFromCamera()
+    {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        //cameraIntent.setType("image/jpeg");
+        startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
     @Override public boolean isTabBarVisible()
@@ -384,6 +401,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         @Override public void onUpdateRequested()
         {
             // TODO
+        }
+
+        @Override public void onImageFromCameraRequested()
+        {
+            askImageFromCamera();
         }
 
         @Override public void onImageFromLibraryRequested()

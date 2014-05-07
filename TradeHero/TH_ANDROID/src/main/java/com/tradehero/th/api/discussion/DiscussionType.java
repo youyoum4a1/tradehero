@@ -45,8 +45,7 @@ public enum DiscussionType
         throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
     }
 
-    @JsonValue
-    final String value()
+    @JsonValue final String value()
     {
         return description;
     }

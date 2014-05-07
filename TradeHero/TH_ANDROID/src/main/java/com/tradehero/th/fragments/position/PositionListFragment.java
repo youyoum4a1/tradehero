@@ -49,7 +49,7 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
     @Override protected void refreshSimplePage()
     {
         detachGetPositionsTask();
-        DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
+        fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
         //displayProgress(true);
         fetchGetPositionsDTOTask.execute();
     }
@@ -59,14 +59,19 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         return new GetPositionsListener();
     }
 
+    protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    {
+        return new RefreshPositionsListener();
+    }
+
     @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, getPositionsCacheListener);
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, createGetPositionsCacheListener());
     }
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, true, new RefreshPositionsListener());
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, true, createGetPositionsRefreshCacheListener());
     }
 
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>

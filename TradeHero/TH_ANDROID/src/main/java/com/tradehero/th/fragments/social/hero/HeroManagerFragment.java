@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -26,11 +28,9 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
-import java.util.List;
-import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -112,7 +112,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.social_heroes);
+        actionBar.setTitle(getTitle());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -136,6 +136,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         THUIBillingRequest request = super.getShowProductDetailRequest(domain);
         request.purchaseReportedListener = new HeroManagerOnPurchaseReportedListener();
         return request;
+    }
+
+    private boolean isCurrentUser()
+    {
+        UserBaseKey followerId = getFollowerId(getArguments());
+        if (followerId != null && followerId.key != null && currentUserId != null)
+        {
+            return (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+        }
+        return false;
+    }
+
+    private int getTitle()
+    {
+        if (isCurrentUser())
+        {
+            return R.string.manage_my_heroes_title;
+        }
+        else
+        {
+            return R.string.manage_heroes_title;
+        }
     }
 
     /**

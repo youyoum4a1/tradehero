@@ -137,22 +137,45 @@ import retrofit.RetrofitError;
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO)
     {
-        return createUpdateProfileProcessor().process(userService.updateProfile(
-                userBaseKey.key,
-                userFormDTO.deviceToken,
-                userFormDTO.displayName,
-                userFormDTO.email,
-                userFormDTO.firstName,
-                userFormDTO.lastName,
-                userFormDTO.password,
-                userFormDTO.passwordConfirmation,
-                userFormDTO.username,
-                userFormDTO.emailNotificationsEnabled,
-                userFormDTO.pushNotificationsEnabled,
-                userFormDTO.biography,
-                userFormDTO.location,
-                userFormDTO.website,
-                userFormDTO.profilePicture));
+        UserProfileDTO updated;
+        if (userFormDTO.profilePicture == null)
+        {
+            updated = userService.updateProfile(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website);
+        }
+        else
+        {
+            updated = userService.updateProfile(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+        return createUpdateProfileProcessor().process(updated);
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
@@ -161,23 +184,45 @@ import retrofit.RetrofitError;
             Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
-        userServiceAsync.updateProfile(
-                userBaseKey.key,
-                userFormDTO.deviceToken,
-                userFormDTO.displayName,
-                userFormDTO.email,
-                userFormDTO.firstName,
-                userFormDTO.lastName,
-                userFormDTO.password,
-                userFormDTO.passwordConfirmation,
-                userFormDTO.username,
-                userFormDTO.emailNotificationsEnabled,
-                userFormDTO.pushNotificationsEnabled,
-                userFormDTO.biography,
-                userFormDTO.location,
-                userFormDTO.website,
-                userFormDTO.profilePicture,
-                middleCallback);
+        if (userFormDTO.profilePicture == null)
+        {
+            userServiceAsync.updateProfile(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website,
+                    middleCallback);
+        }
+        else
+        {
+            userServiceAsync.updateProfile(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture,
+                    middleCallback);
+        }
         return middleCallback;
     }
 

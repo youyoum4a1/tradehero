@@ -82,7 +82,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         public void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
         {
             Listener<DTOKeyType, DTOType> listener;
-            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : Collections.unmodifiableSet(listeners))
+            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : new HashSet<>(listeners))
             {
                 listener = dtoKeyTypeDTOTypeListener;
                 if (listener != null)
@@ -96,7 +96,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         public void notifyListenersFailed(DTOKeyType key, Throwable error)
         {
             Listener<DTOKeyType, DTOType> listener;
-            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : Collections.unmodifiableSet(listeners))
+            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : new HashSet<>(listeners))
             {
                 listener = dtoKeyTypeDTOTypeListener;
                 if (listener != null)

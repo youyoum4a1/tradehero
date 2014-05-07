@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -71,6 +70,7 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
@@ -78,6 +78,8 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -97,6 +99,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class BuySellFragment extends AbstractBuySellFragment
@@ -141,7 +145,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private ToggleButton mBtnSharePublic;
     private Button mConfirmButton;
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
-    private BaseBuySellAsyncTask buySellTask;
     private boolean isBuying = false;
     private boolean isSelling = false;
     private boolean publishToFb = false;
@@ -164,6 +167,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
+
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
@@ -178,7 +183,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     protected SecurityAlertAssistant securityAlertAssistant;
-    protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList>
             userWatchlistPositionCacheFetchTask;
 
@@ -189,12 +193,14 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
+    @Inject SecurityServiceWrapper securityServiceWrapper;
+    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
+    private ProgressDialog transactionDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
-        this.userWatchlistPositionCacheListener = new BuySellUserWatchlistCacheListener();
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -212,7 +218,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             desiredArguments = getArguments();
         }
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         if (savedInstanceState != null)
         {
             selectedPageIndex = savedInstanceState.getInt(BUNDLE_KEY_SELECTED_PAGE_INDEX);
@@ -369,6 +375,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onSaveInstanceState(outState);
 
+        detachWatchlistFetchTask();
+        detachBuySellMiddleCallback();
+
         outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
@@ -447,6 +456,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         detachWatchlistFetchTask();
+        detachBuySellMiddleCallback();
 
         securityAlertAssistant.setOnPopulatedListener(null);
 
@@ -537,17 +547,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             mConfirmButton.setOnClickListener(null);
         }
         mConfirmButton = null;
-        if (buySellTask != null)
-        {
-            buySellTask.cancel(false);
-        }
-        buySellTask = null;
+
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        this.userWatchlistPositionCacheListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
     }
@@ -577,8 +582,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         detachWatchlistFetchTask();
         this.userWatchlistPositionCacheFetchTask =
-                userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(),
-                        userWatchlistPositionCacheListener);
+                userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(), createUserWatchlistCacheListener());
         this.userWatchlistPositionCacheFetchTask.execute();
     }
 
@@ -1814,71 +1818,47 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void launchBuySell()
     {
-        if (buySellTask != null)
-        {
-            buySellTask.cancel(false);
-        }
-        buySellTask = new BuySellAsyncTask(BuySellFragment.this.getActivity(), isTransactionTypeBuy,
-                securityId);
-        if (isTransactionTypeBuy)
-        {
-            isBuying = true;
-        }
-        else
-        {
-            isSelling = true;
-        }
-        buySellTask.execute();
-    }
+        detachBuySellMiddleCallback();
 
-    public class BuySellAsyncTask extends BaseBuySellAsyncTask
-    {
-        private ProgressDialog transactionDialog;
-
-        public BuySellAsyncTask(Context context, boolean isBuy, SecurityId securityId)
+        if (checkValidToBuyOrSell())
         {
-            super(context, isBuy, securityId);
-        }
-
-        @Override protected void onPreExecute()
-        {
-            transactionDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
-                    R.string.processing, R.string.alert_dialog_please_wait);
-            super.onPreExecute();
-        }
-
-        @Override TransactionFormDTO getBuySellOrder()
-        {
-            return BuySellFragment.this.getBuySellOrder(isBuy);
-        }
-
-        @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
-        {
-            super.onPostExecute(securityPositionDetailDTO);
-            if (transactionDialog != null)
+            TransactionFormDTO transactionFormDTO = getBuySellOrder(isTransactionTypeBuy);
+            if (transactionFormDTO != null)
             {
-                transactionDialog.dismiss();
-            }
+                transactionDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
+                        R.string.processing, R.string.alert_dialog_please_wait);
 
-            if (isCancelled())
-            {
-                return;
-            }
+                buySellMiddleCallback = securityServiceWrapper.doTransaction(
+                        securityId, transactionFormDTO, isTransactionTypeBuy, new BuySellCallback(isTransactionTypeBuy));
 
-            if (isBuy)
-            {
-                isBuying = false;
+                if (isTransactionTypeBuy)
+                {
+                    isBuying = true;
+                }
+                else
+                {
+                    isSelling = true;
+                }
             }
             else
             {
-                isSelling = false;
-            }
-            //displayConfirmMenuItem(buySellConfirmItem);
-            if (!isDetached() && errorCode == CODE_OK && pushPortfolioFragmentRunnable != null)
-            {
-                pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                alertDialogUtilBuySell.informBuySellOrderWasNull(getActivity());
             }
         }
+    }
+
+    private boolean checkValidToBuyOrSell()
+    {
+        return securityId != null && securityId.exchange != null && securityId.securitySymbol != null;
+    }
+
+    private void detachBuySellMiddleCallback()
+    {
+        if (buySellMiddleCallback != null)
+        {
+            buySellMiddleCallback.setPrimaryCallback(null);
+        }
+        buySellMiddleCallback = null;
     }
 
     private TransactionFormDTO getBuySellOrder(boolean isBuy)
@@ -2087,6 +2067,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    protected DTOCache.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    {
+        return new BuySellUserWatchlistCacheListener();
+    }
+
     protected class BuySellUserWatchlistCacheListener
             implements DTOCache.Listener<UserBaseKey, SecurityIdList>
     {
@@ -2122,6 +2107,56 @@ public class BuySellFragment extends AbstractBuySellFragment
         public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
                 BillingException error)
         {
+        }
+    }
+
+    private class BuySellCallback
+            implements retrofit.Callback<SecurityPositionDetailDTO>
+    {
+        private final boolean isBuy;
+
+        public BuySellCallback(boolean isBuy)
+        {
+            this.isBuy = isBuy;
+        }
+
+        @Override public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response)
+        {
+            onFinish();
+
+            if (securityPositionDetailDTO == null)
+            {
+                alertDialogUtilBuySell.informBuySellOrderReturnedNull(getActivity());
+                return;
+            }
+
+            if (isBuy)
+            {
+                isBuying = false;
+            }
+            else
+            {
+                isSelling = false;
+            }
+
+            if (pushPortfolioFragmentRunnable != null)
+            {
+                pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+            }
+        }
+
+        private void onFinish()
+        {
+            if (transactionDialog != null)
+            {
+                transactionDialog.hide();
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            onFinish();
+            THToast.show(new THException(retrofitError));
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.tradehero.th.models.push;
 
 import android.content.Context;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
@@ -26,8 +25,8 @@ public class PushModule
             Provider<BaiduPushManager> baiduPushManager,
             Provider<UrbanAirshipPushNotificationManager> urbanAirshipPushNotificationManager)
     {
-        boolean isChineseLocale = MetaHelper.isChineseLocale(context.getApplicationContext());
-        if (isChineseLocale)
+        boolean isChineseVersion = DeviceTokenHelper.isChineseVersion();
+        if (isChineseVersion)
         {
             return baiduPushManager.get();
         }

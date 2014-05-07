@@ -62,7 +62,7 @@
   <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
   <string name="security_discussion_add">+ Start a New Discussion</string>
   <string name="post">Post</string>
-  <string name="discussion_new_post_hint">I feel bullish/bearish about %s</string>
+  <string name="discussion_new_post_hint">how do you feel about %s?</string>
   <string name="error_discussion_empty_post">Discussion cannot be empty</string>
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
