@@ -374,7 +374,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-
+        progressDialogUtil.dismiss(getActivity());
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
 
@@ -1917,7 +1917,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         shareToWeChat();
         // TODO find a better way to remove this fragment from the stack
-        getNavigator().popFragment();
+        if (isResumed())
+        {
+            getNavigator().popFragment();
+        }
 
         Bundle args = new Bundle();
         args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
