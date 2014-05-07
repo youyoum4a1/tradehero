@@ -116,6 +116,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (Constants.RELEASE)
         {
+            Crashlytics.setString(Constants.TH_CLIENT_TYPE, String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
