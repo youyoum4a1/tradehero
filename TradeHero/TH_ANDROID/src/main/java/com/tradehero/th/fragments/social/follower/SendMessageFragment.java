@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -154,7 +155,7 @@ public class SendMessageFragment extends DashboardFragment
     private void changeHeroType(MessageType messageType)
     {
         this.messageType = messageType;
-        this.messageTypeView.setText(messageType.toString());
+        this.messageTypeView.setText(getString(messageType.titleResource));
         Timber.d("changeHeroType:%s, discussionType:%s", messageType, discussionType);
     }
 
@@ -173,11 +174,28 @@ public class SendMessageFragment extends DashboardFragment
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(
+        ArrayAdapter arrayAdapter = new ArrayAdapter<MessageType>(
                 getActivity(),
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
-                MessageType.getShowingTypes());
+                MessageType.getShowingTypes()){
+
+            @Override public View getView(int position, View convertView, ViewGroup parent)
+            {
+                View view;
+                TextView text;
+                if (convertView == null) {
+                    LayoutInflater mInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view =  mInflater.inflate(R.layout.common_dialog_item_layout, parent, false);
+                } else {
+                    view = convertView;
+                }
+                text = (TextView) view.findViewById(R.id.popup_text);
+                MessageType item = getItem(position);
+                text.setText(getString(item.titleResource));
+                return view;
+            }
+        };
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
