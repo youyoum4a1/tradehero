@@ -149,7 +149,7 @@ public class NewsDetailFullView extends LinearLayout
                 mNewsDetailLoading.setVisibility(View.GONE);
             }
 
-            if (dto.securityIds != null)
+            if (dto.securityIds != null && !dto.securityIds.isEmpty())
             {
                 unsetFetchMultipleSecurityMiddleCallback();
                 fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.securityIds, createNewsDetailSecurityCallback());
