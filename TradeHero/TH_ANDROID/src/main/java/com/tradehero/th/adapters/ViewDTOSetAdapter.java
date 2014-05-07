@@ -10,19 +10,15 @@ import java.util.Collection;
 abstract public class ViewDTOSetAdapter<T, ViewType extends DTOView<T>>
         extends DTOSetAdapter<T>
 {
-    protected final LayoutInflater inflater;
-
     //<editor-fold desc="Constructors">
-    public ViewDTOSetAdapter(Context context, LayoutInflater inflater)
+    public ViewDTOSetAdapter(Context context)
     {
         super(context);
-        this.inflater = inflater;
     }
 
-    public ViewDTOSetAdapter(Context context, LayoutInflater inflater, Collection<T> objects)
+    public ViewDTOSetAdapter(Context context, Collection<T> objects)
     {
         super(context, objects);
-        this.inflater = inflater;
     }
     //</editor-fold>
 
@@ -30,7 +26,7 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends DTOView<T>>
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(getViewResId(position), parent, false);
+            convertView = LayoutInflater.from(context).inflate(getViewResId(position), parent, false);
         }
 
         ViewType dtoView = (ViewType) convertView;

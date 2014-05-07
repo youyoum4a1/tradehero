@@ -80,7 +80,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         return new SingleViewDiscussionSetAdapter(
                 getContext(),
-                LayoutInflater.from(getContext()),
                 initial,
                 R.layout.security_discussion_item_view);
     }
