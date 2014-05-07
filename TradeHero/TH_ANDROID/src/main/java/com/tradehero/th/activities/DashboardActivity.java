@@ -57,6 +57,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -496,5 +497,15 @@ public class DashboardActivity extends SherlockFragmentActivity
                 progressDialog.hide();
             }
         }
+    }
+
+    @Override public void onLowMemory()
+    {
+        super.onLowMemory();
+
+        // TODO remove
+        // for DEBUGGING purpose only
+        Timber.e(new RuntimeException("LowMemory"), "%s", getSupportFragmentManager().findFragmentById(R.id.realtabcontent).getClass().getName());
+        Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 }
