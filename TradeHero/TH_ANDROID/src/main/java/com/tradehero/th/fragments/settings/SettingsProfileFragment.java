@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -33,6 +34,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -244,12 +246,26 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private void handleDataFromLibrary(Intent data)
     {
         Uri selectedImageUri = data.getData();
-        String selectedPath = getPath(selectedImageUri);
+        String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
+        Bitmap imageBmp = decodeBitmap(selectedPath);
+        if (imageBmp != null && profileView != null)
+        {
+            profileView.setNewImage(imageBmp);
+            profileView.setNewImagePath(selectedPath);
+        }
+        else
+        {
+            THToast.show("Please chose picture from appropriate path");
+        }
+    }
+
+    private Bitmap decodeBitmap(String selectedPath)
+    {
         File imageFile = new File(selectedPath);
-        Bitmap imageBmp = BitmapFactory.decodeFile(selectedPath);
+        Bitmap imageBmp = null;// = BitmapFactory.decodeFile(selectedPath);
         BitmapFactory.Options options;
         // TODO limit the size of the image
-        if (imageBmp != null)
+        if (imageFile != null)
         {
             options = new BitmapFactory.Options();
             if (selectedPath.length() > 1000000)
@@ -261,18 +277,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 options.inSampleSize = 2;
             }
 
-            imageBmp  = graphicUtil.decodeFileWithinSize(imageFile, 400, 400); // For display only
-
-            if (profileView != null)
-            {
-                profileView.setNewImage(imageBmp);
-                profileView.setNewImagePath(selectedPath);
-            }
+            imageBmp  = graphicUtil.decodeFileWithinSize(imageFile, 600, 600); // For display only
         }
         else
         {
             THToast.show("Please chose picture from appropriate path");
         }
+        return imageBmp;
     }
 
     private void populateCurrentUser()
@@ -325,6 +336,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             if (userFormDTO == null)
             {
                 return;
+            }
+            if (userFormDTO.profilePicturePath != null)
+            {
+                userFormDTO.profilePicture = new BitmapTypedOutput(
+                        BitmapTypedOutput.TYPE_JPEG,
+                        decodeBitmap(userFormDTO.profilePicturePath),
+                        userFormDTO.profilePicturePath);
             }
 
             detachMiddleCallbackUpdateUserProfile();

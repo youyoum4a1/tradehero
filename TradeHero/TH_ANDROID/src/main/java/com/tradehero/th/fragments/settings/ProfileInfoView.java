@@ -235,7 +235,7 @@ public class ProfileInfoView extends LinearLayout
         created.lastName = getTextValue(lastName);
         if (newImagePath != null)
         {
-            created.profilePicture = new TypedFile("image/jpeg", new File(newImagePath));
+            created.profilePicturePath = newImagePath;
         }
         return created;
     }
