@@ -56,6 +56,10 @@ public class AbstractDiscussionItemView<T extends DiscussionKey> extends LinearL
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        if (abstractDiscussionDTO != null)
+        {
+            viewHolder.linkWith(abstractDiscussionDTO, true);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
