@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.position;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -709,20 +709,38 @@ abstract public class AbstractPositionListFragment<
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
-        Timber.d("onFollowRequested %s", userBaseKey);
-        popFollowUser(userBaseKey);
+        Timber.d("lyl onFollowRequested %s", userBaseKey);
+
+        premiumFollowUser(userBaseKey);
+        //popFollowUser(userBaseKey);
     }
+
+    @Override public void onUserFollowed(UserBaseKey userBaseKey)
+    {
+        //
+        pullToRefreshListView.setRefreshing();
+        refreshPortfolio();
+        refreshSimplePage();
+    }
+
     //</editor-fold>
 
     protected void popFollowUser(final UserBaseKey userBaseKey)
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        //TODO need to improve
+        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
         {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
-                premiumFollowUser(userBaseKey);
-            }
-        });
+            ((OtherUserPortfolioHeaderView)portfolioHeaderView).showFollowDialog();
+        }
+        //else do nothing
+
+        //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        //{
+        //    @Override public void onClick(DialogInterface dialog, int which)
+        //    {
+        //        premiumFollowUser(userBaseKey);
+        //    }
+        //});
     }
 
     //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
