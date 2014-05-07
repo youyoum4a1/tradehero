@@ -23,4 +23,5 @@
   <string name="following_this_hero">正在关注这个英雄...</string>
   <string name="free_message_left">剩余 %1$s 条免费消息</string>
   <string name="upgrade_to_message_more">升级可发送更多消息!</string>
+  <string name="follower_item_with_subtitle">%1$s (%2$s)</string>
 </resources>
