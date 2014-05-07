@@ -16,20 +16,20 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -49,6 +49,7 @@ public class NewsDetailFullView extends LinearLayout
 
     private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
     private NewsItemDTO newsItemDTO;
+    private MiddleCallback<Map<Integer, SecurityCompactDTO>> fetchMultipleSecurityMiddleCallback;
 
     //<editor-fold desc="Constructors">
     public NewsDetailFullView(Context context)
@@ -130,6 +131,7 @@ public class NewsDetailFullView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        unsetFetchMultipleSecurityMiddleCallback();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -149,34 +151,42 @@ public class NewsDetailFullView extends LinearLayout
 
             if (dto.getSecurityIds() != null)
             {
-                securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
+                unsetFetchMultipleSecurityMiddleCallback();
+                fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.getSecurityIds(), createNewsDetailSecurityCallback());
             }
         }
     }
 
-    private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
+    private void unsetFetchMultipleSecurityMiddleCallback()
     {
-        return new Callback<List<SecurityCompactDTO>>()
+        if (fetchMultipleSecurityMiddleCallback != null)
         {
-            @Override
-            public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
+            fetchMultipleSecurityMiddleCallback.setPrimaryCallback(null);
+        }
+        fetchMultipleSecurityMiddleCallback = null;
+    }
+
+    private Callback<Map<Integer, SecurityCompactDTO>> createNewsDetailSecurityCallback()
+    {
+        return new Callback<Map<Integer, SecurityCompactDTO>>()
+        {
+            @Override public void success(Map<Integer, SecurityCompactDTO> securityCompactDTOList, Response response)
             {
-                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null ||
-                        simpleSecurityItemViewAdapter == null)
+                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null || simpleSecurityItemViewAdapter == null)
                 {
                     return; // TODO proper handling of middle callback
                 }
+
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
                 lp.width = 510 * securityCompactDTOList.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
                 mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
-                simpleSecurityItemViewAdapter.setItems(securityCompactDTOList);
+                simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
                 simpleSecurityItemViewAdapter.notifyDataSetChanged();
             }
 
-            @Override
-            public void failure(RetrofitError error)
+            @Override public void failure(RetrofitError error)
             {
                 THToast.show(new THException(error));
             }
