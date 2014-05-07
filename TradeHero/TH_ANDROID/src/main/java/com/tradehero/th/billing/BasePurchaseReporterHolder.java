@@ -3,7 +3,6 @@ package com.tradehero.th.billing;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -12,6 +11,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.HashMap;
 import java.util.Map;
+import timber.log.Timber;
 
 abstract public class BasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
@@ -108,7 +108,7 @@ abstract public class BasePurchaseReporterHolder<
 
     protected void handlePurchaseReported(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
-        THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);
+        Timber.d("handlePurchaseReported Purchase info " + reportedPurchase);
 
         if (updatedUserPortfolio != null)
         {
@@ -131,12 +131,12 @@ abstract public class BasePurchaseReporterHolder<
                 BillingExceptionType> handler = getPurchaseReportedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "handlePurchaseReported passing on the purchase for requestCode " + requestCode);
+            Timber.d("handlePurchaseReported passing on the purchase for requestCode %d", requestCode);
             handler.onPurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
         }
         else
         {
-            THLog.d(TAG, "handlePurchaseReported No PurchaseReportedHandler for requestCode " + requestCode);
+            Timber.d("handlePurchaseReported No PurchaseReportedHandler for requestCode %d", requestCode);
         }
     }
 
@@ -147,7 +147,7 @@ abstract public class BasePurchaseReporterHolder<
 
     protected void handlePurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
-        THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
+        Timber.e(error, "handlePurchaseReportFailed There was an exception during the report");
         PurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
@@ -155,12 +155,12 @@ abstract public class BasePurchaseReporterHolder<
                 BillingExceptionType> handler = getPurchaseReportedListener(requestCode);
         if (handler != null)
         {
-            THLog.d(TAG, "handlePurchaseReportFailed passing on the exception for requestCode " + requestCode);
+            Timber.d("handlePurchaseReportFailed passing on the exception for requestCode %d", requestCode);
             handler.onPurchaseReportFailed(requestCode, reportedPurchase, error);
         }
         else
         {
-            THLog.d(TAG, "handlePurchaseReportFailed No THIABPurchaseHandler for requestCode " + requestCode);
+            Timber.d(TAG, "handlePurchaseReportFailed No THIABPurchaseHandler for requestCode %d", requestCode);
         }
     }
 
