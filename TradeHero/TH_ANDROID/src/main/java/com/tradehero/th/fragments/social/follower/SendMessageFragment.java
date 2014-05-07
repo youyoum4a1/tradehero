@@ -174,7 +174,18 @@ public class SendMessageFragment extends DashboardFragment
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter<MessageType>(
+        listView.setAdapter(createMessageTypeAdapter());
+        listView.setOnItemClickListener(createMessageTypeItemClickListener());
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        linearLayout.addView(listView);
+        this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
+    }
+
+    private ArrayAdapter createMessageTypeAdapter()
+    {
+        return new ArrayAdapter<MessageType>(
                 getActivity(),
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
@@ -196,23 +207,20 @@ public class SendMessageFragment extends DashboardFragment
                 return view;
             }
         };
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+    }
+
+    private AdapterView.OnItemClickListener createMessageTypeItemClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Object o = parent.getAdapter().getItem(position);
-                Timber.d("onItemClick %d, object:%s", position, o);
                 changeHeroType((MessageType) o);
                 dismissDialog(chooseDialog);
             }
-        });
-        LinearLayout linearLayout = new LinearLayout(getActivity());
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(listView);
-        this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
+        };
     }
 
     private void sendMessage()
