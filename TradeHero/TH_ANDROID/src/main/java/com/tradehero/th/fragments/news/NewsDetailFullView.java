@@ -149,10 +149,10 @@ public class NewsDetailFullView extends LinearLayout
                 mNewsDetailLoading.setVisibility(View.GONE);
             }
 
-            if (dto.getSecurityIds() != null)
+            if (dto.securityIds != null)
             {
                 unsetFetchMultipleSecurityMiddleCallback();
-                fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.getSecurityIds(), createNewsDetailSecurityCallback());
+                fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.securityIds, createNewsDetailSecurityCallback());
             }
         }
     }
@@ -179,7 +179,7 @@ public class NewsDetailFullView extends LinearLayout
 
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
-                lp.width = 510 * securityCompactDTOList.size();
+                lp.width = 200 * securityCompactDTOList.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
                 mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
                 simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
