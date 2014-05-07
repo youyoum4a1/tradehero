@@ -159,7 +159,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 // when user cancel the process
                 if (!isDetached())
                 {
-                    progressDialog.dismiss();
+                    progressDialog.hide();
                 }
             }
 
@@ -1043,7 +1043,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                progressDialog.dismiss();
+                progressDialog.hide();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s",
@@ -1058,7 +1058,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.dismiss();
+                        progressDialog.hide();
                     }
                 }, 3000);
             }
@@ -1086,7 +1086,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         @Override protected void finish()
         {
-            progressDialog.dismiss();
+            progressDialog.hide();
             updateSocialConnectStatus();
         }
     }
@@ -1105,7 +1105,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             if (progressDialog != null)
             {
-                progressDialog.dismiss();
+                progressDialog.hide();
             }
         }
 
