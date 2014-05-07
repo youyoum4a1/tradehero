@@ -172,7 +172,7 @@ public class NewsDetailFullView extends LinearLayout
         {
             @Override public void success(Map<Integer, SecurityCompactDTO> securityCompactDTOList, Response response)
             {
-                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null || simpleSecurityItemViewAdapter == null)
+                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null || simpleSecurityItemViewAdapter == null || securityCompactDTOList == null)
                 {
                     return; // TODO proper handling of middle callback
                 }

@@ -773,7 +773,7 @@ abstract public class AbstractPositionListFragment<
     @Override public void onAddAlertClicked(PositionDTOType clickedPositionDTO)
     {
         SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-        if (securityId != null)
+        if (securityId != null && getApplicablePortfolioId() != null)
         {
             Bundle args = new Bundle();
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
