@@ -33,7 +33,7 @@ import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.mime.TypedFile;
+import retrofit.mime.TypedOutput;
 
 interface UserServiceAsync
 {
@@ -91,7 +91,7 @@ interface UserServiceAsync
             @Part("biography") String biography,
             @Part("location") String location,
             @Part("website") String website,
-            @Part("profilePicture") TypedFile profilePicture,
+            @Part("profilePicture") TypedOutput profilePicture,
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
