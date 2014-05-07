@@ -377,9 +377,9 @@ public class ProfileInfoView extends LinearLayout
     protected void showImageFromDialog()
     {
         ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
-                getContext(), LayoutInflater.from(getContext()),
+                getContext(),
                 R.layout.choose_from_item);
-        adapter.setItems(chooseImageFromDTOFactory.getAll(getContext()));
+        adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
         alertDialogUtil.popWithNegativeButton(getContext(),
                 getContext().getString(R.string.user_profile_choose_image_from_choice),
                 null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
