@@ -13,6 +13,18 @@ public class BitmapTypedOutputFactory
         super();
     }
 
+    public BitmapTypedOutput safeCreateForProfilePhoto(
+            Resources resources,
+            BitmapForProfileFactory bitmapForProfileFactory,
+            UserFormDTO userFormDTO)
+    {
+        if (userFormDTO == null || userFormDTO.profilePicturePath == null)
+        {
+            return null;
+        }
+        return createForProfilePhoto(resources, bitmapForProfileFactory, userFormDTO);
+    }
+
     public BitmapTypedOutput createForProfilePhoto(
             Resources resources,
             BitmapForProfileFactory bitmapForProfileFactory,

@@ -109,7 +109,8 @@ public class UserFormFactory
         {
             ((TwitterUserFormDTO)userFormDTO).twitter_access_token = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
             ((TwitterUserFormDTO)userFormDTO).twitter_access_token_secret = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
-        }else if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
+        }
+        else if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
         {
             ((WeiboUserFormDTO)userFormDTO).weibo_access_token = json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);
         }
