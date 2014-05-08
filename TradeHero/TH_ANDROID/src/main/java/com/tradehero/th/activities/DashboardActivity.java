@@ -499,7 +499,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         // TODO remove
         // for DEBUGGING purpose only
-        Timber.e(new RuntimeException("LowMemory"), "%s", getSupportFragmentManager().findFragmentById(R.id.realtabcontent).getClass().getName());
+        String currentFragmentName = getSupportFragmentManager().findFragmentById(R.id.realtabcontent).getClass().getName();
+        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 }
