@@ -6,6 +6,7 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
+import retrofit.mime.TypedOutput;
 
 public class UserFormFactory
 {
@@ -19,8 +20,9 @@ public class UserFormFactory
     public static final String KEY_LAST_NAME = "lastName";
     public static final String KEY_EMAIL_NOTIFICATION_ENABLED = "emailNotificationsEnabled";
     public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
+    public static final String KEY_PROFILE_PICTURE = "profilePicture";
 
-    public static UserFormDTO create (JSONObject json)
+    public static UserFormDTO create(JSONObject json)
     {
         try
         {
@@ -37,7 +39,7 @@ public class UserFormFactory
         }
     }
 
-    private static UserFormDTO createEmptyForType (String type)
+    private static UserFormDTO createEmptyForType(String type)
     {
         if (type.equals(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE))
         {
@@ -55,14 +57,15 @@ public class UserFormFactory
         {
             return new EmailUserFormDTO();
         }
-        if(type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE)) {
+        if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
+        {
             return new WeiboUserFormDTO();
         }
 
         return new UserFormDTO();
     }
 
-    private static void populateBase (UserFormDTO userFormDTO, JSONObject json) throws JSONException
+    private static void populateBase(UserFormDTO userFormDTO, JSONObject json) throws JSONException
     {
         if (json.has(KEY_EMAIL))
         {
@@ -92,27 +95,38 @@ public class UserFormFactory
         {
             userFormDTO.lastName = json.getString(KEY_LAST_NAME);
         }
+        if (json.has(KEY_PROFILE_PICTURE))
+        {
+            userFormDTO.profilePicture = (TypedOutput) json.get(KEY_PROFILE_PICTURE);
+        }
     }
 
-    private static void populatePerType (UserFormDTO userFormDTO, String type, JSONObject json) throws JSONException
+    private static void populatePerType(UserFormDTO userFormDTO, String type, JSONObject json)
+            throws JSONException
     {
         if (type.equals(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE))
         {
-            ((FacebookUserFormDTO)userFormDTO).facebook_access_token = json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
+            ((FacebookUserFormDTO) userFormDTO).facebook_access_token =
+                    json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
         }
         else if (type.equals(SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE))
         {
-            ((LinkedinUserFormDTO)userFormDTO).linkedin_access_token = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
-            ((LinkedinUserFormDTO)userFormDTO).linkedin_access_token_secret = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
+            ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token =
+                    json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
+            ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token_secret =
+                    json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
         }
         else if (type.equals(SocialAuthenticationProvider.TWITTER_AUTH_TYPE))
         {
-            ((TwitterUserFormDTO)userFormDTO).twitter_access_token = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
-            ((TwitterUserFormDTO)userFormDTO).twitter_access_token_secret = json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
+            ((TwitterUserFormDTO) userFormDTO).twitter_access_token =
+                    json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
+            ((TwitterUserFormDTO) userFormDTO).twitter_access_token_secret =
+                    json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
         }
         else if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
         {
-            ((WeiboUserFormDTO)userFormDTO).weibo_access_token = json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);
+            ((WeiboUserFormDTO) userFormDTO).weibo_access_token =
+                    json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);
         }
     }
 }

@@ -244,6 +244,11 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        if (newImagePath != null)
+        {
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, bitmapTypedOutputFactory.createForProfilePhoto(
+                    getResources(), bitmapForProfileFactory, newImagePath));
+        }
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
