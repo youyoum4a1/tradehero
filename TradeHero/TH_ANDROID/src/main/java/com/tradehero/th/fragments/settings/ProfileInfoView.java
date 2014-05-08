@@ -96,6 +96,7 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
+        displayProfileImage();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -300,6 +301,10 @@ public class ProfileInfoView extends LinearLayout
         else if (userBaseDTO != null)
         {
             displayProfileImage(userBaseDTO);
+        }
+        else
+        {
+            displayDefaultProfileImage();
         }
     }
 
