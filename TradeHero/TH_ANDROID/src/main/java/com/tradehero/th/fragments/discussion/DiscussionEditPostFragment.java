@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -317,17 +318,20 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private Editable unSpanText(Editable editable)
     {
-        Span[] spans = editable.getSpans(0, editable.length(), Span.class);
+        // keep editable unchange
+        SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);
+        Span[] spans = editableCopy.getSpans(0, editableCopy.length(), Span.class);
+
         // replace all span string with its original text
         for (int i = spans.length - 1; i >= 0; --i)
         {
             Span span = spans[i];
-            int spanStart = editable.getSpanStart(span);
-            int spanEnd = editable.getSpanEnd(span);
+            int spanStart = editableCopy.getSpanStart(span);
+            int spanEnd = editableCopy.getSpanEnd(span);
 
-            editable = editable.replace(spanStart, spanEnd, span.getOriginalText());
+            editableCopy = editableCopy.replace(spanStart, spanEnd, span.getOriginalText());
         }
-        return editable;
+        return editableCopy;
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
