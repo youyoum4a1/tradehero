@@ -127,6 +127,7 @@ public class NewsDetailFullView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
