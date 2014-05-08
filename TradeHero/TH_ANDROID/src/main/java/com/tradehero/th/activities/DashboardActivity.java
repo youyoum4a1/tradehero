@@ -427,12 +427,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
-
-        Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
-        if (currentDashboardFragment != null)
-        {
-            currentDashboardFragment.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
