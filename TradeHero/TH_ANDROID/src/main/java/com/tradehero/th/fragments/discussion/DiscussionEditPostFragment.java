@@ -283,8 +283,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private void handleExtraInput(Object extraInput)
     {
-        Timber.d("Extra: %s", extraInput);
-
         String extraText = "";
         Editable editable = discussionPostContent.getText();
 
@@ -314,6 +312,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         Timber.d("Original text: %s", nonMarkUpText);
         discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
+        discussionPostContent.setSelection(discussionPostContent.length());
     }
 
     private Editable unSpanText(Editable editable)
