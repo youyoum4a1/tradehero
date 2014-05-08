@@ -20,9 +20,9 @@ public class BackTickTagProcessor extends RichSpanTextProcessor
         return "$1";
     }
 
-    @Override protected Object getSpanElement(String replacement, String[] matchStrings)
+    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
     {
-        return new StyleSpan(Typeface.MONOSPACE.getStyle());
+        return new RichStyleSpan(Typeface.MONOSPACE.getStyle(), replacement, matchStrings);
     }
 
     @Override protected Pattern getPattern()
