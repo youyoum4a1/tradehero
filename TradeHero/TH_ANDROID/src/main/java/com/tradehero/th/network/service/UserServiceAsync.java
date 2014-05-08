@@ -75,6 +75,14 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
+    //<editor-fold desc="Signup">
+    @POST("/users")
+    void signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user,
+            Callback<UserProfileDTO> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Update Profile">
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     void updateProfile(
@@ -112,14 +120,6 @@ interface UserServiceAsync
             @Part("website") String website,
             @Part("profilePicture") TypedOutput profilePicture,
             Callback<UserProfileDTO> cb);
-    //</editor-fold>
-
-    //<editor-fold desc="Signup">
-    @POST("/users")
-    void signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Signin">
