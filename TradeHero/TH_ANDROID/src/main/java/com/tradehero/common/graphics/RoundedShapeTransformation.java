@@ -54,7 +54,7 @@ public class RoundedShapeTransformation implements RecyclerTransformation
 
         canvas.clipPath(path);
 
-
+        //TODO need check scaleBitmapImage before use it by alex
         canvas.drawBitmap(scaleBitmapImage, new Rect(0, 0, scaleBitmapImage.getWidth(),
                 scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
                 targetHeight), paint);

@@ -14,19 +14,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.inject.Inject;
 
-public class GraphicUtil
+public class GraphicUtil implements BitmapForProfileFactory
 {
     @Inject public GraphicUtil()
     {
         super();
     }
 
+    //<editor-fold desc="EXIF Rotation">
     public Integer getOrientationCode(String imagePath)
     {
         return getOrientationCode(new File(imagePath));
     }
 
-    //<editor-fold desc="EXIF Rotation">
     /**
      * ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_ROTATE_180,
      * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
@@ -78,7 +78,7 @@ public class GraphicUtil
     }
     //</editor-fold>
 
-    public Bitmap decodeBitmapForProfile(Resources resources, String selectedPath)
+    @Override public Bitmap decodeBitmapForProfile(Resources resources, String selectedPath)
     {
         File imageFile = new File(selectedPath);
         BitmapFactory.Options options;

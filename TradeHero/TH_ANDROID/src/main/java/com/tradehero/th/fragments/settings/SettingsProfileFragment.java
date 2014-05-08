@@ -15,7 +15,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.graphics.CenterCropTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
@@ -34,12 +33,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.graphics.BitmapTypedOutput;
+import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
@@ -68,7 +67,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject GraphicUtil graphicUtil;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -246,10 +244,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Uri selectedImageUri = data.getData();
         String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-        Bitmap imageBmp = graphicUtil.decodeBitmapForProfile(getResources(), selectedPath);
-        if (imageBmp != null && profileView != null)
+        if (profileView != null)
         {
-            profileView.setNewImage(imageBmp);
             profileView.setNewImagePath(selectedPath);
         }
         else
@@ -308,14 +304,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             if (userFormDTO == null)
             {
                 return;
-            }
-            if (userFormDTO.profilePicturePath != null)
-            {
-                userFormDTO.profilePicture = new BitmapTypedOutput(
-                        BitmapTypedOutput.TYPE_JPEG,
-                        graphicUtil.decodeBitmapForProfile(getResources(), userFormDTO.profilePicturePath),
-                        userFormDTO.profilePicturePath,
-                        getResources().getInteger(R.integer.user_profile_photo_compress_quality));
             }
 
             detachMiddleCallbackUpdateUserProfile();

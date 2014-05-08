@@ -28,8 +28,10 @@ import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -55,9 +57,10 @@ public class ProfileInfoView extends LinearLayout
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+    @Inject BitmapForProfileFactory bitmapForProfileFactory;
+    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     ProgressDialog progressDialog;
     private UserBaseDTO userBaseDTO;
-    private Bitmap newImage;
     private String newImagePath;
     private Listener listener;
 
@@ -210,15 +213,10 @@ public class ProfileInfoView extends LinearLayout
         progressDialog = null;
     }
 
-    public void setNewImage(Bitmap newImage)
-    {
-        this.newImage = newImage;
-        displayProfileImage();
-    }
-
     public void setNewImagePath(String newImagePath)
     {
         this.newImagePath = newImagePath;
+        displayProfileImage();
     }
 
     public UserFormDTO createForm()
@@ -232,7 +230,8 @@ public class ProfileInfoView extends LinearLayout
         created.lastName = getTextValue(lastName);
         if (newImagePath != null)
         {
-            created.profilePicturePath = newImagePath;
+            created.profilePicture = bitmapTypedOutputFactory.createForProfilePhoto(
+                    getResources(), bitmapForProfileFactory, newImagePath);
         }
         return created;
     }
@@ -245,10 +244,6 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
-        if (newImage != null)
-        {
-            // TODO add profile picture
-        }
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
@@ -283,9 +278,9 @@ public class ProfileInfoView extends LinearLayout
 
     public void displayProfileImage()
     {
-        if (newImage != null)
+        if (newImagePath != null)
         {
-            displayProfileImage(newImage);
+            displayProfileImage(bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath));
         }
         else if (userBaseDTO != null)
         {
