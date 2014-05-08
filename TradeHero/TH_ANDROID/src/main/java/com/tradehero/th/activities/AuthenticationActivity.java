@@ -144,9 +144,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode,resultCode,data);
-        Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
     }
 
     @Override public void onClick(View view)

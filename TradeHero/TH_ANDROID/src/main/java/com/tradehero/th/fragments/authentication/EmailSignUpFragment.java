@@ -3,8 +3,6 @@ package com.tradehero.th.fragments.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,7 +22,9 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -33,13 +33,12 @@ import timber.log.Timber;
  */
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
-    private static final int REQUEST_GALLERY = 111;
+    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
+    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
+    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
     private ProfileInfoView profileView;
     private EditText emailEditText;
-
-    private String selectedPath = null;
-    private Bitmap imageBmp;
 
     @Inject LocalyticsSession localyticsSession;
 
@@ -64,6 +63,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         this.profileView.setOnTouchListenerOnFields(touchListener);
         this.profileView.addValidationListenerOnFields(this);
+        this.profileView.setListener(createProfileViewListener());
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
@@ -106,40 +106,33 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         if (resultCode == Activity.RESULT_OK)
         {
-            if (requestCode == REQUEST_GALLERY && data != null)
-
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
             {
                 try
                 {
-                    Uri selectedImageUri = data.getData();
-                    selectedPath = getPath(selectedImageUri);
-                    imageBmp = BitmapFactory.decodeFile(selectedPath);
-                    BitmapFactory.Options options;
-                    if (imageBmp != null)
+                    if (profileView != null)
                     {
-                        if (selectedPath.length() > 1000000)
-                        {
-                            options = new BitmapFactory.Options();
-                            options.inSampleSize = 4;
-                        }
-                        else
-                        {
-                            options = new BitmapFactory.Options();
-                            options.inSampleSize = 2;
-                        }
-
-                        imageBmp = BitmapFactory.decodeFile(
-                                selectedPath, options);
+                        profileView.handleDataFromLibrary(data);
                     }
-                    else
-                    {
-                        THToast.show("Please chose picture from appropriate path");
-                    }
-                } catch (Exception e)
+                }
+                catch (OutOfMemoryError e)
                 {
-                    e.printStackTrace();
+                    THToast.show(R.string.error_decode_image_memory);
+                }
+                catch (Exception e)
+                {
+                    THToast.show(R.string.error_fetch_image_library);
+                    Timber.e(e, "Failed to extract image from library");
                 }
             }
+            else if (requestCode == REQUEST_GALLERY)
+            {
+                Timber.e(new Exception("Got null data from library"), "");
+            }
+        }
+        else if (resultCode != Activity.RESULT_CANCELED)
+        {
+            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
@@ -150,6 +143,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             this.profileView.setOnTouchListenerOnFields(null);
             this.profileView.removeAllListenersOnFields();
             this.profileView.setNullOnFields();
+            this.profileView.setListener(null);
         }
         this.profileView = null;
 
@@ -196,6 +190,20 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return map;
     }
 
+    protected void askImageFromLibrary()
+    {
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+        libraryIntent.setType("image/jpeg");
+        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+    }
+
+    protected void askImageFromCamera()
+    {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        //cameraIntent.setType("image/jpeg");
+        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+    }
+
     public String getPath(Uri uri)
     {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -209,6 +217,29 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override public AuthenticationMode getAuthenticationMode()
     {
         return AuthenticationMode.SignUpWithEmail;
+    }
+
+    protected ProfileInfoView.Listener createProfileViewListener()
+    {
+        return new EmailSignUpProfileViewListener();
+    }
+
+    protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener
+    {
+        @Override public void onUpdateRequested()
+        {
+            // TODO
+        }
+
+        @Override public void onImageFromCameraRequested()
+        {
+            askImageFromCamera();
+        }
+
+        @Override public void onImageFromLibraryRequested()
+        {
+            askImageFromLibrary();
+        }
     }
 }
 
