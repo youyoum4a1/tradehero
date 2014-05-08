@@ -128,6 +128,7 @@ public class THUser
         if (userFormDTO == null)
         {
             // input error, unable to parse as json data
+            THToast.show(R.string.authentication_error_creating_signup_form);
             return;
         }
         if (userFormDTO.deviceToken == null)
@@ -167,7 +168,6 @@ public class THUser
                 break;
         }
     }
-
 
     private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
     {

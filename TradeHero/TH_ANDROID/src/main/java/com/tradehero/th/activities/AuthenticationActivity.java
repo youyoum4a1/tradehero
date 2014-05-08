@@ -215,7 +215,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
-            EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
+            JSONObject createdJson = castedFragment.getUserFormJSON();
+            EmailAuthenticationProvider.setCredentials(createdJson);
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
             THUser.setAuthenticationMode(authenticationMode);
             THUser.logInWithAsync(EmailAuthenticationProvider.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));

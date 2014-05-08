@@ -95,7 +95,7 @@ public class UserFormFactory
         {
             userFormDTO.lastName = json.getString(KEY_LAST_NAME);
         }
-        if (json.has(KEY_PROFILE_PICTURE))
+        if (json.has(KEY_PROFILE_PICTURE) && json.get(KEY_PROFILE_PICTURE) != null)
         {
             userFormDTO.profilePicture = (TypedOutput) json.get(KEY_PROFILE_PICTURE);
         }
