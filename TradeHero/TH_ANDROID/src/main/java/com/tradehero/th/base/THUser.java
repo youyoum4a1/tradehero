@@ -62,7 +62,6 @@ public class THUser
     @Inject static CurrentUserId currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
-    @Inject static Lazy<UserService> userService;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
     @Inject static Lazy<UserProfileCache> userProfileCache;
@@ -154,7 +153,7 @@ public class THUser
                 break;
             case SignUp:
                 Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
-                userService.get().signUp(
+                userServiceWrapper.get().signUp(
                         authenticator.getAuthHeader(),
                         userFormDTO,
                         createCallbackForSignUpAsyncWithJson(json, callback));

@@ -178,6 +178,25 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Sign-Up">
+    public UserProfileDTO signUp(
+            String authorization,
+            UserFormDTO userFormDTO)
+    {
+        return createUpdateProfileProcessor().process(userService.signUp(authorization, userFormDTO));
+    }
+
+    public MiddleCallback<UserProfileDTO> signUp(
+            String authorization,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.signUp(authorization, userFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Update Profile">
     public UserProfileDTO updateProfile(
             UserBaseKey userBaseKey,

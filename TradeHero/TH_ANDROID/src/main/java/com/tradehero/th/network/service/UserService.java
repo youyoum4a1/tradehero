@@ -75,6 +75,14 @@ public interface UserService
             @Part("profilePicture") TypedOutput profilePicture);
     //</editor-fold>
 
+    //<editor-fold desc="Signup">
+    @POST("/users")
+    UserProfileDTO signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user)
+            throws RetrofitError;
+    //</editor-fold>
+
     //<editor-fold desc="Update Profile">
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     UserProfileDTO updateProfile(
@@ -110,21 +118,6 @@ public interface UserService
             @Part("location") String location,
             @Part("website") String website,
             @Part("profilePicture") TypedOutput profilePicture);
-    //</editor-fold>
-
-    //<editor-fold desc="Signup">
-    @POST("/users")
-    UserProfileDTO signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated @POST("/users")
-    void signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Signin">
