@@ -172,7 +172,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 @Override public void run()
                 {
                     SwipeListView watchlistListViewCopy = watchlistListView;
-                    if (watchlistListViewCopy != null)
+                    if (!isDetached() && watchlistListViewCopy != null)
                     {
                         watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
                                 getResources().getDimension(R.dimen.watchlist_item_button_width)
