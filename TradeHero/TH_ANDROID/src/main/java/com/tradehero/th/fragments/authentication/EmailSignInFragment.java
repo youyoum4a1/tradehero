@@ -20,6 +20,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -42,6 +43,12 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        DeviceUtil.showKeyboardDelayed(email);
     }
 
     @Override public int getDefaultViewId ()

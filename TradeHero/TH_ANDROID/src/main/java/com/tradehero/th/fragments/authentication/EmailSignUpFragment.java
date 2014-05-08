@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
@@ -21,6 +22,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.Map;
 import javax.inject.Inject;
@@ -34,6 +36,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private static final int REQUEST_GALLERY = 111;
 
     private ProfileInfoView profileView;
+    private EditText emailEditText;
 
     private String selectedPath = null;
     private Bitmap imageBmp;
@@ -57,12 +60,19 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
 
         this.profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
+        this.emailEditText = (EditText) view.findViewById(R.id.authentication_sign_up_email);
 
         this.profileView.setOnTouchListenerOnFields(touchListener);
         this.profileView.addValidationListenerOnFields(this);
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        DeviceUtil.showKeyboardDelayed(emailEditText);
     }
 
     @Override public void onResume()
@@ -103,11 +113,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 {
                     Uri selectedImageUri = data.getData();
                     selectedPath = getPath(selectedImageUri);
-                    System.out.println("image path......."
-                            + selectedPath);
                     imageBmp = BitmapFactory.decodeFile(selectedPath);
-                    System.out.println("image size1......."
-                            + imageBmp.getByteCount());
                     BitmapFactory.Options options;
                     if (imageBmp != null)
                     {
