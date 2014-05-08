@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,6 +19,7 @@ import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -211,6 +214,13 @@ public class ProfileInfoView extends LinearLayout
         firstName = null;
         lastName = null;
         progressDialog = null;
+    }
+
+    public void handleDataFromLibrary(Intent data)
+    {
+        Uri selectedImageUri = data.getData();
+        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+        setNewImagePath(selectedPath);
     }
 
     public void setNewImagePath(String newImagePath)
