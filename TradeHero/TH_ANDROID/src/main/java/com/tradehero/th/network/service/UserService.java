@@ -39,24 +39,9 @@ import retrofit.mime.TypedOutput;
 public interface UserService
 {
     //<editor-fold desc="Sign-Up With Email">
-    // TODO @retrofit does not accept to pass a Map as multiple fields
-    //{
-    //    "biography": null,
-    //        "deviceToken": null,
-    //        "displayName": "Hello moto23",
-    //        "email": "testttt1@ttt.com",
-    //        "emailNotificationsEnabled": null,
-    //        "firstName": "",
-    //        "lastName": "",
-    //        "location": null,
-    //        "password": "asd123",
-    //        "passwordConfirmation": "asd123",
-    //        "pushNotificationsEnabled": null,
-    //        "username": null,
-    //        "website": null
-    //}
     @FormUrlEncoded @POST("/SignupWithEmail")
-    UserProfileDTO signUpWithEmail(@Header("Authorization") String authorization,
+    UserProfileDTO signUpWithEmail(
+            @Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -69,8 +54,25 @@ public interface UserService
             @Field("passwordConfirmation") String passwordConfirmation,
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("username") String username,
-            @Field("website") String website)
-            throws RetrofitError;
+            @Field("website") String website);
+
+    @Multipart @POST("/SignupWithEmail")
+    UserProfileDTO signUpWithEmail(
+            @Header("Authorization") String authorization,
+            @Part("biography") String biography,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("location") String location,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("username") String username,
+            @Part("website") String website,
+            @Part("profilePicture") TypedOutput profilePicture);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">

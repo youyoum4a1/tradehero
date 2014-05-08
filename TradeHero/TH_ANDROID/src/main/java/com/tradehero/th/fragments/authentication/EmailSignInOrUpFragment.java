@@ -18,7 +18,6 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
     protected Button signButton;
