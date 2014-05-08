@@ -67,8 +67,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject BitmapForProfileFactory bitmapForProfileFactory;
-    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -246,10 +244,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Uri selectedImageUri = data.getData();
         String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-        Bitmap imageBmp = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), selectedPath);
-        if (imageBmp != null && profileView != null)
+        if (profileView != null)
         {
-            profileView.setNewImage(imageBmp);
             profileView.setNewImagePath(selectedPath);
         }
         else
@@ -309,8 +305,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 return;
             }
-            userFormDTO.profilePicture = bitmapTypedOutputFactory.safeCreateForProfilePhoto(
-                    getResources(), bitmapForProfileFactory, userFormDTO);
 
             detachMiddleCallbackUpdateUserProfile();
             middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(

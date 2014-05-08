@@ -23,8 +23,6 @@ public class UserFormDTO
     public String website;
     public String deviceToken;
 
-    @JsonIgnore
-    public String profilePicturePath;
     public TypedOutput profilePicture;
 
     public UserFormDTO()
