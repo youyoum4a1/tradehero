@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,12 +36,10 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
-import java.io.File;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
-import retrofit.mime.TypedFile;
 import timber.log.Timber;
 
 public class ProfileInfoView extends LinearLayout
@@ -235,7 +232,7 @@ public class ProfileInfoView extends LinearLayout
         created.lastName = getTextValue(lastName);
         if (newImagePath != null)
         {
-            created.profilePicture = new TypedFile("image/jpeg", new File(newImagePath));
+            created.profilePicturePath = newImagePath;
         }
         return created;
     }
@@ -377,9 +374,9 @@ public class ProfileInfoView extends LinearLayout
     protected void showImageFromDialog()
     {
         ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
-                getContext(), LayoutInflater.from(getContext()),
+                getContext(),
                 R.layout.choose_from_item);
-        adapter.setItems(chooseImageFromDTOFactory.getAll());
+        adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
         alertDialogUtil.popWithNegativeButton(getContext(),
                 getContext().getString(R.string.user_profile_choose_image_from_choice),
                 null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
@@ -391,7 +388,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
         {
-            // TODO
+            notifyImageFromCameraRequested();
         }
         else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
         {
@@ -400,6 +397,15 @@ public class ProfileInfoView extends LinearLayout
         else
         {
             Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
+        }
+    }
+
+    protected void notifyImageFromCameraRequested()
+    {
+        Listener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onImageFromCameraRequested();
         }
     }
 
@@ -428,6 +434,7 @@ public class ProfileInfoView extends LinearLayout
     public static interface Listener
     {
         void onUpdateRequested();
+        void onImageFromCameraRequested();
         void onImageFromLibraryRequested();
     }
 }

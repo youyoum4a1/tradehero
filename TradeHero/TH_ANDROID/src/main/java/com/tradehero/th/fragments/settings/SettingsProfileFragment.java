@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -33,15 +34,18 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +58,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 {
     //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
+    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
     public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = SettingsProfileFragment.class.getName() + ".showButtonBack";
 
@@ -64,6 +69,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject GraphicUtil graphicUtil;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -211,7 +217,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         if (resultCode == Activity.RESULT_OK)
         {
-            if (requestCode == REQUEST_GALLERY && data != null)
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
             {
                 try
                 {
@@ -240,35 +246,44 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private void handleDataFromLibrary(Intent data)
     {
         Uri selectedImageUri = data.getData();
-        String selectedPath = getPath(selectedImageUri);
-        Bitmap imageBmp = BitmapFactory.decodeFile(selectedPath);
-        BitmapFactory.Options options;
-        if (imageBmp != null)
+        String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
+        Bitmap imageBmp = decodeBitmap(selectedPath);
+        if (imageBmp != null && profileView != null)
         {
-            if (selectedPath.length() > 1000000)
-            {
-                options = new BitmapFactory.Options();
-                options.inSampleSize = 4;
-            }
-            else
-            {
-                options = new BitmapFactory.Options();
-                options.inSampleSize = 2;
-            }
-
-            imageBmp = BitmapFactory.decodeFile(
-                    selectedPath, options);
-
-            if (profileView != null)
-            {
-                profileView.setNewImage(imageBmp);
-                profileView.setNewImagePath(selectedPath);
-            }
+            profileView.setNewImage(imageBmp);
+            profileView.setNewImagePath(selectedPath);
         }
         else
         {
             THToast.show("Please chose picture from appropriate path");
         }
+    }
+
+    private Bitmap decodeBitmap(String selectedPath)
+    {
+        File imageFile = new File(selectedPath);
+        Bitmap imageBmp = null;// = BitmapFactory.decodeFile(selectedPath);
+        BitmapFactory.Options options;
+        // TODO limit the size of the image
+        if (imageFile != null)
+        {
+            options = new BitmapFactory.Options();
+            if (selectedPath.length() > 1000000)
+            {
+                options.inSampleSize = 4;
+            }
+            else
+            {
+                options.inSampleSize = 2;
+            }
+
+            imageBmp  = graphicUtil.decodeFileWithinSize(imageFile, 600, 600); // For display only
+        }
+        else
+        {
+            THToast.show("Please chose picture from appropriate path");
+        }
+        return imageBmp;
     }
 
     private void populateCurrentUser()
@@ -322,6 +337,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 return;
             }
+            if (userFormDTO.profilePicturePath != null)
+            {
+                userFormDTO.profilePicture = new BitmapTypedOutput(
+                        BitmapTypedOutput.TYPE_JPEG,
+                        decodeBitmap(userFormDTO.profilePicturePath),
+                        userFormDTO.profilePicturePath);
+            }
 
             detachMiddleCallbackUpdateUserProfile();
             middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
@@ -362,9 +384,16 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     protected void askImageFromLibrary()
     {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/jpeg");
-        startActivityForResult(intent, REQUEST_GALLERY);
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+        libraryIntent.setType("image/jpeg");
+        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+    }
+
+    protected void askImageFromCamera()
+    {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        //cameraIntent.setType("image/jpeg");
+        startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
     @Override public boolean isTabBarVisible()
@@ -390,6 +419,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         @Override public void onUpdateRequested()
         {
             // TODO
+        }
+
+        @Override public void onImageFromCameraRequested()
+        {
+            askImageFromCamera();
         }
 
         @Override public void onImageFromLibraryRequested()

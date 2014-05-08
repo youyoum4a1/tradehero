@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
@@ -288,7 +287,6 @@ public class PrivateDiscussionView extends DiscussionView
         protected PrivateDiscussionViewDiscussionSetAdapter()
         {
             super(getContext(),
-                    LayoutInflater.from(getContext()),
                     R.layout.private_message_bubble_mine,
                     R.layout.private_message_bubble_other);
         }

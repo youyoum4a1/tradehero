@@ -29,7 +29,11 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistChange
         SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
         if (currentIds != null)
         {
-            currentIds.add(0, watchlistPositionDTO.securityDTO.getSecurityId());
+            // Remove this test when #70827276 is fixed
+            if (watchlistPositionDTO.securityDTO != null)
+            {
+                currentIds.add(0, watchlistPositionDTO.securityDTO.getSecurityId());
+            }
         }
         return processed;
     }

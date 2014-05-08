@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -708,20 +709,35 @@ abstract public class AbstractPositionListFragment<
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
-        Timber.d("onFollowRequested %s", userBaseKey);
-        popFollowUser(userBaseKey);
+        premiumFollowUser(userBaseKey);
+        //popFollowUser(userBaseKey);
     }
+
+    @Override public void onUserFollowed(UserBaseKey userBaseKey)
+    {
+        //
+        pullToRefreshListView.setRefreshing();
+        refreshPortfolio();
+        refreshSimplePage();
+    }
+
     //</editor-fold>
 
     protected void popFollowUser(final UserBaseKey userBaseKey)
     {
-        //TODO hacked by alipay alex
+        //TODO need to improve
+        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
+        {
+            ((OtherUserPortfolioHeaderView)portfolioHeaderView).showFollowDialog();
+        }
+        //else do nothing
+
         //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         //{
         //    @Override public void onClick(DialogInterface dialog, int which)
         //    {
-                premiumFollowUser(userBaseKey);
-            //}
+        //        premiumFollowUser(userBaseKey);
+        //    }
         //});
     }
 
@@ -757,7 +773,7 @@ abstract public class AbstractPositionListFragment<
     @Override public void onAddAlertClicked(PositionDTOType clickedPositionDTO)
     {
         SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-        if (securityId != null)
+        if (securityId != null && getApplicablePortfolioId() != null)
         {
             Bundle args = new Bundle();
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());

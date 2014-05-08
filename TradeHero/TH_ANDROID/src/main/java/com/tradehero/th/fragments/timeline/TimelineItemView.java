@@ -249,7 +249,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayUsername(UserProfileCompactDTO user)
     {
-        username.setText(user.displayName);
+        if (username != null && user != null && user.displayName != null)
+        {
+            username.setText(user.displayName);
+        }
     }
 
     private void displayUserProfilePicture(UserProfileCompactDTO user)

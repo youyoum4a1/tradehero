@@ -54,4 +54,8 @@
   <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
 
+  <string name="follower_type_premium">Paid Follower(s)</string>
+  <string name="follower_type_free">Free Follower(s)</string>
+  <string name="follower_type_all">Free Follower(s)</string>
+
 </resources>

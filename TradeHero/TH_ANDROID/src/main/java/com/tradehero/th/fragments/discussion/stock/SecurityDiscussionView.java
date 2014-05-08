@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
@@ -80,7 +79,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         return new SingleViewDiscussionSetAdapter(
                 getContext(),
-                LayoutInflater.from(getContext()),
                 initial,
                 R.layout.security_discussion_item_view);
     }

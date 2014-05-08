@@ -25,11 +25,11 @@ import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -252,7 +252,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.linkWith(value, andDisplay);
         if (value != null)
         {
-            chartDTO.setSecurityCompactDTO(value);
+            if (chartDTO != null)
+            {
+                chartDTO.setSecurityCompactDTO(value);
+            }
             linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null, andDisplay);
         }
         if (andDisplay)

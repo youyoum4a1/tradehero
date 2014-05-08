@@ -272,6 +272,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 {
                     @Override public void onFetched()
                     {
+                        onLoadFinished();
                         displayPortfolios();
                     }
                 });
@@ -460,6 +461,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
+    private void refreshPortfolioList()
+    {
+        portfolioCompactListCache.get().invalidate(shownUserBaseKey);
+        displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
+    }
+
     private AdapterView.OnItemClickListener createTimelineOnClickListener()
     {
         return new AdapterView.OnItemClickListener()
@@ -604,6 +611,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                     @Override public void onLoadFinished()
                     {
                         TimelineFragment.this.onLoadFinished();
+                    }
+
+                    @Override public void onBeginRefresh(TabType tabType)
+                    {
+                        if (tabType == TabType.PORTFOLIO_LIST)
+                        {
+                            refreshPortfolioList();
+                        }
                     }
                 });
         timelineListView.setOnRefreshListener(mainTimelineAdapter);

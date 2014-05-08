@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-@Singleton public class UrbanAirshipPushNotificationManager implements PushNotificationManager
+@Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
     private final Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder;
 

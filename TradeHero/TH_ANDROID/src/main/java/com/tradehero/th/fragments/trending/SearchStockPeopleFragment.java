@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.trending;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -50,8 +48,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -142,7 +138,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater,
                 R.layout.search_security_item);
         peopleItemViewAdapter =
-                new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
+                new PeopleItemViewAdapter(getActivity(), R.layout.search_people_item);
 
         if (listView != null)
         {
@@ -505,11 +501,12 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
         if (peopleItemViewAdapter != null)
         {
-            peopleItemViewAdapter.setItems(users);
-            if (peopleItemViewAdapter != null)
+            peopleItemViewAdapter.clear();
+            if (users != null)
             {
-                peopleItemViewAdapter.notifyDataSetChanged();
+                peopleItemViewAdapter.addAll(users);
             }
+            peopleItemViewAdapter.notifyDataSetChanged();
             updateVisibilities();
         }
     }
@@ -775,14 +772,15 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 nearEndScrollListener.deactivateEnd();
                 if (lastLoadedPage == FIRST_PAGE)
                 {
-                    peopleItemViewAdapter.setItems(null);
+                    peopleItemViewAdapter.clear();
                     searchEmptyView.setText(R.string.trending_search_no_people_found);
                 }
             }
             else
             {
                 userBaseKeys.addAll(value);
-                peopleItemViewAdapter.setItems(userBaseKeys);
+                peopleItemViewAdapter.clear();
+                peopleItemViewAdapter.addAll(userBaseKeys);
             }
             setQuerying(false);
             peopleItemViewAdapter.notifyDataSetChanged();

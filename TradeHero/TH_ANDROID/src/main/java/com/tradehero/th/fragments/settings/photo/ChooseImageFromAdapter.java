@@ -1,18 +1,14 @@
 package com.tradehero.th.fragments.settings.photo;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 
-public class ChooseImageFromAdapter extends ArrayDTOAdapter<ChooseImageFromDTO, ChooseImageFromItemView>
+public class ChooseImageFromAdapter extends ArrayDTOAdapterNew<ChooseImageFromDTO, ChooseImageFromItemView>
 {
-    public ChooseImageFromAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public ChooseImageFromAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
     }
-
-    @Override protected void fineTune(int position, ChooseImageFromDTO dto,
-            ChooseImageFromItemView dtoView)
-    {
-    }
+    //</editor-fold>
 }

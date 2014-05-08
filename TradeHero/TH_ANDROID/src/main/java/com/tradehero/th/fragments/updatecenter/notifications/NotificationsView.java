@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -97,7 +96,6 @@ public class NotificationsView extends BetterViewAnimator
     {
         return new NotificationListAdapter(
                 getContext(),
-                LayoutInflater.from(getContext()),
                 R.layout.notification_item_view);
     }
 
@@ -215,7 +213,8 @@ public class NotificationsView extends BetterViewAnimator
         {
             notificationListAdapter = createNotificationListAdapter();
         }
-        notificationListAdapter.setItems(notificationKeyList);
+        notificationListAdapter.clear();
+        notificationListAdapter.addAll(notificationKeyList);
         notificationListAdapter.notifyDataSetChanged();
         Timber.d("resetContent");
     }
@@ -327,15 +326,12 @@ public class NotificationsView extends BetterViewAnimator
                 //TODO right?
                 nextPageDelta = notificationKeyList.isEmpty() ? -1 : 1;
 
-                if (shouldAppend)
+                if (!shouldAppend)
                 {
-                    notificationListAdapter.appendMore(notificationKeyList);
+                    notificationListAdapter.clear();
                 }
-                else
-                {
-                    notificationListAdapter.setItems(notificationKeyList);
-                    notificationListAdapter.notifyDataSetChanged();
-                }
+                notificationListAdapter.addAll(notificationKeyList);
+                notificationListAdapter.notifyDataSetChanged();
             }
         }
 
@@ -355,7 +351,7 @@ public class NotificationsView extends BetterViewAnimator
             Integer currentPage = paginatedNotificationListKey.getPage();
             if (currentPage != null && currentPage == 1)
             {
-                notificationListAdapter.setItems(null);
+                notificationListAdapter.clear();
                 notificationList.onRefreshComplete();
             }
 

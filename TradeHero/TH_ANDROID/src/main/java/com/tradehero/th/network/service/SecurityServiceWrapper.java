@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -19,27 +18,22 @@ import com.tradehero.th.models.security.DTOProcessorSecurityPosition;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import com.tradehero.th.utils.StringUtils;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 @Singleton public class SecurityServiceWrapper
 {
     private final SecurityService securityService;
     private final ProviderServiceWrapper providerServiceWrapper;
-    private final ObjectMapper objectMapper;
     private final SecurityPositionDetailCache securityPositionDetailCache;
+    private final SecurityCompactCache securityCompactCache;
     private final UserProfileCache userProfileCache;
     private final CurrentUserId currentUserId;
 
@@ -47,84 +41,29 @@ import timber.log.Timber;
             SecurityService securityService,
             ProviderServiceWrapper providerServiceWrapper,
             SecurityPositionDetailCache securityPositionDetailCache,
-            ObjectMapper objectMapper, UserProfileCache userProfileCache, CurrentUserId currentUserId)
+            SecurityCompactCache securityCompactCache,
+            UserProfileCache userProfileCache,
+            CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityPositionDetailCache = securityPositionDetailCache;
-        this.objectMapper = objectMapper;
+        this.securityCompactCache = securityCompactCache;
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
     }
 
-    private String read(InputStream in)
-    {
-        try
-        {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null)
-            {
-                sb.append(line);
-            }
-            return sb.toString();
-        } catch (IOException e)
-        {
-            //System.err.println("========read error=========");
-            //e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void getMultipleSecurities2(final Callback<List<SecurityCompactDTO>> callback, final List<Integer> ids)
+    public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(List<Integer> ids,
+            Callback<Map<Integer, SecurityCompactDTO>> callback)
             throws RetrofitError
     {
-        final int len = ids.size();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < len; i++)
-        {
-            sb.append(ids.get(i));
-            if (i != len - 1)
-            {
-                sb.append(",");
-            }
-        }
+        String securityIds = StringUtils.join(",", ids);
+        MiddleCallback<Map<Integer, SecurityCompactDTO>> multipleSecurityFetchMiddleCallback = new
+                BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
+        securityService.getMultipleSecurities(securityIds, multipleSecurityFetchMiddleCallback);
 
-        Callback<Response> middleCallback = new Callback<Response>()
-        {
-
-            @Override
-            public void success(Response response, Response response2)
-            {
-
-                try
-                {
-                    InputStream is = response.getBody().in();
-                    JSONObject obj = new JSONObject(read(is));
-                    List<SecurityCompactDTO> list = new ArrayList<SecurityCompactDTO>(len);
-                    for (int i = 0; i < len; i++)
-                    {
-                        JSONObject o = obj.getJSONObject(String.valueOf(ids.get(i)));
-                        SecurityCompactDTO dto = objectMapper.readValue(o.toString(), SecurityCompactDTO.class);
-                        list.add(dto);
-                    }
-                    callback.success(list, response2);
-                } catch (Exception e)
-                {
-                    Timber.e(e, "middleCallback parse data error");
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error)
-            {
-                callback.failure(error);
-            }
-        };
-
-        securityService.getMultipleSecurities2(sb.toString(), middleCallback);
+        return multipleSecurityFetchMiddleCallback;
     }
 
     //<editor-fold desc="Routing SecurityListType">
@@ -146,8 +85,7 @@ import timber.log.Timber;
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
-    public void getSecurities(SecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
+    public void getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
         if (key instanceof TrendingSecurityListType)
         {
@@ -552,5 +490,25 @@ import timber.log.Timber;
                 userProfileCache,
                 currentUserId,
                 securityId);
+    }
+
+    private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
+    {
+        return new DTOProcessor<Map<Integer, SecurityCompactDTO>>()
+        {
+            @Override public Map<Integer, SecurityCompactDTO> process(Map<Integer, SecurityCompactDTO> value)
+            {
+                for (Map.Entry<Integer, SecurityCompactDTO> securityEntry: value.entrySet())
+                {
+                    if (securityEntry.getKey() != null && securityEntry.getKey() != 0)
+                    {
+                        SecurityCompactDTO securityCompactDTO = securityEntry.getValue();
+                        SecurityId securityId = new SecurityId(securityCompactDTO.exchange, securityCompactDTO.symbol);
+                        securityCompactCache.put(securityId, securityCompactDTO);
+                    }
+                }
+                return value;
+            }
+        };
     }
 }

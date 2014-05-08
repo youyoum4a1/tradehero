@@ -106,6 +106,14 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
     }
 
+    protected void notifyBeginRefresh(TimelineFragment.TabType tabType)
+    {
+        if (this.onLoadFinishedListener != null)
+        {
+            this.onLoadFinishedListener.onBeginRefresh(tabType);
+        }
+    }
+
     //<editor-fold desc="AbsListView.OnScrollListener">
     private int currentScrollState;
 
@@ -187,7 +195,7 @@ public class MainTimelineAdapter extends ArrayAdapter
 
             case PORTFOLIO_LIST:
                 // TODO
-                notifyLoadFinished();
+                notifyBeginRefresh(currentTabType);
                 break;
 
             case STATS:
@@ -484,5 +492,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static interface OnLoadFinishedListener
     {
         void onLoadFinished();
+
+        void onBeginRefresh(TimelineFragment.TabType tabType);
     }
 }

@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-@Singleton public class BaiduPushManager implements PushNotificationManager
+@Singleton public final class BaiduPushManager implements PushNotificationManager
 {
     private static final int NOTIFICATION_BUILDER_ID = 1;
 

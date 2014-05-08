@@ -231,7 +231,8 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        unsetMiddleCallback();
+        //we set a message unread when click the item, so don't remove callback at the moment and do it in onDestroy.
+        //unsetMiddleCallback();
         detachFetchMessageTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
@@ -321,10 +322,16 @@ public class MessagesCenterFragment extends DashboardFragment
                 messageHeaderCache.get(getListAdapter().getItem(position));
         if (messageHeaderDTO != null)
         {
+            int currentUser = currentUserId.toUserBaseKey().key;
             Bundle bundle = new Bundle();
             DashboardNavigator navigator =
                     ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, messageHeaderDTO.recipientUserId);
+            int targetUser = messageHeaderDTO.recipientUserId;
+            if (currentUser == messageHeaderDTO.recipientUserId)
+            {
+                targetUser = messageHeaderDTO.senderUserId;
+            }
+            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, targetUser);
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
@@ -621,6 +628,10 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 requestUpdateTabCounter();
             }
+            if (getView() == null)
+            {
+                return;
+            }
             displayContent(value);
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
                     fromCache);
@@ -631,6 +642,11 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             hasMorePage = true;
             decreasePageNumber();
+
+            if (getView() == null)
+            {
+                return;
+            }
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view
@@ -659,22 +675,16 @@ public class MessagesCenterFragment extends DashboardFragment
                 //force to get news from the server
                 return;
             }
+            requestUpdateTabCounter();
+            hasMorePage = (value.size() > 0);
             refreshCache(value);
-            resetContent(value);
             resetPageNumber();
+            if (getView() == null)
+            {
+                return;
+            }
+            resetContent(value);
             onRefreshCompleted();
-            if (!fromCache)
-            {
-                requestUpdateTabCounter();
-            }
-            if (value.size() == 0)
-            {
-                hasMorePage = false;
-            }
-            else
-            {
-                hasMorePage = true;
-            }
             Timber.d("refresh onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
                     fromCache);
             //TODO how to invalidate the old data ..
@@ -890,7 +900,6 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void success(Response response, Response response2)
         {
             // mark message as deleted
-            //Timber.d("response.getStatus()=%d", response.getStatus());
             if (getListAdapter() != null)
             {
                 if (alreadyFetched != null)
@@ -899,9 +908,10 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
 
                 requestUpdateTabCounter();
-
-                getListAdapter().notifyDataSetChanged();
-                //MessageListAdapter adapter = getListAdapter();
+                if (getListAdapter() != null)
+                {
+                    getListAdapter().notifyDataSetChanged();
+                }
             }
         }
 

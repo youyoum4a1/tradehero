@@ -92,7 +92,7 @@ public class DiscussionView extends FrameLayout
 
     protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        return new SingleViewDiscussionSetAdapter(getContext(), LayoutInflater.from(getContext()), listItemLayout);
+        return new SingleViewDiscussionSetAdapter(getContext(), listItemLayout);
     }
 
     private void init(AttributeSet attrs)

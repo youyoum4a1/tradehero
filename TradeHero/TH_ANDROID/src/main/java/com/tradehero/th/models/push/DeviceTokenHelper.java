@@ -45,7 +45,7 @@ public class DeviceTokenHelper
     {
         if (isChineseVersion())
         {
-            return DeviceType.Chinese_Version;
+            return DeviceType.ChineseVersion;
         }
         return DeviceType.Android;
     }

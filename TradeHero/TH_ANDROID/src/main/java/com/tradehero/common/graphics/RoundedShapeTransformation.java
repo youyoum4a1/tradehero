@@ -12,10 +12,12 @@ import javax.inject.Inject;
 public class RoundedShapeTransformation implements RecyclerTransformation
 {
     private boolean recycleOriginal = true;
+    private final CenterCropTransformation centerCropTransformation;
 
-    @Inject public RoundedShapeTransformation()
+    @Inject public RoundedShapeTransformation(CenterCropTransformation centerCropTransformation)
     {
         super();
+        this.centerCropTransformation = centerCropTransformation;
     }
 
     @Override public boolean isRecycleOriginal()
@@ -30,6 +32,7 @@ public class RoundedShapeTransformation implements RecyclerTransformation
 
     @Override public Bitmap transform(Bitmap scaleBitmapImage)
     {
+        scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
         int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
         int targetHeight = targetWidth;
 

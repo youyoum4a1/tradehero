@@ -2,7 +2,6 @@ package com.tradehero.th.persistence.social;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Application;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
-
+import timber.log.Timber;
 
 public class VisitedFriendListPrefs
 {
@@ -74,12 +73,12 @@ public class VisitedFriendListPrefs
                 }
                 else
                 {
-                    THLog.d(TAG, "A userKey was not positive " + userKey);
+                    Timber.d("A userKey was not positive %s", userKey);
                 }
             }
             catch (NumberFormatException e)
             {
-                THLog.e(TAG, "There was a bad userKey " + userKey, e);
+                Timber.e(e, "There was a bad userKey %s", userKey);
             }
         }
 

@@ -150,7 +150,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         super.onViewCreated(view, savedInstanceState);
 
         priceChangeHistoryList.addHeaderView(headerView);
-        alertEventAdapter = new AlertEventAdapter(getActivity(), getActivity().getLayoutInflater(),
+        alertEventAdapter = new AlertEventAdapter(getActivity(),
                 R.layout.alert_event_item_view);
         priceChangeHistoryList.setAdapter(alertEventAdapter);
     }
@@ -248,7 +248,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         this.alertDTO = alertDTO;
 
-        alertEventAdapter.setItems(alertDTO.alertEvents);
+        alertEventAdapter.clear();
+        alertEventAdapter.addAll(alertDTO.alertEvents);
         alertEventAdapter.notifyDataSetChanged();
 
         if (alertDTO.security != null)
