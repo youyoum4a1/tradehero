@@ -2,7 +2,6 @@ package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
