@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +15,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.graphics.CenterCropTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
@@ -45,7 +45,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,7 +246,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Uri selectedImageUri = data.getData();
         String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-        Bitmap imageBmp = decodeBitmap(selectedPath);
+        Bitmap imageBmp = graphicUtil.decodeBitmapForProfile(getResources(), selectedPath);
         if (imageBmp != null && profileView != null)
         {
             profileView.setNewImage(imageBmp);
@@ -257,33 +256,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         {
             THToast.show("Please chose picture from appropriate path");
         }
-    }
-
-    private Bitmap decodeBitmap(String selectedPath)
-    {
-        File imageFile = new File(selectedPath);
-        Bitmap imageBmp = null;// = BitmapFactory.decodeFile(selectedPath);
-        BitmapFactory.Options options;
-        // TODO limit the size of the image
-        if (imageFile != null)
-        {
-            options = new BitmapFactory.Options();
-            if (selectedPath.length() > 1000000)
-            {
-                options.inSampleSize = 4;
-            }
-            else
-            {
-                options.inSampleSize = 2;
-            }
-
-            imageBmp  = graphicUtil.decodeFileWithinSize(imageFile, 600, 600); // For display only
-        }
-        else
-        {
-            THToast.show("Please chose picture from appropriate path");
-        }
-        return imageBmp;
     }
 
     private void populateCurrentUser()
@@ -341,8 +313,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 userFormDTO.profilePicture = new BitmapTypedOutput(
                         BitmapTypedOutput.TYPE_JPEG,
-                        decodeBitmap(userFormDTO.profilePicturePath),
-                        userFormDTO.profilePicturePath);
+                        graphicUtil.decodeBitmapForProfile(getResources(), userFormDTO.profilePicturePath),
+                        userFormDTO.profilePicturePath,
+                        getResources().getInteger(R.integer.user_profile_photo_compress_quality));
             }
 
             detachMiddleCallbackUpdateUserProfile();

@@ -257,10 +257,12 @@ public class RelationsListItemView extends RelativeLayout
 
         if (subtitleresId > 0)
         {
+            String userTypeText = getContext().getString(userTypeTextResId);
+            String subTitle = getContext().getString(subtitleresId);
             return getContext().getString(
-                    R.string.follower_item_with_subtitle,
-                    getContext().getString(userTypeTextResId),
-                    getContext().getString(subtitleresId));
+                        R.string.follower_item_with_subtitle,
+                        userTypeText,
+                        subTitle);
         }
         return getContext().getString(userTypeTextResId);
     }

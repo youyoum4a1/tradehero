@@ -25,7 +25,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -49,7 +48,7 @@ public class HeroListItemView extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
 
-    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    private OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -87,7 +86,7 @@ public class HeroListItemView extends RelativeLayout
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
-        OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
+        //OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
         if (heroStatusButtonClickedListener != null)
         {
             heroStatusButtonClickedListener.onHeroStatusButtonClicked(HeroListItemView.this, heroDTO);
@@ -142,7 +141,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
-        this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
+        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
     }
 
     public void display(HeroDTO heroDTO)

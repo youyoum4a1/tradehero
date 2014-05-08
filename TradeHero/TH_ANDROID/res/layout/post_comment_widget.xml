@@ -5,7 +5,7 @@
     >
   <com.tradehero.th.fragments.discussion.PostCommentView
       android:layout_width="match_parent"
-      android:layout_height="@dimen/discussion_comment_box_height"
+      android:layout_height="wrap_content"
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
@@ -45,7 +45,7 @@
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:inputType="text|textImeMultiLine|textMultiLine"
         android:hint="@string/timeline_discussion_comment_box_hint"
         />
 

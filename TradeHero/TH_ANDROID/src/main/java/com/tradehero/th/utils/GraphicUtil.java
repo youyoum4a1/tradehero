@@ -1,11 +1,13 @@
 package com.tradehero.th.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
 import com.tradehero.common.graphics.RotateTransformation;
+import com.tradehero.th.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,6 +26,7 @@ public class GraphicUtil
         return getOrientationCode(new File(imagePath));
     }
 
+    //<editor-fold desc="EXIF Rotation">
     /**
      * ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_ROTATE_180,
      * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
@@ -72,6 +75,26 @@ public class GraphicUtil
             }
         }
         return rotation;
+    }
+    //</editor-fold>
+
+    public Bitmap decodeBitmapForProfile(Resources resources, String selectedPath)
+    {
+        File imageFile = new File(selectedPath);
+        BitmapFactory.Options options;
+        // TODO limit the size of the image
+        options = new BitmapFactory.Options();
+        if (selectedPath.length() > 1000000)
+        {
+            options.inSampleSize = 4;
+        }
+        else
+        {
+            options.inSampleSize = 2;
+        }
+
+        int maxEdgePixel = resources.getInteger(R.integer.user_profile_photo_max_edge_pixel);
+        return decodeFileWithinSize(imageFile, maxEdgePixel, maxEdgePixel);
     }
 
     public Bitmap decodeFileForDisplay(Context context, File f)

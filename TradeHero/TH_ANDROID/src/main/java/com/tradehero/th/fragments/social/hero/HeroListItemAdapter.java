@@ -9,7 +9,6 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
@@ -31,8 +30,8 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     protected UserBaseKey followerId;
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
-    private WeakReference<HeroListItemView.OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
-    private WeakReference<View.OnClickListener> mostSkilledClicked = new WeakReference<>(null);
+    private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
+    private View.OnClickListener mostSkilledClicked;
 
     public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
             int headerInactiveResId)
@@ -50,12 +49,12 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
 
     public void setHeroStatusButtonClickedListener(HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
-        this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
+        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
     }
 
     public void setMostSkilledClicked(View.OnClickListener mostSkilledClicked)
     {
-        this.mostSkilledClicked = new WeakReference<>(mostSkilledClicked);
+        this.mostSkilledClicked = mostSkilledClicked;
     }
 
     @Override public boolean hasStableIds()
@@ -199,7 +198,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
                 if (mostSkilledButton != null)
                 {
-                    mostSkilledButton.setOnClickListener(mostSkilledClicked.get());
+                    mostSkilledButton.setOnClickListener(mostSkilledClicked);
                 }
                 break;
 
@@ -227,7 +226,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 }
                 ((HeroListItemView) convertView).setFollowerId(followerId);
                 ((HeroListItemView) convertView).display((HeroDTO) getItem(position));
-                ((HeroListItemView) convertView).setHeroStatusButtonClickedListener(heroStatusButtonClickedListener.get());
+                ((HeroListItemView) convertView).setHeroStatusButtonClickedListener(heroStatusButtonClickedListener);
                 break;
 
             default:
