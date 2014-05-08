@@ -95,16 +95,14 @@ public class WhiteToTransparentTransformation implements com.squareup.picasso.Tr
         {
             Timber.d("White to transparent problem: %d", e.getMessage());
         }
-        finally
+        
+        if (bitmapIn != bitmapOut && bitmapOut != null)
         {
-            if (bitmapIn != bitmapOut)
-            {
-                // recycle the source bitmap, this will be no longer used.
-                bitmapIn.recycle();
-            }
+            // recycle the source bitmap, this will be no longer used.
+            bitmapIn.recycle();
+            return bitmapOut;
         }
-
-        return bitmapOut;
+        return bitmapIn;
     }
 
     @Override public String key()

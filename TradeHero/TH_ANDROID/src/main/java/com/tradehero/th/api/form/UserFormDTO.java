@@ -1,6 +1,7 @@
 package com.tradehero.th.api.form;
 
-import retrofit.mime.TypedFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import retrofit.mime.TypedOutput;
 
 public class UserFormDTO
 {
@@ -21,7 +22,10 @@ public class UserFormDTO
     public String location;
     public String website;
     public String deviceToken;
-    public TypedFile profilePicture;
+
+    @JsonIgnore
+    public String profilePicturePath;
+    public TypedOutput profilePicture;
 
     public UserFormDTO()
     {

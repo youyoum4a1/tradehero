@@ -17,6 +17,12 @@ public interface PortfolioHeaderView
     public static interface OnFollowRequestedListener
     {
         void onFollowRequested(UserBaseKey userBaseKey);
+
+        /**
+         * when the user follow the hero success
+         * @param hero
+         */
+        void onUserFollowed(UserBaseKey hero);
     }
 
     public static interface OnTimelineRequestedListener

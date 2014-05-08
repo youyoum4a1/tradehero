@@ -252,7 +252,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.linkWith(value, andDisplay);
         if (value != null)
         {
-            chartDTO.setSecurityCompactDTO(value);
+            if (chartDTO != null)
+            {
+                chartDTO.setSecurityCompactDTO(value);
+            }
             linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null, andDisplay);
         }
         if (andDisplay)

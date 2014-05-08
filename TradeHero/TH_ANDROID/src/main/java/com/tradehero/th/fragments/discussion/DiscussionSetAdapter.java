@@ -15,15 +15,15 @@ import java.util.TreeSet;
 abstract public class DiscussionSetAdapter
         extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionItemView<DiscussionKey>>
 {
-    public DiscussionSetAdapter(Context context, LayoutInflater inflater)
+    public DiscussionSetAdapter(Context context)
     {
-        super(context, inflater);
+        super(context);
     }
 
-    public DiscussionSetAdapter(Context context, LayoutInflater inflater,
+    public DiscussionSetAdapter(Context context,
             Collection<DiscussionKey> objects)
     {
-        super(context, inflater, objects);
+        super(context, objects);
     }
 
     @Override protected Set<DiscussionKey> createSet(Collection<DiscussionKey> objects)

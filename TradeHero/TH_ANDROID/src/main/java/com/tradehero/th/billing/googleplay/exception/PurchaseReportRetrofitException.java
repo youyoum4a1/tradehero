@@ -35,7 +35,7 @@ public class PurchaseReportRetrofitException extends IABOneResponseValueExceptio
 
     public PurchaseReportRetrofitException(Throwable cause)
     {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     @Override protected int getOnlyValidResponse()

@@ -24,9 +24,9 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @Inject DiscussionCache discussionCache;
     @Inject CurrentUserId currentUserId;
 
-    public PrivateDiscussionSetAdapter(Context context, LayoutInflater inflater, int mineResId, int otherResId)
+    public PrivateDiscussionSetAdapter(Context context, int mineResId, int otherResId)
     {
-        super(context, inflater);
+        super(context);
         this.mineResId = mineResId;
         this.otherResId = otherResId;
         DaggerUtils.inject(this);

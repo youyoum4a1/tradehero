@@ -5,7 +5,7 @@ import java.util.List;
 
 public class StringUtils
 {
-    public static String join(String glue, List<String> elements)
+    public static String join(String glue, List elements)
     {
         if (elements == null)
         {
@@ -26,7 +26,7 @@ public class StringUtils
         return out.toString();
     }
 
-    public static String join(String glue, String... elements)
+    public static String join(String glue, Object... elements)
     {
         if (elements == null)
         {

@@ -91,7 +91,7 @@ public class GraphicUtil
 
             int scaleW = options.outWidth / width;
             int scaleH = options.outHeight / height;
-            int scale = Math.max(scaleW, scaleH);
+            int scale = Math.max(1, Math.max(scaleW, scaleH));
             //Log.d("Scale Factor:"+scale);
             //Find the correct scale value. It should be the power of 2.
 

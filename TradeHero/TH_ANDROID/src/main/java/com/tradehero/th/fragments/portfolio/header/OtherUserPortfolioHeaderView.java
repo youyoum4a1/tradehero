@@ -89,10 +89,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             {
                 @Override public void onClick(View view)
                 {
-                    localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
-                    alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
-                            UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                            new OtherUserPortfolioFollowRequestedListener());
+                    showFollowDialog();
                 }
             });
         }
@@ -110,6 +107,17 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
                 }
             });
         }
+    }
+
+    /**
+     * show the dialog to let the user follow the hero the user's browsing
+     */
+    public void showFollowDialog()
+    {
+        localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
+        alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+                UserProfileDTOUtil.IS_NOT_FOLLOWER,
+                new OtherUserPortfolioFollowRequestedListener());
     }
 
     public class OtherUserPortfolioFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
@@ -158,6 +166,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             alertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
+            notifyUserFollowed(userProfileDTO.getBaseKey());
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -227,7 +236,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
                 .into(this.userImageView);
     }
 
-    private void configureFollowItemsVisibility()
+    public void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
         if (this.userProfileDTO == null)
@@ -262,6 +271,15 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         if (followRequestedListener != null)
         {
             followRequestedListener.onFollowRequested(userBaseKey);
+        }
+    }
+
+    protected void notifyUserFollowed(UserBaseKey userBaseKey)
+    {
+        OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
+        if (followRequestedListener != null)
+        {
+            followRequestedListener.onUserFollowed(userBaseKey);
         }
     }
 

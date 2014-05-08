@@ -49,4 +49,7 @@
   <string name="leaderboard_community_hero_free">{0,choice,0#免费|0&lt;免费({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#所有|0&lt;所有({0})}</string>
 
+  <string name="follower_type_premium">付费粉丝</string>
+  <string name="follower_type_free">免费粉丝</string>
+  <string name="follower_type_all">所有粉丝</string>
 </resources>

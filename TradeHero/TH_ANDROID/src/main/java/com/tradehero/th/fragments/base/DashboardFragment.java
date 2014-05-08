@@ -65,6 +65,8 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
+    //suggest use DashboardNavigator
+    @Deprecated
     protected Navigator getNavigator()
     {
         return ((NavigatorActivity) getActivity()).getNavigator();

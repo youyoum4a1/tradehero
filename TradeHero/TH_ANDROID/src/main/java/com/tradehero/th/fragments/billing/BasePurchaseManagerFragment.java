@@ -232,6 +232,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         premiumFollowUser(heroId, createPremiumUserFollowedListener());
     }
 
+
     public void premiumFollowUser(UserBaseKey heroId,
             PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
     {

@@ -288,7 +288,6 @@ public class PrivateDiscussionView extends DiscussionView
         protected PrivateDiscussionViewDiscussionSetAdapter()
         {
             super(getContext(),
-                    LayoutInflater.from(getContext()),
                     R.layout.private_message_bubble_mine,
                     R.layout.private_message_bubble_other);
         }

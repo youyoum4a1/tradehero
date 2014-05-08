@@ -9,16 +9,16 @@ public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 {
     public final int layoutResId;
 
-    public SingleViewDiscussionSetAdapter(Context context, LayoutInflater inflater, int layoutResId)
+    public SingleViewDiscussionSetAdapter(Context context, int layoutResId)
     {
-        super(context, inflater);
+        super(context);
         this.layoutResId = layoutResId;
     }
 
-    public SingleViewDiscussionSetAdapter(Context context, LayoutInflater inflater,
+    public SingleViewDiscussionSetAdapter(Context context,
             Collection<DiscussionKey> objects, int layoutResId)
     {
-        super(context, inflater, objects);
+        super(context, objects);
         this.layoutResId = layoutResId;
     }
 

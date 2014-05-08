@@ -60,8 +60,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         // HACK
         if (!Constants.RELEASE)
         {
-            email.setText("neeraj@eatechnologies.com");
-            password.setText("asd123");
+            email.setText(getString(R.string.test_email));
+            password.setText(getString(R.string.test_password));
         }
 
         signButton = (Button) view.findViewById(R.id.btn_login);
