@@ -112,9 +112,6 @@ public interface UserService
             @Part("profilePicture") TypedOutput profilePicture);
     //</editor-fold>
 
-    @Multipart @POST("/SignupWithEmail")
-    Response signUpWithEmailWithProfilePicture();
-
     //<editor-fold desc="Signup">
     @POST("/users")
     UserProfileDTO signUp(
@@ -123,8 +120,7 @@ public interface UserService
         throws RetrofitError;
 
     // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users")
+    @Deprecated @POST("/users")
     void signUp(
             @Header("Authorization") String authorization,
             @Body UserFormDTO user,

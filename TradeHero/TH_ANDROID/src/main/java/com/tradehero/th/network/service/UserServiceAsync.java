@@ -114,9 +114,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
-    @Multipart @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture(Callback<Response> callback);
-
     //<editor-fold desc="Signup">
     @POST("/users")
     void signUp(

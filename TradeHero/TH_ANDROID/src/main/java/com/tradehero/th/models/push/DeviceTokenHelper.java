@@ -14,7 +14,6 @@ public class DeviceTokenHelper
     @Inject @SavedBaiduPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;
     @Inject static Context context;
 
-
     public static boolean isChineseVersion()
     {
         //TODO need to improve
@@ -22,6 +21,7 @@ public class DeviceTokenHelper
         //MetaHelper.isChineseLocale(context.getApplicationContext());
         return flag;
     }
+
     /**
      * If locale is Chinese, return the token from baidu,otherwise from urbanairship
      * @return
