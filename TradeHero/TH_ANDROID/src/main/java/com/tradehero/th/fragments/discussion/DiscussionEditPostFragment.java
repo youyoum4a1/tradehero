@@ -318,7 +318,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private Editable unSpanText(Editable editable)
     {
-        Span[] spans = editable.getSpans(0, discussionPostContent.getText().length(), Span.class);
+        Span[] spans = editable.getSpans(0, editable.length(), Span.class);
         // replace all span string with its original text
         for (int i = spans.length - 1; i >= 0; --i)
         {
