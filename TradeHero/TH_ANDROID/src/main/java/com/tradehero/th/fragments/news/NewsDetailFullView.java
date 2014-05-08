@@ -180,7 +180,7 @@ public class NewsDetailFullView extends LinearLayout
 
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
-                lp.width = 200 * securityCompactDTOList.size();
+                lp.width = (int) getResources().getDimension(R.dimen.stock_item_width) * securityCompactDTOList.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
                 mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
                 simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
