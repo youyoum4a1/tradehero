@@ -21,7 +21,7 @@
       android:gravity="top"
       android:layout_above="@id/discussion_new_post_action_buttons"
       android:background="@color/transparent"
-      android:inputType="text"
+      android:inputType="textMultiLine"
       tools:text="Buy more security from TradeHero">
       <requestFocus/>
   </EditText>
