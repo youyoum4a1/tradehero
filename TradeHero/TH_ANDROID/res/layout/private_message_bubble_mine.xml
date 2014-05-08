@@ -39,6 +39,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/white"
+          android:autoLink="all"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 
     </LinearLayout>
