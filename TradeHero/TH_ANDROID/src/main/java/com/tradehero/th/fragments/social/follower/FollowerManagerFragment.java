@@ -249,7 +249,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             addTab(resourceDTO);
         }
-
+        setTitleColor();
         return mTabHost;
     }
 
@@ -267,6 +267,27 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
         TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
         mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
+    }
+
+    private void setTitleColor()
+    {
+        int color = getResources().getColor(android.R.color.holo_blue_light);
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
+        {
+
+            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
+                    .findViewById(android.R.id.title);
+
+            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
+            if (tv == null)
+            {
+                continue;
+            }
+            else
+            {
+                tv.setTextColor(color);
+            }
+        }
     }
 
     private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)

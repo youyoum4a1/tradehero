@@ -87,7 +87,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             addTab(resourceDTO);
         }
-
+        setTitleColor();
         return mTabHost;
     }
 
@@ -101,6 +101,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
         tabSpecList.add(tabSpec);
         mTabHost.addTab(tabSpec, resourceDTO.heroContentFragmentClass, args);
+    }
+
+    //TODO should make FragmentTabHost more generic
+    private void setTitleColor()
+    {
+        int color = getResources().getColor(android.R.color.holo_blue_light);
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
+        {
+
+            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
+                    .findViewById(android.R.id.title);
+
+            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
+            if (tv == null)
+            {
+                continue;
+            }
+            else
+            {
+                tv.setTextColor(color);
+            }
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

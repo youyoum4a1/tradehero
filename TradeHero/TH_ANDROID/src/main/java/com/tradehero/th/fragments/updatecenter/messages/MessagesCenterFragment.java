@@ -685,8 +685,6 @@ public class MessagesCenterFragment extends DashboardFragment
             }
             resetContent(value);
             onRefreshCompleted();
-            Timber.d("refresh onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
-                    fromCache);
             //TODO how to invalidate the old data ..
         }
 
