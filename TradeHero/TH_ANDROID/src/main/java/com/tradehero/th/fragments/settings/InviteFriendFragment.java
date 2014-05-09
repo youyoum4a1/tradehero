@@ -34,6 +34,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -54,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import org.json.JSONObject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
@@ -118,7 +118,6 @@ public class InviteFriendFragment extends DashboardFragment
 
             @Override public void onLoaderReset(Loader<List<UserFriendsDTO>> loader)
             {
-
             }
         };
         inviteFriendCallback = new THCallback<Response>()
@@ -153,7 +152,7 @@ public class InviteFriendFragment extends DashboardFragment
                 }
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 detachMiddleCallbackConnect();
                 middleCallbackConnect = socialServiceWrapper.connect(

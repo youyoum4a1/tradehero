@@ -4,4 +4,5 @@
     <dimen name="todo_trending_security_item_height">@dimen/security_item_height</dimen>
     <dimen name="security_tile_bg_padding_r_b">10px</dimen>
     <dimen name="security_tile_bg_padding_t_l">5px</dimen>
+    <dimen name="buysell_dialog_scroll_height">160dp</dimen>
 </resources>

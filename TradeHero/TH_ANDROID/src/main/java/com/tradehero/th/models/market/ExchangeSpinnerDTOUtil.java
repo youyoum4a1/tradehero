@@ -54,6 +54,10 @@ import timber.log.Timber;
             {
                 Timber.d("Exchange logo does not exist: %s", ex.getMessage());
             }
+            catch (OutOfMemoryError ex)
+            {
+                Timber.e(ex, "Exchange for %s causes OutOfMemory problem", exchangeDTO.name);
+            }
             finally
             {
                 index++;

@@ -12,7 +12,7 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderCont
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -51,22 +51,11 @@ public class UxModule
         return Tapstream.getInstance();
     }
 
-    @Provides @Singleton Config provideTapStreamConfig()
+    @Provides @Singleton Config provideTapStreamConfig(Context context)
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
-        switch (Constants.VERSION)
-        {
-            case 0:
-                config.setInstallEventName(TapStreamEvents.APP_INSTALL);
-                break;
-            case 1:
-                config.setInstallEventName(TapStreamEvents.APP_INSTALL_BAIDU);
-                break;
-            case 2:
-                config.setInstallEventName(TapStreamEvents.APP_INSTALL_TENCENT);
-                break;
-        }
+        config.setInstallEventName(context.getString(TapStreamType.fromType(Constants.VERSION).getInstallResId()));
         return config;
     }
 }

@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,6 +19,7 @@ import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -93,6 +96,7 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
+        displayProfileImage();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -213,6 +217,13 @@ public class ProfileInfoView extends LinearLayout
         progressDialog = null;
     }
 
+    public void handleDataFromLibrary(Intent data)
+    {
+        Uri selectedImageUri = data.getData();
+        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+        setNewImagePath(selectedPath);
+    }
+
     public void setNewImagePath(String newImagePath)
     {
         this.newImagePath = newImagePath;
@@ -244,6 +255,11 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        if (newImagePath != null)
+        {
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, bitmapTypedOutputFactory.createForProfilePhoto(
+                    getResources(), bitmapForProfileFactory, newImagePath));
+        }
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
@@ -285,6 +301,10 @@ public class ProfileInfoView extends LinearLayout
         else if (userBaseDTO != null)
         {
             displayProfileImage(userBaseDTO);
+        }
+        else
+        {
+            displayDefaultProfileImage();
         }
     }
 

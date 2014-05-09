@@ -5,7 +5,6 @@ import android.view.View;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.auth.AuthenticationMode;
 
-
 public abstract class AuthenticationFragment extends SherlockFragment
 {
     protected View.OnClickListener onClickListener;

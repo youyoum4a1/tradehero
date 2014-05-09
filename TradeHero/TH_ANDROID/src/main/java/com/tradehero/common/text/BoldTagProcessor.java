@@ -1,6 +1,5 @@
 package com.tradehero.common.text;
 
-import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
 
@@ -14,9 +13,9 @@ public class BoldTagProcessor extends RichSpanTextProcessor
         return "$1";
     }
 
-    @Override protected Object getSpanElement(String replacement, String[] matchStrings)
+    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
     {
-        return new StyleSpan(android.graphics.Typeface.BOLD);
+        return new RichStyleSpan(android.graphics.Typeface.BOLD, replacement, matchStrings);
     }
 
     @Override protected Pattern getPattern()

@@ -54,6 +54,33 @@ interface UserServiceAsync
             @Field("username") String username,
             @Field("website") String website,
             Callback<UserProfileDTO> cb);
+
+    @Multipart @POST("/SignupWithEmail")
+    void signUpWithEmail(
+            @Header("Authorization") String authorization,
+            @Part("biography") String biography,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("location") String location,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("username") String username,
+            @Part("website") String website,
+            @Part("profilePicture") TypedOutput profilePicture,
+            Callback<UserProfileDTO> cb);
+    //</editor-fold>
+
+    //<editor-fold desc="Signup">
+    @POST("/users")
+    void signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
@@ -93,17 +120,6 @@ interface UserServiceAsync
             @Part("website") String website,
             @Part("profilePicture") TypedOutput profilePicture,
             Callback<UserProfileDTO> cb);
-    //</editor-fold>
-
-    @Multipart @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture(Callback<Response> callback);
-
-    //<editor-fold desc="Signup">
-    @POST("/users")
-    void signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Signin">

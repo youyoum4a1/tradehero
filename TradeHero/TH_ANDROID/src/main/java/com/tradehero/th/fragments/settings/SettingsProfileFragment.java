@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,7 +15,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -26,6 +24,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
@@ -33,11 +32,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -49,7 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
-import org.json.JSONObject;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -203,9 +199,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         return map;
     }
 
-    public JSONObject getUserFormJSON()
+    public JSONCredentials getUserFormJSON()
     {
-        return new JSONObject(getUserFormMap());
+        return new JSONCredentials(getUserFormMap());
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -218,7 +214,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 try
                 {
-                    handleDataFromLibrary(data);
+                    if (profileView != null)
+                    {
+                        profileView.handleDataFromLibrary(data);
+                    }
                 }
                 catch (OutOfMemoryError e)
                 {
@@ -226,6 +225,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 }
                 catch (Exception e)
                 {
+                    THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
             }
@@ -237,20 +237,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         else if (resultCode != Activity.RESULT_CANCELED)
         {
             Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
-        }
-    }
-
-    private void handleDataFromLibrary(Intent data)
-    {
-        Uri selectedImageUri = data.getData();
-        String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-        if (profileView != null)
-        {
-            profileView.setNewImagePath(selectedPath);
-        }
-        else
-        {
-            THToast.show("Please chose picture from appropriate path");
         }
     }
 

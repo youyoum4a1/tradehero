@@ -87,23 +87,46 @@ import retrofit.RetrofitError;
     public UserProfileDTO signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO)
-            throws RetrofitError
     {
-        return createUpdateProfileProcessor().process(userService.signUpWithEmail(
-                authorization,
-                userFormDTO.biography,
-                userFormDTO.deviceToken,
-                userFormDTO.displayName,
-                userFormDTO.email,
-                userFormDTO.emailNotificationsEnabled,
-                userFormDTO.firstName,
-                userFormDTO.lastName,
-                userFormDTO.location,
-                userFormDTO.password,
-                userFormDTO.passwordConfirmation,
-                userFormDTO.pushNotificationsEnabled,
-                userFormDTO.username,
-                userFormDTO.website));
+        UserProfileDTO created;
+        if (userFormDTO.profilePicture == null)
+        {
+            created = userService.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website);
+        }
+        else
+        {
+            created = userService.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+        return createUpdateProfileProcessor().process(created);
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(
@@ -112,22 +135,64 @@ import retrofit.RetrofitError;
             Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
-        userServiceAsync.signUpWithEmail(
-                authorization,
-                userFormDTO.biography,
-                userFormDTO.deviceToken,
-                userFormDTO.displayName,
-                userFormDTO.email,
-                userFormDTO.emailNotificationsEnabled,
-                userFormDTO.firstName,
-                userFormDTO.lastName,
-                userFormDTO.location,
-                userFormDTO.password,
-                userFormDTO.passwordConfirmation,
-                userFormDTO.pushNotificationsEnabled,
-                userFormDTO.username,
-                userFormDTO.website,
-                middleCallback);
+        if (userFormDTO.profilePicture == null)
+        {
+            userServiceAsync.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website,
+                    middleCallback);
+        }
+        else
+        {
+            userServiceAsync.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture,
+                    middleCallback);
+        }
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sign-Up">
+    public UserProfileDTO signUp(
+            String authorization,
+            UserFormDTO userFormDTO)
+    {
+        return createUpdateProfileProcessor().process(userService.signUp(authorization, userFormDTO));
+    }
+
+    public MiddleCallback<UserProfileDTO> signUp(
+            String authorization,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.signUp(authorization, userFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

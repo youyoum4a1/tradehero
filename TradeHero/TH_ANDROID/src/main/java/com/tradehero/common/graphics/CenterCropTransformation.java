@@ -14,7 +14,7 @@ public class CenterCropTransformation implements Transformation
     @Override public Bitmap transform(Bitmap source)
     {
         Bitmap dstBmp;
-        if (source.getWidth() >= source.getHeight())
+        if (source.getWidth() > source.getHeight())
         {
             dstBmp = Bitmap.createBitmap(
                     source,
@@ -23,8 +23,9 @@ public class CenterCropTransformation implements Transformation
                     source.getHeight(),
                     source.getHeight()
             );
+            source.recycle();
         }
-        else
+        else if (source.getWidth() < source.getHeight())
         {
             dstBmp = Bitmap.createBitmap(
                     source,
@@ -33,8 +34,12 @@ public class CenterCropTransformation implements Transformation
                     source.getWidth(),
                     source.getWidth()
             );
+            source.recycle();
         }
-        source.recycle();
+        else
+        {
+            dstBmp = source;
+        }
         return dstBmp;
     }
 

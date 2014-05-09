@@ -131,4 +131,7 @@
   <dimen name="common_margin_10">10dp</dimen>
   <dimen name="common_margin_50">50dp</dimen>
   <dimen name="common_height_40">40dp</dimen>
+  <dimen name="stock_item_width">200dp</dimen>
+
+  <dimen name="buysell_dialog_scroll_height">160dp</dimen>
 </resources>

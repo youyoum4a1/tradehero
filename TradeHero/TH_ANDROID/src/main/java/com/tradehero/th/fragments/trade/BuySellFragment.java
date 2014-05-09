@@ -1920,19 +1920,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
     {
         shareToWeChat();
-        // TODO find a better way to remove this fragment from the stack
         if (isResumed())
         {
-            getNavigator().popFragment();
-        }
+            DashboardNavigator navigator = getDashboardNavigator();
+            // TODO find a better way to remove this fragment from the stack
+            navigator.popFragment();
 
-        Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
-        DashboardNavigator dashboardNavigator = getDashboardNavigator();
-        if (dashboardNavigator != null)
-        {
-            dashboardNavigator.pushFragment(PositionListFragment.class, args);
+            Bundle args = new Bundle();
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            navigator.pushFragment(PositionListFragment.class, args);
         }
     }
 

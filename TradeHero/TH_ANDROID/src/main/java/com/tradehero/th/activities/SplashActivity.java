@@ -27,7 +27,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -96,18 +96,7 @@ public class SplashActivity extends SherlockActivity
 
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
-        switch (Constants.VERSION)
-        {
-            case 0:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
-                break;
-            case 1:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_BAIDU, false));
-                break;
-            case 2:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_TENCENT, false));
-                break;
-        }
+        tapStream.get().fireEvent(new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()), false));
 
         if (!Constants.RELEASE)
         {
