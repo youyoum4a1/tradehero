@@ -2,6 +2,7 @@ package com.tradehero.th.auth;
 
 import android.content.Context;
 import com.tradehero.th.auth.operator.LinkedIn;
+import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -124,7 +125,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     public String getAuthType()
     {
-        return SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE;
+        return LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE;
     }
 
     @Override public String getAuthHeaderParameter()

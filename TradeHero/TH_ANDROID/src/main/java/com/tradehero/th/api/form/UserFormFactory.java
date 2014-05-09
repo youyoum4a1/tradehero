@@ -4,6 +4,11 @@ import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit.mime.TypedOutput;
@@ -41,23 +46,23 @@ public class UserFormFactory
 
     private static UserFormDTO createEmptyForType(String type)
     {
-        if (type.equals(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE))
+        if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
         {
             return new FacebookUserFormDTO();
         }
-        if (type.equals(SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE))
+        if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
         {
             return new LinkedinUserFormDTO();
         }
-        if (type.equals(SocialAuthenticationProvider.TWITTER_AUTH_TYPE))
+        if (type.equals(TwitterCredentialsDTO.TWITTER_AUTH_TYPE))
         {
             return new TwitterUserFormDTO();
         }
-        if (type.equals(EmailAuthenticationProvider.EMAIL_AUTH_TYPE))
+        if (type.equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
         {
             return new EmailUserFormDTO();
         }
-        if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
+        if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {
             return new WeiboUserFormDTO();
         }
@@ -104,26 +109,26 @@ public class UserFormFactory
     private static void populatePerType(UserFormDTO userFormDTO, String type, JSONObject json)
             throws JSONException
     {
-        if (type.equals(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE))
+        if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
         {
             ((FacebookUserFormDTO) userFormDTO).facebook_access_token =
                     json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
         }
-        else if (type.equals(SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE))
+        else if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
         {
             ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
             ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token_secret =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
         }
-        else if (type.equals(SocialAuthenticationProvider.TWITTER_AUTH_TYPE))
+        else if (type.equals(TwitterCredentialsDTO.TWITTER_AUTH_TYPE))
         {
             ((TwitterUserFormDTO) userFormDTO).twitter_access_token =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
             ((TwitterUserFormDTO) userFormDTO).twitter_access_token_secret =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
         }
-        else if (type.equals(SocialAuthenticationProvider.WEIBO_AUTH_TYPE))
+        else if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {
             ((WeiboUserFormDTO) userFormDTO).weibo_access_token =
                     json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);

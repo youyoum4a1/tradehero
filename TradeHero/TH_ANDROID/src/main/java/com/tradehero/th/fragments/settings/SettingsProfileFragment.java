@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -194,7 +195,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = new HashMap<>();
-        map.put(UserFormFactory.KEY_TYPE, EmailAuthenticationProvider.EMAIL_AUTH_TYPE);
+        map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
         profileView.populateUserFormMap(map);
         return map;
     }

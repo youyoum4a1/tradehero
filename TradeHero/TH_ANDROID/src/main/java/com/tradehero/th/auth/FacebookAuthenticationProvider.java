@@ -17,6 +17,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
+import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -210,7 +211,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
 
     public String getAuthType()
     {
-        return SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE;
+        return FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE;
     }
 
     @Override public String getAuthHeader()

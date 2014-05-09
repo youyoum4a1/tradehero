@@ -9,6 +9,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.ValidationListener;
@@ -80,7 +81,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
     protected Map<String, Object> getUserFormMap ()
     {
         Map<String, Object> map = new HashMap<>();
-        map.put(UserFormFactory.KEY_TYPE, EmailAuthenticationProvider.EMAIL_AUTH_TYPE);
+        map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
         return map;
     }
 

@@ -2,15 +2,13 @@ package com.tradehero.th.auth;
 
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
-    public static final String TAG = EmailAuthenticationProvider.class.getSimpleName();
-
-    public static final String EMAIL_AUTH_TYPE = "Basic";
     private static JSONObject credentials;
 
     public EmailAuthenticationProvider()
@@ -29,7 +27,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public String getAuthType()
     {
-        return EMAIL_AUTH_TYPE;
+        return EmailCredentialsDTO.EMAIL_AUTH_TYPE;
     }
 
     @Override public String getAuthHeader()

@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -219,7 +220,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             EmailAuthenticationProvider.setCredentials(createdJson);
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
             THUser.setAuthenticationMode(authenticationMode);
-            THUser.logInWithAsync(EmailAuthenticationProvider.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
+            THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
         }
         else
         {
