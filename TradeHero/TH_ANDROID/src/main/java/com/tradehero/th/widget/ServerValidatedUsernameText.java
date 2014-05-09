@@ -2,28 +2,20 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import java.util.HashMap;
-import java.util.Map;
+import com.tradehero.th.api.users.DisplayNameDTO;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.persistence.user.UserAvailabilityCache;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-
 public class ServerValidatedUsernameText extends ServerValidatedText
+    implements UserAvailabilityCache.UserAvailabilityListener
 {
+    @Inject UserAvailabilityCache userAvailabilityCache;
     private boolean isValidInServer = true;
-
-    public String getOriginalUsernameValue() {
-        return originalUsernameValue;
-    }
-
-    public void setOriginalUsernameValue(String originalUsernameValue) {
-        this.originalUsernameValue = originalUsernameValue;
-    }
-
     private String originalUsernameValue;
-    private Map<String, AbstractUserAvailabilityRequester> alreadyRequested = new HashMap<>();
 
     //<editor-fold desc="Constructors">
     public ServerValidatedUsernameText(Context context)
@@ -40,8 +32,26 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     {
         super(context, attrs, defStyle);
     }
-
     //</editor-fold>
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        userAvailabilityCache.unregister(this);
+        super.onDetachedFromWindow();
+    }
+
+    public String getOriginalUsernameValue() {
+        return originalUsernameValue;
+    }
+
+    public void setOriginalUsernameValue(String originalUsernameValue) {
+        this.originalUsernameValue = originalUsernameValue;
+    }
 
     @Override protected boolean validate()
     {
@@ -62,32 +72,53 @@ public class ServerValidatedUsernameText extends ServerValidatedText
             return true;
         }
 
-        if (alreadyRequested.containsKey(displayName))
+        UserAvailabilityDTO cachedAvailability = userAvailabilityCache.get(new DisplayNameDTO(displayName));
+        if (cachedAvailability != null)
         {
-            isValidInServer = alreadyRequested.get(displayName).isAvailable();
-            alreadyRequested.get(displayName).askServerIfNeeded();
+            isValidInServer = cachedAvailability.available;
         }
         else
         {
-            createNewRequester();
+            queryCache(displayName);
         }
         return isValidInServer;
     }
 
-    private void createNewRequester ()
+    @Override public ValidationMessage getCurrentValidationMessage()
     {
-        String displayName = getText().toString();
-        if (!alreadyRequested.containsKey(displayName))
+        if (!isValidInServer)
         {
-            AbstractUserAvailabilityRequester requester = createUserAvailabilityRequester(displayName);
-            alreadyRequested.put(displayName, requester);
-            requester.askServerIfNeeded();
+            return new ValidationMessage(this, false, getContext().getString(R.string.validation_server_username_not_available));
+        }
+        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
+    }
+
+    protected void queryCache(String displayName)
+    {
+        handleServerRequest(true);
+        userAvailabilityCache.getOrFetchAsync(new DisplayNameDTO(displayName), true);
+    }
+
+    @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value,
+            boolean fromCache)
+    {
+        if (key.isSameName(getText().toString()))
+        {
+            handleServerRequest(false);
+            handleReturnFromServer(value.available);
         }
     }
 
-    private AbstractUserAvailabilityRequester createUserAvailabilityRequester(String displayName)
+    @Override public void onErrorThrown(DisplayNameDTO key, Throwable error)
     {
-        return new UserAvailabilityRequester(this, displayName);
+        if (key.isSameName(getText().toString()))
+        {
+            handleServerRequest(false);
+            if (error instanceof RetrofitError && ((RetrofitError) error).isNetworkError())
+            {
+                handleNetworkError((RetrofitError) error);
+            }
+        }
     }
 
     private void handleReturnFromServer (boolean newIsValidFromServer)
@@ -107,55 +138,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
     }
 
-    @Override public ValidationMessage getCurrentValidationMessage()
-    {
-        if (!isValidInServer)
-        {
-            return new ValidationMessage(this, false, getContext().getString(R.string.validation_server_username_not_available));
-        }
-        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
-    }
-
     public void handleNetworkError (RetrofitError retrofitError)
     {
         hintDefaultStatus();
-    }
-
-    public static class UserAvailabilityRequester extends AbstractUserAvailabilityRequester
-    {
-        private ServerValidatedUsernameText text;
-
-        @Inject
-        public UserAvailabilityRequester()
-        {
-        }
-
-        public UserAvailabilityRequester(ServerValidatedUsernameText text, String displayName)
-        {
-            this.displayName = displayName;
-            this.text = text;
-        }
-
-        @Override public void notifyAvailabilityChanged()
-        {
-            if (this.getDisplayName().equals(text.getText().toString()))
-            {
-                text.handleReturnFromServer (this.isAvailable());
-            }
-        }
-
-        @Override public void notifyIsQuerying(boolean isQuerying)
-        {
-            text.handleServerRequest(isQuerying);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            super.failure(retrofitError);
-            if (retrofitError.isNetworkError())
-            {
-                text.handleNetworkError(retrofitError);
-            }
-        }
     }
 }

@@ -7,6 +7,7 @@ import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -33,6 +34,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.GET;
+import retrofit.http.Query;
 
 @Singleton public class UserServiceWrapper
 {
@@ -329,6 +332,22 @@ import retrofit.RetrofitError;
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
         return this.updateProfile(userBaseKey, userFormDTO, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Check Display Name Available">
+    public UserAvailabilityDTO checkDisplayNameAvailable(String username)
+    {
+        return userService.checkDisplayNameAvailable(username);
+    }
+
+    public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
+            String username,
+            Callback<UserAvailabilityDTO> callback)
+    {
+        MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 

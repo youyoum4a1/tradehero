@@ -4,7 +4,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import retrofit.RetrofitError;
 
-
 public class BasicRetrofitErrorHandler
 {
     public static void handle(RetrofitError retrofitError)
