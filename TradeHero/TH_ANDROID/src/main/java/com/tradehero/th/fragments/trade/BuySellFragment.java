@@ -1,13 +1,12 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -24,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -131,7 +129,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     //for dialog
-    private Dialog mBuySellDialog;
+    private AlertDialog mBuySellDialog;
     private TextView mTradeValueTextView;
     private TextView mCashLeftValueTextView;
     private TextView mQuantityTextView;
@@ -1521,12 +1519,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         };
 
-        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        Dialog dialog = new Dialog(getActivity()/*, R.style.dialog*/);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.security_buy_sell_dialog, null);
-        //builder.setView(view);
-        //builder.setCancelable(true);
+        builder.setView(view);
+        builder.setCancelable(true);
         TextView stockNameTextView = (TextView) view.findViewById(R.id.dialog_stock_name);
         if (stockNameTextView != null)
         {
@@ -1712,24 +1709,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         updateBuySellDialog();
-        //mBuySellDialog = builder.create();
-        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-        final ScrollView scrollView = (ScrollView)view.findViewById(R.id.scrollview);
-        new Handler().postDelayed(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                scrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        }, 100);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.addContentView(view,lp);
-
-        dialog.show();
-        //mBuySellDialog.setCanceledOnTouchOutside(true);
-        mBuySellDialog =  dialog;
+        mBuySellDialog = builder.create();
+        mBuySellDialog.show();
     }
 
     public void shareToWeChat()
