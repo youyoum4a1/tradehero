@@ -1,5 +1,8 @@
 package com.tradehero.th.api.form;
 
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
+import com.tradehero.th.auth.SocialAuthenticationProvider;
+import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;

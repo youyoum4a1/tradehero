@@ -11,10 +11,10 @@ import org.json.JSONException;
 @Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {
-    private static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
-    private static final String AUTH_TOKEN_KEY = "auth_token";
-    private static final String CONSUMER_KEY_KEY = "consumer_key";
-    private static final String CONSUMER_SECRET_KEY = "consumer_secret";
+    public static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
+    public static final String AUTH_TOKEN_KEY = "auth_token";
+    public static final String CONSUMER_KEY_KEY = "consumer_key";
+    public static final String CONSUMER_SECRET_KEY = "consumer_secret";
     private final LinkedIn linkedIn;
 
     @Inject public LinkedInAuthenticationProvider(LinkedIn linkedIn)

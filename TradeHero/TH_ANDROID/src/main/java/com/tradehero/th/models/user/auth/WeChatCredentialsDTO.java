@@ -1,6 +1,10 @@
 package com.tradehero.th.models.user.auth;
 
-public class WeChatCredentialsDTO implements CredentialsDTO
+import com.tradehero.th.api.form.UserFormFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class WeChatCredentialsDTO extends BaseCredentialsDTO
 {
     public static final String WECHAT_AUTH_TYPE = "TH-Wehat";
 
@@ -12,5 +16,11 @@ public class WeChatCredentialsDTO implements CredentialsDTO
     @Override public String getAuthType()
     {
         return WECHAT_AUTH_TYPE;
+    }
+
+    @Override protected void populate(JSONObject object) throws JSONException
+    {
+        super.populate(object);
+        // TODO
     }
 }
