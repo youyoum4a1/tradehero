@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     >
 
-  <TextView
-      android:id="@+id/dialog_stock_name"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="16sp"
-      android:layout_marginLeft="15dp"
-      android:layout_marginTop="15dp"
-      android:textStyle="bold"
-      tools:text="Padbury Mining Ltd"
-      />
-
-  <!--<ProgressBar-->
-      <!--android:id="@+id/quote_refresh_countdown"-->
-      <!--android:layout_width="match_parent"-->
-      <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
-      <!--android:layout_height="4dp"-->
-      <!--android:progressDrawable="@drawable/progress_thin_square"-->
-      <!--/>-->
-
-  <RelativeLayout
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginLeft="15dp"
       android:layout_marginRight="25dp"
+      android:gravity="center_vertical"
       >
 
-    <TextView
-        android:id="@+id/dialog_price"
-        android:layout_width="wrap_content"
+    <LinearLayout android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        tools:text="Buy @ AU$ 0.033"
-        />
+        android:orientation="vertical">
+      <TextView
+          android:id="@+id/dialog_stock_name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="16sp"
+          android:textStyle="bold"
+          tools:text="Padbury Mining Ltd"
+          />
+
+      <TextView
+          android:id="@+id/dialog_price"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/dialog_stock_name"
+          tools:text="Buy @ AU$ 0.033"
+          />
+        </LinearLayout>
+
 
     <!--<TextView-->
-        <!--android:id="@+id/dialog_portfolio"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/dialog_price"-->
-        <!--android:text="Portfolio: Main Portfolio"-->
-        <!--/>-->
+    <!--android:id="@+id/dialog_portfolio"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/dialog_price"-->
+    <!--android:text="Portfolio: Main Portfolio"-->
+    <!--/>-->
 
     <ImageButton
         android:id="@+id/dialog_btn_add_cash"
@@ -62,223 +59,247 @@
         android:layout_centerVertical="true"
         />
 
-  </RelativeLayout>
-
-  <TableRow
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      >
-
-    <TextView
-        android:id="@+id/vtrade_value"
-        style="@style/TH.SmallValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="US$ 0"
-        />
-
-    <TextView
-        android:id="@+id/vquantity"
-        style="@style/TH.SmallValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textColor="#3720c0"
-        tools:text="0"
-        />
-
-    <TextView
-        android:id="@+id/vcash_left"
-        style="@style/TH.SmallValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="US$ 338,306"
-        />
-
-  </TableRow>
-
-  <TableRow
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:layout_marginTop="-5dp"
-      >
-    <TextView
-        style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/buy_sell_trade_value"
-        />
-    <TextView
-        style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/buy_sell_quantity"
-        />
-    <TextView
-        style="@style/TH.SmallTitle"
-        android:id="@+id/dialog_cash_left"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        />
-  </TableRow>
-
-  <SeekBar
-      android:id="@+id/seekBar"
-      android:layout_width="match_parent"
-      android:layout_height="32dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
-      />
-
-  <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
-        android:id="@+id/quick_price_button_set"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/trend_price_bar"
-        android:orientation="horizontal"
-        >
-
-      <com.tradehero.th.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle5k"
-          style="@style/TH.Btn_Price_Bar"
-          android:text="@string/buy_sell_p5k"
-          app:price="5000"
-          />
-
-      <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-      <com.tradehero.th.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle10k"
-          style="@style/TH.Btn_Price_Bar"
-          android:text="@string/buy_sell_p10k"
-          app:price="10000"
-          />
-
-      <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-      <com.tradehero.th.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle25k"
-          style="@style/TH.Btn_Price_Bar"
-          android:text="@string/buy_sell_p25k"
-          app:price="25000"
-          />
-
-      <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-      <com.tradehero.th.fragments.trade.view.QuickPriceButton
-          android:id="@+id/toggle50k"
-          style="@style/TH.Btn_Price_Bar"
-          android:text="@string/buy_sell_p50k"
-          app:price="50000"
-          />
-
-    </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
-
-  <EditText
-      android:id="@+id/comments"
-      android:layout_width="match_parent"
-      android:layout_height="45dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
-      android:background="@drawable/security_dialog_comment_bg"
-      android:ems="10"
-      android:gravity="top"
-      android:padding="5dp"
-      android:hint="@string/buy_sell_confirm_buy_comment"
-      android:inputType="textMultiLine"
-      android:layout_marginTop="15dp"/>
-
-  <LinearLayout
-      android:id="@+id/share_panel"
-      android:layout_width="match_parent"
-      android:layout_height="40dp"
-      android:background="@color/stock_info_bg"
-      android:gravity="center_vertical"
-      android:orientation="horizontal"
-      android:layout_marginTop="15dp"
-      >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:text="@string/buy_sell_confirm_share_on"
-        android:textSize="13sp"
-        android:textColor="@color/authentication_button_light"
-        />
-
-    <ToggleButton
-        android:id="@+id/btn_wechat"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginLeft="8dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:background="@drawable/ic_wechat"
-        android:checked="false"
-        android:textOff=""
-        android:textOn=""
-        />
-
-    <ToggleButton
-        android:id="@+id/btn_share_li"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginLeft="8dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:background="@drawable/ic_share_li"
-        android:checked="false"
-        android:textOff=""
-        android:textOn=""
-        />
-
-    <ToggleButton
-        android:id="@+id/btn_location"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginLeft="8dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:background="@drawable/ic_location"
-        android:checked="false"
-        android:textOff=""
-        android:textOn=""
-        />
-
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
-    <ToggleButton
-        android:id="@+id/switch_share_public"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="12dp"
-        android:textSize="13sp"
-        android:background="@null"
-        android:textOn="@string/buy_sell_confirm_share_public"
-        android:textOff="@string/buy_sell_confirm_share_private"
-        android:textColor="@color/authentication_button_light"
-        />
-
   </LinearLayout>
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/buysell_dialog_scroll_height"
+      android:id="@+id/scrollview"
+      >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        tools:background="#f00"
+        >
+      <!--<ProgressBar-->
+      <!--android:id="@+id/quote_refresh_countdown"-->
+      <!--android:layout_width="match_parent"-->
+      <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
+      <!--android:layout_height="4dp"-->
+      <!--android:progressDrawable="@drawable/progress_thin_square"-->
+      <!--/>-->
+
+      <TableRow
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          >
+
+        <TextView
+            android:id="@+id/vtrade_value"
+            style="@style/TH.SmallValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            tools:text="US$ 0"
+            />
+
+        <TextView
+            android:id="@+id/vquantity"
+            style="@style/TH.SmallValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#3720c0"
+            tools:text="0"
+            />
+
+        <TextView
+            android:id="@+id/vcash_left"
+            style="@style/TH.SmallValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            tools:text="US$ 338,306"
+            />
+
+      </TableRow>
+
+      <TableRow
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginTop="-5dp"
+          >
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/buy_sell_trade_value"
+            />
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/buy_sell_quantity"
+            />
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:id="@+id/dialog_cash_left"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+      </TableRow>
+
+      <SeekBar
+          android:id="@+id/seekBar"
+          android:layout_width="match_parent"
+          android:layout_height="32dp"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="20dp"
+          />
+
+      <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
+          android:id="@+id/quick_price_button_set"
+          android:layout_width="match_parent"
+          android:layout_height="25dp"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="20dp"
+          android:background="@drawable/trend_price_bar"
+          android:orientation="horizontal"
+          >
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle5k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/buy_sell_p5k"
+            app:price="5000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator"/>
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle10k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/buy_sell_p10k"
+            app:price="10000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator"/>
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle25k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/buy_sell_p25k"
+            app:price="25000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator"/>
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle50k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/buy_sell_p50k"
+            app:price="50000"
+            />
+
+      </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
+
+      <EditText
+          android:id="@+id/comments"
+          android:layout_width="match_parent"
+          android:layout_height="45dp"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="20dp"
+          android:background="@drawable/security_dialog_comment_bg"
+          android:ems="10"
+          android:gravity="top"
+          android:padding="5dp"
+          android:hint="@string/buy_sell_confirm_buy_comment"
+          android:inputType="textMultiLine"
+          android:layout_marginTop="15dp"/>
+      <LinearLayout
+          android:id="@+id/share_panel"
+          android:layout_width="match_parent"
+          android:layout_height="40dp"
+          android:background="@color/stock_info_bg"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+          android:layout_marginTop="15dp"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:text="@string/buy_sell_confirm_share_on"
+            android:textSize="13sp"
+            android:textColor="@color/authentication_button_light"
+            />
+
+        <ToggleButton
+            android:id="@+id/btn_wechat"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="8dp"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ic_wechat"
+            android:checked="false"
+            android:textOff=""
+            android:textOn=""
+            />
+
+        <ToggleButton
+            android:id="@+id/btn_share_li"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="8dp"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ic_share_li"
+            android:checked="false"
+            android:textOff=""
+            android:textOn=""
+            />
+
+        <ToggleButton
+            android:id="@+id/btn_location"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="8dp"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ic_location"
+            android:checked="false"
+            android:textOff=""
+            android:textOn=""
+            />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <ToggleButton
+            android:id="@+id/switch_share_public"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="12dp"
+            android:textSize="13sp"
+            android:background="@null"
+            android:textOn="@string/buy_sell_confirm_share_public"
+            android:textOff="@string/buy_sell_confirm_share_private"
+            android:textColor="@color/authentication_button_light"
+            />
+
+      </LinearLayout>
+
+
+    </LinearLayout>
+  </ScrollView>
+
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -310,5 +331,4 @@
         />
 
   </LinearLayout>
-
 </LinearLayout>
