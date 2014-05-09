@@ -85,6 +85,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialSharer;
@@ -1522,8 +1523,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.security_buy_sell_dialog, null);
+        view.setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
+            }
+        });
         builder.setView(view);
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         TextView stockNameTextView = (TextView) view.findViewById(R.id.dialog_stock_name);
         if (stockNameTextView != null)
         {
@@ -1542,6 +1550,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
+                    DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
                     handleBtnAddCashPressed();
                 }
             });
