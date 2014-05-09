@@ -17,7 +17,8 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
@@ -36,8 +37,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
-    @Inject UserService userService;
+    @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+
+    protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -80,6 +83,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override public void onDestroyView()
     {
+        detachMiddleCallbackForgotPassword();
         if (this.email != null)
         {
             this.email.removeAllListeners();
@@ -105,6 +109,15 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         this.forgotPasswordLink = null;
 
         super.onDestroyView();
+    }
+
+    protected void detachMiddleCallbackForgotPassword()
+    {
+        if (middleCallbackForgotPassword != null)
+        {
+            middleCallbackForgotPassword.setPrimaryCallback(null);
+        }
+        middleCallbackForgotPassword = null;
     }
 
     @Override public void onClick(View view)
@@ -199,7 +212,9 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);
 
-        userService.forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
+        detachMiddleCallbackForgotPassword();
+        middleCallbackForgotPassword = userServiceWrapper
+                .forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
     }
 
     private THCallback<ForgotPasswordDTO> createForgotPasswordCallback()

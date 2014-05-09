@@ -13,6 +13,8 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -34,8 +36,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.http.GET;
-import retrofit.http.Query;
 
 @Singleton public class UserServiceWrapper
 {
@@ -347,6 +347,22 @@ import retrofit.http.Query;
     {
         MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Forgot Password">
+    public ForgotPasswordDTO forgotPassword(ForgotPasswordFormDTO forgotPasswordFormDTO)
+    {
+        return userService.forgotPassword(forgotPasswordFormDTO);
+    }
+
+    public MiddleCallback<ForgotPasswordDTO> forgotPassword(
+            ForgotPasswordFormDTO forgotPasswordFormDTO,
+            Callback<ForgotPasswordDTO> callback)
+    {
+        MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.forgotPassword(forgotPasswordFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

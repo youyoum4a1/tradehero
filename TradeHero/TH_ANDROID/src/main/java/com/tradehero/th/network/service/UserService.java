@@ -79,8 +79,7 @@ public interface UserService
     @POST("/users")
     UserProfileDTO signUp(
             @Header("Authorization") String authorization,
-            @Body UserFormDTO user)
-            throws RetrofitError;
+            @Body UserFormDTO user);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
@@ -123,36 +122,19 @@ public interface UserService
     //<editor-fold desc="Signin">
     @POST("users/signin")
     Response signIn(
-            @Body WebSignInFormDTO webSignInFormDTO)
-        throws RetrofitError;
+            @Body WebSignInFormDTO webSignInFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
     @GET("/checkDisplayNameAvailable")
     UserAvailabilityDTO checkDisplayNameAvailable(
-            @Query("displayName") String username)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @GET("/checkDisplayNameAvailable")
-    void checkDisplayNameAvailable(
-            @Query("displayName") String username,
-            Callback<UserAvailabilityDTO> callback);
+            @Query("displayName") String username);
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
     @POST("/forgotPassword")
     ForgotPasswordDTO forgotPassword(
-            @Body ForgotPasswordFormDTO forgotPasswordFormDTO)
-        throws RetrofitError;
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/forgotPassword")
-    void forgotPassword(
-            @Body ForgotPasswordFormDTO forgotPasswordFormDTO,
-            Callback<ForgotPasswordDTO> callback);
+            @Body ForgotPasswordFormDTO forgotPasswordFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
