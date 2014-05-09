@@ -13,12 +13,12 @@
   <string name="leaderboard_sort_comments">评论</string>
   <string name="leaderboard_user_sharpe_ratio">夏普比率</string>
   <string name="leaderboard_positions_count"># 持仓</string>
-  <string name="leaderboard_number_trades_in_period_title">在一定时间内的交易数</string>
+  <string name="leaderboard_number_trades_in_period_title">周期交易数</string>
   <string name="leaderboard_win_ratio_title">胜率</string>
   <string name="leaderboard_avg_days_held">平均日持有数</string>
   <string name="leaderboard_followers_count"># 粉丝</string>
   <string name="leaderboard_comments_count"># 评论</string>
-  <string name="leaderboard_roi_annualized"><![CDATA[(年度化: <b>%s</b>)]]></string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(年化率: <b>%s</b>)]]></string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">帮助</string>
@@ -45,11 +45,11 @@
   <string name="error_fetch_leaderboard_def_list_key">获取英雄榜定义列表出现错误</string>
   <string name="leaderboard_community_followers">粉丝</string>
   <string name="leaderboard_community_heros">英雄</string>
-  <string name="leaderboard_community_hero_premium">{0,choice,0#付费|0&lt;付费({0})}</string>
-  <string name="leaderboard_community_hero_free">{0,choice,0#免费|0&lt;免费({0})}</string>
+  <string name="leaderboard_community_hero_premium">{0,choice,0#高级|0&lt;高级({0})}</string>
+  <string name="leaderboard_community_hero_free">{0,choice,0#普通|0&lt;普通({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#所有|0&lt;所有({0})}</string>
 
-  <string name="follower_type_premium">付费粉丝</string>
-  <string name="follower_type_free">免费粉丝</string>
+  <string name="follower_type_premium">高级粉丝</string>
+  <string name="follower_type_free">普通粉丝</string>
   <string name="follower_type_all">所有粉丝</string>
 </resources>
