@@ -47,6 +47,17 @@ import javax.inject.Singleton;
         return userServiceWrapper.get().getUser(key);
     }
 
+    @Override public GetOrFetchTask<UserBaseKey, UserProfileDTO> getOrFetch(
+            UserBaseKey key, boolean forceUpdateCache,
+            Listener<UserBaseKey, UserProfileDTO> initialListener)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException("UserBaseKey cannot be null");
+        }
+        return super.getOrFetch(key, forceUpdateCache, initialListener);
+    }
+
     public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
     {
         if (baseKeys == null)
