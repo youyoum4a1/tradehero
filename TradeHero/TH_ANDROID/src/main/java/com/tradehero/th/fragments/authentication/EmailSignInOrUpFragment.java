@@ -8,7 +8,7 @@ import android.widget.Button;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
@@ -17,7 +17,6 @@ import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
@@ -73,9 +72,9 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
         }
     }
 
-    public JSONObject getUserFormJSON ()
+    public JSONCredentials getUserFormJSON ()
     {
-        return new JSONObject(getUserFormMap());
+        return new JSONCredentials(getUserFormMap());
     }
 
     protected Map<String, Object> getUserFormMap ()

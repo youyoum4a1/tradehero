@@ -3,24 +3,24 @@ package com.tradehero.th.auth;
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
-    private static JSONObject credentials;
+    private static JSONCredentials credentials;
 
     public EmailAuthenticationProvider()
     {
     }
 
-    public EmailAuthenticationProvider(JSONObject credentials)
+    public EmailAuthenticationProvider(JSONCredentials credentials)
     {
         setCredentials (credentials);
     }
 
-    public static void setCredentials (JSONObject credentials)
+    public static void setCredentials (JSONCredentials credentials)
     {
         EmailAuthenticationProvider.credentials = credentials;
     }
@@ -73,7 +73,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         // throw new UnsupportedOperationException();
     }
 
-    @Override public boolean restoreAuthentication(JSONObject paramJSONObject)
+    @Override public boolean restoreAuthentication(JSONCredentials paramJSONObject)
     {
         // Do nothing
         return true;

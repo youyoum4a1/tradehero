@@ -1,17 +1,13 @@
 package com.tradehero.th.api.form;
 
-import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
+import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
 import org.json.JSONObject;
-import retrofit.mime.TypedOutput;
 
 public class UserFormFactory
 {
@@ -27,7 +23,7 @@ public class UserFormFactory
     public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
     public static final String KEY_PROFILE_PICTURE = "profilePicture";
 
-    public static UserFormDTO create(JSONObject json)
+    public static UserFormDTO create(JSONCredentials json)
     {
         try
         {
@@ -70,7 +66,7 @@ public class UserFormFactory
         return new UserFormDTO();
     }
 
-    private static void populateBase(UserFormDTO userFormDTO, JSONObject json) throws JSONException
+    private static void populateBase(UserFormDTO userFormDTO, JSONCredentials json) throws JSONException
     {
         if (json.has(KEY_EMAIL))
         {
@@ -100,9 +96,9 @@ public class UserFormFactory
         {
             userFormDTO.lastName = json.getString(KEY_LAST_NAME);
         }
-        if (json.has(KEY_PROFILE_PICTURE) && json.get(KEY_PROFILE_PICTURE) != null)
+        if (json.profilePicture != null)
         {
-            userFormDTO.profilePicture = (TypedOutput) json.get(KEY_PROFILE_PICTURE);
+            userFormDTO.profilePicture = json.profilePicture;
         }
     }
 

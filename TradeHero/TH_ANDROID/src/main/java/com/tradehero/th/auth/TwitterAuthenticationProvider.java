@@ -2,11 +2,11 @@ package com.tradehero.th.auth;
 
 import android.content.Context;
 import com.tradehero.th.auth.operator.Twitter;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 @Singleton
 public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
@@ -61,7 +61,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
                 callback.onStart();
             }
 
-            @Override public void onSuccess(JSONObject result)
+            @Override public void onSuccess(JSONCredentials result)
             {
                 if (TwitterAuthenticationProvider.this.currentOperationCallback != callback)
                 {
@@ -69,7 +69,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
                 }
                 try
                 {
-                    JSONObject authData;
+                    JSONCredentials authData;
                     try
                     {
                         authData = TwitterAuthenticationProvider.this.getAuthData(
@@ -93,10 +93,10 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
         });
     }
 
-    public JSONObject getAuthData(String userId, String screenName, String authToken, String authTokenSecret)
+    public JSONCredentials getAuthData(String userId, String screenName, String authToken, String authTokenSecret)
             throws JSONException
     {
-        JSONObject authData = new JSONObject();
+        JSONCredentials authData = new JSONCredentials();
         authData.put(AUTH_TOKEN_KEY, authToken);
         authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
         authData.put(ID_KEY, userId);
@@ -126,7 +126,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
         return sb.toString();
     }
 
-    @Override public boolean restoreAuthentication(JSONObject authData)
+    @Override public boolean restoreAuthentication(JSONCredentials authData)
     {
         if (authData == null)
         {

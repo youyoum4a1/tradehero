@@ -78,4 +78,12 @@
   <string name="sell">Sell</string>
   <string name="buy">Buy</string>
   <string name="chart_loading_image">Loading chart image…</string>
+  <!--do not translate begin-->
+  <string name="tap_stream_type_install">android-tradehero-install</string>
+  <string name="tap_stream_type_open">android-tradehero-open</string>
+  <string name="tap_stream_type_baidu_install">android-tradehero-baidu-install</string>
+  <string name="tap_stream_type_baidu_open">android-tradehero-baidu-open</string>
+  <string name="tap_stream_type_tencent_install">android-tradehero-tencent-install</string>
+  <string name="tap_stream_type_tencent_open">android-tradehero-tencent-open</string>
+  <!--do not translate end-->
 </resources>

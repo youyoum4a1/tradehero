@@ -2,22 +2,23 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:state_selected="true">
     <shape>
-      <solid android:color="#25a5e1"/>
+      <solid android:color="#6e96fa"/>
     </shape>
   </item>
   <item android:state_checked="true">
     <shape>
-      <solid android:color="#25a5e1"/>
+      <solid android:color="#6e96fa"/>
     </shape>
   </item>
   <item android:state_pressed="true">
     <shape>
-      <solid android:color="#25a5e1"/>
+      <solid android:color="#6e96fa"/>
     </shape>
   </item>
   <item>
     <shape>
-      <solid android:color="#dce2e9"/>
+      <solid android:color="#7ea9ff"/>
     </shape>
   </item>
+
 </selector>

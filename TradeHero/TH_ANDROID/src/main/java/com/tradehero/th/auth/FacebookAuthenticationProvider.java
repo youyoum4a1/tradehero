@@ -1,7 +1,5 @@
 package com.tradehero.th.auth;
 
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +15,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -29,7 +28,6 @@ import java.util.SimpleTimeZone;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
-import org.json.JSONObject;
 import timber.log.Timber;
 
 @Singleton
@@ -85,18 +83,18 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         this.currentOperationCallback = callback;
         boolean result = this.facebook.extendAccessToken(context, new Facebook.ServiceListener()
         {
-            public void onComplete(Bundle values)
+            @Override public void onComplete(Bundle values)
             {
                 FacebookAuthenticationProvider.this.handleSuccess(
                         FacebookAuthenticationProvider.this.userId);
             }
 
-            public void onFacebookError(FacebookError e)
+            @Override public void onFacebookError(FacebookError e)
             {
                 FacebookAuthenticationProvider.this.handleError(e);
             }
 
-            public void onError(Error e)
+            @Override public void onError(Error e)
             {
                 FacebookAuthenticationProvider.this.handleError(e);
             }
@@ -107,7 +105,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    public synchronized void authenticate(THAuthenticationProvider.THAuthenticationCallback callback)
+    @Override public synchronized void authenticate(THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if (this.currentOperationCallback != null)
         {
@@ -199,7 +197,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    public synchronized void cancel()
+    @Override public synchronized void cancel()
     {
         handleCancel();
     }
@@ -209,7 +207,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         return this.activityCode;
     }
 
-    public String getAuthType()
+    @Override public String getAuthType()
     {
         return FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE;
     }
@@ -266,9 +264,9 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    public JSONObject getAuthData(String id, String accessToken, Date expiration) throws JSONException
+    public JSONCredentials getAuthData(String id, String accessToken, Date expiration) throws JSONException
     {
-        JSONObject authData = new JSONObject();
+        JSONCredentials authData = new JSONCredentials();
         authData.put(SocialAuthenticationProvider.ID_KEY, id);
         authData.put(ACCESS_TOKEN_KEY, accessToken);
         authData.put(EXPIRATION_DATE_KEY, this.preciseDateFormat.format(expiration));
@@ -283,7 +281,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
 
         this.userId = userId;
-        JSONObject authData = null;
+        JSONCredentials authData = null;
         try
         {
             authData = getAuthData(userId, this.session.getAccessToken(), this.session.getExpirationDate());
@@ -318,7 +316,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         this.permissions = permissions;
     }
 
-    public boolean restoreAuthentication(JSONObject authData)
+    @Override public boolean restoreAuthentication(JSONCredentials authData)
     {
         if (authData == null)
         {
@@ -369,9 +367,9 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         return false;
     }
 
-    public void deauthenticate()
+    @Override public void deauthenticate()
     {
-        JSONObject authData = null;
+        JSONCredentials authData = null;
         try
         {
             authData = getAuthData("", "", new Date());
