@@ -38,6 +38,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -71,7 +72,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -167,7 +167,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             {
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 detachMiddleCallbackConnect();
                 middleCallbackConnect = socialServiceWrapper.connect(

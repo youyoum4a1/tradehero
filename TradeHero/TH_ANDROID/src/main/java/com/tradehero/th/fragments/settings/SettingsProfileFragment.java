@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
@@ -45,7 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
-import org.json.JSONObject;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -199,9 +199,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         return map;
     }
 
-    public JSONObject getUserFormJSON()
+    public JSONCredentials getUserFormJSON()
     {
-        return new JSONObject(getUserFormMap());
+        return new JSONCredentials(getUserFormMap());
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

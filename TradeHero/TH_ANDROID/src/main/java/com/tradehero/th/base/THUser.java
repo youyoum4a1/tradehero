@@ -26,7 +26,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.service.SessionService;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
@@ -54,7 +53,7 @@ public class THUser
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
-    private static HashMap<String, JSONObject> credentials;
+    private static HashMap<String, JSONCredentials> credentials;
 
     @Inject @SessionToken static StringPreference currentSessionToken;
     @Inject @AuthenticationType public /* TODO, remove public */ static StringPreference currentAuthenticationType;
@@ -82,7 +81,7 @@ public class THUser
         {
             try
             {
-                JSONObject json = new JSONObject(token);
+                JSONCredentials json = new JSONCredentials(token);
                 credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
             }
             catch (JSONException e)
@@ -104,7 +103,7 @@ public class THUser
 
     private static void logInWithAsync(final THAuthenticationProvider authenticator, final LogInCallback callback)
     {
-        JSONObject savedTokens = credentials.get(authenticator.getAuthType());
+        JSONCredentials savedTokens = credentials.get(authenticator.getAuthType());
         if (savedTokens != null)
         {
             callback.onStart();
@@ -121,7 +120,7 @@ public class THUser
         authenticator.authenticate(outerCallback);
     }
 
-    public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    public static void logInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         UserFormDTO userFormDTO = UserFormFactory.create(json);
         if (userFormDTO == null)
@@ -177,7 +176,7 @@ public class THUser
                 callback.onStart();
             }
 
-            @Override public void onSuccess(JSONObject json)
+            @Override public void onSuccess(JSONCredentials json)
             {
                 try
                 {
@@ -204,7 +203,7 @@ public class THUser
         };
     }
 
-    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         return new THCallback<UserProfileDTO>()
         {
@@ -226,7 +225,7 @@ public class THUser
         };
     }
 
-    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         return new THCallback<UserLoginDTO>()
         {
@@ -287,7 +286,7 @@ public class THUser
     /**
      * @param json json data is from social media
      */
-    public static void saveCredentialsToUserDefaults(JSONObject json)
+    public static void saveCredentialsToUserDefaults(JSONCredentials json)
     {
         if (credentials == null)
         {
@@ -309,7 +308,7 @@ public class THUser
         }
 
         Set<String> toSave = new HashSet<>();
-        for (JSONObject entry : credentials.values())
+        for (JSONCredentials entry : credentials.values())
         {
             toSave.add(entry.toString());
         }

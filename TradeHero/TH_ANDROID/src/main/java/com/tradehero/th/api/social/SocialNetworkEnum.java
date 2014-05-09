@@ -2,7 +2,6 @@ package com.tradehero.th.api.social;
 
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 
-
 public enum SocialNetworkEnum
 {
     FB(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE, "Facebook"),

@@ -15,6 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -39,7 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
-import org.json.JSONObject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -54,7 +54,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
-    private JSONObject twitterJson;
+    private JSONCredentials twitterJson;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -215,7 +215,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
-            JSONObject createdJson = castedFragment.getUserFormJSON();
+            JSONCredentials createdJson = castedFragment.getUserFormJSON();
             EmailAuthenticationProvider.setCredentials(createdJson);
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
             THUser.setAuthenticationMode(authenticationMode);
@@ -239,7 +239,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 return signingUp;
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 return true;
             }
@@ -288,7 +288,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 return !(currentFragment instanceof SignInFragment);
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 if (super.onSocialAuthDone(json))
                 {
@@ -359,7 +359,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 
-    private void setTwitterData(JSONObject json)
+    private void setTwitterData(JSONCredentials json)
     {
         twitterJson = json;
     }
@@ -367,7 +367,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     private class SocialAuthenticationCallback extends LogInCallback
     {
-
         private final String providerName;
         public SocialAuthenticationCallback(String providerName)
         {
@@ -395,7 +394,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             progressDialog.hide();
         }
 
-        @Override public boolean onSocialAuthDone(JSONObject json)
+        @Override public boolean onSocialAuthDone(JSONCredentials json)
         {
             if (!isSigningUp())
             {
@@ -422,8 +421,5 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             return false;
         }
-
     }
-
-
 }
