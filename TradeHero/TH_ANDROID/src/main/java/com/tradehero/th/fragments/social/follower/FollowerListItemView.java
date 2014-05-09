@@ -134,7 +134,7 @@ public class FollowerListItemView extends RelativeLayout
             displayUserIcon();
             displayTitle();
             displayRevenue();
-            //displayCountryLogo();
+            displayCountryLogo();
         }
     }
 

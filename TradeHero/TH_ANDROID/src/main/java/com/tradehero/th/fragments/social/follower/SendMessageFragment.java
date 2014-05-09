@@ -101,6 +101,7 @@ public class SendMessageFragment extends DashboardFragment
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.broadcast_message_title));
+        // better use android.R.drawable.ic_menu_send;
         MenuItem menuItem = menu.add(0, 100, 0, getString(R.string.broadcast_message_action_send));
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("onCreateOptionsMenu");
