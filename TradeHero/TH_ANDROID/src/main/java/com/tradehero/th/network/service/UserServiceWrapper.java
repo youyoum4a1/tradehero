@@ -446,6 +446,13 @@ import java.util.List;
     {
         return userService.getUserTransactions(userBaseKey.key);
     }
+
+    public MiddleCallback<List<UserTransactionHistoryDTO>> getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    {
+        MiddleCallback<List<UserTransactionHistoryDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
