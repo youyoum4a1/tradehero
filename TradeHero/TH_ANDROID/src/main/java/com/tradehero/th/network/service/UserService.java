@@ -140,41 +140,18 @@ public interface UserService
     //<editor-fold desc="Search Users">
     @GET("/users/search")
     List<UserSearchResultDTO> searchUsers(
-            @Query("q") String searchString)
-        throws RetrofitError;
-
-    @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
             @Query("q") String searchString,
-            @Query("page") int page)
-        throws RetrofitError;
-
-    @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
-            @Query("q") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage)
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage)
         throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
     @GET("/users/allowableRecipients")
-    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients();
-
-    @GET("/users/allowableRecipients")
-    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
-            @Query("searchTerm") String searchString);
-
-    @GET("/users/allowableRecipients")
     PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString,
-            @Query("page") int page);
-
-    @GET("/users/allowableRecipients")
-    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage);
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Get User">

@@ -381,17 +381,32 @@ import retrofit.RetrofitError;
     {
         if (key.searchString == null)
         {
-            throw new IllegalArgumentException("SearchUserListType.searchString cannot be null");
-        }
-        else if (key.page == null)
-        {
-            return this.userService.searchUsers(key.searchString);
-        }
-        else if (key.perPage == null)
-        {
-            return this.userService.searchUsers(key.searchString, key.page);
+            return this.userService.searchUsers(null, null, null);
         }
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
+    }
+
+    public MiddleCallback<List<UserSearchResultDTO>> searchUsers(UserListType key, Callback<List<UserSearchResultDTO>> callback)
+    {
+        if (key instanceof SearchUserListType)
+        {
+            return searchUsers((SearchUserListType) key, callback);
+        }
+        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+    }
+
+    protected MiddleCallback<List<UserSearchResultDTO>> searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
+    {
+        MiddleCallback<List<UserSearchResultDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        if (key.searchString == null)
+        {
+            this.userServiceAsync.searchUsers(null, null, null, middleCallback);
+        }
+        else
+        {
+            this.userServiceAsync.searchUsers(key.searchString, key.page, key.perPage, middleCallback);
+        }
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -400,17 +415,9 @@ import retrofit.RetrofitError;
     {
         if (key == null)
         {
-            return userService.searchAllowableRecipients();
+            return userService.searchAllowableRecipients(null, null, null);
         }
-        else if (key.page == null)
-        {
-            return userService.searchAllowableRecipients(key.searchString);
-        }
-        else if (key.perPage == null)
-        {
-            return userService.searchAllowableRecipients(key.searchString, key.page);
-        }
-        return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
+         return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
     public BaseMiddleCallback<PaginatedDTO<AllowableRecipientDTO>> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedDTO<AllowableRecipientDTO>> callback)
@@ -419,15 +426,7 @@ import retrofit.RetrofitError;
                 middleCallback = new BaseMiddleCallback<>(callback);
         if (key == null)
         {
-            userServiceAsync.searchAllowableRecipients(middleCallback);
-        }
-        else if (key.page == null)
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, middleCallback);
-        }
-        else if (key.perPage == null)
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, middleCallback);
+            userServiceAsync.searchAllowableRecipients(null, null, null, middleCallback);
         }
         else
         {

@@ -147,43 +147,17 @@ interface UserServiceAsync
     @GET("/users/search")
     void searchUsers(
             @Query("q") String searchString,
-            Callback<List<UserSearchResultDTO>> callback);
-
-    @GET("/users/search")
-    void searchUsers(
-            @Query("q") String searchString,
-            @Query("page") int page,
-            Callback<List<UserSearchResultDTO>> callback);
-
-    @GET("/users/search")
-    void searchUsers(
-            @Query("q") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
             Callback<List<UserSearchResultDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
             @Query("searchTerm") String searchString,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") int page,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
     //</editor-fold>
 
