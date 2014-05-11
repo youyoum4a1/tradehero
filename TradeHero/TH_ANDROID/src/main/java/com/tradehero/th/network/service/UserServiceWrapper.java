@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -14,6 +15,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -24,6 +26,8 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import retrofit.Callback;
+import retrofit.client.Response;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
@@ -74,6 +78,11 @@ import java.util.List;
     protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(UserBaseKey playerId)
     {
         return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+    }
+
+    protected DTOProcessor<Response> createUserDeletedProcessor(UserBaseKey playerId)
+    {
+        return new DTOProcessorUserDeleted(userProfileCache, playerId);
     }
     //</editor-fold>
 
@@ -493,6 +502,34 @@ import java.util.List;
                 middleCallback = new BaseMiddleCallback<>(callback, createUpdateAlipayAccountProcessor(userBaseKey));
         userServiceAsync.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO,
                 middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Delete User">
+    public Response deleteUser(UserBaseKey userKey)
+    {
+        return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
+    }
+
+    public MiddleCallback<Response> deleteUser(UserBaseKey userKey, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
+        userServiceAsync.deleteUser(userKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Friends">
+    public List<UserFriendsDTO> getFriends(UserBaseKey userKey)
+    {
+        return userService.getFriends(userKey.key);
+    }
+
+    public MiddleCallback<List<UserFriendsDTO>> getFriends(UserBaseKey userKey, Callback<List<UserFriendsDTO>> callback)
+    {
+        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getFriends(userKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
