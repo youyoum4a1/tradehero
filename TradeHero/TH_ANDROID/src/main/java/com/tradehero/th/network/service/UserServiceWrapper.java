@@ -4,15 +4,7 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -31,11 +23,10 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.List;
+import retrofit.Callback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
-import retrofit.RetrofitError;
+import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -297,7 +288,6 @@ import retrofit.RetrofitError;
     public UserProfileDTO updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled)
-            throws RetrofitError
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
@@ -317,7 +307,6 @@ import retrofit.RetrofitError;
     public UserProfileDTO updateProfilePropertyPushNotifications(
             UserBaseKey userBaseKey,
             Boolean pushNotificationsEnabled)
-            throws RetrofitError
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
@@ -432,6 +421,22 @@ import retrofit.RetrofitError;
         {
             userServiceAsync.searchAllowableRecipients(key.searchString, key.page, key.perPage, middleCallback);
         }
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get User">
+    public UserProfileDTO getUser(UserBaseKey userKey)
+    {
+        return userService.getUser(userKey.key);
+    }
+
+    public MiddleCallback<UserProfileDTO> getUser(
+            UserBaseKey userKey,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getUser(userKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
