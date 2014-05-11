@@ -180,14 +180,6 @@ public interface UserService
     Response inviteFriends(
             @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO);
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/inviteFriends")
-    void inviteFriends(
-            @Path("userId") int userId,
-            @Body InviteFormDTO inviteFormDTO,
-            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Add Follow Credit">
