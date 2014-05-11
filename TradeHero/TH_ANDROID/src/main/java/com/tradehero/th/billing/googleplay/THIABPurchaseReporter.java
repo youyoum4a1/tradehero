@@ -145,8 +145,8 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
         else
         {
-            userService.get().addCredit(
-                    portfolioId.userId,
+            userServiceWrapper.addCredit(
+                    portfolioId.getUserBaseKey(),
                     purchase.getGooglePlayPurchaseDTO(),
                     new THIABPurchaseReporterPurchaseCallback());
         }

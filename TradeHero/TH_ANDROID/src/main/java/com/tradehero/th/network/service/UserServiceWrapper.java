@@ -549,6 +549,20 @@ import java.util.List;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Add Credit">
+    public UserProfileDTO addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO)
+    {
+        return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
+    }
+
+    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Follow Hero">
     public UserProfileDTO follow(UserBaseKey userBaseKey)
     {

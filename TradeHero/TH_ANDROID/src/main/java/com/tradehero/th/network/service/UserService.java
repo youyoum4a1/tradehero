@@ -187,14 +187,6 @@ public interface UserService
     UserProfileDTO addCredit(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO);
-
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/addCredit")
-    void addCredit(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
