@@ -5,7 +5,10 @@
       android:orientation="horizontal"
       android:id="@+id/mention_widget"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:layout_gravity="center_vertical"
+      >
     <TextView
         android:id="@+id/btn_mention"
         style="@style/TH.TextSocialButtons"
