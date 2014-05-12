@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="invite_friends">邀请朋友</string>
-  <string name="invite_friend_refer_friend_empty_view">您的好友列表是空的, 连接微博或是 Linkedin 推荐朋友吧</string>
-  <string name="invite_friend_send_invitations">发送邀请</string>
-  <string name="invite_friend_refer_friend_announcement">邀请朋友加入股货英雄，获取免费虚拟现金!</string>
-  <string name="invite_friend_search_friends">搜索朋友</string>
-  <string name="invite_friend_add_all">全部添加</string>
-  <string name="invite_friend_remove_all">全部移除</string>
-  <string name="invite_friend_success">成功</string>
-  <string name="invite_friend_facebook_tradehero_refer_friend_message">下载股货英雄，跟着顶尖英雄赚大钱!</string>
-  <string name="invite_friend_request_canceled">请求取消</string>
-  <string name="invite_friend_request_sent">请求已发</string>
-  <string name="error_fetch_friends">获取好友列表失败</string>
-  <string name="error_fetch_local_contacts">获取手机通讯录失败</string>
-  <string name="error_fetch_server_friends">从服务器获取好友列表失败</string>
+  <string name="invite_friends">Invite Friends</string>
+  <string name="invite_friend_refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
+  <string name="invite_friend_send_invitations">Send Invitations</string>
+  <string name="invite_friend_refer_friend_announcement">Get FREE TradeHero Dollars for each friend who signs up for TradeHero!</string>
+  <string name="invite_friend_search_friends">Search Friends</string>
+  <string name="invite_friend_add_all">Add All</string>
+  <string name="invite_friend_remove_all">Remove All</string>
+  <string name="invite_friend_success">Success</string>
+  <string name="invite_friend_facebook_tradehero_refer_friend_message">Download TradeHero: make money copying top traders!</string>
+  <string name="invite_friend_request_canceled">Request canceled</string>
+  <string name="invite_friend_request_sent">Request sent</string>
+
+  <string name="error_fetch_friends">Failed to retrieve your friends list</string>
+  <string name="error_fetch_local_contacts">Failed to retrieve the contacts from your phone</string>
+  <string name="error_fetch_server_friends">Failed to retrieve your friends list from the server</string>
 
 </resources>

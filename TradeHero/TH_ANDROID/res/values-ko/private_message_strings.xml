@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="private_message_empty_list_hint">开始会话</string>
-  <string name="private_message_message_hint">输入讯息</string>
-  <string name="private_message_btn_send">发送</string>
-  <string name="private_message_limited_count">剩余可发送消息次数 %d \n升级获得不受限的消息功能!</string>
-  <string name="private_message_subtitle">私信</string>
-  <string name="private_message_expired_free_message_title">可发送消息次数已用完</string>
-  <string name="private_message_expired_free_message_description">您已经用完了与 %1$s 的免费消息次数.\n您是否要保留这段对话并且高级关注 %1$s?</string>
-  <string name="private_message_expired_free_message_ok">是的</string>
-  <string name="private_message_expired_free_message_cancel">不了</string>
-  <string name="error_fetch_private_message_initiating_discussion">获取消息列表失败</string>
+  <string name="private_message_empty_list_hint">Start a conversation</string>
+  <string name="private_message_message_hint">Type a Message</string>
+  <string name="private_message_btn_send">Send</string>
+
+  <string name="private_message_limited_count">%d message threads left.\nUpgrade now for unlimited messaging!</string>
+
+  <string name="private_message_subtitle">Private Message Thread</string>
+
+  <string name="private_message_expired_free_message_title">No more free message threads</string>
+  <string name="private_message_expired_free_message_description">You have exhausted the free message threads you can send to %1$s.\nDo you want to keep the conversation running and premium-follow %1$s?</string>
+  <string name="private_message_expired_free_message_ok">Yes</string>
+  <string name="private_message_expired_free_message_cancel">No</string>
+
+  <string name="error_fetch_private_message_initiating_discussion">Failed to fetch the initiating discussion</string>
+
 </resources>

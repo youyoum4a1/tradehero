@@ -6,7 +6,7 @@
     <item>@string/search_stock_spinner_people</item>
   </string-array>
 
-  <string name="search_stock_spinner_stock">股票</string>
-  <string name="search_stock_spinner_people">用户</string>
+  <string name="search_stock_spinner_stock">Stocks</string>
+  <string name="search_stock_spinner_people">People</string>
 
 </resources>

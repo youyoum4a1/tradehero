@@ -3,40 +3,47 @@
 
   <!--timeline-->
   <string name="tutorial_timeline_content">
-    <![CDATA[查找排行榜上的牛人,按总损益排名，或按特定的“英雄指数”排名。你也可以按交易所、行业、月收益、季度收益、总收益进行筛选。\n\n竞技好友排行榜，与微博好友较劲。]]></string>
-  <string name="tutorial_timeline_header">欢迎来到股货英雄!</string>
-  <string name="tutorial_portfolio_list_header">投资组合</string>
+    <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
+  <string name="tutorial_timeline_header">Welcome to TradeHero!</string>
+  <string name="tutorial_portfolio_list_header">Portfolios</string>
 
   <!--Store screen-->
-  <string name="tutorial_store_screen_content">你可以在这里购买虚拟股金、关注点数、股市预警、数据重置，也可以在此管理订单
+  <string name="tutorial_store_screen_content">Purchase TradeHero dollars, credits, stock alerts, and portfolio reset here. You can also manage your
+    purchases.
   </string>
-  <string name="tutorial_store_screen_header">商店</string>
+  <string name="tutorial_store_screen_header">Store</string>
 
   <!--Portfolio list-->
-  <string name="tutorial_portfolio_list_content">你最近浏览过的用户名单，查看他们的持仓
+  <string name="tutorial_portfolio_list_content">Lists names of TradeHero users that you recently viewed. Drill down each name to see the position
+    details.
   </string>
 
   <!--Leaderboard-->
   <string name="tutorial_leaderboard_content">
-    <![CDATA[查找排行榜上的牛人,按总损益排名，或按特定的“英雄指数”排名。你也可以按交易所、行业、月收益、季度收益、总收益进行筛选。\n\n竞技好友排行榜，与微博好友较劲]]></string>
-  <string name="tutorial_leaderboard_header">社区</string>
+    <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
+  <string name="tutorial_leaderboard_header">Community</string>
 
   <!--Trending-->
-  <string name="tutorial_trending_header">寻找股票</string>
-  <string name="tutorial_trending_content">你可以在屏幕顶部的搜索栏，输入公司名称或符号，在我们所支持的股票交易所里搜寻特定股票。\n\n你也可以滚动查看实时交易的股票：股货英雄用户正在买入或出售的股票
+  <string name="tutorial_trending_header">Search for stocks</string>
+  <string name="tutorial_trending_content">Search for stocks across all our supported exchanges by typing into the search bar on the top of the
+    screen. You can search by company or symbol name.\n\nIf you prefer, you can scroll through the trending stocks: these are the stocks that other
+    TradeHero users are buying and selling.
   </string>
-  <string name="tutorial_buy_sell_header">买 / 卖</string>
-  <string name="tutorial_buy_sell_content">交易价格* 是指买入时得到的报价，或卖出时的投标价格。这是为了模拟市价委托型交易。对于某些股票，我们没有报价信息，我们将采用最近一次交易价格代替。\n\n交易数量不能超过每日平均交易总量或当日总量的20％，两者取较高值。你的交易数量可能会因为这个条款受限。\n\n*价格可能会因为交易所状况或我们的数据提供方有所延迟
+  <string name="tutorial_buy_sell_header">Buy / Sell</string>
+  <string name="tutorial_buy_sell_content">Trade Price* is set to the market ask price when buying, and the bid price when selling. This is to
+    simulate Market Order type transactions. For some stocks, we don\'t have ask and bid data. For these stocks, we use the last traded price of the
+    stock.\n\nTrade Quantity is limited to 20% of Average Daily Volume or Current Day Volume, whichever is higher. Your Trade Value may be limited due
+    to this constraint.\n\n*Price is delayed as specified by financial exchanges or our data providers.
   </string>
 
   <!--Positions list-->
-  <string name="tutorial_position_list_header">持仓投资回报率</string>
+  <string name="tutorial_position_list_header">Position Level ROI</string>
   <string name="tutorial_position_list_content1">
-    <![CDATA[排行榜以股友投资总额的回报率为依据。\n\n限时排行榜 (比如过去30天)，仅计算在此时段开启或关闭的交易。\n\n限区排行榜(如亚洲A股) 仅计算在特定证券交易所的交易。]]></string>
+    <![CDATA[All leaderboards may be ranked by traders\' return on investment (ROI) on the invested amounts of all trades that qualify for the leaderboard.\n\nFor time-restricted leaderboards (e.g. Last 30 Days) trades qualify by being opened or closed in the time period.\n\nFor security-restricted leaderboards (e.g. Asia A-Team) trades qualify by being on the appropriate underlying security.\n\n]]></string>
   <string name="tutorial_position_list_content2">
-    <![CDATA[请注意:\n我们保留去除非正常交易数据的权利(比如价格低于0.01美金或交易数量过大的) 。你可以下拉排行榜，查看持仓名单，浏览组成收益的具体交易]]></string>
-  <string name="tutorial_position_list_formula_left_text">投资回报率</string>
-  <string name="tutorial_position_list_formula_top_text"><![CDATA[总损益 (已实现＋未实现)]]></string>
-  <string name="tutorial_position_list_formula_bottom_text">总投资(有效交易)</string>
+    <![CDATA[NOTE:\nWe reserve the right to exclude certain trades that have incorrect price data (e.g. penny stocks below US$ 0.01 or trades with very large quantities) You can view the specific trades that make up the leaderboard P&L by drilling down on a leaderboard row and viewing the list of positions.\n\n]]></string>
+  <string name="tutorial_position_list_formula_left_text">ROI =</string>
+  <string name="tutorial_position_list_formula_top_text"><![CDATA[Total P&L (realized + unrealized)]]></string>
+  <string name="tutorial_position_list_formula_bottom_text">Total Invested (in qualifying trades)</string>
 
 </resources>

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="security_type_label_short">种类</string>
-  <string name="security_type_equity">普通股</string>
-  <string name="security_type_fund">基金</string>
-  <string name="security_type_warrant">担保</string>
-  <string name="security_type_bond">债券</string>
-  <string name="security_type_unit">单元</string>
-  <string name="security_type_tradable_rights_issue">交易权限问题</string>
-  <string name="security_type_preference_share">优先股</string>
-  <string name="security_type_depository_receipt">存托凭证</string>
-  <string name="security_type_covered_warrant">备兑权证</string>
-  <string name="security_type_preferred_sec">优先证交会</string>
-  <string name="security_type_stapled_sec">合订证券</string>
+  <string name="security_type_label_short">Type</string>
+
+  <string name="security_type_equity">Equity</string>
+  <string name="security_type_fund">Fund</string>
+  <string name="security_type_warrant">Warrant</string>
+  <string name="security_type_bond">Bond</string>
+  <string name="security_type_unit">Unit</string>
+  <string name="security_type_tradable_rights_issue">Tradable Rights Issue</string>
+  <string name="security_type_preference_share">Preference Share</string>
+  <string name="security_type_depository_receipt">Depository Receipt</string>
+  <string name="security_type_covered_warrant">Covered Warrant</string>
+  <string name="security_type_preferred_sec">Preferred Sec</string>
+  <string name="security_type_stapled_sec">Stapled Sec</string>
 </resources>

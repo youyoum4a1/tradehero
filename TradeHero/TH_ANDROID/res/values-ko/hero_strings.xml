@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="relation_following">英雄</string>
-  <string name="error_fetch_hero">获取英雄信息发生了点错误</string>
+  <string name="relation_following">Following</string>
+  <string name="error_fetch_hero">There was an error when fetching the hero information</string>
 
 </resources>
