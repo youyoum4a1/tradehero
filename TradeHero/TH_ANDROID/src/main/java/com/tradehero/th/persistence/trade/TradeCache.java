@@ -6,10 +6,8 @@ import com.tradehero.th.api.trade.TradeDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class TradeCache extends StraightDTOCache <OwnedTradeId, TradeDTO>
 {
-    public static final String TAG = TradeCache.class.getSimpleName();
     private static final int DEFAULT_MAX_SIZE = 500;
 
     @Inject public TradeCache()
