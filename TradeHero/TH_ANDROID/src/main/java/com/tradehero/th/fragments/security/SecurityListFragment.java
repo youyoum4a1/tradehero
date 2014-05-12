@@ -18,7 +18,7 @@ import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.common.widget.FlagNearEndScrollListener;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -50,7 +50,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.trending_gridview) AbsListView securityListView;
 
     protected TextWatcher filterTextWatcher;
-    protected FlagNearEndScrollListener listViewScrollListener;
+    protected FlagNearEdgeScrollListener listViewScrollListener;
     protected GestureDetector listViewGesture;
 
     protected int perPage = DEFAULT_PER_PAGE;
@@ -75,7 +75,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         showProgressSpinner(false);
 
-        listViewScrollListener = new SecurityListFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
+        listViewScrollListener = new SecurityListFlagNearEdgeScrollListener(DEFAULT_VISIBLE_THRESHOLD);
 
         // TODO this part is tricky, we have multiple screens using the same kind of data, list of security item data,
         // trending screen is the special one, which will use wrapped adapter which provides security item data AND extra tiles such as survey,
@@ -126,8 +126,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
-            listViewScrollListener.lowerFlag();
-            listViewScrollListener.activate();
+            listViewScrollListener.lowerEndFlag();
+            listViewScrollListener.activateEnd();
         }
         //load();
     }
@@ -137,7 +137,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         firstVisiblePosition = securityListView.getFirstVisiblePosition();
         if (listViewScrollListener != null)
         {
-            listViewScrollListener.deactivate();
+            listViewScrollListener.deactivateEnd();
         }
         super.onPause();
     }
@@ -157,7 +157,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        //THLog.d(TAG, "onDestroyView");
         if (securityListView != null)
         {
             securityListView.setOnItemClickListener(null);
@@ -212,8 +211,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         pagedLoader.setQueryKey(getInitialSecurityListType());
         if (this.listViewScrollListener != null)
         {
-            this.listViewScrollListener.activate();
-            this.listViewScrollListener.raiseFlag();
+            this.listViewScrollListener.activateEnd();
+            this.listViewScrollListener.raiseEndFlag();
         }
         loader.forceLoad();
     }
@@ -253,24 +252,17 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Listeners">
-    protected class SecurityListFlagNearEndScrollListener extends FlagNearEndScrollListener
+    protected class SecurityListFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
-        public final String TAG = SecurityListFlagNearEndScrollListener.class.getSimpleName();
-
-        public SecurityListFlagNearEndScrollListener(int visibleThreshold)
+        public SecurityListFlagNearEdgeScrollListener(int visibleThreshold)
         {
             super(visibleThreshold);
         }
 
-        @Override public void raiseFlag()
+        @Override public void raiseEndFlag()
         {
-            super.raiseFlag();
+            super.raiseEndFlag();
             loadNextPage();
-        }
-
-        @Override public void onScrollStateChanged(AbsListView view, int scrollState)
-        {
-            super.onScrollStateChanged(view, scrollState);
         }
     }
 
@@ -279,16 +271,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
             return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-        {
-            //if (mFilterViewPager != null && Math.abs(velocityY) > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
-            //{
-            //    mFilterViewPager.setVisibility(View.GONE);
-            //}
-            //THLog.d(TAG, "VelocityY " + velocityY);
-            return super.onFling(e1, e2, velocityX, velocityY);
         }
     }
 
@@ -327,11 +309,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             if (listViewScrollListener != null && !noMorePages)
             {
                 // There are more pages, so we want to raise the flag  when at the end.
-                listViewScrollListener.lowerFlag();
+                listViewScrollListener.lowerEndFlag();
             }
             else if (listViewScrollListener != null)
             {
-                listViewScrollListener.deactivate();
+                listViewScrollListener.deactivateEnd();
             }
         }
     };
@@ -358,7 +340,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
             if (listViewScrollListener != null)
             {
-                listViewScrollListener.lowerFlag();
+                listViewScrollListener.lowerEndFlag();
             }
         }
 

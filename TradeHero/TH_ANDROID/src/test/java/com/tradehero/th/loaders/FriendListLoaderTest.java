@@ -9,9 +9,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/24/14 Time: 11:05 AM Copyright (c) TradeHero
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class FriendListLoaderTest

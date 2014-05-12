@@ -1,8 +1,5 @@
 package com.tradehero.th.fragments.position;
 
-/**
- * Created by julien on 31/10/13
- */
 public enum PositionItemType
 {
     Header(0),

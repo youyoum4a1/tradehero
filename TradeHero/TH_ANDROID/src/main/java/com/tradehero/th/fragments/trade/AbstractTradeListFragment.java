@@ -39,9 +39,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by julien on 23/10/13
- */
 abstract public class AbstractTradeListFragment<PositionDTOType extends PositionDTO> extends DashboardFragment
 {
     @Inject Lazy<TradeListCache> tradeListCache;

@@ -12,9 +12,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 31/10/13
- */
 public class PositionLockedView extends LinearLayout
 {
     private ColorIndicator colorIndicator;

@@ -17,14 +17,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
  * Refactor the code inside AlertDialogUtil
- * Created by tho on 4/25/2014.
  */
 public class FollowDialogView extends LinearLayout
     implements DTOView<UserBaseDTO>
@@ -42,7 +41,7 @@ public class FollowDialogView extends LinearLayout
     @Inject Lazy<Picasso> picasso;
 
     private UserBaseDTO userBaseDTO;
-    private FollowRequestedListener followRequestedListener;
+    private OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
     public FollowDialogView(Context context)
@@ -87,7 +86,6 @@ public class FollowDialogView extends LinearLayout
         displayUserPhoto();
 
         displayUserName();
-
     }
 
     @OnClick({
@@ -97,7 +95,7 @@ public class FollowDialogView extends LinearLayout
     {
         if (followRequestedListener != null)
         {
-            followRequestedListener.freeFollowRequested();
+            followRequestedListener.freeFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
@@ -109,7 +107,7 @@ public class FollowDialogView extends LinearLayout
     {
         if (followRequestedListener != null)
         {
-            followRequestedListener.followRequested();
+            followRequestedListener.premiumFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
@@ -178,7 +176,7 @@ public class FollowDialogView extends LinearLayout
         }
     }
 
-    public void setFollowRequestedListener(FollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

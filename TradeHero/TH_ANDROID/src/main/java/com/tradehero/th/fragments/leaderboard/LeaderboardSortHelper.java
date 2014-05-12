@@ -6,7 +6,7 @@ import com.actionbarsherlock.view.SubMenu;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/24/13 Time: 4:22 PM Copyright (c) TradeHero */
+
 @Singleton
 public class LeaderboardSortHelper
 {

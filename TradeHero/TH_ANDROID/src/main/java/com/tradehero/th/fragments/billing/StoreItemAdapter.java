@@ -8,18 +8,7 @@ import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import java.util.HashMap;
 
-/**
- * - InApp purchase
- *     - Virtual Dollars
- *     - Follow Credits
- *     - Stock Alerts
- *     - Reset Portfolio
- * - Manage Purchases
- *     - Manage Heroes
- *     - Manage Followers
- *     - Manage Stock Alerts
- * Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 7:08 PM To change this template use File | Settings | File Templates.
- */
+
 public class StoreItemAdapter extends BaseAdapter
 {
     public static final String TAG = StoreItemAdapter.class.getSimpleName();

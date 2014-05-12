@@ -17,18 +17,17 @@ import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
+import com.tradehero.th.models.staff.StaffDTOFactory;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: nia Date: 18/10/13 Time: 5:21 PM To change this template use File | Settings | File Templates. */
 public class AboutFragment extends DashboardFragment
 {
     @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
     @InjectView(R.id.staff_list_holder) LinearLayout staffList;
 
     @Inject LocalyticsSession localyticsSession;
+    @Inject StaffDTOFactory staffDTOFactory;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,29 +42,12 @@ public class AboutFragment extends DashboardFragment
     private void initStaffList()
     {
         staffList.removeAllViews();
-        for (StaffDTO staffDTO: getStaffListData())
+        for (StaffDTO staffDTO: staffDTOFactory.getTradeHeroStaffers(getResources()))
         {
             StaffTitleView staffTitleView = (StaffTitleView) getActivity().getLayoutInflater().inflate(R.layout.staff_view, null);
-            staffTitleView.setStaffName(staffDTO.getStaffName());
-            staffTitleView.setStaffTitle(staffDTO.getStaffTitle());
+            staffTitleView.setStaffDTO(staffDTO);
             staffList.addView(staffTitleView);
         }
-    }
-
-    private List<StaffDTO> getStaffListData()
-    {
-        String[] staffs = getResources().getStringArray(R.array.staffs);
-        List<StaffDTO> staffDTOs = new ArrayList<>(staffs.length);
-        for (String staff: staffs)
-        {
-            String[] staffInfo = staff.split("\\|");
-            if (staffInfo.length < 2)
-            {
-                continue;
-            }
-            staffDTOs.add(new StaffDTO(staffInfo[0], staffInfo[1]));
-        }
-        return staffDTOs;
     }
 
     //<editor-fold desc="ActionBar">
@@ -109,7 +91,6 @@ public class AboutFragment extends DashboardFragment
         {
             @Override public void onAnimationStart(Animation animation)
             {
-
             }
 
             @Override public void onAnimationEnd(Animation animation)
@@ -119,7 +100,6 @@ public class AboutFragment extends DashboardFragment
 
             @Override public void onAnimationRepeat(Animation animation)
             {
-
             }
         });
         set.setStartOffset(3000);
@@ -138,6 +118,5 @@ public class AboutFragment extends DashboardFragment
     {
         return false;
     }
-
     //</editor-fold>
 }

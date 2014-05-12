@@ -27,7 +27,14 @@ public class TimelineDTO
 
     public List<TimelineItemDTOEnhanced> getEnhancedItems()
     {
-        return Collections.unmodifiableList(enhancedItems);
+        if (enhancedItems != null)
+        {
+            return Collections.unmodifiableList(enhancedItems);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public void setEnhancedItems(List<TimelineItemDTOEnhanced> enhancedItems)

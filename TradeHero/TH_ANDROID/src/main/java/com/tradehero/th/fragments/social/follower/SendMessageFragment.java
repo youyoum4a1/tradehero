@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.follower;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -40,6 +38,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -51,14 +50,11 @@ import timber.log.Timber;
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE =
-            SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE =
-            SendMessageFragment.class.getName() + ".messageType";
+    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
 
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
-    private MessageLifeTime messageLifeTime = MessageLifeTime.LIFETIME_FOREVER;
     /** ProgressDialog to show progress when sending message */
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
@@ -80,12 +76,6 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        showInput(true);
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -111,6 +101,7 @@ public class SendMessageFragment extends DashboardFragment
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.broadcast_message_title));
+        // better use android.R.drawable.ic_menu_send;
         MenuItem menuItem = menu.add(0, 100, 0, getString(R.string.broadcast_message_action_send));
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         Timber.d("onCreateOptionsMenu");
@@ -149,44 +140,23 @@ public class SendMessageFragment extends DashboardFragment
 
     private void initView()
     {
-        inputText.setFocusable(true);
-        inputText.requestFocus();
-        showInput(true);
+        DeviceUtil.showKeyboardDelayed(inputText);
+
         messageTypeWrapperView.setOnClickListener(this);
         changeHeroType(messageType);
     }
 
     @Override public void onDestroy()
     {
-        showInput(false);
+        DeviceUtil.dismissKeyboard(getActivity(), inputText);
         sendMessageDiscussionCallback = null;
         super.onDestroy();
-    }
-
-    private void showInput(boolean shown)
-    {
-        if (inputText != null)
-        {
-
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            if (shown)
-            {
-                //imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
-                imm.showSoftInput(inputText, InputMethodManager.SHOW_FORCED);
-                //imm.showSoftInput(inputText, 0);
-            }
-            else
-            {
-                imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
-            }
-        }
     }
 
     private void changeHeroType(MessageType messageType)
     {
         this.messageType = messageType;
-        this.messageTypeView.setText(messageType.toString());
+        this.messageTypeView.setText(getString(messageType.titleResource));
         Timber.d("changeHeroType:%s, discussionType:%s", messageType, discussionType);
     }
 
@@ -205,28 +175,53 @@ public class SendMessageFragment extends DashboardFragment
         listView.setBackgroundColor(getResources().getColor(android.R.color.white));
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(
-                getActivity(),
-                R.layout.common_dialog_item_layout,
-                R.id.popup_text,
-                MessageType.getShowingTypes());
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                Object o = parent.getAdapter().getItem(position);
-                Timber.d("onItemClick %d, object:%s", position, o);
-                changeHeroType((MessageType) o);
-                dismissDialog(chooseDialog);
-            }
-        });
+        listView.setAdapter(createMessageTypeAdapter());
+        listView.setOnItemClickListener(createMessageTypeItemClickListener());
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         linearLayout.addView(listView);
         this.chooseDialog = THDialog.showUpDialog(getSherlockActivity(), linearLayout, null);
+    }
+
+    private ArrayAdapter createMessageTypeAdapter()
+    {
+        return new ArrayAdapter<MessageType>(
+                getActivity(),
+                R.layout.common_dialog_item_layout,
+                R.id.popup_text,
+                MessageType.getShowingTypes()){
+
+            @Override public View getView(int position, View convertView, ViewGroup parent)
+            {
+                View view;
+                TextView text;
+                if (convertView == null) {
+                    LayoutInflater mInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view =  mInflater.inflate(R.layout.common_dialog_item_layout, parent, false);
+                } else {
+                    view = convertView;
+                }
+                text = (TextView) view.findViewById(R.id.popup_text);
+                MessageType item = getItem(position);
+                text.setText(getString(item.titleResource));
+                return view;
+            }
+        };
+    }
+
+    private AdapterView.OnItemClickListener createMessageTypeItemClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Object o = parent.getAdapter().getItem(position);
+                changeHeroType((MessageType) o);
+                dismissDialog(chooseDialog);
+            }
+        };
     }
 
     private void sendMessage()

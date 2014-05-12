@@ -13,10 +13,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.Scanner;
 
-/**
- * Created by wangliang on 14-3-5.
- * Use to decode server response in xml format.
- */
+
 public class CustomXmlConverter extends SimpleXMLConverter {
 
     private final Serializer serializer;

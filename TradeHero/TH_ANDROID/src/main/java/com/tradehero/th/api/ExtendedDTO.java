@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/15/13 Time: 11:47 AM Copyright (c) TradeHero */
+
 public class ExtendedDTO implements DTO
 {
     public static final boolean VERBOSE = false;

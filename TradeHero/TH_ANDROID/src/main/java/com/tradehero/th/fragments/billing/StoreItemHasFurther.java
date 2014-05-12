@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 7:09 PM To change this template use File | Settings | File Templates. */
+
 public class StoreItemHasFurther extends RelativeLayout
 {
     public static final String TAG = StoreItemHasFurther.class.getSimpleName();

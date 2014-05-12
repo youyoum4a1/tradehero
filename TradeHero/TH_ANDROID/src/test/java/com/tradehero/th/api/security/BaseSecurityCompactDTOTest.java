@@ -2,9 +2,7 @@ package com.tradehero.th.api.security;
 
 import com.tradehero.th.api.position.PositionDTOCompact;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 abstract public class BaseSecurityCompactDTOTest
 {
     public static final String TAG = BaseSecurityCompactDTOTest.class.getSimpleName();

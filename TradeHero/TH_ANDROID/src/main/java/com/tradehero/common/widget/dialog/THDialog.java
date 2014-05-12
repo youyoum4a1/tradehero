@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by tradehero on 14-3-6.
- */
+
 public class THDialog {
 
     public interface OnDialogItemClickListener {
@@ -86,6 +84,7 @@ public class THDialog {
         dlg.show();
         return dlg;
     }
+
     public static Dialog showUpDialog(final Context context,final View contentView,final DialogCallback callback) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,contentView);
         setDialogAttribute(dlg,null);

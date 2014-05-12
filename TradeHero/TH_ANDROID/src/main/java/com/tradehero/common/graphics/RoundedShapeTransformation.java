@@ -7,12 +7,32 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/5/13 Time: 1:12 PM Copyright (c) TradeHero */
-public class RoundedShapeTransformation implements com.squareup.picasso.Transformation
+public class RoundedShapeTransformation implements RecyclerTransformation
 {
+    private boolean recycleOriginal = true;
+    private final CenterCropTransformation centerCropTransformation;
+
+    @Inject public RoundedShapeTransformation(CenterCropTransformation centerCropTransformation)
+    {
+        super();
+        this.centerCropTransformation = centerCropTransformation;
+    }
+
+    @Override public boolean isRecycleOriginal()
+    {
+        return recycleOriginal;
+    }
+
+    @Override public void setRecycleOriginal(boolean recycleOriginal)
+    {
+        this.recycleOriginal = recycleOriginal;
+    }
+
     @Override public Bitmap transform(Bitmap scaleBitmapImage)
     {
+        scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
         int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
         int targetHeight = targetWidth;
 
@@ -34,12 +54,12 @@ public class RoundedShapeTransformation implements com.squareup.picasso.Transfor
 
         canvas.clipPath(path);
 
-
+        //TODO need check scaleBitmapImage before use it by alex
         canvas.drawBitmap(scaleBitmapImage, new Rect(0, 0, scaleBitmapImage.getWidth(),
                 scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
                 targetHeight), paint);
 
-        if (targetBitmap != scaleBitmapImage)
+        if (recycleOriginal && targetBitmap != scaleBitmapImage)
         {
             scaleBitmapImage.recycle();
         }

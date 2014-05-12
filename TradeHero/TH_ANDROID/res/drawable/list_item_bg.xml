@@ -5,13 +5,13 @@
       android:state_pressed="true"
     >
     <shape>
-      <solid android:color="@color/gray_1"/>
-    </shape>
+    <solid android:color="@color/gray_1"/>
+  </shape>
   </item>
 
   <item>
     <shape>
-      <stroke android:color="@color/gray_1" android:width="0.5dp"/>
+      <!--<stroke android:color="@color/gray_1" android:width="0.5dp"/>-->
       <solid android:color="@color/white"/>
     </shape>
   </item>

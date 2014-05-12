@@ -11,18 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
-import com.tradehero.th.models.social.FollowRequestedListener;
+import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use
- * File | Settings | File Templates.
- */
 public class AlertDialogUtil
 {
     private ProgressDialog mProgressDialog;
@@ -72,13 +70,46 @@ public class AlertDialogUtil
             String descriptionRes, String cancelRes,
             DialogInterface.OnClickListener cancelListener)
     {
+        return popWithNegativeButton(context, titleRes,
+                descriptionRes, cancelRes,
+                null, null,
+                cancelListener);
+    }
+
+    public AlertDialog popWithNegativeButton(Context context, String titleRes,
+            String descriptionRes, String cancelRes,
+            final ListAdapter detailsAdapter,
+            final OnClickListener adapterListener,
+            DialogInterface.OnClickListener cancelListener)
+    {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
-                .setTitle(titleRes)
-                .setMessage(descriptionRes)
                 .setIcon(R.drawable.th_app_logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelRes, cancelListener);
+        if (titleRes != null)
+        {
+            alertDialogBuilder.setTitle(titleRes);
+        }
+        if (descriptionRes != null)
+        {
+            alertDialogBuilder.setMessage(descriptionRes);
+        }
+        if (detailsAdapter != null)
+        {
+            alertDialogBuilder
+                    .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            if (adapterListener != null)
+                            {
+                                adapterListener.onClick(detailsAdapter.getItem(i));
+                            }
+                            dialogInterface.cancel();
+                        }
+                    });
+        }
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
@@ -178,7 +209,7 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, int followType, final FollowRequestedListener followRequestedListener)
+    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, final int followType, final OnFollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -197,18 +228,21 @@ public class AlertDialogUtil
         final AlertDialog mFollowDialog = builder.create();
         mFollowDialog.show();
 
-        followDialogView.setFollowRequestedListener(new FollowRequestedListener()
+        followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
         {
-            @Override public void freeFollowRequested()
+            @Override public void freeFollowRequested(UserBaseKey heroId)
             {
                 onFinish();
-                followRequestedListener.freeFollowRequested();
+                if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                {
+                    followRequestedListener.freeFollowRequested(heroId);
+                }
             }
 
-            @Override public void followRequested()
+            @Override public void premiumFollowRequested(UserBaseKey heroId)
             {
                 onFinish();
-                followRequestedListener.followRequested();
+                followRequestedListener.premiumFollowRequested(heroId);
             }
 
             private void onFinish()
@@ -230,11 +264,29 @@ public class AlertDialogUtil
         mProgressDialog.show();
     }
 
+    public void showProgressDialog(Context context, String content)
+    {
+        if (mProgressDialog != null)
+        {
+            mProgressDialog.dismiss();
+        }
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(content);
+        mProgressDialog.show();
+    }
+
     public void dismissProgressDialog()
     {
         if (mProgressDialog != null)
         {
             mProgressDialog.dismiss();
         }
+    }
+
+    public static interface OnClickListener<DTOType>
+    {
+        void onClick(DTOType which);
     }
 }

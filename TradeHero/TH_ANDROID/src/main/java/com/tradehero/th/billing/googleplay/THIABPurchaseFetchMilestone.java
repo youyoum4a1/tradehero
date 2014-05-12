@@ -9,15 +9,12 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 11:36 AM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseFetchMilestone
         extends IABPurchaseFetchMilestone<
             IABSKU,
             THIABOrderId,
             THIABPurchase>
 {
-    public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
-
     @Inject protected THIABLogicHolder logicHolder;
 
     /**

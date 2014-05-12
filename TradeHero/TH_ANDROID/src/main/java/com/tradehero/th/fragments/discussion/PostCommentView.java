@@ -15,18 +15,19 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
@@ -37,17 +38,18 @@ import retrofit.client.Response;
 public class PostCommentView extends RelativeLayout
 {
     /**
-     * If true, then we wait for a return from the server before adding the discussion.
-     * If false, we add it right away.
+     * If false, then we wait for a return from the server before adding the discussion.
+     * If true, we add it right away.
      */
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
+    private boolean keypadIsShowing;
 
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
-    private MiddleCallback<DiscussionDTO> postCommentMiddleCallback;
+    private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
 
     @Inject MessageServiceWrapper messageServiceWrapper;
     private MessageType messageType = null;
@@ -55,10 +57,11 @@ public class PostCommentView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
     private DiscussionKey discussionKey = null;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     private CommentPostedListener commentPostedListener;
+    private DiscussionKey nextStubKey;
 
     //<editor-fold desc="Constructors">
     public PostCommentView(Context context)
@@ -83,6 +86,9 @@ public class PostCommentView extends RelativeLayout
 
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+        postCommentMiddleCallbacks = new MiddleCallbackWeakList<>();
+        DeviceUtil.showKeyboardDelayed(commentText);
+        keypadIsShowing = true;
     }
 
     @Override protected void onAttachedToWindow()
@@ -95,7 +101,7 @@ public class PostCommentView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachSubmitCommentMiddleCallback();
+        postCommentMiddleCallbacks.detach();
         resetView();
         commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
@@ -105,11 +111,41 @@ public class PostCommentView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    public void dismissKeypad()
+    {
+        if (keypadIsShowing)
+        {
+            DeviceUtil.dismissKeyboard(getContext(), commentText);
+            keypadIsShowing = false;
+            commentText.clearFocus();
+        }
+    }
+
+    protected DiscussionType getDefaultDiscussionType()
+    {
+        return DiscussionType.COMMENT;
+    }
+
+    public synchronized DiscussionKey moveNextStubKey()
+    {
+        if (nextStubKey != null)
+        {
+            nextStubKey = discussionKeyFactory.create(nextStubKey.getType(), nextStubKey.id + 1);
+        }
+        else if (discussionKey != null)
+        {
+            nextStubKey = discussionKeyFactory.create(discussionKey.getType(), Integer.MAX_VALUE - 10000);
+        }
+        else
+        {
+            nextStubKey = discussionKeyFactory.create(getDefaultDiscussionType(), Integer.MAX_VALUE - 10000);
+        }
+        return nextStubKey;
+    }
+
     @OnClick(R.id.post_comment_action_submit)
     protected void postComment()
     {
-        detachSubmitCommentMiddleCallback();
-
         if (!validate())
         {
             THToast.show(R.string.error_empty_comment);
@@ -142,25 +178,41 @@ public class PostCommentView extends RelativeLayout
     {
         DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
         setPosting();
-        postCommentMiddleCallback = discussionServiceWrapper.createDiscussion(
+        postCommentMiddleCallbacks.add(
+                discussionServiceWrapper.createDiscussion(
                 discussionFormDTO,
-                createCommentSubmitCallback(),
-                USE_QUICK_STUB_DISCUSSION);
+                createCommentSubmitCallback()));
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
     {
-        DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionKey.getType());
+        DiscussionFormDTO discussionFormDTO = createEmptyCommentFormDTO();
+        populateFormDTO(discussionFormDTO);
+        return discussionFormDTO;
+    }
+
+    protected DiscussionFormDTO createEmptyCommentFormDTO()
+    {
+        return discussionFormDTOFactory.createEmpty(discussionKey.getType());
+    }
+
+    protected void populateFormDTO(DiscussionFormDTO discussionFormDTO)
+    {
         discussionFormDTO.inReplyToId = discussionKey.id;
         discussionFormDTO.text = commentText.getText().toString();
-        return discussionFormDTO;
+        if (USE_QUICK_STUB_DISCUSSION)
+        {
+            discussionFormDTO.stubKey = moveNextStubKey();
+        }
     }
 
     protected void submitAsNewDiscussion()
     {
         MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
         setPosting();
-        postCommentMiddleCallback = messageServiceWrapper.createMessage(messageCreateFormDTO, createCommentSubmitCallback());
+        postCommentMiddleCallbacks.add(
+                messageServiceWrapper.createMessage(messageCreateFormDTO,
+                createCommentSubmitCallback()));
     }
 
     protected MessageCreateFormDTO buildMessageCreateFormDTO()
@@ -174,15 +226,6 @@ public class PostCommentView extends RelativeLayout
     public void setCommentPostedListener(CommentPostedListener listener)
     {
         this.commentPostedListener = listener;
-    }
-
-    private void detachSubmitCommentMiddleCallback()
-    {
-        if (postCommentMiddleCallback != null)
-        {
-            postCommentMiddleCallback.setPrimaryCallback(null);
-        }
-        postCommentMiddleCallback = null;
     }
 
     private void resetCommentText()
@@ -289,7 +332,9 @@ public class PostCommentView extends RelativeLayout
         {
             if (hasFocus)
             {
-                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                keypadIsShowing = true;
+                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         }
     }

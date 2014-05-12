@@ -11,9 +11,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertEventDTO;
 import com.tradehero.th.utils.THSignedNumber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 3:34 PM Copyright (c) TradeHero
- */
+
 public class AlertEventItemView extends LinearLayout
         implements DTOView<AlertEventDTO>
 {

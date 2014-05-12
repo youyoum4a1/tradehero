@@ -63,5 +63,14 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             return this.listener;
         }
+
+        /**
+         * TODO make it better
+         * @return
+         */
+        public final AsyncTask<Void, Void, DTOType> execute() {
+           //Timber.d("execute on my method");
+           return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 }

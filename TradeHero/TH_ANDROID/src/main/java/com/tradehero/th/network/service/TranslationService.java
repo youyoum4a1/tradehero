@@ -11,10 +11,7 @@ import retrofit.http.Query;
 
 import java.net.URLDecoder;
 
-/**
- * Created by tradehero on 14-3-5.
- * Second step to request translation.
- */
+
 public interface TranslationService {
 
     @GET("/v2/Http.svc/Translate")

@@ -13,7 +13,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -27,7 +26,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.service.SessionService;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
@@ -49,14 +47,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
     private static AuthenticationMode authenticationMode;
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
-    private static HashMap<String, JSONObject> credentials;
+    private static HashMap<String, JSONCredentials> credentials;
 
     @Inject @SessionToken static StringPreference currentSessionToken;
     @Inject @AuthenticationType public /* TODO, remove public */ static StringPreference currentAuthenticationType;
@@ -64,7 +61,6 @@ public class THUser
     @Inject static CurrentUserId currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
-    @Inject static Lazy<UserService> userService;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
     @Inject static Lazy<UserProfileCache> userProfileCache;
@@ -85,7 +81,7 @@ public class THUser
         {
             try
             {
-                JSONObject json = new JSONObject(token);
+                JSONCredentials json = new JSONCredentials(token);
                 credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
             }
             catch (JSONException e)
@@ -107,7 +103,7 @@ public class THUser
 
     private static void logInWithAsync(final THAuthenticationProvider authenticator, final LogInCallback callback)
     {
-        JSONObject savedTokens = credentials.get(authenticator.getAuthType());
+        JSONCredentials savedTokens = credentials.get(authenticator.getAuthType());
         if (savedTokens != null)
         {
             callback.onStart();
@@ -124,12 +120,13 @@ public class THUser
         authenticator.authenticate(outerCallback);
     }
 
-    public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    public static void logInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         UserFormDTO userFormDTO = UserFormFactory.create(json);
         if (userFormDTO == null)
         {
             // input error, unable to parse as json data
+            THToast.show(R.string.authentication_error_creating_signup_form);
             return;
         }
         if (userFormDTO.deviceToken == null)
@@ -155,7 +152,7 @@ public class THUser
                 break;
             case SignUp:
                 Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
-                userService.get().signUp(
+                userServiceWrapper.get().signUp(
                         authenticator.getAuthHeader(),
                         userFormDTO,
                         createCallbackForSignUpAsyncWithJson(json, callback));
@@ -170,7 +167,6 @@ public class THUser
         }
     }
 
-
     private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
     {
         return new THAuthenticationProvider.THAuthenticationCallback()
@@ -180,7 +176,7 @@ public class THUser
                 callback.onStart();
             }
 
-            @Override public void onSuccess(JSONObject json)
+            @Override public void onSuccess(JSONCredentials json)
             {
                 try
                 {
@@ -207,7 +203,7 @@ public class THUser
         };
     }
 
-    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         return new THCallback<UserProfileDTO>()
         {
@@ -229,7 +225,7 @@ public class THUser
         };
     }
 
-    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
     {
         return new THCallback<UserLoginDTO>()
         {
@@ -290,7 +286,7 @@ public class THUser
     /**
      * @param json json data is from social media
      */
-    public static void saveCredentialsToUserDefaults(JSONObject json)
+    public static void saveCredentialsToUserDefaults(JSONCredentials json)
     {
         if (credentials == null)
         {
@@ -312,7 +308,7 @@ public class THUser
         }
 
         Set<String> toSave = new HashSet<>();
-        for (JSONObject entry : credentials.values())
+        for (JSONCredentials entry : credentials.values())
         {
             toSave.add(entry.toString());
         }

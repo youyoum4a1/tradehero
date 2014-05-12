@@ -5,16 +5,12 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 
-/**
- * Created by xavier on 3/5/14.
- */
 class FlaggedDisplayablePortfolioDTO extends DisplayablePortfolioDTO
 {
-    public static final String TAG = FlaggedDisplayablePortfolioDTO.class.getSimpleName();
-
     public boolean fetchingUser = false;
     public boolean fetchingPortfolio = false;
 
+    //<editor-fold desc="Constructors">
     public FlaggedDisplayablePortfolioDTO()
     {
         super();
@@ -29,4 +25,5 @@ class FlaggedDisplayablePortfolioDTO extends DisplayablePortfolioDTO
     {
         super(ownedPortfolioId, userBaseDTO, portfolioDTO);
     }
+    //</editor-fold>
 }

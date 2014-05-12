@@ -25,7 +25,6 @@ import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
 public class UserProfileResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
 {

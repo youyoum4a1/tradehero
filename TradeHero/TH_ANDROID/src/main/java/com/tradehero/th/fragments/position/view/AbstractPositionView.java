@@ -4,26 +4,20 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.PositionListener;
 import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
+import timber.log.Timber;
 
-/**
- * Created by julien on 30/10/13
- */
 public abstract class AbstractPositionView<
             PositionDTOType extends PositionDTO,
             ExpandableListItemType extends ExpandableListItem<PositionDTOType>>
         extends LinearLayout
 {
-    public static final String TAG = AbstractPositionView.class.getSimpleName();
-
     protected PositionPartialTopView topView;
     protected AbstractPartialBottomView<PositionDTOType, ExpandableListItemType> bottomView;
 
@@ -239,8 +233,8 @@ public abstract class AbstractPositionView<
 
     public PositionDTOType getPositionDTO()
     {
-        THLog.d(TAG, "getPositionDTO " + positionDTO);
-        THLog.d(TAG, "getPositionDTO " + positionDTO.getOwnedPositionId());
+        Timber.d("getPositionDTO %s", positionDTO);
+        Timber.d("getPositionDTO %s", positionDTO.getOwnedPositionId());
         return positionDTO;
     }
 

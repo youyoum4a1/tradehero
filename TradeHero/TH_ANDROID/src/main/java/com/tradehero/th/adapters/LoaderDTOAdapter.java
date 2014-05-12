@@ -10,9 +10,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.loaders.ListLoader;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:40 PM Copyright (c) TradeHero
- */
+
 public abstract class LoaderDTOAdapter<
             DTOType,
             DTOViewType extends DTOView<DTOType>,

@@ -4,12 +4,11 @@ import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Repurposes requests
@@ -64,9 +63,9 @@ import timber.log.Timber;
                 securityId.securitySymbol));
     }
 
-    public MiddleCallback<Response> getRawQuote(SecurityId securityId, Callback<Response> callback)
+    public BaseMiddleCallback<Response> getRawQuote(SecurityId securityId, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(securityId);
         this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
                 securityId.securitySymbol), middleCallback);

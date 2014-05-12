@@ -6,9 +6,7 @@ import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.activities.ActivityModule;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
@@ -22,6 +20,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -31,6 +30,8 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
@@ -52,7 +53,6 @@ import com.tradehero.th.fragments.news.NewsHeadlineView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
-import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -74,6 +74,7 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
+import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
@@ -95,10 +96,8 @@ import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.PrivateDiscussionListAdapter;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleOtherView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleView;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -133,14 +132,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.push.baidu.BaiduPushManager;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.models.user.FollowUserAssistant;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
-import com.tradehero.th.models.user.MiddleCallbackFollowUser;
-import com.tradehero.th.models.user.MiddleCallbackLogout;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -164,10 +156,6 @@ import dagger.Provides;
 import java.util.Locale;
 import javax.inject.Singleton;
 
-//import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
-//import com.tradehero.th.fragments.trade.view.TradeQuantityView;
-
-/** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         includes = {
                 CacheModule.class,
@@ -186,17 +174,14 @@ import javax.inject.Singleton;
         },
         injects =
                 {
+                        DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
-                        MiddleCallbackUpdateUserProfile.class,
-                        MiddleCallbackAddCash.class,
-                        MiddleCallbackFollowUser.class,
-                        FollowUserAssistant.class,
+                        ProfileInfoView.class,
+                        PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
-                        MiddleCallbackLogout.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
-                        ServerValidatedUsernameText.UserAvailabilityRequester.class,
                         ServerValidatedUsernameText.class,
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
@@ -210,13 +195,9 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
-                        //BuySellConfirmFragment.class,
-                        BuySellFragment.BuySellAsyncTask.class,
-                        //TradeQuantityView.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
-                        //PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -226,7 +207,6 @@ import javax.inject.Singleton;
                         WarrantInfoValueFragment.class,
                         StockInfoFragment.class,
                         PortfolioListFragment.class,
-                        PushablePortfolioListFragment.class,
                         PortfolioListItemView.class,
                         PortfolioListItemAdapter.class,
                         DisplayablePortfolioFetchAssistant.class,
@@ -260,7 +240,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        AbstractUserAvailabilityRequester.class,
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
@@ -350,14 +329,13 @@ import javax.inject.Singleton;
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
-
+                        AbstractDiscussionItemViewHolder.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
-                        //PrivateMessageBubbleAdapter.class,
-                        PrivateDiscussionListAdapter.class,
-                        PrivateMessageBubbleMineView.class,
-                        PrivateMessageBubbleOtherView.class,
+                        PrivateDiscussionSetAdapter.class,
+                        PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,
+                        PrivateMessageBubbleView.class,
                         AbstractDiscussionFragment.class,
                         AbstractPrivateMessageFragment.class,
 
@@ -398,32 +376,4 @@ public class TradeHeroModule
     {
         return application;
     }
-
-    @Provides @Singleton PushNotificationManager providePushNotificationManager(BaiduPushManager baiduPushManager)
-    {
-        boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
-        if (isChineseLocale)
-        {
-            return baiduPushManager;
-        }
-        else
-        {
-            return new UrbanAirshipPushNotificationManager();
-        }
-    }
-
-    //@Provides @Singleton @ForDeviceToken String provideDeviceToken(@SavedBaiduPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
-    //{
-    //    boolean isChineseLocale = MetaHelper.isChineseLocale(application.getApplicationContext());
-    //    if (isChineseLocale)
-    //    {
-    //        String token = savedPushDeviceIdentifier.get();
-    //        return token;
-    //    }
-    //    else
-    //    {
-    //        return PushManager.shared().getAPID();
-    //    }
-    //}
-
 }

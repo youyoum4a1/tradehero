@@ -10,9 +10,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 
-/**
- * Created by xavier on 1/24/14.
- */
+
 abstract public class AbstractSecurityIdPredicateFilterTest
 {
     public static final String TAG = AbstractSecurityIdPredicateFilterTest.class.getSimpleName();

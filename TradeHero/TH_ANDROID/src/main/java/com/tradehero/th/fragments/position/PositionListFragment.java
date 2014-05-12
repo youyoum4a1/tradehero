@@ -9,9 +9,6 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/3/14.
- */
 public class PositionListFragment extends AbstractPositionListFragment<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
 {
     @Inject Lazy<GetPositionsCache> getPositionsCache;
@@ -44,9 +41,17 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         {
             detachGetPositionsTask();
             fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
-            displayProgress(true);
+            //displayProgress(true);
             fetchGetPositionsDTOTask.execute();
         }
+    }
+
+    @Override protected void refreshSimplePage()
+    {
+        detachGetPositionsTask();
+        fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
+        //displayProgress(true);
+        fetchGetPositionsDTOTask.execute();
     }
 
     @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
@@ -54,9 +59,19 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         return new GetPositionsListener();
     }
 
+    protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    {
+        return new RefreshPositionsListener();
+    }
+
     @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, getPositionsCacheListener);
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, createGetPositionsCacheListener());
+    }
+
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
+    {
+        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, true, createGetPositionsRefreshCacheListener());
     }
 
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
@@ -65,8 +80,35 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         {
             if (key.equals(shownOwnedPortfolioId))
             {
-                displayProgress(false);
+                //displayProgress(false);
                 linkWith(value, true);
+                showResultIfNecessary();
+            }
+            else
+            {
+                showErrorView();
+            }
+        }
+    }
+
+    protected class RefreshPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
+        {
+            if (!fromCache)
+            {
+                linkWith(value, true);
+                showResultIfNecessary();
+            }
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            //super.onErrorThrown(key, error);
+            boolean loaded = checkLoadingSuccess();
+            if (!loaded)
+            {
+                showErrorView();
             }
         }
     }

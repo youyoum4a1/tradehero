@@ -5,9 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import java.lang.ref.WeakReference;
 
-/**
- * Created by xavier on 2/11/14.
- */
+
 public class CurrentActivityHolder
 {
     public static final String TAG = CurrentActivityHolder.class.getSimpleName();

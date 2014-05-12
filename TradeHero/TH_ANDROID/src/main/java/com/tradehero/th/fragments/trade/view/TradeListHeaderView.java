@@ -19,9 +19,6 @@ import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 28/10/13
- */
 public class TradeListHeaderView extends RelativeLayout
 {
     @Inject Lazy<PositionCache> positionCache;

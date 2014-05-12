@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:07 PM Copyright (c) TradeHero
- */
 public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
 {
     protected final LayoutInflater inflater;

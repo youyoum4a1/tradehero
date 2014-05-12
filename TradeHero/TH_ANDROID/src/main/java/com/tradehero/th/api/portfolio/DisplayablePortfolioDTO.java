@@ -6,11 +6,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
 
-/**
- * This compound object allows the definition of a comparable mechanism, to order the list of PortfolioDTOs in the list.
- *
- * Created with IntelliJ IDEA. User: xavier Date: 10/25/13 Time: 11:52 AM To change this template use File | Settings | File Templates.
- */
+
 public class DisplayablePortfolioDTO implements Comparable
 {
     public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();

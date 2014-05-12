@@ -1,8 +1,7 @@
 package com.tradehero.th.auth;
 
-import org.json.JSONObject;
+import com.tradehero.th.base.JSONCredentials;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 2:45 PM Copyright (c) TradeHero */
 public interface THAuthenticationProvider
 {
     public void authenticate(THAuthenticationCallback callback);
@@ -15,7 +14,7 @@ public interface THAuthenticationProvider
      * @param paramJSONObject
      * @return success
      */
-    public boolean restoreAuthentication(JSONObject paramJSONObject);
+    public boolean restoreAuthentication(JSONCredentials paramJSONObject);
 
     public void cancel();
 
@@ -29,7 +28,7 @@ public interface THAuthenticationProvider
     {
         public void onStart();
 
-        public void onSuccess(JSONObject paramJSONObject);
+        public void onSuccess(JSONCredentials paramJSONObject);
 
         public void onCancel();
 

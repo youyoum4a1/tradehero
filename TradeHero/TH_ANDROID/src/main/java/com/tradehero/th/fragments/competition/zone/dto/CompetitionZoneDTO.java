@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.common.persistence.DTO;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 public class CompetitionZoneDTO implements DTO
 {
     public static final String TAG = CompetitionZoneDTO.class.getSimpleName();

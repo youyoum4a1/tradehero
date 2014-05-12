@@ -4,9 +4,7 @@ import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
- * Created by xavier on 2/12/14.
- */
+
 public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
 {
     public static final String TAG = PerPagedFilteredLeaderboardKey.class.getSimpleName();

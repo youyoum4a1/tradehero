@@ -9,7 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,6 +21,7 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
@@ -66,9 +66,9 @@ public class WatchlistPositionFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionFetchTask;
     private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> portfolioFetchTask;
 
-    @InjectView(android.R.id.list) SwipeListView watchlistListView;
+    //@InjectView(android.R.id.list) SwipeListView watchlistListView;
     @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
-    @InjectView(R.id.pull_to_refresh_watchlist_listview) WatchlistPositionListView watchlistPositionListView;
+    @InjectView(R.id.pull_to_refresh_watchlist_listview) PullToRefreshSwipeListView watchlistPositionListView;
 
     private WatchlistAdapter watchListAdapter;
 
@@ -134,19 +134,16 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if (watchlistListView != null)
+                if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
                 {
                     SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
                     if (deletedSecurityId != null)
                     {
+                        SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
-                        int deletedItemId = adapter.getIndexOf(deletedSecurityId);
-                        if (deletedItemId != -1)
-                        {
-                            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
-                            watchlistListView.dismiss(deletedItemId);
-                            watchlistListView.closeOpenedItems();
-                        }
+                        adapter.remove(deletedSecurityId);
+                        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
+                        watchlistListView.closeOpenedItems();
                     }
                 }
             }
@@ -168,12 +165,14 @@ public class WatchlistPositionFragment extends DashboardFragment
         if (view != null)
         {
             ButterKnife.inject(this, view);
+
+            final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
             watchlistListView.post(new Runnable()
             {
                 @Override public void run()
                 {
                     SwipeListView watchlistListViewCopy = watchlistListView;
-                    if (watchlistListViewCopy != null)
+                    if (!isDetached() && watchlistListViewCopy != null)
                     {
                         watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
                                 getResources().getDimension(R.dimen.watchlist_item_button_width)
@@ -190,15 +189,27 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private void initPullToRefreshListView(View view)
     {
-        ((ViewGroup) view).removeView(watchlistListView);
-        watchlistPositionListView.setRefreshableView(watchlistListView);
-        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        // wrong usage
+        //((ViewGroup) view).removeView(watchlistListView);
+        //watchlistPositionListView.setRefreshableView(watchlistListView);
+
+        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<SwipeListView>()
         {
-            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            @Override public void onRefresh(PullToRefreshBase<SwipeListView> refreshView)
             {
-                fetchSecurityIdList();
+                refretchSecurityIdList();
             }
         });
+    }
+
+    protected void refretchSecurityIdList()
+    {
+        detachUserWatchlistFetchTask();
+        userWatchlistPositionFetchTask = userWatchlistPositionCache.getOrFetch(
+                currentUserId.toUserBaseKey(),
+                true,
+                new RefreshWatchlisListener());
+        userWatchlistPositionFetchTask.execute();
     }
 
     protected void fetchSecurityIdList()
@@ -291,11 +302,11 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
         watchlistPortfolioHeaderView = null;
 
-        if (watchlistListView != null)
+        if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
         {
-            watchlistListView.setSwipeListViewListener(null);
+            watchlistPositionListView.getRefreshableView().setSwipeListViewListener(null);
         }
-        watchlistListView = null;
+        //watchlistListView = null;
 
         watchListAdapter = null;
 
@@ -303,7 +314,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             watchlistPositionListView.onRefreshComplete();
             watchlistPositionListView.setOnRefreshListener(
-                    (PullToRefreshBase.OnRefreshListener<ListView>) null);
+                    (PullToRefreshBase.OnRefreshListener<SwipeListView>) null);
         }
 
         super.onDestroyView();
@@ -363,30 +374,35 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private void displayWatchlist(SecurityIdList securityIds)
     {
-        watchListAdapter = createWatchlistAdapter();
-        watchListAdapter.setItems(securityIds);
+        WatchlistAdapter newAdapter = createWatchlistAdapter();
+        newAdapter.addAll(securityIds);
+        watchlistPositionListView.setAdapter(newAdapter);
+        watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
-        watchlistListView.setAdapter(watchListAdapter);
     }
 
     private void openWatchlistItemEditor(int position)
     {
-        SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
-        Bundle args = new Bundle();
-        if (securityId != null)
+        // TODO discover why sometimes we would get a mismatch
+        if (position < watchListAdapter.getCount())
         {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            if (watchlistPositionCache.get(securityId) != null)
+            SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
+            Bundle args = new Bundle();
+            if (securityId != null)
             {
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                if (watchlistPositionCache.get(securityId) != null)
+                {
+                    args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                }
             }
+            getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private WatchlistAdapter createWatchlistAdapter()
     {
-        return new WatchlistAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.watchlist_item_view);
+        return new WatchlistAdapter(getActivity(), R.layout.watchlist_item_view);
     }
 
     private void displayProgress(boolean show)
@@ -428,6 +444,29 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             watchlistPositionListView.onRefreshComplete();
             THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+        }
+    }
+
+    protected class RefreshWatchlisListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        {
+            if (fromCache)
+            {
+                return;
+            }
+            watchlistPositionListView.onRefreshComplete();
+            displayWatchlist(value);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            watchlistPositionListView.onRefreshComplete();
+            if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
+            {
+                THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+            }
+
         }
     }
 

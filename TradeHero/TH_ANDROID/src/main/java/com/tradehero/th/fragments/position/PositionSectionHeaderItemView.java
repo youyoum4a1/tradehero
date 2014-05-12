@@ -8,11 +8,8 @@ import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 7:09 PM To change this template use File | Settings | File Templates. */
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
-    public static final String TAG = PositionSectionHeaderItemView.class.getSimpleName();
-
     protected TextView headerText;
     protected TextView timeBaseText;
     protected SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");

@@ -34,9 +34,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/21/14.
- */
+
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
     public static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";

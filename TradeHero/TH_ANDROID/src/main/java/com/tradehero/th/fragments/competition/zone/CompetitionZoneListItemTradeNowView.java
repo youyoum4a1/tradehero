@@ -10,9 +10,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDT
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 public class CompetitionZoneListItemTradeNowView extends AbstractCompetitionZoneListItemView
 {
     public static final String TAG = CompetitionZoneListItemTradeNowView.class.getSimpleName();

@@ -3,7 +3,7 @@ package com.tradehero.th.api.users;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:58 PM To change this template use File | Settings | File Templates. */
+
 public class UserSearchResultDTO implements DTO
 {
     public String userFirstName;

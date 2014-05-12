@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import com.squareup.picasso.Transformation;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/6/13 Time: 2:17 PM Copyright (c) TradeHero */
+
 public class GradientTransformation implements Transformation
 {
     private final int endColor;

@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 7:27 PM To change this template use File | Settings | File Templates. */
+
 public class NewsHeadlineList extends ArrayList<NewsHeadline> implements DTO
 {
     public static final String TAG = NewsHeadlineList.class.getSimpleName();

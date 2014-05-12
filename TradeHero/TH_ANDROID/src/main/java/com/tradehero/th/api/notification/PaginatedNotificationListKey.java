@@ -5,13 +5,11 @@ import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
 public class PaginatedNotificationListKey extends NotificationListKey
     implements PaginatedKey
 {
     private static final Integer DEFAULT_PER_PAGE = 42;
+    private static final int FIRST_PAGE = 1;
 
     private final Integer perPage;
     private final int page;
@@ -76,6 +74,20 @@ public class PaginatedNotificationListKey extends NotificationListKey
     @Override public PaginatedNotificationListKey next(int pages)
     {
         return new PaginatedNotificationListKey(this, page + pages);
+    }
+
+    @Override public PaginatedNotificationListKey prev()
+    {
+        return prev(1);
+    }
+
+    @Override public PaginatedNotificationListKey prev(int pages)
+    {
+        if (page - pages < FIRST_PAGE)
+        {
+            throw new IllegalArgumentException("Cannot get " + pages + " previous pages from page " + page);
+        }
+        return new PaginatedNotificationListKey(this, page - pages);
     }
     //</editor-fold>
 

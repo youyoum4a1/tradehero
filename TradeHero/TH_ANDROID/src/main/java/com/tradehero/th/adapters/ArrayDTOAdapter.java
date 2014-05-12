@@ -21,7 +21,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
     }
 
     /**
-     * If called in non-UI thread,must be synchronized(see source code of ArrayAdapter) TODO
+     * If called in non-UI thread, must be synchronized(see source code of ArrayAdapter) TODO
      */
     public void addItem(T item)
     {
@@ -35,7 +35,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
     }
 
     /**
-     * If called in non-UI thread,must be synchronized TODO
+     * If called in non-UI thread, must be synchronized TODO
      */
     public void addItems(T[] items)
     {
@@ -47,7 +47,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
     }
 
     /**
-     * If called in non-UI thread,must be synchronized TODO
+     * If called in non-UI thread, must be synchronized TODO
      */
     public void addItems(List<T> data)
     {

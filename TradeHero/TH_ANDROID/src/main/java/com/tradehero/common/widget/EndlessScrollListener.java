@@ -3,9 +3,7 @@ package com.tradehero.common.widget;
 import android.widget.AbsListView;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 12/5/13.
- */
+
 abstract public class EndlessScrollListener implements AbsListView.OnScrollListener
 {
     public static final int DEFAULT_VISIBLE_THRESHOLD = 5;

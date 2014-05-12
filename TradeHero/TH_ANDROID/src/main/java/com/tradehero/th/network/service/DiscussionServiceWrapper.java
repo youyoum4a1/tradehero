@@ -10,11 +10,12 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.discussion.MiddleCallbackDiscussion;
-import com.tradehero.th.models.discussion.MiddleCallbackPaginatedDiscussion;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
+import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,12 +23,9 @@ import retrofit.Callback;
 
 @Singleton public class DiscussionServiceWrapper
 {
-    public final static boolean DEFAULT_USE_QUICK_STUB_RESPONSE = false;
-
     private final DiscussionService discussionService;
     private final DiscussionServiceAsync discussionServiceAsync;
     private final DiscussionDTOFactory discussionDTOFactory;
-    private final UserMessagingRelationshipCache userMessagingRelationshipCache;
 
     // It has to be lazy to avoid infinite dependency
     private final Lazy<DiscussionCache> discussionCache;
@@ -36,15 +34,28 @@ import retrofit.Callback;
             DiscussionService discussionService,
             DiscussionServiceAsync discussionServiceAsync,
             DiscussionDTOFactory discussionDTOFactory,
-            UserMessagingRelationshipCache userMessagingRelationshipCache,
             Lazy<DiscussionCache> discussionCache)
     {
         this.discussionService = discussionService;
         this.discussionServiceAsync = discussionServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
-        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.discussionCache = discussionCache;
     }
+
+    //<editor-fold desc="DTO Processors">
+    protected DTOProcessor<DiscussionDTO> createDiscussionProcessor()
+    {
+        return new DTOProcessorDiscussion(discussionDTOFactory);
+    }
+
+    protected DTOProcessor<DiscussionDTO> createDiscussionCreateProcessor(DiscussionKey stubKey)
+    {
+        return new DTOProcessorDiscussionCreate(
+                discussionDTOFactory,
+                discussionCache.get(),
+                stubKey);
+    }
+    //</editor-fold>
 
     // TODO add providers in RetrofitModule and RetrofitProtectedModule
     // TODO add methods based on DiscussionServiceAsync and MiddleCallback implementations
@@ -52,21 +63,13 @@ import retrofit.Callback;
     //<editor-fold desc="Get Comment">
     public DiscussionDTO getComment(DiscussionKey discussionKey)
     {
-        DiscussionDTO discussionDTO = discussionDTOFactory.createChildClass(discussionService.getComment(discussionKey.id));
-        if (discussionDTO != null)
-        {
-            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
-        }
-        return discussionDTO;
+        return createDiscussionProcessor().process(discussionService.getComment(discussionKey.id));
     }
 
-    public MiddleCallbackDiscussion getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
-                callback,
-                discussionDTOFactory,
-                userMessagingRelationshipCache,
-                discussionCache.get());
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
+                callback, createDiscussionProcessor());
         discussionServiceAsync.getComment(discussionKey.id, middleCallback);
         return middleCallback;
     }
@@ -75,38 +78,20 @@ import retrofit.Callback;
     //<editor-fold desc="Create Discussion">
     public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
-        DiscussionDTO discussionDTO = discussionService.createDiscussion(discussionFormDTO);
-        if (discussionDTO != null)
-        {
-            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
-        }
-        return discussionDTO;
+        return createDiscussionCreateProcessor(discussionFormDTO.stubKey).process(
+            discussionService.createDiscussion(discussionFormDTO));
     }
 
-    public MiddleCallbackDiscussion createDiscussion(
+    public MiddleCallback<DiscussionDTO> createDiscussion(
             DiscussionFormDTO discussionFormDTO,
             Callback<DiscussionDTO> callback)
     {
-        return createDiscussion(discussionFormDTO, callback, DEFAULT_USE_QUICK_STUB_RESPONSE);
-    }
-
-    public MiddleCallbackDiscussion createDiscussion(
-            DiscussionFormDTO discussionFormDTO,
-            Callback<DiscussionDTO> callback,
-            boolean useQuickStubResponse)
-    {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
-                callback,
-                discussionDTOFactory,
-                userMessagingRelationshipCache,
-                discussionCache.get());
-        if (useQuickStubResponse)
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
+                callback, createDiscussionCreateProcessor(discussionFormDTO.stubKey));
+        if (discussionFormDTO.stubKey != null)
         {
             DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
             middleCallback.success(stub, null);
-
-            // TODO nullifying here is debatable
-            middleCallback.setPrimaryCallback(null);
         }
         discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
         return middleCallback;
@@ -141,11 +126,11 @@ import retrofit.Callback;
                 discussionsKey.toMap());
     }
 
-    public MiddleCallbackPaginatedDiscussion getMessageThread(
+    public MiddleCallback<PaginatedDTO<DiscussionDTO>> getMessageThread(
             MessageDiscussionListKey discussionsKey,
             Callback<PaginatedDTO<DiscussionDTO>> callback)
     {
-        MiddleCallbackPaginatedDiscussion middleCallback = new MiddleCallbackPaginatedDiscussion(callback);
+        MiddleCallback<PaginatedDTO<DiscussionDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         discussionServiceAsync.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
@@ -158,24 +143,16 @@ import retrofit.Callback;
     //<editor-fold desc="Vote">
     public DiscussionDTO vote(DiscussionVoteKey discussionVoteKey)
     {
-        DiscussionDTO discussionDTO = discussionService.vote(
+        return createDiscussionCreateProcessor(null).process(discussionService.vote(
                 discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
-                discussionVoteKey.voteDirection);
-        if (discussionDTO != null)
-        {
-            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
-        }
-        return discussionDTO;
+                discussionVoteKey.voteDirection));
     }
 
-    public MiddleCallbackDiscussion vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
+    public MiddleCallback<DiscussionDTO> vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback =  new MiddleCallbackDiscussion(
-                callback,
-                discussionDTOFactory,
-                userMessagingRelationshipCache,
-                discussionCache.get());
+        MiddleCallback<DiscussionDTO> middleCallback =  new BaseMiddleCallback<>(
+                callback, createDiscussionCreateProcessor(null));
         discussionServiceAsync.vote(
                 discussionVoteKey.inReplyToType,
                 discussionVoteKey.inReplyToId,
@@ -188,28 +165,20 @@ import retrofit.Callback;
     //<editor-fold desc="Share">
     public DiscussionDTO share(DiscussionListKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
-        DiscussionDTO discussionDTO = discussionService.share(
+        return createDiscussionCreateProcessor(null).process(
+            discussionService.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,
-                timelineItemShareRequestDTO);
-        if (discussionDTO != null)
-        {
-            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
-        }
-
-        return discussionDTO;
+                timelineItemShareRequestDTO));
     }
 
-    public MiddleCallbackDiscussion share(
+    public MiddleCallback<DiscussionDTO> share(
             DiscussionListKey discussionKey,
             TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback)
     {
-        MiddleCallbackDiscussion middleCallback = new MiddleCallbackDiscussion(
-                callback,
-                discussionDTOFactory,
-                userMessagingRelationshipCache,
-                discussionCache.get());
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
+                callback, createDiscussionCreateProcessor(null));
         discussionServiceAsync.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,

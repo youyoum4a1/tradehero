@@ -40,12 +40,12 @@
 
     <!--Followers-->
     <LinearLayout
-        android:id="@+id/user_profile_compact_followers_count_wrapper"
+        android:id="@+id/user_profile_followers_count_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_toLeftOf="@+id/user_profile_compact_heroes_count_wrapper"
+        android:layout_toLeftOf="@+id/user_profile_heroes_count_wrapper"
         android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
         >
@@ -65,7 +65,7 @@
 
     <!--Heroes-->
     <LinearLayout
-        android:id="@+id/user_profile_compact_heroes_count_wrapper"
+        android:id="@+id/user_profile_heroes_count_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -91,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/user_profile_avatar"
-        android:layout_toLeftOf="@id/user_profile_compact_followers_count_wrapper"
+        android:layout_toLeftOf="@id/user_profile_followers_count_wrapper"
         android:layout_centerVertical="true"
         android:orientation="vertical"
         android:gravity="center_vertical"

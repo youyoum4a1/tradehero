@@ -47,11 +47,13 @@
 
     <!--Heroes-->
     <LinearLayout
+        android:id="@+id/user_profile_heroes_count_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        >
 
       <TextView
           android:id="@+id/user_profile_heroes_count"
@@ -81,6 +83,7 @@
 
     <!--Trades-->
     <LinearLayout
+        android:id="@+id/user_profile_trade_count_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -115,6 +118,7 @@
 
     <!--Exchanges-->
     <LinearLayout
+        android:id="@+id/user_profile_exchanges_count_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"

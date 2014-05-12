@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -28,9 +28,9 @@ public class NotificationServiceWrapper
         return notificationService.getNotificationDetail(pushKey.key);
     }
 
-    public MiddleCallback<NotificationDTO> getNotificationDetail(NotificationKey pushKey, Callback<NotificationDTO> callback)
+    public BaseMiddleCallback<NotificationDTO> getNotificationDetail(NotificationKey pushKey, Callback<NotificationDTO> callback)
     {
-        MiddleCallback<NotificationDTO> middleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<NotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
         notificationServiceAsync.getNotificationDetail(pushKey.key, middleCallback);
         return middleCallback;
     }
@@ -42,9 +42,9 @@ public class NotificationServiceWrapper
         return notificationService.markAsRead(pushKey.key);
     }
 
-    public MiddleCallback<Response> markAsRead(NotificationKey pushKey, Callback<Response> callback)
+    public BaseMiddleCallback<Response> markAsRead(NotificationKey pushKey, Callback<Response> callback)
     {
-        MiddleCallback<Response> readMiddleCallback = new MiddleCallback<>(callback);
+        BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback);
         notificationServiceAsync.markAsRead(pushKey.key, readMiddleCallback);
         return readMiddleCallback;
     }

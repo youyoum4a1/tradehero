@@ -20,12 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
         extends BaseAdapter implements ExpandableListReporter
 {
-    public static final String TAG = AbstractPositionItemAdapter.class.getSimpleName();
-
     protected List<Integer> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
 
@@ -232,7 +229,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         {
             return context.getString(R.string.position_list_header_open_unsure);
         }
-        return context.getString(R.string.position_list_header_open, headerDTO.count);
+        return context.getString(R.string.position_list_header_open, (int) headerDTO.count);
     }
 
     public String getClosedHeaderText(HeaderDTO headerDTO)
@@ -241,7 +238,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         {
             return context.getString(R.string.position_list_header_closed_unsure);
         }
-        return context.getString(R.string.position_list_header_closed, headerDTO.count);
+        return context.getString(R.string.position_list_header_closed, (int) headerDTO.count);
     }
 
     @Override public int getViewTypeCount()

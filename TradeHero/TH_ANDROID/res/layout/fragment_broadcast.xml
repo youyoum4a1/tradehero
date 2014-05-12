@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
-    android:background="@color/white"
     tools:layout_height="120dp"
     >
   <LinearLayout
@@ -57,10 +56,12 @@
       android:layout_height="wrap_content"
       android:minHeight="80dp"
       android:textSize="@dimen/stock_symbol_header"
-      android:paddingLeft="5dp"
-      tools:text="NASDAQ:GOOG"
       android:gravity="left|top"
+      android:padding="5dp"
       android:inputType="text"
+      android:focusable="true"
+      tools:text="NASDAQ:GOOG"
+      android:background="@drawable/et_bg"
       >
     <requestFocus/>
   </EditText>

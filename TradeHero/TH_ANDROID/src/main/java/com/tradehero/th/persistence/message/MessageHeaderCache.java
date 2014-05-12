@@ -26,7 +26,7 @@ public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, Messag
     // TODO implement a fetch on server side
     @Override protected MessageHeaderDTO fetch(MessageHeaderId key) throws Throwable
     {
-        throw new IllegalArgumentException("This cache has no service to fetch");
+        return messageServiceWrapper.getMessageHeader(key.key);
     }
 
     public MessageHeaderDTOList getMessages(Collection<MessageHeaderId> list)

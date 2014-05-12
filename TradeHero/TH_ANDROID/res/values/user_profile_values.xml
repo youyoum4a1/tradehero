@@ -52,4 +52,7 @@
     <item name="android:layout_margin">@dimen/user_profile_button_margin</item>
   </style>
 
+  <integer name="user_profile_photo_max_edge_pixel">480</integer>
+  <integer name="user_profile_photo_compress_quality">75</integer>
+
 </resources>

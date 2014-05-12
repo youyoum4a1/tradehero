@@ -4,7 +4,7 @@ import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
+
 public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardKey.class.getName() + ".perPage";

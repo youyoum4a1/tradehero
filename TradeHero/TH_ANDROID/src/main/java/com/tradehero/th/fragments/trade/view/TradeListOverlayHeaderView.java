@@ -25,9 +25,6 @@ import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 28/10/13
- */
 public class TradeListOverlayHeaderView extends LinearLayout
 {
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;

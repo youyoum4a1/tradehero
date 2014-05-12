@@ -8,13 +8,8 @@ import com.tradehero.th.api.security.WarrantDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/28/14.
- */
 @Singleton public class WarrantDTOFormatter
 {
-    public static final String TAG = WarrantDTOFormatter.class.getSimpleName();
-
     @Inject public WarrantDTOFormatter()
     {
         super();

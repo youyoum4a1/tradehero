@@ -33,7 +33,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
@@ -60,18 +59,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     protected boolean querying = false;
-    protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     protected ProviderId providerId;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     protected FreshQuoteHolder freshQuoteHolder;
-    protected FreshQuoteHolder.FreshQuoteListener freshQuoteListener;
     protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
@@ -86,7 +82,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(currentUserId.toUserBaseKey());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -122,7 +117,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         // Prevent reuse of previous values when changing securities
         securityCompactDTO = null;
         quoteDTO = null;
-        freshQuoteListener = createFreshQuoteListener();
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -178,6 +172,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+
+        detachFetchPositionDetailTask();
+        detachFetchUserProfileTask();
+        destroyFreshQuoteHolder();
+
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         if (mBuyQuantity != null)
         {
@@ -194,7 +193,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         detachFetchPositionDetailTask();
         detachFetchUserProfileTask();
         destroyFreshQuoteHolder();
-        freshQuoteListener = null;
         querying = false;
 
         super.onDestroyView();
@@ -211,8 +209,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroy()
     {
-        securityPositionDetailCacheListener = null;
-        userProfileCacheListener = null;
         super.onDestroy();
     }
 
@@ -267,8 +263,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             fetchPositionDetailTask.setListener(null);
         }
-        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
-        fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);
+        fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, createSecurityPositionCacheListener(securityId));
         fetchPositionDetailTask.execute();
     }
 
@@ -279,7 +274,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             fetchUserProfileTask.cancel(false);
         }
         UserBaseKey baseKey = currentUserId.toUserBaseKey();
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
+        fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, createUserProfileCacheListener(baseKey));
         fetchUserProfileTask.execute();
     }
 
@@ -517,7 +512,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         destroyFreshQuoteHolder();
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.setListener(freshQuoteListener);
+        freshQuoteHolder.setListener(createFreshQuoteListener());
         freshQuoteHolder.start();
     }
 
@@ -559,6 +554,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener(SecurityId securityId)
+    {
+        return new AbstractBuySellSecurityPositionCacheListener(securityId);
+    }
+
     private class AbstractBuySellSecurityPositionCacheListener implements DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
     {
         private final SecurityId securityId;
@@ -581,6 +581,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("Error fetching the security position detail %s", key, error);
         }
+    }
+
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
+    {
+        return new AbstractBuySellUserProfileCacheListener(userBaseKey);
     }
 
     private class AbstractBuySellUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>

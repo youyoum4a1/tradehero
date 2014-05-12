@@ -16,7 +16,6 @@ import java.util.List;
 abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends SecurityCompactDTO>
         extends ArrayDTOAdapter<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
 {
-    private final static String TAG = SecurityItemViewAdapter.class.getSimpleName();
     public int itemHeight = 0;
 
     protected List<SecurityCompactDTOType> originalItems;

@@ -6,13 +6,8 @@ import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/23/14.
- */
 public class SecurityIntentFactory extends THIntentSubFactory<SecurityPushBuyIntent>
 {
-    public static final String TAG = SecurityIntentFactory.class.getSimpleName();
-
     @Inject public SecurityIntentFactory()
     {
         super();

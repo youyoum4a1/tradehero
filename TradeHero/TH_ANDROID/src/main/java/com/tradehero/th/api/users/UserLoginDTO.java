@@ -1,6 +1,6 @@
 package com.tradehero.th.api.users;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/4/13 Time: 11:27 AM Copyright (c) TradeHero */
+
 public class UserLoginDTO
 {
     public static final String SUGGEST_UPGRADE = UserLoginDTO.class.getName() + ".suggestUpgrade";

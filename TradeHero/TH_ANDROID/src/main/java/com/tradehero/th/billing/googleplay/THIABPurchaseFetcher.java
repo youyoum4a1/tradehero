@@ -6,12 +6,9 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import javax.inject.Inject;
 import org.json.JSONException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 3:31 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseFetcher
         extends IABPurchaseFetcher<IABSKU, THIABOrderId, THIABPurchase>
 {
-    public static final String TAG = THIABPurchaseFetcher.class.getSimpleName();
-
     @Inject protected THIABPurchaseCache thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">

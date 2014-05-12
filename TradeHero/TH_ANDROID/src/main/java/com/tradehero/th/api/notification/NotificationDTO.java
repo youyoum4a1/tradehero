@@ -4,9 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import java.util.Date;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
+
 public class NotificationDTO implements DTO, KeyGenerator
 {
     public String imageUrl;

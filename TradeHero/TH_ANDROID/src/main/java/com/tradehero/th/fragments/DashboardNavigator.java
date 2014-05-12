@@ -12,15 +12,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.utils.DaggerUtils;
+import java.util.HashSet;
+import java.util.Set;
+import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
 {
     private static final boolean ENABLE_TABBAR_ANIMATION = false;
@@ -28,10 +32,13 @@ public class DashboardNavigator extends Navigator
 
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
+    private Set<TabHost.OnTabChangeListener> mOnTabChangedListeners;
     private TabHost.OnTabChangeListener mOnTabChangedListener;
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
     private View tabBarView;
+
+    @Inject ResideMenu resideMenu;
 
     public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
     {
@@ -40,6 +47,26 @@ public class DashboardNavigator extends Navigator
 
         initTabs();
         initAnimation();
+
+        DaggerUtils.inject(this);
+    }
+
+    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (mOnTabChangedListeners == null)
+        {
+            mOnTabChangedListeners = new HashSet<TabHost.OnTabChangeListener>();
+        }
+        mOnTabChangedListeners.add(onTabChangeListener);
+    }
+
+    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (mOnTabChangedListeners == null)
+        {
+            return;
+        }
+        mOnTabChangedListeners.remove(onTabChangeListener);
     }
 
     private void initAnimation()
@@ -83,6 +110,7 @@ public class DashboardNavigator extends Navigator
             @Override public void onTabChanged(String tabId)
             {
                 updateTabBarOnTabChanged(tabId);
+                notifyOnTabChanged(tabId);
             }
         });
 
@@ -101,7 +129,6 @@ public class DashboardNavigator extends Navigator
 
         //mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
         mTabHost.setCurrentTabByTag(activity.getString(DashboardTabType.TRENDING.stringResId));
-
         tabBarView = mTabHost.findViewById(android.R.id.tabhost);
 
         if (!ENABLE_TABBAR_ANIMATION)
@@ -120,8 +147,12 @@ public class DashboardNavigator extends Navigator
             mTabHost.setOnTabChangedListener(null);
         }
         mTabHost = null;
+        if (mOnTabChangedListeners != null)
+        {
+            mOnTabChangedListeners.clear();
+            mOnTabChangedListeners = null;
+        }
         mOnTabChangedListener = null;
-
         tabBarView = null;
 
         slideInAnimation.setAnimationListener(null);
@@ -163,13 +194,6 @@ public class DashboardNavigator extends Navigator
         return "TH-tab:"+tabType.ordinal();
     }
 
-    @Override
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim,
-            String backStackName)
-    {
-        return super.pushFragment(fragmentClass, args, anim, backStackName);
-    }
-
     /**
      * Yes ,a better way is to use FragmentTabHost to manage the fragments and their states.
      * @param currentTab
@@ -204,7 +228,7 @@ public class DashboardNavigator extends Navigator
                 ft.add(R.id.main_fragment, targetFragment, name);
                 Timber.d("replaceTab add targetFragment %s",targetFragment);
             }
-            ft.commit();
+            ft.commitAllowingStateLoss();
 
         } else {
             //resideMenu.clearIgnoredViewList();
@@ -218,7 +242,7 @@ public class DashboardNavigator extends Navigator
                     .beginTransaction()
                     .replace(R.id.main_fragment, targetFragment, "fragment")
                     //.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+                    .commitAllowingStateLoss();
 
             Timber.d("replaceTab replace targetFragment %s,findFragmentById:%s",targetFragment,manager.findFragmentById(R.id.main_fragment));
         }
@@ -302,6 +326,7 @@ public class DashboardNavigator extends Navigator
 
     @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
+        resideMenu.closeMenu();
         Fragment fragment = super.pushFragment(fragmentClass, args);
         executePending(fragment);
         return fragment;
@@ -348,6 +373,21 @@ public class DashboardNavigator extends Navigator
             else
             {
                 showTabBar();
+            }
+        }
+    }
+
+    private void notifyOnTabChanged(String tabId)
+    {
+        Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
+        if (mOnTabChangedListeners != null && mOnTabChangedListeners.size() > 0)
+        {
+            for(TabHost.OnTabChangeListener o:mOnTabChangedListeners)
+            {
+                if(o != null)
+                {
+                    o.onTabChanged(tabId);
+                }
             }
         }
     }

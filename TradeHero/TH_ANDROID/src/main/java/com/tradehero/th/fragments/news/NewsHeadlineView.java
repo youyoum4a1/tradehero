@@ -20,11 +20,6 @@ import com.tradehero.th.wxapi.WeChatMessageType;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by julien on 11/10/13
- *
- * modified by Wang Liang.
- */
 public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
 {

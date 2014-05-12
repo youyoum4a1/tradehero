@@ -3,27 +3,19 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import java.util.HashMap;
-import java.util.Map;
+import com.tradehero.th.api.users.DisplayNameDTO;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.persistence.user.UserAvailabilityCache;
+import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:25 AM Copyright (c) TradeHero */
 public class ServerValidatedUsernameText extends ServerValidatedText
+        implements UserAvailabilityCache.UserAvailabilityListener
 {
+    @Inject UserAvailabilityCache userAvailabilityCache;
     private boolean isValidInServer = true;
-
-    public String getOriginalUsernameValue() {
-        return originalUsernameValue;
-    }
-
-    public void setOriginalUsernameValue(String originalUsernameValue) {
-        this.originalUsernameValue = originalUsernameValue;
-    }
-
     private String originalUsernameValue;
-    private Map<String, AbstractUserAvailabilityRequester> alreadyRequested = new HashMap<>();
 
     //<editor-fold desc="Constructors">
     public ServerValidatedUsernameText(Context context)
@@ -40,8 +32,29 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     {
         super(context, attrs, defStyle);
     }
-
     //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        DaggerUtils.inject(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        userAvailabilityCache.unregister(this);
+        super.onDetachedFromWindow();
+    }
+
+    public String getOriginalUsernameValue()
+    {
+        return originalUsernameValue;
+    }
+
+    public void setOriginalUsernameValue(String originalUsernameValue)
+    {
+        this.originalUsernameValue = originalUsernameValue;
+    }
 
     @Override protected boolean validate()
     {
@@ -55,49 +68,82 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
 
         String displayName = getText().toString();
-        boolean sameDisplayName = (this.originalUsernameValue != null && this.originalUsernameValue.equalsIgnoreCase(displayName));
+        boolean sameDisplayName =
+                (this.originalUsernameValue != null && this.originalUsernameValue.equalsIgnoreCase(
+                        displayName));
         if (sameDisplayName)
         {
             isValidInServer = true;
             return true;
         }
 
-        if (alreadyRequested.containsKey(displayName))
+        if (displayName != null)
         {
-            isValidInServer = alreadyRequested.get(displayName).isAvailable();
-            alreadyRequested.get(displayName).askServerIfNeeded();
-        }
-        else
-        {
-            createNewRequester();
+            UserAvailabilityDTO cachedAvailability =
+                    userAvailabilityCache.get(new DisplayNameDTO(displayName));
+            if (cachedAvailability != null)
+            {
+                isValidInServer = cachedAvailability.available;
+            }
+            else
+            {
+                queryCache(displayName);
+            }
         }
         return isValidInServer;
     }
 
-    private void createNewRequester ()
+    @Override public ValidationMessage getCurrentValidationMessage()
     {
-        String displayName = getText().toString();
-        if (!alreadyRequested.containsKey(displayName))
+        if (!isValidInServer)
         {
-            AbstractUserAvailabilityRequester requester = createUserAvailabilityRequester(displayName);
-            alreadyRequested.put(displayName, requester);
-            requester.askServerIfNeeded();
+            return new ValidationMessage(this, false,
+                    getContext().getString(R.string.validation_server_username_not_available));
+        }
+        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
+    }
+
+    protected void queryCache(String displayName)
+    {
+        if (displayName != null)
+        {
+            handleServerRequest(true);
+            DisplayNameDTO key = new DisplayNameDTO(displayName);
+            userAvailabilityCache.register(key, this);
+            userAvailabilityCache.getOrFetchAsync(key, true);
         }
     }
 
-    private AbstractUserAvailabilityRequester createUserAvailabilityRequester(String displayName)
+    @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value,
+            boolean fromCache)
     {
-        return new UserAvailabilityRequester(this, displayName);
+        if (key.isSameName(getText().toString()))
+        {
+            handleServerRequest(false);
+            handleReturnFromServer(value.available);
+        }
     }
 
-    private void handleReturnFromServer (boolean newIsValidFromServer)
+    @Override public void onErrorThrown(DisplayNameDTO key, Throwable error)
+    {
+        if (key.isSameName(getText().toString()))
+        {
+            handleServerRequest(false);
+            if (error instanceof RetrofitError && ((RetrofitError) error).isNetworkError())
+            {
+                handleNetworkError((RetrofitError) error);
+            }
+        }
+    }
+
+    private void handleReturnFromServer(boolean newIsValidFromServer)
     {
         boolean hasChanged = isValidInServer != newIsValidFromServer;
         isValidInServer = newIsValidFromServer;
 
         if (hasChanged)
         {
-            this.post (new Runnable()
+            this.post(new Runnable()
             {
                 @Override public void run()
                 {
@@ -107,55 +153,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
     }
 
-    @Override public ValidationMessage getCurrentValidationMessage()
-    {
-        if (!isValidInServer)
-        {
-            return new ValidationMessage(this, false, getContext().getString(R.string.validation_server_username_not_available));
-        }
-        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
-    }
-
-    public void handleNetworkError (RetrofitError retrofitError)
+    public void handleNetworkError(RetrofitError retrofitError)
     {
         hintDefaultStatus();
-    }
-
-    public static class UserAvailabilityRequester extends AbstractUserAvailabilityRequester
-    {
-        private ServerValidatedUsernameText text;
-
-        @Inject
-        public UserAvailabilityRequester()
-        {
-        }
-
-        public UserAvailabilityRequester(ServerValidatedUsernameText text, String displayName)
-        {
-            this.displayName = displayName;
-            this.text = text;
-        }
-
-        @Override public void notifyAvailabilityChanged()
-        {
-            if (this.getDisplayName().equals(text.getText().toString()))
-            {
-                text.handleReturnFromServer (this.isAvailable());
-            }
-        }
-
-        @Override public void notifyIsQuerying(boolean isQuerying)
-        {
-            text.handleServerRequest(isQuerying);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            super.failure(retrofitError);
-            if (retrofitError.isNetworkError())
-            {
-                text.handleNetworkError(retrofitError);
-            }
-        }
     }
 }

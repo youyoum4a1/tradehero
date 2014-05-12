@@ -14,7 +14,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 6:56 PM Copyright (c) TradeHero */
 abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
@@ -66,6 +65,8 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
+    //suggest use DashboardNavigator
+    @Deprecated
     protected Navigator getNavigator()
     {
         return ((NavigatorActivity) getActivity()).getNavigator();

@@ -4,14 +4,9 @@ import android.content.Context;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 
-/**
- * Created by xavier on 12/13/13.
- */
 // TODO fix server and remove this class
 public class MacquarieSecurityListPagedLoader extends SecurityListPagedLoader
 {
-    public static final String TAG = MacquarieSecurityListPagedLoader.class.getSimpleName();
-
     public MacquarieSecurityListPagedLoader(Context context)
     {
         super(context);

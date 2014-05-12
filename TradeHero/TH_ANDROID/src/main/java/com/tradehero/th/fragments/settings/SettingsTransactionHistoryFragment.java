@@ -23,13 +23,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 22/10/13
- * Time: 1:10 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
     private ListView transactionListView;

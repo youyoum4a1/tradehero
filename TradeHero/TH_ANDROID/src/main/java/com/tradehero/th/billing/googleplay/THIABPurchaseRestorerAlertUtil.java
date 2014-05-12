@@ -12,7 +12,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseRestorerAlertUtil extends THIABAlertDialogUtil
 {
     @Inject public THIABPurchaseRestorerAlertUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)

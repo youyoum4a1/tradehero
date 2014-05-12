@@ -28,13 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 23/10/13
- */
 public class TradeListItemView extends LinearLayout implements DTOView<AbstractTradeListItemAdapter.ExpandableTradeItem>
 {
-    public static final String TAG = TradeListItemView.class.getName();
-
     private AbstractTradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;

@@ -1,9 +1,4 @@
-/**
- * WebViewFragment.java 
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 28, 2013
- */
+
 package com.tradehero.th.fragments.web;
 
 import android.content.Intent;

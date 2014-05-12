@@ -93,7 +93,7 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                followUser(shownUserBaseKey);
+                premiumFollowUser(shownUserBaseKey);
             }
         });
     }

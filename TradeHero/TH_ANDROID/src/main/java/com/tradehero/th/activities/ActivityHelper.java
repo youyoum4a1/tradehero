@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:28 PM Copyright (c) TradeHero */
+
 public class ActivityHelper
 {
     public static void launchAuthentication(Context activity)

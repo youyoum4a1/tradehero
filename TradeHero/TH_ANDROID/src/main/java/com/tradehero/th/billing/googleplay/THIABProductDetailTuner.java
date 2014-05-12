@@ -6,7 +6,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:25 PM To change this template use File | Settings | File Templates. */
 public class THIABProductDetailTuner implements ProductDetailTuner<IABSKU, THIABProductDetail>
 {
     public THIABProductDetailTuner()

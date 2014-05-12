@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:12 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPageListLoader extends PaginationListLoader<ListedSecurityCompact>
 {
     @Inject SecurityService securityService;

@@ -1,23 +1,15 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import com.tradehero.th.adapters.AppendableArrayDTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.notification.NotificationKey;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
-public class NotificationListAdapter extends AppendableArrayDTOAdapter<NotificationKey, NotificationItemView>
+public class NotificationListAdapter extends ArrayDTOAdapterNew<NotificationKey, NotificationItemView>
 {
-
-    public NotificationListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public NotificationListAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
     }
-
-    @Override protected void fineTune(int position, NotificationKey dto, NotificationItemView dtoView)
-    {
-        // nothing for now
-    }
+    //</editor-fold>
 }

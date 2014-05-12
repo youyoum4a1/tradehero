@@ -3,7 +3,7 @@ package com.tradehero.th.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 12:05 PM To change this template use File | Settings | File Templates. */
+
 public class ExceptionUtils
 {
     public static final String TAG = ExceptionUtils.class.getSimpleName();

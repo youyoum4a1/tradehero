@@ -10,17 +10,12 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
-/**
- * Created by julien on 30/10/13
- */
 abstract public class AbstractPositionPartialBottomOpenView<
         PositionDTOType extends PositionDTO,
         ExpandableListItemType extends ExpandableListItem<PositionDTOType>
         >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
-    public static final String TAG = AbstractPositionPartialBottomOpenView.class.getSimpleName();
-
     private TextView unrealisedPLValue;
     private TextView realisedPLValue;
     private TextView totalInvestedValue;

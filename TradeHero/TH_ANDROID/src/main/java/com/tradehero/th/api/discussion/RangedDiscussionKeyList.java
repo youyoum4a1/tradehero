@@ -5,9 +5,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.pagination.RangedDTO;
 import java.util.List;
 
-/**
- * Created by xavier2 on 2014/4/9.
- */
+
 public class RangedDiscussionKeyList extends RangedDTO<DiscussionKey, DiscussionKeyList>
     implements DTO
 {

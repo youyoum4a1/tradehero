@@ -4,9 +4,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 12/13/13.
- */
+
 public class SecurityPositionDetailDTOUtil
 {
     public static final String TAG = SecurityPositionDetailDTOUtil.class.getSimpleName();

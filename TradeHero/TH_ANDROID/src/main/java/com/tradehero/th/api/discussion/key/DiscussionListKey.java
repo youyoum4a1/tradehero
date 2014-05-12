@@ -85,4 +85,12 @@ public class DiscussionListKey
     {
         return new HashMap<>();
     }
+
+    @Override public String toString()
+    {
+        return "DiscussionListKey{" +
+                "inReplyToType=" + inReplyToType +
+                ", inReplyToId=" + inReplyToId +
+                '}';
+    }
 }

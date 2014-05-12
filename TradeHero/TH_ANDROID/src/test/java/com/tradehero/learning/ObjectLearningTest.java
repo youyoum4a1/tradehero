@@ -14,14 +14,7 @@ import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 4:31 PM To change this template use File | Settings | File Templates.
- *
- * The purpose of these tests is to confirm that our DTOCache will need DTOKeys that properly implement hashCode and equals
- * to function as intended.
- * The intended function is that 2 different instances of a DTOKey that share the same field values should be identified by
- * the cache as identical.
- * */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class ObjectLearningTest

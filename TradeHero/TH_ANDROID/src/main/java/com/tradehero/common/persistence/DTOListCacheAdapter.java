@@ -6,9 +6,7 @@ import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.DTOView;
 import java.util.Collection;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/17/14 Time: 3:10 PM Copyright (c) TradeHero
- */
+
 public abstract class DTOListCacheAdapter<
         DTOKeyType extends DTOKey,
         DTOViewType extends DTOView<DTOKeyType>

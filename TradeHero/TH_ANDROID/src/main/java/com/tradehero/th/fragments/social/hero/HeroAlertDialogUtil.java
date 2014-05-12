@@ -7,11 +7,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/28/13 Time: 4:34 PM To change this template use File | Settings | File Templates. */
 public class HeroAlertDialogUtil extends AlertDialogUtil
 {
-    public static final String TAG = HeroAlertDialogUtil.class.getSimpleName();
-
     @Inject public HeroAlertDialogUtil()
     {
         super();

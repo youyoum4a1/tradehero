@@ -9,9 +9,6 @@
     android:layout_height="match_parent"
     >
 
-  <!--com.tradehero.th.fragments.updatecenter.messages.FixedSwipeListView
-  com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
-  -->
   <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/message_list"

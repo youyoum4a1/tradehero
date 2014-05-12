@@ -4,20 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemView>
 {
-    public static final String TAG = HeroListItemAdapter.class.getSimpleName();
-
     public static final int VIEW_TYPE_EMPTY_PLACEHOLDER = 0;
     public static final int VIEW_TYPE_HEADER_ACTIVE = 1;
     public static final int VIEW_TYPE_ITEM_ACTIVE = 2;
@@ -30,10 +27,11 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     private final int headerActiveResId;
 
     private final int headerInactiveResId;
+    protected UserBaseKey followerId;
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
-    private WeakReference<HeroListItemView.OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
-    private WeakReference<View.OnClickListener> mostSkilledClicked = new WeakReference<>(null);
+    private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
+    private View.OnClickListener mostSkilledClicked;
 
     public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
             int headerInactiveResId)
@@ -44,14 +42,19 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         this.headerInactiveResId = headerInactiveResId;
     }
 
+    public void setFollowerId(UserBaseKey followerId)
+    {
+        this.followerId = followerId;
+    }
+
     public void setHeroStatusButtonClickedListener(HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
-        this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
+        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
     }
 
     public void setMostSkilledClicked(View.OnClickListener mostSkilledClicked)
     {
-        this.mostSkilledClicked = new WeakReference<>(mostSkilledClicked);
+        this.mostSkilledClicked = mostSkilledClicked;
     }
 
     @Override public boolean hasStableIds()
@@ -71,7 +74,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         {
             activeHeroes = null;
             inactiveHeroes = null;
-            THLog.d(TAG, "Null items");
+            Timber.d("Null items");
         }
         else
         {
@@ -89,7 +92,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                     //inactiveHeroes.add(heroDTO);
                 }
             }
-            THLog.d(TAG, "setItems active " + activeHeroes.size() + ", inactive " + inactiveHeroes.size());
+            Timber.d("setItems active %d, inactive %d", activeHeroes.size(), inactiveHeroes.size());
         }
     }
 
@@ -195,7 +198,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
                 if (mostSkilledButton != null)
                 {
-                    mostSkilledButton.setOnClickListener(mostSkilledClicked.get());
+                    mostSkilledButton.setOnClickListener(mostSkilledClicked);
                 }
                 break;
 
@@ -221,8 +224,9 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 {
                     convertView = inflater.inflate(layoutResourceId, parent, false);
                 }
+                ((HeroListItemView) convertView).setFollowerId(followerId);
                 ((HeroListItemView) convertView).display((HeroDTO) getItem(position));
-                ((HeroListItemView) convertView).setHeroStatusButtonClickedListener(heroStatusButtonClickedListener.get());
+                ((HeroListItemView) convertView).setHeroStatusButtonClickedListener(heroStatusButtonClickedListener);
                 break;
 
             default:

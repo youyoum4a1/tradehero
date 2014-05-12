@@ -3,7 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:25 AM Copyright (c) TradeHero */
+
 public class ServerValidatedEmailText extends ServerValidatedText
 {
     //<editor-fold desc="Constructors">

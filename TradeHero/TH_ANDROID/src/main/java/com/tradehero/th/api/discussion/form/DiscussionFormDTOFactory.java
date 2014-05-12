@@ -5,9 +5,6 @@ import com.tradehero.th.api.news.form.NewsItemDiscussionFormDTO;
 import com.tradehero.th.api.timeline.form.TimelineItemCommentFormDTO;
 import javax.inject.Inject;
 
-/**
- * Created by xavier2 on 2014/4/11.
- */
 public class DiscussionFormDTOFactory
 {
     @Inject public DiscussionFormDTOFactory()
@@ -17,21 +14,30 @@ public class DiscussionFormDTOFactory
 
     public DiscussionFormDTO createEmpty(DiscussionType discussionType)
     {
+        DiscussionFormDTO created;
         switch (discussionType)
         {
             case COMMENT:
-                return new CommentFormDTO();
+                created = new CommentFormDTO();
+                break;
             case TIMELINE_ITEM:
-                return new TimelineItemCommentFormDTO();
+                created = new TimelineItemCommentFormDTO();
+                break;
             case SECURITY:
-                return new SecurityDiscussionFormDTO();
+                created = new SecurityDiscussionFormDTO();
+                break;
             case NEWS:
-                return new NewsItemDiscussionFormDTO();
+                created = new NewsItemDiscussionFormDTO();
+                break;
             case PRIVATE_MESSAGE:
-                return new PrivateDiscussionFormDTO();
+                created = new PrivateDiscussionFormDTO();
+                break;
             case BROADCAST_MESSAGE:
-                return new BroadcastDiscussionFormDTO();
+                created = new BroadcastDiscussionFormDTO();
+                break;
+            default:
+                throw new IllegalStateException("Invalid type of DiscussionType" + discussionType);
         }
-        throw new IllegalStateException("Invalid type of DiscussionType" + discussionType);
+        return created;
     }
 }

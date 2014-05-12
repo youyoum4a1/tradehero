@@ -3,7 +3,7 @@
 <com.tradehero.th.fragments.timeline.UserProfileResideMenuItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:background="@color/red"
@@ -11,7 +11,7 @@
 
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/user_profile_side_menu_view"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       >
     <ProgressBar
@@ -43,14 +43,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_toRightOf="@id/user_profile_avatar"
-          android:textSize="16sp"
+          android:textSize="20sp"
           android:paddingLeft="5sp"
           android:textColor="@color/white"
           android:textStyle="bold"
           android:shadowColor="@color/black"
           android:shadowDy="1"
           android:shadowRadius="1"
-          android:singleLine="true"
           android:ellipsize="end"
           tools:text="Tho Nguyen Truong"
           />
@@ -74,6 +73,7 @@
           android:layout_height="wrap_content"
           android:textStyle="bold"
           android:paddingLeft="1sp"
+          android:singleLine="true"
           />
 
       <ImageView
@@ -89,7 +89,7 @@
   </com.tradehero.common.widget.BetterViewAnimator>
 
   <View
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="1dp"
       android:layout_marginTop="20dp"
       android:background="@color/white"

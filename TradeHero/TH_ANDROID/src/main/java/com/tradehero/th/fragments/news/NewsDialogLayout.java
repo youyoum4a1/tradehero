@@ -38,9 +38,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
 
-/**
- * Created by tradehero on 14-3-7.
- */
 public class NewsDialogLayout extends LinearLayout implements View.OnClickListener,
         AdapterView.OnItemClickListener, THDialog.DialogCallback
 {

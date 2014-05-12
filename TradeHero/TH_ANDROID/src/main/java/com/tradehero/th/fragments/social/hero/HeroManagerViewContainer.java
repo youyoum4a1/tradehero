@@ -10,13 +10,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-/**
- * Created by xavier on 12/16/13.
- */
 public class HeroManagerViewContainer
 {
-    public static final String TAG = HeroManagerViewContainer.class.getSimpleName();
-
     public final TextView followCreditCount;
     public final ImageView icnCoinStack;
     public final ImageButton btnBuyMore;

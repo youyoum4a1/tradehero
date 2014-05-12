@@ -1,8 +1,6 @@
 package com.tradehero.th.api.pagination;
 
-/**
- * Created by xavier2 on 2014/4/9.
- */
+
 public interface RangedKey
 {
     static final String JSON_MAX_COUNT = "maxCount";

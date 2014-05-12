@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.PrivateMessageKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -21,18 +21,21 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by tho on 4/17/2014.
- */
 public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
     private final Navigator navigator;
     private final Context context;
 
-    public NotificationClickHandler(Context context, NotificationDTO notificationDTO)
+    @Inject DiscussionKeyFactory discussionKeyFactory;
+
+    public NotificationClickHandler(
+            Context context,
+            NotificationDTO notificationDTO)
     {
         this.context = context;
         this.notificationDTO = notificationDTO;
@@ -45,6 +48,8 @@ public class NotificationClickHandler
         {
             throw new IllegalArgumentException("Context needed to be NavigatorActivity");
         }
+
+        DaggerUtils.inject(this);
     }
 
     /**
@@ -136,14 +141,19 @@ public class NotificationClickHandler
                 break;
 
                 case PRIVATE_MESSAGE:
+                case BROADCAST_MESSAGE:
                 {
+                    Bundle args = new Bundle();
                     if (notificationDTO.referencedUserId != null)
                     {
-                        Bundle args = new Bundle();
                         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
-                        ReplyPrivateMessageFragment.putDiscussionKey(args, new PrivateMessageKey(notificationDTO.replyableId));
-                        navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                     }
+
+                    if (notificationDTO.replyableId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                    }
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                 }
                 break;
 

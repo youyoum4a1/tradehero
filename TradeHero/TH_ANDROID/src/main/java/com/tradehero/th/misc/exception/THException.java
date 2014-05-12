@@ -7,7 +7,6 @@ import com.tradehero.th.base.Application;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 5:20 PM Copyright (c) TradeHero */
 public class THException extends Exception
 {
     private ExceptionCode code;

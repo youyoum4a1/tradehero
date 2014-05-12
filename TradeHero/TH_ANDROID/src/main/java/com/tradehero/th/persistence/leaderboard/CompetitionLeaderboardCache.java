@@ -13,7 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 22/1/14 Time: 4:47 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class CompetitionLeaderboardCache extends PartialDTOCache<CompetitionLeaderboardId, CompetitionLeaderboardDTO>
 {
     public static final String TAG = CompetitionLeaderboardCache.class.getSimpleName();

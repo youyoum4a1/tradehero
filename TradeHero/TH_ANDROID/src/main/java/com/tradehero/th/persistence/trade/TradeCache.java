@@ -6,9 +6,7 @@ import com.tradehero.th.api.trade.TradeDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by julien on 22/10/13
- */
+
 @Singleton public class TradeCache extends StraightDTOCache <OwnedTradeId, TradeDTO>
 {
     public static final String TAG = TradeCache.class.getSimpleName();

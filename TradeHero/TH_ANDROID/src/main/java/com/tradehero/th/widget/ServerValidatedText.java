@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.tradehero.th.R;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/28/13 Time: 6:22 PM Copyright (c) TradeHero */
 public class ServerValidatedText extends SelfValidatedText
 {
     private int progressIndicatorId;

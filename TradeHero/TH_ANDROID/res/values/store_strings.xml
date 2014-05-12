@@ -125,17 +125,21 @@
     portfolio!
   </string>
 
-  <string name="store_buy_virtual_dollar_window_button_cancel">Cancel</string>
+  <string name="store_buy_virtual_dollar_window_button_cancel">@string/cancel</string>
   <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
 
   <!-- Manage heroes -->
   <string name="manage_heroes_title">Heroes</string>
+  <string name="manage_my_heroes_title">My Heroes</string>
   <string name="manage_heroes_follows">Follows:</string>
 
   <string name="manage_heroes_empty_title">BUY CREDITS TO FOLLOW HEROES</string>
   <string name="manage_heroes_empty_description">Following Heroes allows you to receive all their
     trades in real-time as well as their market commentary.
     Keep ahead of the game: browse the Most Skilled traders now to pick your Heroes!
+  </string>
+  <string name="manage_heroes_empty_description_for_other">
+    There is no heroes.
   </string>
   <string name="manage_heroes_empty_leaderboard_link">Go to Most Skilled Traders</string>
 
@@ -163,7 +167,7 @@
     open positions and timeline.\n\nYour subscription to this Hero will stop with immediate effect
     upon confirmation. It will cost you extra TradeHero credits to follow this Hero again.
   </string>
-  <string name="manage_heroes_alert_unfollow_cancel">Cancel</string>
+  <string name="manage_heroes_alert_unfollow_cancel">@string/cancel</string>
   <string name="manage_heroes_alert_unfollow_ok">Stop Following</string>
 
   <string name="manage_heroes_unfollow_progress_title">Processing</string>
@@ -175,6 +179,7 @@
 
   <!-- Manage followers -->
   <string name="manage_followers_title">Followers</string>
+  <string name="manage_my_followers_title">My Followers</string>
   <string name="manage_followers_total_revenue">Total Revenue</string>
   <string name="manage_followers_total_amount_paid">Total Amount Paid</string>
   <string name="manage_followers_number_followers">Followers</string>

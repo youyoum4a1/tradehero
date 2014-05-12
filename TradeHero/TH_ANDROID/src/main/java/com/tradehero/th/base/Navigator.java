@@ -13,7 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
+
 public class Navigator
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";

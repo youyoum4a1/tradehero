@@ -1,6 +1,6 @@
 package com.tradehero.th.api.market;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 5:57 PM To change this template use File | Settings | File Templates. */
+
 public class SecuritySuperCompactDTO
 {
     public String n;    // name

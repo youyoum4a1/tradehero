@@ -7,9 +7,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.widget.news.TimeSpanButton;
 
-/**
- * Created by xavier on 8/2/14.
- */
+
 public class YahooTimeSpanButton extends TimeSpanButton
 {
     public static final String TAG = YahooTimeSpanButton.class.getSimpleName();

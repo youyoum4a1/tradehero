@@ -8,9 +8,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by xavier on 2/12/14.
- */
+
 abstract public class BaseLeaderboardUserDTOUtilTest
 {
     public static final String TAG = BaseLeaderboardUserDTOUtilTest.class.getSimpleName();

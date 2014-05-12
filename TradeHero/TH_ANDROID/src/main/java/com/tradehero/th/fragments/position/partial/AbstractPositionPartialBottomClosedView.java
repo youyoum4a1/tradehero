@@ -11,17 +11,12 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
-/**
- * Created by julien on 30/10/13
- */
 abstract public class AbstractPositionPartialBottomClosedView<
             PositionDTOType extends PositionDTO,
             ExpandableListItemType extends ExpandableListItem<PositionDTOType>
             >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
-    public static final String TAG = AbstractPositionPartialBottomClosedView.class.getSimpleName();
-
     private TextView realisedPLValue;
     protected TextView roiValue;
     private TextView totalInvestedValue;

@@ -4,11 +4,7 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.Collection;
 
-/**
- * Created by wangliang on 14-4-4.
- *
- * list of message id
- */
+
 public class MessageHeaderIdList extends DTOKeyIdList<MessageHeaderId>
 {
     public MessageHeaderIdList()

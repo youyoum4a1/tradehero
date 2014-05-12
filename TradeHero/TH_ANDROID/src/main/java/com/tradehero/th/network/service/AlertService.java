@@ -10,7 +10,7 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/13/13 Time: 12:54 PM To change this template use File | Settings | File Templates. */
+
 public interface AlertService
 {
     //<editor-fold desc="Get Alerts">

@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 public class FollowerManagerInfoFetcher
 {
-    public static final String TAG = FollowerManagerInfoFetcher.class.getSimpleName();
-
     @Inject protected FollowerSummaryCache followerSummaryCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, FollowerSummaryDTO> followerSummaryFetchTask;
     private final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;

@@ -7,7 +7,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:06 PM Copyright (c) TradeHero */
+
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
     public double initialCash;

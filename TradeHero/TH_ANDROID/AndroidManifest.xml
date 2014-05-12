@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
-    android:versionCode="25"
     android:versionName="2.1.0"
+    android:versionCode="48"
     android:installLocation="auto">
 
   <uses-sdk
@@ -12,7 +12,6 @@
   <supports-screens
       android:anyDensity="true"
       android:resizeable="true"/>
-
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -192,7 +191,7 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.NotificaionReceiver">
+    <receiver android:name=".models.push.baidu.NotificationReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
       </intent-filter>

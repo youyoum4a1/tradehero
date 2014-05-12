@@ -9,9 +9,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-/**
- * Created by tradehero on 14-4-3.
- */
 public class TitleTabView extends RelativeLayout
 {
     @InjectView(R.id.tab_title) TextView titleView;

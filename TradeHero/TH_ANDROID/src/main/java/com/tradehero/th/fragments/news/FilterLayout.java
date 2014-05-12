@@ -17,14 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tradehero on 14-3-14.
- */
 public class FilterLayout extends RelativeLayout implements View.OnClickListener
 {
-
-    public static final String TAG = FilterLayout.class.getSimpleName();
-
     public ImageButton mPrevious;
     public ImageButton mNext;
     public TextView mTitle;
@@ -32,7 +26,6 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
     public TextView mDescription;
     public Spinner mSpinner;
     private MyListAdapter mSpinnerAdapter;
-
 
     private OnFilterListener onFilterListener;
 
@@ -54,13 +47,14 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
     }
     //</editor-fold>
 
-    protected void init() {
+    protected void init()
+    {
         //DaggerUtils.inject(this);
         //trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
     }
 
-
-    public void fillDefaultData() {
+    public void fillDefaultData()
+    {
         BaseFilter filter = new BaseFilter();
         //start fillData
         int page = buildDefaultPageData(filter);
@@ -68,53 +62,60 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
 
         this.filter = filter;
         showProperView();
-
     }
 
     private static final String KEY_CURRENT_PAGE = "current_page";
     private static final String KEY_MAX_PAGE = "max_page";
     private static final String KEY_MIN_PAGE = "min_page";
 
-
-    public static class SavedState extends BaseSavedState {
+    public static class SavedState extends BaseSavedState
+    {
         int currentPage;
         Parcelable adapterState;
         ClassLoader loader;
 
-        public SavedState(Parcelable superState) {
+        public SavedState(Parcelable superState)
+        {
             super(superState);
         }
 
         @Override
-        public void writeToParcel(Parcel out, int flags) {
+        public void writeToParcel(Parcel out, int flags)
+        {
             super.writeToParcel(out, flags);
             out.writeInt(currentPage);
             out.writeParcelable(adapterState, flags);
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "FilterLayout#SavedState{"
                     + Integer.toHexString(System.identityHashCode(this))
                     + " position=" + currentPage + "}";
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR
-                = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>() {
+                = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>()
+        {
             @Override
-            public SavedState createFromParcel(Parcel in, ClassLoader loader) {
+            public SavedState createFromParcel(Parcel in, ClassLoader loader)
+            {
                 return new SavedState(in, loader);
             }
 
             @Override
-            public SavedState[] newArray(int size) {
+            public SavedState[] newArray(int size)
+            {
                 return new SavedState[size];
             }
         });
 
-        SavedState(Parcel in, ClassLoader loader) {
+        SavedState(Parcel in, ClassLoader loader)
+        {
             super(in);
-            if (loader == null) {
+            if (loader == null)
+            {
                 loader = getClass().getClassLoader();
             }
             currentPage = in.readInt();
@@ -123,79 +124,97 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         }
     }
 
-
     @Override
-    protected Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState()
+    {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
         ss.currentPage = currentPage;
-//        if (mAdapter != null) {
-//            ss.adapterState = mAdapter.saveState();
-//        }
+        //        if (mAdapter != null) {
+        //            ss.adapterState = mAdapter.saveState();
+        //        }
         return ss;
     }
 
     @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
+    protected void onRestoreInstanceState(Parcelable state)
+    {
+        if (!(state instanceof SavedState))
+        {
             super.onRestoreInstanceState(state);
             return;
         }
-        SavedState ss = (SavedState)state;
+        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
-        if (filter != null) {
+        if (filter != null)
+        {
             currentPage = ss.currentPage;
             //mAdapter.restoreState(ss.adapterState, ss.loader);
             //setCurrentItemInternal(ss.position, false, true);
             showProperView();
-        } else {
+        }
+        else
+        {
             currentPage = ss.currentPage;
             //mRestoredAdapterState = ss.adapterState;
             //mRestoredClassLoader = ss.loader;
         }
-
     }
 
-    private int buildDefaultPageData(BaseFilter filter) {
+    private int buildDefaultPageData(BaseFilter filter)
+    {
 
         int minPage = 0;
         int maxPage = 0;
-        NewsData.PageTab[] pages =  NewsData.PageTab.values();
+        NewsData.PageTab[] pages = NewsData.PageTab.values();
 
-        for (NewsData.PageTab page:pages) {
+        for (NewsData.PageTab page : pages)
+        {
             List<SpinnerItemData> spinnerItemDataList = null;
-            if (page == NewsData.PageTab.REGION_NEWS) {
+            if (page == NewsData.PageTab.REGION_NEWS)
+            {
 
-                List<CountryLanguagePairDTO> countryLanguagePairDTOList = NewsData.buildCountriesPair();
-                spinnerItemDataList = new ArrayList<SpinnerItemData>(countryLanguagePairDTOList.size());
+                List<CountryLanguagePairDTO> countryLanguagePairDTOList =
+                        NewsData.buildCountriesPair();
+                spinnerItemDataList =
+                        new ArrayList<SpinnerItemData>(countryLanguagePairDTOList.size());
                 int size = countryLanguagePairDTOList.size();
-                for (int i=0;i<size;i++){
+                for (int i = 0; i < size; i++)
+                {
                     CountryLanguagePairDTO dto = countryLanguagePairDTOList.get(i);
-                    spinnerItemDataList.add(new SpinnerItemData(i,dto.name,0));
+                    spinnerItemDataList.add(new SpinnerItemData(i, dto.name, 0));
                 }
+            }
+            else if (page == NewsData.PageTab.MY_HEADLINE_NEWS)
+            {
 
-            } else if (page == NewsData.PageTab.MY_HEADLINE_NEWS) {
-
-            }else if (page == NewsData.PageTab.SOCIAL_NEWS){
-                List<NewsItemCategoryDTO>  newsItemCategoryDTOList = NewsData.buildSocialCategories();
-                spinnerItemDataList = new ArrayList<SpinnerItemData>(newsItemCategoryDTOList.size());
+            }
+            else if (page == NewsData.PageTab.SOCIAL_NEWS)
+            {
+                List<NewsItemCategoryDTO> newsItemCategoryDTOList =
+                        NewsData.buildSocialCategories();
+                spinnerItemDataList =
+                        new ArrayList<SpinnerItemData>(newsItemCategoryDTOList.size());
                 int size = newsItemCategoryDTOList.size();
-                for (int i=0;i<size;i++){
+                for (int i = 0; i < size; i++)
+                {
                     NewsItemCategoryDTO dto = newsItemCategoryDTOList.get(i);
-                    spinnerItemDataList.add(new SpinnerItemData(dto.id,dto.name,0));
+                    spinnerItemDataList.add(new SpinnerItemData(dto.id, dto.name, 0));
                 }
             }
 
-            PageData pageData = new PageData(page.page,page.title,page.haveDesc,page.desc,
-                    page.haveSubFilter,page.spinnerItemLayout,spinnerItemDataList
+            PageData pageData = new PageData(page.page, page.title, page.haveDesc, page.desc,
+                    page.haveSubFilter, page.spinnerItemLayout, spinnerItemDataList
             );
-            filter.setPageData(page.page,pageData);
+            filter.setPageData(page.page, pageData);
 
-            if (page.page > maxPage) {
+            if (page.page > maxPage)
+            {
                 maxPage = page.page;
             }
-            if (page.page < minPage) {
+            if (page.page < minPage)
+            {
                 minPage = page.page;
             }
         }
@@ -204,15 +223,15 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         this.currentPage = currentPage;
         this.maxPage = maxPage;
         return currentPage;
-
     }
 
-    public void fillPageData(Map<Integer,PageData> dataMap){
-        fillPageData(0,dataMap);
+    public void fillPageData(Map<Integer, PageData> dataMap)
+    {
+        fillPageData(0, dataMap);
     }
 
-
-    public void fillPageData(int defaultPage,Map<Integer,PageData> dataMap){
+    public void fillPageData(int defaultPage, Map<Integer, PageData> dataMap)
+    {
         BaseFilter filter = new BaseFilter();
         filter.setPageData(dataMap);
         this.filter = filter;
@@ -222,13 +241,13 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         showProperView();
     }
 
-
-
-    private void test() {
+    private void test()
+    {
         mTitle.setText("Regional");
     }
 
-    @Override protected void onFinishInflate() {
+    @Override protected void onFinishInflate()
+    {
         super.onFinishInflate();
 
         mPrevious = (ImageButton) findViewById(R.id.previous_filter);
@@ -245,7 +264,8 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         setClickEvent();
     }
 
-    private void setClickEvent() {
+    private void setClickEvent()
+    {
         if (mPrevious != null)
         {
             mPrevious.setOnClickListener(this);
@@ -288,18 +308,25 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         mSpinner = null;
     }
 
-
-    public void showProperView() {
-        Timber.d("Wangliang  showProperView currentPage:%d",currentPage);
-          mTitle.setText(filter.getTitle(currentPage));
-          //mTitleIcon.setImageResource(typeDTO.titleIconResId);
-          if (filter.isSubTitleVisible(currentPage)) {
-              mDescription.setText(filter.getSubTitle(currentPage));
-          }
-        if (filter.hasSpinner(currentPage)) {
-            if (mSpinnerAdapter == null) {
-                mSpinnerAdapter = new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,filter.getSpinnerData(currentPage));
-            } else {
+    public void showProperView()
+    {
+        Timber.d("Wangliang  showProperView currentPage:%d", currentPage);
+        mTitle.setText(filter.getTitle(currentPage));
+        //mTitleIcon.setImageResource(typeDTO.titleIconResId);
+        if (filter.isSubTitleVisible(currentPage))
+        {
+            mDescription.setText(filter.getSubTitle(currentPage));
+        }
+        if (filter.hasSpinner(currentPage))
+        {
+            if (mSpinnerAdapter == null)
+            {
+                mSpinnerAdapter =
+                        new MyListAdapter(getContext(), R.layout.common_dialog_item_layout,
+                                R.id.popup_text, filter.getSpinnerData(currentPage));
+            }
+            else
+            {
                 mSpinnerAdapter.setNotifyOnChange(false);
                 mSpinnerAdapter.clear();
                 mSpinnerAdapter.addAll(filter.getSpinnerData(currentPage));
@@ -307,17 +334,18 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
                 mSpinnerAdapter.setNotifyOnChange(true);
             }
 
-            if (mSpinner.getAdapter() == null) {
+            if (mSpinner.getAdapter() == null)
+            {
                 mSpinner.setAdapter(mSpinnerAdapter);
             }
         }
-
-
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
             case R.id.previous_filter:
                 handlePreviousClicked();
                 break;
@@ -327,79 +355,90 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         }
     }
 
-    private class MyListAdapter extends ArrayAdapter<SpinnerItemData> {
+    private class MyListAdapter extends ArrayAdapter<SpinnerItemData>
+    {
 
-
-        public MyListAdapter(Context context, int resource, int textViewResourceId, List<SpinnerItemData> objects) {
+        public MyListAdapter(Context context, int resource, int textViewResourceId,
+                List<SpinnerItemData> objects)
+        {
             super(context, resource, textViewResourceId, objects);
         }
-
-
-
     }
 
-    private boolean canForward() {
+    private boolean canForward()
+    {
         boolean canForward = currentPage < maxPage;
-        Timber.d("Wangliang  canForward ? %s currentPage:%d,maxPage:%s",canForward,currentPage,maxPage);
+        Timber.d("Wangliang  canForward ? %s currentPage:%d,maxPage:%s", canForward, currentPage,
+                maxPage);
         return canForward;
     }
 
-    private boolean canBackward() {
+    private boolean canBackward()
+    {
         boolean canBackward = currentPage > minPage;
-        Timber.d("Wangliang  canBackward ? %s currentPage:%d,minPage:%s",canBackward,currentPage,minPage);
+        Timber.d("Wangliang  canBackward ? %s currentPage:%d,minPage:%s", canBackward, currentPage,
+                minPage);
         //return canBackward;
         return canBackward;
     }
 
-    private void showNextPage() {
+    private void showNextPage()
+    {
         currentPage++;
         showProperView();
     }
 
-    private void showPreviousPage() {
+    private void showPreviousPage()
+    {
         currentPage--;
         showProperView();
     }
 
-    private void showFirstPage() {
+    private void showFirstPage()
+    {
         currentPage = minPage;
         showProperView();
     }
-    private void showLastPage() {
+
+    private void showLastPage()
+    {
         currentPage = maxPage;
         showProperView();
     }
 
-
-    private void handlePreviousClicked(){
+    private void handlePreviousClicked()
+    {
         Timber.d("Wangliang  handlePreviousClicked");
         //apply(trendingFilterTypeDTO.getPrevious());
-        if (canBackward()) {
+        if (canBackward())
+        {
             int oldPage = currentPage;
             showPreviousPage();
             notifyPageChanged(oldPage);
-        } else {
+        }
+        else
+        {
             int oldPage = currentPage;
             showLastPage();
             notifyPageChanged(oldPage);
         }
-
     }
 
     private void handleNextClicked()
     {
         Timber.d("Wangliang  handleNextClicked");
-        if (canForward()) {
+        if (canForward())
+        {
             int oldPage = currentPage;
             showNextPage();
             notifyPageChanged(oldPage);
-        }else {
+        }
+        else
+        {
             int oldPage = currentPage;
             showFirstPage();
             notifyPageChanged(oldPage);
-
         }
-
     }
 
     public void setOnFilterListener(OnFilterListener listener)
@@ -409,21 +448,25 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
 
     private void notifyPageChanged(int oldPage)
     {
-        if (onFilterListener != null) {
+        if (onFilterListener != null)
+        {
             onFilterListener.onPageChanged(oldPage, currentPage);
-        }
-    } 
-    private void notifyItemSelected()
-    {
-        if (onFilterListener != null) {
-            onFilterListener.onPageItemSelected(currentPage,mSpinner.getSelectedItemPosition());
         }
     }
 
-
-    private class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener
+    private void notifyItemSelected()
     {
-        @Override public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id)
+        if (onFilterListener != null)
+        {
+            onFilterListener.onPageItemSelected(currentPage, mSpinner.getSelectedItemPosition());
+        }
+    }
+
+    private class TrendingFilterSelectorViewSpinnerListener
+            implements AdapterView.OnItemSelectedListener
+    {
+        @Override public void onItemSelected(AdapterView<?> adapterView, View view, int position,
+                long id)
         {
             Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener onItemSelected");
             notifyItemSelected();
@@ -435,11 +478,11 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
         }
     }
 
+    public static interface OnFilterListener
+    {
 
+        void onPageChanged(int page, int position);
 
-    public static interface OnFilterListener {
-
-        void onPageChanged(int page,int position);
-        void onPageItemSelected(int oldPage,int currentPage);
+        void onPageItemSelected(int oldPage, int currentPage);
     }
 }

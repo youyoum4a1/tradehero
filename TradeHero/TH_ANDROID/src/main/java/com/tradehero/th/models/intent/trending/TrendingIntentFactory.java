@@ -9,9 +9,6 @@ import com.tradehero.th.models.intent.security.SecurityTradeIntent;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public class TrendingIntentFactory extends THIntentSubFactory<TrendingIntent>
 {
     @Inject public TrendingIntentFactory()

@@ -7,9 +7,7 @@ import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by alex on 14-4-8.
- */
+
 @Singleton
 public class WeChatUtils implements SocialSharer
 {

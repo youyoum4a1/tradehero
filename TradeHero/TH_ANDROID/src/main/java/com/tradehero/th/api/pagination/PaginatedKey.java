@@ -11,4 +11,6 @@ public interface PaginatedKey
     Integer getPage();
     PaginatedKey next();
     PaginatedKey next(int pages);
+    PaginatedKey prev();
+    PaginatedKey prev(int pages);
 }

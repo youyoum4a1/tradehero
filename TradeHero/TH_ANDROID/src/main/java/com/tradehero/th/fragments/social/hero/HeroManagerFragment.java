@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -25,12 +27,10 @@ import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-import com.tradehero.th.models.user.FollowUserAssistant;
-import java.util.List;
-import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -59,9 +59,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
 
-    @Override protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new HeroManagerUserFollowedListener();
+        return new HeroManagerPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -87,7 +87,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             addTab(resourceDTO);
         }
-
+        setTitleColor();
         return mTabHost;
     }
 
@@ -103,6 +103,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         mTabHost.addTab(tabSpec, resourceDTO.heroContentFragmentClass, args);
     }
 
+    //TODO should make FragmentTabHost more generic
+    private void setTitleColor()
+    {
+        int color = getResources().getColor(android.R.color.holo_blue_light);
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
+        {
+
+            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
+                    .findViewById(android.R.id.title);
+
+            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
+            if (tv == null)
+            {
+                continue;
+            }
+            else
+            {
+                tv.setTextColor(color);
+            }
+        }
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -112,7 +134,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.social_heroes);
+        actionBar.setTitle(getTitle());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -136,6 +158,28 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         THUIBillingRequest request = super.getShowProductDetailRequest(domain);
         request.purchaseReportedListener = new HeroManagerOnPurchaseReportedListener();
         return request;
+    }
+
+    private boolean isCurrentUser()
+    {
+        UserBaseKey followerId = getFollowerId(getArguments());
+        if (followerId != null && followerId.key != null && currentUserId != null)
+        {
+            return (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+        }
+        return false;
+    }
+
+    private int getTitle()
+    {
+        if (isCurrentUser())
+        {
+            return R.string.manage_my_heroes_title;
+        }
+        else
+        {
+            return R.string.manage_heroes_title;
+        }
     }
 
     /**
@@ -190,7 +234,8 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class HeroManagerUserFollowedListener extends BasePurchaseManagerUserFollowedListener
+    protected class HeroManagerPremiumUserFollowedListener
+            extends BasePurchaseManagerPremiumUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)

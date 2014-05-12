@@ -2,18 +2,17 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 
 public class PrivatePostCommentView extends PostCommentView
 {
-    private OnMessageNotAllowedToSendListener messageNotAllowedToSendListener;
     private UserBaseKey recipient;
-    private UserMessagingRelationshipDTO userMessagingRelationshipDTO;
 
     //<editor-fold desc="Constructors">
     public PrivatePostCommentView(Context context)
@@ -38,16 +37,9 @@ public class PrivatePostCommentView extends PostCommentView
         linkWith(MessageType.PRIVATE);
     }
 
-    @Override protected void onDetachedFromWindow()
+    @Override protected DiscussionType getDefaultDiscussionType()
     {
-        this.messageNotAllowedToSendListener = null;
-        super.onDetachedFromWindow();
-    }
-
-    public void setMessageNotAllowedToSendListener(
-            OnMessageNotAllowedToSendListener messageNotAllowedToSendListener)
-    {
-        this.messageNotAllowedToSendListener = messageNotAllowedToSendListener;
+        return DiscussionType.PRIVATE_MESSAGE;
     }
 
     public void setRecipient(UserBaseKey recipient)
@@ -55,50 +47,20 @@ public class PrivatePostCommentView extends PostCommentView
         this.recipient = recipient;
     }
 
-    public void setUserMessagingRelationshipDTO(
-            UserMessagingRelationshipDTO userMessagingRelationshipDTO)
-    {
-        this.userMessagingRelationshipDTO = userMessagingRelationshipDTO;
-    }
-
-    /**
-     * Here we want to make sure we are allowed to post a comment before doing it
-     */
-    @Override protected void postComment()
-    {
-        if (canSendMessage())
-        {
-            super.postComment();
-        }
-        else
-        {
-            notifyPreSubmissionInterceptListener();
-        }
-    }
-
-    protected boolean canSendMessage()
-    {
-        return userMessagingRelationshipDTO == null || userMessagingRelationshipDTO.canSendPrivate();
-    }
-
     @Override protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO message = super.buildMessageCreateFormDTO();
-        ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;
+        if (recipient != null)
+        {
+            ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;
+        }
         return message;
     }
 
-    protected void notifyPreSubmissionInterceptListener()
+    @Override protected DiscussionFormDTO buildCommentFormDTO()
     {
-        OnMessageNotAllowedToSendListener listener = messageNotAllowedToSendListener;
-        if (listener != null)
-        {
-            listener.onMessageNotAllowedToSend();
-        }
-    }
-
-    public static interface OnMessageNotAllowedToSendListener
-    {
-        void onMessageNotAllowedToSend();
+        DiscussionFormDTO discussionFormDTO = super.buildCommentFormDTO();
+        discussionFormDTO.recipientUserId = recipient.key;
+        return discussionFormDTO;
     }
 }

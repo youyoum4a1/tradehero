@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:19 PM To change this template use File | Settings | File Templates. */
+
 public class OwnedPortfolioId  implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";

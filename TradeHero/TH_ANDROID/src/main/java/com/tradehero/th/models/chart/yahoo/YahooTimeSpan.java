@@ -3,9 +3,6 @@ package com.tradehero.th.models.chart.yahoo;
 import com.tradehero.th.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
-/**
- * Created by julien on 9/10/13
- */
 public enum YahooTimeSpan
 {
     day1("1d", R.string.yahoo_chart_1d, ChartTimeSpan.DAY_1),

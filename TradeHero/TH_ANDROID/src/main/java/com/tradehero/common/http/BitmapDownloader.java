@@ -1,6 +1,6 @@
 package com.tradehero.common.http;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 11:35 AM To change this template use File | Settings | File Templates. */
+
 /*
 public class BitmapDownloader implements Runnable
 {

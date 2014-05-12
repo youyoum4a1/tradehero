@@ -7,13 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/16/14.
- */
 @Singleton public class TrendingFilterTypeDTOFactory
 {
-    public static final String TAG = TrendingFilterTypeDTOFactory.class.getSimpleName();
-
     @Inject public TrendingFilterTypeDTOFactory()
     {
         super();

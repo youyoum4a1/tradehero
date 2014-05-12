@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
@@ -19,9 +18,6 @@ import com.tradehero.th.utils.THSignedNumber;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/6/14.
- */
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
@@ -31,7 +27,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
+    @InjectView(R.id.user_profile_trade_count_wrapper) @Optional protected View tradesCountWrapper;
     @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
+    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
     @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
@@ -46,21 +44,17 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void initViews(View view)
     {
         super.initViews(view);
-        ButterKnife.inject(this, view);
-    }
-
-    public void onAttachedToWindow()
-    {
         topBackgroundTarget = new BackgroundTarget();
     }
 
-    public void onDetachedFromWindow()
+    @Override public void detachViews()
     {
         topBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
+        super.detachViews();
     }
 
     @Override public void display(final UserProfileDTO dto)

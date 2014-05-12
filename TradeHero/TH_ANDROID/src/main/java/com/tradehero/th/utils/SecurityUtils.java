@@ -1,6 +1,6 @@
 package com.tradehero.th.utils;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/11/13 Time: 11:44 AM To change this template use File | Settings | File Templates. */
+
 public class SecurityUtils
 {
     public static final String DEFAULT_VIRTUAL_CASH_CURRENCY_ISO = "USD";

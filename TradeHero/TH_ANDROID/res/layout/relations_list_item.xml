@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.social.RelationsListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="4dp"
@@ -18,10 +19,13 @@
         android:id="@+id/user_profile_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="@dimen/user_profile_compact_avatar_margin"
+        android:layout_marginRight="@dimen/user_profile_compact_avatar_margin"
+        android:layout_marginLeft="@dimen/user_profile_compact_avatar_margin"
         android:background="@drawable/layout_oval"
         android:padding="0.5dp"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
+        />
 
     <LinearLayout
         android:orientation="vertical"
@@ -31,12 +35,61 @@
         android:paddingBottom="2dp"
         android:paddingLeft="5dp">
 
-      <TextView
-          android:id="@+id/user_name"
-          android:layout_width="wrap_content"
+      <RelativeLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
-          android:textSize="18sp"/>
+          android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            tools:text="xavier"
+            />
+
+        <ImageView
+            android:id="@+id/country_logo"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="@dimen/common_margin_10"
+            android:layout_alignParentRight="true"
+            tools:src="@drawable/flag_country_round_canada"
+            />
+
+      </RelativeLayout>
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textSize="15sp"
+            android:textColor="@color/gray_normal"
+            tools:text="Hero (Free)"
+            />
+
+        <TextView
+            android:id="@+id/upgrade_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/common_margin_10"
+            android:text="@string/upgrade_now"
+            android:textSize="15sp"
+            android:textColor="@color/number_green"
+            tools:background="@color/light_grey"
+            />
+
+      </RelativeLayout>
 
     </LinearLayout>
 

@@ -8,11 +8,8 @@ import com.tradehero.th.utils.VersionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 10:55 AM To change this template use File | Settings | File Templates. */
 public class GooglePlayUtils
 {
-    public static final String TAG = GooglePlayUtils.class.getSimpleName();
-
     public static Intent getSupportPurchaseReportEmailIntent(Context context, THIABPurchase purchase)
     {
         String deviceDetails = "\n\nThere appears to have been a problem reporting my purchase to TradeHero server\n\n-----\n" +

@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -13,105 +12,63 @@ import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.security.DTOProcessorSecurityPosition;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.StringUtils;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
-/**
- * Repurpose queries
- * Created by xavier on 12/5/13.
- */
 @Singleton public class SecurityServiceWrapper
 {
     private final SecurityService securityService;
     private final ProviderServiceWrapper providerServiceWrapper;
-    private final ObjectMapper objectMapper;
+    private final SecurityPositionDetailCache securityPositionDetailCache;
+    private final SecurityCompactCache securityCompactCache;
+    private final UserProfileCache userProfileCache;
+    private final CurrentUserId currentUserId;
 
-    @Inject public SecurityServiceWrapper(SecurityService securityService, ProviderServiceWrapper providerServiceWrapper,ObjectMapper objectMapper)
+    @Inject public SecurityServiceWrapper(
+            SecurityService securityService,
+            ProviderServiceWrapper providerServiceWrapper,
+            SecurityPositionDetailCache securityPositionDetailCache,
+            SecurityCompactCache securityCompactCache,
+            UserProfileCache userProfileCache,
+            CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
         this.providerServiceWrapper = providerServiceWrapper;
-        this.objectMapper = objectMapper;
+        this.securityPositionDetailCache = securityPositionDetailCache;
+        this.securityCompactCache = securityCompactCache;
+        this.userProfileCache = userProfileCache;
+        this.currentUserId = currentUserId;
     }
 
-    private String read(InputStream in){
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            return sb.toString();
-        }catch (IOException e){
-            //System.err.println("========read error=========");
-            //e.printStackTrace();
-            return null;
-        }
-
-    }
-
-    public void getMultipleSecurities2(final Callback<List<SecurityCompactDTO>> callback,final List<Integer> ids)
+    public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(List<Integer> ids,
+            Callback<Map<Integer, SecurityCompactDTO>> callback)
             throws RetrofitError
     {
-        final int len = ids.size();
-        StringBuffer sb = new StringBuffer();
-        for (int i=0;i<len;i++){
-            sb.append(ids.get(i));
-            if (i != len-1){
-                sb.append(",");
-            }
-        }
+        String securityIds = StringUtils.join(",", ids);
+        MiddleCallback<Map<Integer, SecurityCompactDTO>> multipleSecurityFetchMiddleCallback = new
+                BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
+        securityService.getMultipleSecurities(securityIds, multipleSecurityFetchMiddleCallback);
 
-        Callback<Response> middleCallback =  new Callback<Response>() {
-
-            @Override
-            public void success(Response response, Response response2) {
-
-                try {
-                    InputStream is = response.getBody().in();
-                    JSONObject obj = new JSONObject(read(is));
-                    List<SecurityCompactDTO> list = new ArrayList<SecurityCompactDTO>(len);
-                    for (int i=0;i<len;i++){
-                        JSONObject o = obj.getJSONObject(String.valueOf(ids.get(i)));
-                        SecurityCompactDTO dto = objectMapper.readValue(o.toString(),SecurityCompactDTO.class);
-                        list.add(dto);
-                    }
-                    callback.success(list,response2);
-
-                }catch (Exception e) {
-                    Timber.e(e,"middleCallback parse data error");
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        };
-
-        securityService.getMultipleSecurities2(sb.toString(),middleCallback);
+        return multipleSecurityFetchMiddleCallback;
     }
-
 
     //<editor-fold desc="Routing SecurityListType">
     public List<SecurityCompactDTO> getSecurities(SecurityListType key)
-        throws RetrofitError
+            throws RetrofitError
     {
         if (key instanceof TrendingSecurityListType)
         {
@@ -128,8 +85,7 @@ import timber.log.Timber;
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
-    public void getSecurities(SecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
+    public void getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
         if (key instanceof TrendingSecurityListType)
         {
@@ -150,7 +106,7 @@ import timber.log.Timber;
     }
 
     public List<SecurityCompactDTO> getTrendingSecurities(TrendingSecurityListType key)
-        throws RetrofitError
+            throws RetrofitError
     {
         if (key instanceof TrendingBasicSecurityListType)
         {
@@ -196,7 +152,7 @@ import timber.log.Timber;
 
     //<editor-fold desc="Get Basic Trending">
     public List<SecurityCompactDTO> getTrendingSecuritiesBasic(TrendingBasicSecurityListType key)
-        throws RetrofitError
+            throws RetrofitError
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
@@ -469,7 +425,7 @@ import timber.log.Timber;
 
     //<editor-fold desc="Get Security">
     public SecurityPositionDetailDTO getSecurity(SecurityId securityId)
-        throws RetrofitError
+            throws RetrofitError
     {
         return this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol);
     }
@@ -482,7 +438,7 @@ import timber.log.Timber;
 
     //<editor-fold desc="Buy Security">
     public SecurityPositionDetailDTO buy(SecurityId securityId, TransactionFormDTO transactionFormDTO)
-        throws RetrofitError
+            throws RetrofitError
     {
         return this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
     }
@@ -495,7 +451,7 @@ import timber.log.Timber;
 
     //<editor-fold desc="Sell Security">
     public SecurityPositionDetailDTO sell(SecurityId securityId, TransactionFormDTO transactionFormDTO)
-        throws RetrofitError
+            throws RetrofitError
     {
         return this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
     }
@@ -505,4 +461,54 @@ import timber.log.Timber;
         this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, callback);
     }
     //</editor-fold>
+
+    public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
+            SecurityId securityId,
+            TransactionFormDTO transactionFormDTO,
+            boolean isBuy,
+            Callback<SecurityPositionDetailDTO> securityPositionDetailDTOCallback)
+    {
+        MiddleCallback<SecurityPositionDetailDTO> securityMiddleCallback =
+                new BaseMiddleCallback<>(securityPositionDetailDTOCallback, createSecurityPositionProcessor(securityId));
+
+        if (isBuy)
+        {
+            this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, securityMiddleCallback);
+        }
+        else
+        {
+            this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, securityMiddleCallback);
+        }
+
+        return securityMiddleCallback;
+    }
+
+    private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionProcessor(SecurityId securityId)
+    {
+        return new DTOProcessorSecurityPosition(
+                securityPositionDetailCache,
+                userProfileCache,
+                currentUserId,
+                securityId);
+    }
+
+    private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
+    {
+        return new DTOProcessor<Map<Integer, SecurityCompactDTO>>()
+        {
+            @Override public Map<Integer, SecurityCompactDTO> process(Map<Integer, SecurityCompactDTO> value)
+            {
+                for (Map.Entry<Integer, SecurityCompactDTO> securityEntry: value.entrySet())
+                {
+                    if (securityEntry.getKey() != null && securityEntry.getKey() != 0)
+                    {
+                        SecurityCompactDTO securityCompactDTO = securityEntry.getValue();
+                        SecurityId securityId = new SecurityId(securityCompactDTO.exchange, securityCompactDTO.symbol);
+                        securityCompactCache.put(securityId, securityCompactDTO);
+                    }
+                }
+                return value;
+            }
+        };
+    }
 }

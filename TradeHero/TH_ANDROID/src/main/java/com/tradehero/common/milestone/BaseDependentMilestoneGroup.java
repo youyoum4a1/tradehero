@@ -1,6 +1,6 @@
 package com.tradehero.common.milestone;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:06 PM To change this template use File | Settings | File Templates. */
+
 public class BaseDependentMilestoneGroup extends BaseMilestoneGroup
     implements DependentMilestone
 {

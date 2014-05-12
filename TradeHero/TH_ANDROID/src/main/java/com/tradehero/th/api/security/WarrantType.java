@@ -3,9 +3,7 @@ package com.tradehero.th.api.security;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 public enum WarrantType
 {
     CALL("C"),

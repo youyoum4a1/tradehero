@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProviderSpecificResourcesDTO
 {
-    public static final String TAG = ProviderSpecificResourcesDTO.class.getSimpleName();
-
     public int mainCompetitionFragmentTitleResId;
     public int notJoinedBannerImageResId;
     public int joinedBannerImageResId;

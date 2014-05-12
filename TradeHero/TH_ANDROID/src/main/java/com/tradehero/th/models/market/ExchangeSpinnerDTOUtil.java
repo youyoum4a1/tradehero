@@ -11,9 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/16/14.
- */
 @Singleton public class ExchangeSpinnerDTOUtil
 {
     @Inject public ExchangeSpinnerDTOUtil()
@@ -56,6 +53,10 @@ import timber.log.Timber;
             catch (IllegalArgumentException ex)
             {
                 Timber.d("Exchange logo does not exist: %s", ex.getMessage());
+            }
+            catch (OutOfMemoryError ex)
+            {
+                Timber.e(ex, "Exchange for %s causes OutOfMemory problem", exchangeDTO.name);
             }
             finally
             {

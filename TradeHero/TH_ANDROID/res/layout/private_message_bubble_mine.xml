@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView
+<com.tradehero.th.fragments.social.message.PrivateMessageBubbleView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -31,18 +31,41 @@
         android:layout_below="@id/discussion_time"
         android:layout_alignParentRight="true"
         android:padding="8dp"
-        android:background="@drawable/mine_bubble">
-      <!--android:background="@color/button_blue"-->
+        android:background="@drawable/mine_bubble"
+        >
+
       <TextView
           android:id="@+id/discussion_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/white"
+          android:autoLink="all"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/private_text_stub_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discussion_time"
+        android:layout_alignParentRight="true"
+        android:padding="8dp"
+        android:background="@drawable/mine_bubble_processing"
+        android:visibility="gone"
+        >
+
+      <TextView
+          android:id="@+id/discussion_stub_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/white"
+          tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
+
+    </RelativeLayout>
+
+
   </RelativeLayout>
 
 
-</com.tradehero.th.fragments.social.message.PrivateMessageBubbleMineView>
+</com.tradehero.th.fragments.social.message.PrivateMessageBubbleView>

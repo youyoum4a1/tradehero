@@ -2,7 +2,7 @@ package com.tradehero.th.auth.operator;
 
 import android.app.ProgressDialog;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/22/13 Time: 6:26 PM Copyright (c) TradeHero */
+
 public abstract class SocialOperator
 {
     private ProgressDialog progressDialog;

@@ -10,7 +10,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/10/13 Time: 4:51 PM To change this template use File | Settings | File Templates. */
+
 public interface ProviderService
 {
     //<editor-fold desc="Get Providers">

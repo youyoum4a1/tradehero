@@ -1,8 +1,6 @@
 package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,10 +14,6 @@ import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. Date: 7/1/13 Time: 12:49 PM Copyright (c) 2013 thonguyen. All rights
- * reserved.
- */
 public class THJsonAdapter implements Converter
 {
     private static ConverterType CONVERTER_TYPE = ConverterType.JACKSON;
@@ -125,8 +119,8 @@ public class THJsonAdapter implements Converter
         {
             switch (converterType)
             {
-                case GSON:
-                    return getGsonConverter();
+                //case GSON:
+                //    return getGsonConverter();
                 case JACKSON:
                     return getJacksonConverter();
             }
@@ -141,10 +135,10 @@ public class THJsonAdapter implements Converter
             return new JacksonConverter(objectMapper);
         }
 
-        private static Converter getGsonConverter()
-        {
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-            return new GsonConverter(gson);
-        }
+        //private static Converter getGsonConverter()
+        //{
+        //    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+        //    return new GsonConverter(gson);
+        //}
     }
 }

@@ -1,8 +1,6 @@
 package com.tradehero.th.api;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
+
 
 import java.util.Map;
 

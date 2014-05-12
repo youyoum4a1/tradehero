@@ -7,7 +7,6 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 10:13 PM To change this template use File | Settings | File Templates. */
 public interface SocialService
 {
     //<editor-fold desc="Connect User">

@@ -5,7 +5,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
@@ -13,7 +12,7 @@ import com.tradehero.th.billing.googleplay.exception.MissingCachedProductDetailE
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
@@ -29,7 +28,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
@@ -44,7 +42,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private MiddleCallbackAddCash middleCallbackAddCash;
+    private MiddleCallback<UserProfileDTO> middleCallbackAddCash;
 
     public THIABPurchaseReporter()
     {
@@ -147,8 +145,8 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
         else
         {
-            userService.get().addCredit(
-                    portfolioId.userId,
+            userServiceWrapper.addCredit(
+                    portfolioId.getUserBaseKey(),
                     purchase.getGooglePlayPurchaseDTO(),
                     new THIABPurchaseReporterPurchaseCallback());
         }

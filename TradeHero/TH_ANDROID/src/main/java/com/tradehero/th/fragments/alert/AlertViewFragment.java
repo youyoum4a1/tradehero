@@ -46,9 +46,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 12:45 PM Copyright (c) TradeHero
- */
+
 public class AlertViewFragment extends BasePurchaseManagerFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
@@ -152,7 +150,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         super.onViewCreated(view, savedInstanceState);
 
         priceChangeHistoryList.addHeaderView(headerView);
-        alertEventAdapter = new AlertEventAdapter(getActivity(), getActivity().getLayoutInflater(),
+        alertEventAdapter = new AlertEventAdapter(getActivity(),
                 R.layout.alert_event_item_view);
         priceChangeHistoryList.setAdapter(alertEventAdapter);
     }
@@ -250,7 +248,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         this.alertDTO = alertDTO;
 
-        alertEventAdapter.setItems(alertDTO.alertEvents);
+        alertEventAdapter.clear();
+        alertEventAdapter.addAll(alertDTO.alertEvents);
         alertEventAdapter.notifyDataSetChanged();
 
         if (alertDTO.security != null)

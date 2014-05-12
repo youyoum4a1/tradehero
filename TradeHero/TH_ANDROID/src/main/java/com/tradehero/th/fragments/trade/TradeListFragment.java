@@ -8,9 +8,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/5/14.
- */
 public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
 {
     public static final String BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE = TradeListFragment.class.getName() + ".ownedPositionId";

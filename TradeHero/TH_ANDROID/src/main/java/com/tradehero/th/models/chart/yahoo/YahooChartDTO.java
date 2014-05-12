@@ -7,13 +7,8 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by xavier on 1/30/14.
- */
 public class YahooChartDTO implements ChartDTO
 {
-    public static final String TAG = YahooChartDTO.class.getSimpleName();
-
     public static final ChartSize DEFAULT_CHART_SIZE = new ChartSize(YahooChartSize.medium.yahooPixelWidth, YahooChartSize.medium.yahooPixelHeight);
     public static final ChartTimeSpan DEFAULT_TIME_SPAN = new ChartTimeSpan(YahooTimeSpan.month3.chartTimeSpanDuration);
 

@@ -5,8 +5,6 @@ import java.util.Date;
 
 public class UserMessagingRelationshipDTO implements DTO
 {
-    public int freeSendsRemaining; // -1 signifies unlimited messages 
-
     // TODO: client to display these on search-lists
     public boolean isHero;
     public boolean isFollower;
@@ -15,28 +13,18 @@ public class UserMessagingRelationshipDTO implements DTO
 
     public Date followerSince;
     public Date heroSince;
-    public Boolean freeFollow;
-
-    public boolean isUnlimited()
-    {
-        return freeSendsRemaining == -1;
-    }
-
-    public boolean canSendPrivate()
-    {
-        return isUnlimited() || freeSendsRemaining > 0;
-    }
+    public boolean freeFollow;
 
     @Override public String toString()
     {
         return "UserMessagingRelationshipDTO{" +
-                "freeSendsRemaining=" + freeSendsRemaining +
                 ", isHero=" + isHero +
                 ", isFollower=" + isFollower +
                 ", isFriend=" + isFriend +
                 ", friendDesc='" + friendDesc + '\'' +
                 ", followerSince=" + followerSince +
                 ", heroSince=" + heroSince +
+                ", freeFollow=" + freeFollow +
                 '}';
     }
 }

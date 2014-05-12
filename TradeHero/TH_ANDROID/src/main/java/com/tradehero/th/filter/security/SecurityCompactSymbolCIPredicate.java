@@ -3,14 +3,9 @@ package com.tradehero.th.filter.security;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
-/**
- * Created by xavier on 1/24/14.
- */
 public class SecurityCompactSymbolCIPredicate<SecurityCompactType extends SecurityCompactDTO>
         implements CharSequencePredicate<SecurityCompactType>
 {
-    public static final String TAG = SecurityCompactSymbolCIPredicate.class.getSimpleName();
-
     public CharSequence pattern;
 
     //<editor-fold desc="Constructors">

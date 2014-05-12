@@ -24,15 +24,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
 import org.json.JSONException;
 
-/**
- * Represents an in-app billing purchase usable in TradeHero.
- */
 public class THIABPurchase
         extends BaseIABPurchase<IABSKU, THIABOrderId>
     implements THProductPurchase<IABSKU, THIABOrderId>
 {
-    public static final String TAG = THIABPurchase.class.getSimpleName();
-
     private UserBaseKey userToFollow;
 
     public THIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException

@@ -5,9 +5,7 @@ import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
 {
     public static final String TAG = PagedLeaderboardKeyPreference.class.getSimpleName();

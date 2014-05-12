@@ -11,6 +11,7 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
     public static final String PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".page";
     public static final String PER_PAGE_BUNDLE_KEY = PaginatedDiscussionListKey.class.getName() + ".perPage";
     private static final Integer DEFAULT_PERPAGE = 42;
+    private static final int FIRST_PAGE = 1;
 
     public final Integer page;
     public final Integer perPage;
@@ -85,7 +86,21 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
 
     @Override public PaginatedDiscussionListKey next(int pages)
     {
-        return new PaginatedDiscussionListKey(this, page + pages);
+        return new PaginatedDiscussionListKey(this, page + pages, perPage);
+    }
+
+    @Override public PaginatedDiscussionListKey prev()
+    {
+        return prev(1);
+    }
+
+    @Override public PaginatedDiscussionListKey prev(int pages)
+    {
+        if (page - pages < FIRST_PAGE)
+        {
+            throw new IllegalArgumentException("Cannot get " + pages + " previous pages from page " + page);
+        }
+        return new PaginatedDiscussionListKey(this, page - pages, perPage);
     }
     //</editor-fold>
 

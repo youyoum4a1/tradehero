@@ -6,7 +6,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 4:45 PM To change this template use File | Settings | File Templates. */
+
 public class NumberDisplayUtils
 {
     public static final int[] SUFFIX_IDS =

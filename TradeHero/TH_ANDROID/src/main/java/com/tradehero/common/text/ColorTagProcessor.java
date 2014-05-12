@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.text.style.ForegroundColorSpan;
 import java.util.regex.Pattern;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 6:03 PM Copyright (c) TradeHero */
 public class ColorTagProcessor extends RichSpanTextProcessor
 {
     private static final String THMarkdownURegexColor = "\\{(.+?)\\|(.+?)\\}"; /* "{color|text}" = text in specified color */
@@ -19,11 +18,14 @@ public class ColorTagProcessor extends RichSpanTextProcessor
         return "$1";
     }
 
-    @Override protected Object getSpanElement(String replacement, String[] matchStrings)
+    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
     {
-        if (matchStrings.length >= 3) {
-            return new ForegroundColorSpan(Color.parseColor(matchStrings[1]));
-        } else {
+        if (matchStrings.length >= 3)
+        {
+            return new RichForegroundColorSpan(replacement, matchStrings);
+        }
+        else
+        {
             return null;
         }
     }
@@ -31,5 +33,23 @@ public class ColorTagProcessor extends RichSpanTextProcessor
     @Override protected Pattern getPattern()
     {
         return Pattern.compile(THMarkdownURegexColor);
+    }
+
+    private class RichForegroundColorSpan extends ForegroundColorSpan
+        implements Span
+    {
+        private final String originalText;
+
+        public RichForegroundColorSpan(String replacement, String[] matchStrings)
+        {
+            super(Color.parseColor(matchStrings[1]));
+
+            this.originalText = matchStrings[0];
+        }
+
+        @Override public String getOriginalText()
+        {
+            return originalText;
+        }
     }
 }

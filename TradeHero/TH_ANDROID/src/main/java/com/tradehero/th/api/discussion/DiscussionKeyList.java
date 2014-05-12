@@ -4,9 +4,6 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Collection;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
 {
     //<editor-fold desc="Constructors">
@@ -25,4 +22,30 @@ public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
         super(collection);
     }
     //</editor-fold>
+
+    public DiscussionKey getLowestId()
+    {
+        DiscussionKey lowest = null;
+        for (DiscussionKey discussionKey: this)
+        {
+            if (lowest == null || discussionKey.id < lowest.id)
+            {
+                lowest = discussionKey;
+            }
+        }
+        return lowest;
+    }
+
+    public DiscussionKey getHighestId()
+    {
+        DiscussionKey highest = null;
+        for (DiscussionKey discussionKey: this)
+        {
+            if (highest == null || highest.id < discussionKey.id)
+            {
+                highest = discussionKey;
+            }
+        }
+        return highest;
+    }
 }

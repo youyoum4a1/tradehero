@@ -8,9 +8,6 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-/**
- * Created by xavier on 3/7/14.
- */
 interface SocialServiceAsync
 {
     //<editor-fold desc="Connect User">

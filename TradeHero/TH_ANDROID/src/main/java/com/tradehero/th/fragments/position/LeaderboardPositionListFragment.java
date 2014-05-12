@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.position;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -12,13 +11,11 @@ import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
 public class LeaderboardPositionListFragment
         extends AbstractPositionListFragment<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
 {
-    public static final String TAG = LeaderboardPositionListFragment.class.getSimpleName();
-
     @Inject GetLeaderboardPositionsCache getLeaderboardPositionsCache;
 
     private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
@@ -62,12 +59,17 @@ public class LeaderboardPositionListFragment
         return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, force, getLeaderboardPositionsCacheListener);
     }
 
+    protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createRefreshPositionsCacheFetchTask()
+    {
+        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, true, createRefreshLeaderboardPositionsCacheListener() );
+    }
+
     @Override public void onResume()
     {
         this.leaderboardMarkUserId = new LeaderboardMarkUserId((int) getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
 
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
-        THLog.d(TAG, "Period Start: " + periodStart);
+        Timber.d("Period Start: %s" + periodStart);
 
         super.onResume();
     }
@@ -95,7 +97,15 @@ public class LeaderboardPositionListFragment
 
     @Override protected void fetchSimplePage()
     {
+        Timber.d("fetchSimplePage");
         fetchSimplePage(false);
+    }
+
+    @Override protected void refreshSimplePage()
+    {
+        detachGetLeaderboardPositions();
+        DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
+        fetchGetPositionsDTOTask.execute();
     }
 
     @Override protected void fetchSimplePage(boolean force)
@@ -116,13 +126,48 @@ public class LeaderboardPositionListFragment
             {
                 if (key.equals(leaderboardMarkUserId))
                 {
+                    Timber.d("GetLeaderboardPositionsCacheListener onDTOReceived %s",leaderboardMarkUserId);
                     linkWith(value, true);
+                    showResultIfNecessary();
+                }
+                else
+                {
+                    showErrorView();
+                    Timber.e("leaderboardMarkUserId(%s) doesn't match result(%s)",
+                            leaderboardMarkUserId, key);
                 }
             }
 
             @Override public void onErrorThrown(LeaderboardMarkUserId key, Throwable error)
             {
                 //To change body of implemented methods use File | Settings | File Templates.
+                showErrorView();
+            }
+        };
+    }
+
+    private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createRefreshLeaderboardPositionsCacheListener()
+    {
+        return new DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>()
+        {
+            @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
+            {
+                if (!fromCache)
+                {
+                   linkWith(value, true);
+                    showResultIfNecessary();
+                }
+
+            }
+
+            @Override public void onErrorThrown(LeaderboardMarkUserId key, Throwable error)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+                boolean loaded = checkLoadingSuccess();
+                if (!loaded)
+                {
+                    showErrorView();
+                }
             }
         };
     }
@@ -141,9 +186,18 @@ public class LeaderboardPositionListFragment
         {
             if (key.equals(leaderboardMarkUserId))
             {
-                displayProgress(false);
+                Timber.d("GetLeaderboardPositionsListener onDTOReceived");
+                //displayProgress(false);
                 linkWith(value, true);
+                showResultIfNecessary();
+
             }
+            else
+            {
+                showErrorView();
+                Timber.e("leaderboardMarkUserId(%s) doesn't match result(%s)",leaderboardMarkUserId,key);
+            }
+            //TODO if condition false, how to do?
         }
     }
 }

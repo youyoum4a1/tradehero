@@ -63,7 +63,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
@@ -182,7 +181,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onDetachedFromWindow()
     {
         detachShareMiddleCallback();
-        displayDefaultUserProfilePicture();
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -251,7 +249,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayUsername(UserProfileCompactDTO user)
     {
-        username.setText(user.displayName);
+        if (username != null && user != null && user.displayName != null)
+        {
+            username.setText(user.displayName);
+        }
     }
 
     private void displayUserProfilePicture(UserProfileCompactDTO user)

@@ -11,11 +11,8 @@ import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioI
 import java.io.IOException;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 10:45 AM To change this template use File | Settings | File Templates. */
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>
 {
-    public static final String TAG = THIABPurchaseOrder.class.getSimpleName();
-
     private IABSKU sku;
     private int quantity;
     private OwnedPortfolioId developerPayload;

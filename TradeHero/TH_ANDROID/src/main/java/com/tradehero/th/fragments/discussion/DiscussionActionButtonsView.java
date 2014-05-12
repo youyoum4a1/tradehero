@@ -8,10 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-/**
- * TODO create share action buttons for discussion item view (timeline, news, comment)
- * Created by thonguyen on 12/4/14.
- */
+
 public class DiscussionActionButtonsView extends LinearLayout
 {
     @InjectView(R.id.discussion_action_button_comment_count) TextView comment;

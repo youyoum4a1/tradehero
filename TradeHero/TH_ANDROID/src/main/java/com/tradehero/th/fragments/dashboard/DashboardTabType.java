@@ -14,7 +14,7 @@ import com.tradehero.th.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 1:26 PM To change this template use File | Settings | File Templates. */
+
 public enum DashboardTabType
 {
     //NEWS(R.string.dashboard_headline, R.drawable.trending_selector, HeadlineFragment.class),

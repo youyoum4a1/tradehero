@@ -7,7 +7,7 @@ import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 9:24 PM To change this template use File | Settings | File Templates. */
+
 public interface FollowerService
 {
     //<editor-fold desc="Get All Followers Summary">

@@ -2,7 +2,6 @@ package com.tradehero.th.api.social;
 
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/19/13 Time: 5:25 PM Copyright (c) TradeHero */
 public enum SocialNetworkEnum
 {
     FB(SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE, "Facebook"),

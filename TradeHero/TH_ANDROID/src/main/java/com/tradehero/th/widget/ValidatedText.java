@@ -10,9 +10,7 @@ import com.tradehero.th.R;
 import java.util.LinkedList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:24 AM Copyright (c) TradeHero
- * ValidatedText is used to change the display of an EditText depending on the value of flag.
- * */
+
 public class ValidatedText extends EditText implements ValidatedView, View.OnFocusChangeListener
 {
     private boolean valid = true;

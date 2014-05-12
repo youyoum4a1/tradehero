@@ -5,11 +5,8 @@ import android.graphics.Canvas;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 11:43 AM To change this template use File | Settings | File Templates. */
 public class TrendingFilterViewPager extends ViewPager
 {
-    public static final String TAG = TrendingFilterViewPager.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public TrendingFilterViewPager(Context context)
     {

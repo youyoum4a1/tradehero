@@ -110,9 +110,11 @@ public class HeroManagerInfoFetcher
     public void reloadHeroes(UserBaseKey userBaseKey,
             DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
-        DTOCache.GetOrFetchTask<UserBaseKey, HeroIdExtWrapper> heroListFetchTask =
-                heroListCache.get().getOrFetch(
-                        userBaseKey, true, heroListListener);
+        if (heroListFetchTask != null)
+        {
+            heroListFetchTask.setListener(null);
+        }
+        heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, true, heroListListener);
         heroListFetchTask.execute();
     }
 }

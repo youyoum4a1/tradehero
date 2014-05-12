@@ -14,7 +14,7 @@ import com.tradehero.th.utils.EmailSignUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 3:33 PM Copyright (c) TradeHero */
+
 public class Application extends PApplication
 {
     public static final String TAG = Application.class.getSimpleName();

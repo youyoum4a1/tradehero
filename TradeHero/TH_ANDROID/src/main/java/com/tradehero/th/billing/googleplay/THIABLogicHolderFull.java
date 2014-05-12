@@ -33,7 +33,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderFull
     extends THBaseBillingLogicHolder<
                 IABSKUListKey,
@@ -48,8 +47,6 @@ public class THIABLogicHolderFull
                 IABException>
     implements THIABLogicHolder
 {
-    public static final String TAG = THIABLogicHolderFull.class.getSimpleName();
-
     private IABSKUListCache iabskuListCache;
     private THIABProductDetailCache thskuDetailCache;
 
