@@ -94,9 +94,12 @@ public class PostCommentView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
-        commentText.requestFocus();
-        //DeviceUtil.showKeyboard(getContext(), commentText);
+        if (commentText != null)
+        {
+            commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
+            commentText.requestFocus();
+            //DeviceUtil.showKeyboard(getContext(), commentText);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
