@@ -75,7 +75,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject LocalyticsSession localyticsSession;
 
-    @InjectView(R.id.search_empty_container) RelativeLayout serchEmptyContainer;
+    @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
     @InjectView(R.id.search_empty_view) TextView searchEmptyView;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
@@ -145,7 +145,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setAdapter(securityItemViewAdapter);
             listView.setOnItemClickListener(new SearchOnItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
-            listView.setEmptyView(serchEmptyContainer);
+            listView.setEmptyView(searchEmptyContainer);
         }
     }
 
