@@ -16,13 +16,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityCompactDTOFactoryTest
 {
-    public static final String TAG = SecurityCompactDTOFactoryTest.class.getSimpleName();
-
     @Test public void nullReturnsNull()
     {
         assertNull(new SecurityCompactDTOFactory().clonePerType((SecurityCompactDTO) null));
