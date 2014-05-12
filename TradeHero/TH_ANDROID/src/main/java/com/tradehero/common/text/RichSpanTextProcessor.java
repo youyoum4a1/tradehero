@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 2:30 PM Copyright (c) TradeHero */
+
 public abstract class RichSpanTextProcessor implements RichTextProcessor
 {
     @Override public SpannableStringBuilder process(SpannableStringBuilder source)
@@ -60,7 +60,7 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
 
     @Override public abstract String getExtractionPattern();
 
-    protected abstract Object getSpanElement(String replacement, String[] matchStrings);
+    protected abstract Span getSpanElement(String replacement, String[] matchStrings);
 
     protected abstract Pattern getPattern();
 }

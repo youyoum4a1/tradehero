@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
-/**
- * Created by xavier on 1/17/14.
- */
+
 public class CompetitionZoneVideoDTO extends CompetitionZoneDTO
 {
     public static final String TAG = CompetitionZoneVideoDTO.class.getSimpleName();

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAllowableRecipientListType, PaginatedDTO<UserBaseKey>>
+public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
 
@@ -27,27 +27,28 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
     }
     //</editor-fold>
 
-    @Override protected PaginatedDTO<UserBaseKey> fetch(SearchAllowableRecipientListType key)
+    @Override protected PaginatedDTO<AllowableRecipientDTO> fetch(SearchAllowableRecipientListType key)
             throws Throwable
     {
         return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
     }
 
-    private PaginatedDTO<UserBaseKey> putInternal(SearchAllowableRecipientListType key, PaginatedDTO<AllowableRecipientDTO> value)
+    private PaginatedDTO<AllowableRecipientDTO> putInternal(SearchAllowableRecipientListType key, PaginatedDTO<AllowableRecipientDTO> value)
     {
         if (value == null)
         {
             return null;
         }
 
-        PaginatedDTO<UserBaseKey> reprocessed = new PaginatedDTO<>();
+        PaginatedDTO<AllowableRecipientDTO> reprocessed = new PaginatedDTO<>();
         reprocessed.setPagination(value.getPagination());
         if (value.getData() != null)
         {
-            List<UserBaseKey> data = new ArrayList<>();
+            List<AllowableRecipientDTO> data = new ArrayList<>();
             for (AllowableRecipientDTO allowableRecipientDTO : value.getData())
             {
-                data.add(allowableRecipientDTO.user.getBaseKey());
+                //data.add(allowableRecipientDTO.user.getBaseKey());
+                data.add(allowableRecipientDTO);
                 put(allowableRecipientDTO);
             }
             reprocessed.setData(data);

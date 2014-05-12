@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by xavier on 2/24/14.
- */
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
@@ -131,6 +128,7 @@ abstract public class BillingAlertDialogUtil<
         return new THProductDetailDecreasingPriceComparator<>();
     }
 
+    // TODO use parent's popWithNegativeButton
     public AlertDialog popBuyDialog(
             final int requestCode,
             final Context context,

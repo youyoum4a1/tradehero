@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
+
 abstract public class BaseBillingInventoryFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,

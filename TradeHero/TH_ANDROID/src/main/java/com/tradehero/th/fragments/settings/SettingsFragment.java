@@ -5,11 +5,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +38,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -46,7 +50,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -69,16 +72,11 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use
- * File | Settings | File Templates.
- */
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     @Inject THBillingInteractor billingInteractor;
@@ -89,8 +87,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject SocialServiceWrapper socialServiceWrapper;
-    private MiddleCallbackUpdateUserProfile middleCallbackConnect;
-    private MiddleCallbackUpdateUserProfile middleCallbackDisconnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
@@ -109,7 +107,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
-    private MiddleCallbackUpdateUserProfile middleCallbackUpdateUserProfile;
+    private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -161,7 +159,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 // when user cancel the process
                 if (!isDetached())
                 {
-                    progressDialog.dismiss();
+                    progressDialog.hide();
                 }
             }
 
@@ -169,7 +167,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             {
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 detachMiddleCallbackConnect();
                 middleCallbackConnect = socialServiceWrapper.connect(
@@ -662,6 +660,24 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
+        PackageInfo packageInfo = null;
+        String timeStr = "";
+        try
+        {
+            packageInfo = getActivity().getPackageManager().getPackageInfo(
+                    getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        if (packageInfo != null)
+        {
+            timeStr = (String) DateFormat.format(
+                    getActivity().getString(R.string.data_format_d_mmm_yyyy_kk_mm),
+                    packageInfo.lastUpdateTime);
+            timeStr = timeStr + "(" + packageInfo.lastUpdateTime + ")";
+            version.setSummary(timeStr);
+        }
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
     }
 
@@ -1019,7 +1035,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(getActivity()));
     }
 
-
     private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
     {
         return new Callback<UserProfileDTO>()
@@ -1028,7 +1043,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                progressDialog.dismiss();
+                progressDialog.hide();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s",
@@ -1043,7 +1058,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.dismiss();
+                        progressDialog.hide();
                     }
                 }, 3000);
             }
@@ -1071,7 +1086,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         @Override protected void finish()
         {
-            progressDialog.dismiss();
+            progressDialog.hide();
             updateSocialConnectStatus();
         }
     }
@@ -1090,7 +1105,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             if (progressDialog != null)
             {
-                progressDialog.dismiss();
+                progressDialog.hide();
             }
         }
 

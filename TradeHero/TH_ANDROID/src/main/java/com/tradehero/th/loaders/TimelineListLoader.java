@@ -38,6 +38,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         {
             --upperItemId;
         }
+        // lowerItemId and upperItemId may be null!
         Timber.d("Start loading timeline with upperItemId=%d/lowerItemId=%d", upperItemId, lowerItemId);
 
         Query query = new Query();
@@ -59,13 +60,13 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 
     @Override protected void onLoadNext(TimelineItemDTOKey firstVisible)
     {
-        if (firstVisible == null)
-        {
-            return;
-        }
 
         upperItemId = null;
-        lowerItemId = firstVisible.id;
+        //TODO it's just a temp fix
+        if (firstVisible != null)
+        {
+            lowerItemId = firstVisible.id;
+        }
         forceLoad();
     }
 

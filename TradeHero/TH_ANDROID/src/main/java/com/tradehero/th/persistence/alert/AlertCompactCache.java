@@ -14,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class AlertCompactCache extends PartialDTOCache<AlertId, AlertCompactDTO>
 {
     public static final String TAG = AlertCompactCache.class.getSimpleName();

@@ -11,9 +11,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/24/14.
- */
 public class THBaseIABPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
                 IABSKU,

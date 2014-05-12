@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
@@ -27,7 +27,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamEvents;
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,7 +42,7 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject protected UserService userService;
+    @Inject protected UserServiceWrapper userServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected ExchangeListCache exchangeListCache;
     @Inject protected ProviderListCache providerListCache;
@@ -95,18 +95,7 @@ public class SplashActivity extends SherlockActivity
 
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
-        switch (Constants.VERSION)
-        {
-            case 0:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED, false));
-                break;
-            case 1:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_BAIDU, false));
-                break;
-            case 2:
-                tapStream.get().fireEvent(new Event(TapStreamEvents.APP_OPENED_TENCENT, false));
-                break;
-        }
+        tapStream.get().fireEvent(new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()), false));
 
         if (!Constants.RELEASE)
         {
@@ -161,16 +150,18 @@ public class SplashActivity extends SherlockActivity
         boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
         try
         {
-            UserProfileDTO profileDTO = userService.getUser(currentUserId.get());
+            UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
                 exchangeListCache.getOrFetch(new ExchangeListType());
-            } catch (Throwable throwable)
+            }
+            catch (Throwable throwable)
             {
                 throwable.printStackTrace();
             }
-        } catch (RetrofitError retrofitError)
+        }
+        catch (RetrofitError retrofitError)
         {
             canLoad = false;
             if (retrofitError.isNetworkError())

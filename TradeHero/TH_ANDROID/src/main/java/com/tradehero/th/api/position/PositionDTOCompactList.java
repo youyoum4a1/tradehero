@@ -7,7 +7,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 7:43 PM To change this template use File | Settings | File Templates. */
+
 public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
 {
     public static final String TAG = PositionDTOCompactList.class.getSimpleName();

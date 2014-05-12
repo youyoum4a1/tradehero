@@ -2,12 +2,11 @@ package com.tradehero.th.auth;
 
 import android.content.Context;
 import com.tradehero.th.auth.operator.LinkedIn;
+import com.tradehero.th.base.JSONCredentials;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:49 PM Copyright (c) TradeHero */
 @Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {
@@ -38,12 +37,12 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
         linkedIn.authorize(context, new THAuthenticationCallback()
         {
-            public void onCancel()
+            @Override public void onCancel()
             {
                 LinkedInAuthenticationProvider.this.handleCancel(callback);
             }
 
-            public void onError(Throwable error)
+            @Override public void onError(Throwable error)
             {
                 if (LinkedInAuthenticationProvider.this.currentOperationCallback != callback)
                 {
@@ -66,7 +65,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
             }
 
             @Override
-            public void onSuccess(JSONObject result)
+            public void onSuccess(JSONCredentials result)
             {
                 if (LinkedInAuthenticationProvider.this.currentOperationCallback != callback)
                 {
@@ -74,7 +73,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
                 }
                 try
                 {
-                    JSONObject authData;
+                    JSONCredentials authData;
                     try
                     {
                         authData = LinkedInAuthenticationProvider.this.getAuthData(
@@ -102,7 +101,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         linkedIn.setAuthTokenSecret(null);
     }
 
-    @Override public boolean restoreAuthentication(JSONObject authData)
+    @Override public boolean restoreAuthentication(JSONCredentials authData)
     {
         if (authData == null)
         {
@@ -122,7 +121,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         return false;
     }
 
-    public String getAuthType()
+    @Override public String getAuthType()
     {
         return SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE;
     }
@@ -134,10 +133,10 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         return  sb.toString();
     }
 
-    public JSONObject getAuthData(String authToken, String authTokenSecret)
+    public JSONCredentials getAuthData(String authToken, String authTokenSecret)
             throws JSONException
     {
-        JSONObject authData = new JSONObject();
+        JSONCredentials authData = new JSONCredentials();
         authData.put(AUTH_TOKEN_KEY, authToken);
         authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
         authData.put(CONSUMER_KEY_KEY, linkedIn.getConsumerKey());

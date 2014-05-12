@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import java.util.Collection;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 6:55 PM To change this template use File | Settings | File Templates. */
+
 public class CompetitionIdList extends DTOKeyIdList<CompetitionId>
 {
     public static final String TAG = CompetitionIdList.class.getSimpleName();

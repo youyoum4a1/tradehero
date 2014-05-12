@@ -9,13 +9,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/29/14.
- */
 @Singleton public class WarrantSpecificKnowledgeFactory
 {
-    public static final String TAG = WarrantSpecificKnowledgeFactory.class.getSimpleName();
-
     private Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
     @Inject protected ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
 

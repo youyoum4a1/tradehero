@@ -16,9 +16,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 1/16/14.
- */
+
 @Singleton public class ProviderServiceWrapper
 {
     private final ProviderService providerService;

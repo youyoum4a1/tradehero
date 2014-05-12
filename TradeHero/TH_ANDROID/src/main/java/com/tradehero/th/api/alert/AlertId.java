@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
+
 public class AlertId implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = AlertId.class.getName() + ".userId";

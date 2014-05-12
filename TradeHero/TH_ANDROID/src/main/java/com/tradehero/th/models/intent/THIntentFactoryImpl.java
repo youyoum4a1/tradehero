@@ -6,9 +6,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 {
     private Map<String, THIntentFactory<? extends THIntent>> factoryMap;

@@ -7,9 +7,7 @@ import java.util.WeakHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/24/14 Time: 6:24 PM Copyright (c) TradeHero
- */
+
 @Singleton
 public class FontUtil
 {

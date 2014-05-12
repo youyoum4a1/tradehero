@@ -1,8 +1,5 @@
 package com.tradehero.th.models.staff;
 
-/**
- * Created by tho on 4/24/2014.
- */
 public class StaffDTO
 {
     private final String staffName;

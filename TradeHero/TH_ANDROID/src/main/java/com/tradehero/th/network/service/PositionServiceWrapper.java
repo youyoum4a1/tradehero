@@ -9,10 +9,7 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-/**
- * Repurpose PositionService calls
- * Created by xavier on 12/5/13.
- */
+
 @Singleton public class PositionServiceWrapper
 {
     private final PositionService positionService;

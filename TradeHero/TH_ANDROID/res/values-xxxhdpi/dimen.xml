@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="buysell_dialog_scroll_height">200dp</dimen>
+</resources>

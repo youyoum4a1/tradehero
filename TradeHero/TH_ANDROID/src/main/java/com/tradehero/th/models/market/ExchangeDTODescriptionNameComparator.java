@@ -3,13 +3,8 @@ package com.tradehero.th.models.market;
 import com.tradehero.th.api.market.ExchangeDTO;
 import java.util.Comparator;
 
-/**
- * Created by xavier on 2/3/14.
- */
 public class ExchangeDTODescriptionNameComparator implements Comparator<ExchangeDTO>
 {
-    public static final String TAG = ExchangeDTODescriptionNameComparator.class.getSimpleName();
-
     @Override public int compare(ExchangeDTO lhs, ExchangeDTO rhs)
     {
         if (lhs == null)

@@ -13,9 +13,6 @@ import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemView
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by xavier on 1/13/14.
- */
 @Module(
         staticInjections =
                 {

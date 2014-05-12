@@ -13,7 +13,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/10/13 Time: 6:12 PM To change this template use File | Settings | File Templates. */
+
 public interface CompetitionService
 {
     //<editor-fold desc="Get Competitions">

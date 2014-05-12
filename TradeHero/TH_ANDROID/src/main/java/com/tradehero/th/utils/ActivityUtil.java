@@ -6,7 +6,7 @@ import com.tradehero.th.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/29/13 Time: 11:59 AM To change this template use File | Settings | File Templates. */
+
 @Singleton public class ActivityUtil
 {
     public static final String TAG = ActivityUtil.class.getSimpleName();

@@ -7,9 +7,7 @@ import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-/**
- * Created by julien on 22/10/13
- */
+
 public interface TradeService
 {
     //<editor-fold desc="Get One Position Trades List">

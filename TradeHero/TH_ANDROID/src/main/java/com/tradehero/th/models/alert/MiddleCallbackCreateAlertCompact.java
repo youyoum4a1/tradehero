@@ -7,13 +7,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Created by xavier on 3/5/14.
- */
 public class MiddleCallbackCreateAlertCompact extends MiddleCallbackAlertCompact
 {
-    public static final String TAG = MiddleCallbackCreateAlertCompact.class.getSimpleName();
-
     private final UserBaseKey userBaseKey;
 
     public MiddleCallbackCreateAlertCompact(UserBaseKey userBaseKey, Callback<AlertCompactDTO> primaryCallback)

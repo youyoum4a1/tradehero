@@ -10,7 +10,7 @@ import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import java.util.List;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 4:28 PM To change this template use File | Settings | File Templates. */
+
 public class UserPortfolioFetchAssistant extends BasicFetchAssistant<UserBaseKey, OwnedPortfolioId>
     implements FetchAssistant.OnInfoFetchedListener<UserBaseKey, UserProfileDTO>
 {

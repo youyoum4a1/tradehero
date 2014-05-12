@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 3:45 PM Copyright (c) TradeHero */
+
 public class CacheHelper extends SQLiteOpenHelper
 {
     private static final String name = "cache.db";

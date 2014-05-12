@@ -14,9 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by thonguyen on 3/4/14.
- */
+
 @Singleton
 public class NotificationListCache extends StraightDTOCache<NotificationListKey, NotificationKeyList>
 {

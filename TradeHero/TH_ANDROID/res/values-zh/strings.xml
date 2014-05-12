@@ -62,4 +62,6 @@
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
   <string name="discussion_edit_post_subtitle">在 %s</string>
+  <string name="sell">卖</string>
+  <string name="buy">买</string>
 </resources>

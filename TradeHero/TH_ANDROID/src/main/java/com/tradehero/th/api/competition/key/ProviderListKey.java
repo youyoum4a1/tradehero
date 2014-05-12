@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition.key;
 
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:07 PM To change this template use File | Settings | File Templates. */
+
 public class ProviderListKey extends AbstractIntegerDTOKey
 {
     public static final String TAG = ProviderListKey.class.getSimpleName();

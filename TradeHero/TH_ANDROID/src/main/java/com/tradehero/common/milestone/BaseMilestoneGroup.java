@@ -3,7 +3,7 @@ package com.tradehero.common.milestone;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 5:26 PM To change this template use File | Settings | File Templates. */
+
 public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 {
     public static final String TAG = BaseMilestoneGroup.class.getSimpleName();

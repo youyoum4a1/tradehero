@@ -15,12 +15,6 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import javax.inject.Inject;
 
-/**
- * StockInfoValueFragment.java
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 26, 2013
- */
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     private TextView mPreviousClose;

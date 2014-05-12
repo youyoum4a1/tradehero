@@ -2,9 +2,7 @@ package com.tradehero.th.api.users;
 
 import android.os.Bundle;
 
-/**
- * Created by xavier on 3/4/14.
- */
+
 public class UserTransactionHistoryListType extends UserBaseKey
 {
     public static final String TAG = UserTransactionHistoryListType.class.getSimpleName();

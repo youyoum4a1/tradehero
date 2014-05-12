@@ -20,7 +20,7 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.widget.FlagNearEndScrollListener;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -30,16 +30,18 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.models.push.baidu.PushMessageHandler;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -64,7 +66,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject Lazy<DiscussionListCache> discussionListCache;
+    @Inject Lazy<DiscussionListCacheNew> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
@@ -229,7 +231,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        //we set a message unread when click the item, so don't remove callback at the moment.
+        //we set a message unread when click the item, so don't remove callback at the moment and do it in onDestroy.
         //unsetMiddleCallback();
         detachFetchMessageTask();
         SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
@@ -267,8 +269,16 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onMessageClick(int position, int type)
     {
         Timber.d("onMessageClick position:%d,type:%d", position, type);
-        updateReadStatus(position);
-        pushMessageFragment(position);
+        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
+        {
+            updateReadStatus(position);
+            pushMessageFragment(position);
+        }
+        else if (type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
+        {
+            pushHeroProfileFrgment(position);
+        }
+
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -298,9 +308,34 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO =
                 messageHeaderCache.get(getListAdapter().getItem(position));
-        pushMessageFragment(
-                discussionKeyFactory.create(messageHeaderDTO),
-                messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        if (messageHeaderDTO != null)
+        {
+            pushMessageFragment(
+                    discussionKeyFactory.create(messageHeaderDTO),
+                    messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+        }
+    }
+
+    private void pushHeroProfileFrgment(int position)
+    {
+        MessageHeaderDTO messageHeaderDTO =
+                messageHeaderCache.get(getListAdapter().getItem(position));
+        if (messageHeaderDTO != null)
+        {
+            int currentUser = currentUserId.toUserBaseKey().key;
+            Bundle bundle = new Bundle();
+            DashboardNavigator navigator =
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            int targetUser = messageHeaderDTO.recipientUserId;
+            if (currentUser == messageHeaderDTO.recipientUserId)
+            {
+                targetUser = messageHeaderDTO.senderUserId;
+            }
+            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, targetUser);
+            Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        }
+
     }
 
     protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)
@@ -508,7 +543,10 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
-                messageHeaderId, messageHeaderDTO.senderUserId, messageHeaderDTO.recipientUserId,
+                messageHeaderId,
+                messageHeaderDTO.senderUserId,
+                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
                 new MessageDeletionCallback(messageHeaderId));
     }
 
@@ -590,6 +628,10 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 requestUpdateTabCounter();
             }
+            if (getView() == null)
+            {
+                return;
+            }
             displayContent(value);
             Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
                     fromCache);
@@ -600,6 +642,11 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             hasMorePage = true;
             decreasePageNumber();
+
+            if (getView() == null)
+            {
+                return;
+            }
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view
@@ -628,24 +675,16 @@ public class MessagesCenterFragment extends DashboardFragment
                 //force to get news from the server
                 return;
             }
+            requestUpdateTabCounter();
+            hasMorePage = (value.size() > 0);
             refreshCache(value);
-            resetContent(value);
             resetPageNumber();
+            if (getView() == null)
+            {
+                return;
+            }
+            resetContent(value);
             onRefreshCompleted();
-            if (!fromCache)
-            {
-                requestUpdateTabCounter();
-            }
-            if (value.size() == 0)
-            {
-                hasMorePage = false;
-            }
-            else
-            {
-                hasMorePage = true;
-            }
-            Timber.d("refresh onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
-                    fromCache);
             //TODO how to invalidate the old data ..
         }
 
@@ -666,13 +705,13 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    class OnScrollListener extends FlagNearEndScrollListener
+    class OnScrollListener extends FlagNearEdgeScrollListener
     {
         AbsListView.OnScrollListener onScrollListener;
 
         public OnScrollListener(AbsListView.OnScrollListener onScrollListener)
         {
-            activate();
+            activateEnd();
             this.onScrollListener = onScrollListener;
         }
 
@@ -699,9 +738,9 @@ public class MessagesCenterFragment extends DashboardFragment
             super.onScrollStateChanged(view, state);
         }
 
-        @Override public void raiseFlag()
+        @Override public void raiseEndFlag()
         {
-            Timber.d("raiseFlag");
+            Timber.d("raiseEndFlag");
             if (hasMorePage)
             {
                 loadNextMessages();
@@ -788,10 +827,15 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             middleCallback.setPrimaryCallback(null);
         }
-        middleCallbackMap.put(messageHeaderDTO.id, messageServiceWrapper.get()
-                .readMessage(messageHeaderDTO.id, messageHeaderDTO.senderUserId
-                        , messageHeaderDTO.recipientUserId.intValue()
-                        , createMessageAsReadCallback(messageHeaderDTO.id)));
+        middleCallbackMap.put(
+                messageHeaderDTO.id,
+                messageServiceWrapper.get().readMessage(
+                        messageHeaderDTO.id,
+                        messageHeaderDTO.senderUserId,
+                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        currentUserId.toUserBaseKey(),
+                        createMessageAsReadCallback(messageHeaderDTO.id)));
     }
 
     private Callback<Response> createMessageAsReadCallback(int pushId)
@@ -823,7 +867,7 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.unread = false;
                     messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
 
-                    updateUnreadStatusInUserProfileCache();
+                    requestUpdateTabCounter();
                 }
                 middleCallbackMap.remove(messageId);
             }
@@ -833,20 +877,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             Timber.d("Report failure for Message: %d", messageId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.unreadMessageThreadsCount > 0)
-        {
-            --userProfileDTO.unreadMessageThreadsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
@@ -868,7 +898,6 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void success(Response response, Response response2)
         {
             // mark message as deleted
-            Timber.d("lyl %d", response.getStatus());
             if (getListAdapter() != null)
             {
                 if (alreadyFetched != null)
@@ -876,15 +905,11 @@ public class MessagesCenterFragment extends DashboardFragment
                     alreadyFetched.remove(messageId);
                 }
 
-                //if the unread message is deleted, update unread counter
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageId);
-                if (messageHeaderDTO != null && messageHeaderDTO.unread)
+                requestUpdateTabCounter();
+                if (getListAdapter() != null)
                 {
-                    messageHeaderDTO.unread = false;
-                    updateUnreadStatusInUserProfileCache();
+                    getListAdapter().notifyDataSetChanged();
                 }
-                getListAdapter().notifyDataSetChanged();
-                //MessageListAdapter adapter = getListAdapter();
             }
         }
 

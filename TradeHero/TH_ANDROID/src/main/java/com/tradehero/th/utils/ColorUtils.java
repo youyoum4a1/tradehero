@@ -2,11 +2,10 @@ package com.tradehero.th.utils;
 
 import android.graphics.Color;
 import com.tradehero.common.application.PApplication;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
-import timber.log.Timber;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 3:24 PM To change this template use File | Settings | File Templates. */
+
 public class ColorUtils
 {
     public static final int MAX_RED_VALUE = 255;
@@ -18,7 +17,7 @@ public class ColorUtils
      */
     public static int getColorForPercentage(float percentage)
     {
-        if(MetaHelper.isChineseLocale(PApplication.context()))
+        if(DeviceTokenHelper.isChineseVersion()/*MetaHelper.isChineseLocale(PApplication.context()*/)
         {
             return PApplication.context().getResources().getColor(getColorResourceForNumber(percentage));
         }

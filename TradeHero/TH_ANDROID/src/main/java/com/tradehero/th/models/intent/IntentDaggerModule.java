@@ -10,9 +10,6 @@ import dagger.Provides;
 import java.util.Set;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 1/13/14.
- */
 @Module(
         staticInjections =
                 {

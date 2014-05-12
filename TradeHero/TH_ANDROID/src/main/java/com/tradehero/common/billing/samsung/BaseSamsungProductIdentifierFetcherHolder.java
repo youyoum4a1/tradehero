@@ -6,9 +6,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by xavier on 2/24/14.
- */
+
 abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,

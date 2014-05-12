@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
+
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,

@@ -22,12 +22,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
-    public static final String TAG = PortfolioListItemAdapter.class.getSimpleName();
-
     public static final int ITEM_TYPE_OWN_HEADER = 0;
     public static final int ITEM_TYPE_OWN = 1;
     public static final int ITEM_TYPE_HERO_HEADER = 2;
@@ -198,7 +196,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 }
                 else
                 {
-                    THLog.w(TAG, "type " + itemType + ", item not DisplayablePortfolioDTO " + item);
+                    Timber.w("type %d, item not DisplayablePortfolioDTO %s", itemType, item);
                 }
                 break;
 
@@ -212,7 +210,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 }
                 else
                 {
-                    THLog.w(TAG, "type " + itemType + ", item not Integer " + item);
+                    Timber.w("type %d , item not Integer %s",itemType, item);
                 }
                 break;
 

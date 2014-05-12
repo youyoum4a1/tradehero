@@ -3,7 +3,7 @@ package com.tradehero.th.api.security;
 import com.tradehero.th.api.timeline.form.TradePublishableFormDTO;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 10:09 AM To change this template use File | Settings | File Templates. */
+
 public class TransactionFormDTO extends TradePublishableFormDTO
 {
     public static final String POST_KEY_SIGNED_QUOTE_DTO = "signedQuoteDto";

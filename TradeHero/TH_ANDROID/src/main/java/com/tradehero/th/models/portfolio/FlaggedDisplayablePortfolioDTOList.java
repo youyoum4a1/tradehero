@@ -3,15 +3,11 @@ package com.tradehero.th.models.portfolio;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by xavier on 3/5/14.
- */
 class FlaggedDisplayablePortfolioDTOList extends ArrayList<FlaggedDisplayablePortfolioDTO>
 {
-    public static final String TAG = FlaggedDisplayablePortfolioDTOList.class.getSimpleName();
-
     public boolean fetchingIds = false;
 
+    //<editor-fold desc="Constructors">
     public FlaggedDisplayablePortfolioDTOList(int capacity)
     {
         super(capacity);
@@ -26,4 +22,5 @@ class FlaggedDisplayablePortfolioDTOList extends ArrayList<FlaggedDisplayablePor
     {
         super(collection);
     }
+    //</editor-fold>
 }

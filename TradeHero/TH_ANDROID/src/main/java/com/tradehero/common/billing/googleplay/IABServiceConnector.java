@@ -18,7 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created by julien on 5/11/13 */
+
 public class IABServiceConnector implements ServiceConnection
 {
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";

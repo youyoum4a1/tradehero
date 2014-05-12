@@ -9,8 +9,6 @@ import javax.inject.Singleton;
 
 @Singleton public class ProviderSpecificKnowledgeFactory
 {
-    public static final String TAG = ProviderSpecificKnowledgeFactory.class.getSimpleName();
-
     @Inject public ProviderSpecificKnowledgeFactory()
     {
         super();

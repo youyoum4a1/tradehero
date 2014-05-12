@@ -6,38 +6,24 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
-import com.tradehero.th.api.users.WebSignInFormDTO;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.*;
+import retrofit.mime.TypedOutput;
+
+import java.util.List;
 
 interface UserServiceAsync
 {
     //<editor-fold desc="Sign-Up With Email">
-    @FormUrlEncoded
-    @POST("/SignupWithEmail")
+    @FormUrlEncoded @POST("/SignupWithEmail")
     void signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -53,11 +39,37 @@ interface UserServiceAsync
             @Field("username") String username,
             @Field("website") String website,
             Callback<UserProfileDTO> cb);
+
+    @Multipart @POST("/SignupWithEmail")
+    void signUpWithEmail(
+            @Header("Authorization") String authorization,
+            @Part("biography") String biography,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("location") String location,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("username") String username,
+            @Part("website") String website,
+            @Part("profilePicture") TypedOutput profilePicture,
+            Callback<UserProfileDTO> cb);
+    //</editor-fold>
+
+    //<editor-fold desc="Signup">
+    @POST("/users")
+    void signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
+    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
     void updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
@@ -74,18 +86,25 @@ interface UserServiceAsync
             @Field("location") String location,
             @Field("website") String website,
             Callback<UserProfileDTO> cb);
-    //</editor-fold>
 
-    @Multipart
-    @POST("/SignupWithEmail")
-    void signUpWithEmailWithProfilePicture();
-
-    //<editor-fold desc="Signup">
-    @POST("/users")
-    void signUp(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
-            Callback<UserProfileDTO> callback);
+    @Multipart @PUT("/users/{userId}/updateUser")
+    void updateProfile(
+            @Path("userId") int userId,
+            @Part("deviceToken") String deviceToken,
+            @Part("displayName") String displayName,
+            @Part("email") String email,
+            @Part("firstName") String firstName,
+            @Part("lastName") String lastName,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            @Part("username") String username,
+            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Part("biography") String biography,
+            @Part("location") String location,
+            @Part("website") String website,
+            @Part("profilePicture") TypedOutput profilePicture,
+            Callback<UserProfileDTO> cb);
     //</editor-fold>
 
     //<editor-fold desc="Signin">
@@ -113,43 +132,17 @@ interface UserServiceAsync
     @GET("/users/search")
     void searchUsers(
             @Query("q") String searchString,
-            Callback<List<UserSearchResultDTO>> callback);
-
-    @GET("/users/search")
-    void searchUsers(
-            @Query("q") String searchString,
-            @Query("page") int page,
-            Callback<List<UserSearchResultDTO>> callback);
-
-    @GET("/users/search")
-    void searchUsers(
-            @Query("q") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
             Callback<List<UserSearchResultDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
     @GET("/users/allowableRecipients")
     void searchAllowableRecipients(
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
             @Query("searchTerm") String searchString,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") int page,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
-
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") int page,
-            @Query("perPage") int perPage,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
     //</editor-fold>
 
@@ -175,7 +168,7 @@ interface UserServiceAsync
             Callback<UpdatePayPalEmailDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Update Alipay Email">
+    //<editor-fold desc="Update Alipay Account">
     @POST("/users/{userId}/updateAlipayAccount")
     void updateAlipayAccount(
             @Path("userId") int userId,

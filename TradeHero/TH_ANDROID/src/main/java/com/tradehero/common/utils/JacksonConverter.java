@@ -15,7 +15,7 @@ import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
-/** Created with IntelliJ IDEA. Date: 7/1/13 Time: 2:33 PM Copyright (c) 2013 thonguyen. All rights reserved. */
+
 public class JacksonConverter implements Converter
 {
     private static final String MIME_TYPE = "application/json; charset=UTF-8";

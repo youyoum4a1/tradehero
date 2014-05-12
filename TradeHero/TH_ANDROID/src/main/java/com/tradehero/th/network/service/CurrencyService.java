@@ -6,7 +6,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 9:19 PM To change this template use File | Settings | File Templates. */
+
 public interface CurrencyService
 {
     //<editor-fold desc="Get Currencies">

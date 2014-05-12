@@ -7,9 +7,7 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 
-/**
- * Created by xavier on 2/7/14.
- */
+
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     public static final String TAG = AlertCreateFragment.class.getSimpleName();

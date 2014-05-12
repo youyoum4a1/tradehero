@@ -2,9 +2,7 @@ package com.tradehero.th.api.timeline.form;
 
 import java.util.Map;
 
-/**
- * Created by xavier2 on 2014/4/11.
- */
+
 public class TradePublishableFormDTO extends PublishableFormDTO
 {
     public String tradeComment;

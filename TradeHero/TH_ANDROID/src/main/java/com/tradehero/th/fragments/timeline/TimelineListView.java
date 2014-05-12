@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 11:35 AM Copyright (c) TradeHero */
 public class TimelineListView extends PullToRefreshStickyListHeadersListView
 {
     //<editor-fold desc="Constructors">

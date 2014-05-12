@@ -9,9 +9,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by xavier on 1/22/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class HelpVideoListKeyTest

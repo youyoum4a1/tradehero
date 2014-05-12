@@ -6,9 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 @Singleton public class PositionDTOFactory
 {
     public static final String TAG = PositionDTOFactory.class.getSimpleName();

@@ -3,20 +3,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Push Id:"
-      />
-
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    >
   <EditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:inputType="number"
-      android:ems="10"
       android:id="@+id/pushNotification"
+      android:inputType="number"
+      android:hint="Enter a push notification id"
+      android:ems="10"
       android:layout_gravity="center_horizontal"
       >
     <requestFocus/>
@@ -25,6 +21,9 @@
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Open private message: 8143519\nOpen comment: 8145228\n"
+      android:layout_marginTop="10dp"
+      android:padding="5dp"
+      android:textAppearance="?textAppearanceSmall"
+      android:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
       />
 </LinearLayout>

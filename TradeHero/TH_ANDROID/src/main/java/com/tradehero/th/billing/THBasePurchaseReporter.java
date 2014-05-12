@@ -4,7 +4,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:06 PM To change this template use File | Settings | File Templates. */
 abstract public class THBasePurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
         THOrderIdType extends THOrderId,
@@ -16,8 +15,6 @@ abstract public class THBasePurchaseReporter<
         THProductPurchaseType,
         BillingExceptionType>
 {
-    public static final String TAG = THBasePurchaseReporter.class.getSimpleName();
-
     protected int requestCode;
     protected THProductPurchaseType purchase;
     private THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> listener;

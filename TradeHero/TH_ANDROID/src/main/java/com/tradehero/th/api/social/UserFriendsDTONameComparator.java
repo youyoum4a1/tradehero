@@ -2,9 +2,7 @@ package com.tradehero.th.api.social;
 
 import java.util.Comparator;
 
-/**
- * Created by xavier on 3/3/14.
- */
+
 public class UserFriendsDTONameComparator implements Comparator<UserFriendsDTO>
 {
     public static final String TAG = UserFriendsDTONameComparator.class.getSimpleName();

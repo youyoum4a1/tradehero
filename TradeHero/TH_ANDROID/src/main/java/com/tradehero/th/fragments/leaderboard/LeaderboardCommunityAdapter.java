@@ -23,9 +23,7 @@ import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:48 PM Copyright (c) TradeHero
- */
+
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {

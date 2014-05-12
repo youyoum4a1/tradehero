@@ -6,15 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 17/10/13
- * Time: 4:08 PM
- */
 public class SettingsItemView extends LinearLayout
 {
-
     private TextView textView;
 
     //<editor-fold desc="Constructors">

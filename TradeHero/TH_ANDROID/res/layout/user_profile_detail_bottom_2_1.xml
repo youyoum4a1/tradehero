@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
+
   <LinearLayout android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
@@ -12,12 +13,15 @@
       tools:background="@color/red"
       android:layout_centerInParent="true">
 
-    <LinearLayout android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="15dp">
 
-      <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           tools:text="ROI"
           android:minWidth="70dp"
           android:text="@string/user_profile_roi_below"
@@ -27,18 +31,22 @@
       <TextView
           android:id="@+id/user_profile_roi"
           style="@style/UserProfile.Contained.Value"
-          android:layout_width="wrap_content" android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           tools:text="+408%"/>
 
     </LinearLayout>
 
-    <LinearLayout android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="15dp"
         android:layout_marginTop="5dp">
 
-      <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           tools:text="Profit"
           android:text="@string/user_profile_profit"
           android:minWidth="70dp"
@@ -46,70 +54,113 @@
           android:gravity="left"/>
 
       <!--android:id="@+id/user_profile_profit"-->
-      <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           tools:text="$89999"
           android:id="@+id/txt_profile_tradeprofit"
           style="@style/UserProfile.Contained.Value"
           />
+
     </LinearLayout>
 
-    <LinearLayout android:layout_width="match_parent"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        >
 
-      <TextView android:layout_height="wrap_content"
-          tools:text="299"
-          android:layout_weight="1"
+      <LinearLayout
+          android:id="@+id/user_profile_followers_count_wrapper"
           android:layout_width="0dp"
-          android:id="@+id/user_profile_followers_count"
-          style="@style/UserProfile.Contained.Value"
-          android:gravity="center"
-          />
-      <TextView
-          android:id="@+id/user_profile_heroes_count"
-          style="@style/UserProfile.Contained.Value"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
           android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"
-          tools:text="32"
-          android:gravity="center"
-          />
-      <TextView
-          android:id="@+id/user_profile_trade_count"
-          style="@style/UserProfile.Contained.Value"
+          android:gravity="center_horizontal"
+          >
+
+        <TextView
+            android:id="@+id/user_profile_followers_count"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            tools:text="299"
+            style="@style/UserProfile.Contained.Value"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            tools:text="Followers"
+            android:text="@string/user_profile_count_followers"
+            android:layout_width="wrap_content"
+            style="@style/UserProfile.Contained.Header"
+            android:gravity="center"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/user_profile_heroes_count_wrapper"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
           android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"
-          tools:text="132"
-          android:gravity="center"
-          />
+          android:gravity="center_horizontal"
+          >
+
+        <TextView
+            android:id="@+id/user_profile_heroes_count"
+            style="@style/UserProfile.Contained.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="32"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Heroes"
+            android:text="@string/user_profile_count_heroes"
+            style="@style/UserProfile.Contained.Header"
+            android:gravity="center"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/user_profile_trade_count_wrapper"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_weight="1"
+          android:gravity="center_horizontal"
+          >
+
+        <TextView
+            android:id="@+id/user_profile_trade_count"
+            style="@style/UserProfile.Contained.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="132"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Trades"
+            android:gravity="center"
+            android:text="@string/user_profile_count_trades"
+            style="@style/UserProfile.Contained.Header"
+            />
+
+      </LinearLayout>
+
     </LinearLayout>
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-      <TextView android:layout_height="wrap_content"
-          tools:text="Followers"
-          android:layout_weight="1"
-          android:text="@string/user_profile_count_followers"
-          android:layout_width="0dp"
-          style="@style/UserProfile.Contained.Header"
-          android:gravity="center"
-          />
-      <TextView android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"
-          tools:text="Heros"
-          android:text="@string/user_profile_count_heroes"
-          style="@style/UserProfile.Contained.Header"
-          android:gravity="center"
-          />
-      <TextView android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"
-          tools:text="Trades"
-          android:gravity="center"
-          android:text="@string/user_profile_count_trades"
-          style="@style/UserProfile.Contained.Header"
-          />
-    </LinearLayout>
   </LinearLayout>
+
 </merge>

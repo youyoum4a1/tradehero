@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.payment.MiddleCallbackUpdatePayPalEmail;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -33,13 +33,6 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 22/10/13
- * Time: 12:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SettingsPayPalFragment extends DashboardFragment
 {
     private View view;
@@ -48,7 +41,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     private Button submitButton;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private MiddleCallbackUpdatePayPalEmail middleCallbackUpdatePayPalEmail;
+    private MiddleCallback<UpdatePayPalEmailDTO> middleCallbackUpdatePayPalEmail;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
@@ -147,7 +140,6 @@ public class SettingsPayPalFragment extends DashboardFragment
                 if (!isDetached())
                 {
                     THToast.show(getString(R.string.settings_paypal_successful_update));
-                    userProfileCache.invalidate(currentUserId.toUserBaseKey());
                     progressDialog.hide();
                     Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                     navigator.popFragment();

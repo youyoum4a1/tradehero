@@ -12,9 +12,11 @@ abstract public class DiscussionKey implements DTOKey
 
     public final Integer id;
 
+    //<editor-fold desc="Constructors">
     protected DiscussionKey(Integer id)
     {
         this.id = id;
+        checkValid();
     }
 
     protected DiscussionKey(Bundle args)
@@ -24,6 +26,21 @@ abstract public class DiscussionKey implements DTOKey
             throw new IllegalStateException("Discussion bundle should contain id of the discussion");
         }
         this.id = args.getInt(BUNDLE_KEY_ID);
+        checkValid();
+    }
+    //</editor-fold>
+
+    protected void checkValid()
+    {
+        if (!isValid())
+        {
+            throw new IllegalArgumentException("Invalid values");
+        }
+    }
+
+    public boolean isValid()
+    {
+        return id != null;
     }
 
     abstract public DiscussionType getType();
@@ -62,5 +79,12 @@ abstract public class DiscussionKey implements DTOKey
     {
         return other != null &&
                 (id == null ? other.id == null : id.equals(other.id));
+    }
+
+    @Override public String toString()
+    {
+        return "DiscussionKey{" +
+                "id=" + id +
+                '}';
     }
 }

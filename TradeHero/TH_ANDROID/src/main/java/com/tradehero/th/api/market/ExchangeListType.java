@@ -3,7 +3,7 @@ package com.tradehero.th.api.market;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 7:21 PM To change this template use File | Settings | File Templates. */
+
 public class ExchangeListType extends AbstractStringDTOKey
 {
     public static final String TAG = ExchangeListType.class.getSimpleName();

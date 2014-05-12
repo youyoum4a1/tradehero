@@ -7,7 +7,7 @@ import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:05 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class THIABProductDetailCache extends ProductDetailCache<IABSKU, THIABProductDetail, THIABProductDetailTuner>
 {
     private static final int DEFAULT_MAX_SIZE = 200;

@@ -3,7 +3,7 @@ package com.tradehero.th.api.portfolio;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 2:38 PM To change this template use File | Settings | File Templates. */
+
 public class PortfolioId extends AbstractIntegerDTOKey
 {
     public final static String TAG = PortfolioId.class.getSimpleName();

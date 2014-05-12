@@ -17,16 +17,16 @@ import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.models.user.FollowUserAssistant;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * It expects its Activity to implement THIABInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
@@ -42,7 +42,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
     protected Integer showProductDetailRequestCode;
 
-    protected FollowUserAssistant followUserAssistant;
+    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     abstract protected void initViews(View view);
@@ -58,9 +58,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return new BasePurchaseManagementPortfolioCompactListRetrievedListener();
     }
 
-    protected FollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new BasePurchaseManagerUserFollowedListener();
+        return new BasePurchaseManagerPremiumUserFollowedListener();
+    }
+
+    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
+    {
+        return new BasePurchaseManagerFreeUserFollowedCallback();
     }
 
     @Override public void onResume()
@@ -87,8 +92,17 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachPortfolioRetrievedMilestone();
-        detachUserFollowAssistant();
+        detachPremiumFollowUserAssistant();
+        detachRequestCode();
         super.onDestroyView();
+    }
+
+    protected void detachRequestCode()
+    {
+        if (showProductDetailRequestCode != null && userInteractor != null)
+        {
+            userInteractor.forgetRequestCode(showProductDetailRequestCode);
+        }
     }
 
     @Override public void onDestroy()
@@ -160,13 +174,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedListener = null;
     }
 
-    private void detachUserFollowAssistant()
+    private void detachPremiumFollowUserAssistant()
     {
-        if (followUserAssistant != null)
+        if (premiumFollowUserAssistant != null)
         {
-            followUserAssistant.setUserFollowedListener(null);
+            premiumFollowUserAssistant.setUserFollowedListener(null);
         }
-        followUserAssistant = null;
+        premiumFollowUserAssistant = null;
     }
 
     protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
@@ -184,10 +198,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
     {
-        if (showProductDetailRequestCode != null)
-        {
-            userInteractor.forgetRequestCode(showProductDetailRequestCode);
-        }
+        detachRequestCode();
         showProductDetailRequestCode = showProductDetailListForPurchase(domain);
     }
 
@@ -217,23 +228,26 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return request;
     }
 
-    public void followUser(UserBaseKey userToFollow)
+    public void premiumFollowUser(UserBaseKey heroId)
     {
-        followUser(userToFollow, createUserFollowedListener());
+        premiumFollowUser(heroId, createPremiumUserFollowedListener());
     }
 
-    public void followUser(UserBaseKey userToFollow, FollowUserAssistant.OnUserFollowedListener followedListener)
+
+    public void premiumFollowUser(UserBaseKey heroId,
+            PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
     {
-        detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(followedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
-        followUserAssistant.launchFollow();
+        detachPremiumFollowUserAssistant();
+        premiumFollowUserAssistant = new PremiumFollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
+        premiumFollowUserAssistant.launchFollow();
     }
 
-    public void unfollowUser(UserBaseKey userToUnFollow)
+    public void unfollowUser(UserBaseKey heroId)
     {
-        detachUserFollowAssistant();
-        followUserAssistant = new FollowUserAssistant(createUserFollowedListener(), userToUnFollow, purchaseApplicableOwnedPortfolioId);
-        followUserAssistant.launchUnFollow();
+        detachPremiumFollowUserAssistant();
+        premiumFollowUserAssistant = new PremiumFollowUserAssistant(
+                createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
+        premiumFollowUserAssistant.launchUnFollow();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
@@ -250,7 +264,20 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagerUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
+    protected class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            // Children classes should update the display
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            // Anything to do?
+        }
+    }
+
+    protected class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override
         public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)

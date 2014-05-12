@@ -5,10 +5,8 @@ import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueExce
 import com.tradehero.th.billing.THBillingConstants;
 import com.tradehero.th.billing.googleplay.THIABConstants;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
 public class IABMissingApplicablePortfolioIdException extends IABOneResponseValueException
 {
-    public static final String TAG = IABMissingApplicablePortfolioIdException.class.getSimpleName();
     public static final int VALID_RESPONSE = THIABConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
 
     public IABMissingApplicablePortfolioIdException(IABResult r)

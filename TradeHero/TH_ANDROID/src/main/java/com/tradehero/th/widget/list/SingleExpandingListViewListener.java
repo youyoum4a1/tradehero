@@ -5,9 +5,7 @@ import android.widget.AdapterView;
 import com.tradehero.th.adapters.ExpandableItem;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/24/14 Time: 12:57 PM Copyright (c) TradeHero
- */
+
 public class SingleExpandingListViewListener extends BaseExpandingListViewListener
 {
     @Inject public SingleExpandingListViewListener()

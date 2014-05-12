@@ -4,21 +4,22 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCache;
+import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
@@ -26,40 +27,35 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.DeviceUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
-    implements DTOView<DiscussionKey>
+    implements DTOView<DiscussionKey>, DiscussionListCacheNew.DiscussionKeyListListener
 {
     @InjectView(android.R.id.list) protected ListView discussionList;
-    @InjectView(R.id.discussion_comment_widget) protected PostCommentView postCommentView;
+    protected FlagNearEdgeScrollListener scrollListener;
+    @InjectView(R.id.discussion_comment_widget) @Optional protected PostCommentView postCommentView;
 
     private int listItemLayout;
     private int topicLayout;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject DiscussionListCache discussionListCache;
+    @Inject protected DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
-    @Inject protected DiscussionKeyFactory discussionKeyFactory;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     protected TextView discussionStatus;
-    private DiscussionKey discussionKey;
+    protected DiscussionKey discussionKey;
 
     private PostCommentView.CommentPostedListener commentPostedListener;
 
-    private DTOCache.GetOrFetchTask<DiscussionListKey, DiscussionKeyList> discussionFetchTask;
-    protected DiscussionListAdapter discussionListAdapter;
-    private DiscussionListKey discussionListKey;
-    private int nextPageDelta;
-    private PaginatedDiscussionListKey paginatedDiscussionListKey;
+    protected DiscussionSetAdapter discussionListAdapter;
+    protected DiscussionListKey prevDiscussionListKey;
+    protected DiscussionListKey startingDiscussionListKey;
+    protected DiscussionListKey nextDiscussionListKey;
     private View topicView;
 
     //<editor-fold desc="Constructors">
@@ -95,12 +91,9 @@ public class DiscussionView extends FrameLayout
         discussionListAdapter = createDiscussionListAdapter();
     }
 
-    protected DiscussionListAdapter createDiscussionListAdapter()
+    protected DiscussionSetAdapter createDiscussionListAdapter()
     {
-        return new DiscussionListAdapter(
-                getContext(),
-                LayoutInflater.from(getContext()),
-                listItemLayout);
+        return new SingleViewDiscussionSetAdapter(getContext(), listItemLayout);
     }
 
     private void init(AttributeSet attrs)
@@ -160,15 +153,35 @@ public class DiscussionView extends FrameLayout
     {
         super.onAttachedToWindow();
         discussionList.setAdapter(discussionListAdapter);
-        postCommentView.setCommentPostedListener(createCommentPostedListener());
-        DeviceUtil.showKeyboard(getContext());
+        scrollListener = createFlagNearEndScrollListener();
+        discussionList.setOnScrollListener(scrollListener);
+        discussionList.setOnTouchListener(new OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                if (postCommentView != null)
+                {
+                    postCommentView.dismissKeypad();
+                }
+                return false;
+            }
+        });
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(createCommentPostedListener());
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachDiscussionFetchTask();
-        postCommentView.setCommentPostedListener(null);
+        discussionListCache.unregister(this);
+        if (postCommentView != null)
+        {
+            postCommentView.setCommentPostedListener(null);
+        }
         discussionList.setAdapter(null);
+        discussionList.setOnScrollListener(null);
+        discussionList.setOnTouchListener(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -182,7 +195,10 @@ public class DiscussionView extends FrameLayout
     protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        postCommentView.linkWith(discussionKey);
+        if (postCommentView != null)
+        {
+            postCommentView.linkWith(discussionKey);
+        }
 
         initialFetchDiscussion(false);
 
@@ -207,15 +223,17 @@ public class DiscussionView extends FrameLayout
 
     protected void initialFetchDiscussion(boolean force)
     {
-        discussionListAdapter.setItems(null);
-        this.discussionListKey = createListKey();
-        if (discussionListKey != null)
+        discussionListAdapter = createDiscussionListAdapter();
+        discussionList.setAdapter(discussionListAdapter);
+        discussionListCache.unregister(this);
+        this.startingDiscussionListKey = createStartingDiscussionListKey();
+        if (startingDiscussionListKey != null)
         {
-            fetchDiscussionListIfNecessary(force);
+            fetchStartingDiscussionListIfNecessary(force);
         }
     }
 
-    protected DiscussionListKey createListKey()
+    protected DiscussionListKey createStartingDiscussionListKey()
     {
         if (discussionKey != null)
         {
@@ -224,20 +242,94 @@ public class DiscussionView extends FrameLayout
         return null;
     }
 
-    private void fetchDiscussionListIfNecessary(boolean force)
+    private void fetchStartingDiscussionListIfNecessary(boolean force)
     {
-        prepareDiscussionListKey();
         setLoading();
-        detachDiscussionFetchTask();
-        discussionFetchTask = discussionListCache.getOrFetch(discussionListKey, force, createDiscussionListListener());
-        discussionFetchTask.execute();
+        Timber.d("DiscussionListKey %s", startingDiscussionListKey);
+        discussionListCache.register(startingDiscussionListKey, this);
+        discussionListCache.getOrFetchAsync(startingDiscussionListKey, force);
     }
 
-    protected void prepareDiscussionListKey()
+    protected DiscussionListKey getNextDiscussionListKey(DiscussionKeyList latestDiscussionKeys)
     {
-        if (discussionListKey instanceof PaginatedDiscussionListKey && nextPageDelta >= 0)
+        return getNextDiscussionListKey(nextDiscussionListKey != null ? nextDiscussionListKey : startingDiscussionListKey,
+                latestDiscussionKeys);
+    }
+
+    protected DiscussionListKey getNextDiscussionListKey(DiscussionListKey currentNext, DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey next = null;
+        if (latestDiscussionKeys != null && !latestDiscussionKeys.isEmpty())
         {
-            discussionListKey = ((PaginatedDiscussionListKey) discussionListKey).next(nextPageDelta);
+            next = ((PaginatedDiscussionListKey) currentNext).next();
+            if (next != null && next.equals(currentNext))
+            {
+                // This situation where next is equal to currentNext may happen
+                // when the server is still returning the same values
+                next = null;
+            }
+        }
+        return next;
+    }
+
+    protected void fetchDiscussionListNextIfValid(DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey next = getNextDiscussionListKey(latestDiscussionKeys);
+        if (next != null)
+        {
+            nextDiscussionListKey = next;
+            fetchDiscussionListNext();
+        }
+    }
+
+    protected void fetchDiscussionListNext()
+    {
+        if (nextDiscussionListKey != null)
+        {
+            discussionListCache.register(nextDiscussionListKey, this);
+            discussionListCache.getOrFetchAsync(nextDiscussionListKey, false);
+        }
+    }
+
+    protected DiscussionListKey getPrevDiscussionListKey(DiscussionKeyList latestDiscussionKeys)
+    {
+        return getPrevDiscussionListKey(prevDiscussionListKey != null ? prevDiscussionListKey : startingDiscussionListKey,
+                latestDiscussionKeys);
+    }
+
+    protected DiscussionListKey getPrevDiscussionListKey(DiscussionListKey currentPrev, DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey prev = null;
+        if (latestDiscussionKeys != null && !latestDiscussionKeys.isEmpty() &&
+                ((PaginatedDiscussionListKey) currentPrev).page > 1)
+        {
+            prev = ((PaginatedDiscussionListKey) currentPrev).prev();
+            if (prev != null && prev.equals(currentPrev))
+            {
+                // This situation where next is equal to currentNext may happen
+                // when the server is still returning the same values
+                prev = null;
+            }
+        }
+        return prev;
+    }
+
+    protected void fetchDiscussionListPrevIfValid(DiscussionKeyList latestDiscussionKeys)
+    {
+        DiscussionListKey prev = getPrevDiscussionListKey(latestDiscussionKeys);
+        if (prev != null)
+        {
+            prevDiscussionListKey = prev;
+            fetchDiscussionListPrev();
+        }
+    }
+
+    protected void fetchDiscussionListPrev()
+    {
+        if (prevDiscussionListKey != null)
+        {
+            discussionListCache.register(prevDiscussionListKey, this);
+            discussionListCache.getOrFetchAsync(prevDiscussionListKey, false);
         }
     }
 
@@ -260,23 +352,15 @@ public class DiscussionView extends FrameLayout
     {
         if (discussionKeyList != null)
         {
-            nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
-
-            // Most recent at bottom
-            List<DiscussionKey> reversedList = new ArrayList<>(discussionKeyList);
-            Collections.reverse(reversedList);
-            discussionListAdapter.appendMore(reversedList);
+            // Anyway it will be reordered
+            discussionListAdapter.appendTail(discussionKeyList);
+            discussionListAdapter.notifyDataSetChanged();
         }
 
         if (andDisplay)
         {
             discussionStatus.setText(R.string.discussion_loaded);
         }
-    }
-
-    protected DTOCache.Listener<DiscussionListKey, DiscussionKeyList> createDiscussionListListener()
-    {
-        return new DiscussionFetchListener();
     }
 
     /**
@@ -290,8 +374,8 @@ public class DiscussionView extends FrameLayout
 
         if (discussionListAdapter != null)
         {
-            discussionListAdapter.addItem(newDiscussionKey);
             discussionCache.put(newDiscussionKey, newDiscussion);
+            discussionListAdapter.appendTail(newDiscussion);
             discussionListAdapter.notifyDataSetChanged();
         }
         discussionListCache.invalidateAllPagesFor(discussionKey);
@@ -299,6 +383,7 @@ public class DiscussionView extends FrameLayout
 
     private void updateCommentCount()
     {
+        // TODO review in light of the stubKey
         if (discussionKey != null)
         {
             AbstractDiscussionDTO discussionDTO = discussionCache.get(discussionKey);
@@ -324,15 +409,6 @@ public class DiscussionView extends FrameLayout
         {
             discussionStatus.setText(R.string.discussion_loaded);
         }
-    }
-
-    private void detachDiscussionFetchTask()
-    {
-        if (discussionFetchTask != null)
-        {
-            discussionFetchTask.setListener(null);
-        }
-        discussionFetchTask = null;
     }
 
     public void setCommentPostedListener(PrivatePostCommentView.CommentPostedListener commentPostedListener)
@@ -363,25 +439,79 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    private class DiscussionFetchListener implements DTOCache.Listener<DiscussionListKey, DiscussionKeyList>
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
     {
-        @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
-        {
-            onFinish();
+        onFinish();
 
-            linkWith(value, true);
+        linkWith(value, true);
+
+        if (key.equals(startingDiscussionListKey))
+        {
+            handleStartingDTOReceived(key, value, fromCache);
         }
-
-        @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+        else if (key.equals(prevDiscussionListKey))
         {
-            onFinish();
-
-            THToast.show(new THException(error));
+            postHandlePrevDTOReceived(key, value, fromCache);
         }
-
-        private void onFinish()
+        else if (key.equals(nextDiscussionListKey))
         {
-            setLoaded();
+            postHandleNextDTOReceived(key, value, fromCache);
+        }
+    }
+
+    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+    {
+        onFinish();
+
+        THToast.show(new THException(error));
+    }
+
+    private void onFinish()
+    {
+        setLoaded();
+    }
+
+    protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    {
+        fetchDiscussionListNextIfValid(value);
+        fetchDiscussionListPrevIfValid(value);
+    }
+
+    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    {
+        post(new Runnable()
+        {
+            @Override public void run()
+            {
+                handleNextDTOReceived(key, value, fromCache);
+            }
+        });
+    }
+
+    protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    {
+        if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
+        {
+            fetchDiscussionListNextIfValid(value);
+        }
+    }
+
+    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    {
+        post(new Runnable()
+        {
+            @Override public void run()
+            {
+                handlePrevDTOReceived(key, value, fromCache);
+            }
+        });
+    }
+
+    protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    {
+        if (discussionList != null && discussionList.getFirstVisiblePosition() == 0)
+        {
+            fetchDiscussionListPrevIfValid(value);
         }
     }
 
@@ -397,6 +527,31 @@ public class DiscussionView extends FrameLayout
         {
             THToast.show(R.string.error_unknown);
             notifyCommentPostFailedListener(exception);
+        }
+    }
+
+    protected FlagNearEdgeScrollListener createFlagNearEndScrollListener()
+    {
+        return new DiscussionViewFlagNearEdgeScrollListener();
+    }
+
+    protected class DiscussionViewFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
+    {
+        public DiscussionViewFlagNearEdgeScrollListener()
+        {
+            super();
+        }
+
+        @Override public void raiseStartFlag()
+        {
+            super.raiseStartFlag();
+            fetchDiscussionListPrev();
+        }
+
+        @Override public void raiseEndFlag()
+        {
+            super.raiseEndFlag();
+            fetchDiscussionListNext();
         }
     }
 }

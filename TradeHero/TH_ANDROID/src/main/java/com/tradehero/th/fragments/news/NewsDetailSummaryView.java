@@ -15,9 +15,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/25/14 Time: 12:03 PM Copyright (c) TradeHero
- */
 public class NewsDetailSummaryView extends FrameLayout
     implements DTOView<NewsItemDTO>
 {
@@ -56,6 +53,7 @@ public class NewsDetailSummaryView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -68,8 +66,15 @@ public class NewsDetailSummaryView extends FrameLayout
     {
         if (dto != null)
         {
-            mNewsDetailTitle.setText(dto.title);
-            mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+            if (mNewsDetailTitle != null)
+            {
+                mNewsDetailTitle.setText(dto.title);
+            }
+
+            if (mNewsDetailDate != null)
+            {
+                mNewsDetailDate.setText(prettyTime.format(dto.createdAtUtc));
+            }
         }
     }
 

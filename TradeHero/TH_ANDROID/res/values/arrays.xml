@@ -2,18 +2,22 @@
 <resources>
   <string-array name="servers">
     <item>Prod</item>
+    <item>Staging</item>
     <item>Dev</item>
     <item>ThoPC</item>
     <item>PeterPC</item>
     <item>XavShPC</item>
+    <item>MaddyPC</item>
   </string-array>
 
   <string-array name="server_values">
     <item>https://www.tradehero.mobi/api/</item>
+    <item>https://966e65227ab24d18a2a75e4530770153.cloudapp.net/api</item>
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
     <item>http://truongtho.noip.me/api/</item>
     <item>http://192.168.20.49/api</item>
     <item>http://192.168.1.10/api</item>
+    <item>https://192.168.1.123:44300/api</item>
   </string-array>
 
   <string-array name="staffs">

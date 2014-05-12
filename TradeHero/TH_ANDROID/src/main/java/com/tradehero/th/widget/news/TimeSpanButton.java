@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:40 PM To change this template use File | Settings | File Templates. */
+
 abstract public class TimeSpanButton extends Button
 {
     public static final String TAG = TimeSpanButton.class.getSimpleName();

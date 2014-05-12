@@ -16,7 +16,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
@@ -86,7 +86,7 @@ import javax.inject.Singleton;
 
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageHeaderCache> messageHeaderCache;
-    @Inject Lazy<DiscussionListCache> discussionListCache;
+    @Inject Lazy<DiscussionListCacheNew> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
 
     @Inject Lazy<NotificationCache> notificationCache;

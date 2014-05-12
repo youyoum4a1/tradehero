@@ -5,9 +5,6 @@ import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/24/14 Time: 5:58 PM Copyright (c) TradeHero
- */
 public abstract class InteractorIntent extends THIntent
 {
     @Override public DashboardTabType getDashboardType()

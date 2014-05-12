@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter<SecurityCompactDTO>
 {
-    private final static String TAG = SimpleSecurityItemViewAdapter.class.getSimpleName();
-
     protected Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<SecurityCompactDTO> securityCompactPredicateFilter;
 

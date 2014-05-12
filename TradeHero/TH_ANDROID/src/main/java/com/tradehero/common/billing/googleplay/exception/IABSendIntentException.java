@@ -3,10 +3,8 @@ package com.tradehero.common.billing.googleplay.exception;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:15 PM To change this template use File | Settings | File Templates. */
 public class IABSendIntentException extends IABOneResponseValueException
 {
-    public static final String TAG = IABSendIntentException.class.getSimpleName();
     public static final int VALID_RESPONSE = IABConstants.IABHELPER_SEND_INTENT_FAILED;
 
     public IABSendIntentException(IABResult r)

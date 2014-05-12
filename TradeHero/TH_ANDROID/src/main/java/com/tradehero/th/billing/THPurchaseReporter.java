@@ -6,7 +6,6 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/27/13 Time: 1:01 PM To change this template use File | Settings | File Templates. */
 public interface THPurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
         THOrderIdType extends THOrderId,

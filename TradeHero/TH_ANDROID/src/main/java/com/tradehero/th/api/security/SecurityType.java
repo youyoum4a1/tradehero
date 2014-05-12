@@ -4,7 +4,7 @@ import com.tradehero.th.R;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:31 PM To change this template use File | Settings | File Templates. */
+
 public enum SecurityType
 {
     EQUITY (1, R.string.security_type_equity),

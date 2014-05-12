@@ -25,7 +25,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
 public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
@@ -33,8 +32,6 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         THIABStoreProductDetailView,
         THIABSKUDetailAdapter>
 {
-    public static final String TAG = THIABAlertDialogUtil.class.getSimpleName();
-
     protected THIABPurchaseCache thiabPurchaseCache;
     protected GooglePlayUtils googlePlayUtils;
 

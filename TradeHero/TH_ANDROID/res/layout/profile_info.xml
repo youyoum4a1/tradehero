@@ -40,7 +40,9 @@
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
-        />
+        >
+        <requestFocus/>
+        </com.tradehero.th.widget.ServerValidatedEmailText>
 
     <com.tradehero.th.widget.ValidatedPasswordText
         android:id="@+id/authentication_sign_up_password"
@@ -153,7 +155,7 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
-          android:layout_toRightOf="@+id/image_optional"
+          android:layout_toRightOf="@id/image_optional"
           android:paddingLeft="5dip"
           android:orientation="vertical">
 
@@ -176,6 +178,7 @@
             android:inputType="text"
             android:drawableLeft="@drawable/accounts_glyph_name_default"
             style="@style/TradeHero.Authentication.EditText"/>
+
       </LinearLayout>
 
     </RelativeLayout>

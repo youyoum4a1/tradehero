@@ -2,31 +2,19 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.th.api.misc.DeviceType;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/14/13 Time: 7:33 PM To change this template use File | Settings | File Templates. */
 public class LoginFormDTO
 {
-    public static final String TAG = LoginFormDTO.class.getSimpleName();
+    public final String deviceToken;
 
-    public String deviceToken;
-
-    @Deprecated
-    public boolean clientiOS;
-
-    public int clientType;
+    public final DeviceType clientType;
 
     // min. version support
-    public String clientVersion;
-
-    public LoginFormDTO(String deviceToken, boolean clientiOS, String clientVersion)
-    {
-        this.deviceToken = deviceToken;
-        this.clientiOS = clientiOS;
-        this.clientVersion = clientVersion;
-    }
+    public final String clientVersion;
 
     public LoginFormDTO(String deviceToken, DeviceType deviceType, String clientVersion)
     {
-        this(deviceToken, false, clientVersion);
-        this.clientType = deviceType.getServerValue();
+        this.deviceToken = deviceToken;
+        this.clientVersion = clientVersion;
+        this.clientType = deviceType;
     }
 }

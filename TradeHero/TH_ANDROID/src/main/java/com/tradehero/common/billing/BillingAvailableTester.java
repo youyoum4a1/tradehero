@@ -2,9 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-/**
- * Created by xavier on 3/19/14.
- */
+
 public interface BillingAvailableTester<BillingExceptionType extends BillingException>
 {
     int getRequestCode();

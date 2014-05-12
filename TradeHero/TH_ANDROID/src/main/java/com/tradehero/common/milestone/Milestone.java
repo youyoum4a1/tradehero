@@ -1,6 +1,6 @@
 package com.tradehero.common.milestone;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 4:44 PM To change this template use File | Settings | File Templates. */
+
 public interface Milestone
 {
     void launch();

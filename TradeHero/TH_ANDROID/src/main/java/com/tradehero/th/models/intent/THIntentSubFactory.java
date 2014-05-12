@@ -3,13 +3,8 @@ package com.tradehero.th.models.intent;
 import android.content.Intent;
 import java.util.List;
 
-/**
- * Created by xavier on 1/10/14.
- */
 abstract public class THIntentSubFactory<THIntentType extends THIntent> extends THIntentFactory<THIntentType>
 {
-    public static final String TAG = THIntentSubFactory.class.getSimpleName();
-
     public THIntentSubFactory()
     {
     }

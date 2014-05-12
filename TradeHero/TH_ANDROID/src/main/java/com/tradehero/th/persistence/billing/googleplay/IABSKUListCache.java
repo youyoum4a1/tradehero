@@ -7,9 +7,7 @@ import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:27 PM To change this template use File | Settings | File Templates.
- * */
+
 @Singleton public class IABSKUListCache extends ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList>
 {
     public static final int MAX_SIZE = 5;

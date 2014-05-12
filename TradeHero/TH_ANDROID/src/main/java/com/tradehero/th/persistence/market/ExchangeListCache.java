@@ -8,7 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 7:20 PM To change this template use File | Settings | File Templates. */
+
 @Singleton public class ExchangeListCache extends StraightDTOCache<ExchangeListType, ExchangeDTOList>
 {
     public static final String TAG = ExchangeCache.class.getSimpleName();

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 10:55 AM To change this template use File | Settings | File Templates. */
 public class GooglePlayUtils
     extends BillingUtils<
         IABSKU,

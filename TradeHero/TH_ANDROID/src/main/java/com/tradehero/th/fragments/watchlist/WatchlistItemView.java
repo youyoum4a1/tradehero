@@ -36,9 +36,8 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
@@ -55,7 +54,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private static final String INTENT_KEY_DELETED_SECURITY_ID = WatchlistItemView.class.getName() + ".deletedSecurityId";
 
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
@@ -73,7 +71,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private WatchlistPositionDTO watchlistPositionDTO;
     private SecurityId securityId;
 
-    private MiddleCallback<WatchlistPositionDTO> middleCallbackWatchlistDelete;
+    private MiddleCallbackWeakList<WatchlistPositionDTO> middleCallbackWatchlistDeletes;
 
     private PopupMenu morePopupMenu;
 
@@ -114,6 +112,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
+        middleCallbackWatchlistDeletes = new MiddleCallbackWeakList<>();
     }
 
     @Override protected void onAttachedToWindow()
@@ -137,6 +136,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             @Override public void onClick(View v)
             {
+                setEnabledSwipeButtons(false);
                 deleteSelf();
             }
         };
@@ -215,6 +215,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
             @Override protected void failure(THException ex)
             {
+                setEnabledSwipeButtons(true);
                 if (watchlistPositionDTOCopy != null)
                 {
                     Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, ex);
@@ -242,16 +243,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             morePopupMenu.setOnMenuItemClickListener(null);
         }
 
-        detachMiddleCallbackDelete();
-    }
-
-    protected void detachMiddleCallbackDelete()
-    {
-        if (middleCallbackWatchlistDelete != null)
-        {
-            middleCallbackWatchlistDelete.setPrimaryCallback(null);
-        }
-        middleCallbackWatchlistDelete = null;
+        middleCallbackWatchlistDeletes.detach();
     }
 
     @Override public void display(SecurityId securityId)
@@ -281,6 +273,20 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             displayCompanyName();
 
             displayLastPrice();
+        }
+    }
+
+    protected void setEnabledSwipeButtons(boolean enabled)
+    {
+        setEnabled(moreButton, enabled);
+        setEnabled(deleteButton, enabled);
+    }
+
+    protected void setEnabled(View button, boolean enabled)
+    {
+        if (button != null)
+        {
+            button.setEnabled(enabled);
         }
     }
 
@@ -473,9 +479,10 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private void deleteSelf()
     {
-        detachMiddleCallbackDelete();
         // not to show dialog but request deletion in background
-        middleCallbackWatchlistDelete = watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO, createWatchlistDeletionCallback());
+        middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
+                    watchlistPositionDTO,
+                    createWatchlistDeletionCallback()));
     }
 
     private PopupMenu createMoreOptionsPopupMenu()

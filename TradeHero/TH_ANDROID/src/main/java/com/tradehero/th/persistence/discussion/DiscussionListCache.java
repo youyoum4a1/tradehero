@@ -20,7 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton
+@Singleton @Deprecated
 public class DiscussionListCache extends StraightDTOCache<DiscussionListKey, DiscussionKeyList>
 {
     private final DiscussionCache discussionCache;

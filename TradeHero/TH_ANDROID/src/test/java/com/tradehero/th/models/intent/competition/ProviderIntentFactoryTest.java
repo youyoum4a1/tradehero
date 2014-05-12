@@ -16,9 +16,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by xavier on 1/20/14.
- */
+
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 public class ProviderIntentFactoryTest

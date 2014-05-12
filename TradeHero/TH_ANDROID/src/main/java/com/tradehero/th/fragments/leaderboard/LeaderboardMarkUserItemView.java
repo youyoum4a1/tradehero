@@ -34,18 +34,17 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.social.FollowRequestedListener;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -442,16 +441,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public class LeaderBoardFollowRequestedListener implements FollowRequestedListener
+    public class LeaderBoardFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested()
+        @Override public void freeFollowRequested(UserBaseKey heroId)
         {
-            freeFollow();
+            freeFollow(heroId);
         }
 
-        @Override public void followRequested()
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            follow();
+            follow(heroId);
         }
     }
 
@@ -477,18 +476,19 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow()
+    protected void freeFollow(UserBaseKey heroId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext());
+        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
+                R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
-                        .freeFollow(leaderboardItem.getBaseKey(), new FreeFollowCallback());
+                        .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow()
+    protected void follow(UserBaseKey heroId)
     {
-        notifyFollowRequested();
+        notifyFollowRequested(heroId);
     }
 
     private void handleOpenPositionListClicked()
@@ -553,12 +553,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested()
+    protected void notifyFollowRequested(UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(leaderboardItem.getBaseKey());
+            followRequestedListenerCopy.onFollowRequested(heroId);
         }
     }
 

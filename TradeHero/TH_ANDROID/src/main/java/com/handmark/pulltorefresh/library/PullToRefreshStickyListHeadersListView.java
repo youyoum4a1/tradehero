@@ -25,7 +25,6 @@ import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 11:35 AM Copyright (c) TradeHero */
 public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<StickyListHeadersListView>
         implements AbsListView.OnScrollListener
 {

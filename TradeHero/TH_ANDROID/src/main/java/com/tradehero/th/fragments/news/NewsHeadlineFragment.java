@@ -14,8 +14,8 @@ import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
@@ -26,6 +26,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Display a ListView of News object for a given SecurityId - It uses
@@ -44,10 +45,14 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchNewsTask;
     private NewsHeadlineAdapter adapter;
 
+    public static final String TEST_KEY = "News-Test";
+    public static long start = 0;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        start = System.currentTimeMillis();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,6 +139,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
 
     private void fetchSecurityNews()
     {
+        Timber.d("%s fetchSecurityNews,consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
         detachFetchTask();
 
         fetchNewsTask = newsTitleCache.getOrFetch(securityId, true, this);
@@ -142,6 +148,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
 
     @Override public void display()
     {
+        Timber.d("%s display consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
         displayNewsListView();
 
         showNewsList();
@@ -181,9 +188,11 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
             int resId = adapter.getBackgroundRes(position);
             Bundle bundle = new Bundle();
             bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                    news.getArgs());
+            bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL,
+                    securityId.securitySymbol);
+            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,news.getArgs());
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
+
         }
     }
 

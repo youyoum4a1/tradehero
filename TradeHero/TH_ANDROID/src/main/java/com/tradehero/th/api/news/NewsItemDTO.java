@@ -6,9 +6,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/6/14 Time: 4:10 PM Copyright (c) TradeHero
- */
+
 public class NewsItemDTO extends AbstractDiscussionDTO
 {
     public String title;
@@ -26,7 +24,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> categories; // Header:Referenced Calais Entities
-    private List<Integer> securityIds;
+    public List<Integer> securityIds;
 
     public String message;
 
@@ -64,16 +62,6 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     public void setCategories(List<NewsItemMediaDTO> categories)
     {
         this.categories = categories;
-    }
-
-    public List<Integer> getSecurityIds()
-    {
-        return securityIds != null ? Collections.unmodifiableList(securityIds) : null;
-    }
-
-    public void setSecurityIds(List<Integer> securityIds)
-    {
-        this.securityIds = securityIds;
     }
 
     //convenient method

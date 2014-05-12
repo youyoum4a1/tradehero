@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
 
-/** Created with IntelliJ IDEA. User: tho Date: 11/15/13 Time: 3:41 PM Copyright (c) TradeHero */
 public class TutorialFragment extends SherlockFragment
 {
-    public static final String TUTORIAL_LAYOUT = TutorialFragment.class.getName();
+    public static final String BUNDLE_KEY_TUTORIAL_LAYOUT = TutorialFragment.class.getName() + ".tutorialResId";
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -18,7 +17,7 @@ public class TutorialFragment extends SherlockFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        int tutorialLayout = getArguments().getInt(TUTORIAL_LAYOUT);
+        int tutorialLayout = getArguments().getInt(BUNDLE_KEY_TUTORIAL_LAYOUT);
         return inflater.inflate(tutorialLayout, container, false);
     }
 }

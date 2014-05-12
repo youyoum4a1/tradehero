@@ -2,24 +2,18 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import timber.log.Timber;
 
-/**
- * Created by julien on 11/10/13 <p/> Map a Yahoo News object to a NewsHeadlineView.
- */
 public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineView>
 {
-    private final static String TAG = NewsHeadlineAdapter.class.getSimpleName();
-
     //    public int[] backgrounds = {
     //            R.drawable.img_placeholder_news_1,
     //            R.drawable.img_placeholder_news_2,
@@ -55,7 +49,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
         }
         catch (Exception e)
         {
-            Log.e(TAG, "loadBackground error", e);
+            Timber.e("loadBackground error", e);
         }
         finally
         {

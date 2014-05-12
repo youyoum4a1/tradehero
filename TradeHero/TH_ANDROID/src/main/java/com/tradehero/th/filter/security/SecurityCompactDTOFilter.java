@@ -6,9 +6,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.List;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/24/14.
- */
 abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends SecurityCompactDTO> extends Filter
 {
     protected ListCharSequencePredicateFilter<SecurityCompactDTOType> securityCompactDTOPredicateFilter;

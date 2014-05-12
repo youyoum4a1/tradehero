@@ -12,7 +12,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 3:42 PM To change this template use File | Settings | File Templates. */
+
 public class UserProfileFetchAssistant extends DTOFetchAssistant<UserBaseKey, UserProfileDTO>
 {
     public static final String TAG = UserProfileFetchAssistant.class.getSimpleName();

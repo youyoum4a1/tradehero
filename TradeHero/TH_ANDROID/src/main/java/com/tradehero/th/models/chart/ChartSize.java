@@ -1,12 +1,7 @@
 package com.tradehero.th.models.chart;
 
-/**
- * Created by xavier on 8/2/14.
- */
 public class ChartSize
 {
-    public static final String TAG = ChartSize.class.getSimpleName();
-
     public int width;
     public int height;
 

@@ -6,9 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by xavier on 2/25/14.
- */
+
 abstract public class PurchaseFetchMilestone<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,

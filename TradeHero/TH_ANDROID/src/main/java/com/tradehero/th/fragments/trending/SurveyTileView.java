@@ -16,9 +16,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/7/14 Time: 5:36 PM Copyright (c) TradeHero
- */
 public final class SurveyTileView extends ImageView
 {
     @Inject Lazy<UserProfileCache> userProfileCache;

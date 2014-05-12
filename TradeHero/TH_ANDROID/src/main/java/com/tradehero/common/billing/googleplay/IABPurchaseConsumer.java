@@ -2,9 +2,6 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public interface IABPurchaseConsumer<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
@@ -25,5 +22,4 @@ public interface IABPurchaseConsumer<
         void onPurchaseConsumed(int requestCode, IABPurchaseType purchase);
         void onPurchaseConsumeFailed(int requestCode, IABPurchaseType purchase, IABExceptionType exception);
     }
-
 }

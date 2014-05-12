@@ -7,9 +7,7 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-/**
- * Created by alex on 14-4-4.
- */
+
 public interface WeChatService
 {
     @POST("/users/{userId}/trackshare")

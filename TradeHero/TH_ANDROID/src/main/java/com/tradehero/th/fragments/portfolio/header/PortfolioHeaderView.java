@@ -5,7 +5,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
- * Created by julien on 21/10/13
  * Interface for the header displayed on a PositionListFragment
  */
 public interface PortfolioHeaderView
@@ -18,6 +17,12 @@ public interface PortfolioHeaderView
     public static interface OnFollowRequestedListener
     {
         void onFollowRequested(UserBaseKey userBaseKey);
+
+        /**
+         * when the user follow the hero success
+         * @param hero
+         */
+        void onUserFollowed(UserBaseKey hero);
     }
 
     public static interface OnTimelineRequestedListener

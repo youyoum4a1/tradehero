@@ -8,7 +8,7 @@ import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 1:14 PM Copyright (c) TradeHero */
+
 @Singleton
 public class LinkedInUtils implements SocialSharer
 {

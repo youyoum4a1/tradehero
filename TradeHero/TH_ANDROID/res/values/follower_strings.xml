@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_follower">There was an error when fetching the follower information
-  </string>
+  <string name="relation_follower">Follower</string>
+  <string name="relation_friend">Friend</string>
+  <string name="error_fetch_follower">There was an error when fetching the follower information</string>
   <string name="not_follow_title">Choose a package to follow</string>
   <string name="not_follow_msg_title">You must follow\n%1$s\nto privately send messages. Choose a
     tier below:
   </string>
   <string name="not_follow_subtitle">FREE Follow</string>
+  <string name="not_follow_subtitle2">Free</string>
+  <string name="follower_item_with_subtitle">%1$s (%2$s)</string>
   <string name="not_follow_premium_subtitle">PREMIUM Follow</string>
+  <string name="not_follow_premium_subtitle2">Premium</string>
   <string name="free_follow_title">You are now following</string>
   <string name="free_follow_content1">Upgrade to Premium follow for US$1.99/month and
     get the following perks:
@@ -21,4 +25,7 @@
   </string>
   <string name="continue_free_follow">Continue with\nFree Follow</string>
   <string name="upgrade">Upgrade</string>
+  <string name="following_this_hero">Following this hero...</string>
+  <string name="free_message_left">%1$s free message left</string>
+  <string name="upgrade_to_message_more">Upgrade to message more!</string>
 </resources>

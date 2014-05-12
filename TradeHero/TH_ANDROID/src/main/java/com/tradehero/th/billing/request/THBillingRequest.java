@@ -11,9 +11,6 @@ import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.THPurchaseOrder;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

@@ -1,8 +1,5 @@
 package com.tradehero.th.models.push;
 
-/**
- * Created by xavier on 1/10/14.
- */
 public interface PushNotificationManager
 {
     void initialise();

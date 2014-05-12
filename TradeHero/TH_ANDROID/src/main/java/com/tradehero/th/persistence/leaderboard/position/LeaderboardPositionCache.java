@@ -10,9 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by julien on 1/11/13
- */
+
 @Singleton public class LeaderboardPositionCache extends StraightDTOCache<OwnedLeaderboardPositionId, PositionInPeriodDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;

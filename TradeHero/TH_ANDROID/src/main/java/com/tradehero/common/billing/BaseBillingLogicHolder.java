@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
+
 abstract public class BaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/25/14.
- */
 abstract public class THInventoryFetchMilestone<
         ProductIdentifierListKey extends DTOKey,
         ProductIdentifierType extends ProductIdentifier,

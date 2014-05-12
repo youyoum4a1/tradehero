@@ -4,12 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -17,13 +16,8 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/24/14 Time: 11:16 AM Copyright (c) TradeHero
- */
 public class FriendListLoader extends ListLoader<UserFriendsDTO>
 {
-    private static final String TAG = FriendListLoader.class.getName();
-
     private static final String[] CONTACT_PROJECTIONS =
             {
                     Contacts._ID,
@@ -49,7 +43,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
     private static final String CONTACT_ID_SORT_ORDER = Contacts._ID + " ASC";
     private static final String EMAIL_CONTACT_ID_SORT_ORDER = Email.CONTACT_ID + " ASC";
 
-    @Inject protected Lazy<UserService> userService;
+    @Inject protected Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
 
     private List<UserFriendsDTO> contactEntries;
@@ -153,7 +147,8 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
                     while (contactQueryCursor.moveToNext())
                     {
                         int contactIdFromContactTable = contactQueryCursor.getInt(CONTACT_ID_COLUMN);
-                        THLog.d(TAG, String.format("contactId from Contact/Email table: %d/%d", contactIdFromContactTable, contactIdFromEmailTable));
+                        Timber.d("contactId from Contact/Email table: %d/%d",
+                                contactIdFromContactTable, contactIdFromEmailTable);
                         if (contactIdFromContactTable > contactIdFromEmailTable)
                         {
                             break;
@@ -183,6 +178,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     private void retrieveFriendList()
     {
-        userFriendsDTOs = userService.get().getFriends(currentUserId.get());
+        userFriendsDTOs = userServiceWrapper.get().getFriends(currentUserId.toUserBaseKey());
     }
 }

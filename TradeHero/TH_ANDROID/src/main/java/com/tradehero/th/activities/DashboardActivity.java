@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -20,7 +21,6 @@ import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -42,6 +42,8 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.push.DeviceTokenHelper;
+import com.tradehero.th.models.push.IntentLogger;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -55,6 +57,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -113,6 +116,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (Constants.RELEASE)
         {
+            Crashlytics.setString(Constants.TH_CLIENT_TYPE, String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -145,11 +149,29 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        this.isChineseLocale = MetaHelper.isChineseLocale(getApplicationContext());
+        this.isChineseLocale = DeviceTokenHelper.isChineseVersion();
         if (isChineseLocale)
         {
             pushNotificationManager.get().enablePush();
         }
+    }
+
+    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (navigator != null && onTabChangeListener != null)
+        {
+            navigator.addOnTabChangeListener(onTabChangeListener);
+        }
+
+    }
+
+    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
+    {
+        if (navigator != null && onTabChangeListener != null)
+        {
+            navigator.removeOnTabChangeListener(onTabChangeListener);
+        }
+
     }
 
     @Override
@@ -284,6 +306,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onNewIntent(intent);
         Timber.d("Received new intent: %s", intent);
 
+        IntentLogger intentLogger = new IntentLogger(intent);
+        Timber.d("Intent: %s", intentLogger);
+
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
@@ -369,6 +394,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             return;
         }
+
         switch (intent.getAction())
         {
             case Intent.ACTION_VIEW:
@@ -433,11 +459,12 @@ public class DashboardActivity extends SherlockFragmentActivity
             default:
                 break;
         }
-        if (currentTab != tabType) {
+
+        if (currentTab != tabType)
+        {
             navigator.replaceTab(currentTab,tabType);
             currentTab = tabType;
         }
-
     }
 
     private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
@@ -463,5 +490,16 @@ public class DashboardActivity extends SherlockFragmentActivity
                 progressDialog.hide();
             }
         }
+    }
+
+    @Override public void onLowMemory()
+    {
+        super.onLowMemory();
+
+        // TODO remove
+        // for DEBUGGING purpose only
+        String currentFragmentName = getSupportFragmentManager().findFragmentById(R.id.realtabcontent).getClass().getName();
+        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
+        Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 }

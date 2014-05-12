@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
+
 abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType extends BillingException>
     implements BillingAvailableTesterHolder<BillingExceptionType>
 {

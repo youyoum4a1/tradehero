@@ -4,9 +4,7 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 
-/**
- * Created by julien on 1/11/13
- */
+
 public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
 {
     public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_ID = OwnedLeaderboardPositionId.class.getName() + ".leaderboardMarkUserId";

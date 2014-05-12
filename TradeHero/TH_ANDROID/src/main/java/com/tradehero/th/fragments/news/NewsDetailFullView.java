@@ -14,36 +14,34 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/24/14 Time: 5:36 PM Copyright (c) TradeHero
- */
 public class NewsDetailFullView extends LinearLayout
         implements DTOView<NewsItemDTO>
 {
-    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
+    @InjectView(R.id.news_detail_wrapper) BetterViewAnimator mNewsContentWrapper;
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
-    @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;
+    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
     @InjectView(R.id.news_detail_reference) GridView mNewsDetailReference;
     @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
     @InjectView(R.id.news_detail_reference_container) LinearLayout mNewsDetailReferenceContainer;
@@ -52,6 +50,7 @@ public class NewsDetailFullView extends LinearLayout
 
     private SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
     private NewsItemDTO newsItemDTO;
+    private MiddleCallback<Map<Integer, SecurityCompactDTO>> fetchMultipleSecurityMiddleCallback;
 
     //<editor-fold desc="Constructors">
     public NewsDetailFullView(Context context)
@@ -129,10 +128,12 @@ public class NewsDetailFullView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        unsetFetchMultipleSecurityMiddleCallback();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -142,44 +143,60 @@ public class NewsDetailFullView extends LinearLayout
         this.newsItemDTO = dto;
         if (dto != null)
         {
-            if (dto.text != null && !dto.text.isEmpty())
-            {
-                mNewsDetailContent.setText(dto.text);
+            displayNewsDetailContent(dto);
 
-                mNewsDetailContent.setVisibility(View.VISIBLE);
-                mNewsDetailLoading.setVisibility(View.GONE);
-            }
-
-            if (dto.getSecurityIds() != null)
-            {
-                securityServiceWrapper.getMultipleSecurities2(createNewsDetailSecurityCallback(), dto.getSecurityIds());
-            }
+            displaySecurityLogoList(dto);
         }
     }
 
-    private Callback<List<SecurityCompactDTO>> createNewsDetailSecurityCallback()
+    private void displaySecurityLogoList(NewsItemDTO dto)
     {
-        return new Callback<List<SecurityCompactDTO>>()
+        if (dto.securityIds != null && !dto.securityIds.isEmpty())
         {
-            @Override
-            public void success(List<SecurityCompactDTO> securityCompactDTOList, Response response)
+            unsetFetchMultipleSecurityMiddleCallback();
+            fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.securityIds, createNewsDetailSecurityCallback());
+        }
+    }
+
+    private void displayNewsDetailContent(NewsItemDTO dto)
+    {
+        if (mNewsDetailContent != null && dto.text != null)
+        {
+            mNewsDetailContent.setText(dto.text);
+            mNewsContentWrapper.setDisplayedChildByLayoutId(mNewsDetailContent.getId());
+        }
+    }
+
+    private void unsetFetchMultipleSecurityMiddleCallback()
+    {
+        if (fetchMultipleSecurityMiddleCallback != null)
+        {
+            fetchMultipleSecurityMiddleCallback.setPrimaryCallback(null);
+        }
+        fetchMultipleSecurityMiddleCallback = null;
+    }
+
+    private Callback<Map<Integer, SecurityCompactDTO>> createNewsDetailSecurityCallback()
+    {
+        return new Callback<Map<Integer, SecurityCompactDTO>>()
+        {
+            @Override public void success(Map<Integer, SecurityCompactDTO> securityCompactDTOList, Response response)
             {
-                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null ||
-                        simpleSecurityItemViewAdapter == null)
+                if (mNewsDetailReferenceContainer == null || mNewsDetailReference == null || simpleSecurityItemViewAdapter == null || securityCompactDTOList == null)
                 {
                     return; // TODO proper handling of middle callback
                 }
+
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
-                lp.width = 510 * securityCompactDTOList.size();
+                lp.width = (int) getResources().getDimension(R.dimen.stock_item_width) * securityCompactDTOList.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
                 mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
-                simpleSecurityItemViewAdapter.setItems(securityCompactDTOList);
+                simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
                 simpleSecurityItemViewAdapter.notifyDataSetChanged();
             }
 
-            @Override
-            public void failure(RetrofitError error)
+            @Override public void failure(RetrofitError error)
             {
                 THToast.show(new THException(error));
             }

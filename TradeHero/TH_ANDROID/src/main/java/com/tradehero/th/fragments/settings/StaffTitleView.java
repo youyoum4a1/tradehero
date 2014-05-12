@@ -7,10 +7,8 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.models.staff.StaffDTO;
 
-/**
- * Created by tho on 4/24/2014.
- */
 public class StaffTitleView extends LinearLayout
 {
     @InjectView(R.id.staff_name) TextView staffNameTextView;
@@ -40,12 +38,18 @@ public class StaffTitleView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-    public void setStaffName(String staffName)
+    public void setStaffDTO(StaffDTO staffDTO)
+    {
+        setStaffName(staffDTO.getStaffName());
+        setStaffTitle(staffDTO.getStaffTitle());
+    }
+
+    protected void setStaffName(String staffName)
     {
         staffNameTextView.setText(staffName);
     }
 
-    public void setStaffTitle(String staffTitle)
+    protected void setStaffTitle(String staffTitle)
     {
         staffTitleTextView.setText(staffTitle);
     }

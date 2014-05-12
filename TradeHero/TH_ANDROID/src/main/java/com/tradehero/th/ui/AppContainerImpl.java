@@ -5,21 +5,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import com.special.ResideMenu.ResideMenu;
 import com.special.ResideMenu.ResideMenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
 import static butterknife.ButterKnife.findById;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 3/5/14 Time: 4:07 PM Copyright (c) TradeHero
- */
 public class AppContainerImpl implements AppContainer
 {
     private final ResideMenu.OnMenuListener menuListener;
@@ -107,14 +104,9 @@ public class AppContainerImpl implements AppContainer
     {
         try
         {
-            InputMethodManager imm =
-                    (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
-            //imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
-            //activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            //imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (Exception e)
+            DeviceUtil.dismissKeyboard(activity);
+        }
+        catch (Exception e)
         {
         }
     }
@@ -139,7 +131,6 @@ public class AppContainerImpl implements AppContainer
     {
         @Override public void onClick(View v)
         {
-            //mOnResideMenuItemClickListener.onResideMenuItemClick(tabType);
             resideMenu.closeMenu();
         }
     }

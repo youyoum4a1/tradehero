@@ -20,22 +20,24 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 3/5/14.
- */
 public class DisplayablePortfolioFetchAssistant
 {
-    @Inject PortfolioCompactListCache portfolioListCache;
-    @Inject PortfolioCache portfolioCache;
-    @Inject UserProfileCache userProfileCache;
+    private final PortfolioCompactListCache portfolioListCache;
+    private final PortfolioCache portfolioCache;
+    private final UserProfileCache userProfileCache;
 
     private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
     private OnFetchedListener fetchedListener;
 
-    public DisplayablePortfolioFetchAssistant()
+    @Inject public DisplayablePortfolioFetchAssistant(
+            PortfolioCompactListCache portfolioListCache,
+            PortfolioCache portfolioCache,
+            UserProfileCache userProfileCache)
     {
         super();
-        DaggerUtils.inject(this);
+        this.portfolioListCache = portfolioListCache;
+        this.portfolioCache = portfolioCache;
+        this.userProfileCache = userProfileCache;
         displayPortfolios = new HashMap<>();
     }
 

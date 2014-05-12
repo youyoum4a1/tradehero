@@ -26,9 +26,6 @@ import com.tradehero.th.billing.THProductPurchase;
 import org.json.JSONException;
 import timber.log.Timber;
 
-/**
- * Represents an in-app billing purchase usable in TradeHero.
- */
 public class THIABPurchase
         extends BaseIABPurchase<IABSKU, THIABOrderId>
     implements THProductPurchase<IABSKU, THIABOrderId>

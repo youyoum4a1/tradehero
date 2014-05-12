@@ -26,9 +26,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 2/11/14.
- */
 @Module(
         injects = {
                 IABServiceConnector.class,
@@ -53,8 +50,6 @@ import javax.inject.Singleton;
 )
 public class THIABModule
 {
-    public static final String TAG = THIABModule.class.getSimpleName();
-
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;

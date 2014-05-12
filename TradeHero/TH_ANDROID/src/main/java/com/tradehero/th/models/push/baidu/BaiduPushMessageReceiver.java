@@ -6,11 +6,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
-import com.tradehero.th.models.push.urbanairship.PushConstants;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -24,9 +23,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     public static final String KEY_NOTIFICATION_CONTENT = "com.tradehero.th.NOTIFICATION_CONTENT";
 
     public static final int CODE_OK = 0;
-    public static final int MESSAGE_ID = 100;
 
     @Inject Provider<PushSender> pushSender;
+    @Inject Provider<CustomPushNotificationBuilder> customPushNotificationBuilderProvider;
     @Inject static Provider<NotificationOpenedHandler> notificationOpenedHandler;
 
     public BaiduPushMessageReceiver()
@@ -35,59 +34,43 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     }
 
     /**
-     * @return none
+     * After calling PushManager.startWork (or BaiduPushManager.enablePush), BaiduSDK will send to server a asynchronous request asking for binding.
+     * Binding request results returned by onBind.
+     *
+     * @param channelId: used for unicast push (push to QQ/Wechat/... network
+     * @param userId: used for unicast push
      */
-    @Override
-    public void onBind(Context context, int errorCode, String appId,
-            String userId, String channelId, String requestId)
+    @Override public void onBind(Context context, int errorCode, String appId, String userId, String channelId, String requestId)
     {
-        Timber.d("onBind appId:%s userId:%s channelId:%s requestId:%s", appId, userId, channelId,
-                requestId);
-        //if bind successfully, don't have to bind again
-        if (!isRequestSuccess(errorCode))
+        Timber.d("onBind appId: %s, userId: %s, channelId: %s, requestId: %s", appId, userId, channelId, requestId);
+        if (errorCode == CODE_OK)
         {
-            return;
+            pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
         }
-        //  Bind success
-        pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
     }
 
-    private boolean isRequestSuccess(int errorCode)
+    /**
+     * Callback for PushManager.stopWork() (or BaiduPushManager.disablePush)
+     */
+    @Override public void onUnbind(Context context, int errorCode, String requestId)
     {
-        return errorCode == CODE_OK;
+        Timber.d("onUnbind errorCode:%s", errorCode);
+        if (errorCode == CODE_OK)
+        {
+            pushSender.get().setPushDeviceIdentifierSentFlag(false);
+        }
     }
 
-    private void showNotification(Context context, PushMessageDTO pushMessageDTO)
+    /**
+     * When a message is received
+     */
+    @Override public void onMessage(Context context, String message, String customContentString)
     {
-        com.baidu.android.pushservice.CustomPushNotificationBuilder
-                cBuilder = new com.baidu.android.pushservice.CustomPushNotificationBuilder(
-                context.getApplicationContext(),
-                R.layout.notification,
-                R.id.notification_icon,
-                R.id.notification_subject,
-                R.id.message
-        );
-
-        cBuilder.setNotificationFlags(Notification.FLAG_AUTO_CANCEL);
-        cBuilder.setNotificationDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-        cBuilder.setStatusbarIcon(R.drawable.notification_logo);
-        cBuilder.setLayoutDrawable(R.drawable.notification_logo);
-        //cBuilder.setNotificationTitle(context.getApplicationInfo().name);
-        cBuilder.setNotificationTitle(context.getString(R.string.app_name));
-        cBuilder.setNotificationText(pushMessageDTO.description);
-        Notification notification = cBuilder.construct(context);
-
-        notification.contentIntent = PendingIntent.getBroadcast(context, 0,composeIntent(pushMessageDTO), 0);
-
-        NotificationManager nm = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        int hashCode = pushMessageDTO.description.hashCode();
-        if (hashCode < 0)
+        Timber.d("onMessage message: %s, customContentString: %s", message, customContentString);
+        if (!TextUtils.isEmpty(message))
         {
-            hashCode = -hashCode;
+            handleReceiveMessage(context, message);
         }
-        int msgId = hashCode % 1000;
-        nm.notify(msgId, notification);
     }
 
     public static Intent composeIntent(PushMessageDTO pushMessageDTO)
@@ -98,13 +81,12 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         return intent;
     }
 
-
-    public static Intent handle(Intent intent)
+    public static Intent handleIntent(Intent intent)
     {
         String action = intent.getAction();
-        int id = intent.getIntExtra(KEY_NOTIFICATION_ID,-1);
+        int id = intent.getIntExtra(KEY_NOTIFICATION_ID, -1);
         String description = intent.getStringExtra(KEY_NOTIFICATION_CONTENT);
-        Timber.d("action %s, id:%s, description:%s",action,id,description);
+        Timber.d("action: %s, id: %s, description: %s", action, id, description);
 
         Intent fakeIntent = new Intent();
         fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(id));
@@ -113,98 +95,78 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         return intent;
     }
 
-    private void handleRecevieMessage(Context context, String message)
+    private void showNotification(Context context, PushMessageDTO pushMessageDTO)
     {
-        PushMessageDTO pushMessageDTO  = PushMessageHandler.parseNotification(message);
+        CustomPushNotificationBuilder customPushNotificationBuilder = customPushNotificationBuilderProvider.get();
+        customPushNotificationBuilder.setNotificationText(pushMessageDTO.description);
+
+        Notification notification = customPushNotificationBuilder.construct(context);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        int msgId;
+        if (pushMessageDTO.id > 0)
+        {
+            msgId = pushMessageDTO.id;
+        }
+        else
+        {
+            int hashCode = Math.abs(pushMessageDTO.description.hashCode());
+            msgId = hashCode % 1000;
+        }
+        Timber.d("Msg id:%d,content:%s",msgId,pushMessageDTO.description);
+        nm.notify(msgId, notification);
+    }
+
+    private void handleReceiveMessage(Context context, String message)
+    {
+        PushMessageDTO pushMessageDTO = PushMessageHandler.parseNotification(message);
         if (pushMessageDTO != null)
         {
-            if (pushMessageDTO.discussionType == DiscussionType.BROADCAST_MESSAGE || pushMessageDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
+            switch (pushMessageDTO.discussionType)
             {
-                PushMessageHandler.notifyMessageReceived(context);
+                case BROADCAST_MESSAGE:
+                case PRIVATE_MESSAGE:
+                    PushMessageHandler.notifyMessageReceived(context);
+                    break;
             }
             showNotification(context, pushMessageDTO);
         }
-
     }
 
-    /**
-     */
-    @Override
-    public void onMessage(Context context, String message, String customContentString)
-    {
-        Timber.d("onMessage message:%s customContentString:%s", message, customContentString);
-        if (!TextUtils.isEmpty(message))
-        {
-            handleRecevieMessage(context, message);
-        }
-    }
-
-    private void handleMessageClick()
-    {
-
-    }
+    //<editor-fold desc="Not being used for the time being">
 
     /**
      * when user click the notification
      */
-    @Override
-    public void onNotificationClicked(Context context, String title,
-            String description, String customContentString)
+    @Override public void onNotificationClicked(Context context, String title, String description, String customContentString)
     {
-        Timber.d("onNotificationClicked title:%s description:%s customContentString:%s", title,
-                description, customContentString);
-        handleMessageClick();
+        Timber.d("onNotificationClicked title:%s, description:%s, customContentString:%s", title, description, customContentString);
     }
 
     /**
-     * setTags() 的回调函数。
+     * Callback for setTags()
      */
-    @Override
-    public void onSetTags(Context context, int errorCode,
-            List<String> sucessTags, List<String> failTags, String requestId)
+    @Override public void onSetTags(Context context, int errorCode, List<String> successTags, List<String> failTags, String requestId)
     {
-        Timber.d("onSetTags sucessTags:%s failTags:%s requestId:%s", sucessTags, failTags,
-                requestId);
+        Timber.d("onSetTags successTags: %s, failTags: %s, requestId:%s", successTags, failTags, requestId);
     }
 
     /**
-     * delTags() 的回调函数。
+     * Callback for delTags()
      */
-    @Override
-    public void onDelTags(Context context, int errorCode,
-            List<String> sucessTags, List<String> failTags, String requestId)
+    @Override public void onDelTags(Context context, int errorCode, List<String> successTags, List<String> failTags, String requestId)
     {
-        Timber.d("onDelTags sucessTags:%s failTags:%s requestId:%s", sucessTags, failTags,
-                requestId);
+        Timber.d("onDelTags successTags:%s failTags:%s requestId:%s", successTags, failTags, requestId);
     }
 
     /**
-     * listTags() 的回调函数。
+     * Callback for listTags()
      */
-    @Override
-    public void onListTags(Context context, int errorCode,
-            List<String> tags, String requestId)
+    @Override public void onListTags(Context context, int errorCode, List<String> tags, String requestId)
     {
         Timber.d("onListTags tags:%s", tags);
     }
-
-    /**
-     * PushManager.stopWork() 的回调函数。
-     */
-    @Override
-    public void onUnbind(Context context, int errorCode, String requestId)
-    {
-        Timber.d("onUnbind errorCode:%s", errorCode);
-
-        // 解绑定成功，设置未绑定flag，
-        if (!isRequestSuccess(errorCode))
-        {
-            return;
-        }
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-    }
-
-    private void updateContent(Context context, String content)
-    {
-    }
+    //</editor-fold>
 }

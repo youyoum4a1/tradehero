@@ -3,9 +3,7 @@ package com.tradehero.common.time;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.TimeFormat;
 
-/**
- * Created by xavier on 1/23/14.
- */
+
 public class TimeFormatFloor implements TimeFormat
 {
     public static final String TAG = TimeFormatFloor.class.getSimpleName();

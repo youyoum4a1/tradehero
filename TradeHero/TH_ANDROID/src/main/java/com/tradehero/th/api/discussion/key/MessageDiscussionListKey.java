@@ -13,8 +13,11 @@ public class MessageDiscussionListKey extends DiscussionListKey
     public static final String MAX_ID_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".maxId";
     public static final String MIN_ID_BUNDLE_KEY = MessageDiscussionListKey.class.getName() + ".minId";
 
-    public static final String JSON_SENDER_USER = "senderUserId";
-    public static final String JSON_RECIPIENT_USER = "recipientUserId";
+    public static final String QUERY_SENDER_USER = "senderUserId";
+    public static final String QUERY_RECIPIENT_USER = "recipientUserId";
+    public static final String QUERY_MAX_COUNT = "maxCount";
+    public static final String QUERY_MAX_ID = "maxId";
+    public static final String QUERY_MIN_ID = "minId";
 
     public final UserBaseKey senderUser;
     public final UserBaseKey recipientUser;
@@ -132,19 +135,60 @@ public class MessageDiscussionListKey extends DiscussionListKey
         }
     }
 
+    public MessageDiscussionListKey next()
+    {
+        return new MessageDiscussionListKey(
+                inReplyToType, inReplyToId,
+                senderUser, recipientUser,
+                maxCount,
+                null, maxId);
+    }
+
+    public MessageDiscussionListKey prev()
+    {
+        return new MessageDiscussionListKey(
+                inReplyToType, inReplyToId,
+                senderUser, recipientUser,
+                maxCount,
+                minId, null);
+    }
+
     @Override public Map<String, Object> toMap()
     {
         Map<String, Object> generatedMap = super.toMap();
 
         if (senderUser != null)
         {
-            generatedMap.put(JSON_SENDER_USER, senderUser.key);
+            generatedMap.put(QUERY_SENDER_USER, senderUser.key);
         }
         if (recipientUser != null)
         {
-            generatedMap.put(JSON_RECIPIENT_USER, recipientUser.key);
+            generatedMap.put(QUERY_RECIPIENT_USER, recipientUser.key);
+        }
+        if (maxCount != null)
+        {
+            generatedMap.put(QUERY_MAX_COUNT, maxCount);
+        }
+        if (maxId != null)
+        {
+            generatedMap.put(QUERY_MAX_ID, maxId);
+        }
+        if (minId != null)
+        {
+            generatedMap.put(QUERY_MIN_ID, minId);
         }
         return generatedMap;
     }
 
+    @Override public String toString()
+    {
+        return "MessageDiscussionListKey{" +
+                super.toString() +
+                ", senderUser=" + senderUser +
+                ", recipientUser=" + recipientUser +
+                ", maxCount=" + maxCount +
+                ", maxId=" + maxId +
+                ", minId=" + minId +
+                '}';
+    }
 }

@@ -42,7 +42,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/13/13 Time: 12:04 PM To change this template use File | Settings | File Templates. */
+
 public class AlertManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = AlertManagerFragment.class.getSimpleName();

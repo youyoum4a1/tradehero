@@ -20,9 +20,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 12/4/14.
- */
 public class UpdateCenterResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
 {
@@ -31,8 +28,6 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     @InjectView(R.id.tab_title_number) TextView unreadMessageCount;
 
-    private UserProfileDTO userProfileDTO;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
     //<editor-fold desc="Constructors">
@@ -58,21 +53,18 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
-
-        userProfileListener = new UserProfileFetchListener();
     }
 
     private void fetchAndDisplayUserProfile()
     {
         detachUserProfileFetchTask();
         userProfileFetchTask = userProfileCache.get()
-                .getOrFetch(currentUserId.toUserBaseKey(), false, userProfileListener);
+                .getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileFetchListener());
         userProfileFetchTask.execute();
     }
 
     @Override protected void onAttachedToWindow()
     {
-        userProfileListener = new UserProfileFetchListener();
         fetchAndDisplayUserProfile();
         Timber.d("UpdateCenterResideMenuItem onAttachedToWindow fetchAndDisplayUserProfile");
         super.onAttachedToWindow();
@@ -81,7 +73,6 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     @Override protected void onDetachedFromWindow()
     {
         detachUserProfileFetchTask();
-        userProfileListener = null;
         super.onDetachedFromWindow();
     }
 
@@ -96,19 +87,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     @Override public void display(UserProfileDTO dto)
     {
-        updateUserProfileCache();
         linkWith(dto, true);
-    }
-
-    /**
-     * update user profile cache
-     */
-    private void updateUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        userProfileCache.get().put(userBaseKey, userProfileDTO);
     }
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -122,6 +101,11 @@ public class UpdateCenterResideMenuItem extends LinearLayout
             unreadMessageCount.setText("" + totalUnreadItem);
             unreadMessageCount.setVisibility(totalUnreadItem == 0 ? GONE : VISIBLE);
         }
+    }
+
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
     }
 
     private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>

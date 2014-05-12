@@ -11,9 +11,7 @@ import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 5:43 PM Copyright (c) TradeHero
- */
+
 @Module(
         injects = {
                 SplashActivity.class,

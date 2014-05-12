@@ -5,9 +5,7 @@ import com.sec.android.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 
-/**
- * Created by xavier on 3/26/14.
- */
+
 public class SamsungExceptionFactory
         implements BillingExceptionFactory
 {

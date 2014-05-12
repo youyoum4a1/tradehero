@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 3:47 PM To change this template use File | Settings | File Templates. */
+
 abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends BasicFetchAssistant<DTOKeyType, DTOType>
         implements DTOCache.Listener<DTOKeyType, DTOType>

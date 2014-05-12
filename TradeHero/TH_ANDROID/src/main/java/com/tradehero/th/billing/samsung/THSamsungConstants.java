@@ -8,9 +8,6 @@ import com.tradehero.th.utils.Constants;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by xavier on 3/26/14.
- */
 public class THSamsungConstants
         extends SamsungConstants
         implements THBillingConstants

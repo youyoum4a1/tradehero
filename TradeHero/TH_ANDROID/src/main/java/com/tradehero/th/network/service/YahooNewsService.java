@@ -6,9 +6,7 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
-/**
- * Created by julien on 10/10/13
- */
+
 public interface YahooNewsService
 {
     @GET("/rss/headline")

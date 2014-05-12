@@ -7,13 +7,8 @@ import android.view.ViewGroup;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
 
-/**
- * Created by xavier on 1/7/14.
- */
 public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 {
-    public static final String TAG = TrendingFilterSpinnerIconAdapter.class.getSimpleName();
-
     private int itemResId;
     private int itemDropDrownResId;
 

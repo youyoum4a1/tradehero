@@ -2,31 +2,51 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
+import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.BitmapForProfileFactory;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
 import java.util.Map;
+import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/7/14.
- */
 public class ProfileInfoView extends LinearLayout
 {
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
@@ -35,7 +55,17 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.authentication_sign_up_username) ServerValidatedUsernameText displayName;
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
+    @InjectView(R.id.image_optional) @Optional ImageView profileImage;
+    @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
+    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation userPhotoTransformation;
+    @Inject BitmapForProfileFactory bitmapForProfileFactory;
+    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     ProgressDialog progressDialog;
+    private UserBaseDTO userBaseDTO;
+    private String newImagePath;
+    private Listener listener;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context)
@@ -58,7 +88,26 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onFinishInflate();
 
+        DaggerUtils.inject(this);
         ButterKnife.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+        displayProfileImage();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
+    public void setListener(Listener listener)
+    {
+        this.listener = listener;
     }
 
     public void forceValidateFields()
@@ -168,6 +217,36 @@ public class ProfileInfoView extends LinearLayout
         progressDialog = null;
     }
 
+    public void handleDataFromLibrary(Intent data)
+    {
+        Uri selectedImageUri = data.getData();
+        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+        setNewImagePath(selectedPath);
+    }
+
+    public void setNewImagePath(String newImagePath)
+    {
+        this.newImagePath = newImagePath;
+        displayProfileImage();
+    }
+
+    public UserFormDTO createForm()
+    {
+        UserFormDTO created = new UserFormDTO();
+        created.email = getTextValue(email);
+        created.password = getTextValue(password);
+        created.passwordConfirmation = getTextValue(confirmPassword);
+        created.displayName = getTextValue(displayName);
+        created.firstName = getTextValue(firstName);
+        created.lastName = getTextValue(lastName);
+        if (newImagePath != null)
+        {
+            created.profilePicture = bitmapTypedOutputFactory.createForProfilePhoto(
+                    getResources(), bitmapForProfileFactory, newImagePath);
+        }
+        return created;
+    }
+
     public void populateUserFormMap(Map<String, Object> map)
     {
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
@@ -176,7 +255,11 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
-        // TODO add profile picture
+        if (newImagePath != null)
+        {
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, bitmapTypedOutputFactory.createForProfilePhoto(
+                    getResources(), bitmapForProfileFactory, newImagePath));
+        }
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
@@ -187,12 +270,87 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    private String getTextValue(TextView textView)
+    {
+        if (textView != null)
+        {
+            return textView.getText().toString();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public void populate(UserBaseDTO userBaseDTO)
     {
+        this.userBaseDTO = userBaseDTO;
         this.firstName.setText(userBaseDTO.firstName);
         this.lastName.setText(userBaseDTO.lastName);
         this.displayName.setText(userBaseDTO.displayName);
         this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
+        displayProfileImage();
+    }
+
+    public void displayProfileImage()
+    {
+        if (newImagePath != null)
+        {
+            displayProfileImage(bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath));
+        }
+        else if (userBaseDTO != null)
+        {
+            displayProfileImage(userBaseDTO);
+        }
+        else
+        {
+            displayDefaultProfileImage();
+        }
+    }
+
+    public void displayProfileImage(Bitmap newImage)
+    {
+        if (this.profileImage != null)
+        {
+            profileImage.setImageBitmap(userPhotoTransformation.transform(newImage));
+        }
+    }
+
+    public void displayProfileImage(UserBaseDTO userBaseDTO)
+    {
+        if (this.profileImage != null)
+        {
+            if (userBaseDTO.picture == null)
+            {
+                displayDefaultProfileImage();
+            }
+            else
+            {
+                picasso.load(userBaseDTO.picture)
+                        .transform(userPhotoTransformation)
+                        .into(profileImage, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                displayDefaultProfileImage();
+                            }
+                        });
+            }
+        }
+    }
+
+    public void displayDefaultProfileImage()
+    {
+        if (this.profileImage != null)
+        {
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(profileImage);
+        }
     }
 
     public void populateCredentials(JSONObject credentials)
@@ -225,5 +383,73 @@ public class ProfileInfoView extends LinearLayout
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
         }
+    }
+
+    @OnClick(R.id.image_optional) @Optional
+    protected void showImageFromDialog()
+    {
+        ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
+                getContext(),
+                R.layout.choose_from_item);
+        adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
+        alertDialogUtil.popWithNegativeButton(getContext(),
+                getContext().getString(R.string.user_profile_choose_image_from_choice),
+                null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
+                adapter, createChooseImageDialogClickListener(),
+                null);
+    }
+
+    protected void handleChooseImage(ChooseImageFromDTO chooseImageFrom)
+    {
+        if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
+        {
+            notifyImageFromCameraRequested();
+        }
+        else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
+        {
+            notifyImageFromLibraryRequested();
+        }
+        else
+        {
+            Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
+        }
+    }
+
+    protected void notifyImageFromCameraRequested()
+    {
+        Listener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onImageFromCameraRequested();
+        }
+    }
+
+    protected void notifyImageFromLibraryRequested()
+    {
+        Listener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onImageFromLibraryRequested();
+        }
+    }
+
+    protected AlertDialogUtil.OnClickListener<ChooseImageFromDTO> createChooseImageDialogClickListener()
+    {
+        return new ProfileInfoViewChooseImageDialogClickListener();
+    }
+
+    protected class ProfileInfoViewChooseImageDialogClickListener implements AlertDialogUtil.OnClickListener<ChooseImageFromDTO>
+    {
+        @Override public void onClick(ChooseImageFromDTO which)
+        {
+            handleChooseImage(which);
+        }
+    }
+
+    public static interface Listener
+    {
+        void onUpdateRequested();
+        void onImageFromCameraRequested();
+        void onImageFromLibraryRequested();
     }
 }

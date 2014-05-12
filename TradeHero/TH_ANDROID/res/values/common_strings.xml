@@ -5,19 +5,21 @@
 
   <string name="na">N/A</string>
   <string name="empty"/>
+  <string name="cancel">Cancel</string>
   <string name="action_menu_settings">Settings</string>
 
   <string name="network_error">Please check your network connection!</string>
   <!-- data format-->
   <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
+  <string name="data_format_d_mmm_yyyy_kk_mm">Update time: d MMM yyyy kk</string>
   <string name="data_format_dd_mmm_yyyy">dd MMM yyyy</string>
   <string name="data_format_dd_mmm_hh_mm">dd MMM HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">dd MMM HH:mm \'GMT\'</string>
 
   <!-- TEMP stuff -->
-  <string name="test_email">neeraj@eatechnologies.com</string>
+  <string name="test_email">dev@tradehero.mobi</string>
   <string name="test_password">asd123</string>
 
   <!-- Splash screen -->
@@ -72,4 +74,7 @@
   <string name="translating">Translating…</string>
   <string name="translation_result">Translation result:</string>
 
+  <string name="ok">OK</string>
+  <string name="downloading_relations">Downloading relations...</string>
+  <string name="upgrade_now">Upgrade Now!</string>
 </resources>

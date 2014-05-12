@@ -3,7 +3,7 @@ package com.tradehero.th.api.competition;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.HelpVideoId;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/10/13 Time: 5:59 PM To change this template use File | Settings | File Templates. */
+
 public class HelpVideoDTO implements DTO
 {
     public int id;

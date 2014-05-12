@@ -49,9 +49,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/17/14.
- */
 public class MainCompetitionFragment extends CompetitionFragment
 {
     private ActionBar actionBar;
@@ -69,11 +66,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderUtil providerUtil;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> profileCacheListener;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
     protected List<CompetitionId> competitionIds;
-    private DTOCache.Listener<ProviderId, CompetitionIdList> competitionListCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -91,7 +86,6 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override protected void initViews(View view)
     {
-
         this.progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
         if (this.progressBar != null)
         {
@@ -103,16 +97,15 @@ public class MainCompetitionFragment extends CompetitionFragment
             this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
         }
         placeAdapterInList();
-
-        this.profileCacheListener = new MainCompetitionUserProfileCacheListener();
-        this.competitionListCacheListener = new MainCompetitionCompetitionListCacheListener();
     }
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_SHOW_HOME);
         displayActionBarTitle();
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -129,11 +122,15 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         super.onStart();
         detachUserProfileCacheTask();
-        profileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), profileCacheListener);
+        profileCacheFetchTask = userProfileCache.getOrFetch(
+                currentUserId.toUserBaseKey(),
+                createProfileCacheListener());
         profileCacheFetchTask.execute();
 
         detachCompetitionListCacheTask();
-        competitionListCacheFetchTask = competitionListCache.getOrFetch(providerId, competitionListCacheListener);
+        competitionListCacheFetchTask = competitionListCache.getOrFetch(
+                        providerId,
+                        createCompetitionListCacheListener());
         competitionListCacheFetchTask.execute();
     }
 
@@ -157,22 +154,17 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onDestroyView()
     {
+        if (this.listView != null)
+        {
+            this.listView.setOnItemClickListener(null);
+        }
         if (this.competitionZoneListItemAdapter != null)
         {
             this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         }
         this.competitionZoneListItemAdapter = null;
-
         this.progressBar = null;
-
-        if (this.listView != null)
-        {
-            this.listView.setOnItemClickListener(null);
-        }
         this.listView = null;
-
-        this.profileCacheListener = null;
-        this.competitionListCacheListener = null;
 
         super.onDestroyView();
     }
@@ -242,7 +234,8 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
                 R.layout.competition_zone_portfolio,
-                R.layout.competition_zone_leaderboard_item, R.layout.competition_zone_legal_mentions);
+                R.layout.competition_zone_leaderboard_item,
+                R.layout.competition_zone_legal_mentions);
         newAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
         newAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
         newAdapter.setProvider(providerDTO);
@@ -266,9 +259,11 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (this.actionBar != null)
         {
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId > 0)
+            if (providerSpecificResourcesDTO != null
+                    && providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId > 0)
             {
-                this.actionBar.setTitle(providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId);
+                this.actionBar.setTitle(
+                        providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId);
             }
             else if (this.providerDTO == null || this.providerDTO.name == null)
             {
@@ -331,7 +326,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+        args.putBundle(
+                ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                getApplicablePortfolioId().getArgs());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
@@ -342,7 +339,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                    ownedPortfolioId.getArgs());
             getNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
@@ -359,9 +357,13 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        args.putString(
+                CompetitionWebViewFragment.BUNDLE_KEY_URL,
+                providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+        this.webViewFragment =
+                (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class,
+                        args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -369,19 +371,28 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
-        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
-        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
-        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, competitionZoneDTO.competitionDTO.name);
-        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PROVIDER_ID,
+                providerId.getArgs());
+        args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID,
+                competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
+        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID,
+                leaderboardDefDTO.id);
+        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE,
+                competitionZoneDTO.competitionDTO.name);
+        args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
+                leaderboardDefDTO.desc);
+        args.putBundle(
+                CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                getApplicablePortfolioId().getArgs());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
-            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
+            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
+                    args);
         }
         else
         {
-            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
+            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class,
+                    args);
         }
     }
 
@@ -390,17 +401,35 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
         {
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getRulesPage(providerId));
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL,
+                    providerUtil.getRulesPage(providerId));
         }
         else
         {
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getTermsPage(providerId));
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL,
+                    providerUtil.getTermsPage(providerId));
         }
         getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
     }
     //</editor-fold>
 
-    private class MainCompetitionFragmentItemClickListener implements AdapterView.OnItemClickListener
+    private AdapterView.OnItemClickListener createAdapterViewItemClickListener()
+    {
+        return new MainCompetitionFragmentItemClickListener();
+    }
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    {
+        return new MainCompetitionUserProfileCacheListener();
+    }
+
+    private DTOCache.Listener<ProviderId, CompetitionIdList> createCompetitionListCacheListener()
+    {
+        return new MainCompetitionCompetitionListCacheListener();
+    }
+
+    private class MainCompetitionFragmentItemClickListener
+            implements AdapterView.OnItemClickListener
     {
         @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
@@ -423,7 +452,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener
+    private class MainCompetitionWebViewTHIntentPassedListener
+            extends CompetitionWebFragmentTHIntentPassedListener
     {
         public MainCompetitionWebViewTHIntentPassedListener()
         {
@@ -456,7 +486,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionLegalClickedListener implements CompetitionZoneLegalMentionsView.OnElementClickedListener
+    private class MainCompetitionLegalClickedListener
+            implements CompetitionZoneLegalMentionsView.OnElementClickedListener
     {
         @Override public void onElementClicked(CompetitionZoneDTO competitionZoneLegalDTO)
         {
@@ -464,9 +495,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class MainCompetitionUserProfileCacheListener
+            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value,
+                boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -478,9 +511,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionCompetitionListCacheListener implements DTOCache.Listener<ProviderId, CompetitionIdList>
+    private class MainCompetitionCompetitionListCacheListener
+            implements DTOCache.Listener<ProviderId, CompetitionIdList>
     {
-        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value, boolean fromCache)
+        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value,
+                boolean fromCache)
         {
             linkWith(value, true);
         }

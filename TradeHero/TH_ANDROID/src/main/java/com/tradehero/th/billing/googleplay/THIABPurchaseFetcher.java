@@ -5,9 +5,6 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THPurchaseFetcher;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public interface THIABPurchaseFetcher
         extends
         IABPurchaseFetcher<

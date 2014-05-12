@@ -12,7 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.billing.THProductDetail;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
+
 abstract public class ProductDetailView<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends THProductDetail<ProductIdentifierType>>

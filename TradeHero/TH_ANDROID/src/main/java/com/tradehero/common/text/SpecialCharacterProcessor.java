@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/19/13 Time: 4:43 PM Copyright (c) TradeHero */
+
 public class SpecialCharacterProcessor implements RichTextProcessor
 {
     private static Map<String, String> characterMap;

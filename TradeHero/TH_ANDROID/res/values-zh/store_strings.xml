@@ -84,10 +84,14 @@
 
   <!-- Manage heroes -->
   <string name="manage_heroes_title">英雄</string>
+  <string name="manage_my_heroes_title">我的英雄</string>
   <string name="manage_heroes_follows">关注:</string>
   <string name="manage_heroes_empty_title">购买关注点数，关注股市达人</string>
   <string name="manage_heroes_empty_description">一旦高级关注了某位英雄，你都能第一时间获得英雄的交易及动态通知。
     一马当先: 选择最牛股货英雄，做你的英雄!
+  </string>
+  <string name="manage_heroes_empty_description_for_other">
+    没有关注的英雄
   </string>
   <string name="manage_heroes_empty_leaderboard_link">查看最牛股货英雄</string>
   <string name="manage_heroes_following_since">从%s开始关注</string>
@@ -115,6 +119,7 @@
 
   <!-- Manage followers -->
   <string name="manage_followers_title">粉丝</string>
+  <string name="manage_my_followers_title">我的粉丝</string>
   <string name="manage_followers_total_revenue">总收益</string>
   <string name="manage_followers_total_amount_paid">总支出</string>
   <string name="manage_followers_number_followers">粉丝</string>

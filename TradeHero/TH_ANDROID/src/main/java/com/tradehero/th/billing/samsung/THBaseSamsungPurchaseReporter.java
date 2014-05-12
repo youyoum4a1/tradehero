@@ -12,7 +12,7 @@ import com.tradehero.th.billing.samsung.exception.SamsungMissingApplicablePortfo
 import com.tradehero.th.billing.samsung.exception.SamsungMissingCachedProductDetailException;
 import com.tradehero.th.billing.samsung.exception.SamsungPurchaseReportRetrofitException;
 import com.tradehero.th.billing.samsung.exception.SamsungUnhandledSKUDomainException;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
@@ -47,7 +47,8 @@ public class THBaseSamsungPurchaseReporter
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THSamsungProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private MiddleCallbackAddCash middleCallbackAddCash;
+    private MiddleCallback<UserProfileDTO> middleCallbackAddCash;
+    private MiddleCallback<UserProfileDTO> middleCallbackAddCredit;
 
     public THBaseSamsungPurchaseReporter()
     {
@@ -151,8 +152,12 @@ public class THBaseSamsungPurchaseReporter
         }
         else
         {
-            userService.get().addCredit(
-                    portfolioId.userId,
+            if (middleCallbackAddCredit != null)
+            {
+                middleCallbackAddCredit.setPrimaryCallback(null);
+            }
+            middleCallbackAddCredit = userServiceWrapper.addCredit(
+                    portfolioId.getUserBaseKey(),
                     purchase.getPurchaseDTO(),
                     new THSamsungPurchaseReporterPurchaseCallback());
         }

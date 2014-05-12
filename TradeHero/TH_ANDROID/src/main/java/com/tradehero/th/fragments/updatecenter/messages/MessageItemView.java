@@ -21,19 +21,20 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-public class MessageItemView extends LinearLayout implements DTOView<MessageHeaderId>
+public class MessageItemView extends LinearLayout
+        implements DTOView<MessageHeaderId>
 {
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
 
-    @InjectView(R.id.message_item_icon) ImageView iconView;
-    @InjectView(R.id.message_item_title) TextView titleView;
-    @InjectView(R.id.message_item_sub_title) TextView subTitleView;
-    @InjectView(R.id.message_item_date) TextView dateView;
-    @InjectView(R.id.message_item_content) TextView contentView;
-    @InjectView(R.id.message_unread_flag) View unreadFlag;
+    @InjectView(R.id.message_item_icon) ImageView mMessageIcon;
+    @InjectView(R.id.message_item_title) TextView mMessageTitle;
+    @InjectView(R.id.message_item_sub_title) TextView mMessageSubTitle;
+    @InjectView(R.id.message_item_date) TextView mMessageDate;
+    @InjectView(R.id.message_item_content) TextView mMessageContent;
+    @InjectView(R.id.message_unread_flag) View mUnreadFlag;
 
     private MessageHeaderDTO messageHeaderDTO;
 
@@ -58,15 +59,9 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
 
     @Override protected void onDetachedFromWindow()
     {
-
-        if (iconView != null)
-        {
-            iconView.setImageDrawable(null);
-        }
-        //ButterKnife.reset(this);
-
+        resetMessageIcon();
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
-
     }
 
     @Override public void display(MessageHeaderId dto)
@@ -75,34 +70,26 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
         if (messageHeaderDTO != null)
         {
             setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
-            //if(messageHeaderDTO.discussionType == DiscussionType.BROADCAST_MESSAGE)
-            //{
-            //    setBackgroundColor(getResources().getColor(R.color.broadcast_message_item_bg));
-            //}
-            //else if (messageHeaderDTO.discussionType == DiscussionType.PRIVATE_MESSAGE)
-            //{
-            //    setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
-            //}
-
         }
-        displayData();
+        display();
     }
 
-    private void displayData()
+    private void display()
     {
         if (messageHeaderDTO != null)
         {
-            titleView.setText(messageHeaderDTO.title);
-            subTitleView.setText(messageHeaderDTO.subTitle);
-            contentView.setText(messageHeaderDTO.latestMessage);
-            dateView.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
-            unreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.INVISIBLE);
+            mMessageTitle.setText(messageHeaderDTO.title);
+            mMessageSubTitle.setText(messageHeaderDTO.subTitle);
+            mMessageContent.setText(messageHeaderDTO.latestMessage);
+            mMessageDate.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
+            mUnreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.INVISIBLE);
 
-            if (messageHeaderDTO.imageUrl != null && iconView != null)
+            resetMessageIcon();
+            if (messageHeaderDTO.imageUrl != null && mMessageIcon != null)
             {
                 picasso.load(messageHeaderDTO.imageUrl)
                         .transform(userPhotoTransformation)
-                        .into(iconView, new Callback()
+                        .into(mMessageIcon, new Callback()
                         {
                             @Override public void onSuccess()
                             {
@@ -110,20 +97,16 @@ public class MessageItemView extends LinearLayout implements DTOView<MessageHead
 
                             @Override public void onError()
                             {
-                                setDefaultIcon();
+                                resetMessageIcon();
                             }
                         });
-            }
-            else
-            {
-                setDefaultIcon();
             }
         }
     }
 
-    private void setDefaultIcon()
+    private void resetMessageIcon()
     {
-        ImageView iconViewCopy = iconView;
+        ImageView iconViewCopy = mMessageIcon;
         if (iconViewCopy != null)
         {
             picasso.cancelRequest(iconViewCopy);

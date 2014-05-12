@@ -5,9 +5,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference
 {
     @Inject public PerPagedFilteredLeaderboardKeyPreference(SharedPreferences preference, String key, Set<String> defaultValue)

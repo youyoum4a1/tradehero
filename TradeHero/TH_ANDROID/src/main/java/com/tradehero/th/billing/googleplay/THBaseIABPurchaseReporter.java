@@ -12,7 +12,7 @@ import com.tradehero.th.billing.googleplay.exception.IABMissingCachedProductDeta
 import com.tradehero.th.billing.googleplay.exception.IABPurchaseReportRetrofitException;
 import com.tradehero.th.billing.googleplay.exception.IABUnhandledSKUDomainException;
 import com.tradehero.th.billing.exception.PurchaseReportedToOtherUserException;
-import com.tradehero.th.models.user.MiddleCallbackAddCash;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
@@ -45,7 +45,8 @@ public class THBaseIABPurchaseReporter
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private MiddleCallbackAddCash middleCallbackAddCash;
+    private MiddleCallback<UserProfileDTO> middleCallbackAddCash;
+    private MiddleCallback<UserProfileDTO> middleCallbackAddCredit;
 
     public THBaseIABPurchaseReporter()
     {
@@ -149,8 +150,12 @@ public class THBaseIABPurchaseReporter
         }
         else
         {
-            userService.get().addCredit(
-                    portfolioId.userId,
+            if (middleCallbackAddCredit != null)
+            {
+                middleCallbackAddCash.setPrimaryCallback(null);
+            }
+            middleCallbackAddCredit = userServiceWrapper.addCredit(
+                    portfolioId.getUserBaseKey(),
                     purchase.getGooglePlayPurchaseDTO(),
                     new THIABPurchaseReporterPurchaseCallback());
         }

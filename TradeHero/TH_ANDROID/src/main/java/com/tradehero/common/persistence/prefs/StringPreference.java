@@ -3,9 +3,7 @@ package com.tradehero.common.persistence.prefs;
 import android.content.SharedPreferences;
 import javax.inject.Inject;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 5:52 PM Copyright (c) TradeHero
- */
+
 public class StringPreference extends AbstractPreference<String>
 {
     public StringPreference(SharedPreferences preference, String key, String defaultValue)

@@ -5,9 +5,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 
-/**
- * Created by tradehero on 14-4-3.
- */
 public enum UpdateCenterTabType
 {
     Messages(R.string.message_center_tab_message, 0, 0, MessagesCenterFragment.class),

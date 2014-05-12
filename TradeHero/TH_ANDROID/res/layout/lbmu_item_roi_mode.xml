@@ -8,6 +8,7 @@
     android:gravity="center_vertical"
     android:background="@color/white"
     android:paddingTop="5dp"
+    android:paddingBottom="5dp"
     android:descendantFocusability="blocksDescendants"
     >
 
@@ -15,6 +16,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/leaderboard_user_item_basic_info"
+      tools:background="#8f0"
       >
 
     <TextView
@@ -37,7 +39,7 @@
         android:layout_height="@dimen/leaderboard_user_view_profile_width"
         android:layout_width="@dimen/leaderboard_user_view_profile_width"
         android:contentDescription="@null"
-        tools:src="@drawable/superman_facebook"
+        android:src="@drawable/icon"
         android:layout_toRightOf="@id/leaderboard_user_item_position"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
@@ -74,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/leaderboard_user_item_fof"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:layout_marginTop="2dp"
         >
 
       <TextView
@@ -91,9 +94,7 @@
           android:textColor="@color/gray_1"
           tools:text="(annualised: +1200%)"
           />
-
     </LinearLayout>
-
   </RelativeLayout>
 
   <ImageView
@@ -483,7 +484,6 @@
           />
 
     </LinearLayout>
-
 
     <include
         android:layout_width="match_parent"

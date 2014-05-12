@@ -13,9 +13,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 1/29/14.
- */
+
 abstract public class CompetitionWebFragmentTHIntentPassedListener implements THIntentPassedListener
 {
     public static final String TAG = CompetitionWebFragmentTHIntentPassedListener.class.getSimpleName();

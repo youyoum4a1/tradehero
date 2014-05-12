@@ -1,8 +1,6 @@
 package com.tradehero.th.api.leaderboard.key;
 
-/**
- * Created by xavier on 2/12/14.
- */
+
 public class BasePerPagedFilteredLeaderboardKeyTest extends BasePerPagedLeaderboardKeyTest
 {
     public static final String TAG = BasePerPagedFilteredLeaderboardKeyTest.class.getSimpleName();

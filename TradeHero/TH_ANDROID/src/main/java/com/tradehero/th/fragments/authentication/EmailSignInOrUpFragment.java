@@ -9,6 +9,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.ValidationListener;
@@ -16,9 +17,7 @@ import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 8:18 PM To change this template use File | Settings | File Templates. */
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
     protected Button signButton;
@@ -73,9 +72,9 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
         }
     }
 
-    public JSONObject getUserFormJSON ()
+    public JSONCredentials getUserFormJSON ()
     {
-        return new JSONObject(getUserFormMap());
+        return new JSONCredentials(getUserFormMap());
     }
 
     protected Map<String, Object> getUserFormMap ()

@@ -19,17 +19,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by julien on 23/10/13
- */
 abstract public class AbstractTradeListItemAdapter<PositionDTOType extends PositionDTO>
         extends ExpandableDTOAdapter<
             OwnedTradeId,
             AbstractTradeListItemAdapter.ExpandableTradeItem,
             TradeListItemView>
 {
-    public static final String TAG = AbstractTradeListItemAdapter.class.getName();
-
     public static final int ITEM_TYPE_BUTTONS = 0;
     public static final int ITEM_TYPE_HEADER_POSITION_SUMMARY = 1;
     public static final int ITEM_TYPE_POSITION_SUMMARY = 2;

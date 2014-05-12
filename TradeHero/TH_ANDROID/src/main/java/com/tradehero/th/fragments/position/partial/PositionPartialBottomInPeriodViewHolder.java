@@ -12,13 +12,8 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/5/14.
- */
 public class PositionPartialBottomInPeriodViewHolder
 {
-    public static final String TAG = PositionPartialBottomInPeriodViewHolder.class.getSimpleName();
-
     public TextView inPeriodPL;
     public TextView inPeriodAdditionalInvested;
     public TextView inPeriodValueAtStart;

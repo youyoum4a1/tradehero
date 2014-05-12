@@ -9,9 +9,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by tho on 3/27/2014.
- */
+
 @Singleton
 public class NewsCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
 {

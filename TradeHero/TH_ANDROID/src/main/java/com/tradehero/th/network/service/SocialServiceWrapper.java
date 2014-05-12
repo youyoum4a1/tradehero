@@ -4,36 +4,61 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.user.MiddleCallbackUpdateUserProfile;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
-/**
- * Created by xavier on 3/7/14.
- */
 @Singleton public class SocialServiceWrapper
 {
     private final SocialService socialService;
     private final SocialServiceAsync socialServiceAsync;
+    private final UserProfileCache userProfileCache;
 
-    @Inject public SocialServiceWrapper(SocialService socialService, SocialServiceAsync socialServiceAsync)
+    @Inject public SocialServiceWrapper(
+            SocialService socialService,
+            SocialServiceAsync socialServiceAsync,
+            UserProfileCache userProfileCache)
     {
         this.socialService = socialService;
         this.socialServiceAsync = socialServiceAsync;
+        this.userProfileCache = userProfileCache;
     }
 
-    public MiddleCallbackUpdateUserProfile connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    protected DTOProcessor<UserProfileDTO> createConnectDTOProcessor()
     {
-        MiddleCallbackUpdateUserProfile middleCallbackConnect = new MiddleCallbackUpdateUserProfile(callback);
-        socialServiceAsync.connect(userBaseKey.key, userFormDTO, middleCallbackConnect);
-        return middleCallbackConnect;
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
 
-    public MiddleCallbackUpdateUserProfile disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
+    //<editor-fold desc="Connect">
+    public UserProfileDTO connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
-        MiddleCallbackUpdateUserProfile middleCallbackDisconnect = new MiddleCallbackUpdateUserProfile(callback);
-        socialServiceAsync.disconnect(userBaseKey.key, socialNetworkFormDTO, middleCallbackDisconnect);
-        return middleCallbackDisconnect;
+        return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
+
+    public MiddleCallback<UserProfileDTO> connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
+        socialServiceAsync.connect(userBaseKey.key, userFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Disconnect">
+    public UserProfileDTO disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    {
+        return createConnectDTOProcessor().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
+    }
+
+    public MiddleCallback<UserProfileDTO> disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
+        socialServiceAsync.disconnect(userBaseKey.key, socialNetworkFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
 }

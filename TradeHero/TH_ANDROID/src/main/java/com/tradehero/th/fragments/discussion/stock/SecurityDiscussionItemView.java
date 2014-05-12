@@ -28,9 +28,6 @@ import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by thonguyen on 4/4/14.
- */
 public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey> implements
         View.OnClickListener
 {
@@ -71,6 +68,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
         discussionUserPicture.setOnClickListener(this);
         Timber.d("VotePair: %s", discussionVotePair);
         if (discussionVotePair != null)

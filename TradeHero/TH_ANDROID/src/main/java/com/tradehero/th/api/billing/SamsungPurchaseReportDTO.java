@@ -3,9 +3,6 @@ package com.tradehero.th.api.billing;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 
-/**
- * Created by xavier on 2014/4/2.
- */
 public class SamsungPurchaseReportDTO implements PurchaseReportDTO
 {
     public static final String PAYMENT_ID_JSON_KEY = "samsung_payment_id";

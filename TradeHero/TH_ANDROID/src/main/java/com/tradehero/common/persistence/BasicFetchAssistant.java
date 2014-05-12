@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 4:33 PM To change this template use File | Settings | File Templates. */
+
 abstract public class BasicFetchAssistant<DTOKeyType, DTOType> implements FetchAssistant<DTOKeyType, DTOType>
 {
     public static final String TAG = BasicFetchAssistant.class.getSimpleName();

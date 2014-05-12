@@ -17,8 +17,7 @@
   <string name="authentication_ask_for_email">Please enter your email address:</string>
   <string name="authentication_thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="authentication_confirm">Confirm</string>
-  <string name="authentication_cancel">Cancel</string>
-  <string name="authentication_ok">OK</string>
+  <string name="authentication_cancel">@string/cancel</string>
   <string name="authentication_not_registered">You need to go back and sign up</string>
 
   <string name="authentication_forgot_password">forgot your password ?</string>
@@ -36,5 +35,7 @@
   <string name="sina_weibo">Weibo</string>
   <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
   <string name="wechat">WeChat</string>
+
+  <string name="authentication_error_creating_signup_form">There was an error creating the sign-up form</string>
 
 </resources>

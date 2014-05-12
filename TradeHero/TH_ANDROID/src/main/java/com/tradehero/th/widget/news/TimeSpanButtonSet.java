@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:38 PM To change this template use File | Settings | File Templates. */
+
 public class TimeSpanButtonSet extends LinearLayout
 {
     public static final String TAG = TimeSpanButtonSet.class.getSimpleName();

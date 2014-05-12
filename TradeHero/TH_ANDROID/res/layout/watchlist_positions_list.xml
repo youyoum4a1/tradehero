@@ -7,26 +7,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.fortysevendeg.android.swipelistview.SwipeListView
-      android:id="@android:id/list"
+
+
+  <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+      xmlns:ptr="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/pull_to_refresh_watchlist_listview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
       android:clipToPadding="false"
+      android:layout_marginTop="@dimen/watch_list_header_height"
       swipe:swipeFrontView="@id/front"
       swipe:swipeBackView="@id/back"
-      swipe:swipeDrawableChecked="@drawable/ic_info"
-      swipe:swipeDrawableUnchecked="@drawable/ic_info"
       swipe:swipeCloseAllItemsWhenMoveList="true"
       swipe:swipeMode="left"
+      swipe:swipeDrawableChecked="@drawable/ic_info"
+      swipe:swipeOffsetLeft="250dp"
+      swipe:swipeDrawableUnchecked="@drawable/ic_info"
+      android:listSelector="#00000000"
+      ptr:ptrMode="pullFromStart"
+      ptr:ptrScrollingWhileRefreshingEnabled="true"
+      ptr:ptrListViewExtrasEnabled="false"
+      android:fadingEdge="none"
+      android:scrollbars="none"
+
       />
 
-  <com.tradehero.th.fragments.watchlist.WatchlistPositionListView
-      android:id="@+id/pull_to_refresh_watchlist_listview"
-      android:layout_marginTop="@dimen/watch_list_header_height"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      />
+  <!--<com.fortysevendeg.android.swipelistview.SwipeListView-->
+      <!--android:id="@android:id/list"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--android:layout_alignParentTop="true"-->
+      <!--android:clipToPadding="false"-->
+      <!--swipe:swipeFrontView="@id/front"-->
+      <!--swipe:swipeBackView="@id/back"-->
+      <!--swipe:swipeDrawableChecked="@drawable/ic_info"-->
+      <!--swipe:swipeDrawableUnchecked="@drawable/ic_info"-->
+      <!--swipe:swipeCloseAllItemsWhenMoveList="true"-->
+      <!--swipe:swipeMode="left"-->
+      <!--android:layout_marginTop="@dimen/watch_list_header_height"-->
+      <!--/>-->
+
+  <!--<com.tradehero.th.fragments.watchlist.WatchlistPositionListView-->
+      <!--android:id="@+id/pull_to_refresh_watchlist_listview"-->
+      <!--android:layout_marginTop="@dimen/watch_list_header_height"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--/>-->
 
   <include
       android:layout_width="match_parent"

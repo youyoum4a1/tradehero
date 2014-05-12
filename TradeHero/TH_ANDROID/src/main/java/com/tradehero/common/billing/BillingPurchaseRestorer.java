@@ -3,9 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 
-/**
- * Created by xavier on 2/21/14.
- */
+
 public interface BillingPurchaseRestorer<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,

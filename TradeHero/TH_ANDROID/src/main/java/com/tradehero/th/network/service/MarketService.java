@@ -7,7 +7,7 @@ import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 5:58 PM To change this template use File | Settings | File Templates. */
+
 public interface MarketService
 {
     //<editor-fold desc="GetExchanges">

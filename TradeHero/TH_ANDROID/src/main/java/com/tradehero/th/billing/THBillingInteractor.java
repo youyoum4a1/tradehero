@@ -8,9 +8,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 
-/**
- * Created by xavier on 2/24/14.
- */
 public interface THBillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import timber.log.Timber;
 
-/**
- * Created by julien on 4/11/13
- */
+
 public class IABConstants
 {
     public static final String BASE_64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhVgfcepa4NXGyS5kSGD1TmksVWhZcyMrqqJVBsuQgi+Io0+vFmboFN5n/nYPWWFOPjpvo8ht/11bglW+V+LtPOauk3/lCyFYGMVxuzv55J+YPimNBBnpECIqr6wfHyk0k6h2XPDJeEG2fPV3CIgAWiyNlH3JZVPrmVUIoU4537GACssREjFi7DERyv0JPg9n+0qlBb/NKhpbh00uniDXbNcb9KAb3e+kWI3+qpextDn0k6nt6/nqEFNZMD4JFlbqdrbc9Lfd+Zj2XUO983oVBbuRoIW11UUL5nY6qnjdh+FHG6254mbqoPtWeMnYrMPp3d733WOQdXhsfxwC0Fx99QIDAQAB";

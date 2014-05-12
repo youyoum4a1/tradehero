@@ -15,9 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-/**
- * Created with IntelliJ IDEA. User: tho Date: 1/21/14 Time: 7:28 PM Copyright (c) TradeHero
- */
 public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFriendDTOView>
         implements StickyListHeadersAdapter, SectionIndexer
 {

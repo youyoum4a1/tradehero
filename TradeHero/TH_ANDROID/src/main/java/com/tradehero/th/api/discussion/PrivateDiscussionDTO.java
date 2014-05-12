@@ -37,4 +37,9 @@ public class PrivateDiscussionDTO extends DiscussionDTO
         // The assumption here is that this was the first comment of the discussion
         return getDiscussionKey();
     }
+
+    @Override public String toString()
+    {
+        return "PrivateDiscussionDTO{" + super.toString() + '}';
+    }
 }

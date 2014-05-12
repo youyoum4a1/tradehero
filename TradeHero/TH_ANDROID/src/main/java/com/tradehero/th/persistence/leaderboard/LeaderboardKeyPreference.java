@@ -6,9 +6,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 2/13/14.
- */
+
 public class LeaderboardKeyPreference extends StringSetPreference
 {
     @Inject public LeaderboardKeyPreference(SharedPreferences preference, String key, Set<String> defaultValue)

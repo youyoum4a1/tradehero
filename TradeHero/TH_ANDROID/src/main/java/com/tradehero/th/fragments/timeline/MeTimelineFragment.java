@@ -21,7 +21,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/20/13 Time: 3:35 PM Copyright (c) TradeHero */
+
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {

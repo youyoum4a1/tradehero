@@ -4,32 +4,27 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import java.util.List;
+import java.util.Map;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:50 PM To change this template use File | Settings | File Templates. */
+
 public interface SecurityService
 {
     //get multiple securities
     @GET("/securities/multi/")
     void getMultipleSecurities(
             @Query("securityIds") String ids,
-            Callback<List<SecurityCompactDTO>> callback);
-
-    @GET("/securities/multi/")
-    void getMultipleSecurities2(
-            @Query("securityIds") String ids,
-            Callback<Response> callback);
+            Callback<Map<Integer, SecurityCompactDTO>> callback);
 
     //get multiple securities
     @GET("/securities/multi/")
-    List<SecurityCompactDTO> getMultipleSecurities(
+    Map<Integer, SecurityCompactDTO> getMultipleSecurities(
             @Query("securityIds") String ids);
 
     //<editor-fold desc="Get Basic Trending">
