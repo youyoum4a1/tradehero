@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
@@ -42,7 +42,7 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject protected UserService userService;
+    @Inject protected UserServiceWrapper userServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected ExchangeListCache exchangeListCache;
     @Inject protected ProviderListCache providerListCache;
@@ -151,16 +151,18 @@ public class SplashActivity extends SherlockActivity
         boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
         try
         {
-            UserProfileDTO profileDTO = userService.getUser(currentUserId.get());
+            UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
                 exchangeListCache.getOrFetch(new ExchangeListType());
-            } catch (Throwable throwable)
+            }
+            catch (Throwable throwable)
             {
                 throwable.printStackTrace();
             }
-        } catch (RetrofitError retrofitError)
+        }
+        catch (RetrofitError retrofitError)
         {
             canLoad = false;
             if (retrofitError.isNetworkError())

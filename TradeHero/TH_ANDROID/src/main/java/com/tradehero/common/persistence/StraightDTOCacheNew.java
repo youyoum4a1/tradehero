@@ -15,11 +15,12 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     
     @Override public DTOType get(DTOKeyType key)
     {
-        if (key == null)
+        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        if (cacheValue == null)
         {
             return null;
         }
-        return this.lruCache.get(key).getValue();
+        return cacheValue.getValue();
     }
 
     @Override protected CacheValue<DTOKeyType, DTOType> getCacheValue(DTOKeyType key)

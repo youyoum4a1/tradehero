@@ -129,8 +129,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDestroyOptionsMenu()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(null);
+        //actionBar.setTitle(null);
         actionBar.setSubtitle(null);
+        Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
     }
@@ -142,6 +143,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
             case R.id.discussion_edit_post:
                 postDiscussion();
                 return true;
+            case android.R.id.home:
+                DeviceUtil.dismissKeyboard(getActivity());
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -406,6 +410,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             isPosted = true;
 
+            DeviceUtil.dismissKeyboard(getActivity());
             getNavigator().popFragment();
         }
 

@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.tradehero.th.R;
 
-
 public class ServerValidatedText extends SelfValidatedText
 {
     private int progressIndicatorId;

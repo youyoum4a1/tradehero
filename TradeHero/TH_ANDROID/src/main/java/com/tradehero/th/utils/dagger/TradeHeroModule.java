@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
@@ -184,7 +183,6 @@ import javax.inject.Singleton;
                         SettingsFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
-                        ServerValidatedUsernameText.UserAvailabilityRequester.class,
                         ServerValidatedUsernameText.class,
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
@@ -243,7 +241,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        AbstractUserAvailabilityRequester.class,
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
