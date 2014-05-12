@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.trending;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -50,8 +48,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -479,8 +475,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(List<SecurityId> securityIds, boolean andDisplay,
-            SecurityId typeQualifier)
+    private void linkWith(List<SecurityId> securityIds, boolean andDisplay, SecurityId typeQualifier)
     {
         this.securityIds = securityIds;
 
@@ -587,7 +582,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         Bundle args = new Bundle();
         args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
 
-        getNavigator().pushFragment(PushableTimelineFragment.class, args);
+       getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
