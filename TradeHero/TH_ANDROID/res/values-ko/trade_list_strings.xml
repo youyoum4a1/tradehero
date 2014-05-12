@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="trade_list_title">거래 히스토리</string>
+  <string name="trade_list_title_with_security">%1$s:%2$s</string>
+  <string name="trade_list_avg_price">평균가</string>
+  <string name="trade_list_realized_pl">확정된 손익</string>
+  <string name="trade_list_unrealized_pl">확정되지 않은 손익</string>
+  <string name="trade_list_quantity">거래종목 수량</string>
+  <string name="trade_list_comment">코멘트</string>
+  <string name="trade_list_header_history">거래 히스토리</string>
+  <string name="trade_list_header_security_symbol">종목 코드</string>
+  <string name="trade_list_button_buy">매수</string>
+  <string name="trade_list_button_sell">매도</string>
+  <string name="trade_list_header_open_summary">매수한 종목</string>
+  <string name="trade_list_header_closed_summary">매도한 종목</string>
+
+  <string name="error_fetch_trade_list_info">거래목록을 불러오는데 오류가 발생하였습니다</string>
+
+</resources>

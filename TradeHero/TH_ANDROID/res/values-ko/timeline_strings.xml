@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="timeline_menu_edit">편집</string>
+
+    <string name="timeline_monitor">모니터</string>
+    <string name="timeline_trade">트레이드</string>
+    <string name="timeline_share">공유</string>
+    <string name="timeline_enable_stock_alert">주식 알림기능 켜기</string>
+    <string name="timeline_view_graph">그래프보기</string>
+    <string name="timeline_post_to_social_network">%s에 성공적으로 게시되었습니다.</string>
+    <string name="timeline_link_account">계정이 연결되어 있지 않습니다. 설정으로 가서 %s계정을 연결하세요.</string>
+
+  <string name="news_like">좋아요</string>
+  <string name="news_comment">코멘트</string>
+
+</resources>
