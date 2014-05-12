@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+  <LinearLayout
+      android:orientation="horizontal"
+      android:id="@+id/mention_widget"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/btn_mention"
+        style="@style/TH.TextSocialButtons"
+        android:text="@string/at"
+        android:textSize="15sp"
+        />
+
+    <TextView
+        android:id="@+id/btn_security_tag"
+        style="@style/TH.TextSocialButtons"
+        android:text="@string/hashtag"
+        android:textSize="15sp"
+        />
+  </LinearLayout>
+</merge>
