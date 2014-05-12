@@ -312,6 +312,11 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         if (watchlistPositionListView != null)
         {
+            View watchListView = watchlistPositionListView.getRefreshableView();
+            if (watchListView != null)
+            {
+                watchListView.removeCallbacks(null);
+            }
             watchlistPositionListView.onRefreshComplete();
             watchlistPositionListView.setOnRefreshListener(
                     (PullToRefreshBase.OnRefreshListener<SwipeListView>) null);
