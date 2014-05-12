@@ -56,6 +56,11 @@ public class RetrofitProtectedModule
         return adapter.create(NotificationServiceAsync.class);
     }
 
+    @Provides @Singleton TradeServiceAsync provideTradeServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(TradeServiceAsync.class);
+    }
+
     @Provides @Singleton TranslationServiceAsync provideTranslationServiceAsync(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)

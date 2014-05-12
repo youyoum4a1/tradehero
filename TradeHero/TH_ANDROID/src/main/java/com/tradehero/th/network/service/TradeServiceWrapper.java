@@ -3,20 +3,25 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 
 @Singleton public class TradeServiceWrapper
 {
     private final TradeService tradeService;
+    private final TradeServiceAsync tradeServiceAsync;
 
-    @Inject public TradeServiceWrapper(TradeService tradeService)
+    @Inject public TradeServiceWrapper(
+            TradeService tradeService,
+            TradeServiceAsync tradeServiceAsync)
     {
         super();
         this.tradeService = tradeService;
+        this.tradeServiceAsync = tradeServiceAsync;
     }
 
     private void basicCheck(OwnedPositionId ownedPositionId)
@@ -49,30 +54,30 @@ import retrofit.RetrofitError;
     }
 
     public List<TradeDTO> getTrades(OwnedPositionId ownedPositionId)
-            throws RetrofitError
     {
         basicCheck(ownedPositionId);
         return this.tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId);
     }
 
-    public void getTrades(OwnedPositionId ownedPositionId, Callback<List<TradeDTO>> callback)
-            throws RetrofitError
+    public MiddleCallback<List<TradeDTO>> getTrades(OwnedPositionId ownedPositionId, Callback<List<TradeDTO>> callback)
     {
         basicCheck(ownedPositionId);
-        this.tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId, callback);
+        MiddleCallback<List<TradeDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        this.tradeServiceAsync.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId, middleCallback);
+        return middleCallback;
     }
 
     public TradeDTO getTrade(OwnedTradeId ownedTradeId)
-            throws RetrofitError
     {
         basicCheck(ownedTradeId);
         return this.tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId);
     }
 
-    public void getTrade(OwnedTradeId ownedTradeId, Callback<TradeDTO> callback)
-            throws RetrofitError
+    public MiddleCallback<TradeDTO> getTrade(OwnedTradeId ownedTradeId, Callback<TradeDTO> callback)
     {
         basicCheck(ownedTradeId);
-        this.tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId, callback);
+        MiddleCallback<TradeDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.tradeServiceAsync.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId, middleCallback);
+        return middleCallback;
     }
 }
