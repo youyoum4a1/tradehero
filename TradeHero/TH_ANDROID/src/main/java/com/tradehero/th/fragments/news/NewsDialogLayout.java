@@ -2,8 +2,6 @@ package com.tradehero.th.fragments.news;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -26,14 +25,18 @@ import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.translation.TranslationResult;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.network.service.TranslationServiceWrapper;
+import com.tradehero.th.persistence.translation.TranslationCache;
+import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.wxapi.WeChatDTO;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
@@ -54,6 +57,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private ListView listViewSecond;
 
     private THDialog.DialogInterface dialogCallback;
+    protected ProgressDialog dialog;
 
     private int id;
     private String title;
@@ -61,21 +65,35 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private String langCode;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
-    @Inject Lazy<TranslationServiceWrapper> translationServiceWrapperLazy;
-
+    @Inject TranslationCache translationCache;
     @Inject @ForWeChat SocialSharer wechatSharer;
+
     private int mShareType;
+    protected List<WeakReference<DTOCache.GetOrFetchTask<TranslationKey, TranslationResult>>> weakTranslationTasks;
+
+    //<editor-fold desc="Constructors">
+    public NewsDialogLayout(Context context)
+    {
+        super(context);
+    }
 
     public NewsDialogLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        DaggerUtils.inject(this);
     }
+
+    public NewsDialogLayout(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+    }
+    //</editor-fold>
 
     @Override
     protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
+        weakTranslationTasks = new ArrayList<>();
         findView();
         fillData();
         registerListener();
@@ -107,14 +125,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
     }
 
-    private void registerListener()
-    {
-        backView.setOnClickListener(this);
-        cancelView.setOnClickListener(this);
-        listViewFirst.setOnItemClickListener(this);
-        listViewSecond.setOnItemClickListener(this);
-    }
-
     private void fillData()
     {
         String[] dataForFirst = {getContext().getString(R.string.sharing),
@@ -132,6 +142,34 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         listViewSecond.setDividerHeight(1);
         setNewsTitle();
         setShareTitle();
+    }
+
+    private void registerListener()
+    {
+        backView.setOnClickListener(this);
+        cancelView.setOnClickListener(this);
+        listViewFirst.setOnItemClickListener(this);
+        listViewSecond.setOnItemClickListener(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        detachTranslationTasks();
+        super.onDetachedFromWindow();
+    }
+
+    protected void detachTranslationTasks()
+    {
+        DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> task;
+        for (WeakReference<DTOCache.GetOrFetchTask<TranslationKey, TranslationResult>> weakTask : weakTranslationTasks)
+        {
+            task = weakTask.get();
+            if (task != null)
+            {
+                task.setListener(null);
+            }
+        }
+        weakTranslationTasks.clear();
     }
 
     private void setNewsTitle()
@@ -232,73 +270,19 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     private void handleTranslation()
     {
-
-        new AsyncTask<Void, Void, TranslationResult>()
+        if (dialog == null)
         {
-            ProgressDialog dialog;
+            dialog = new ProgressDialog(getContext());
+        }
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setMessage(getContext().getString(R.string.translating));
+        dialog.show();
 
-            @Override
-            protected void onPreExecute()
-            {
-                super.onPreExecute();
-                dialog = new ProgressDialog(getContext());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setMessage(getContext().getString(R.string.translating));
-                dialog.show();
-            }
-
-            @Override
-            protected TranslationResult doInBackground(Void... params)
-            {
-                try
-                {
-                    TranslationServiceWrapper serviceWrapper = translationServiceWrapperLazy.get();
-                    Timber.d("serviceWrapper " + serviceWrapper);
-                    //TODO zh enough ?
-                    return translationServiceWrapperLazy.get()
-                            .translate(langCode, "zh", title);
-                } catch (Exception e)
-                {
-                    Timber.e(e, "Translation Error");
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(TranslationResult s)
-            {
-                super.onPostExecute(s);
-                if (dialog != null && dialog.isShowing())
-                {
-                    dialog.dismiss();
-                }
-
-                //TODO
-                if (s != null && s.getContent() != null)
-                {
-                    THToast.show("Success");
-                    showTranslationResult(s.getContent());
-                }
-                else
-                {
-                    THToast.show("error");
-                }
-            }
-        }.execute();
-    }
-
-    private void showTranslationResult(String text)
-    {
-        THDialog.showCenterDialog(getContext(), getContext().getString(R.string.translation_result),
-                text, null,
-                getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        });
+        TranslationKey key = new TranslationKey(langCode, "zh", title);
+        DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> task = translationCache.getOrFetch(
+                key, createTranslationListener());
+        task.execute();
+        weakTranslationTasks.add(new WeakReference<>(task));
     }
 
     private void dismissDialog()
@@ -370,6 +354,43 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 String[] objects)
         {
             super(context, resource, textViewResourceId, objects);
+        }
+    }
+
+    protected DTOCache.Listener<TranslationKey, TranslationResult> createTranslationListener()
+    {
+        return new NewsDialogTranslationCacheListener();
+    }
+
+    protected class NewsDialogTranslationCacheListener implements DTOCache.Listener<TranslationKey, TranslationResult>
+    {
+        @Override public void onDTOReceived(TranslationKey key, TranslationResult value,
+                boolean fromCache)
+        {
+            if (dialog != null && dialog.isShowing())
+            {
+                dialog.dismiss();
+            }
+
+            //TODO
+            if (value != null && value.getContent() != null)
+            {
+                THToast.show("Success");
+                THDialog.showTranslationResult(getContext(), value.getContent());
+            }
+            else
+            {
+                THToast.show("error");
+            }
+        }
+
+        @Override public void onErrorThrown(TranslationKey key, Throwable error)
+        {
+            Timber.e(error, "");
+            if (dialog != null)
+            {
+                dialog.dismiss();
+            }
         }
     }
 }
