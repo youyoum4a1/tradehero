@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="message_center_tab_message">Messages</string>
-  <string name="message_center_tab_notification">Notifications</string>
-  <string name="message_center_sending_to">Sending to:</string>
-  <string name="message_center_title">Message Center</string>
-  <string name="message_center_new_message_title">New Message</string>
-  <string name="message_center_private_message_menu">Private Message</string>
-  <string name="message_center_broadcast_message_menu">Broadcast Message</string>
+  <string name="message_center_tab_message">메세지</string>
+  <string name="message_center_tab_notification">알림</string>
+  <string name="message_center_sending_to">받는사람:</string>
+  <string name="message_center_title">메세지 센터</string>
+  <string name="message_center_new_message_title">새메세지</string>
+  <string name="message_center_private_message_menu">개인 메세지</string>
+  <string name="message_center_broadcast_message_menu">전체 메세지</string>
 
-  <string name="message_list_refresh_menu">Refresh</string>
+  <string name="message_list_refresh_menu">새로고침</string>
 
-  <string name="error_fetch_message_thread_header">Failed to fetch the message thread info</string>
+  <string name="error_fetch_message_thread_header">메세지 로딩에 실패</string>
 
 </resources>
