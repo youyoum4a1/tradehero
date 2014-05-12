@@ -31,6 +31,11 @@ public class RetrofitProtectedModule
         return adapter.create(CompetitionServiceAsync.class);
     }
 
+    @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
+    {
+        return adapter.create(FollowerServiceAsync.class);
+    }
+
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceAsync.class);

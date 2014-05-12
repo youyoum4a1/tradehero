@@ -49,8 +49,6 @@ import retrofit.RestAdapter;
 import retrofit.Server;
 import retrofit.converter.Converter;
 
-
-
 @Module(
         includes = {
                 RetrofitProtectedModule.class,

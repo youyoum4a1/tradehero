@@ -6,17 +6,23 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
 
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import retrofit.Callback;
 
 @Singleton public class FollowerServiceWrapper
 {
     private final FollowerService followerService;
+    private final FollowerServiceAsync followerServiceAsync;
 
-    @Inject public FollowerServiceWrapper(FollowerService followerService)
+    @Inject public FollowerServiceWrapper(
+            FollowerService followerService,
+            FollowerServiceAsync followerServiceAsync)
     {
         super();
         this.followerService = followerService;
+        this.followerServiceAsync = followerServiceAsync;
     }
 
     //<editor-fold desc="Get All Followers Summary">
@@ -25,9 +31,11 @@ import retrofit.Callback;
         return followerService.getAllFollowersSummary(heroId.key);
     }
 
-    public void getAllFollowersSummary(UserBaseKey heroId, Callback<FollowerSummaryDTO> callback)
+    public MiddleCallback<FollowerSummaryDTO> getAllFollowersSummary(UserBaseKey heroId, Callback<FollowerSummaryDTO> callback)
     {
-        followerService.getAllFollowersSummary(heroId.key, callback);
+        MiddleCallback<FollowerSummaryDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        followerServiceAsync.getAllFollowersSummary(heroId.key, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -38,10 +46,12 @@ import retrofit.Callback;
         return this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
     }
 
-    public void getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId, Callback<UserFollowerDTO> callback)
+    public MiddleCallback<UserFollowerDTO> getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId, Callback<UserFollowerDTO> callback)
     {
         basicCheck(followerHeroRelationId);
-        this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId, callback);
+        MiddleCallback<UserFollowerDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.followerServiceAsync.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
