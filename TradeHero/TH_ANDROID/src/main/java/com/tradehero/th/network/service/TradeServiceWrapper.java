@@ -9,7 +9,6 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
-
 @Singleton public class TradeServiceWrapper
 {
     private final TradeService tradeService;

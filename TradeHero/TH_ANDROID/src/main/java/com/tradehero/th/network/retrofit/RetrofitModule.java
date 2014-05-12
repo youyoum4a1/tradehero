@@ -68,7 +68,6 @@ import retrofit.converter.Converter;
 )
 public class RetrofitModule
 {
-
     //<editor-fold desc="API Services">
     @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
     {

@@ -2,41 +2,47 @@ package com.tradehero.th.models.translation;
 
 import org.simpleframework.xml.Text;
 
-public class TranslationResult {
-
+public class TranslationResult
+{
     private String fromLanguageCode;
-
     private String languageCode;
 
     @Text()
     private String content;
 
-    public String getFromLanguageCode() {
+    public String getFromLanguageCode()
+    {
         return fromLanguageCode;
     }
 
-    public void setFromLanguageCode(String fromLanguageCode) {
+    public void setFromLanguageCode(String fromLanguageCode)
+    {
         this.fromLanguageCode = fromLanguageCode;
     }
 
-    public String getLanguageCode() {
+    public String getLanguageCode()
+    {
         return languageCode;
     }
 
-    public void setLanguageCode(String languageCode) {
+    public void setLanguageCode(String languageCode)
+    {
         this.languageCode = languageCode;
     }
 
-    public String getContent() {
+    public String getContent()
+    {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(String content)
+    {
         this.content = content;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "TranslationResult{" +
                 "fromLanguageCode='" + fromLanguageCode + '\'' +
                 ", languageCode='" + languageCode + '\'' +

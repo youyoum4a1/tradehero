@@ -1,11 +1,11 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.utils.CustomXmlConverter;
+import com.tradehero.th.network.NetworkConstants;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 import retrofit.RestAdapter;
-
-
 
 @Module(
         injects = {
@@ -54,6 +54,13 @@ public class RetrofitProtectedModule
     @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NotificationServiceAsync.class);
+    }
+
+    @Provides @Singleton TranslationServiceAsync provideTranslationServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)

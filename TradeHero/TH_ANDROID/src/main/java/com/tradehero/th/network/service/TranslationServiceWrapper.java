@@ -3,42 +3,66 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.models.translation.TokenData;
 import com.tradehero.th.models.translation.TranslationResult;
 import com.tradehero.th.network.NetworkConstants;
-import retrofit.RetrofitError;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import retrofit.Callback;
 import timber.log.Timber;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+@Singleton public class TranslationServiceWrapper
+{
+    private final TranslationTokenService translationTokenService;
+    private final TranslationService translationService;
+    private final TranslationServiceAsync translationServiceAsync;
 
-@Singleton
-public class TranslationServiceWrapper {
+    @Inject
+    public TranslationServiceWrapper(
+            TranslationTokenService translationTokenService,
+            TranslationService translationService,
+            TranslationServiceAsync translationServiceAsync)
+    {
+        this.translationTokenService = translationTokenService;
+        this.translationService = translationService;
+        this.translationServiceAsync = translationServiceAsync;
+    }
 
-
-        private final TranslationTokenService translationTokenService;
-        private final TranslationService translationService;
-
-        @Inject
-        public TranslationServiceWrapper(TranslationTokenService translationTokenService, TranslationService translationService)
+    public TranslationResult translate(String from, String to, String text)
+    {
+        TokenData tokenData = translationTokenService.requestToken(
+                NetworkConstants.TRANSLATION_REQ_TSCOPE,
+                NetworkConstants.TRANSLATION_GRANT_TYPE,
+                NetworkConstants.TRANSLATION_CLIENT_ID,
+                NetworkConstants.TRANSLATION_CLIENT_SECRET
+        );
+        Timber.d("translate tokenData %s " + tokenData);
+        if (tokenData == null || tokenData.getAccessToken() == null)
         {
-            this.translationTokenService = translationTokenService;
-            this.translationService = translationService;
+            return null;
         }
+        String contentType = "text/plain";
+        return translationService.requestForTranslation("Bearer " + tokenData.getAccessToken(),
+                        from, to, contentType, text);
+    }
 
-        public TranslationResult translate(String from, String to, String text) throws RetrofitError
+    public MiddleCallback<TranslationResult> translate(String from, String to, String text, Callback<TranslationResult> callback)
+    {
+        TokenData tokenData = translationTokenService.requestToken(
+                NetworkConstants.TRANSLATION_REQ_TSCOPE,
+                NetworkConstants.TRANSLATION_GRANT_TYPE,
+                NetworkConstants.TRANSLATION_CLIENT_ID,
+                NetworkConstants.TRANSLATION_CLIENT_SECRET
+        );
+        Timber.d("translate tokenData %s " + tokenData);
+        if (tokenData == null || tokenData.getAccessToken() == null)
         {
-            TokenData tokenData = translationTokenService.requestToken(
-                    NetworkConstants.TRANSLATION_REQ_TSCOPE,
-                    NetworkConstants.TRANSLATION_GRANT_TYPE,
-                    NetworkConstants.TRANSLATION_CLIENT_ID,
-                    NetworkConstants.TRANSLATION_CLIENT_SECRET
-                    );
-            Timber.d("translate tokenData %s "+tokenData);
-            if (tokenData == null || tokenData.getAccessToken() == null){
-                return null;
-            }
-            String contentType = "text/plain";
-            TranslationResult translationResult = translationService.requestForTranslation("Bearer "+tokenData.getAccessToken(), from, to, contentType, text);
-            return translationResult;
+            return null;
         }
-
+        String contentType = "text/plain";
+        MiddleCallback<TranslationResult> middleCallback = new BaseMiddleCallback<>(callback);
+        translationServiceAsync.requestForTranslation("Bearer " + tokenData.getAccessToken(),
+                        from, to, contentType, text, middleCallback);
+        return middleCallback;
+    }
 }
