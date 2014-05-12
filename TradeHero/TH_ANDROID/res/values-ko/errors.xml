@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_unknown">예상치 못한 오류가 발생하였습니다. 다시 시도해 주세요.</string>
+  <string name="error_canceled">A명령이 취소됩었습니다</string>
+  <string name="error_network_connection">네트워크 연결상태를 확인하세요</string>
+  <string name="error_cache_flush">디스크캐시 오류입니다</string>
+
+  <string name="error_incomplete_info_title">정보가 부족합니다</string>
+  <string name="error_incomplete_info_message">잠시후 다시 시도하세요</string>
+  <string name="error_incomplete_info_cancel">Ok</string>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Full page elements -->
+  <string name="leaderboard_filter_top_ranking_reminder">Must have at least 2 positions to qualify for ranking</string>
+  <string name="leaderboard_filter_reset_filter">Reset Filters</string>
+  <string name="leaderboard_filter_menu_title">Filter Options</string>
+  <string name="leaderboard_filter_menu_button_done">Done</string>
+
+  <!-- For individual LeaderboardFilterValueSlider -->
+  <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
+  <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
+
+  <!-- For Monthly Activity -->
+  <string name="leaderboard_filter_monthly_activity_header">Monthly Activity</string>
+  <string name="leaderboard_filter_monthly_activity_value_unit">trades (average)</string>
+  <string name="leaderboard_filter_monthly_activity_description">Average trades per month</string>
+  <string name="leaderboard_filter_monthly_activity_min_description">Passive</string>
+  <string name="leaderboard_filter_monthly_activity_max_description">Active</string>
+
+  <!-- For Win Ratio -->
+  <string name="leaderboard_filter_win_ratio_header">Win Ratio</string>
+  <string name="leaderboard_filter_win_ratio_value_unit">%</string>
+  <string name="leaderboard_filter_win_ratio_description">Winning vs. losing trades - higher is better</string>
+  <string name="leaderboard_filter_win_ratio_min_description">Never wins</string>
+  <string name="leaderboard_filter_win_ratio_max_description">Always wins</string>
+
+  <!-- For Holding Period -->
+  <string name="leaderboard_filter_holding_period_header">Holding Period</string>
+  <string name="leaderboard_filter_holding_period_value_unit">days</string>
+  <string name="leaderboard_filter_holding_period_description">Average time held</string>
+  <string name="leaderboard_filter_holding_period_min_description">Short</string>
+  <string name="leaderboard_filter_holding_period_max_description">Long</string>
+
+</resources>

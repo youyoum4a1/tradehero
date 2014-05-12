@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string-array name="search_stock_spinner">
+    <item>@string/search_stock_spinner_stock</item>
+    <item>@string/search_stock_spinner_people</item>
+  </string-array>
+
+  <string name="search_stock_spinner_stock">Stocks</string>
+  <string name="search_stock_spinner_people">People</string>
+
+</resources>

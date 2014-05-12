@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="error_fetch_help_video_list_info">There was an error when fetching the list of help videos</string>
+  <string name="error_fetch_help_video_info">There was an error when fetching the info of a help video</string>
+  <string name="error_help_video_no_package_available_to_play">You do not have a player for this video</string>
+
+</resources>

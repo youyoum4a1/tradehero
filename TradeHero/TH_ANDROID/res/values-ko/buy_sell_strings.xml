@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="buy_sell_price_as_of">기준</string>
+  <string name="buy_sell_cash_available">사용가능 캐쉬</string>
+  <string name="buy_sell_cash_left">남은 캐쉬</string>
+  <string name="buy_sell_share_available">거개가능 주식수</string>
+  <string name="buy_sell_share_left">남은 주</string>
+  <string name="buy_sell_quantity">수량</string>
+  <string name="buy_sell_trade_value">가치</string>
+  <string name="buy_sell_projected_p_and_l_value">예상 수익률</string>
+  <string name="buy_sell_bid_with_bracket">(입찰가)</string>
+  <string name="buy_sell_ask_with_bracket">(호가)</string>
+  <string name="buy_sell_bid_price_not_available">입찰가 없음</string>
+  <string name="buy_sell_ask_price_not_available">호가 없음</string>
+  <string name="buy_sell_p5k">$5,000</string>
+  <string name="buy_sell_p10k">$10,000</string>
+  <string name="buy_sell_p25k">$25,000</string>
+  <string name="buy_sell_p50k">$50,000</string>
+  <string name="buy_sell_button_buy">%1$s %2$s에 매수</string>
+  <string name="buy_sell_button_sell">%1$s %2$s에 매도</string>
+  <string name="buy_sell_button_cannot_buy">-</string>
+  <string name="buy_sell_button_cannot_sell">-</string>
+  <string name="buy_sell_buy_details_unavailable">정보 불러오는 중...</string>
+  <string name="buy_sell_buy_details">매수 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n수수료: 게임머니 %6$s %7$,.2f\n총 거래금액: %8$s %9$,.2f</string>
+  <string name="buy_sell_sell_details_unavailable">정보 불러오는중…</string>
+  <string name="buy_sell_sell_details">매도 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n수수료: 게임머니 %6$s %7$,.2f\n순 거래금액: %8$s %9$,.2f</string>
+  <string name="buy_sell_confirm_share_public">공개</string>
+  <string name="buy_sell_confirm_share_private">비공개</string>
+  <string name="buy_sell_confirm_buy_comment">코멘트 추가…</string>
+  <string name="buy_sell_confirm_share_on">공유:</string>
+  <string name="buy_sell_switch_buy">매수</string>
+  <string name="buy_sell_switch_sell">매도</string>
+  <string name="buy_sell_usd_price_unit_left">= US$</string>
+  <string name="buy_sell_market_status">증시 지표</string>
+  <string name="buy_sell_toggle">매수/매도 화면으로</string>
+
+  <string name="buy_sell_portfolio_selected_title">포트폴리오:</string>
+
+  <string name="alert_dialog_buy_sell_order_null_title">어쩌면 좋아요</string>
+  <string name="alert_dialog_buy_sell_order_null_message">매수/매도 주문 중 오류가 생겼습니다.</string>
+  <string name="alert_dialog_buy_sell_order_null_cancel">Okay</string>
+
+  <string name="alert_dialog_buy_sell_retrofit_failed_title">실패</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_message">주문처리중 오류가 생겼습니다. / 주문 / 확인 후 다시 시도하세요</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_cancel">Okay</string>
+
+  <string name="alert_dialog_buy_sell_returned_null_title">죄송합니다.</string>
+  <string name="alert_dialog_buy_sell_returned_null_message">서버오류로 정보를 불러올 수 없습니다.\ 거래정보 확인후 다시 시도하세요.</string>
+  <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
+  <string name="buy_sell_share_count"></string>
+
+</resources>

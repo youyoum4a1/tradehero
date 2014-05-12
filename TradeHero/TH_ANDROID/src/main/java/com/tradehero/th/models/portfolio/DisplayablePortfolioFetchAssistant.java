@@ -132,7 +132,8 @@ public class DisplayablePortfolioFetchAssistant
                         displayablePortfolioDTO.fetchingUser = false;
                         displayablePortfolioDTO.userBaseDTO = value;
                     }
-                    notifyListener();
+                    //hide this for createPortfolioDTOListener will notify later by alex
+                    //notifyListener();
                 }
             }
 

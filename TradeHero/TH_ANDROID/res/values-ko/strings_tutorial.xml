@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!--timeline-->
+  <string name="tutorial_timeline_content">
+    <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
+  <string name="tutorial_timeline_header">Welcome to TradeHero!</string>
+  <string name="tutorial_portfolio_list_header">Portfolios</string>
+
+  <!--Store screen-->
+  <string name="tutorial_store_screen_content">Purchase TradeHero dollars, credits, stock alerts, and portfolio reset here. You can also manage your
+    purchases.
+  </string>
+  <string name="tutorial_store_screen_header">Store</string>
+
+  <!--Portfolio list-->
+  <string name="tutorial_portfolio_list_content">Lists names of TradeHero users that you recently viewed. Drill down each name to see the position
+    details.
+  </string>
+
+  <!--Leaderboard-->
+  <string name="tutorial_leaderboard_content">
+    <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
+  <string name="tutorial_leaderboard_header">Community</string>
+
+  <!--Trending-->
+  <string name="tutorial_trending_header">Search for stocks</string>
+  <string name="tutorial_trending_content">Search for stocks across all our supported exchanges by typing into the search bar on the top of the
+    screen. You can search by company or symbol name.\n\nIf you prefer, you can scroll through the trending stocks: these are the stocks that other
+    TradeHero users are buying and selling.
+  </string>
+  <string name="tutorial_buy_sell_header">Buy / Sell</string>
+  <string name="tutorial_buy_sell_content">Trade Price* is set to the market ask price when buying, and the bid price when selling. This is to
+    simulate Market Order type transactions. For some stocks, we don\'t have ask and bid data. For these stocks, we use the last traded price of the
+    stock.\n\nTrade Quantity is limited to 20% of Average Daily Volume or Current Day Volume, whichever is higher. Your Trade Value may be limited due
+    to this constraint.\n\n*Price is delayed as specified by financial exchanges or our data providers.
+  </string>
+
+  <!--Positions list-->
+  <string name="tutorial_position_list_header">Position Level ROI</string>
+  <string name="tutorial_position_list_content1">
+    <![CDATA[All leaderboards may be ranked by traders\' return on investment (ROI) on the invested amounts of all trades that qualify for the leaderboard.\n\nFor time-restricted leaderboards (e.g. Last 30 Days) trades qualify by being opened or closed in the time period.\n\nFor security-restricted leaderboards (e.g. Asia A-Team) trades qualify by being on the appropriate underlying security.\n\n]]></string>
+  <string name="tutorial_position_list_content2">
+    <![CDATA[NOTE:\nWe reserve the right to exclude certain trades that have incorrect price data (e.g. penny stocks below US$ 0.01 or trades with very large quantities) You can view the specific trades that make up the leaderboard P&L by drilling down on a leaderboard row and viewing the list of positions.\n\n]]></string>
+  <string name="tutorial_position_list_formula_left_text">ROI =</string>
+  <string name="tutorial_position_list_formula_top_text"><![CDATA[Total P&L (realized + unrealized)]]></string>
+  <string name="tutorial_position_list_formula_bottom_text">Total Invested (in qualifying trades)</string>
+
+</resources>

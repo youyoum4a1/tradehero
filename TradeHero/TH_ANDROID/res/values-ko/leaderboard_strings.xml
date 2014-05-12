@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="leaderboard_community_by_exchange">By Exchange</string>
+  <string name="leaderboard_community_by_sector">By Sector</string>
+  <string name="leaderboard_community_friends">Friends</string>
+  <string name="leaderboard_community_leaderboards">Leaderboards</string>
+  <string name="leaderboard_community_exchange">Exchanges</string>
+  <string name="leaderboard_community_sector">Sector</string>
+  <string name="leaderboard_user_roi">ROI</string>
+  <string name="leaderboard_user_hero_quotient">Hero Quotient</string>
+  <string name="leaderboard_sort_followers">Followers</string>
+  <string name="leaderboard_sort_comments">Comments</string>
+  <string name="leaderboard_user_sharpe_ratio">Sharpe Ratio</string>
+  <string name="leaderboard_positions_count"># Positions</string>
+  <string name="leaderboard_number_trades_in_period_title">Number of Trades In Period</string>
+  <string name="leaderboard_win_ratio_title">Win Ratio</string>
+  <string name="leaderboard_avg_days_held">Avg. Days Held</string>
+  <string name="leaderboard_followers_count"># Followers</string>
+  <string name="leaderboard_comments_count"># Comments</string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
+  <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
+  <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
+  <string name="leaderboard_action_bar_help">Help</string>
+  <string name="leaderboard_sort">Sort</string>
+  <string name="leaderboard_p_n_l"><![CDATA[P&L]]></string>
+  <string name="leaderboard_benchmark_roi">Benchmark ROI</string>
+  <string name="leaderboard_action_bar_follow">Follow</string>
+  <string name="leaderboard_action_bar_following">Following</string>
+  <string name="leaderboard_profile">Profile</string>
+  <string name="leaderboard_positions">Positions</string>
+  <string name="leaderboard_win_ratio">(win ratio: <b>%s</b>%%)</string>
+  <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
+  <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
+  <string name="leaderboard_number_of_trade">(%s trade)</string>
+  <string name="leaderboard_number_of_trades_plural">(%s trades)</string>
+  <string name="leaderboard_period">Period</string>
+  <string name="leaderboard_not_ranked">Not ranked</string>
+  <string name="leaderboard_show_friends_only">Show friends only</string>
+  <string name="leaderboard_show_friends_of_friends">Show friends of friends</string>
+  <string name="leaderboard_keep_friends_close">Keep your friends close …</string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… and your Heroes closer! Success is all the sweeter when your friends are around to
+    share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
+  </string>
+  <string name="leaderboard_connect_accounts">Connect Accounts…</string>
+  <string name="leaderboard_follow">@string/follow</string>
+
+  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
+
+  <string name="leaderboard_community_followers">Followers</string>
+  <string name="leaderboard_community_heros">Heroes</string>
+
+  <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
+  <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
+  <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
+
+  <string name="follower_type_premium">Paid Follower(s)</string>
+  <string name="follower_type_free">Free Follower(s)</string>
+  <string name="follower_type_all">Free Follower(s)</string>
+
+</resources>

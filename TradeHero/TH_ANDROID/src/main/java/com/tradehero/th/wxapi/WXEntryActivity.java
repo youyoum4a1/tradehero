@@ -134,7 +134,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                         mBitmap = Bitmap.createBitmap(picassoLazy.get().load(mMsgImageURL).get());
                         if (mBitmap != null)
                         {
-                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 50, 50, false);
+                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
                         }
                     } catch (IOException e)
                     {
@@ -151,7 +151,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         if (mBitmap == null)
         {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
+            //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
         }
     }
 

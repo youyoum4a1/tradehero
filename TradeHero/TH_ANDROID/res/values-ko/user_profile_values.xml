@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="UserProfile" parent="TradeHero">
+    <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="UserProfile.ValueContainer">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:orientation">vertical</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
+  <style name="UserProfile.Contained">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="UserProfile.Contained.Value">
+    <item name="android:textSize">20sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:drawablePadding">@dimen/timeline_bottom_button_drawable_adjustment</item>
+  </style>
+
+  <style name="UserProfile.Contained.Header">
+    <item name="android:textSize">12sp</item>
+    <item name="android:layout_marginTop">0dp</item>
+    <item name="android:textStyle">normal</item>
+  </style>
+
+  <style name="UserProfile.ButtonContainer">
+    <item name="android:background">@drawable/profile_bottom_button_bg</item>
+  </style>
+
+  <color name="user_profile_blue">@color/button_blue</color>
+  <dimen name="user_profile_button_margin">6dp</dimen>
+  <drawable name="user_profile_button_active">@drawable/action_button_active_2_0</drawable>
+  <drawable name="user_profile_button_default">@drawable/action_button_available_2_0</drawable>
+
+  <style name="UserProfile.Button">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textColor">@color/user_profile_button_text</item>
+    <item name="android:background">@drawable/user_profile_button_bg</item>
+    <item name="android:layout_margin">@dimen/user_profile_button_margin</item>
+  </style>
+
+  <integer name="user_profile_photo_max_edge_pixel">480</integer>
+  <integer name="user_profile_photo_compress_quality">75</integer>
+
+</resources>

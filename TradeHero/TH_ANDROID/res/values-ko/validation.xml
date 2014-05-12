@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="validation_please_correct">표시된 입력칸의 정보를 수정해주세요</string>
+  <string name="validation_size_too_short">%d자 이상이여야 합니다</string>
+  <string name="validation_size_too_long">%d자 이상이 될 수 없습니다</string>
+  <string name="validation_size_in_between">%1$d와 %2$d 사이로 입력 가능합니다</string>
+  <string name="validation_incorrect_pattern">This does not look correct</string>
+  <string name="validation_server_username_not_available">이름이 이미 사용중입니다</string>
+  <string name="password_validation_confirm_fail_string">비밀번호가 일치하지 않습니다</string>
+  <string name="validation_incorrect_pattern_email">이메일 주소의 형태를 인지할 수 없습니다</string>
+
+  <string name="forgot_email_incorrect_input_email">이메일을 입력해야합니다.</string>
+  <string name="wrong_number_format">사용가능한 번호을 입력하세요.</string>
+</resources>
