@@ -85,5 +85,29 @@
   <string name="tap_stream_type_baidu_open">android-tradehero-baidu-open</string>
   <string name="tap_stream_type_tencent_install">android-tradehero-tencent-install</string>
   <string name="tap_stream_type_tencent_open">android-tradehero-tencent-open</string>
+  <string name="tap_stream_type_xiaomi_install">android-tradehero-xiaomi-install</string>
+  <string name="tap_stream_type_xiaomi_open">android-tradehero-xiaomi-open</string>
+  <string name="tap_stream_type_91_install">android-tradehero-91-install</string>
+  <string name="tap_stream_type_91_open">android-tradehero-91-open</string>
+  <string name="tap_stream_type_azhuosc_install">android-tradehero-azhuosc-install</string>
+  <string name="tap_stream_type_azhuosc_open">android-tradehero-azhuosc-open</string>
+  <string name="tap_stream_type_azhisc_install">android-tradehero-azhisc-install</string>
+  <string name="tap_stream_type_azhisc_open">android-tradehero-azhisc-open</string>
+  <string name="tap_stream_type_lenovo_install">android-tradehero-lenovo-install</string>
+  <string name="tap_stream_type_lenovo_open">android-tradehero-lenovo-open</string>
+  <string name="tap_stream_type_wandoujia_install">android-tradehero-wandoujia-install</string>
+  <string name="tap_stream_type_wandoujia_open">android-tradehero-wandoujia-open</string>
+  <string name="tap_stream_type_360_install">android-tradehero-360-install</string>
+  <string name="tap_stream_type_360_open">android-tradehero-360-open</string>
+  <string name="tap_stream_type_oppo_install">android-tradehero-oppo-install</string>
+  <string name="tap_stream_type_oppo_open">android-tradehero-oppo-open</string>
+  <string name="tap_stream_type_jifeng_install">android-tradehero-jifeng-install</string>
+  <string name="tap_stream_type_jifeng_open">android-tradehero-jifeng-open</string>
+  <string name="tap_stream_type_yyhui_install">android-tradehero-yyhui-install</string>
+  <string name="tap_stream_type_yyhui_open">android-tradehero-yyhui-open</string>
+  <string name="tap_stream_type_ydmm_install">android-tradehero-ydmm-install</string>
+  <string name="tap_stream_type_ydmm_open">android-tradehero-ydmm-open</string>
+  <string name="tap_stream_type_mptang_install">android-tradehero-mptang-install</string>
+  <string name="tap_stream_type_mptang_open">android-tradehero-mptang-open</string>
   <!--do not translate end-->
 </resources>
