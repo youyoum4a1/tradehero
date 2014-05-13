@@ -15,7 +15,7 @@ interface NewsServiceAsync
     //countries
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);
 
-    //social catefories
+    //social categories
     @GET("/news/categories") void getCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback);
 
     @GET("/news/sources") void getSources(Callback<PaginatedDTO<NewsItemSourceDTO>> callback);
@@ -46,7 +46,6 @@ interface NewsServiceAsync
             @Query("page") int page/*    = 1*/,
             @Query("perPage") int perPage/* = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
-
 
     @GET("/news/securities") void getSecuritiesNewsList(
             @Query("securityId") int securityId,
