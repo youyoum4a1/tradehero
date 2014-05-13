@@ -183,8 +183,10 @@ public class HeroListItemView extends RelativeLayout
     {
         if (heroDTO != null)
         {
-            resetUserIcon();
+            //resetUserIcon();
+            displayDefaultUserIcon();
             picasso.get().load(heroDTO.picture)
+                    .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
                     .into(userIcon, new Callback()
