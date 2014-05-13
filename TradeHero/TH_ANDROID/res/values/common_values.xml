@@ -3,6 +3,9 @@
 
   <dimen name="button_corner_radius">4dp</dimen>
   <color name="button_blue">#3bcaff</color>
-  <color name="button_blue_light">#FFcecfd0</color>
+  <color name="button_gray">#FFcecfd0</color>
+  <color name="button_green">#7fe072</color>
+  <color name="button_green_light">#a7fb9c</color>
+  <color name="button_yellow">#F0E68C</color>
 
 </resources>
