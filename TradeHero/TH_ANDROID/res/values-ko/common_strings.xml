@@ -13,8 +13,8 @@
   <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
   <string name="data_format_d_mmm_yyyy_kk_mm">마지막 업데이트된 시간: d MMM yyyy kk</string>
-  <string name="data_format_dd_mmm_yyyy">dd MMM yyyy</string>
-  <string name="data_format_dd_mmm_hh_mm">dd MMM HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy">yyyy MM월 dd일</string>
+  <string name="data_format_dd_mmm_hh_mm">MMM월 dd일 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">dd MMM HH:mm \'GMT\'</string>
 
@@ -27,7 +27,7 @@
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
-  <string name="dashboard_trending">거래</string>
+  <string name="dashboard_trending">주식거래</string>
   <string name="dashboard_community">소셜</string>
   <string name="dashboard_home">홈</string>
   <string name="dashboard_portfolio">포트폴리오</string>
