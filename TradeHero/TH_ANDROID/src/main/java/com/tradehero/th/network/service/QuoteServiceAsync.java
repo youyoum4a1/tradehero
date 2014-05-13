@@ -7,7 +7,7 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-public interface QuoteServiceAsync
+interface QuoteServiceAsync
 {
     //<editor-fold desc="Get Quote">
     @GET("/securities/{exchange}/{securitySymbol}/quote")

@@ -10,7 +10,7 @@ import retrofit.http.Query;
 
 import java.util.List;
 
-public interface ProviderServiceAsync
+interface ProviderServiceAsync
 {
     //<editor-fold desc="Get Providers">
     @GET("/providers")
