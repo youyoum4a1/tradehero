@@ -1,9 +1,7 @@
 package com.tradehero.th.api.security.key;
 
-
 public class TrendingSecurityListType extends SecurityListType
 {
-    public static final String TAG = TrendingSecurityListType.class.getSimpleName();
     public static final String ALL_EXCHANGES = "allExchanges";
 
     public final String exchange;
