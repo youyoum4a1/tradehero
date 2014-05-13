@@ -110,4 +110,5 @@
   <string name="tap_stream_type_mptang_install">android-tradehero-mptang-install</string>
   <string name="tap_stream_type_mptang_open">android-tradehero-mptang-open</string>
   <!--do not translate end-->
+  <string name="sure_to_delete_message">Delete this message?</string>
 </resources>
