@@ -14,7 +14,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface NewsServiceAsync
+interface NewsServiceAsync
 {
     //countries
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);

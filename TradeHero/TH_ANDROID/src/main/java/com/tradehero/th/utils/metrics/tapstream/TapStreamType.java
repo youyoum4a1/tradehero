@@ -7,7 +7,7 @@ import com.tradehero.th.R;
  */
 public enum TapStreamType
 {
-    GooglePlay(0, R.string.tap_stream_type_install, R.string.tap_stream_type_open),
+    GooglePlay(0, R.string.tap_stream_type_google_install, R.string.tap_stream_type_google_open),
     Baidu(1, R.string.tap_stream_type_baidu_install, R.string.tap_stream_type_baidu_open),
     Tencent(2, R.string.tap_stream_type_tencent_install, R.string.tap_stream_type_tencent_open),
     XiaoMi(3, R.string.tap_stream_type_xiaomi_install, R.string.tap_stream_type_xiaomi_open),

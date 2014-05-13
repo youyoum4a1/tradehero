@@ -3,6 +3,6 @@
 
   <dimen name="button_corner_radius">4dp</dimen>
   <color name="button_blue">@color/follow_button_background</color>
-  <color name="button_blue_light">#FF8CEBFF</color>
+  <color name="button_blue_light">#FFcecfd0</color>
 
 </resources>

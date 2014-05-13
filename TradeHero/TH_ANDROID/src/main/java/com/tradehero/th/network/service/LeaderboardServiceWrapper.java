@@ -11,253 +11,111 @@ import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 
+import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
+import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import retrofit.Callback;
 
 @Singleton public class LeaderboardServiceWrapper
 {
     private final LeaderboardService leaderboardService;
+    private final LeaderboardServiceAsync leaderboardServiceAsync;
 
-    @Inject public LeaderboardServiceWrapper(LeaderboardService leaderboardService)
+    @Inject public LeaderboardServiceWrapper(
+            LeaderboardService leaderboardService,
+            LeaderboardServiceAsync leaderboardServiceAsync)
     {
         super();
         this.leaderboardService = leaderboardService;
+        this.leaderboardServiceAsync = leaderboardServiceAsync;
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
-    public List<LeaderboardDefDTO> getLeaderboardDefinitions() throws RetrofitError
+    public List<LeaderboardDefDTO> getLeaderboardDefinitions()
     {
         return leaderboardService.getLeaderboardDefinitions();
     }
 
-    public void getLeaderboardDefinitions(Callback<List<LeaderboardDefDTO>> callback)
+    public MiddleCallback<List<LeaderboardDefDTO>> getLeaderboardDefinitions(Callback<List<LeaderboardDefDTO>> callback)
     {
-        leaderboardService.getLeaderboardDefinitions(callback);
+        MiddleCallback<List<LeaderboardDefDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        leaderboardServiceAsync.getLeaderboardDefinitions(middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
-    public LeaderboardDTO getLeaderboard(LeaderboardKey leaderboardKey) throws RetrofitError
+    public LeaderboardDTO getLeaderboard(LeaderboardKey leaderboardKey)
     {
-        if (leaderboardKey instanceof PagedLeaderboardKey)
+        if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
         {
-            return getLeaderboard((PagedLeaderboardKey) leaderboardKey);
+            SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
+            return leaderboardService.getLeaderboard(
+                    sortedPerPagedLeaderboardKey.key,
+                    sortedPerPagedLeaderboardKey.page,
+                    sortedPerPagedLeaderboardKey.perPage,
+                    sortedPerPagedLeaderboardKey.sortType);
         }
-        return leaderboardService.getLeaderboard(leaderboardKey.key);
-    }
-
-    public void getLeaderboard(LeaderboardKey leaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        if (leaderboardKey instanceof PagedLeaderboardKey)
+        else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
         {
-            getLeaderboard((PagedLeaderboardKey) leaderboardKey, callback);
-        }
-        else
-        {
-            leaderboardService.getLeaderboard(leaderboardKey.key, callback);
-        }
-    }
-
-    public LeaderboardDTO getLeaderboard(PagedLeaderboardKey pagedLeaderboardKey) throws RetrofitError
-    {
-        if (pagedLeaderboardKey instanceof PerPagedLeaderboardKey)
-        {
-            return getLeaderboard((PerPagedLeaderboardKey) pagedLeaderboardKey);
-        }
-        return leaderboardService.getLeaderboard(
-                pagedLeaderboardKey.key,
-                pagedLeaderboardKey.page);
-    }
-
-    public void getLeaderboard(PagedLeaderboardKey pagedLeaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        if (pagedLeaderboardKey instanceof PerPagedLeaderboardKey)
-        {
-            getLeaderboard((PerPagedLeaderboardKey) pagedLeaderboardKey, callback);
-        }
-        else
-        {
-            leaderboardService.getLeaderboard(
-                    pagedLeaderboardKey.key,
-                    pagedLeaderboardKey.page,
-                    callback);
-        }
-    }
-
-    public LeaderboardDTO getLeaderboard(PerPagedLeaderboardKey perPagedLeaderboardKey) throws RetrofitError
-    {
-        if (perPagedLeaderboardKey instanceof SortedPerPagedLeaderboardKey)
-        {
-            return getLeaderboard((SortedPerPagedLeaderboardKey) perPagedLeaderboardKey);
-        }
-        if (perPagedLeaderboardKey instanceof PerPagedFilteredLeaderboardKey)
-        {
-            return getLeaderboard((PerPagedFilteredLeaderboardKey) perPagedLeaderboardKey);
-        }
-        if (perPagedLeaderboardKey instanceof FriendsPerPagedLeaderboardKey)
-        {
-            return getLeaderboard((FriendsPerPagedLeaderboardKey) perPagedLeaderboardKey);
-        }
-        return leaderboardService.getLeaderboard(
-                perPagedLeaderboardKey.key,
-                perPagedLeaderboardKey.page,
-                perPagedLeaderboardKey.perPage);
-    }
-
-    public void getLeaderboard(PerPagedLeaderboardKey perPagedLeaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        if (perPagedLeaderboardKey instanceof SortedPerPagedLeaderboardKey)
-        {
-            getLeaderboard((SortedPerPagedLeaderboardKey) perPagedLeaderboardKey, callback);
-        }
-        else if (perPagedLeaderboardKey instanceof PerPagedFilteredLeaderboardKey)
-        {
-            getLeaderboard((PerPagedFilteredLeaderboardKey) perPagedLeaderboardKey, callback);
-        }
-        else if (perPagedLeaderboardKey instanceof FriendsPerPagedLeaderboardKey)
-        {
-            getLeaderboard((FriendsPerPagedLeaderboardKey) perPagedLeaderboardKey, callback);
-        }
-        else
-
-        {
-            leaderboardService.getLeaderboard(
-                    perPagedLeaderboardKey.key,
-                    perPagedLeaderboardKey.page,
-                    perPagedLeaderboardKey.perPage,
-                    callback);
-        }
-    }
-
-    public LeaderboardDTO getLeaderboard(SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey) throws RetrofitError
-    {
-        return leaderboardService.getLeaderboard(
-                sortedPerPagedLeaderboardKey.key,
-                sortedPerPagedLeaderboardKey.page,
-                sortedPerPagedLeaderboardKey.perPage,
-                sortedPerPagedLeaderboardKey.sortType);
-    }
-
-    public void getLeaderboard(SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        leaderboardService.getLeaderboard(
-                sortedPerPagedLeaderboardKey.key,
-                sortedPerPagedLeaderboardKey.page,
-                sortedPerPagedLeaderboardKey.perPage,
-                sortedPerPagedLeaderboardKey.sortType,
-                callback);
-    }
-
-    public LeaderboardDTO getLeaderboard(FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey) throws RetrofitError
-    {
-        if (friendsPerPagedLeaderboardKey.includeFoF == null)
-        {
-            return leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    friendsPerPagedLeaderboardKey.perPage);
-        }
-        else if (friendsPerPagedLeaderboardKey.perPage == null)
-        {
-            return leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page);
-        }
-        else if (friendsPerPagedLeaderboardKey.page == null)
-        {
-            return leaderboardService.getFriendsLeaderboard();
-        }
-        return leaderboardService.getFriendsLeaderboard(
-                friendsPerPagedLeaderboardKey.page,
-                friendsPerPagedLeaderboardKey.perPage,
-                friendsPerPagedLeaderboardKey.includeFoF);
-    }
-
-    public void getLeaderboard(FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        if (friendsPerPagedLeaderboardKey.includeFoF == null)
-        {
-            leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    friendsPerPagedLeaderboardKey.perPage,
-                    callback);
-        }
-        else if (friendsPerPagedLeaderboardKey.perPage == null)
-        {
-            leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    callback);
-        }
-        else if (friendsPerPagedLeaderboardKey.page == null)
-        {
-            leaderboardService.getFriendsLeaderboard(callback);
-        }
-        else
-        {
-            leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    friendsPerPagedLeaderboardKey.perPage,
-                    friendsPerPagedLeaderboardKey.includeFoF,
-                    callback);
-        }
-    }
-
-    public LeaderboardDTO getLeaderboard(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey) throws RetrofitError
-    {
-        if (perPagedFilteredLeaderboardKey.perPage == null)
-        {
+            PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
             return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
-                    perPagedFilteredLeaderboardKey.winRatio,
-                    perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
-                    perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
-                    perPagedFilteredLeaderboardKey.page);
-        }
-        else if (perPagedFilteredLeaderboardKey.page == null)
-        {
-            return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
-                    perPagedFilteredLeaderboardKey.winRatio,
-                    perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
-                    perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility);
-        }
-        return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
-                perPagedFilteredLeaderboardKey.winRatio,
-                perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                perPagedFilteredLeaderboardKey.averageHoldingDays,
-                perPagedFilteredLeaderboardKey.minSharpeRatio,
-                perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
-                perPagedFilteredLeaderboardKey.page,
-                perPagedFilteredLeaderboardKey.perPage);
-    }
-
-    public void getLeaderboard(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey, Callback<LeaderboardDTO> callback)
-    {
-        if (perPagedFilteredLeaderboardKey.perPage == null)
-        {
-            leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
                     perPagedFilteredLeaderboardKey.averageHoldingDays,
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
                     perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
                     perPagedFilteredLeaderboardKey.page,
-                    callback);
+                    perPagedFilteredLeaderboardKey.perPage);
         }
-        else if (perPagedFilteredLeaderboardKey.page == null)
+        else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
         {
-            leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
-                    perPagedFilteredLeaderboardKey.winRatio,
-                    perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
-                    perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
-                    callback);
+            FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
+            return leaderboardService.getFriendsLeaderboard(
+                    friendsPerPagedLeaderboardKey.page,
+                    friendsPerPagedLeaderboardKey.perPage,
+                    friendsPerPagedLeaderboardKey.includeFoF);
         }
-        else
+        else if (leaderboardKey instanceof PerPagedLeaderboardKey)
         {
-            leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
+            PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
+            return leaderboardService.getLeaderboard(
+                    perPagedLeaderboardKey.key,
+                    perPagedLeaderboardKey.page,
+                    perPagedLeaderboardKey.perPage);
+        }
+        else if (leaderboardKey instanceof PagedLeaderboardKey)
+        {
+            PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+            return leaderboardService.getLeaderboard(
+                    pagedLeaderboardKey.key,
+                    pagedLeaderboardKey.page,
+                    null);
+        }
+        return leaderboardService.getLeaderboard(leaderboardKey.key, null, null);
+    }
+
+    public MiddleCallback<LeaderboardDTO> getLeaderboard(LeaderboardKey leaderboardKey, Callback<LeaderboardDTO> callback)
+    {
+        MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
+        {
+            SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
+            leaderboardServiceAsync.getLeaderboard(
+                    sortedPerPagedLeaderboardKey.key,
+                    sortedPerPagedLeaderboardKey.page,
+                    sortedPerPagedLeaderboardKey.perPage,
+                    sortedPerPagedLeaderboardKey.sortType,
+                    middleCallback);
+        }
+        else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
+        {
+            PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
+            leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
                     perPagedFilteredLeaderboardKey.averageHoldingDays,
@@ -265,8 +123,102 @@ import retrofit.RetrofitError;
                     perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
                     perPagedFilteredLeaderboardKey.page,
                     perPagedFilteredLeaderboardKey.perPage,
-                    callback);
+                    middleCallback);
         }
+        else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
+        {
+            FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
+            leaderboardServiceAsync.getFriendsLeaderboard(
+                    friendsPerPagedLeaderboardKey.page,
+                    friendsPerPagedLeaderboardKey.perPage,
+                    friendsPerPagedLeaderboardKey.includeFoF,
+                    middleCallback);
+        }
+        else if (leaderboardKey instanceof PerPagedLeaderboardKey)
+        {
+            PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
+            leaderboardServiceAsync.getLeaderboard(
+                    perPagedLeaderboardKey.key,
+                    perPagedLeaderboardKey.page,
+                    perPagedLeaderboardKey.perPage,
+                    middleCallback);
+        }
+        else if (leaderboardKey instanceof PagedLeaderboardKey)
+        {
+            PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+            leaderboardServiceAsync.getLeaderboard(
+                    pagedLeaderboardKey.key,
+                    pagedLeaderboardKey.page,
+                    null,
+                    middleCallback);
+        }
+        else
+        {
+            leaderboardServiceAsync.getLeaderboard(leaderboardKey.key, null, null, middleCallback);
+        }
+        return middleCallback;
     }
     //</editor-fold>
+
+    //<editor-fold desc="Get Positions For Leaderboard Mark User">
+    public GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
+            LeaderboardMarkUserId key)
+    {
+        if (key instanceof PerPagedLeaderboardMarkUserId)
+        {
+            PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
+            return leaderboardService.getPositionsForLeaderboardMarkUser(
+                    perPagedLeaderboardMarkUserId.key,
+                    perPagedLeaderboardMarkUserId.page,
+                    perPagedLeaderboardMarkUserId.perPage);
+        }
+        else if (key instanceof PagedLeaderboardMarkUserId)
+        {
+            PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
+            return leaderboardService.getPositionsForLeaderboardMarkUser(
+                    pagedLeaderboardMarkUserId.key,
+                    pagedLeaderboardMarkUserId.page,
+                    null);
+        }
+        return leaderboardService.getPositionsForLeaderboardMarkUser(
+                key.key,
+                null,
+                null);
+    }
+
+    public MiddleCallback<GetLeaderboardPositionsDTO> getPositionsForLeaderboardMarkUser(
+            LeaderboardMarkUserId key,
+            Callback<GetLeaderboardPositionsDTO> callback)
+    {
+        MiddleCallback<GetLeaderboardPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        if (key instanceof PerPagedLeaderboardMarkUserId)
+        {
+            PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
+            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+                    perPagedLeaderboardMarkUserId.key,
+                    perPagedLeaderboardMarkUserId.page,
+                    perPagedLeaderboardMarkUserId.perPage,
+                    middleCallback);
+        }
+        else if (key instanceof PagedLeaderboardMarkUserId)
+        {
+            PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
+            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+                    pagedLeaderboardMarkUserId.key,
+                    pagedLeaderboardMarkUserId.page,
+                    null,
+                    middleCallback);
+        }
+        else
+        {
+            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+                    key.key,
+                    null,
+                    null,
+                    middleCallback);
+        }
+        return middleCallback;
+    }
+    //</editor-fold>
+
 }
