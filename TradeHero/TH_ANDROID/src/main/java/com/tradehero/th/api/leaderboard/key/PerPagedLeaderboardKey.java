@@ -4,7 +4,6 @@ import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
 
-
 public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardKey.class.getName() + ".perPage";
