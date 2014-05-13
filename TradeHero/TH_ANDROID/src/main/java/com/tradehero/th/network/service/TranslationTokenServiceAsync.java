@@ -4,7 +4,7 @@ import com.tradehero.th.api.translation.TranslationToken;
 import retrofit.Callback;
 import retrofit.http.GET;
 
-public interface TranslationTokenServiceAsync
+interface TranslationTokenServiceAsync
 {
     @GET("/translation/token/") void requestToken(Callback<TranslationToken> callback);
 }

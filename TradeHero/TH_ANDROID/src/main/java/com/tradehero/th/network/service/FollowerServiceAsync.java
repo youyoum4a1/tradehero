@@ -6,7 +6,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-public interface FollowerServiceAsync
+interface FollowerServiceAsync
 {
     //<editor-fold desc="Get All Followers Summary">
     @GET("/followersSummary/all/{heroId}")

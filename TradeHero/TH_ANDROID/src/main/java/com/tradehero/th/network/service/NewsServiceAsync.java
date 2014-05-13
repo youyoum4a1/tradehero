@@ -10,7 +10,7 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
 
-public interface NewsServiceAsync
+interface NewsServiceAsync
 {
     //countries
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);

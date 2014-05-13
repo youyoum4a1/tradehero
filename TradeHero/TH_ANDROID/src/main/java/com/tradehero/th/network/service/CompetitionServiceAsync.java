@@ -12,7 +12,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface CompetitionServiceAsync
+interface CompetitionServiceAsync
 {
     //<editor-fold desc="Get Competitions">
     @GET("/providers/{providerId}/competitions")
