@@ -3,32 +3,36 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import java.util.List;
+import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface ProviderService
+import java.util.List;
+
+public interface ProviderServiceAsync
 {
     //<editor-fold desc="Get Providers">
     @GET("/providers")
-    List<ProviderDTO> getProviders();
+    void getProviders(Callback<List<ProviderDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
     @GET("/providers/{providerId}/securities")
-    List<SecurityCompactDTO> getSecurities(
+    void getSecurities(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage);
+            @Query("perPage") Integer perPage,
+            Callback<List<SecurityCompactDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Warrant Underlyers">
     @GET("/providers/{providerId}/warrantUnderlyers")
-    List<SecurityCompactDTO> getWarrantUnderlyers(
+    void getWarrantUnderlyers(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage);
+            @Query("perPage") Integer perPage,
+            Callback<List<SecurityCompactDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Suggested Warrant">
@@ -90,7 +94,8 @@ public interface ProviderService
 
     //<editor-fold desc="Get Help Videos">
     @GET("/providers/{providerId}/helpVideos")
-    List<HelpVideoDTO> getHelpVideos(
-            @Path("providerId") int providerId);
+    void getHelpVideos(
+            @Path("providerId") int providerId,
+            Callback<List<HelpVideoDTO>> callback);
     //</editor-fold>
 }
