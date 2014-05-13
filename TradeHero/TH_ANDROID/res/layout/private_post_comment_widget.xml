@@ -39,6 +39,9 @@
           />
     </com.tradehero.common.widget.BetterViewAnimator>
 
+    <include
+        layout="@layout/discussion_edit_post_mention_buttons"
+        />
     <EditText
         android:id="@+id/post_comment_text"
         android:layout_centerVertical="true"
@@ -46,7 +49,6 @@
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/common_height_40"
         android:inputType="text|textMultiLine|textImeMultiLine"
         android:hint="@string/timeline_discussion_comment_box_hint"
         android:gravity="left|top"

@@ -1,20 +1,18 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.models.translation.TranslationResult;
-import retrofit.Callback;
+import com.tradehero.th.api.translation.bing.BingTranslationResult;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
 
-public interface TranslationServiceAsync
+public interface BingTranslationService
 {
-    @GET("/v2/Http.svc/Translate") void requestForTranslation(
+    @GET("/v2/Http.svc/Translate") BingTranslationResult requestForTranslation(
             @Header("Authorization") String authorization,
             @Query("from") String from,
             @Query("to") String to,
             @Query("contentType") String contentType,
-            @Query("text") String text,
-            Callback<TranslationResult> callback);
+            @Query("text") String text);
 }
 
 //        Get access_token

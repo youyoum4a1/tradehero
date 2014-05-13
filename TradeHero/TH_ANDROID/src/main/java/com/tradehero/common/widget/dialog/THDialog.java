@@ -33,6 +33,22 @@ public class THDialog {
         void onDialogDismiss();
     }
 
+    public static void showTranslationResult(Context context, String text)
+    {
+        THDialog.showCenterDialog(
+                context,
+                context.getString(R.string.translation_result),
+                text, null,
+                context.getResources().getString(android.R.string.ok),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+    }
 
     public static Dialog showCenterDialog(final Context context,
                                           String title,

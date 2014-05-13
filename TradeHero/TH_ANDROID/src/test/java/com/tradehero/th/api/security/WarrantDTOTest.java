@@ -11,7 +11,6 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOTest

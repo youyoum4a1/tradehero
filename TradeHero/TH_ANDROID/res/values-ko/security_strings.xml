@@ -2,19 +2,19 @@
 <resources>
 
   <!-- Security Info -->
-  <string name="security_previous_close">Prev. Close</string>
-  <string name="security_open">Open</string>
-  <string name="security_days_high">High</string>
-  <string name="security_days_low">Low</string>
-  <string name="security_market_cap">Market Cap</string>
-  <string name="security_pe_ratio">P/E Ratio</string>
+  <string name="security_previous_close">마감</string>
+  <string name="security_open">시작가</string>
+  <string name="security_days_high">최고</string>
+  <string name="security_days_low">최저</string>
+  <string name="security_market_cap">시가총액</string>
+  <string name="security_pe_ratio">P/E 지수</string>
   <string name="security_eps">EPS</string>
-  <string name="security_volume">Volume</string>
-  <string name="security_avg_volume">Avg. Volume</string>
-  <string name="security_market_status">Market status</string>
-  <string name="security_info">Info</string>
-  <string name="security_discussions">Discussions</string>
-  <string name="security_news">News</string>
+  <string name="security_volume">수량</string>
+  <string name="security_avg_volume">평균 수량</string>
+  <string name="security_market_status">시세</string>
+  <string name="security_info">정보</string>
+  <string name="security_discussions">토론</string>
+  <string name="security_news">뉴스</string>
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>
@@ -33,20 +33,20 @@
   <string name="warrant_info_issuer">Issuer</string>
   <string name="warrant_info_strike_price_value_display">%1$s %2$s</string>
 
-  <string name="error_find_security_id_to_int">Could not find this security</string>
-  <string name="error_fetch_security_list_info">There was an error when fetching the list of securities</string>
-  <string name="error_fetch_security_info">There was an error when fetching the security information</string>
-  <string name="error_fetch_detailed_security_info">There was an error when fetching the detailed security information</string>
-  <string name="error_fetch_quote">There was an error fetching quote information</string>
-  <string name="security_close">Close</string>
+  <string name="error_find_security_id_to_int">해당 주식을 찾을 수 없습니다</string>
+  <string name="error_fetch_security_list_info">해당 주식을 불러오는데 오류가 생겼습니다</string>
+  <string name="error_fetch_security_info">해당 주식 정보를 불러오는데 오류가 생겼습니다</string>
+  <string name="error_fetch_detailed_security_info">해당 주식 상세정보를 불러오는데 오류가 생겼습니다</string>
+  <string name="error_fetch_quote">해당 주식 가격정보를 불러오는데 오류가 생겼습니다</string>
+  <string name="security_close">마감</string>
 
   <!--share-->
-  <string name="need_install_wechat">Please install weChat</string>
-  <string name="need_update_wechat">Please update weChat to 4.2 or later</string>
-  <string name="share_to_wechat_timeline_news">I\'ve shared a news on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_create_discussion">I\'ve created a discussion on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_discussion">I\'ve shared a discussion on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_timeline">I\'ve shared my timeline on tradehero, come and join us.</string>
-  <string name="share_to_wechat_timeline_trade">I\'ve done a stock trade on tradehero, come and join us.</string>
-  <string name="share_success">Your share is success</string>
+  <string name="need_install_wechat">weChat을 인스톨하세요</string>
+  <string name="need_update_wechat">weChat to 4.2 이상 버전으로 업데이트하세요</string>
+  <string name="share_to_wechat_timeline_news">트레이드히어로에 뉴스를 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요</string>
+  <string name="share_to_wechat_timeline_create_discussion">트레이드히어로에 토론을 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
+  <string name="share_to_wechat_timeline_discussion">I트레이드히어로에 토론을 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
+  <string name="share_to_wechat_timeline_timeline">트레이드히어로에 타임라인을 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
+  <string name="share_to_wechat_timeline_trade">트레이드히어로에서 주식거래중입니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
+  <string name="share_success">성공적으로 공유하였습니다</string>
 </resources>

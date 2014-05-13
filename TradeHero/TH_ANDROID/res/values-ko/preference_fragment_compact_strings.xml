@@ -2,10 +2,10 @@
 <resources>
 
   <!--  Strings for possible PreferenceActivity Back/Next buttons -->
-  <string name="preference_fragment_compact_back_button_label">Back</string>
-  <string name="preference_fragment_compact_next_button_label">Next</string>
+  <string name="preference_fragment_compact_back_button_label">뒤로</string>
+  <string name="preference_fragment_compact_next_button_label">다음</string>
 
   <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
-  <string name="preference_fragment_compact_skip_button_label">Skip</string>
+  <string name="preference_fragment_compact_skip_button_label">건너뛰기</string>
 
 </resources>

@@ -1,10 +1,7 @@
 package com.tradehero.th.api.market;
 
-
 public class CurrencyDTO
 {
-    public static final String TAG = CurrencyDTO.class.getSimpleName();
-
     public int id;
     public String symbol;
     public String thDisplayString;

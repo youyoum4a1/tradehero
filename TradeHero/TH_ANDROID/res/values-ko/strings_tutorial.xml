@@ -4,46 +4,40 @@
   <!--timeline-->
   <string name="tutorial_timeline_content">
     <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
-  <string name="tutorial_timeline_header">Welcome to TradeHero!</string>
-  <string name="tutorial_portfolio_list_header">Portfolios</string>
+  <string name="tutorial_timeline_header">트레이드히어로에 오신것을 환영합니다!</string>
+  <string name="tutorial_portfolio_list_header">포트폴리오</string>
 
   <!--Store screen-->
-  <string name="tutorial_store_screen_content">Purchase TradeHero dollars, credits, stock alerts, and portfolio reset here. You can also manage your
-    purchases.
+  <string name="tutorial_store_screen_content">트레이드히어로 게임머니와 크레딧으로 주식 알림기능과 포트폴리오 초기화 기능을 이용하세요. 구매관리도 할 수 있습니다. 
   </string>
   <string name="tutorial_store_screen_header">Store</string>
 
   <!--Portfolio list-->
-  <string name="tutorial_portfolio_list_content">Lists names of TradeHero users that you recently viewed. Drill down each name to see the position
-    details.
+  <string name="tutorial_portfolio_list_content"> 최근 방문한 트레이드히어로 사용자 목록. 각 사용자명을 누르면 자세한 거래정보를 확인할 수 있습니다. 
   </string>
 
   <!--Leaderboard-->
   <string name="tutorial_leaderboard_content">
     <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
-  <string name="tutorial_leaderboard_header">Community</string>
+  <string name="tutorial_leaderboard_header">커뮤니티</string>
 
   <!--Trending-->
-  <string name="tutorial_trending_header">Search for stocks</string>
-  <string name="tutorial_trending_content">Search for stocks across all our supported exchanges by typing into the search bar on the top of the
-    screen. You can search by company or symbol name.\n\nIf you prefer, you can scroll through the trending stocks: these are the stocks that other
-    TradeHero users are buying and selling.
+  <string name="tutorial_trending_header">주식 검색</string>
+  <string name="tutorial_trending_content">상단에 있는 검색창에서 지원되는 주식시장의 주식을 검색하세요. 회사명 혹은 종목코드로 검색 가능합니다. 트레이드히어로 사용자들이 사고 파는 주식은 인기종목을 스크롤하면 확인할 수 있습니다. 
   </string>
-  <string name="tutorial_buy_sell_header">Buy / Sell</string>
-  <string name="tutorial_buy_sell_content">Trade Price* is set to the market ask price when buying, and the bid price when selling. This is to
-    simulate Market Order type transactions. For some stocks, we don\'t have ask and bid data. For these stocks, we use the last traded price of the
-    stock.\n\nTrade Quantity is limited to 20% of Average Daily Volume or Current Day Volume, whichever is higher. Your Trade Value may be limited due
-    to this constraint.\n\n*Price is delayed as specified by financial exchanges or our data providers.
+  <string name="tutorial_buy_sell_header">매수 / 매도</string>
+  <string name="tutorial_buy_sell_content">거래가격*은 매수시 장중 호가로 설정되어 있으며 매도시 입찰가로 설정되어 있습니다. 이는 증시의 거래타입과 유사하게 맞추어져 있습니다. 일부 주식은 호가와 입찰가 정보가 없을 수도 있으며 이경우에는 가장 최근 거래가를 적용합니다. 거래수량은 일일 평균 거래량 혹은 당일 거래량 중 더 많은 쪽을 기준으로 20%를 넘지 못합니다. 이때문에 트레이드히어로에서의 거래량이 제한될 수 있습니다. 
+  *모든 가격은 증시 혹은 데이터제공자에 따라 지연될 수 있습니다. 
   </string>
 
   <!--Positions list-->
-  <string name="tutorial_position_list_header">Position Level ROI</string>
+  <string name="tutorial_position_list_header">포지션 레벨 수익률 </string>
   <string name="tutorial_position_list_content1">
     <![CDATA[All leaderboards may be ranked by traders\' return on investment (ROI) on the invested amounts of all trades that qualify for the leaderboard.\n\nFor time-restricted leaderboards (e.g. Last 30 Days) trades qualify by being opened or closed in the time period.\n\nFor security-restricted leaderboards (e.g. Asia A-Team) trades qualify by being on the appropriate underlying security.\n\n]]></string>
   <string name="tutorial_position_list_content2">
     <![CDATA[NOTE:\nWe reserve the right to exclude certain trades that have incorrect price data (e.g. penny stocks below US$ 0.01 or trades with very large quantities) You can view the specific trades that make up the leaderboard P&L by drilling down on a leaderboard row and viewing the list of positions.\n\n]]></string>
   <string name="tutorial_position_list_formula_left_text">ROI =</string>
   <string name="tutorial_position_list_formula_top_text"><![CDATA[Total P&L (realized + unrealized)]]></string>
-  <string name="tutorial_position_list_formula_bottom_text">Total Invested (in qualifying trades)</string>
+  <string name="tutorial_position_list_formula_bottom_text">총 투자금액 (인중된 거래 기준)</string>
 
 </resources>

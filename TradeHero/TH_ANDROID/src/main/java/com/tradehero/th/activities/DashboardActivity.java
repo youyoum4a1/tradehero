@@ -286,7 +286,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
     {
-        Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        Fragment currentDashboardFragment = navigator.getCurrentFragment();
         if (!(fragmentClass.isInstance(currentDashboardFragment)))
         {
             getNavigator().pushFragment(fragmentClass);

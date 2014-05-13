@@ -1,8 +1,9 @@
-package com.tradehero.th.models.translation;
+package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.th.api.translation.TranslationResult;
 import org.simpleframework.xml.Text;
 
-public class TranslationResult
+public class BingTranslationResult extends TranslationResult
 {
     private String fromLanguageCode;
     private String languageCode;
@@ -43,7 +44,7 @@ public class TranslationResult
     @Override
     public String toString()
     {
-        return "TranslationResult{" +
+        return "BingTranslationResult{" +
                 "fromLanguageCode='" + fromLanguageCode + '\'' +
                 ", languageCode='" + languageCode + '\'' +
                 ", content='" + content + '\'' +

@@ -10,10 +10,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
 {
-    public static final String TAG = TradeListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
     @Inject protected TradeServiceWrapper tradeServiceWrapper;

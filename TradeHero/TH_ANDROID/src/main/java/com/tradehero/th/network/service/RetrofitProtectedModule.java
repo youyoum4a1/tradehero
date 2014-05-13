@@ -26,6 +26,16 @@ public class RetrofitProtectedModule
         return adapter.create(AlertServiceAsync.class);
     }
 
+    @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionServiceAsync.class);
+    }
+
+    @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
+    {
+        return adapter.create(FollowerServiceAsync.class);
+    }
+
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceAsync.class);
@@ -61,11 +71,16 @@ public class RetrofitProtectedModule
         return adapter.create(TradeServiceAsync.class);
     }
 
-    @Provides @Singleton TranslationServiceAsync provideTranslationServiceAsync(RestAdapter.Builder builder)
+    @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
     {
-        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+        return adapter.create(TranslationTokenServiceAsync.class);
+    }
+
+    @Provides @Singleton BingTranslationServiceAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
-                .build().create(TranslationServiceAsync.class);
+                .build().create(BingTranslationServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)

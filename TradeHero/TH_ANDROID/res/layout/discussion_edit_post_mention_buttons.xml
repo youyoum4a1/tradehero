@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-  <LinearLayout
+  <com.tradehero.th.fragments.discussion.MentionActionButtonsView
       android:orientation="horizontal"
       android:id="@+id/mention_widget"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:layout_gravity="center_vertical"
+      >
     <TextView
         android:id="@+id/btn_mention"
         style="@style/TH.TextSocialButtons"
@@ -19,5 +22,5 @@
         android:text="@string/hashtag"
         android:textSize="15sp"
         />
-  </LinearLayout>
+  </com.tradehero.th.fragments.discussion.MentionActionButtonsView>
 </merge>

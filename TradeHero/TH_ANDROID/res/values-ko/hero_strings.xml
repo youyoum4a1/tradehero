@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="relation_following">Following</string>
-  <string name="error_fetch_hero">There was an error when fetching the hero information</string>
+  <string name="relation_following">팔로우 중</string>
+  <string name="error_fetch_hero">히어로 정보를 불러오는데 실패하였습니</string>
 
 </resources>
