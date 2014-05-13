@@ -825,25 +825,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayActionBarElements();
         displayPageElements();
 
-        int avgDailyVolume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
-        {
-            avgDailyVolume = 0;
-        }
-        else
-        {
-            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
-        }
-
-        int volume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.volume == null)
-        {
-            volume = 0;
-        }
-        else
-        {
-            volume = (int) Math.ceil(securityCompactDTO.volume);
-        }
+        //TODO not know do what, temp remove by alex
+        //int avgDailyVolume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+        //{
+        //    avgDailyVolume = 0;
+        //}
+        //else
+        //{
+        //    avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
+        //}
+        //
+        //int volume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.volume == null)
+        //{
+        //    volume = 0;
+        //}
+        //else
+        //{
+        //    volume = (int) Math.ceil(securityCompactDTO.volume);
+        //}
     }
 
     public void displayPageElements()
