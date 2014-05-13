@@ -7,17 +7,19 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import timber.log.Timber;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import timber.log.Timber;
 
 public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper>
         implements
-        View.OnClickListener
+        View.OnClickListener,View.OnLongClickListener
 {
     private MessageOnClickListener messageOnClickListener;
+    private MessageOnLongClickListener messageOnLongClickListener;
     private Set<MessageHeaderId> markedDeletedIds;
 
     public MessageListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
@@ -36,6 +38,7 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         iconView.setTag(position);
         iconView.setOnClickListener(this);
         contentView.setOnClickListener(this);
+        contentView.setOnLongClickListener(this);
         //((SwipeListView)viewGroup).recycle(v, position);
         return v;
     }
@@ -57,6 +60,27 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
             }
         }
     }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Timber.d("MessageListAdapter onClick %s", v.getTag());
+        if (v.getTag() != null && messageOnLongClickListener != null)
+        {
+            Integer position = (Integer) v.getTag();
+            if (v.getId() == R.id.main_content_wrapper)
+            {
+                messageOnLongClickListener.onMessageLongClick(position,
+                        MessageOnClickListener.TYPE_CONTENT);
+            }
+            else if (v.getId() == R.id.message_item_icon)
+            {
+                messageOnLongClickListener.onMessageLongClick(position, MessageOnClickListener.TYPE_ICON);
+            }
+        }
+        return true;
+    }
+
+
 
     @Override protected void fineTune(int position, MessageHeaderId dto,
             MessageItemViewWrapper dtoView)
@@ -139,6 +163,11 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
         this.messageOnClickListener = messageOnClickListener;
     }
 
+    public void setMessageOnLongClickListener(MessageOnLongClickListener messageOnLongClickListener)
+    {
+        this.messageOnLongClickListener = messageOnLongClickListener;
+    }
+
     public static interface MessageOnClickListener
     {
         public static final int TYPE_ICON = 1;
@@ -146,4 +175,13 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
         void onMessageClick(int position, int type);
     }
+
+    public static interface MessageOnLongClickListener
+    {
+        public static final int TYPE_ICON = 1;
+        public static final int TYPE_CONTENT = 2;
+
+        void onMessageLongClick(int position,int type);
+    }
+
 }
