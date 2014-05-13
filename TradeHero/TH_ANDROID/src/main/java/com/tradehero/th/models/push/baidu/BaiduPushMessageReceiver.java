@@ -102,7 +102,10 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         Notification notification = customPushNotificationBuilder.construct(context);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
+
+        //TODO if we set PendingIntent.FLAG_ONE_SHOT, only the first notification will jump to new fragment. So temp remove it by alex
+        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), 0);
+        //notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         int msgId;
