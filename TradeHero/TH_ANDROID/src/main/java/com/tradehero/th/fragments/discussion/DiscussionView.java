@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -154,6 +155,17 @@ public class DiscussionView extends FrameLayout
         discussionList.setAdapter(discussionListAdapter);
         scrollListener = createFlagNearEndScrollListener();
         discussionList.setOnScrollListener(scrollListener);
+        discussionList.setOnTouchListener(new OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                if (postCommentView != null)
+                {
+                    postCommentView.dismissKeypad();
+                }
+                return false;
+            }
+        });
         if (postCommentView != null)
         {
             postCommentView.setCommentPostedListener(createCommentPostedListener());
@@ -169,6 +181,7 @@ public class DiscussionView extends FrameLayout
         }
         discussionList.setAdapter(null);
         discussionList.setOnScrollListener(null);
+        discussionList.setOnTouchListener(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();

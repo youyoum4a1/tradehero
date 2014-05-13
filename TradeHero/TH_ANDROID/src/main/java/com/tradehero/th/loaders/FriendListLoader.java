@@ -8,7 +8,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
     private static final String CONTACT_ID_SORT_ORDER = Contacts._ID + " ASC";
     private static final String EMAIL_CONTACT_ID_SORT_ORDER = Email.CONTACT_ID + " ASC";
 
-    @Inject protected Lazy<UserService> userService;
+    @Inject protected Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
 
     private List<UserFriendsDTO> contactEntries;
@@ -178,6 +178,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     private void retrieveFriendList()
     {
-        userFriendsDTOs = userService.get().getFriends(currentUserId.get());
+        userFriendsDTOs = userServiceWrapper.get().getFriends(currentUserId.toUserBaseKey());
     }
 }

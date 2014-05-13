@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -38,9 +39,9 @@ import retrofit.client.Response;
 public class NewsDetailFullView extends LinearLayout
         implements DTOView<NewsItemDTO>
 {
-    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
+    @InjectView(R.id.news_detail_wrapper) BetterViewAnimator mNewsContentWrapper;
     @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
-    @InjectView(R.id.news_detail_loading) TextView mNewsDetailLoading;
+    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
     @InjectView(R.id.news_detail_reference) GridView mNewsDetailReference;
     @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
     @InjectView(R.id.news_detail_reference_container) LinearLayout mNewsDetailReferenceContainer;
@@ -127,6 +128,7 @@ public class NewsDetailFullView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -141,19 +143,27 @@ public class NewsDetailFullView extends LinearLayout
         this.newsItemDTO = dto;
         if (dto != null)
         {
-            if (dto.text != null && !dto.text.isEmpty())
-            {
-                mNewsDetailContent.setText(dto.text);
+            displayNewsDetailContent(dto);
 
-                mNewsDetailContent.setVisibility(View.VISIBLE);
-                mNewsDetailLoading.setVisibility(View.GONE);
-            }
+            displaySecurityLogoList(dto);
+        }
+    }
 
-            if (dto.securityIds != null && !dto.securityIds.isEmpty())
-            {
-                unsetFetchMultipleSecurityMiddleCallback();
-                fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.securityIds, createNewsDetailSecurityCallback());
-            }
+    private void displaySecurityLogoList(NewsItemDTO dto)
+    {
+        if (dto.securityIds != null && !dto.securityIds.isEmpty())
+        {
+            unsetFetchMultipleSecurityMiddleCallback();
+            fetchMultipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(dto.securityIds, createNewsDetailSecurityCallback());
+        }
+    }
+
+    private void displayNewsDetailContent(NewsItemDTO dto)
+    {
+        if (mNewsDetailContent != null && dto.text != null)
+        {
+            mNewsDetailContent.setText(dto.text);
+            mNewsContentWrapper.setDisplayedChildByLayoutId(mNewsDetailContent.getId());
         }
     }
 
@@ -179,7 +189,7 @@ public class NewsDetailFullView extends LinearLayout
 
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
-                lp.width = 200 * securityCompactDTOList.size();
+                lp.width = (int) getResources().getDimension(R.dimen.stock_item_width) * securityCompactDTOList.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
                 mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
                 simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));

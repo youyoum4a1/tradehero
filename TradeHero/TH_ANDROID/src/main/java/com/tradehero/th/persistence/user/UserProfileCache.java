@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.user;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
@@ -18,7 +18,7 @@ import javax.inject.Singleton;
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<UserService> userService;
+    @Inject protected Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected Lazy<UserProfileCompactCache> userProfileCompactCache;
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<LeaderboardCache> leaderboardCache;
@@ -33,7 +33,7 @@ import javax.inject.Singleton;
     @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
-        return userService.get().getUser(key.key);
+        return userServiceWrapper.get().getUser(key);
     }
 
     public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable

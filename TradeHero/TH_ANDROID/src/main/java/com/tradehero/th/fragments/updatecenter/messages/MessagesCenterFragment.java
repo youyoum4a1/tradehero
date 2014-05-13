@@ -1,9 +1,6 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -21,6 +18,7 @@ import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -47,17 +45,19 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, MessageListAdapter.MessageOnClickListener,
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
+        MessageListAdapter.MessageOnLongClickListener,
         PullToRefreshBase.OnRefreshListener2<SwipeListView>
 {
     public static final int DEFAULT_PER_PAGE = 42;
@@ -263,6 +263,11 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onItemClick %d", position);
     }
 
+    @Override public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Timber.d("onItemLongClick %d", position);
+        return false;
+    }
+
     /**
      * subview of item view is clicked.
      */
@@ -279,6 +284,33 @@ public class MessagesCenterFragment extends DashboardFragment
             pushHeroProfileFrgment(position);
         }
 
+    }
+
+    @Override
+    public void onMessageLongClick(int position, int type) {
+        Timber.d("onMessageLongClick position:%d,type:%d", position, type);
+        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT || type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
+        {
+            createDeleteMessageDialog(position);
+        }
+    }
+
+    private void createDeleteMessageDialog(final int position) {
+        THDialog.showCenterDialog(getActivity(),null,
+                getResources().getString(R.string.sure_to_delete_message), getResources().getString(android.R.string.cancel),
+                getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if(which == DialogInterface.BUTTON_POSITIVE){
+                    dialog.dismiss();
+                    removeMessageIfNecessary(position);
+                }else if(which == DialogInterface.BUTTON_NEGATIVE){
+                    dialog.dismiss();
+                }
+            }
+        });
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -355,6 +387,7 @@ public class MessagesCenterFragment extends DashboardFragment
         ListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
         SwipeListView swipeListView = (SwipeListView) listView;
 
         this.swipeListener = new SwipeListener();
@@ -455,6 +488,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.setMessageOnLongClickListener(this);
         adapter.appendMore(messageKeys);
     }
 
@@ -487,6 +521,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.setMessageOnLongClickListener(this);
         adapter.clearDeletedSet();
         adapter.appendMore(messageKeys);
     }
@@ -685,8 +720,6 @@ public class MessagesCenterFragment extends DashboardFragment
             }
             resetContent(value);
             onRefreshCompleted();
-            Timber.d("refresh onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
-                    fromCache);
             //TODO how to invalidate the old data ..
         }
 

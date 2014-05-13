@@ -33,7 +33,7 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
-import com.tradehero.th.network.service.TranslationService;
+import com.tradehero.th.network.service.BingTranslationService;
 import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
@@ -48,8 +48,6 @@ import javax.inject.Singleton;
 import retrofit.RestAdapter;
 import retrofit.Server;
 import retrofit.converter.Converter;
-
-
 
 @Module(
         includes = {
@@ -68,7 +66,6 @@ import retrofit.converter.Converter;
 )
 public class RetrofitModule
 {
-
     //<editor-fold desc="API Services">
     @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
     {
@@ -263,17 +260,15 @@ public class RetrofitModule
     //}
 
     @Provides @Singleton
-    TranslationTokenService provideTranslationTokenService(RestAdapter.Builder builder)
+    TranslationTokenService provideTranslationTokenService(RestAdapter adapter)
     {
-        return builder.setEndpoint(NetworkConstants.TRANSLATION_REQ_TOKEN_ENDPOINT)
-                .build().create(TranslationTokenService.class);
+        return adapter.create(TranslationTokenService.class);
     }
 
-    @Provides @Singleton
-    TranslationService provideTranslationService(RestAdapter.Builder builder)
+    @Provides @Singleton BingTranslationService provideBingTranslationService(RestAdapter.Builder builder)
     {
-        return builder.setEndpoint(NetworkConstants.TRANSLATION_ENDPOINT)
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
-                .build().create(TranslationService.class);
+                .build().create(BingTranslationService.class);
     }
 }

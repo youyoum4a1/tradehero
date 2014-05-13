@@ -1,11 +1,11 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.utils.CustomXmlConverter;
+import com.tradehero.th.network.NetworkConstants;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 import retrofit.RestAdapter;
-
-
 
 @Module(
         injects = {
@@ -24,6 +24,21 @@ public class RetrofitProtectedModule
     @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
+    }
+
+    @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionServiceAsync.class);
+    }
+
+    @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
+    {
+        return adapter.create(FollowerServiceAsync.class);
+    }
+
+    @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardServiceAsync.class);
     }
 
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
@@ -54,6 +69,23 @@ public class RetrofitProtectedModule
     @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NotificationServiceAsync.class);
+    }
+
+    @Provides @Singleton TradeServiceAsync provideTradeServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(TradeServiceAsync.class);
+    }
+
+    @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(TranslationTokenServiceAsync.class);
+    }
+
+    @Provides @Singleton BingTranslationServiceAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(BingTranslationServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)

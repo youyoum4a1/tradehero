@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="user_profile_count_followers">팔로워</string>
+  <string name="user_profile_count_heroes">히어로</string>
+  <string name="user_profile_count_trades">거래</string>
+  <string name="user_profile_count_exchanges">시장</string>
+
+  <string name="user_profile_roi_below">수익률</string>
+  <string name="user_profile_profit">수익</string>
+
+  <string name="user_profile_button_timeline">타임라인</string>
+  <string name="user_profile_button_portfolios">포트폴리오</string>
+  <string name="user_profile_button_stats">기록</string>
+
+  <string name="user_profile_info_required">요청</string>
+  <string name="user_profile_email">이메일</string>
+  <string name="user_profile_password">비밀번호</string>
+  <string name="user_profile_confirm_pwd">비밀번호 확인</string>
+  <string name="user_profile_display_name">표시될 이름</string>
+  <string name="user_profile_optional">옵션</string>
+  <string name="user_profile_first_name">이름</string>
+  <string name="user_profile_last_name">성</string>
+
+  <string name="user_profile_roi">"수익률: "</string>
+  <string name="user_profile_member_since">회원가입 기간 </string>
+  <string name="user_profile_trade_profit">트레이드히어로에서 발생한 수익</string>
+  <string name="user_profile_total_wealth">총 자산</string>
+  <string name="user_profile_additional_cash">추가 캐쉬</string>
+  <string name="user_profile_cash_on_hand">Cash on Hand</string>
+  <string name="user_profile_first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localisations may swap those -->
+
+  <string name="user_profile_choose_image_from_choice">프로필 사진을 고르세요:</string>
+  <string name="user_profile_choose_image_from_camera">카메라로 사진찍기</string>
+  <string name="user_profile_choose_image_from_library">사진첩에서 고르기</string>
+  <string name="user_profile_choose_image_from_cancel">@string/cancel</string>
+
+  <string name="error_decode_image_memory">이미지를 로딩할 메모리가 부족합니다</string>
+  <string name="error_fetch_user_profile">프로필 정보를 불러오는데 오류가 발생하였습니다</string>
+  <string name="error_fetch_your_user_profile">프로필 정보를 불러오는데 오류가 발생하였습니다</string>
+  <string name="error_fetch_people_list_info">사용자 정보를 불러오는데 오류가 발생하였습니다</string>
+
+</resources>

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.text.RichTextCreator;
+import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -57,7 +59,7 @@ import timber.log.Timber;
 public class DiscussionEditPostFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID = DiscussionEditPostFragment.class.getName() + ".securityId";
-    private static final String SECURITY_TAG_FORMAT = "<$$%s,%d$>";
+    private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
@@ -127,8 +129,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDestroyOptionsMenu()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(null);
+        //actionBar.setTitle(null);
         actionBar.setSubtitle(null);
+        Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
     }
@@ -140,6 +143,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
             case R.id.discussion_edit_post:
                 postDiscussion();
                 return true;
+            case android.R.id.home:
+                DeviceUtil.dismissKeyboard(getActivity());
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -227,7 +233,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
             discussionFormDTO.inReplyToId = discussionId;
-            discussionFormDTO.text = discussionPostContent.getText().toString();
+            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
             discussionPostActionButtonsView.populate(discussionFormDTO);
 
             unsetDiscussionEditMiddleCallback();
@@ -282,16 +288,16 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private void handleExtraInput(Object extraInput)
     {
-        Timber.d("Extra: %s", extraInput);
-
         String extraText = "";
-        String editingText = discussionPostContent.getText().toString();
+        Editable editable = discussionPostContent.getText();
 
         if (extraInput instanceof SecurityCompactDTO)
         {
             SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;
 
-            extraText = String.format(SECURITY_TAG_FORMAT, taggedSecurity.getExchangeSymbol(), taggedSecurity.id);
+            String exchangeSymbol = taggedSecurity.getExchangeSymbol();
+            String exchangeSymbolUrl = exchangeSymbol.replace(':', '_');
+            extraText = String.format(SECURITY_TAG_FORMAT, exchangeSymbol, taggedSecurity.id, exchangeSymbolUrl);
         }
 
         if (extraInput instanceof UserBaseKey)
@@ -300,15 +306,36 @@ public class DiscussionEditPostFragment extends DashboardFragment
             extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName, mentionedUserProfileDTO.userId);
         }
 
-        String newText = extraText;
-        if (!editingText.isEmpty())
+        String nonMarkUpText = extraText;
+        if (!editable.toString().isEmpty())
         {
             int start = discussionPostContent.getSelectionStart();
             int end = discussionPostContent.getSelectionEnd();
-            newText = discussionPostContent.getText().replace(start, end, extraText).toString();
+            editable = editable.replace(start, end, extraText);
+            nonMarkUpText = unSpanText(editable).toString();
         }
 
-        discussionPostContent.setText(parser.load(newText).create(), TextView.BufferType.SPANNABLE);
+        Timber.d("Original text: %s", nonMarkUpText);
+        discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
+        discussionPostContent.setSelection(discussionPostContent.length());
+    }
+
+    private Editable unSpanText(Editable editable)
+    {
+        // keep editable unchange
+        SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);
+        Span[] spans = editableCopy.getSpans(0, editableCopy.length(), Span.class);
+
+        // replace all span string with its original text
+        for (int i = spans.length - 1; i >= 0; --i)
+        {
+            Span span = spans[i];
+            int spanStart = editableCopy.getSpanStart(span);
+            int spanEnd = editableCopy.getSpanEnd(span);
+
+            editableCopy = editableCopy.replace(spanStart, spanEnd, span.getOriginalText());
+        }
+        return editableCopy;
     }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
@@ -383,6 +410,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             isPosted = true;
 
+            DeviceUtil.dismissKeyboard(getActivity());
             getNavigator().popFragment();
         }
 

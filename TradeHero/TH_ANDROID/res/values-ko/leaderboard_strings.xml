@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="leaderboard_community_by_exchange">시장별</string>
+  <string name="leaderboard_community_by_sector">섹터별</string>
+  <string name="leaderboard_community_friends">친구</string>
+  <string name="leaderboard_community_leaderboards">리더보드</string>
+  <string name="leaderboard_community_exchange">시장</string>
+  <string name="leaderboard_community_sector">섹터</string>
+  <string name="leaderboard_user_roi">수익률</string>
+  <string name="leaderboard_user_hero_quotient">히어로 지수</string>
+  <string name="leaderboard_sort_followers">팔로워</string>
+  <string name="leaderboard_sort_comments">코멘트</string>
+  <string name="leaderboard_user_sharpe_ratio">샤프 지수</string>
+  <string name="leaderboard_positions_count"># 종목</string>
+  <string name="leaderboard_number_trades_in_period_title">기간내 거래 횟수</string>
+  <string name="leaderboard_win_ratio_title">승률</string>
+  <string name="leaderboard_avg_days_held">평균 보유일</string>
+  <string name="leaderboard_followers_count"># 팔로워</string>
+  <string name="leaderboard_comments_count"># 코멘트</string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
+  <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
+  <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
+  <string name="leaderboard_action_bar_help">도움말</string>
+  <string name="leaderboard_sort">Sort</string>
+  <string name="leaderboard_p_n_l"><![CDATA[P&L]]></string>
+  <string name="leaderboard_benchmark_roi">벤치마크 수익률</string>
+  <string name="leaderboard_action_bar_follow">팔로우</string>
+  <string name="leaderboard_action_bar_following">팔로우 중</string>
+  <string name="leaderboard_profile">프로필</string>
+  <string name="leaderboard_positions">거래목록</string>
+  <string name="leaderboard_win_ratio">(수익률: <b>%s</b>%%)</string>
+  <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
+  <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
+  <string name="leaderboard_number_of_trade">(%s trade)</string>
+  <string name="leaderboard_number_of_trades_plural">(%s trades)</string>
+  <string name="leaderboard_period">기간</string>
+  <string name="leaderboard_not_ranked">랭크에 없음</string>
+  <string name="leaderboard_show_friends_only">친구한테만 보여주기</string>
+  <string name="leaderboard_show_friends_of_friends">친구의 친구에게만 보여주기</string>
+  <string name="leaderboard_keep_friends_close">친구들과 함께 즐기세요…</string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… 히어로와도 항상 친분을 유지하세요! 투자의 성공 케이스를 친구들과 함께 공유하면 기쁨이 2배가 됩니다. 페이스북, LinkedIn 계정을 연결하고 연결된 친구중에 누가 가장 수익을 많이 얻는지 비교해보세요! 
+  </string>
+  <string name="leaderboard_connect_accounts">계정 연결…</string>
+  <string name="leaderboard_follow">@string/follow</string>
+
+  <string name="error_fetch_leaderboard_def_list_key">리더보드를 불러오는데 오류가 생겼습니다.</string>
+
+  <string name="leaderboard_community_followers">팔로워</string>
+  <string name="leaderboard_community_heros">히어로</string>
+
+  <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
+  <string name="leaderboard_community_hero_free">{0,choice,0#Free|0&lt;Free({0})}</string>
+  <string name="leaderboard_community_hero_all">{0,choice,0#All|0&lt;All({0})}</string>
+
+  <string name="follower_type_premium">유료 팔로워</string>
+  <string name="follower_type_free">무료 팔로워</string>
+  <string name="follower_type_all">무료 팔로워</string>
+
+</resources>

@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-
 @Singleton
 public class SecurityNewsCache extends StraightDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>>
 {

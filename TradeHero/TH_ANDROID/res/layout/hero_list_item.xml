@@ -2,11 +2,13 @@
 
 <com.tradehero.th.fragments.social.hero.HeroListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="4dp"
     android:paddingRight="@dimen/position_padding_right"
     style="@style/TH.ListItem"
+    tools:background="#7f7"
     >
   <!--android:background="@color/white"-->
 
@@ -21,27 +23,28 @@
       />
 
   <ImageView
-      android:id="@+id/hint_open_follower_info"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/settings_forward_light"
-      android:scaleType="center"
-      android:contentDescription="@null"
-      />
-
-  <ImageView
       android:id="@+id/ic_status"
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:layout_toLeftOf="@id/hint_open_follower_info"
       android:layout_centerVertical="true"
       android:src="@drawable/cross_red"
       android:scaleType="fitCenter"
       android:contentDescription="@null"
+      android:layout_alignParentRight="true"
       android:visibility="visible"
       android:padding="10dp"
+      />
+
+  <ImageView
+      android:id="@+id/country_logo"
+      android:layout_width="25dp"
+      android:layout_height="25dp"
+      android:src="@drawable/settings_forward_light"
+      android:scaleType="centerInside"
+      android:contentDescription="@null"
+      android:layout_toLeftOf="@+id/ic_status"
+      android:layout_marginRight="10dp"
+      android:layout_centerVertical="true"
       />
 
   <LinearLayout
@@ -49,7 +52,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/follower_profile_picture"
-      android:layout_toLeftOf="@+id/ic_status"
+      android:layout_toLeftOf="@+id/country_logo"
       android:paddingTop="2dp"
       android:paddingBottom="2dp"
       android:paddingLeft="5dp"
@@ -59,18 +62,24 @@
     <TextView
         android:id="@+id/hero_title"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:maxLines="1"
-        android:layout_weight="3"
         android:textStyle="bold"
+        android:text=""
+        />
+
+    <TextView
+        android:id="@+id/hero_revenue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
         android:text=""
         />
 
     <TextView
         android:id="@+id/hero_date_info"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
         android:maxLines="1"
         android:text=""
         android:textSize="10dp"

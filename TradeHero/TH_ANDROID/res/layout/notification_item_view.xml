@@ -8,7 +8,9 @@
     android:orientation="horizontal"
     android:descendantFocusability="blocksDescendants"
     android:padding="@dimen/timeline_item_padding"
-    tools:background="@color/number_green">
+    tools:background="@color/number_green"
+    style="@style/TH.ListItem"
+    >
 
   <ImageView
       android:id="@+id/notification_user_picture"

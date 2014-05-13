@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="private_message_empty_list_hint">대화 시작하기</string>
+  <string name="private_message_message_hint">메세지를 입력하세요</string>
+  <string name="private_message_btn_send">보내기</string>
+
+  <string name="private_message_limited_count">%d개의 메세지가 남았습니다. 무제한 메세지를 사용하려면 업그레이드하세요!</string>
+
+  <string name="private_message_subtitle">개인 메세지 목록</string>
+
+  <string name="private_message_expired_free_message_title">무료메세지가 더이상 없습니다</string>
+  <string name="private_message_expired_free_message_description">You have exhausted the free message threads you can send to %1$s에게 보낼 수 있는 무료메세지를 모두 소진했습니다. %1$s님을 프리미엄 팔로우하여 계속해서 대화를 이어가겠습니까?</string>
+  <string name="private_message_expired_free_message_ok">네</string>
+  <string name="private_message_expired_free_message_cancel">아니요</string>
+
+  <string name="error_fetch_private_message_initiating_discussion">토론을 불러오는데 실패</string>
+
+</resources>

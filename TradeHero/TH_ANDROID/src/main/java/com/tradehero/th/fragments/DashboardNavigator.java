@@ -12,14 +12,17 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
@@ -35,6 +38,8 @@ public class DashboardNavigator extends Navigator
     private Animation slideOutAnimation;
     private View tabBarView;
 
+    @Inject ResideMenu resideMenu;
+
     public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
     {
         super(context, manager, fragmentContentId);
@@ -42,6 +47,8 @@ public class DashboardNavigator extends Navigator
 
         initTabs();
         initAnimation();
+
+        DaggerUtils.inject(this);
     }
 
     public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
@@ -187,13 +194,6 @@ public class DashboardNavigator extends Navigator
         return "TH-tab:"+tabType.ordinal();
     }
 
-    @Override
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim,
-            String backStackName)
-    {
-        return super.pushFragment(fragmentClass, args, anim, backStackName);
-    }
-
     /**
      * Yes ,a better way is to use FragmentTabHost to manage the fragments and their states.
      * @param currentTab
@@ -326,6 +326,7 @@ public class DashboardNavigator extends Navigator
 
     @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
+        resideMenu.closeMenu();
         Fragment fragment = super.pushFragment(fragmentClass, args);
         executePending(fragment);
         return fragment;

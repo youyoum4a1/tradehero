@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="apprate_later">나중에 다시보기</string>
+  <string name="apprate_no_thanks">아니요</string>
+  <string name="apprate_message">앱 별점주기</string>
+  <string name="apprate">별점 해주세요</string>
+  <string name="apprate_dialog_title">트레이드히어로 별점주기</string>
+
+</resources>

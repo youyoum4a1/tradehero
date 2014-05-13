@@ -205,4 +205,9 @@ public class Navigator
     {
         backPressedCount = 0;
     }
+
+    public Fragment getCurrentFragment()
+    {
+        return manager.findFragmentById(R.id.realtabcontent);
+    }
 }

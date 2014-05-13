@@ -6,8 +6,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
 
-
-public interface CurrencyService
+interface CurrencyService
 {
     //<editor-fold desc="Get Currencies">
     @GET("/currencies")

@@ -42,6 +42,7 @@ public class PostCommentView extends RelativeLayout
      * If true, we add it right away.
      */
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
+    private boolean keypadIsShowing;
 
     @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
     @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
@@ -87,14 +88,18 @@ public class PostCommentView extends RelativeLayout
         DaggerUtils.inject(this);
         postCommentMiddleCallbacks = new MiddleCallbackWeakList<>();
         DeviceUtil.showKeyboardDelayed(commentText);
+        keypadIsShowing = true;
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
-        commentText.requestFocus();
-        //DeviceUtil.showKeyboard(getContext(), commentText);
+        if (commentText != null)
+        {
+            commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
+            commentText.requestFocus();
+            //DeviceUtil.showKeyboard(getContext(), commentText);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -107,6 +112,16 @@ public class PostCommentView extends RelativeLayout
         DeviceUtil.dismissKeyboard(getContext(), commentText);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    public void dismissKeypad()
+    {
+        if (keypadIsShowing)
+        {
+            DeviceUtil.dismissKeyboard(getContext(), commentText);
+            keypadIsShowing = false;
+            commentText.clearFocus();
+        }
     }
 
     protected DiscussionType getDefaultDiscussionType()
@@ -320,7 +335,9 @@ public class PostCommentView extends RelativeLayout
         {
             if (hasFocus)
             {
-                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                keypadIsShowing = true;
+                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         }
     }

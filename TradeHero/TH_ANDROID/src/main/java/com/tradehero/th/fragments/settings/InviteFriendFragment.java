@@ -34,6 +34,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -43,7 +44,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -54,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import org.json.JSONObject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
@@ -68,7 +68,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserService> userService;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Lazy<SocialService> socialService;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -92,6 +92,7 @@ public class InviteFriendFragment extends DashboardFragment
     private ToggleButton contactToggle;
 
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleCallback<Response> middleCallbackInvite;
 
     private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
     private THCallback<Response> inviteFriendCallback;
@@ -118,7 +119,6 @@ public class InviteFriendFragment extends DashboardFragment
 
             @Override public void onLoaderReset(Loader<List<UserFriendsDTO>> loader)
             {
-
             }
         };
         inviteFriendCallback = new THCallback<Response>()
@@ -153,7 +153,7 @@ public class InviteFriendFragment extends DashboardFragment
                 }
             }
 
-            @Override public boolean onSocialAuthDone(JSONObject json)
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
             {
                 detachMiddleCallbackConnect();
                 middleCallbackConnect = socialServiceWrapper.connect(
@@ -320,7 +320,7 @@ public class InviteFriendFragment extends DashboardFragment
         getProgressDialog().show();
 
         // load friend list from server side
-        // userService.get().getFriends(currentUserId.get(), getFriendsCallback);
+        // userServiceWrapper.get().getFriends(currentUserId.get(), getFriendsCallback);
         // load contact (with email) list of the phone
         getLoaderManager().initLoader(CONTACT_LOADER_ID, null, contactListLoaderCallback);
     }
@@ -328,6 +328,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachMiddleCallbackConnect();
+        detachMiddleCallbackInvite();
         if (searchTextView != null)
         {
             searchTextView.removeTextChangedListener(searchTextWatcher);
@@ -385,6 +386,15 @@ public class InviteFriendFragment extends DashboardFragment
         middleCallbackConnect = null;
     }
 
+    protected void detachMiddleCallbackInvite()
+    {
+        if (middleCallbackInvite != null)
+        {
+            middleCallbackInvite.setPrimaryCallback(null);
+        }
+        middleCallbackInvite = null;
+    }
+
     @Override public void onDestroy()
     {
         contactListLoaderCallback = null;
@@ -421,7 +431,8 @@ public class InviteFriendFragment extends DashboardFragment
             }
             //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
             getProgressDialog().show();
-            userService.get().inviteFriends(currentUserId.get(), inviteFriendForm, inviteFriendCallback);
+            detachMiddleCallbackInvite();
+            middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
         }
         else
         {
@@ -597,7 +608,8 @@ public class InviteFriendFragment extends DashboardFragment
                         }
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();
-                        userService.get().inviteFriends(currentUserId.get(), inviteFriendForm, inviteFriendCallback);
+                        detachMiddleCallbackInvite();
+                        middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
                     }
                 case FB:
                     if (Session.getActiveSession() == null)

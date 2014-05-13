@@ -146,6 +146,7 @@ public class RelationsListItemView extends RelativeLayout
     {
         if (avatar != null)
         {
+            loadDefaultPicture();
             if (allowableRecipientDTO != null && allowableRecipientDTO.user.picture != null)
             {
                 picassoLazy.get().load(allowableRecipientDTO.user.picture)
@@ -159,7 +160,7 @@ public class RelationsListItemView extends RelativeLayout
 
                             @Override public void onError()
                             {
-                                loadDefaultPicture();
+                                //loadDefaultPicture();
                             }
                         });
             }
@@ -171,8 +172,8 @@ public class RelationsListItemView extends RelativeLayout
         if (avatar != null)
         {
             picassoLazy.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformationLazy.get())
-                    .into(avatar);
+                .transform(peopleIconTransformationLazy.get())
+                .into(avatar);
         }
     }
 
@@ -257,10 +258,12 @@ public class RelationsListItemView extends RelativeLayout
 
         if (subtitleresId > 0)
         {
+            String userTypeText = getContext().getString(userTypeTextResId);
+            String subTitle = getContext().getString(subtitleresId);
             return getContext().getString(
-                    R.string.follower_item_with_subtitle,
-                    getContext().getString(userTypeTextResId),
-                    getContext().getString(subtitleresId));
+                        R.string.follower_item_with_subtitle,
+                        userTypeText,
+                        subTitle);
         }
         return getContext().getString(userTypeTextResId);
     }

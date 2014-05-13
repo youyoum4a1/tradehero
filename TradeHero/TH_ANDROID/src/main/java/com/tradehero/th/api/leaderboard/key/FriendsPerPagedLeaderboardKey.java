@@ -2,7 +2,6 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 
-
 public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND = FriendsPerPagedLeaderboardKey.class.getName() + ".includeFoF";

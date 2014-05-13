@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -24,8 +25,8 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -39,8 +40,10 @@ public class HeroListItemView extends RelativeLayout
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;
+    @InjectView(R.id.hero_revenue) TextView revenueInfo;
     @InjectView(R.id.hero_date_info) TextView dateInfo;
     @InjectView(R.id.ic_status) ImageView statusIcon;
+    @InjectView(R.id.country_logo) ImageView countryLogo;
 
     private UserBaseKey followerId;
     private HeroDTO heroDTO;
@@ -49,7 +52,7 @@ public class HeroListItemView extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
 
-    private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    private OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -87,7 +90,7 @@ public class HeroListItemView extends RelativeLayout
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
-        OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
+        //OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
         if (heroStatusButtonClickedListener != null)
         {
             heroStatusButtonClickedListener.onHeroStatusButtonClicked(HeroListItemView.this, heroDTO);
@@ -142,7 +145,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
-        this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
+        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
     }
 
     public void display(HeroDTO heroDTO)
@@ -160,6 +163,8 @@ public class HeroListItemView extends RelativeLayout
             displayTitle();
             displayDateInfo();
             displayStatus();
+            displayRevenue();
+            displayCountryLogo();
         }
     }
 
@@ -170,14 +175,18 @@ public class HeroListItemView extends RelativeLayout
         displayTitle();
         displayDateInfo();
         displayStatus();
+        displayRevenue();
+        displayCountryLogo();
     }
 
     public void displayUserIcon()
     {
         if (heroDTO != null)
         {
-            resetUserIcon();
+            //resetUserIcon();
+            displayDefaultUserIcon();
             picasso.get().load(heroDTO.picture)
+                    .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
                     .into(userIcon, new Callback()
@@ -246,6 +255,57 @@ public class HeroListItemView extends RelativeLayout
         {
             statusIcon.setImageResource(RES_ID_CROSS_RED);
             statusIcon.setVisibility(isFollowerCurrentUser() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null)
+        {
+            if (heroDTO != null)
+            {
+                countryLogo.setImageResource(getConutryLogoId(heroDTO.countryCode));
+            }
+            else
+            {
+                countryLogo.setImageResource(R.drawable.default_image);
+            }
+        }
+    }
+
+    public int getConutryLogoId(String country)
+    {
+        return getConutryLogoId(0, country);
+    }
+
+    public int getConutryLogoId(int defaultResId, String country)
+    {
+        try
+        {
+            return Country.valueOf(country).logoId;
+        } catch (IllegalArgumentException ex)
+        {
+            return defaultResId;
+        }
+    }
+
+    public void displayRevenue()
+    {
+        if (revenueInfo != null)
+        {
+            if (heroDTO != null && heroDTO.roiSinceInception != null)
+            {
+                THSignedNumber thRoiSinceInception = new THSignedNumber(
+                        THSignedNumber.TYPE_PERCENTAGE,
+                        heroDTO.roiSinceInception * 100);
+                revenueInfo.setText(thRoiSinceInception.toString());
+                revenueInfo.setTextColor(
+                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
+            }
+            else
+            {
+                revenueInfo.setText(R.string.na);
+            }
         }
     }
 

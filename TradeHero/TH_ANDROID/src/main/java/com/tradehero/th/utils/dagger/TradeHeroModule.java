@@ -7,7 +7,6 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
@@ -21,6 +20,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -174,6 +174,7 @@ import javax.inject.Singleton;
         },
         injects =
                 {
+                        DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
@@ -181,7 +182,6 @@ import javax.inject.Singleton;
                         SettingsFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
-                        ServerValidatedUsernameText.UserAvailabilityRequester.class,
                         ServerValidatedUsernameText.class,
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
@@ -240,7 +240,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        AbstractUserAvailabilityRequester.class,
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 

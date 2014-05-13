@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -21,11 +24,15 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.widget.VotePair;
 import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
     public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
             NewsDiscussionFragment.class.getName() + ".title_bg";
+
+    public static final String BUNDLE_KEY_SECURITY_SYMBOL =
+            NewsDiscussionFragment.class.getName() + ".security_symbol";
 
     private NewsItemDTO mDetailNewsItemDTO;
 
@@ -64,6 +71,18 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         return view;
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        Bundle bundle = getArguments();
+        String title = bundle.getString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL);
+        //bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL, securityId.securitySymbol);
+        actionBar.setTitle(title);
+        Timber.d("onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
     @Override public void onDestroyView()
     {
         detachNewsFetchTask();
@@ -74,7 +93,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         newsCacheFetchListener = new NewsFetchListener();
     }
 

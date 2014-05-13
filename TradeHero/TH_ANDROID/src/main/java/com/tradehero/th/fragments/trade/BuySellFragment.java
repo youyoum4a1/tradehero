@@ -85,6 +85,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialSharer;
@@ -821,25 +822,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayActionBarElements();
         displayPageElements();
 
-        int avgDailyVolume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
-        {
-            avgDailyVolume = 0;
-        }
-        else
-        {
-            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
-        }
-
-        int volume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.volume == null)
-        {
-            volume = 0;
-        }
-        else
-        {
-            volume = (int) Math.ceil(securityCompactDTO.volume);
-        }
+        //TODO not know do what, temp remove by alex
+        //int avgDailyVolume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+        //{
+        //    avgDailyVolume = 0;
+        //}
+        //else
+        //{
+        //    avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
+        //}
+        //
+        //int volume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.volume == null)
+        //{
+        //    volume = 0;
+        //}
+        //else
+        //{
+        //    volume = (int) Math.ceil(securityCompactDTO.volume);
+        //}
     }
 
     public void displayPageElements()
@@ -1522,8 +1524,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.security_buy_sell_dialog, null);
+        view.setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
+            }
+        });
         builder.setView(view);
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         TextView stockNameTextView = (TextView) view.findViewById(R.id.dialog_stock_name);
         if (stockNameTextView != null)
         {
@@ -1542,6 +1551,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
+                    DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
                     handleBtnAddCashPressed();
                 }
             });
@@ -1916,19 +1926,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
     {
         shareToWeChat();
-        // TODO find a better way to remove this fragment from the stack
         if (isResumed())
         {
-            getNavigator().popFragment();
-        }
+            DashboardNavigator navigator = getDashboardNavigator();
+            // TODO find a better way to remove this fragment from the stack
+            navigator.popFragment();
 
-        Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
-        DashboardNavigator dashboardNavigator = getDashboardNavigator();
-        if (dashboardNavigator != null)
-        {
-            dashboardNavigator.pushFragment(PositionListFragment.class, args);
+            Bundle args = new Bundle();
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            navigator.pushFragment(PositionListFragment.class, args);
         }
     }
 

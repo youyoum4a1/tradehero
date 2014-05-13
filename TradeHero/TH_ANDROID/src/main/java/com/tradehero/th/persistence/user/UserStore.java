@@ -11,7 +11,6 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 
-
 public class UserStore extends AbstractUserStore
 {
     private Query query;
@@ -20,7 +19,9 @@ public class UserStore extends AbstractUserStore
     @Override public List<UserProfileDTO> request()
     {
         if (query == null)
+        {
             throw new IllegalArgumentException();
+        }
 
         try
         {

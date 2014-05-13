@@ -5,7 +5,7 @@
     >
   <com.tradehero.th.fragments.social.message.PrivatePostCommentView
       android:layout_width="match_parent"
-      android:layout_height="@dimen/discussion_comment_box_height"
+      android:layout_height="wrap_content"
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
@@ -19,7 +19,7 @@
     <com.tradehero.common.widget.BetterViewAnimator
         android:id="@+id/post_comment_action_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/common_height_40"
         android:layout_alignParentRight="true"
         >
       <Button
@@ -39,15 +39,19 @@
           />
     </com.tradehero.common.widget.BetterViewAnimator>
 
+    <include
+        layout="@layout/discussion_edit_post_mention_buttons"
+        />
     <EditText
         android:id="@+id/post_comment_text"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="text"
+        android:layout_height="wrap_content"
+        android:inputType="text|textMultiLine|textImeMultiLine"
         android:hint="@string/timeline_discussion_comment_box_hint"
+        android:gravity="left|top"
         android:background="@drawable/et_bg"
         android:layout_marginRight="5dp"
         android:padding="2dp"

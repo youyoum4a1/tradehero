@@ -10,16 +10,16 @@ public class BitmapTypedOutput extends TypedByteArray
 
     private String fileName;
 
-    public BitmapTypedOutput(String type, Bitmap bitmap, String fileName)
+    public BitmapTypedOutput(String type, Bitmap bitmap, String fileName, int compressQuality)
     {
-        super(getMimeType(type), makeByteArray(type, bitmap));
+        super(getMimeType(type), makeByteArray(type, bitmap, compressQuality));
         this.fileName = fileName;
     }
 
-    private static byte[] makeByteArray(String type, Bitmap bitmap)
+    private static byte[] makeByteArray(String type, Bitmap bitmap, int compressQuality)
     {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(getCompressType(type), 75, bos);
+        bitmap.compress(getCompressType(type), compressQuality, bos);
         return bos.toByteArray();
     }
 

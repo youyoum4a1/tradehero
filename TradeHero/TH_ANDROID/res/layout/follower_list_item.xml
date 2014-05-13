@@ -3,7 +3,6 @@
 <com.tradehero.th.fragments.social.follower.FollowerListItemView
     style="@style/TH.ListItem"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/common_margin_10"
@@ -59,18 +58,18 @@
         <!--android:textStyle="bold"-->
         <!--android:text=""-->
         <!--/>-->
-
   </LinearLayout>
 
   <ImageView
       android:id="@+id/hint_open_follower_info"
-      android:layout_width="20dp"
-      android:layout_height="30dp"
+      android:layout_width="25dp"
+      android:layout_height="25dp"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/chevron_forward"
-      android:scaleType="center"
+      android:scaleType="centerInside"
       android:contentDescription="@null"
+      android:layout_marginRight="10dp"
     />
+  <!--android:src="@drawable/chevron_forward"-->
 
 </com.tradehero.th.fragments.social.follower.FollowerListItemView>
