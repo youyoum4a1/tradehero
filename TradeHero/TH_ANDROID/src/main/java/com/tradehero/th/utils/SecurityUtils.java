@@ -1,8 +1,5 @@
 package com.tradehero.th.utils;
 
-import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
-
 public class SecurityUtils
 {
     public static final String DEFAULT_VIRTUAL_CASH_CURRENCY_ISO = "USD";
@@ -13,6 +10,6 @@ public class SecurityUtils
     public static final String DEFAULT_TRANSACTION_CURRENCY_DISPLAY = "US$";
 
   public static String getDefaultCurrency() {
-    return Application.context().getString(R.string.currency);
+    return DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
   }
 }
