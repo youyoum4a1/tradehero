@@ -1,6 +1,6 @@
 package com.tradehero.th.models.push.baidu;
 
-public class BaiduDeviceMode
+class BaiduDeviceMode
 {
     public final String channelId;
     public final String userId;
@@ -13,11 +13,6 @@ public class BaiduDeviceMode
         this.channelId = channelId;
         this.userId = userId;
         this.appId = appId;
-        processToken();
-    }
-
-    private void processToken()
-    {
         this.token = channelId + "-" + userId;
     }
 }
