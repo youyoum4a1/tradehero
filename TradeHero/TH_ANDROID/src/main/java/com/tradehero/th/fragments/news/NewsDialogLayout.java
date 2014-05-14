@@ -65,11 +65,10 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private String langCode;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
-    @Inject TranslationCache translationCache;
     @Inject @ForWeChat SocialSharer wechatSharer;
 
     private int mShareType;
-    protected List<WeakReference<DTOCache.GetOrFetchTask<TranslationKey, TranslationResult>>> weakTranslationTasks;
+    private OnMenuClickedListener menuClickedListener;
 
     //<editor-fold desc="Constructors">
     public NewsDialogLayout(Context context)
@@ -93,7 +92,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        weakTranslationTasks = new ArrayList<>();
         findView();
         fillData();
         registerListener();
@@ -154,22 +152,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     @Override protected void onDetachedFromWindow()
     {
-        detachTranslationTasks();
         super.onDetachedFromWindow();
-    }
-
-    protected void detachTranslationTasks()
-    {
-        DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> task;
-        for (WeakReference<DTOCache.GetOrFetchTask<TranslationKey, TranslationResult>> weakTask : weakTranslationTasks)
-        {
-            task = weakTask.get();
-            if (task != null)
-            {
-                task.setListener(null);
-            }
-        }
-        weakTranslationTasks.clear();
     }
 
     private void setNewsTitle()
@@ -268,23 +251,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         };
     }
 
-    private void handleTranslation()
-    {
-        if (dialog == null)
-        {
-            dialog = new ProgressDialog(getContext());
-        }
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setMessage(getContext().getString(R.string.translating));
-        dialog.show();
-
-        TranslationKey key = new TranslationKey(langCode, "zh", title);
-        DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> task = translationCache.getOrFetch(
-                key, createTranslationListener());
-        task.execute();
-        weakTranslationTasks.add(new WeakReference<>(task));
-    }
-
     private void dismissDialog()
     {
         if (dialogCallback != null)
@@ -319,7 +285,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
             }
             else if (position == 1)
             {
-                handleTranslation();
+                notifyTranslationClicked();
                 dismissDialog();
             }
         }
@@ -357,40 +323,23 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         }
     }
 
-    protected DTOCache.Listener<TranslationKey, TranslationResult> createTranslationListener()
+    public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
     {
-        return new NewsDialogTranslationCacheListener();
+        this.menuClickedListener = menuClickedListener;
     }
 
-    protected class NewsDialogTranslationCacheListener implements DTOCache.Listener<TranslationKey, TranslationResult>
+    protected void notifyTranslationClicked()
     {
-        @Override public void onDTOReceived(TranslationKey key, TranslationResult value,
-                boolean fromCache)
+        OnMenuClickedListener listenerCopy = menuClickedListener;
+        if (listenerCopy != null)
         {
-            if (dialog != null && dialog.isShowing())
-            {
-                dialog.dismiss();
-            }
-
-            //TODO
-            if (value != null && value.getContent() != null)
-            {
-                THToast.show("Success");
-                THDialog.showTranslationResult(getContext(), value.getContent());
-            }
-            else
-            {
-                THToast.show("error");
-            }
+            listenerCopy.onTranslationRequestedClicked();
         }
+    }
 
-        @Override public void onErrorThrown(TranslationKey key, Throwable error)
-        {
-            Timber.e(error, "");
-            if (dialog != null)
-            {
-                dialog.dismiss();
-            }
-        }
+    public static interface OnMenuClickedListener
+    {
+        void onTranslationRequestedClicked();
+        void onShareRequestedClicked();
     }
 }
