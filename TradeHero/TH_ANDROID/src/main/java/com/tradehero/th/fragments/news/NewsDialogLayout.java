@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -37,20 +38,23 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
 
-public class NewsDialogLayout extends LinearLayout implements View.OnClickListener,
+public class NewsDialogLayout extends LinearLayout implements
         AdapterView.OnItemClickListener, THDialog.DialogCallback
 {
+    public static final int FIRST_MENU_ID = 0;
+    public static final int SHARE_MENU_ID = 1;
+
     @InjectView(R.id.news_action_share_title) protected TextView newsTitleView;
     @InjectView(R.id.news_action_share_subtitle) protected TextView newsSubTitleView;
     @InjectView(R.id.news_action_share_title2) protected TextView shareTitleView;
 
     @InjectView(R.id.news_action_back) protected View backView;
     @InjectView(R.id.news_action_share_cancel) protected View cancelView;
-    @InjectView(R.id.news_action_list_switcher) protected ViewSwitcher viewSwitcher;
     @InjectView(R.id.news_action_share_switcher) protected ViewSwitcher titleSwitcher;
 
-    @InjectView(R.id.news_action_list_sharing_translation) protected ListView listViewFirst;
-    @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSecond;
+    @InjectView(R.id.news_action_list_switcher) protected ViewSwitcher optionsViewSwitcher;
+    @InjectView(R.id.news_action_list_sharing_translation) protected ListView listViewOptions;
+    @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
     private THDialog.DialogInterface dialogCallback;
     protected ProgressDialog dialog;
@@ -59,7 +63,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private String title;
     private String description;
 
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject @ForWeChat SocialSharer wechatSharer;
 
     private int mShareType;
@@ -88,21 +92,27 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-        findView();
-        fillData();
-        registerListener();
     }
 
     @Override protected void onAttachedToWindow()
     {
-        ButterKnife.inject(this);
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
+        finaliseView();
+        fillData();
+        registerListener();
     }
 
-    private void findView()
+    @Override protected void onDetachedFromWindow()
     {
-        this.viewSwitcher.setOutAnimation(getContext(), R.anim.slide_right_out);
-        this.viewSwitcher.setInAnimation(getContext(), R.anim.slide_left_in);
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
+    private void finaliseView()
+    {
+        this.optionsViewSwitcher.setOutAnimation(getContext(), R.anim.slide_right_out);
+        this.optionsViewSwitcher.setInAnimation(getContext(), R.anim.slide_left_in);
 
         this.titleSwitcher.setOutAnimation(
                 AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
@@ -121,67 +131,46 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         MyListAdapter adapterForSecond =
                 new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
                         dataForSecond);
-        listViewFirst.setAdapter(adapterForFirst);
-        listViewSecond.setAdapter(adapterForSecond);
-        listViewFirst.setDividerHeight(1);
-        listViewSecond.setDividerHeight(1);
+        listViewOptions.setAdapter(adapterForFirst);
+        listViewSharingOptions.setAdapter(adapterForSecond);
+        listViewOptions.setDividerHeight(1);
+        listViewSharingOptions.setDividerHeight(1);
         setNewsTitle();
-        setShareTitle();
     }
 
     private void registerListener()
     {
-        backView.setOnClickListener(this);
-        cancelView.setOnClickListener(this);
-        listViewFirst.setOnItemClickListener(this);
-        listViewSecond.setOnItemClickListener(this);
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
+        listViewOptions.setOnItemClickListener(this);
+        listViewSharingOptions.setOnItemClickListener(this);
     }
 
     private void setNewsTitle()
     {
-        //if (newsItemDTO != null)
-        //{
         newsTitleView.setText(title);
-        //newsTitleView.setText(newsItemDTO.title);
         if (!TextUtils.isEmpty(description))
         {
+            newsSubTitleView.setVisibility(View.VISIBLE);
             newsSubTitleView.setText(description);
-            //subTitleView.setVisibility(View.VISIBLE);
         }
         else
         {
             newsSubTitleView.setVisibility(View.GONE);
         }
-        //}
     }
 
-    private void setShareTitle()
-    {
-        shareTitleView.setText(R.string.share_to);
-    }
-
-    private void showFirstChild()
+    @OnClick(R.id.news_action_back)
+    protected void showFirstOptions()
     {
         this.backView.setVisibility(View.INVISIBLE);
-        this.viewSwitcher.setDisplayedChild(0);
-        //setNewsTitle();
-        titleSwitcher.setDisplayedChild(0);
+        this.optionsViewSwitcher.setDisplayedChild(FIRST_MENU_ID);
+        titleSwitcher.setDisplayedChild(FIRST_MENU_ID);
     }
 
-    private void showSecondChild()
+    private void showShareToOptions()
     {
-
         this.backView.setVisibility(View.VISIBLE);
-        this.viewSwitcher.setDisplayedChild(1);
-        //setShareTitle();
-
-        titleSwitcher.setDisplayedChild(1);
+        this.optionsViewSwitcher.setDisplayedChild(SHARE_MENU_ID);
+        titleSwitcher.setDisplayedChild(SHARE_MENU_ID);
     }
 
     private void handleShareAction(int position)
@@ -205,7 +194,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
                 break;
         }
         DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS, id);
-        discussionServiceWrapperLazy.get().share(key,
+        discussionServiceWrapper.get().share(key,
                 new TimelineItemShareRequestDTO(socialNetworkEnum),
                 createShareRequestCallback(socialNetworkEnum));
     }
@@ -239,7 +228,8 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         };
     }
 
-    private void dismissDialog()
+    @OnClick(R.id.news_action_share_cancel)
+    protected void dismissDialog()
     {
         if (dialogCallback != null)
         {
@@ -248,28 +238,14 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
-            case R.id.news_action_back:
-                showFirstChild();
-                break;
-            case R.id.news_action_share_cancel:
-                dismissDialog();
-                break;
-        }
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        if (parent == listViewFirst)
+        if (parent == listViewOptions)
         {
             if (position == 0)
             {
                 //share
-                showSecondChild();
+                showShareToOptions();
             }
             else if (position == 1)
             {
@@ -279,7 +255,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         }
         else
         {
-            notifyShareClicked();
             handleShareAction(position);
             dismissDialog();
         }
@@ -291,8 +266,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         this.dialogCallback = listener;
     }
 
-    public void setNewsData(NewsItemDTO newsItemDTO,
-            int shareType)
+    public void setNewsData(NewsItemDTO newsItemDTO, int shareType)
     {
         this.description = newsItemDTO.description;
         setNewsData((AbstractDiscussionDTO) newsItemDTO, shareType);

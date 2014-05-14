@@ -7,12 +7,14 @@
     android:layout_height="fill_parent"
     android:background="@android:color/white"
     >
+
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:gravity="center_vertical"
       >
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +30,9 @@
         android:id="@+id/news_action_share_cancel"
         android:textColor="#888"/>
 
-    <ViewSwitcher android:layout_width="match_parent" android:layout_height="wrap_content"
+    <ViewSwitcher
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginLeft="65dp"
         android:layout_marginRight="65dp"
@@ -36,7 +40,8 @@
         >
 
 
-      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+      <LinearLayout android:layout_width="match_parent"
+          android:layout_height="wrap_content"
           android:orientation="vertical"
           android:gravity="center"
           android:layout_gravity="center">
@@ -60,11 +65,14 @@
             android:textSize="11sp"/>
 
       </LinearLayout>
+
       <TextView android:id="@+id/news_action_share_title2"
           android:layout_width="match_parent" android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:textStyle="bold"
-          android:gravity="center"/>
+          android:gravity="center"
+          android:text="@string/share_to"
+          />
 
     </ViewSwitcher>
 
@@ -81,6 +89,7 @@
         />
 
   </RelativeLayout>
+
   <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
@@ -92,14 +101,15 @@
       android:layout_height="match_parent"
       android:id="@+id/news_action_list_switcher">
 
-    <ListView
-        android:layout_gravity="center"
-        android:id="@+id/news_action_list_sharing_translation"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@drawable/common_dialog_item_bg"
-        android:cacheColorHint="@color/transparent"
-        />
+  <ListView
+      android:layout_gravity="center"
+      android:id="@+id/news_action_list_sharing_translation"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:listSelector="@drawable/common_dialog_item_bg"
+      android:cacheColorHint="@color/transparent"
+      />
+
     <ListView
         android:layout_gravity="center"
         android:id="@+id/news_action_list_sharing_items"
@@ -110,4 +120,5 @@
         />
 
   </ViewSwitcher>
+
 </com.tradehero.th.fragments.news.NewsDialogLayout>
