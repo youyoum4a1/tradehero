@@ -2123,8 +2123,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private class BuySellCallback
-            implements retrofit.Callback<SecurityPositionDetailDTO>
+    private class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
     {
         private final boolean isBuy;
 
