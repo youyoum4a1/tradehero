@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,30 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import com.tradehero.common.persistence.DTOCache;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.persistence.translation.TranslationCache;
-import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.SocialSharer;
 import com.tradehero.th.wxapi.WeChatDTO;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
@@ -44,17 +40,17 @@ import timber.log.Timber;
 public class NewsDialogLayout extends LinearLayout implements View.OnClickListener,
         AdapterView.OnItemClickListener, THDialog.DialogCallback
 {
-    private TextView newsTitleView;
-    private TextView newsSubTitleView;
-    private TextView shareTitleView;
+    @InjectView(R.id.news_action_share_title) protected TextView newsTitleView;
+    @InjectView(R.id.news_action_share_subtitle) protected TextView newsSubTitleView;
+    @InjectView(R.id.news_action_share_title2) protected TextView shareTitleView;
 
-    private View backView;
-    private View cancelView;
-    private ViewSwitcher viewSwitcher;
-    private ViewSwitcher titleSwitcher;
+    @InjectView(R.id.news_action_back) protected View backView;
+    @InjectView(R.id.news_action_share_cancel) protected View cancelView;
+    @InjectView(R.id.news_action_list_switcher) protected ViewSwitcher viewSwitcher;
+    @InjectView(R.id.news_action_share_switcher) protected ViewSwitcher titleSwitcher;
 
-    private ListView listViewFirst;
-    private ListView listViewSecond;
+    @InjectView(R.id.news_action_list_sharing_translation) protected ListView listViewFirst;
+    @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSecond;
 
     private THDialog.DialogInterface dialogCallback;
     protected ProgressDialog dialog;
@@ -62,7 +58,6 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     private int id;
     private String title;
     private String description;
-    private String langCode;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapperLazy;
     @Inject @ForWeChat SocialSharer wechatSharer;
@@ -92,28 +87,20 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         findView();
         fillData();
         registerListener();
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        ButterKnife.inject(this);
+        super.onAttachedToWindow();
+    }
+
     private void findView()
     {
-        this.titleSwitcher = (ViewSwitcher) findViewById(R.id.news_action_share_switcher);
-        this.newsTitleView = (TextView) titleSwitcher.findViewById(R.id.news_action_share_title);
-        this.newsSubTitleView =
-                (TextView) titleSwitcher.findViewById(R.id.news_action_share_subtitle);
-        this.shareTitleView = (TextView) titleSwitcher.findViewById(R.id.news_action_share_title2);
-
-        this.backView = findViewById(R.id.news_action_back);
-        this.cancelView = findViewById(R.id.news_action_share_cancel);
-        this.viewSwitcher = (ViewSwitcher) findViewById(R.id.news_action_list_switcher);
-
-        this.listViewFirst = (android.widget.ListView) this.viewSwitcher.findViewById(
-                R.id.news_action_list_sharing_translation);
-        this.listViewSecond = (android.widget.ListView) this.viewSwitcher.findViewById(
-                R.id.news_action_list_sharing_items);
-
         this.viewSwitcher.setOutAnimation(getContext(), R.anim.slide_right_out);
         this.viewSwitcher.setInAnimation(getContext(), R.anim.slide_left_in);
 
@@ -152,6 +139,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
 
     @Override protected void onDetachedFromWindow()
     {
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -291,6 +279,7 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         }
         else
         {
+            notifyShareClicked();
             handleShareAction(position);
             dismissDialog();
         }
@@ -302,13 +291,17 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         this.dialogCallback = listener;
     }
 
-    public void setNewsData(String title, String description, String langCode, int id,
+    public void setNewsData(NewsItemDTO newsItemDTO,
             int shareType)
     {
-        this.title = title;
-        this.description = description;
-        this.langCode = langCode;
-        this.id = id;
+        this.description = newsItemDTO.description;
+        setNewsData((AbstractDiscussionDTO) newsItemDTO, shareType);
+    }
+
+    public void setNewsData(AbstractDiscussionDTO abstractDiscussionDTO, int shareType)
+    {
+        this.title = abstractDiscussionDTO.text;
+        this.id = abstractDiscussionDTO.id;
         setNewsTitle();
         mShareType = shareType;
     }
@@ -334,6 +327,15 @@ public class NewsDialogLayout extends LinearLayout implements View.OnClickListen
         if (listenerCopy != null)
         {
             listenerCopy.onTranslationRequestedClicked();
+        }
+    }
+
+    protected void notifyShareClicked()
+    {
+        OnMenuClickedListener listenerCopy = menuClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onShareRequestedClicked();
         }
     }
 

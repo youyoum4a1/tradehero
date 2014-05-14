@@ -151,7 +151,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id,
+        ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
                 WeChatMessageType.Discussion.getType());
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);
@@ -160,7 +160,7 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
     protected void handleTranslationRequested()
     {
         detachTranslationTask();
-        TranslationKey key = new TranslationKey(discussionDTO.langCode, "zh", discussionDTO.text);
+        TranslationKey key = discussionDTO.createTranslationKey("zh");
         translationTask =
                 new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
                         .launchTranslation(key);

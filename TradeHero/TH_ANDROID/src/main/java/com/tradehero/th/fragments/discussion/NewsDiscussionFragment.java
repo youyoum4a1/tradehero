@@ -220,8 +220,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         View contentView = LayoutInflater.from(getSherlockActivity())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO.text,
-                mDetailNewsItemDTO.description, mDetailNewsItemDTO.langCode, mDetailNewsItemDTO.id,
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
                 WeChatMessageType.CreateDiscussion.getType());
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
@@ -232,7 +231,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     protected void handleTranslationRequested()
     {
         detachTranslationTask();
-        TranslationKey key = new TranslationKey(mDetailNewsItemDTO.langCode, "zh", mDetailNewsItemDTO.text);
+        TranslationKey key = mDetailNewsItemDTO.createTranslationKey("zh");
         translationTask =
                 new NewsTranslationSelfDisplayer(getActivity(), translationCache, null)
                 .launchTranslation(key);
