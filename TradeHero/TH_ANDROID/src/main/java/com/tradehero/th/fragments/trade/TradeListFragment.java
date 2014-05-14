@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trade;
 import android.os.Bundle;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.position.PositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -52,5 +53,11 @@ public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
         {
             display();
         }
+    }
+
+    @Override protected void populateBuySellArgs(Bundle args, boolean isBuy, SecurityId securityId)
+    {
+        super.populateBuySellArgs(args, isBuy, securityId);
+        args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPositionId.getArgs());
     }
 }
