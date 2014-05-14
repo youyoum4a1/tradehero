@@ -303,7 +303,7 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
+    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
