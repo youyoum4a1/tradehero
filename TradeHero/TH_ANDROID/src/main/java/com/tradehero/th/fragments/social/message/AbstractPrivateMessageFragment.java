@@ -306,7 +306,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
-            Timber.d("MessageHeaderDTO=%s",value.toString());
+            Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();
             actionBar.setTitle(value.title);
             actionBar.setSubtitle(value.subTitle);
