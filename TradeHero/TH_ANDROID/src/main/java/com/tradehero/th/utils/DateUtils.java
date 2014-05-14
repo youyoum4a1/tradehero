@@ -12,10 +12,7 @@ public class DateUtils
 {
     private static int MILLISECOND_PER_DAY = 1000 * 60 * 60 * 24;
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("d MMM H:m z");
-    static {
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
+    private static SimpleDateFormat sdf;
 
     public static String getDisplayableDate(Context context, Date d)
     {
@@ -24,6 +21,11 @@ public class DateUtils
             return context.getString(R.string.na);
         }
 
+        if (sdf == null)
+        {
+            sdf = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm_gmt));
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
         return sdf.format(d);
     }
 

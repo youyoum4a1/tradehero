@@ -49,7 +49,7 @@ public class THSignedNumber
 
         if (type == TYPE_MONEY && currency == null)
         {
-            this.currency = SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
+            this.currency = SecurityUtils.getDefaultCurrency();
         }
         else
         {

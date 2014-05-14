@@ -51,6 +51,26 @@ public class RetrofitProtectedModule
         return adapter.create(PortfolioServiceAsync.class);
     }
 
+    @Provides @Singleton PositionServiceAsync providePositionServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(PositionServiceAsync.class);
+    }
+
+    @Provides @Singleton ProviderServiceAsync provideProviderServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(ProviderServiceAsync.class);
+    }
+
+    @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(QuoteServiceAsync.class);
+    }
+
+    @Provides @Singleton SecurityServiceAsync provideSecurityServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(SecurityServiceAsync.class);
+    }
+
     @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
     {
         return adapter.create(SocialServiceAsync.class);

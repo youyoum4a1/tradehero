@@ -7,20 +7,23 @@ import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-/**
- * Repurposes requests
- */
 @Singleton public class QuoteServiceWrapper
 {
     private final QuoteService quoteService;
+    private final QuoteServiceAsync quoteServiceAsync;
 
-    @Inject public QuoteServiceWrapper(QuoteService quoteService)
+    @Inject public QuoteServiceWrapper(
+            QuoteService quoteService,
+            QuoteServiceAsync quoteServiceAsync)
     {
         super();
         this.quoteService = quoteService;
+        this.quoteServiceAsync = quoteServiceAsync;
     }
 
     private void basicCheck(SecurityId securityId)
@@ -47,11 +50,13 @@ import retrofit.client.Response;
                 securityId.securitySymbol));
     }
 
-    public void getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
+    public MiddleCallback<SignatureContainer<QuoteDTO>> getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
     {
+        MiddleCallback<SignatureContainer<QuoteDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(securityId);
-        this.quoteService.getQuote(UrlEncoderHelper.transform(
-                securityId.exchange), UrlEncoderHelper.transform(securityId.securitySymbol), callback);
+        this.quoteServiceAsync.getQuote(UrlEncoderHelper.transform(
+                securityId.exchange), UrlEncoderHelper.transform(securityId.securitySymbol), middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -67,7 +72,7 @@ import retrofit.client.Response;
     {
         BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(securityId);
-        this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
+        this.quoteServiceAsync.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
                 securityId.securitySymbol), middleCallback);
         return middleCallback;
     }
