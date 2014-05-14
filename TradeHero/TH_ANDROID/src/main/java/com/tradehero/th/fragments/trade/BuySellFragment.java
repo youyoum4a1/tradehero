@@ -2169,6 +2169,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
+            Timber.e(retrofitError, "Reporting the error to Crashlytics");
             THToast.show(new THException(retrofitError));
         }
     }
