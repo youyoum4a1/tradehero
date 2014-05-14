@@ -15,7 +15,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.baidu.android.pushservice.PushManager;
 import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
@@ -96,7 +95,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private boolean isChineseLocale = false;
     private DTOCache.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
     private ProgressDialog progressDialog;
@@ -122,7 +120,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
 
         ViewGroup dashboardWrapper = appContainer.get(this);
-        // ViewGroup slideMenuWrapper = slideMenuContainer.get(dashboardWrapper);
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
@@ -149,12 +146,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-
-        this.isChineseLocale = DeviceTokenHelper.isChineseVersion();
-        if (isChineseLocale)
-        {
-            pushNotificationManager.get().enablePush();
-        }
     }
 
     public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
@@ -334,33 +325,9 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         localyticsSession.get().close();
         localyticsSession.get().upload();
-        if (isChineseLocale)
-        {
-            PushManager.activityStarted(this);
-        }
-        Timber.d("onPause");
 
         super.onPause();
     }
-
-    @Override protected void onStart()
-    {
-        super.onStart();
-
-        Timber.d("onStart");
-    }
-
-    @Override protected void onStop()
-    {
-        if (isChineseLocale)
-        {
-            PushManager.activityStoped(this);
-        }
-        Timber.d("onStop");
-
-        super.onStop();
-    }
-
 
     @Override protected void onDestroy()
     {

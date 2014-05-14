@@ -35,6 +35,7 @@ import timber.log.Timber;
     @Override public void initialise()
     {
         FrontiaApplication.initFrontiaApplication(context);
+        enablePush();
     }
 
     @Override public void enablePush()
