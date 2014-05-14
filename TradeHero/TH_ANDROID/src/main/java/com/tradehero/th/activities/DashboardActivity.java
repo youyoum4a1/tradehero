@@ -42,7 +42,6 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHa
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
-import com.tradehero.th.models.push.IntentLogger;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -87,24 +86,22 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private DTOCache.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
-    private ProgressDialog progressDialog;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
-    // this need tobe early than super.onCreate or it will crash
-        // when device scrool into landscape. by alex
-        // request the progress-bar feature for the activity
+    private ProgressDialog progressDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        // this need tobe early than super.onCreate or it will crash
+        // when device scroll into landscape.
+        // request the progress-bar feature for the activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
@@ -138,8 +135,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchBilling();
 
         detachUserProfileFetchTask();
-        userProfileFetchListener = new UserProfileFetchListener();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
+        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, new UserProfileFetchListener());
         userProfileFetchTask.execute();
 
         suggestUpgradeIfNecessary();
@@ -148,23 +144,25 @@ public class DashboardActivity extends SherlockFragmentActivity
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
     }
 
+    //<editor-fold desc="Bad design, to be removed">
+    @Deprecated
     public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
     {
         if (navigator != null && onTabChangeListener != null)
         {
             navigator.addOnTabChangeListener(onTabChangeListener);
         }
-
     }
 
+    @Deprecated
     public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
     {
         if (navigator != null && onTabChangeListener != null)
         {
             navigator.removeOnTabChangeListener(onTabChangeListener);
         }
-
     }
+    //</editor-fold>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -290,24 +288,19 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchActions();
         localyticsSession.get().open();
-        Timber.d("onResume");
     }
 
     @Override protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-        Timber.d("Received new intent: %s", intent);
-
-        IntentLogger intentLogger = new IntentLogger(intent);
-        Timber.d("Intent: %s", intentLogger);
 
         Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
             progressDialog = progressDialogUtil.get().show(this, "", "");
+
             detachNotificationFetchTask();
-            notificationFetchListener = new NotificationFetchListener();
-            notificationFetchTask = notificationCache.get().getOrFetch(new NotificationKey(extras), false, notificationFetchListener);
+            notificationFetchTask = notificationCache.get().getOrFetch(new NotificationKey(extras), false, new NotificationFetchListener());
             notificationFetchTask.execute();
         }
     }
