@@ -10,8 +10,8 @@
   <string name="authentication_sign_up_with">아래 계정으로 회원가입</string>
   <string name="authentication_sign_up_with_email">이메일 주소로 회원가입</string>
   <string name="authentication_sign_in">로그인</string>
-  <string name="authentication_sign_in_with">XX로 로그인</string>
   <string name="authentication_sign_in_with_email">이메일 주소로 회원가입</string>
+  <string name="authentication_sign_in_with">아래 계정으로 로그인</string>
   <string name="authentication_existing_user">기존 사용자</string>
   <string name="authentication_email_address">이메일 주소</string>
   <string name="authentication_ask_for_email">이메일 주소를 입력하세요:</string>
