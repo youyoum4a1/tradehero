@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -15,6 +14,7 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -38,8 +38,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
 
-public class NewsDialogLayout extends LinearLayout implements
-        AdapterView.OnItemClickListener, THDialog.DialogCallback
+public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCallback
 {
     public static final int FIRST_MENU_ID = 0;
     public static final int SHARE_MENU_ID = 1;
@@ -98,26 +97,13 @@ public class NewsDialogLayout extends LinearLayout implements
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        finaliseView();
         fillData();
-        registerListener();
     }
 
     @Override protected void onDetachedFromWindow()
     {
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    private void finaliseView()
-    {
-        this.optionsViewSwitcher.setOutAnimation(getContext(), R.anim.slide_right_out);
-        this.optionsViewSwitcher.setInAnimation(getContext(), R.anim.slide_left_in);
-
-        this.titleSwitcher.setOutAnimation(
-                AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-        this.titleSwitcher.setInAnimation(
-                AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
     }
 
     private void fillData()
@@ -136,12 +122,6 @@ public class NewsDialogLayout extends LinearLayout implements
         listViewOptions.setDividerHeight(1);
         listViewSharingOptions.setDividerHeight(1);
         setNewsTitle();
-    }
-
-    private void registerListener()
-    {
-        listViewOptions.setOnItemClickListener(this);
-        listViewSharingOptions.setOnItemClickListener(this);
     }
 
     private void setNewsTitle()
@@ -237,27 +217,26 @@ public class NewsDialogLayout extends LinearLayout implements
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    @OnItemClick(R.id.news_action_list_sharing_translation)
+    protected void onOptionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        if (parent == listViewOptions)
+        if (position == 0)
         {
-            if (position == 0)
-            {
-                //share
-                showShareToOptions();
-            }
-            else if (position == 1)
-            {
-                notifyTranslationClicked();
-                dismissDialog();
-            }
+            //share
+            showShareToOptions();
         }
-        else
+        else if (position == 1)
         {
-            handleShareAction(position);
+            notifyTranslationClicked();
             dismissDialog();
         }
+    }
+
+    @OnItemClick(R.id.news_action_list_sharing_items)
+    protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
+    {
+        handleShareAction(position);
+        dismissDialog();
     }
 
     @Override
