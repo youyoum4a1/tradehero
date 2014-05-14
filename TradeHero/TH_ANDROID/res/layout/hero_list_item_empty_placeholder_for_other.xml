@@ -16,5 +16,4 @@
       android:text="@string/manage_heroes_empty_description_for_other"
       />
 
-
 </RelativeLayout>

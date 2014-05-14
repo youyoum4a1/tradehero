@@ -29,7 +29,6 @@
           tools:src="@drawable/avatar"
           android:contentDescription="@null"/>
 
-
       <include
           layout="@layout/user_profile_detail_bottom_2_1"
           />

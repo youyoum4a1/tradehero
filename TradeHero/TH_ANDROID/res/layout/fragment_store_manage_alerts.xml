@@ -28,7 +28,6 @@
         android:contentDescription="@null"
         />
 
-
     <TextView
         android:id="@+id/manage_alerts_plan_title"
         android:layout_width="wrap_content"
@@ -83,6 +82,7 @@
         android:layout_height="wrap_content"
         tools:background="@color/red"
         />
+
   </com.tradehero.common.widget.BetterViewAnimator>
 
 </RelativeLayout>
