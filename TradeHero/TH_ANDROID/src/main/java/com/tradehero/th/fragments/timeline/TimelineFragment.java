@@ -619,6 +619,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         {
                             refreshPortfolioList();
                         }
+                        else if (tabType == TabType.STATS)
+                        {
+                            userProfileCache.get().invalidate(shownUserBaseKey);
+                            userProfileRetrievedMilestone.launch();
+                        }
                     }
                 });
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
@@ -703,6 +708,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onComplete(Milestone milestone)
                 {
+                    if (currentTab == TabType.STATS)
+                    {
+                        onLoadFinished();
+                    }
                     UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
                     if (cachedUserProfile != null)
                     {

@@ -194,13 +194,11 @@ public class MainTimelineAdapter extends ArrayAdapter
                 break;
 
             case PORTFOLIO_LIST:
-                // TODO
                 notifyBeginRefresh(currentTabType);
                 break;
 
             case STATS:
-                // TODO
-                notifyLoadFinished();
+                notifyBeginRefresh(currentTabType);
                 break;
 
             default:
