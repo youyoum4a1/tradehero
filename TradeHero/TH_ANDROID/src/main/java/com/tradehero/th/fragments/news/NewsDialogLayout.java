@@ -261,7 +261,6 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
 
     private class MyListAdapter extends ArrayAdapter<String>
     {
-
         public MyListAdapter(Context context, int resource, int textViewResourceId,
                 String[] objects)
         {
