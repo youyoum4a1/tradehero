@@ -318,7 +318,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
             OwnedPortfolioId associatedPortfolioId =
                     new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
-            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
+            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
             getNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)

@@ -774,15 +774,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
                     providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
-            Bundle ownedPortfolioArgs =
-                    getArguments().getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
-            if (ownedPortfolioArgs != null)
+
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null && !applicablePortfolioId.equals(defaultOwnedPortfolioId))
             {
-                OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
-                if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
-                {
-                    otherPortfolioIds.add(ownedPortfolioId);
-                }
+                otherPortfolioIds.add(applicablePortfolioId);
             }
 
             for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
@@ -1369,8 +1365,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
-            args.putBundle(BaseAlertEditFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    getApplicablePortfolioId().getArgs());
+            BaseAlertEditFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {

@@ -58,6 +58,6 @@ public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
     @Override protected void populateBuySellArgs(Bundle args, boolean isBuy, SecurityId securityId)
     {
         super.populateBuySellArgs(args, isBuy, securityId);
-        args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPositionId.getArgs());
+        BuySellFragment.putApplicablePortfolioId(args, ownedPositionId);
     }
 }

@@ -439,8 +439,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle args = new Bundle();
             args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
-            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()).getArgs());
+            ProviderSecurityListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
             getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
         }
         else if (providerDTO != null)
