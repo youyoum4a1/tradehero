@@ -15,8 +15,6 @@ import timber.log.Timber;
 
 public class MessagesView extends RelativeLayout
 {
-    static final String TAG = "MessagesView";
-
     @InjectView(R.id.message_list) FixedPullToRefreshSwipeListView pullToRefreshSwipeListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
@@ -31,7 +29,7 @@ public class MessagesView extends RelativeLayout
     {
         super(context, attrs);
 
-        Timber.d("%s constructor", TAG);
+        Timber.d("constructor");
     }
 
     @Override protected void onFinishInflate()
