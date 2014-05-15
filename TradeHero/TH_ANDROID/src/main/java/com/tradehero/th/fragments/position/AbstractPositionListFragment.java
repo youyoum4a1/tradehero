@@ -291,7 +291,7 @@ abstract public class AbstractPositionListFragment<
             {
                 Bundle args = new Bundle();
                 ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-                args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderId().getArgs());
+                args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderIdKey().getArgs());
                 getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
             }
         }
