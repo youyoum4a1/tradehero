@@ -94,7 +94,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.listView = (AbsListView) view.findViewById(R.id.competition_zone_list);
         if (this.listView != null)
         {
-            this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
+            this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
         }
         placeAdapterInList();
     }
