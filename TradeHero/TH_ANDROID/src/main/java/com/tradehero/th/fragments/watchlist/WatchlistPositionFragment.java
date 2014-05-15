@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -139,7 +140,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
                     if (deletedSecurityId != null)
                     {
-                        SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
+                        SwipeListView watchlistListView = (SwipeListView) watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
                         localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
@@ -166,7 +167,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             ButterKnife.inject(this, view);
 
-            final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
+            final SwipeListView watchlistListView = (SwipeListView) watchlistPositionListView.getRefreshableView();
             watchlistListView.post(new Runnable()
             {
                 @Override public void run()
@@ -193,9 +194,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         //((ViewGroup) view).removeView(watchlistListView);
         //watchlistPositionListView.setRefreshableView(watchlistListView);
 
-        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<SwipeListView>()
+        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
         {
-            @Override public void onRefresh(PullToRefreshBase<SwipeListView> refreshView)
+            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 refretchSecurityIdList();
             }
@@ -304,7 +305,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
         {
-            watchlistPositionListView.getRefreshableView().setSwipeListViewListener(null);
+            ((SwipeListView) watchlistPositionListView.getRefreshableView()).setSwipeListViewListener(null);
         }
         //watchlistListView = null;
 
@@ -319,7 +320,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             }
             watchlistPositionListView.onRefreshComplete();
             watchlistPositionListView.setOnRefreshListener(
-                    (PullToRefreshBase.OnRefreshListener<SwipeListView>) null);
+                    (PullToRefreshBase.OnRefreshListener<ListView>) null);
         }
 
         super.onDestroyView();

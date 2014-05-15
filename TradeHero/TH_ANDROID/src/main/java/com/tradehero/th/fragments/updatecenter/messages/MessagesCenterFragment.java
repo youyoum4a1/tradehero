@@ -61,7 +61,7 @@ import timber.log.Timber;
 public class MessagesCenterFragment extends DashboardFragment
         implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
         MessageListAdapter.MessageOnLongClickListener,
-        PullToRefreshBase.OnRefreshListener2<SwipeListView>
+        PullToRefreshBase.OnRefreshListener2<ListView>
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -306,14 +306,13 @@ public class MessagesCenterFragment extends DashboardFragment
         });
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
     {
         doRefreshContent();
     }
 
-    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
     {
-
     }
 
     private void onRefreshCompleted()
