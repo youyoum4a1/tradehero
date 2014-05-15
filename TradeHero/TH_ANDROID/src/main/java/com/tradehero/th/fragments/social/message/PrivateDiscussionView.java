@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
 {
@@ -307,6 +308,10 @@ public class PrivateDiscussionView extends DiscussionView
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
+            if (value == null)
+            {
+                Timber.e(new NullPointerException("Server returned MessageHeaderDTO null for key " + key), "");
+            }
             setRecipient(new UserBaseKey(value.recipientUserId));
             linkWith(discussionKey, true);
             refresh();
