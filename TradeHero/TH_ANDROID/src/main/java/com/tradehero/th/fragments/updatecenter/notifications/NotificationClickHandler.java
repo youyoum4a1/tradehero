@@ -148,9 +148,14 @@ public class NotificationClickHandler
                         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
                     }
 
-                    if (notificationDTO.replyableId != null)
+                    if (notificationDTO.threadId != null)
                     {
                         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    }
+                    //TODO need remove this after server deploy by alex
+                    else if (notificationDTO.replyableId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
                     }
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                 }
