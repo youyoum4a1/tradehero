@@ -14,6 +14,7 @@ public class NotificationDTO implements DTO, KeyGenerator
     public Integer threadId;
     public Integer replyableTypeId;
     public int pushId;
+    public String pushGuid;
 
     // "legacy" fields to replace custom payloads in iOS pushes
     public Integer relatesToHeroUserId;
@@ -21,6 +22,8 @@ public class NotificationDTO implements DTO, KeyGenerator
     public NotificationStockAlertDTO stockAlert;
     public Integer providerId;
     public Integer pushTypeId;
+
+    public boolean useSysIcon;
     public boolean unread;
 
     @Override public NotificationKey getDTOKey()

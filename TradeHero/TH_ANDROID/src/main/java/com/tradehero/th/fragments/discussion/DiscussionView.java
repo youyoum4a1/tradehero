@@ -184,6 +184,7 @@ public class DiscussionView extends FrameLayout
         discussionList.setOnTouchListener(null);
 
         ButterKnife.reset(this);
+        removeCallbacks(null);
         super.onDetachedFromWindow();
     }
 
