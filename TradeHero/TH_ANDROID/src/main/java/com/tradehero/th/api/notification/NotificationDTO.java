@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import java.util.Date;
 
-
 public class NotificationDTO implements DTO, KeyGenerator
 {
     public String imageUrl;
@@ -12,6 +11,7 @@ public class NotificationDTO implements DTO, KeyGenerator
     public Date createdAtUtc;
     public Integer referencedUserId;
     public Integer replyableId;
+    public Integer threadId;
     public Integer replyableTypeId;
     public int pushId;
 
@@ -26,5 +26,18 @@ public class NotificationDTO implements DTO, KeyGenerator
     @Override public NotificationKey getDTOKey()
     {
         return new NotificationKey(pushId);
+    }
+
+    @Override public String toString()
+    {
+        return new StringBuilder().append("NotificationDTO text=")
+                .append(text)
+                .append(" pushId=")
+                .append(pushId)
+                .append(" replyableId=")
+                .append(replyableId)
+                .append(" threadId=")
+                .append(threadId)
+                .toString();
     }
 }

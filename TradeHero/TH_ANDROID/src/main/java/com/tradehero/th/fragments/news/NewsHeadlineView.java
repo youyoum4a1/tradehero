@@ -106,8 +106,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO.title, newsItemDTO.description,
-                newsItemDTO.langCode, newsItemDTO.id, WeChatMessageType.News.getType());
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getType());
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);
@@ -117,7 +116,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     protected void handleTranslationRequested()
     {
         detachTranslationTask();
-        TranslationKey key = new TranslationKey(newsItemDTO.langCode, "zh", newsItemDTO.text);
+        TranslationKey key = newsItemDTO.createTranslationKey("zh");
         translationTask =
                 new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
                         .launchTranslation(key);

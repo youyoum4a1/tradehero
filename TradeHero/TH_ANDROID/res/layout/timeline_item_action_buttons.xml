@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
   <LinearLayout
       android:id="@+id/discussion_share_buttons"
       android:layout_width="match_parent"
@@ -11,6 +12,7 @@
       android:background="@drawable/timeline_action_buttons_background"
       android:baselineAligned="false"
       >
+
     <LinearLayout
         android:id="@+id/timeline_action_button_monitor_wrapper"
         android:layout_width="0dp"
@@ -19,12 +21,14 @@
         android:padding="@dimen/timeline_action_buttons_padding"
         android:gravity="center"
         >
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@drawable/icn_actions_monitor"
           android:contentDescription="@null"
           />
+
       <TextView
           android:id="@+id/timeline_action_button_monitor"
           android:layout_width="wrap_content"
@@ -36,8 +40,8 @@
           android:shadowDy="1"
           android:shadowRadius="1"
           />
-    </LinearLayout>
 
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/timeline_action_button_trade_wrapper"
@@ -47,12 +51,14 @@
         android:padding="@dimen/timeline_action_buttons_padding"
         android:gravity="center"
         >
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@drawable/icn_actions_trade"
           android:contentDescription="@null"
           />
+
       <TextView
           android:id="@+id/timeline_action_button_trade"
           android:layout_width="wrap_content"
@@ -64,6 +70,7 @@
           android:shadowDy="1"
           android:shadowRadius="1"
           />
+
     </LinearLayout>
 
     <LinearLayout
@@ -74,12 +81,14 @@
         android:padding="@dimen/timeline_action_buttons_padding"
         android:gravity="center"
         >
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@drawable/icn_actions_share"
           android:contentDescription="@null"
           />
+
       <TextView
           android:id="@+id/timeline_action_button_share"
           android:layout_width="wrap_content"
@@ -91,6 +100,9 @@
           android:shadowDy="1"
           android:shadowRadius="1"
           />
+
     </LinearLayout>
+
   </LinearLayout>
+
 </merge>

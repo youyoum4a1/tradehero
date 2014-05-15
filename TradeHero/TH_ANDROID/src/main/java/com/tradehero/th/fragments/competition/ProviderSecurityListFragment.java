@@ -260,7 +260,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
             args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-            args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
             getNavigator().pushFragment(BuySellFragment.class, args);

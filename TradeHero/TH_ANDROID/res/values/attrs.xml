@@ -44,4 +44,9 @@
   <declare-styleable name="VotePair">
     <attr name="downVote" format="boolean"/>
   </declare-styleable>
+
+  <declare-styleable name="RightLeftViewSwitcher">
+    <attr name="firstViewIsOnTheRight" format="boolean"/>
+  </declare-styleable>
+
 </resources>

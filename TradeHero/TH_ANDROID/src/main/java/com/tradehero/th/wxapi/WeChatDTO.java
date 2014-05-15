@@ -1,6 +1,5 @@
 package com.tradehero.th.wxapi;
 
-
 public class WeChatDTO
 {
     public int id;

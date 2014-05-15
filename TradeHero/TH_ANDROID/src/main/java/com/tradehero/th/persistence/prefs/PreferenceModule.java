@@ -49,7 +49,7 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_RESET_HELP_SCREENS, false);
     }
 
-    @Provides @Singleton @SavedBaiduPushDeviceIdentifier StringPreference provideSavedPushIdentifier(SharedPreferences sharedPreferences)
+    @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(SharedPreferences sharedPreferences)
     {
         return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, null);
     }

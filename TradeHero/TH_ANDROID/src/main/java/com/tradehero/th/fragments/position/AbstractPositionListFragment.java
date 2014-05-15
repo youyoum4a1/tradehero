@@ -290,7 +290,7 @@ abstract public class AbstractPositionListFragment<
             else
             {
                 Bundle args = new Bundle();
-                args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+                ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
                 args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderId().getArgs());
                 getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
             }
@@ -686,8 +686,7 @@ abstract public class AbstractPositionListFragment<
                 if (currentUserId.toUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
                 {
                     // We only add if this the current user portfolio
-                    args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                            clickedPositionDTO.getOwnedPositionId().getArgs());
+                    BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
                 getNavigator().pushFragment(BuySellFragment.class, args);
@@ -776,7 +775,7 @@ abstract public class AbstractPositionListFragment<
         if (securityId != null && getApplicablePortfolioId() != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             getNavigator().pushFragment(AlertCreateFragment.class, args);
         }

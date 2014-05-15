@@ -131,7 +131,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -143,7 +143,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-  >
+    >
 
   <RelativeLayout
       android:id="@+id/manage_follower_revenue_header"
@@ -15,7 +15,6 @@
       android:background="@color/gray_3"
       tools:background="#f00"
       >
-
 
     <ImageView
         android:id="@+id/follower_profile_picture"
@@ -67,6 +66,7 @@
         android:text="@null"
         android:layout_centerVertical="true"
         />
+
   </RelativeLayout>
 
   <com.tradehero.th.fragments.social.follower.FollowerPaymentListView
@@ -76,13 +76,15 @@
       android:layout_below="@id/manage_follower_revenue_header"
       android:background="@null"
       />
-<TextView
-    android:id="@+id/error_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/manage_follower_revenue_header"
-    android:text="@string/common_loading_error"
-    android:gravity="center"
-    android:visibility="gone"
-    />
+
+  <TextView
+      android:id="@+id/error_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/manage_follower_revenue_header"
+      android:text="@string/common_loading_error"
+      android:gravity="center"
+      android:visibility="gone"
+      />
+
 </RelativeLayout>
