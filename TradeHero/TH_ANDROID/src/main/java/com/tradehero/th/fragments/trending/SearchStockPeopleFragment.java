@@ -552,11 +552,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityId == null)
-        {
-            Timber.e("Cannot handle null SecurityId", new IllegalArgumentException());
-            return;
-        }
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);
