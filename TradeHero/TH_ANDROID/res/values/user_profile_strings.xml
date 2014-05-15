@@ -33,7 +33,6 @@
   <string name="user_profile_choose_image_from_choice">For Your Profile Photo, Pick:</string>
   <string name="user_profile_choose_image_from_camera">Image from Camera</string>
   <string name="user_profile_choose_image_from_library">Image from Library</string>
-  <string name="user_profile_choose_image_from_cancel">@string/cancel</string>
 
   <string name="error_decode_image_memory">Not enough memory to decode the image</string>
   <string name="error_fetch_image_library">Failed to extract image from library</string>

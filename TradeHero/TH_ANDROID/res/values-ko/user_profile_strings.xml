@@ -33,7 +33,6 @@
   <string name="user_profile_choose_image_from_choice">프로필 사진을 고르세요:</string>
   <string name="user_profile_choose_image_from_camera">카메라로 사진찍기</string>
   <string name="user_profile_choose_image_from_library">사진첩에서 고르기</string>
-  <string name="user_profile_choose_image_from_cancel">@string/cancel</string>
 
   <string name="error_decode_image_memory">이미지를 로딩할 메모리가 부족합니다</string>
   <string name="error_fetch_user_profile">프로필 정보를 불러오는데 오류가 발생하였습니다</string>
