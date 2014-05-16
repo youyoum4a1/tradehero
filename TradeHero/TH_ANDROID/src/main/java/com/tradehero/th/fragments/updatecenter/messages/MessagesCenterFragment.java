@@ -61,7 +61,7 @@ import timber.log.Timber;
 public class MessagesCenterFragment extends DashboardFragment
         implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
         MessageListAdapter.MessageOnLongClickListener,
-        PullToRefreshBase.OnRefreshListener2<ListView>
+        PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -306,12 +306,12 @@ public class MessagesCenterFragment extends DashboardFragment
         });
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+    @Override public void onPullDownToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
     {
         doRefreshContent();
     }
 
-    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+    @Override public void onPullUpToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
     {
     }
 
@@ -376,10 +376,10 @@ public class MessagesCenterFragment extends DashboardFragment
         DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
-        ListView listView = messagesView.getListView();
+        InterceptedScrollSwipeListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemLongClickListener(this);
-        SwipeListView swipeListView = (SwipeListView) listView;
+        SwipeListView swipeListView = listView;
 
         this.swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);

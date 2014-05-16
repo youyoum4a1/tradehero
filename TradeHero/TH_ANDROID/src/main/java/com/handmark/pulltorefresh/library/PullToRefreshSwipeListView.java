@@ -8,14 +8,11 @@ import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
-import java.lang.reflect.Field;
-import timber.log.Timber;
 
-public class PullToRefreshSwipeListView extends PullToRefreshListView
+public class PullToRefreshSwipeListView extends PullToRefreshListViewBase<SwipeListView>
 {
     //<editor-fold desc="Constructors">
     public PullToRefreshSwipeListView(Context context)
@@ -38,22 +35,6 @@ public class PullToRefreshSwipeListView extends PullToRefreshListView
         super(context, mode, style);
     }
     //</editor-fold>
-
-    protected FrameLayout getMLvFooterLoadingFrameByReflection()
-    {
-        FrameLayout mLvFooterLoadingFrame = null;
-        try
-        {
-            Field f = PullToRefreshListView.class.getDeclaredField("mLvFooterLoadingFrame");
-            f.setAccessible(true);
-            mLvFooterLoadingFrame = (FrameLayout) f.get(this);
-        }
-        catch (NoSuchFieldException|IllegalAccessException e)
-        {
-            Timber.e(e, "Failed to getMLvFooterLoadingFrameByReflection ");
-        }
-        return mLvFooterLoadingFrame;
-    }
 
     protected SwipeListView createListView(Context context, AttributeSet attrs)
     {
@@ -144,7 +125,6 @@ public class PullToRefreshSwipeListView extends PullToRefreshListView
         @Override
         public void setAdapter(ListAdapter adapter)
         {
-            FrameLayout mLvFooterLoadingFrame = getMLvFooterLoadingFrameByReflection();
             // Add the Footer View at the last possible moment
             if (null != mLvFooterLoadingFrame && !mAddedLvFooter)
             {

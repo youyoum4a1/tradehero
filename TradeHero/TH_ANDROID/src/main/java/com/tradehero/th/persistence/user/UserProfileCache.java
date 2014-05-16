@@ -30,6 +30,17 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
+    @Override public GetOrFetchTask<UserBaseKey, UserProfileDTO> getOrFetch(
+            UserBaseKey key, boolean forceUpdateCache,
+            Listener<UserBaseKey, UserProfileDTO> initialListener)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException("UserBaseKey cannot be null");
+        }
+        return super.getOrFetch(key, forceUpdateCache, initialListener);
+    }
+
     @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
