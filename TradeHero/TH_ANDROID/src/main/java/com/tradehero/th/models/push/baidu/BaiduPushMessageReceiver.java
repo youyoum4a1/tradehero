@@ -155,7 +155,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     public void updateDeviceIdentifier(String appId,String userId, String channelId)
     {
-        if (currentUserId != null)
+        if (currentUserId == null)
         {
             Timber.e("Current user is null, quit");
             return;
