@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -150,8 +151,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setSubtitle(null);
+        SherlockFragmentActivity activity = getSherlockActivity();
+        if (activity != null)
+        {
+            ActionBar actionBar = activity.getSupportActionBar();
+            actionBar.setSubtitle(null);
+        }
         super.onDestroyOptionsMenu();
     }
 

@@ -170,7 +170,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
-
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -320,8 +319,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(),
-                    ((Fragment) this).getChildFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
         }
         if (mBottomViewPager != null)
         {
@@ -919,32 +917,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
         if (adapter != null)
         {
-            SecurityCompactDTO adapterDTO = adapter.getSecurityCompactDTO();
-            if (securityId != null && (adapterDTO == null || !securityId.equals(
-                    adapterDTO.getSecurityId())))
-            {
-                adapter.linkWith(providerId);
-                adapter.linkWith(securityCompactDTO);
-                //adaper of new versioned ViewPager must call notifyDataSetChanged when data changes
-                adapter.notifyDataSetChanged();
-
-                ViewPager viewPager = mBottomViewPager;
-                if (viewPager != null)
-                {
-                    viewPager.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
-                            if (adapter != null)
-                            {
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            }
+            adapter.linkWith(securityId);
+            adapter.notifyDataSetChanged();
         }
     }
 

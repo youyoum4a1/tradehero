@@ -90,9 +90,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private boolean isQuerying;
 
-    private SecurityIdListCacheListener securityIdListCacheListener;
-    private PeopleListCacheListener peopleListCacheListener;
-
     private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
@@ -131,9 +128,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void initViews(View view, LayoutInflater inflater)
     {
-        nearEndScrollListener = new SearchFlagNearEdgeScrollListener();
-        securityIdListCacheListener = new SecurityIdListCacheListener();
-        peopleListCacheListener = new PeopleListCacheListener();
+        nearEndScrollListener = createFlagNearEdgeScrollListener();
 
         securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater,
                 R.layout.search_security_item);
@@ -337,6 +332,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        cancelSearchTasks();
         DeviceUtil.dismissKeyboard(getActivity());
 
         if (listView != null)
@@ -344,6 +340,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setOnItemClickListener(null);
             listView.setOnScrollListener(null);
         }
+        listView = null;
+        nearEndScrollListener = null;
 
         View rootView = getView();
         if (rootView != null && requestDataTask != null)
@@ -354,10 +352,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityItemViewAdapter = null;
         peopleItemViewAdapter = null;
         listView = null;
-
-        cancelSearchTasks();
-        securityIdListCacheListener = null;
-        peopleListCacheListener = null;
 
         super.onDestroyView();
     }
@@ -456,7 +450,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, securityIdListCacheListener);
+                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
             securitySearchTask.execute();
         }
     }
@@ -470,7 +464,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             peopleSearchTask = userBaseKeyListCache.get()
-                    .getOrFetch(searchUserListType, peopleListCacheListener);
+                    .getOrFetch(searchUserListType, createUserCacheListener());
             peopleSearchTask.execute();
         }
     }
@@ -558,11 +552,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityId == null)
-        {
-            Timber.e("Cannot handle null SecurityId", new IllegalArgumentException());
-            return;
-        }
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);
@@ -625,6 +614,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
+    private FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
+    {
+        return new SearchFlagNearEdgeScrollListener();
+    }
+
     private class SearchFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
         @Override public void raiseEndFlag()
@@ -702,6 +696,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
+    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    {
+        return new SecurityIdListCacheListener();
+    }
+
     private class SecurityIdListCacheListener
             implements DTOCache.Listener<SecurityListType, SecurityIdList>
     {
@@ -747,6 +746,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             THToast.show(getString(R.string.error_fetch_security_list_info));
             Timber.e("Error fetching the list of securities " + key, error);
         }
+    }
+
+    private DTOCache.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
+    {
+        return new PeopleListCacheListener();
     }
 
     private class PeopleListCacheListener

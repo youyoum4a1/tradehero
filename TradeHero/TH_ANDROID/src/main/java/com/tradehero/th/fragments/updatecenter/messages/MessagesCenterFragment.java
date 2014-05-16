@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -45,20 +49,19 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
+        implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
         MessageListAdapter.MessageOnLongClickListener,
-        PullToRefreshBase.OnRefreshListener2<SwipeListView>
+        PullToRefreshBase.OnRefreshListener2<ListView>
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -83,7 +86,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     private BroadcastReceiver broadcastReceiver;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -208,7 +210,6 @@ public class MessagesCenterFragment extends DashboardFragment
             LocalBroadcastManager.getInstance(getActivity())
                     .registerReceiver(broadcastReceiver,
                             new IntentFilter(PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED));
-
         }
     }
 
@@ -255,14 +256,6 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onDestroy");
     }
 
-    /**
-     * item of listview is clicked
-     */
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        Timber.d("onItemClick %d", position);
-    }
-
     @Override public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         Timber.d("onItemLongClick %d", position);
         return false;
@@ -273,7 +266,7 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     @Override public void onMessageClick(int position, int type)
     {
-        Timber.d("onMessageClick position:%d,type:%d", position, type);
+        Timber.d("onMessageClick position:%d, type:%d", position, type);
         if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
         {
             updateReadStatus(position);
@@ -313,14 +306,13 @@ public class MessagesCenterFragment extends DashboardFragment
         });
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
     {
         doRefreshContent();
     }
 
-    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
     {
-
     }
 
     private void onRefreshCompleted()
@@ -386,7 +378,6 @@ public class MessagesCenterFragment extends DashboardFragment
         this.messagesView = (MessagesView) view;
         ListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
-        listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         SwipeListView swipeListView = (SwipeListView) listView;
 
@@ -533,7 +524,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
     class SwipeListener extends BaseSwipeListViewListener
     {
-
         @Override public void onClickBackView(final int position)
         {
             final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();

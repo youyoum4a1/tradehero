@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class PortfolioCache extends StraightDTOCache<OwnedPortfolioId, PortfolioDTO>
 {
     public static final String TAG = PortfolioCache.class.getName();

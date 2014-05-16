@@ -66,7 +66,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTOKey newsItemDTOKey;
 
-    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
     private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
@@ -89,18 +88,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     }
 
 
-    @Override public void onDestroyView()
-    {
-        detachNewsFetchTask();
-        detachTranslationTask();
-        super.onDestroyView();
-    }
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        newsCacheFetchListener = new NewsFetchListener();
     }
 
     @Override public void onResume()
@@ -113,11 +104,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         }
     }
 
-    @Override public void onDetach()
+    @Override public void onDestroyView()
     {
-        newsCacheFetchListener = null;
-
-        super.onDetach();
+        detachNewsFetchTask();
+        detachTranslationTask();
+        super.onDestroyView();
     }
 
     @Override public void onDestroy()
@@ -173,7 +164,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private void fetchNewsDetail(boolean force)
     {
         detachNewsFetchTask();
-        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, newsCacheFetchListener);
+        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
         newsFetchTask.execute();
     }
 
@@ -241,6 +232,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> createNewsFetchListener()
+    {
+        return new NewsFetchListener();
     }
 
     private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
