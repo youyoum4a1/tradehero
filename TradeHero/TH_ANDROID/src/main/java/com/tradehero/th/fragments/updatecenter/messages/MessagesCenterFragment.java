@@ -11,12 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -60,14 +56,11 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
-        MessageListAdapter.MessageOnLongClickListener,
+        implements
+        MessageItemView.OnUserClickedListener,
         PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>,
         ResideMenu.OnMenuListener
 {
-    public static final int DEFAULT_PER_PAGE = 42;
-    public static final int ITEM_ID_REFRESH_MENU = 0;
-
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
@@ -126,29 +119,6 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    //https://github.com/JakeWharton/ActionBarSherlock/issues/828
-    //https://github.com/purdyk/ActionBarSherlock/commit/30750def631aa4cdd224d4c4550b23e27c245ac4
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        //MenuItem menuItem = menu.add(0, ITEM_ID_REFRESH_MENU, 0, R.string.message_list_refresh_menu);
-        //menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        Timber.d("onCreateOptionsMenu");
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        Timber.d("onOptionsItemSelected");
-        if (item.getItemId() == ITEM_ID_REFRESH_MENU)
-        {
-            refreshContent();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -164,17 +134,6 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onPause();
     }
 
-    @Override public void onStop()
-    {
-        Timber.d("onStop");
-        super.onStop();
-    }
-
-    private void refreshUserProfile()
-    {
-
-    }
-
     private void registerMessageReceiver()
     {
         if (broadcastReceiver == null)
@@ -185,8 +144,6 @@ public class MessagesCenterFragment extends DashboardFragment
                 {
                     if (PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
                     {
-                        refreshUserProfile();
-
                         Timber.d("onReceive message doRefreshContent");
                         if (messagesView != null
                                 && messagesView.pullToRefreshSwipeListView.isRefreshing())
@@ -204,7 +161,6 @@ public class MessagesCenterFragment extends DashboardFragment
                         }
 
                         doRefreshContent();
-
                     }
                 }
             };
@@ -217,7 +173,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void unregisterMessageReceiver()
     {
-
         if (broadcastReceiver != null)
         {
             LocalBroadcastManager.getInstance(getActivity())
@@ -226,21 +181,16 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        Timber.d("onDestroyOptionsMenu");
-    }
-
     @Override public void onDestroyView()
     {
         //we set a message unread when click the item, so don't remove callback at the moment and do it in onDestroy.
         //unsetMiddleCallback();
         detachFetchMessageTask();
-        SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+        SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
         swipeListener = null;
         messagesView = null;
+        messageListAdapter.setUserClickedListener(null);
         messageListAdapter = null;
         Timber.d("onDestroyView");
 
@@ -256,38 +206,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
         super.onDestroy();
         Timber.d("onDestroy");
-    }
-
-    @Override public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Timber.d("onItemLongClick %d", position);
-        return false;
-    }
-
-    /**
-     * subview of item view is clicked.
-     */
-    @Override public void onMessageClick(int position, int type)
-    {
-        Timber.d("onMessageClick position:%d, type:%d", position, type);
-        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
-        {
-            updateReadStatus(position);
-            pushMessageFragment(position);
-        }
-        else if (type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
-        {
-            pushHeroProfileFrgment(position);
-        }
-
-    }
-
-    @Override
-    public void onMessageLongClick(int position, int type) {
-        Timber.d("onMessageLongClick position:%d,type:%d", position, type);
-        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT || type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
-        {
-            createDeleteMessageDialog(position);
-        }
     }
 
     private void createDeleteMessageDialog(final int position) {
@@ -306,6 +224,11 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
             }
         });
+    }
+
+    @Override public void onUserClicked(MessageHeaderId messageHeaderId)
+    {
+        pushUserProfileFragment(messageHeaderCache.get(messageHeaderId));
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
@@ -342,10 +265,13 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void pushHeroProfileFrgment(int position)
+    private void pushUserProfileFragment(int position)
     {
-        MessageHeaderDTO messageHeaderDTO =
-                messageHeaderCache.get(getListAdapter().getItem(position));
+        pushUserProfileFragment(messageHeaderCache.get(getListAdapter().getItem(position)));
+    }
+
+    private void pushUserProfileFragment(MessageHeaderDTO messageHeaderDTO)
+    {
         if (messageHeaderDTO != null)
         {
             int currentUser = currentUserId.toUserBaseKey().key;
@@ -361,7 +287,6 @@ public class MessagesCenterFragment extends DashboardFragment
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
-
     }
 
     protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)
@@ -380,7 +305,6 @@ public class MessagesCenterFragment extends DashboardFragment
         this.messagesView = (MessagesView) view;
         InterceptedScrollSwipeListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
-        listView.setOnItemLongClickListener(this);
         SwipeListView swipeListView = listView;
 
         this.swipeListener = new SwipeListener();
@@ -391,7 +315,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (nextMoreRecentMessageListKey == null)
         {
             nextMoreRecentMessageListKey =
-                    new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+                    new MessageListKey(MessageListKey.FIRST_PAGE);
         }
     }
 
@@ -415,7 +339,7 @@ public class MessagesCenterFragment extends DashboardFragment
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
         MessageListKey messageListKey =
-                new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+                new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
                 createRefreshMessageHeaderIdListCacheListener());
@@ -440,7 +364,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private void resetPageNumber()
     {
         nextMoreRecentMessageListKey =
-                new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+                new MessageListKey(MessageListKey.FIRST_PAGE);
     }
 
     private void increasePageNumber()
@@ -466,57 +390,27 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void appendMessagesList(MessageHeaderIdList messageKeys)
     {
-        ListView listView = messagesView.getListView();
-
         if (messageListAdapter == null)
         {
-            messageListAdapter =
-                    new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
-                            R.layout.message_list_item_wrapper);
+            resetMessagesList(messageKeys);
         }
-        if (listView.getAdapter() == null)
+        else
         {
-            listView.setAdapter(messageListAdapter);
+            messageListAdapter.appendTail(messageKeys);
+            messageListAdapter.notifyDataSetChanged();
         }
-        MessageListAdapter adapter =
-                messageListAdapter;//(MessageListAdapter) listView.getAdapter();
-        adapter.setMessageOnClickListener(this);
-        adapter.setMessageOnLongClickListener(this);
-        adapter.appendMore(messageKeys);
     }
 
     private void resetMessagesList(MessageHeaderIdList messageKeys)
     {
-        ListView listView = messagesView.getListView();
+        messageListAdapter =
+                new MessageListAdapter(
+                        getActivity(),
+                        messageKeys,
+                        R.layout.message_list_item_wrapper);
+        messageListAdapter.setUserClickedListener(this);
 
-        if (messageListAdapter == null)
-        {
-            messageListAdapter =
-                    new MessageListAdapter(getActivity(), LayoutInflater.from(getActivity()),
-                            R.layout.message_list_item_wrapper);
-        }
-        else
-        {
-            messageListAdapter.clear();
-            messageListAdapter.notifyDataSetChanged();
-        }
-        if (listView.getAdapter() == null)
-        {
-            listView.setAdapter(messageListAdapter);
-        }
-        else
-        {
-            MessageListAdapter adapter =
-                    messageListAdapter;// (MessageListAdapter) listView.getAdapter();
-            adapter.clear();
-            adapter.notifyDataSetChanged();
-        }
-        MessageListAdapter adapter =
-                messageListAdapter;//(MessageListAdapter) listView.getAdapter();
-        adapter.setMessageOnClickListener(this);
-        adapter.setMessageOnLongClickListener(this);
-        adapter.clearDeletedSet();
-        adapter.appendMore(messageKeys);
+        messagesView.getListView().setAdapter(messageListAdapter);
     }
 
     private MessageListAdapter getListAdapter()
@@ -557,6 +451,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             super.onClickFrontView(position);
             Timber.d("SwipeListener onClickFrontView %s", position);
+            pushMessageFragment(position);
         }
 
         @Override public void onDismiss(int[] reverseSortedPositions)
@@ -574,7 +469,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private void removeMessageIfNecessary(int position)
     {
         MessageHeaderId messageHeaderId = getListAdapter().getItem(position);
-        getListAdapter().markDeleted(messageHeaderId, true);
         removeMessageOnServer(messageHeaderId);
     }
 
@@ -649,7 +543,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private void refreshCache(MessageHeaderIdList data)
     {
         MessageListKey messageListKey =
-                new MessageListKey(MessageListKey.FIRST_PAGE, DEFAULT_PER_PAGE);
+                new MessageListKey(MessageListKey.FIRST_PAGE);
         messageListCache.get().invalidateAll();
         messageListCache.get().put(messageListKey, data);
     }
