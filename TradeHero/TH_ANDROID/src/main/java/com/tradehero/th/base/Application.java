@@ -2,6 +2,7 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.tradehero.common.Logger;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
@@ -54,6 +55,7 @@ public class Application extends PApplication
         pushNotificationManager.initialise();
 
         THLog.showDeveloperKeyHash();
+        Logger.logAll("wangliang","init");
     }
 
     public void restartActivity(Class<? extends Activity> activityClass)

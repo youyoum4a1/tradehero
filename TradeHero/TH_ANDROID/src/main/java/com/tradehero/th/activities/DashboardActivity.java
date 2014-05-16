@@ -334,10 +334,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         localyticsSession.get().close();
         localyticsSession.get().upload();
-        if (isChineseLocale)
-        {
-            PushManager.activityStarted(this);
-        }
+
         Timber.d("onPause");
 
         super.onPause();
@@ -347,6 +344,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         super.onStart();
 
+        if (isChineseLocale)
+        {
+            PushManager.activityStarted(this);
+        }
         Timber.d("onStart");
     }
 

@@ -45,4 +45,21 @@
   <color name="broadcast_message_item_bg">#dfefff</color>
   <color name="private_message_item_bg">@color/white</color>
 
+  <string-array name="rangeColors2">
+    <item>#FF0C2B</item>
+    <item>#FF1D0C</item>
+
+    <item>#FF390E</item>
+    <item>#FF530F</item>
+
+    <item>#FF7C11</item>
+    <item>#FF9E13</item>
+    <item>#FFC81A</item>
+    <item>#FFF718</item>
+    <item>#D8FF14</item>
+    <item>#A4FF12</item>
+    <item>#70FF17</item>
+    <item>#3FFF12</item>
+    <item>#16FF11</item>
+  </string-array>
 </resources>
