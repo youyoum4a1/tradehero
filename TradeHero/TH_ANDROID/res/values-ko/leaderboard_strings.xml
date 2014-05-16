@@ -55,6 +55,6 @@
 
   <string name="follower_type_premium">유료 팔로워</string>
   <string name="follower_type_free">무료 팔로워</string>
-  <string name="follower_type_all">무료 팔로워</string>
+  <string name="follower_type_all">모든 팔로워</string>
 
 </resources>
