@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -61,7 +62,8 @@ import timber.log.Timber;
 public class MessagesCenterFragment extends DashboardFragment
         implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
         MessageListAdapter.MessageOnLongClickListener,
-        PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>
+        PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>,
+        ResideMenu.OnMenuListener
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -522,11 +524,28 @@ public class MessagesCenterFragment extends DashboardFragment
         return messageListAdapter;
     }
 
+    @Override public void openMenu()
+    {
+    }
+
+    @Override public void closeMenu()
+    {
+        if (messagesView != null)
+        {
+            SwipeListView swipeListView = messagesView.getListView();
+            if (swipeListView != null)
+            {
+                swipeListView.closeOpenedItems();
+                swipeListView.resetScrolling();
+            }
+        }
+    }
+
     class SwipeListener extends BaseSwipeListViewListener
     {
         @Override public void onClickBackView(final int position)
         {
-            final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            final SwipeListView swipeListView = messagesView.getListView();
             int count = swipeListView.getHeaderViewsCount();
             Timber.d("SwipeListener onClickBackView %s,header count:%s", position, count);
             //TODO it's quite difficult to use

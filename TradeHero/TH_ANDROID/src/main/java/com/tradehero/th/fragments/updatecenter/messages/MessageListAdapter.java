@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, MessageItemViewWrapper>
         implements
-        View.OnClickListener,View.OnLongClickListener
+        View.OnClickListener, View.OnLongClickListener
 {
     private MessageOnClickListener messageOnClickListener;
     private MessageOnLongClickListener messageOnLongClickListener;
