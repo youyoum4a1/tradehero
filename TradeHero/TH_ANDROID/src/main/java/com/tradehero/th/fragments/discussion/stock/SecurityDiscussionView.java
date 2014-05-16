@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
@@ -49,7 +48,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
-    private DTOCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
 
     //<editor-fold desc="Constructors">
     public SecurityDiscussionView(Context context)
@@ -70,7 +68,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        securityCompactCacheListener = new SecurityCompactCacheListener();
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
 
         securityDiscussionAdapter = createDiscussionAdapter(null);
@@ -127,7 +124,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Override public void display(SecurityId securityId)
     {
         detachSecurityCompactCacheTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, false, securityCompactCacheListener);
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, false, createSecurityCompactCacheListener());
         securityCompactCacheFetchTask.execute();
     }
 
@@ -206,6 +203,11 @@ public class SecurityDiscussionView extends BetterViewAnimator
         loading = false;
 
         setDisplayedChildByLayoutId(securityDiscussionList.getId());
+    }
+
+    private DTOCache.Listener<SecurityId,SecurityCompactDTO> createSecurityCompactCacheListener()
+    {
+        return new SecurityCompactCacheListener();
     }
 
     private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId,SecurityCompactDTO>

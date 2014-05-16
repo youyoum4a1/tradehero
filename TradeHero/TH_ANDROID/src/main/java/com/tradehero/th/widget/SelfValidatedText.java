@@ -7,7 +7,6 @@ import android.view.View;
 import com.tradehero.th.R;
 import java.util.regex.Pattern;
 
-
 public class SelfValidatedText extends ValidatedText
 {
     private final int DEFAULT_VALIDATE_DELAY = 200;

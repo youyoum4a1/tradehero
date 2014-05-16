@@ -170,7 +170,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
-
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
@@ -320,8 +319,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(),
-                    ((Fragment) this).getChildFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
         }
         if (mBottomViewPager != null)
         {
@@ -774,15 +772,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
                     providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
-            Bundle ownedPortfolioArgs =
-                    getArguments().getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
-            if (ownedPortfolioArgs != null)
+
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null && !applicablePortfolioId.equals(defaultOwnedPortfolioId))
             {
-                OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
-                if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
-                {
-                    otherPortfolioIds.add(ownedPortfolioId);
-                }
+                otherPortfolioIds.add(applicablePortfolioId);
             }
 
             for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
@@ -822,25 +816,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayActionBarElements();
         displayPageElements();
 
-        int avgDailyVolume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
-        {
-            avgDailyVolume = 0;
-        }
-        else
-        {
-            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
-        }
-
-        int volume = 0;
-        if (securityCompactDTO == null || securityCompactDTO.volume == null)
-        {
-            volume = 0;
-        }
-        else
-        {
-            volume = (int) Math.ceil(securityCompactDTO.volume);
-        }
+        //TODO not know do what, temp remove by alex
+        //int avgDailyVolume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+        //{
+        //    avgDailyVolume = 0;
+        //}
+        //else
+        //{
+        //    avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
+        //}
+        //
+        //int volume = 0;
+        //if (securityCompactDTO == null || securityCompactDTO.volume == null)
+        //{
+        //    volume = 0;
+        //}
+        //else
+        //{
+        //    volume = (int) Math.ceil(securityCompactDTO.volume);
+        //}
     }
 
     public void displayPageElements()
@@ -919,32 +914,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
         if (adapter != null)
         {
-            SecurityCompactDTO adapterDTO = adapter.getSecurityCompactDTO();
-            if (securityId != null && (adapterDTO == null || !securityId.equals(
-                    adapterDTO.getSecurityId())))
-            {
-                adapter.linkWith(providerId);
-                adapter.linkWith(securityCompactDTO);
-                //adaper of new versioned ViewPager must call notifyDataSetChanged when data changes
-                adapter.notifyDataSetChanged();
-
-                ViewPager viewPager = mBottomViewPager;
-                if (viewPager != null)
-                {
-                    viewPager.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
-                            if (adapter != null)
-                            {
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            }
+            adapter.linkWith(securityId);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -1368,8 +1339,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
-            args.putBundle(BaseAlertEditFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    getApplicablePortfolioId().getArgs());
+            BaseAlertEditFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
@@ -2122,8 +2092,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private class BuySellCallback
-            implements retrofit.Callback<SecurityPositionDetailDTO>
+    private class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
     {
         private final boolean isBuy;
 
@@ -2168,6 +2137,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
+            Timber.e(retrofitError, "Reporting the error to Crashlytics");
             THToast.show(new THException(retrofitError));
         }
     }

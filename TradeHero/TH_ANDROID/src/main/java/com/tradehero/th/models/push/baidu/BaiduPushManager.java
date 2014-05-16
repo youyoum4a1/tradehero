@@ -35,6 +35,9 @@ import timber.log.Timber;
     @Override public void initialise()
     {
         FrontiaApplication.initFrontiaApplication(context);
+        //TODO need check whether this is ok for urbanship,
+        //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
+        //enablePush();
     }
 
     @Override public void enablePush()

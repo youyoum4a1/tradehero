@@ -50,7 +50,7 @@
 
   <string name="error_fetch_leaderboard_def_list_key">리더보드를 불러오는데 오류가 생겼습니다.</string>
 
-  <string name="leaderboard_community_followers">팔로우</string>
+  <string name="leaderboard_community_followers">팔로워</string>
   <string name="leaderboard_community_heros">히어로</string>
 
   <string name="leaderboard_community_hero_premium">{0,choice,0#Premium|0&lt;Premium({0})}</string>
@@ -59,6 +59,6 @@
 
   <string name="follower_type_premium">유료 팔로워</string>
   <string name="follower_type_free">무료 팔로워</string>
-  <string name="follower_type_all">무료 팔로워</string>
+  <string name="follower_type_all">모든 팔로워</string>
 
 </resources>

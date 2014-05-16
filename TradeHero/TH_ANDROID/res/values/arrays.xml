@@ -81,10 +81,13 @@
        <item>@drawable/img_placeholder_news_24</item>
    </array>
 
+  <!-- TODO These things should be available only when the sharing facility is
+   implemented and available -->
   <string-array name="share_to">
     <item>@string/wechat</item>
     <item>@string/linkedin</item>
     <item>@string/facebook</item>
     <item>@string/twitter</item>
   </string-array>
+
 </resources>

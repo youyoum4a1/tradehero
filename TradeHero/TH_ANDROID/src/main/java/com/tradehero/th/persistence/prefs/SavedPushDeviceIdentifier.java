@@ -6,6 +6,6 @@ import javax.inject.Qualifier;
 
 
 @Qualifier @Retention(RetentionPolicy.RUNTIME)
-public @interface SavedBaiduPushDeviceIdentifier
+public @interface SavedPushDeviceIdentifier
 {
 }

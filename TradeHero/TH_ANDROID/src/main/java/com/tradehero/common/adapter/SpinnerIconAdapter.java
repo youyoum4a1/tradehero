@@ -1,7 +1,6 @@
 package com.tradehero.common.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,14 +9,13 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import java.util.List;
 
-
 public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 {
     private int textViewResourceId;
     private int iconViewResourceId;
     private int iconDropDownResourceId;
-    private Drawable[] icons;
-    private Drawable[] dropDownIcons;
+    private int[] icons;
+    private int[] dropDownIcons;
 
     //<editor-fold desc="Constructors">
     public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId)
@@ -29,7 +27,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
     }
 
     public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, List<CharSequence> objects,
-            Drawable[] icons)
+            int[] icons)
     {
         super(context, resource, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
@@ -39,7 +37,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         this.dropDownIcons = dropDownIcons;
     }
 
-    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
+    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, int[] icons, int[] dropDownIcons)
     {
         super(context, resource, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
@@ -57,7 +55,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         this.iconDropDownResourceId = iconDropDownResourceId;
     }
 
-    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, List<CharSequence> objects, Drawable[] icons, Drawable[] dropDownIcons)
+    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, List<CharSequence> objects, int[] icons, int[] dropDownIcons)
     {
         super(context, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
@@ -67,7 +65,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         this.dropDownIcons = dropDownIcons;
     }
 
-    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
+    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, int[] icons, int[] dropDownIcons)
     {
         super(context, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
@@ -78,20 +76,20 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
     }
     //</editor-fold>
 
-    public Drawable getIcon(int position)
+    public int getIcon(int position)
     {
         if (position >= icons.length)
         {
-            return getContext().getResources().getDrawable(R.drawable.th_logo);
+            return R.drawable.th_logo;
         }
         return icons[position];
     }
 
-    public Drawable getDropDownIcon(int position)
+    public int getDropDownIcon(int position)
     {
         if (position >= dropDownIcons.length)
         {
-            return getContext().getResources().getDrawable(R.drawable.th_logo);
+            return R.drawable.th_logo;
         }
         return dropDownIcons[position];
     }
@@ -132,7 +130,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             View imageView = container.findViewById(iconViewResourceId);
             if (imageView != null)
             {
-                ((ImageView) imageView).setImageDrawable(getIcon(position));
+                ((ImageView) imageView).setImageResource(getIcon(position));
             }
         }
     }
@@ -144,7 +142,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             View imageView = container.findViewById(iconDropDownResourceId);
             if (imageView != null)
             {
-                ((ImageView) imageView).setImageDrawable(getDropDownIcon(position));
+                ((ImageView) imageView).setImageResource(getDropDownIcon(position));
             }
         }
     }

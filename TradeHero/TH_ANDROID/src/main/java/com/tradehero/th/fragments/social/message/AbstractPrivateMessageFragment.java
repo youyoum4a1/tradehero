@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -118,10 +119,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setSubtitle(R.string.private_message_subtitle);
+        //actionBar.setSubtitle(R.string.private_message_subtitle);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
-        displayTitle();
+        //displayTitle();
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -150,8 +151,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setSubtitle(null);
+        SherlockFragmentActivity activity = getSherlockActivity();
+        if (activity != null)
+        {
+            ActionBar actionBar = activity.getSupportActionBar();
+            actionBar.setSubtitle(null);
+        }
         super.onDestroyOptionsMenu();
     }
 
@@ -229,7 +234,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (andDisplay)
         {
             displayCorrespondentImage();
-            displayTitle();
+            //displayTitle();
             getSherlockActivity().invalidateOptionsMenu();
         }
     }
@@ -237,7 +242,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     public void display()
     {
         displayCorrespondentImage();
-        displayTitle();
+        //displayTitle();
     }
 
     protected void displayCorrespondentImage()
@@ -260,20 +265,21 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected void displayTitle()
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (correspondentProfile != null)
-        {
-            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
-            Timber.d("Display title " + title);
-            actionBar.setTitle(title);
-        }
-        else
-        {
-            actionBar.setTitle(R.string.loading_loading);
-        }
-    }
+    //TODO set actionBar with MessageHeaderDTO by alex
+    //protected void displayTitle()
+    //{
+    //    ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+    //    if (correspondentProfile != null)
+    //    {
+    //        String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+    //        Timber.d("Display title " + title);
+    //        actionBar.setTitle(title);
+    //    }
+    //    else
+    //    {
+    //        actionBar.setTitle(R.string.loading_loading);
+    //    }
+    //}
 
     @Override public boolean isTabBarVisible()
     {
@@ -305,6 +311,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
+            Timber.d("MessageHeaderDTO=%s", value);
+            ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+            actionBar.setTitle(value.title);
+            actionBar.setSubtitle(value.subTitle);
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
         }

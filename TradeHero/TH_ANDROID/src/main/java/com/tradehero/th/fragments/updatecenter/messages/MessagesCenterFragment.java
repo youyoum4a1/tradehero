@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -19,8 +20,10 @@ import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -57,8 +60,10 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class MessagesCenterFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, MessageListAdapter.MessageOnClickListener,
-        PullToRefreshBase.OnRefreshListener2<SwipeListView>
+        implements AdapterView.OnItemLongClickListener, MessageListAdapter.MessageOnClickListener,
+        MessageListAdapter.MessageOnLongClickListener,
+        PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>,
+        ResideMenu.OnMenuListener
 {
     public static final int DEFAULT_PER_PAGE = 42;
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -83,7 +88,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     private BroadcastReceiver broadcastReceiver;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -208,7 +212,6 @@ public class MessagesCenterFragment extends DashboardFragment
             LocalBroadcastManager.getInstance(getActivity())
                     .registerReceiver(broadcastReceiver,
                             new IntentFilter(PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED));
-
         }
     }
 
@@ -255,12 +258,9 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onDestroy");
     }
 
-    /**
-     * item of listview is clicked
-     */
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        Timber.d("onItemClick %d", position);
+    @Override public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Timber.d("onItemLongClick %d", position);
+        return false;
     }
 
     /**
@@ -268,7 +268,7 @@ public class MessagesCenterFragment extends DashboardFragment
      */
     @Override public void onMessageClick(int position, int type)
     {
-        Timber.d("onMessageClick position:%d,type:%d", position, type);
+        Timber.d("onMessageClick position:%d, type:%d", position, type);
         if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT)
         {
             updateReadStatus(position);
@@ -281,14 +281,40 @@ public class MessagesCenterFragment extends DashboardFragment
 
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override
+    public void onMessageLongClick(int position, int type) {
+        Timber.d("onMessageLongClick position:%d,type:%d", position, type);
+        if (type == MessageListAdapter.MessageOnClickListener.TYPE_CONTENT || type == MessageListAdapter.MessageOnClickListener.TYPE_ICON)
+        {
+            createDeleteMessageDialog(position);
+        }
+    }
+
+    private void createDeleteMessageDialog(final int position) {
+        THDialog.showCenterDialog(getActivity(),null,
+                getResources().getString(R.string.sure_to_delete_message), getResources().getString(android.R.string.cancel),
+                getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if(which == DialogInterface.BUTTON_POSITIVE){
+                    dialog.dismiss();
+                    removeMessageIfNecessary(position);
+                }else if(which == DialogInterface.BUTTON_NEGATIVE){
+                    dialog.dismiss();
+                }
+            }
+        });
+    }
+
+    @Override public void onPullDownToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
     {
         doRefreshContent();
     }
 
-    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
+    @Override public void onPullUpToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
     {
-
     }
 
     private void onRefreshCompleted()
@@ -352,10 +378,10 @@ public class MessagesCenterFragment extends DashboardFragment
         DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
-        ListView listView = messagesView.getListView();
+        InterceptedScrollSwipeListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
-        listView.setOnItemClickListener(this);
-        SwipeListView swipeListView = (SwipeListView) listView;
+        listView.setOnItemLongClickListener(this);
+        SwipeListView swipeListView = listView;
 
         this.swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);
@@ -455,6 +481,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.setMessageOnLongClickListener(this);
         adapter.appendMore(messageKeys);
     }
 
@@ -487,6 +514,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListAdapter adapter =
                 messageListAdapter;//(MessageListAdapter) listView.getAdapter();
         adapter.setMessageOnClickListener(this);
+        adapter.setMessageOnLongClickListener(this);
         adapter.clearDeletedSet();
         adapter.appendMore(messageKeys);
     }
@@ -496,12 +524,28 @@ public class MessagesCenterFragment extends DashboardFragment
         return messageListAdapter;
     }
 
+    @Override public void openMenu()
+    {
+    }
+
+    @Override public void closeMenu()
+    {
+        if (messagesView != null)
+        {
+            SwipeListView swipeListView = messagesView.getListView();
+            if (swipeListView != null)
+            {
+                swipeListView.closeOpenedItems();
+                swipeListView.resetScrolling();
+            }
+        }
+    }
+
     class SwipeListener extends BaseSwipeListViewListener
     {
-
         @Override public void onClickBackView(final int position)
         {
-            final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
+            final SwipeListView swipeListView = messagesView.getListView();
             int count = swipeListView.getHeaderViewsCount();
             Timber.d("SwipeListener onClickBackView %s,header count:%s", position, count);
             //TODO it's quite difficult to use

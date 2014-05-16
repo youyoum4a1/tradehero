@@ -45,9 +45,9 @@
         android:layout_centerVertical="true"
         android:orientation="horizontal">
 
-      <include
-          layout="@layout/discussion_edit_post_mention_buttons"
-          />
+      <!--<include-->
+          <!--layout="@layout/discussion_edit_post_mention_buttons"-->
+          <!--/>-->
       <EditText
           android:id="@+id/post_comment_text"
           android:layout_width="match_parent"

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-
 public class PagedOwnedPortfolioId extends OwnedPortfolioId
 {
     public final static String BUNDLE_KEY_PAGE = PagedOwnedPortfolioId.class.getName() + ".page";

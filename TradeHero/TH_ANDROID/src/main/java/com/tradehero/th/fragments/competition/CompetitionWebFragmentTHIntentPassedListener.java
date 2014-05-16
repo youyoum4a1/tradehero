@@ -66,7 +66,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         Bundle argsBundle = thIntent.getBundle();
         if (thIntent.getActionFragment().equals(BuySellFragment.class))
         {
-            argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            BuySellFragment.putApplicablePortfolioId(argsBundle, getApplicablePortfolioId());
             argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, getProviderId().getArgs());
         }
         getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,

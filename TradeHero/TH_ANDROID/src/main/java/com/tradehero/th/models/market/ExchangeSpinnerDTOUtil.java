@@ -34,29 +34,25 @@ import timber.log.Timber;
         return spinnerDTOs;
     }
 
-    public Drawable[] getSpinnerIcons(Context context, List<ExchangeDTO> exchangeDTOs)
+    public int[] getSpinnerIcons(Context context, List<ExchangeDTO> exchangeDTOs)
     {
         if (exchangeDTOs == null)
         {
             return null;
         }
 
-        Drawable[] spinnerIcons = new Drawable[exchangeDTOs.size() + 1];
-        spinnerIcons[0] = null; // That's the "All Exchanges" thing
+        int[] spinnerIcons = new int[exchangeDTOs.size() + 1];
+        spinnerIcons[0] = 0; // That's the "All Exchanges" thing
         int index = 1;
         for (ExchangeDTO exchangeDTO: exchangeDTOs)
         {
             try
             {
-                spinnerIcons[index] = context.getResources().getDrawable(Exchange.valueOf(exchangeDTO.name).logoId);
+                spinnerIcons[index] = Exchange.valueOf(exchangeDTO.name).logoId;
             }
             catch (IllegalArgumentException ex)
             {
                 Timber.d("Exchange logo does not exist: %s", ex.getMessage());
-            }
-            catch (OutOfMemoryError ex)
-            {
-                Timber.e(ex, "Exchange for %s causes OutOfMemory problem", exchangeDTO.name);
             }
             finally
             {

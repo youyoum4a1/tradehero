@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     >
 
-  <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+  <com.handmark.pulltorefresh.library.PullToRefreshInterceptedScrollSwipeListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/message_list"
       android:layout_width="match_parent"
@@ -24,7 +24,7 @@
       swipe:swipeCloseAllItemsWhenMoveList="true"
       swipe:swipeMode="left"
       swipe:swipeDrawableChecked="@drawable/ic_info"
-      app:swipeOffsetLeft="250dp"
+      swipe:swipeOffsetLeft="250dp"
       swipe:swipeDrawableUnchecked="@drawable/ic_info"
       android:listSelector="#00000000"
       ptr:ptrMode="pullFromStart"

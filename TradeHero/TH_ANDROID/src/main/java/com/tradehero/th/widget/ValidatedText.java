@@ -10,7 +10,6 @@ import com.tradehero.th.R;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class ValidatedText extends EditText implements ValidatedView, View.OnFocusChangeListener
 {
     private boolean valid = true;

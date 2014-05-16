@@ -478,7 +478,6 @@ public class WatchlistEditFragment extends DashboardFragment
             THToast.show(ex);
             dismissProgress();
         }
-
     }
 
     protected class WatchlistEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>

@@ -4,11 +4,8 @@ import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
 
-
 public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
 {
-    public static final String TAG = PerPagedFilteredLeaderboardKey.class.getSimpleName();
-
     public static final String BUNDLE_KEY_WIN_RATIO = PerPagedFilteredLeaderboardKey.class.getName() + ".winRatio";
     public static final String BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT = PerPagedFilteredLeaderboardKey.class.getName() + ".averageMonthlyTradeCount";
     public static final String BUNDLE_KEY_AVERAGE_HOLDING_DAYS = PerPagedFilteredLeaderboardKey.class.getName() + ".averageHoldingDays";

@@ -139,7 +139,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
                     if (deletedSecurityId != null)
                     {
-                        SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
+                        SwipeListView watchlistListView = (SwipeListView) watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
                         localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
@@ -304,7 +304,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
         {
-            watchlistPositionListView.getRefreshableView().setSwipeListViewListener(null);
+            ((SwipeListView) watchlistPositionListView.getRefreshableView()).setSwipeListViewListener(null);
         }
         //watchlistListView = null;
 

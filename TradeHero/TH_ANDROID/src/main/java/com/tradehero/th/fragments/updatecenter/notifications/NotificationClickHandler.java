@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.os.Bundle;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
@@ -23,7 +22,6 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -34,7 +32,6 @@ public class NotificationClickHandler
     private final Context context;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     public NotificationClickHandler(
             Context context,
@@ -144,6 +141,21 @@ public class NotificationClickHandler
                 break;
 
                 case PRIVATE_MESSAGE:
+                {
+                    Bundle args = new Bundle();
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                    }
+
+                    if (notificationDTO.threadId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    }
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                }
+                break;
+
                 case BROADCAST_MESSAGE:
                 {
                     Bundle args = new Bundle();
@@ -156,7 +168,6 @@ public class NotificationClickHandler
                     {
                         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
                     }
-                    resideMenuLazy.get().closeMenu();
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                 }
                 break;

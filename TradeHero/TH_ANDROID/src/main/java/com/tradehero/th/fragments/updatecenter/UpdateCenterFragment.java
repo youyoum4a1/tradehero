@@ -48,7 +48,10 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
-        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener, TabHost.OnTabChangeListener
+        implements PopupMenu.OnMenuItemClickListener,
+        OnTitleNumberChangeListener,
+        TabHost.OnTabChangeListener,
+        ResideMenu.OnMenuListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
@@ -458,4 +461,21 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         }
     }
 
+    @Override public void openMenu()
+    {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
+        }
+    }
+
+    @Override public void closeMenu()
+    {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
+        }
+    }
 }

@@ -35,11 +35,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
     @Override public void onResume()
     {
         super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            linkWith(getSecurityId(args), true);
-        }
+        linkWith(getSecurityId(getArguments()), true);
     }
 
     abstract protected DTOCache<SecurityId, InfoType> getInfoCache();

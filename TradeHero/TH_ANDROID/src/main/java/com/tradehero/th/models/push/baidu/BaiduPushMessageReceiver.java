@@ -8,12 +8,22 @@ import android.content.Intent;
 import android.text.TextUtils;
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
+import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
@@ -24,8 +34,13 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     public static final int CODE_OK = 0;
 
-    @Inject Provider<PushSender> pushSender;
     @Inject Provider<CustomPushNotificationBuilder> customPushNotificationBuilderProvider;
+    @Inject CurrentUserId currentUserId;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
+
+    @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
+    @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
+
     @Inject static Provider<NotificationOpenedHandler> notificationOpenedHandler;
 
     public BaiduPushMessageReceiver()
@@ -45,7 +60,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         Timber.d("onBind appId: %s, userId: %s, channelId: %s, requestId: %s", appId, userId, channelId, requestId);
         if (errorCode == CODE_OK)
         {
-            pushSender.get().updateDeviceIdentifier(appId, userId, channelId);
+            updateDeviceIdentifier(appId, userId, channelId);
         }
     }
 
@@ -57,7 +72,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         Timber.d("onUnbind errorCode:%s", errorCode);
         if (errorCode == CODE_OK)
         {
-            pushSender.get().setPushDeviceIdentifierSentFlag(false);
+            setPushDeviceIdentifierSentFlag(false);
         }
     }
 
@@ -102,7 +117,10 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         Notification notification = customPushNotificationBuilder.construct(context);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
+
+        //TODO if we set PendingIntent.FLAG_ONE_SHOT, only the first notification will jump to new fragment. So temp remove it by alex
+        notification.contentIntent = PendingIntent.getBroadcast(context, pushMessageDTO.id, composeIntent(pushMessageDTO), 0);
+        //notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         int msgId;
@@ -132,6 +150,44 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
                     break;
             }
             showNotification(context, pushMessageDTO);
+        }
+    }
+
+    public void updateDeviceIdentifier(String appId,String userId, String channelId)
+    {
+        if (currentUserId == null)
+        {
+            Timber.e("Current user is null, quit");
+            return;
+        }
+        if (pushDeviceIdentifierSentFlag.get())
+        {
+            Timber.d("Already send the device token to the server, quit");
+            return;
+        }
+
+        BaiduDeviceMode deviceMode = new BaiduDeviceMode(channelId, userId, appId);
+        savedPushDeviceIdentifier.set(deviceMode.token);
+        sessionServiceWrapper.updateDevice(new UpdateDeviceIdentifierCallback());
+    }
+
+    public void setPushDeviceIdentifierSentFlag(boolean bind)
+    {
+        pushDeviceIdentifierSentFlag.set(bind);
+    }
+
+    class UpdateDeviceIdentifierCallback implements Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            Timber.d("UpdateDeviceIdentifierCallback send success");
+            setPushDeviceIdentifierSentFlag(true);
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            Timber.e(error,"UpdateDeviceIdentifierCallback send failure");
+            setPushDeviceIdentifierSentFlag(false);
         }
     }
 

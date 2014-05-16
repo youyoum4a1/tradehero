@@ -36,6 +36,11 @@ public class RetrofitProtectedModule
         return adapter.create(FollowerServiceAsync.class);
     }
 
+    @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardServiceAsync.class);
+    }
+
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceAsync.class);
@@ -44,6 +49,26 @@ public class RetrofitProtectedModule
     @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
     {
         return adapter.create(PortfolioServiceAsync.class);
+    }
+
+    @Provides @Singleton PositionServiceAsync providePositionServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(PositionServiceAsync.class);
+    }
+
+    @Provides @Singleton ProviderServiceAsync provideProviderServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(ProviderServiceAsync.class);
+    }
+
+    @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(QuoteServiceAsync.class);
+    }
+
+    @Provides @Singleton SecurityServiceAsync provideSecurityServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(SecurityServiceAsync.class);
     }
 
     @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)

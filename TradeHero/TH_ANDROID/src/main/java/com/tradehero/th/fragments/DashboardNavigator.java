@@ -51,6 +51,7 @@ public class DashboardNavigator extends Navigator
         DaggerUtils.inject(this);
     }
 
+    @Deprecated
     public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
     {
         if (mOnTabChangedListeners == null)
@@ -60,6 +61,7 @@ public class DashboardNavigator extends Navigator
         mOnTabChangedListeners.add(onTabChangeListener);
     }
 
+    @Deprecated
     public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
     {
         if (mOnTabChangedListeners == null)

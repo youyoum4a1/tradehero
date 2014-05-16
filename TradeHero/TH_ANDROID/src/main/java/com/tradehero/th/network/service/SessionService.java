@@ -4,7 +4,6 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.push.baidu.BaiduDeviceMode;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -44,23 +43,6 @@ public interface SessionService
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
-    @POST("/updateDevice")
-    UserProfileDTO updateDevice()
-            throws RetrofitError;
-
-    @POST("/updateDevice")
-    void updateDevice(
-            Callback<UserProfileDTO> callback);
-
-    @POST("/updateDevice")
-    UserProfileDTO updateDevice(
-            @Body BaiduDeviceMode deviceMode);
-
-    @POST("/updateDevice")
-    void updateDevice(
-            @Body BaiduDeviceMode deviceMode,
-            Callback<UserProfileDTO> callback);
-
     @FormUrlEncoded
     @POST("/updateDevice")
     void updateDevice(

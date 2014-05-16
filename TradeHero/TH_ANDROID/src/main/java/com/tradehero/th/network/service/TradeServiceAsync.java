@@ -6,7 +6,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-public interface TradeServiceAsync
+interface TradeServiceAsync
 {
     //<editor-fold desc="Get One Position Trades List">
     @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades")

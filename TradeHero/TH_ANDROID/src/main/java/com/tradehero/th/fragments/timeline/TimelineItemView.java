@@ -178,6 +178,12 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         }
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        init();
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         detachShareMiddleCallback();
