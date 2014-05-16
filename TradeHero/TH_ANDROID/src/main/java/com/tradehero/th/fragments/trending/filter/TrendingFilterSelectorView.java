@@ -132,7 +132,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         Timber.d("Filter setUpExchangeSpinner");
         this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
-        Drawable[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
+        int[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
         Spinner exchangeSelection = mExchangeSelection;
         if (exchangeSelection != null)
         {
