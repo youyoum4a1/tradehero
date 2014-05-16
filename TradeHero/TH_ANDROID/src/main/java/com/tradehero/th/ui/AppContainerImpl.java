@@ -91,10 +91,18 @@ public class AppContainerImpl implements AppContainer
         @Override public void openMenu()
         {
             closeSoftInput();
+            if (activity instanceof ResideMenu.OnMenuListener && !activity.isFinishing())
+            {
+                ((ResideMenu.OnMenuListener) activity).openMenu();
+            }
         }
 
         @Override public void closeMenu()
         {
+            if (activity instanceof ResideMenu.OnMenuListener && !activity.isFinishing())
+            {
+                ((ResideMenu.OnMenuListener) activity).closeMenu();
+            }
         }
     }
 

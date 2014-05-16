@@ -62,7 +62,9 @@ import javax.inject.Provider;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity, AppContainerImpl.OnResideMenuItemClickListener
+        implements DashboardNavigatorActivity,
+        AppContainerImpl.OnResideMenuItemClickListener,
+        ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
 
@@ -142,6 +144,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        //TODO need check whether this is ok for urbanship,
+        //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
+        pushNotificationManager.get().enablePush();
     }
 
     //<editor-fold desc="Bad design, to be removed">
@@ -425,6 +430,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             navigator.replaceTab(currentTab,tabType);
             currentTab = tabType;
+        }
+    }
+
+    @Override public void openMenu()
+    {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
+        }
+    }
+
+    @Override public void closeMenu()
+    {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
         }
     }
 
