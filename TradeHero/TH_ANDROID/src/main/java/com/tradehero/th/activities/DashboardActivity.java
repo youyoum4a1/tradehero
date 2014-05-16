@@ -62,7 +62,9 @@ import javax.inject.Provider;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity, AppContainerImpl.OnResideMenuItemClickListener
+        implements DashboardNavigatorActivity,
+        AppContainerImpl.OnResideMenuItemClickListener,
+        ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
 
@@ -425,6 +427,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             navigator.replaceTab(currentTab,tabType);
             currentTab = tabType;
+        }
+    }
+
+    @Override public void openMenu()
+    {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
+        }
+    }
+
+    @Override public void closeMenu()
+    {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
         }
     }
 
