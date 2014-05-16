@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.updatecenter.messages;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -11,7 +10,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshInterceptedScrollSwipeListView;
 import com.tradehero.th.R;
-import timber.log.Timber;
 
 public class MessagesView extends RelativeLayout
 {
@@ -21,6 +19,7 @@ public class MessagesView extends RelativeLayout
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
 
+    //<editor-fold desc="Constructors">
     public MessagesView(Context context)
     {
         super(context);
@@ -29,9 +28,13 @@ public class MessagesView extends RelativeLayout
     public MessagesView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-
-        Timber.d("constructor");
     }
+
+    public MessagesView(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+    }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -56,7 +59,7 @@ public class MessagesView extends RelativeLayout
     }
 
     /**
-     * Show progressabar or/and listview
+     * Show progress bar or/and listview
      */
     public void showLoadingView(boolean onlyShowLoadingView)
     {
@@ -67,7 +70,7 @@ public class MessagesView extends RelativeLayout
         }
     }
 
-    public ListView getListView()
+    public InterceptedScrollSwipeListView getListView()
     {
         return pullToRefreshSwipeListView.getRefreshableView();
     }

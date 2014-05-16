@@ -376,10 +376,10 @@ public class MessagesCenterFragment extends DashboardFragment
         DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
-        ListView listView = messagesView.getListView();
+        InterceptedScrollSwipeListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         listView.setOnItemLongClickListener(this);
-        SwipeListView swipeListView = (SwipeListView) listView;
+        SwipeListView swipeListView = listView;
 
         this.swipeListener = new SwipeListener();
         swipeListView.setSwipeListViewListener(swipeListener);

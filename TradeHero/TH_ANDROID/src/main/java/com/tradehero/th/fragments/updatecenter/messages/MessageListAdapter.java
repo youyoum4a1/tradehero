@@ -183,5 +183,4 @@ public class MessageListAdapter extends ArrayDTOAdapter<MessageHeaderId, Message
 
         void onMessageLongClick(int position,int type);
     }
-
 }
