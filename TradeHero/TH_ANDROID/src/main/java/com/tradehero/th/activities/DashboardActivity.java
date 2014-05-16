@@ -62,7 +62,7 @@ import javax.inject.Provider;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity,AppContainerImpl.OnResideMenuItemClickListener
+        implements DashboardNavigatorActivity, AppContainerImpl.OnResideMenuItemClickListener
 {
     private DashboardNavigator navigator;
 

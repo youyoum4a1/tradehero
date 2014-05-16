@@ -3,7 +3,6 @@ package com.tradehero.th.ui;
 import android.app.Activity;
 import android.view.ViewGroup;
 
-
 public interface AppContainer
 {
     ViewGroup get(Activity activity);

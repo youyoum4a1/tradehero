@@ -88,7 +88,6 @@ public class AppContainerImpl implements AppContainer
 
     class CustomOnMenuListener implements ResideMenu.OnMenuListener
     {
-
         @Override public void openMenu()
         {
             closeSoftInput();
@@ -96,7 +95,6 @@ public class AppContainerImpl implements AppContainer
 
         @Override public void closeMenu()
         {
-
         }
     }
 
