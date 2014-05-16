@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -239,11 +240,7 @@ public class ProfileInfoView extends LinearLayout
         created.displayName = getTextValue(displayName);
         created.firstName = getTextValue(firstName);
         created.lastName = getTextValue(lastName);
-        if (newImagePath != null)
-        {
-            created.profilePicture = bitmapTypedOutputFactory.createForProfilePhoto(
-                    getResources(), bitmapForProfileFactory, newImagePath);
-        }
+        created.profilePicture = safeCreateProfilePhoto();
         return created;
     }
 
@@ -257,9 +254,26 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
         if (newImagePath != null)
         {
-            map.put(UserFormFactory.KEY_PROFILE_PICTURE, bitmapTypedOutputFactory.createForProfilePhoto(
-                    getResources(), bitmapForProfileFactory, newImagePath));
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
         }
+    }
+
+    protected BitmapTypedOutput safeCreateProfilePhoto()
+    {
+        BitmapTypedOutput created = null;
+        if (newImagePath != null)
+        {
+            try
+            {
+                created = bitmapTypedOutputFactory.createForProfilePhoto(
+                        getResources(), bitmapForProfileFactory, newImagePath);
+            }
+            catch (OutOfMemoryError e)
+            {
+                THToast.show(R.string.error_decode_image_memory);
+            }
+        }
+        return created;
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
