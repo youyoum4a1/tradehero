@@ -9,13 +9,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView;
+import com.handmark.pulltorefresh.library.PullToRefreshInterceptedScrollSwipeListView;
 import com.tradehero.th.R;
 import timber.log.Timber;
 
 public class MessagesView extends RelativeLayout
 {
-    @InjectView(R.id.message_list) FixedPullToRefreshSwipeListView pullToRefreshSwipeListView;
+    @InjectView(R.id.message_list) PullToRefreshInterceptedScrollSwipeListView
+            pullToRefreshSwipeListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;

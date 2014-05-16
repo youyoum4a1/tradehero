@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011, 2012 Chris Banes.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package com.handmark.pulltorefresh.library;
 
 import android.annotation.TargetApi;
@@ -23,43 +8,35 @@ import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.tradehero.th.fragments.updatecenter.messages.InterceptedScrollSwipeListView;
 
-public class FixedPullToRefreshSwipeListView extends PullToRefreshSwipeListView
+public class PullToRefreshInterceptedScrollSwipeListView extends PullToRefreshListViewBase<InterceptedScrollSwipeListView>
 {
-    private FrameLayout mLvFooterLoadingFrame;
-
     //<editor-fold desc="Constructors">
-    public FixedPullToRefreshSwipeListView(Context context)
+    public PullToRefreshInterceptedScrollSwipeListView(Context context)
     {
         super(context);
     }
 
-    public FixedPullToRefreshSwipeListView(Context context, AttributeSet attrs)
+    public PullToRefreshInterceptedScrollSwipeListView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public FixedPullToRefreshSwipeListView(Context context, Mode mode)
+    public PullToRefreshInterceptedScrollSwipeListView(Context context, Mode mode)
     {
         super(context, mode);
     }
 
-    public FixedPullToRefreshSwipeListView(Context context, Mode mode, AnimationStyle style)
+    public PullToRefreshInterceptedScrollSwipeListView(Context context, Mode mode,
+            AnimationStyle style)
     {
         super(context, mode, style);
     }
     //</editor-fold>
 
-    /**
-     *
-     * @param context
-     * @param attrs
-     * @return
-     */
     protected InterceptedScrollSwipeListView createListView(Context context, AttributeSet attrs)
     {
         final InterceptedScrollSwipeListView lv;
@@ -71,16 +48,6 @@ public class FixedPullToRefreshSwipeListView extends PullToRefreshSwipeListView
         {
             lv = new InternalListView(context, attrs);
         }
-        return lv;
-    }
-
-    @Override
-    protected InterceptedScrollSwipeListView createRefreshableView(Context context, AttributeSet attrs)
-    {
-        InterceptedScrollSwipeListView lv = createListView(context, attrs);
-
-        // Set it to this so it can be used in ListActivity/ListFragment
-        lv.setId(android.R.id.list);
         return lv;
     }
 
@@ -103,7 +70,7 @@ public class FixedPullToRefreshSwipeListView extends PullToRefreshSwipeListView
                             scrollRangeY, maxOverScrollX, maxOverScrollY, isTouchEvent);
 
             // Does all of the hard work...
-            OverscrollHelper.overScrollBy(FixedPullToRefreshSwipeListView.this, deltaX, scrollX,
+            OverscrollHelper.overScrollBy(PullToRefreshInterceptedScrollSwipeListView.this, deltaX, scrollX,
                     deltaY, scrollY, isTouchEvent);
 
             return returnValue;
@@ -171,7 +138,7 @@ public class FixedPullToRefreshSwipeListView extends PullToRefreshSwipeListView
         @Override
         public void setEmptyView(View emptyView)
         {
-            FixedPullToRefreshSwipeListView.this.setEmptyView(emptyView);
+            PullToRefreshInterceptedScrollSwipeListView.this.setEmptyView(emptyView);
         }
 
         @Override

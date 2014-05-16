@@ -9,7 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -167,7 +166,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             ButterKnife.inject(this, view);
 
-            final SwipeListView watchlistListView = (SwipeListView) watchlistPositionListView.getRefreshableView();
+            final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
             watchlistListView.post(new Runnable()
             {
                 @Override public void run()
@@ -194,9 +193,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         //((ViewGroup) view).removeView(watchlistListView);
         //watchlistPositionListView.setRefreshableView(watchlistListView);
 
-        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<SwipeListView>()
         {
-            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            @Override public void onRefresh(PullToRefreshBase<SwipeListView> refreshView)
             {
                 refretchSecurityIdList();
             }
@@ -320,7 +319,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             }
             watchlistPositionListView.onRefreshComplete();
             watchlistPositionListView.setOnRefreshListener(
-                    (PullToRefreshBase.OnRefreshListener<ListView>) null);
+                    (PullToRefreshBase.OnRefreshListener<SwipeListView>) null);
         }
 
         super.onDestroyView();
