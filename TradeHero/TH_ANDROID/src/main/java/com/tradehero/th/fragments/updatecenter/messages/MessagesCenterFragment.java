@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
@@ -46,7 +45,6 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -57,7 +55,7 @@ import timber.log.Timber;
 
 public class MessagesCenterFragment extends DashboardFragment
         implements
-        MessageItemView.OnUserClickedListener,
+        MessageItemViewWrapper.OnElementClickedListener,
         PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>,
         ResideMenu.OnMenuListener
 {
@@ -190,7 +188,7 @@ public class MessagesCenterFragment extends DashboardFragment
         swipeListView.setSwipeListViewListener(null);
         swipeListener = null;
         messagesView = null;
-        messageListAdapter.setUserClickedListener(null);
+        messageListAdapter.setElementClickedListener(null);
         messageListAdapter = null;
         Timber.d("onDestroyView");
 
@@ -209,26 +207,36 @@ public class MessagesCenterFragment extends DashboardFragment
     }
 
     private void createDeleteMessageDialog(final int position) {
-        THDialog.showCenterDialog(getActivity(),null,
-                getResources().getString(R.string.sure_to_delete_message), getResources().getString(android.R.string.cancel),
+        THDialog.showCenterDialog(getActivity(), null,
+                getResources().getString(R.string.sure_to_delete_message),
+                getResources().getString(android.R.string.cancel),
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                if(which == DialogInterface.BUTTON_POSITIVE){
-                    dialog.dismiss();
-                    removeMessageIfNecessary(position);
-                }else if(which == DialogInterface.BUTTON_NEGATIVE){
-                    dialog.dismiss();
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (which == DialogInterface.BUTTON_POSITIVE)
+                        {
+                            dialog.dismiss();
+                            removeMessageIfNecessary(position);
+                        }
+                        else if (which == DialogInterface.BUTTON_NEGATIVE)
+                        {
+                            dialog.dismiss();
+                        }
+                    }
                 }
-            }
-        });
+        );
     }
 
     @Override public void onUserClicked(MessageHeaderId messageHeaderId)
     {
         pushUserProfileFragment(messageHeaderCache.get(messageHeaderId));
+    }
+
+    @Override public void onDeleteClicked(MessageHeaderId messageHeaderId)
+    {
+        removeMessageOnServer(messageHeaderId);
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
@@ -408,7 +416,7 @@ public class MessagesCenterFragment extends DashboardFragment
                         getActivity(),
                         messageKeys,
                         R.layout.message_list_item_wrapper);
-        messageListAdapter.setUserClickedListener(this);
+        messageListAdapter.setElementClickedListener(this);
 
         messagesView.getListView().setAdapter(messageListAdapter);
     }
@@ -437,32 +445,16 @@ public class MessagesCenterFragment extends DashboardFragment
 
     class SwipeListener extends BaseSwipeListViewListener
     {
-        @Override public void onClickBackView(final int position)
-        {
-            final SwipeListView swipeListView = messagesView.getListView();
-            int count = swipeListView.getHeaderViewsCount();
-            Timber.d("SwipeListener onClickBackView %s,header count:%s", position, count);
-            //TODO it's quite difficult to use
-            swipeListView.dismiss(position - swipeListView.getHeaderViewsCount());
-            swipeListView.closeOpenedItems();
-        }
-
         @Override public void onClickFrontView(int position)
         {
             super.onClickFrontView(position);
-            Timber.d("SwipeListener onClickFrontView %s", position);
             pushMessageFragment(position);
         }
 
-        @Override public void onDismiss(int[] reverseSortedPositions)
+        @Override public void onClickBackView(int position)
         {
-            Timber.d("SwipeListener onDismiss %s", Arrays.toString(reverseSortedPositions));
-            final SwipeListView swipeListView = (SwipeListView) messagesView.getListView();
-            for (int position : reverseSortedPositions)
-            {
-                removeMessageIfNecessary(position);
-                //swipeListView.closeAnimate(position);
-            }
+            super.onClickBackView(position);
+            removeMessageIfNecessary(position);
         }
     }
 
@@ -844,9 +836,11 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
 
                 requestUpdateTabCounter();
-                if (getListAdapter() != null)
+                MessageListAdapter adapter = getListAdapter();
+                if (adapter != null)
                 {
-                    getListAdapter().notifyDataSetChanged();
+                    adapter.remove(messageId);
+                    adapter.notifyDataSetChanged();
                 }
             }
         }

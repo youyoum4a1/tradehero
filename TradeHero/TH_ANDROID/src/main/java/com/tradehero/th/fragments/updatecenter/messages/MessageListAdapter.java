@@ -10,7 +10,7 @@ import java.util.Collection;
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, MessageItemViewWrapper>
 {
     private int layoutResourceId;
-    private MessageItemView.OnUserClickedListener userClickedListener;
+    private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
     public MessageListAdapter(Context context, Collection<MessageHeaderId> objects, int layoutResourceId)
@@ -23,8 +23,7 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, Messa
     @Override public MessageItemViewWrapper getView(int position, View convertView, ViewGroup parent)
     {
         MessageItemViewWrapper view = super.getView(position, convertView, parent);
-        // TODO too cowboy here?
-        view.messageItemView.setUserClickedListener(createUserClickedListener());
+        view.setElementClickedListener(createUserClickedListener());
         return view;
     }
 
@@ -33,9 +32,10 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, Messa
         return layoutResourceId;
     }
 
-    public void setUserClickedListener(MessageItemView.OnUserClickedListener userClickedListener)
+    public void setElementClickedListener(
+            MessageItemViewWrapper.OnElementClickedListener elementClickedListener)
     {
-        this.userClickedListener = userClickedListener;
+        this.elementClickedListener = elementClickedListener;
     }
 
     protected void handleUserClicked(MessageHeaderId messageHeaderId)
@@ -43,25 +43,46 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, Messa
         notifyUserClicked(messageHeaderId);
     }
 
+    protected void handleDeleteClicked(MessageHeaderId messageHeaderId)
+    {
+        notifyDeleteClicked(messageHeaderId);
+    }
+
     protected void notifyUserClicked(MessageHeaderId messageHeaderId)
     {
-        MessageItemView.OnUserClickedListener userClickedListenerCopy = userClickedListener;
-        if (userClickedListenerCopy != null)
+        MessageItemViewWrapper.OnElementClickedListener elementClickedListenerCopy =
+                elementClickedListener;
+        if (elementClickedListenerCopy != null)
         {
-            userClickedListenerCopy.onUserClicked(messageHeaderId);
+            elementClickedListenerCopy.onUserClicked(messageHeaderId);
         }
     }
 
-    protected MessageItemView.OnUserClickedListener createUserClickedListener()
+    protected void notifyDeleteClicked(MessageHeaderId messageHeaderId)
     {
-        return new MessageListAdapterOnUserClickedListener();
+        MessageItemViewWrapper.OnElementClickedListener elementClickedListener =
+                this.elementClickedListener;
+        if (elementClickedListener != null)
+        {
+            elementClickedListener.onDeleteClicked(messageHeaderId);
+        }
     }
 
-    protected class MessageListAdapterOnUserClickedListener implements MessageItemView.OnUserClickedListener
+    protected MessageItemViewWrapper.OnElementClickedListener createUserClickedListener()
+    {
+        return new MessageListAdapterOnElementClickedListener();
+    }
+
+    protected class MessageListAdapterOnElementClickedListener implements MessageItemViewWrapper.OnElementClickedListener
     {
         @Override public void onUserClicked(MessageHeaderId messageHeaderId)
         {
             handleUserClicked(messageHeaderId);
+        }
+
+        @Override public void onDeleteClicked(MessageHeaderId messageHeaderId)
+        {
+            handleDeleteClicked(messageHeaderId);
         }
     }
 }
