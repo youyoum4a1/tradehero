@@ -114,7 +114,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (Constants.RELEASE)
         {
-            Crashlytics.setString(Constants.TH_CLIENT_TYPE, String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
+            Crashlytics.setString(Constants.TH_CLIENT_TYPE,
+                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -137,7 +138,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchBilling();
 
         detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, new UserProfileFetchListener());
+        userProfileFetchTask = userProfileCache.get()
+                .getOrFetch(currentUserId.toUserBaseKey(), false, new UserProfileFetchListener());
         userProfileFetchTask.execute();
 
         suggestUpgradeIfNecessary();
@@ -170,7 +172,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     //</editor-fold>
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev)
+    {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
@@ -221,7 +224,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
             alertDialogUtil.get().popWithOkCancelButton(
-                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now, R.string.later,
+                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
+                    R.string.later,
                     new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
@@ -230,13 +234,16 @@ public class DashboardActivity extends SherlockFragmentActivity
                             {
                                 THToast.show(R.string.update_guide);
                                 startActivity(
-                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                            }
-                            catch (ActivityNotFoundException ex)
+                                        new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                                "market://details?id="
+                                                        + Constants.PLAYSTORE_APP_ID)));
+                            } catch (ActivityNotFoundException ex)
                             {
                                 startActivity(
                                         new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                                Uri.parse(
+                                                        "https://play.google.com/store/apps/details?id="
+                                                                + Constants.PLAYSTORE_APP_ID)));
                             }
                         }
                     });
@@ -245,7 +252,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUserProfile =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
         MenuInflater menuInflater = getSupportMenuInflater();
 
         menuInflater.inflate(R.menu.hardware_menu, menu);
@@ -305,7 +313,9 @@ public class DashboardActivity extends SherlockFragmentActivity
             progressDialog = progressDialogUtil.get().show(this, "", "");
 
             detachNotificationFetchTask();
-            notificationFetchTask = notificationCache.get().getOrFetch(new NotificationKey(extras), false, new NotificationFetchListener());
+            notificationFetchTask = notificationCache.get()
+                    .getOrFetch(new NotificationKey(extras), false,
+                            new NotificationFetchListener());
             notificationFetchTask.execute();
         }
     }
@@ -349,7 +359,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         detachUserProfileFetchTask();
         detachNotificationFetchTask();
-        
+
         super.onDestroy();
     }
 
@@ -394,9 +404,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             supportInvalidateOptionsMenu();
         }
@@ -411,11 +422,11 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     /**
      * @deprecated
-     * @param tabType
      */
     @Override public void onResideMenuItemClick(DashboardTabType tabType)
     {
-        switch (tabType) {
+        switch (tabType)
+        {
             case TRENDING:
                 break;
             case PORTFOLIO:
@@ -428,14 +439,15 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (currentTab != tabType)
         {
-            navigator.replaceTab(currentTab,tabType);
+            navigator.replaceTab(currentTab, tabType);
             currentTab = tabType;
         }
     }
 
     @Override public void openMenu()
     {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        Fragment currentFragment =
+                getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
         if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
         {
             ((ResideMenu.OnMenuListener) currentFragment).openMenu();
@@ -444,20 +456,24 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void closeMenu()
     {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        Fragment currentFragment =
+                getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
         if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
         {
             ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
         }
     }
 
-    private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
+    private class NotificationFetchListener
+            implements DTOCache.Listener<NotificationKey, NotificationDTO>
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
+            NotificationClickHandler notificationClickHandler =
+                    new NotificationClickHandler(DashboardActivity.this, value);
             notificationClickHandler.handleNotificationItemClicked();
         }
 
@@ -482,8 +498,12 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         // TODO remove
         // for DEBUGGING purpose only
-        String currentFragmentName = getSupportFragmentManager().findFragmentById(R.id.realtabcontent).getClass().getName();
-        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
+        String currentFragmentName =
+                getSupportFragmentManager().findFragmentById(R.id.realtabcontent)
+                        .getClass()
+                        .getName();
+        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s",
+                currentFragmentName);
         Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 }

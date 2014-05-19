@@ -32,6 +32,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -128,6 +129,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.info) protected TextView mInfoTextView;
     @InjectView(R.id.discussions) protected TextView mDiscussTextView;
     @InjectView(R.id.news) protected TextView mNewsTextView;
+
+    @Inject ResideMenu resideMenu;
 
     //for dialog
     private AlertDialog mBuySellDialog;
@@ -226,6 +229,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         View view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
         initViews(view);
+        resideMenu.addIgnoredView(mBottomViewPager);
         return view;
     }
 
@@ -546,6 +550,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             mConfirmButton.setOnClickListener(null);
         }
         mConfirmButton = null;
+
+        resideMenu.removeIgnoredView(mBottomViewPager);
 
         super.onDestroyView();
     }
@@ -2017,6 +2023,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                 position == 1 ? R.color.white : R.color.btn_twitter_color_end));
         mNewsTextView.setTextColor(getResources().getColor(
                 position == 2 ? R.color.white : R.color.btn_twitter_color_end));
+
+        if(selectedPageIndex == 0)
+        {
+            resideMenu.clearIgnoredViewList();
+        }
+        else
+        {
+            resideMenu.addIgnoredView(mBottomViewPager);
+        }
     }
 
     protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
