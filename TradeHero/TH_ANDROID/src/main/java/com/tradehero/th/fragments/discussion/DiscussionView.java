@@ -342,7 +342,7 @@ public class DiscussionView extends FrameLayout
             {
                 ((DTOView<DiscussionKey>) topicView).display(discussionKey);
             }
-            catch (Exception ex)
+            catch (ClassCastException ex)
             {
                 Timber.e(ex, "topicView should implement DTOView<DiscussionKey>");
             }
