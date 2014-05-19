@@ -34,6 +34,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     private Target topBackgroundTarget;
+    private Target topBackgroundTarget2;//for default bg
     protected Runnable displayTopViewBackgroundRunnable;
 
     public UserProfileDetailViewHolder(View view)
@@ -45,16 +46,18 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
+        topBackgroundTarget2 = new BackgroundTarget2();
     }
 
     @Override public void detachViews()
     {
+        super.detachViews();
         topBackgroundTarget = null;
+        topBackgroundTarget2 = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
-        super.detachViews();
     }
 
     @Override public void display(final UserProfileDTO dto)
@@ -83,15 +86,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                         profileTop.getHeight() > 0 &&
                         topBackgroundTarget != null)
                 {
-                    if (userProfileDTO.picture == null)
-                    {
-                        picasso.load(R.drawable.superman_facebook)
-                                .transform(peopleBackgroundTransformation)
-                                .resize(profileTop.getWidth(), profileTop.getHeight())
-                                .centerCrop()
-                                .into(topBackgroundTarget);
-                    }
-                    else
+                    loadDefaultBG();
+                    if (userProfileDTO.picture != null)
                     {
                         picasso.load(userProfileDTO.picture)
                                 .transform(peopleBackgroundTransformation)
@@ -110,6 +106,17 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         if (profileTop != null)
         {
             profileTop.post(displayTopViewBackgroundRunnable);
+        }
+    }
+
+    public void loadDefaultBG()
+    {
+        if (profileTop != null && topBackgroundTarget2 != null
+                && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
+        {
+            picasso.load(R.drawable.superman_facebook).transform(peopleBackgroundTransformation)
+                    .resize(profileTop.getWidth(), profileTop.getHeight())
+                    .centerCrop().into(topBackgroundTarget2);
         }
     }
 
@@ -298,5 +305,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         @Override public void onPrepareLoad(Drawable placeHolderDrawable)
         {
         }
+    }
+
+    protected class BackgroundTarget2 extends BackgroundTarget
+    {
     }
 }
