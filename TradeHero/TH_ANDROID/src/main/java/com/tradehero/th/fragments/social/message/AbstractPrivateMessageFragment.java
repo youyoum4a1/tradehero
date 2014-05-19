@@ -146,7 +146,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onResume()
     {
         super.onResume();
-        fetchCorrespondentProfile();
+        //TODO need this? temp remove by alex
+        //fetchCorrespondentProfile();
     }
 
     @Override public void onDestroyOptionsMenu()
