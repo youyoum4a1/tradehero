@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-
 public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 {
     public static final String INCLUDE_FRIENDS_OF_FRIENDS = "includeFoF";

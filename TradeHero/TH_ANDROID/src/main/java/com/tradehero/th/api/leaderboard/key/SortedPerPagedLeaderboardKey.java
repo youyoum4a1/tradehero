@@ -2,7 +2,6 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 
-
 @Deprecated
 public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {

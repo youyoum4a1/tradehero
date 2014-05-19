@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -83,6 +84,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject ResideMenu resideMenu;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -159,6 +161,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
         initViews(view);
+        resideMenu.addIgnoredView(targetPriceSeekBar);
+        resideMenu.addIgnoredView(percentageSeekBar);
         return view;
     }
 
@@ -204,6 +208,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         percentageSeekBar.setOnSeekBarChangeListener(null);
         targetPriceSeekBar.setOnSeekBarChangeListener(null);
         detachSecurityCompactCacheFetchTask();
+        resideMenu.removeIgnoredView(targetPriceSeekBar);
+        resideMenu.removeIgnoredView(percentageSeekBar);
         super.onDestroyView();
     }
 

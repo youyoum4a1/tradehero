@@ -11,10 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
-    public static final String TAG = LeaderboardDefListCache.class.getSimpleName();
     private static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<LeaderboardService> leaderboardService;

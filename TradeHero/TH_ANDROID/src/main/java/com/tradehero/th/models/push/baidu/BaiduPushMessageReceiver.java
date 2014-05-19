@@ -142,12 +142,15 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         PushMessageDTO pushMessageDTO = PushMessageHandler.parseNotification(message);
         if (pushMessageDTO != null)
         {
-            switch (pushMessageDTO.discussionType)
+            if(pushMessageDTO.discussionType != null)
             {
-                case BROADCAST_MESSAGE:
-                case PRIVATE_MESSAGE:
-                    PushMessageHandler.notifyMessageReceived(context);
-                    break;
+                switch (pushMessageDTO.discussionType)
+                {
+                    case BROADCAST_MESSAGE:
+                    case PRIVATE_MESSAGE:
+                        PushMessageHandler.notifyMessageReceived(context);
+                        break;
+                }
             }
             showNotification(context, pushMessageDTO);
         }
