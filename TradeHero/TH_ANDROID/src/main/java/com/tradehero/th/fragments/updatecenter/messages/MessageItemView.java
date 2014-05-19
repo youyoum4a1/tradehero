@@ -39,7 +39,7 @@ public class MessageItemView extends LinearLayout
 
     private MessageHeaderId messageHeaderId;
     private MessageHeaderDTO messageHeaderDTO;
-    private OnUserClickedListener userClickedListener;
+    private OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
     public MessageItemView(Context context)
@@ -68,7 +68,7 @@ public class MessageItemView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        setUserClickedListener(null);
+        setElementClickedListener(null);
         resetMessageIcon();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -127,9 +127,9 @@ public class MessageItemView extends LinearLayout
         }
     }
 
-    public void setUserClickedListener(OnUserClickedListener userClickedListener)
+    public void setElementClickedListener(OnElementClickedListener elementClickedListener)
     {
-        this.userClickedListener = userClickedListener;
+        this.elementClickedListener = elementClickedListener;
     }
 
     @OnClick({R.id.message_item_icon, R.id.message_item_title})
@@ -140,14 +140,14 @@ public class MessageItemView extends LinearLayout
 
     protected void notifyUserClicked()
     {
-        OnUserClickedListener userClickedListenerCopy = userClickedListener;
+        OnElementClickedListener userClickedListenerCopy = elementClickedListener;
         if (userClickedListenerCopy != null)
         {
             userClickedListenerCopy.onUserClicked(messageHeaderId);
         }
     }
 
-    public static interface OnUserClickedListener
+    public static interface OnElementClickedListener
     {
         void onUserClicked(MessageHeaderId messageHeaderId);
     }

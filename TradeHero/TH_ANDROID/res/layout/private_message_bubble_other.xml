@@ -39,6 +39,7 @@
           android:layout_height="wrap_content"
           android:textColor="@color/black"
           android:autoLink="all"
+          android:textIsSelectable="true"
           tools:text="How can I help you How can I help you How can I help you How can I help you How can I help you How can I help you How can I help you"/>
 
     </LinearLayout>

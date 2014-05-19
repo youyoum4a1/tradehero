@@ -16,13 +16,14 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.GaugeView;
-import com.tradehero.common.widget.NumericalcAnimatedTextView;
+import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -103,13 +104,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
 
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
-    @InjectView(R.id.leaderboard_dayshold_tv) NumericalcAnimatedTextView daysHoldTv;
-    @InjectView(R.id.leaderboard_position_tv) NumericalcAnimatedTextView positionsCountTv;
-    @InjectView(R.id.leaderboard_tradecount_tv) NumericalcAnimatedTextView tradeCountTv;
+    @InjectView(R.id.leaderboard_dayshold_tv) NumericalAnimatedTextView daysHoldTv;
+    @InjectView(R.id.leaderboard_position_tv) NumericalAnimatedTextView positionsCountTv;
+    @InjectView(R.id.leaderboard_tradecount_tv) NumericalAnimatedTextView tradeCountTv;
 
-    @InjectView(R.id.leaderboard_gauge_performance) GaugeView performanceGauage;
-    @InjectView(R.id.leaderboard_gauge_tradeconsistency) GaugeView tradeconsistencyGauage;
-    @InjectView(R.id.leaderboard_gauge_winrate) GaugeView winRateGauage;
+    @InjectView(R.id.leaderboard_gauge_performance) GaugeView performanceGauge;
+    @InjectView(R.id.leaderboard_gauge_tradeconsistency) GaugeView tradeConsistencyGauge;
+    @InjectView(R.id.leaderboard_gauge_winrate) GaugeView winRateGauge;
+    @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -178,6 +180,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        initViews();
         if (lbmuFoF != null)
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
@@ -303,6 +306,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
+        displayCountryLogo();
     }
 
     private void loadDefaultUserImage()
@@ -310,6 +314,38 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         picasso.get().load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(lbmuProfilePicture);
+    }
+
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null)
+        {
+            if (leaderboardItem != null)
+            {
+                countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+            }
+            else
+            {
+                countryLogo.setImageResource(R.drawable.default_image);
+            }
+        }
+    }
+
+    public int getCountryLogoId(String country)
+    {
+        return getCountryLogoId(0, country);
+    }
+
+    public int getCountryLogoId(int defaultResId, String country)
+    {
+        try
+        {
+            return Country.valueOf(country).logoId;
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return defaultResId;
+        }
     }
 
     private void displayExpandableSection()
@@ -393,8 +429,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
 
-        //winRateGauage.setText(digitsWinRatio + "%");
-        //winRateGauage.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
+        //winRateGauge.setText(digitsWinRatio + "%");
+        //winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
 
         tradeCountTv.setEndValue(leaderboardItem.avgNumberOfTradesPerMonth.floatValue());
         daysHoldTv.setEndValue(leaderboardItem.avgHoldingPeriodMins * 1.0f / (60 * 24));
@@ -411,60 +447,60 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         String digitsWinRatio =
                 NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-        winRateGauage.setContentText(digitsWinRatio + "%");
-        winRateGauage.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-        winRateGauage.setAnimiationFlag(false);
-        winRateGauage.setCurrentValue((float) leaderboardItem.getWinRatio() * 100);
+        winRateGauge.setContentText(digitsWinRatio + "%");
+        winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+        winRateGauge.setAnimiationFlag(false);
+        winRateGauge.setCurrentValue((float) leaderboardItem.getWinRatio() * 100);
 
-        performanceGauage.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-        performanceGauage.setSubText(
+        performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+        performanceGauge.setSubText(
                 getContext().getString(R.string.leaderboard_performance_title));
-        performanceGauage.setAnimiationFlag(false);
-        performanceGauage.setDrawStartValue(50f);
-        performanceGauage.setCurrentValue((float) normalizePerformance());
+        performanceGauge.setAnimiationFlag(false);
+        performanceGauge.setDrawStartValue(50f);
+        performanceGauge.setCurrentValue((float) normalizePerformance());
 
-        tradeconsistencyGauage.setSubText(
+        tradeConsistencyGauge.setSubText(
                 getContext().getString(R.string.leaderboard_consistency_title));
-        tradeconsistencyGauage.setAnimiationFlag(false);
-        tradeconsistencyGauage.setCurrentValue((float) normalizeConsistency());
-        Timber.d("showValueWithoutAnimation normalizeConsistency %s",normalizeConsistency());
+        tradeConsistencyGauge.setAnimiationFlag(false);
+        tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
+        Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
 
         tradeCountTv.showText();
         daysHoldTv.showText();
         positionsCountTv.showText();
-
     }
 
     private void showExpandAnimation()
     {
         String digitsWinRatio =
                 NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-        winRateGauage.setContentText(digitsWinRatio + "%");
-        winRateGauage.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-        winRateGauage.setAnimiationFlag(true);
-        winRateGauage.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
+        winRateGauge.setContentText(digitsWinRatio + "%");
+        winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+        winRateGauge.setAnimiationFlag(true);
+        winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
 
-        performanceGauage.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-        performanceGauage.setSubText(
+        performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+        performanceGauge.setSubText(
                 getContext().getString(R.string.leaderboard_performance_title));
-        performanceGauage.setAnimiationFlag(true);
-        performanceGauage.setDrawStartValue(50f);
-        performanceGauage.setTargetValue((float) normalizePerformance());
+        performanceGauge.setAnimiationFlag(true);
+        performanceGauge.setDrawStartValue(50f);
+        performanceGauge.setTargetValue((float) normalizePerformance());
 
-        tradeconsistencyGauage.setSubText(
+        tradeConsistencyGauge.setSubText(
                 getContext().getString(R.string.leaderboard_consistency_title));
-        tradeconsistencyGauage.setAnimiationFlag(true);
-        tradeconsistencyGauage.setTargetValue((float) normalizeConsistency());
+        tradeConsistencyGauge.setAnimiationFlag(true);
+        tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
 
         tradeCountTv.startAnimation();
         daysHoldTv.startAnimation();
         positionsCountTv.startAnimation();
     }
+
     private void clearExpandAnimation()
     {
-        winRateGauage.clear();
-        performanceGauage.clear();
-        tradeconsistencyGauage.clear();
+        winRateGauge.clear();
+        performanceGauge.clear();
+        tradeConsistencyGauge.clear();
     }
 
     @Override public void onExpand(boolean expand)
@@ -704,12 +740,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             Double minConsistency = 0.004;
             Double maxConsistency = getAvgConsistency();
             Double consistency = leaderboardItem.getConsistency();
-            consistency = (consistency < minConsistency) ?minConsistency : consistency;
+            consistency = (consistency < minConsistency) ? minConsistency : consistency;
             consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
 
-            double result =  100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
+            double result =
+                    100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
             return result;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Timber.e("normalizeConsistency", e);
         }
@@ -737,7 +775,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     leaderboardItem.sharpeRatioInPeriodVsSP500, r);
 
             return r;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Timber.e("normalizePerformance", e);
         }

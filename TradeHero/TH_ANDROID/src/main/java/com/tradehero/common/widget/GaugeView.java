@@ -1080,6 +1080,7 @@ public class GaugeView extends View {
     }
 
     /**
+     * Stop animation and set mCurrentValue to mScaleStartValue.
      */
     public void clear() {
         mTargetValue = mScaleStartValue;
@@ -1090,11 +1091,19 @@ public class GaugeView extends View {
         animationEnded = false;
     }
 
+    /**
+     * Set the flag that indicates whether draw with animation.
+     * @param drawWithAnimation
+     */
     public void setAnimiationFlag(boolean drawWithAnimation)
     {
         this.mDrawWithAnimaion = drawWithAnimation;
     }
 
+    /**
+     * The default value of mScaleStartValue is 0, and mScaleEndValue is 100
+     * @param value
+     */
     public void setDrawStartValue(float value)
     {
         if (value > mScaleEndValue) {
@@ -1105,6 +1114,10 @@ public class GaugeView extends View {
         this.mDrawScaleStartValue = value;
     }
 
+    /**
+     * Just for test.
+     * @param debug
+     */
     public void setDebug(boolean debug)
     {
         DEBUG = debug;
