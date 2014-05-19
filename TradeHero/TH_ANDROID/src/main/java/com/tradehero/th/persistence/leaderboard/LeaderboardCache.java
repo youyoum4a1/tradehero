@@ -13,10 +13,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class LeaderboardCache extends PartialDTOCache<LeaderboardKey, LeaderboardDTO>
 {
-    public static final String TAG = LeaderboardCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
