@@ -83,7 +83,7 @@
     android:orientation="horizontal"
     android:layout_marginTop="8dp">
 
-  <com.tradehero.common.widget.NumericalcAnimatedTextView
+  <com.tradehero.common.widget.NumericalAnimatedTextView
       android:id="@+id/leaderboard_position_tv"
       android:layout_width="0dp" android:layout_height="wrap_content"
       android:layout_weight="1"
@@ -94,7 +94,7 @@
       app:textSize="18sp"
 
       />
-  <com.tradehero.common.widget.NumericalcAnimatedTextView
+  <com.tradehero.common.widget.NumericalAnimatedTextView
       android:id="@+id/leaderboard_tradecount_tv"
       android:layout_width="0dp" android:layout_height="wrap_content"
       android:layout_weight="1"
@@ -105,7 +105,7 @@
       app:textSize="18sp"
       />
 
-  <com.tradehero.common.widget.NumericalcAnimatedTextView
+  <com.tradehero.common.widget.NumericalAnimatedTextView
       android:id="@+id/leaderboard_dayshold_tv"
       android:layout_width="0dp" android:layout_height="wrap_content"
       android:layout_weight="1"
