@@ -23,6 +23,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -110,6 +111,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_gauge_performance) GaugeView performanceGauage;
     @InjectView(R.id.leaderboard_gauge_tradeconsistency) GaugeView tradeconsistencyGauage;
     @InjectView(R.id.leaderboard_gauge_winrate) GaugeView winRateGauage;
+    @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -303,6 +305,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
+        displayCountryLogo();
     }
 
     private void loadDefaultUserImage()
@@ -310,6 +313,37 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         picasso.get().load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(lbmuProfilePicture);
+    }
+
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null)
+        {
+            if (leaderboardItem != null)
+            {
+                countryLogo.setImageResource(getConutryLogoId(leaderboardItem.countryCode));
+            }
+            else
+            {
+                countryLogo.setImageResource(R.drawable.default_image);
+            }
+        }
+    }
+
+    public int getConutryLogoId(String country)
+    {
+        return getConutryLogoId(0, country);
+    }
+
+    public int getConutryLogoId(int defaultResId, String country)
+    {
+        try
+        {
+            return Country.valueOf(country).logoId;
+        } catch (IllegalArgumentException ex)
+        {
+            return defaultResId;
+        }
     }
 
     private void displayExpandableSection()

@@ -95,6 +95,16 @@
           tools:text="(annualised: +1200%)"
           />
     </LinearLayout>
+    <ImageView
+        android:id="@+id/leaderboard_user_item_country_logo"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@null"
+        android:layout_marginRight="10dp"
+        />
   </RelativeLayout>
 
   <ImageView
