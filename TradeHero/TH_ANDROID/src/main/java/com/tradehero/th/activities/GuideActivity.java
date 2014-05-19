@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -11,35 +12,28 @@ import android.widget.ImageView;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 public class GuideActivity extends Activity
-        implements ViewPager.OnPageChangeListener, View.OnClickListener
+        implements
+        ViewPager.OnPageChangeListener,
+        View.OnClickListener
 {
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_guide);
         ViewPager viewpager = (ViewPager) findViewById(R.id.viewpager);
-        List<View> list = new ArrayList<>();
-        list.add(createGuideImage(R.drawable.guide1));
-        list.add(createGuideImage(R.drawable.guide2));
-        list.add(createGuideImage(R.drawable.guide3));
-        list.add(createGuideImage(R.drawable.guide4));
-        ImageView imageView5 = createGuideImage(R.drawable.guide5);
-        list.add(imageView5);
-        imageView5.setOnClickListener(this);
+        List<Integer> list = new ArrayList<>();
+        list.add(R.drawable.guide1);
+        list.add(R.drawable.guide2);
+        list.add(R.drawable.guide3);
+        list.add(R.drawable.guide4);
+        list.add(R.drawable.guide5);
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
-    }
-
-    private ImageView createGuideImage(int drawableResId)
-    {
-        ImageView imageView = (ImageView) getLayoutInflater().inflate(R.layout.guide_layout, null);
-        imageView.setBackgroundResource(drawableResId);
-        return imageView;
     }
 
     @Override public void onClick(View v)
@@ -49,34 +43,61 @@ public class GuideActivity extends Activity
 
     class ListViewPagerAdapter extends PagerAdapter
     {
-        private List<View> list = null;
+        private List<Integer> drawableIdList = null;
 
-        public ListViewPagerAdapter(List<View> list)
+        public ListViewPagerAdapter(List<Integer> drawableIdList)
         {
-            this.list = list;
+            this.drawableIdList = drawableIdList;
         }
 
-        @Override
-        public int getCount()
+        @Override public int getCount()
         {
-            return list.size();
+            return drawableIdList.size();
         }
 
-        @Override
-        public Object instantiateItem(ViewGroup container, int position)
+        private boolean isLast(int position)
         {
-            container.addView(list.get(position));
-            return list.get(position);
+            return position == getCount() - 1;
         }
 
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object)
+        private boolean isClickable(int position)
         {
-            container.removeView(list.get(position));
+            return isLast(position);
         }
 
-        @Override
-        public boolean isViewFromObject(View arg0, Object arg1)
+        @Override public Object instantiateItem(ViewGroup container, int position)
+        {
+            ImageView imageView = (ImageView) LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_layout, null);
+            try
+            {
+                imageView.setBackgroundResource(drawableIdList.get(position));
+            }
+            catch (OutOfMemoryError e)
+            {
+                Timber.e(e, "Expanding position %d", position);
+            }
+            if (isClickable(position))
+            {
+                imageView.setOnClickListener(GuideActivity.this);
+            }
+            else
+            {
+                imageView.setOnClickListener(null);
+            }
+            container.addView(imageView);
+            return imageView;
+        }
+
+        @Override public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            container.removeView((View) object);
+            if (object instanceof ImageView)
+            {
+                ((ImageView) object).setBackgroundResource(0);
+            }
+        }
+
+        @Override public boolean isViewFromObject(View arg0, Object arg1)
         {
             return arg0 == arg1;
         }
