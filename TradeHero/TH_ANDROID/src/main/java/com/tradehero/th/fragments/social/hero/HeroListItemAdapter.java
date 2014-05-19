@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
+// TODO refactor with DTOAdapterNew and getItemTypeCount
 public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemView>
 {
     public static final int VIEW_TYPE_EMPTY_PLACEHOLDER = 0;
