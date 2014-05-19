@@ -113,9 +113,10 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
+        // TODO use Dagger to inject pref?
         SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 
-        if (true)//preferences.getBoolean(KEY_FIRST_BOOT, true))
+        if (preferences.getBoolean(KEY_FIRST_BOOT, true))
         {
             ActivityHelper.launchGuide(SplashActivity.this);
             preferences.edit().putBoolean(KEY_FIRST_BOOT, false).apply();
