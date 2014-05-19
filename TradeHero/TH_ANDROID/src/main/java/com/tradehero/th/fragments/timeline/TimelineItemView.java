@@ -25,7 +25,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -46,8 +46,6 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ForWeChat;
@@ -57,8 +55,6 @@ import com.tradehero.th.wxapi.WeChatDTO;
 import com.tradehero.th.wxapi.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.client.Response;
 
@@ -117,7 +113,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject LocalyticsSession localyticsSession;
     @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
 
-    private TimelineItemDTOEnhanced timelineItemDTO;
+    private TimelineItemDTO timelineItemDTO;
     private PopupMenu sharePopupMenu;
     private MiddleCallback<Response> shareMiddleCallback;
 
@@ -210,13 +206,13 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
 
-        if (abstractDiscussionDTO instanceof TimelineItemDTOEnhanced)
+        if (abstractDiscussionDTO instanceof TimelineItemDTO)
         {
-            linkWith((TimelineItemDTOEnhanced) abstractDiscussionDTO, true);
+            linkWith((TimelineItemDTO) abstractDiscussionDTO, true);
         }
     }
 
-    private void linkWith(TimelineItemDTOEnhanced timelineItemDTO, boolean andDisplay)
+    private void linkWith(TimelineItemDTO timelineItemDTO, boolean andDisplay)
     {
         this.timelineItemDTO = timelineItemDTO;
         if (this.timelineItemDTO == null)
@@ -280,7 +276,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 .into(avatar);
     }
 
-    private void displayVendorLogo(TimelineItemDTOEnhanced item)
+    private void displayVendorLogo(TimelineItemDTO item)
     {
         SecurityMediaDTO firstMediaWithLogo = item.getFlavorSecurityForDisplay();
         if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
@@ -626,12 +622,11 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     @Override protected SecurityId getSecurityId()
     {
-        if (timelineItemDTO == null || timelineItemDTO.getFlavorSecurityForDisplay() == null)
+        if (timelineItemDTO == null)
         {
             return null;
         }
-
-        return new SecurityId(timelineItemDTO.getFlavorSecurityForDisplay().exchange, timelineItemDTO.getFlavorSecurityForDisplay().symbol);
+        return timelineItemDTO.createFlavorSecurityIdForDisplay();
     }
     //</editor-fold>
 }

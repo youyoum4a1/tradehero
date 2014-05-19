@@ -10,7 +10,6 @@ import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton
 public class FacebookUtils implements SocialSharer
 {

@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -22,8 +22,7 @@ public interface UserTimelineService
     TimelineDTO getGlobalTimeline(
             @Query("maxCount") int maxCount);
 
-    @GET("/timeline/{timelineId}")
-    TimelineItemDTOEnhanced getTimelineDetail(
+    @GET("/timeline/{timelineId}") TimelineItemDTO getTimelineDetail(
             @Path("timelineId") int timelineId);
 
     @GET("/timeline")
