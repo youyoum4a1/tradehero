@@ -8,22 +8,25 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 
-public class AbstractDiscussionItemView<T extends DiscussionKey>
+abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
-    @Inject DiscussionCache discussionCache;
-    @Inject Provider<PrettyTime> prettyTime;
+    @Inject protected DiscussionCache discussionCache;
+    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected AlertDialogUtil alertDialogUtil;
     protected AbstractDiscussionItemViewHolder viewHolder;
     protected T discussionKey;
@@ -122,6 +125,8 @@ public class AbstractDiscussionItemView<T extends DiscussionKey>
         {
         }
     }
+
+    abstract protected SecurityId getSecurityId();
 
     protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionFetchListener()
     {

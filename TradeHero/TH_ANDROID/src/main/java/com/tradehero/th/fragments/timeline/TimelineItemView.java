@@ -107,8 +107,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         }
     }
 
-    @Inject Provider<PrettyTime> prettyTime;
-    @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
@@ -116,7 +114,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    @Inject Lazy<DiscussionCache> discussionCache;
     @Inject LocalyticsSession localyticsSession;
     @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
 
@@ -627,7 +624,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         };
     }
 
-    private SecurityId getSecurityId()
+    @Override protected SecurityId getSecurityId()
     {
         if (timelineItemDTO == null || timelineItemDTO.getFlavorSecurityForDisplay() == null)
         {

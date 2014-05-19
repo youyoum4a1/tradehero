@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -199,5 +200,10 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
                 }
             }
         }
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        throw new IllegalStateException("It has no securityId");
     }
 }
