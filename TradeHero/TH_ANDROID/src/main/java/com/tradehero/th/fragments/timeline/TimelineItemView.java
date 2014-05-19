@@ -326,7 +326,12 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         }
     }
 
-    private PopupMenu.OnMenuItemClickListener monitorPopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()
+    protected PopupMenu.OnMenuItemClickListener createMonitorPopupMenuItemClickListener()
+    {
+        return new MonitorPopupMenuItemClickListener();
+    }
+
+    protected class MonitorPopupMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
     {
         @Override public boolean onMenuItemClick(MenuItem item)
         {
@@ -361,7 +366,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             }
             return false;
         }
-    };
+    }
 
     private void openStockInfo()
     {
@@ -551,7 +556,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
         menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
+        popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
         return popupMenu;
     }
 
