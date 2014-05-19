@@ -24,13 +24,13 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
 {
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
 
     @InjectView(R.id.discussion_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_share) View buttonShare;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<Picasso> picasso;
@@ -58,6 +58,12 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        ButterKnife.inject(this);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
         ButterKnife.inject(this);
     }
 
@@ -105,6 +111,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
+            R.id.discussion_action_button_share,
             R.id.discussion_action_button_more
     })
     void onItemClicked(View view)
@@ -115,6 +122,11 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
+
+            case R.id.discussion_action_button_share:
+                // TODO
+                break;
+
             case R.id.discussion_action_button_more:
                 //PopupMenu popUpMenu = createActionPopupMenu();
                 //popUpMenu.show();

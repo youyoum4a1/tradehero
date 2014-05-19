@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
   <item
       android:id="@+id/timeline_action_comment"
       android:title="@string/comment"
       />
+
   <item
       android:id="@+id/timeline_action_button_share"
       android:title="@string/share_to"
       />
+
 </menu>
