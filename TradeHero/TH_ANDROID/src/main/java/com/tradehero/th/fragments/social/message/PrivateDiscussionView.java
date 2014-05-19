@@ -20,6 +20,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
@@ -292,7 +293,7 @@ public class PrivateDiscussionView extends DiscussionView
                     R.layout.private_message_bubble_other);
         }
 
-        @Override public View getView(int position, View convertView, ViewGroup parent)
+        @Override public AbstractDiscussionItemView<DiscussionKey> getView(int position, View convertView, ViewGroup parent)
         {
             if (position == 0)
             {

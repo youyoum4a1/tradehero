@@ -115,7 +115,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         removeOnTabChangeListener();
     }
 
-
     private void fetchUserProfile()
     {
         detachUserProfileTask();
@@ -264,7 +263,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         super.onStop();
         Timber.d("onStop");
     }
-
 
     @Override public void onDestroyView()
     {

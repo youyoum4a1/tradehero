@@ -15,6 +15,8 @@
   <string name="leaderboard_positions_count"># 持仓</string>
   <string name="leaderboard_number_trades_in_period_title">周期交易数</string>
   <string name="leaderboard_win_ratio_title">胜率</string>
+  <string name="leaderboard_performance_title">相关表现</string>
+  <string name="leaderboard_consistency_title">交易持续性</string>
   <string name="leaderboard_avg_days_held">平均日持有数</string>
   <string name="leaderboard_followers_count"># 粉丝</string>
   <string name="leaderboard_comments_count"># 评论</string>
@@ -29,6 +31,7 @@
   <string name="leaderboard_action_bar_following">关注中</string>
   <string name="leaderboard_profile">个人资料</string>
   <string name="leaderboard_positions">持仓</string>
+  <string name="leaderboard_monthly_trade_count">月交易量</string>
   <string name="leaderboard_win_ratio">(胜率: <b>%s</b>%%)</string>
   <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
   <string name="leaderboard_volatility"><![CDATA[(波幅: <b>%.4f</b>)]]></string>
