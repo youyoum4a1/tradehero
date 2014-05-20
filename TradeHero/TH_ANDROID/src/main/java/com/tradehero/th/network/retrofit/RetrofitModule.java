@@ -67,44 +67,54 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanService.class);
+    }
+
+    @Provides @Singleton AlertService provideAlertService(RestAdapter adapter)
+    {
+        return adapter.create(AlertService.class);
+    }
+
+    @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionService.class);
+    }
+
     @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
     {
         return adapter.create(DiscussionService.class);
+    }
+
+    @Provides @Singleton FollowerService provideFollowerService(RestAdapter adapter)
+    {
+        return adapter.create(FollowerService.class);
+    }
+
+    @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardService.class);
+    }
+
+    @Provides @Singleton MarketService provideMarketService(RestAdapter adapter)
+    {
+        return adapter.create(MarketService.class);
+    }
+
+    @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
+    {
+        return adapter.create(MessageService.class);
     }
 
     @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceSync.class);
     }
-//
-//    @Provides @Singleton NewsServiceAsync provideNewServiceAsync(RestAdapter adapter)
-//    {
-//        return adapter.create(NewsServiceAsync.class);
-//    }
 
-    @Provides @Singleton UserService provideUserService(RestAdapter adapter)
+    @Provides @Singleton NotificationService provideNotificationService(RestAdapter adapter)
     {
-        return adapter.create(UserService.class);
-    }
-
-    @Provides @Singleton SessionService provideSessionService(RestAdapter adapter)
-    {
-        return adapter.create(SessionService.class);
-    }
-
-    @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
-    {
-        return adapter.create(SecurityService.class);
-    }
-
-    @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineService.class);
-    }
-
-    @Provides @Singleton QuoteService provideQuoteService(RestAdapter adapter)
-    {
-        return adapter.create(QuoteService.class);
+        return adapter.create(NotificationService.class);
     }
 
     @Provides @Singleton PortfolioService providePortfolioService(RestAdapter adapter)
@@ -117,39 +127,24 @@ public class RetrofitModule
         return adapter.create(PositionService.class);
     }
 
-    @Provides @Singleton TradeService provideTradeService(RestAdapter adapter)
-    {
-        return adapter.create(TradeService.class);
-    }
-
-    @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter adapter)
-    {
-        return adapter.create(LeaderboardService.class);
-    }
-
     @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)
     {
         return adapter.create(ProviderService.class);
     }
 
-    @Provides @Singleton MarketService provideMarketService(RestAdapter adapter)
+    @Provides @Singleton QuoteService provideQuoteService(RestAdapter adapter)
     {
-        return adapter.create(MarketService.class);
+        return adapter.create(QuoteService.class);
     }
 
-    @Provides @Singleton FollowerService provideFollowerService(RestAdapter adapter)
+    @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
     {
-        return adapter.create(FollowerService.class);
+        return adapter.create(SecurityService.class);
     }
 
-    @Provides @Singleton AlertService provideAlertService(RestAdapter adapter)
+    @Provides @Singleton SessionService provideSessionService(RestAdapter adapter)
     {
-        return adapter.create(AlertService.class);
-    }
-
-    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanService.class);
+        return adapter.create(SessionService.class);
     }
 
     @Provides @Singleton SocialService provideSocialService(RestAdapter adapter)
@@ -157,34 +152,46 @@ public class RetrofitModule
         return adapter.create(SocialService.class);
     }
 
+    @Provides @Singleton TradeService provideTradeService(RestAdapter adapter)
+    {
+        return adapter.create(TradeService.class);
+    }
+
+    @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationServiceBing.class);
+    }
+
+    @Provides @Singleton TranslationTokenService provideTranslationTokenService(RestAdapter adapter)
+    {
+        return adapter.create(TranslationTokenService.class);
+    }
+
+    @Provides @Singleton UserService provideUserService(RestAdapter adapter)
+    {
+        return adapter.create(UserService.class);
+    }
+
+    @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineService.class);
+    }
+
     @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
     {
         return adapter.create(WatchlistService.class);
     }
 
-    @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter adapter)
-    {
-        return adapter.create(CompetitionService.class);
-    }
-
-    @Provides @Singleton NotificationService provideNotificationService(RestAdapter adapter)
-    {
-        return adapter.create(NotificationService.class);
-    }
-
-    @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
-    {
-        return adapter.create(MessageService.class);
-    }
-
-//    @Provides @Singleton DiscussionService provideDiscussionService(RestAdapter adapter)
-//    {
-//        return adapter.create(DiscussionService.class);
-//    }
-
     @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
     {
         return adapter.create(WeChatService.class);
+    }
+
+    @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
+    {
+        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
     //</editor-fold>
 
@@ -235,11 +242,6 @@ public class RetrofitModule
         return builder.setServer(server).setRequestInterceptor(requestHeaders).build();
     }
 
-    @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
-    {
-        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
-    }
-
     //@Provides Client provideOkClient(Context context)
     //{
     //    File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
@@ -259,16 +261,4 @@ public class RetrofitModule
     //    return new OkClient(okHttpClient);
     //}
 
-    @Provides @Singleton
-    TranslationTokenService provideTranslationTokenService(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenService.class);
-    }
-
-    @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
-                .build().create(TranslationServiceBing.class);
-    }
 }
