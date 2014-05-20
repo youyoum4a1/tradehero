@@ -27,48 +27,13 @@ import retrofit.client.Response;
     }
 
     //<editor-fold desc="Get Global Timeline">
-    public TimelineDTO getGlobalTimeline()
-    {
-        return userTimelineService.getGlobalTimeline();
-    }
-
-    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getGlobalTimeline(middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getGlobalTimeline(int maxCount)
-    {
-        return userTimelineService.getGlobalTimeline(maxCount);
-    }
-
-    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getGlobalTimeline(maxCount, middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getGlobalTimeline(int maxCount, Comparable maxId)
-    {
-        return userTimelineService.getGlobalTimeline(maxCount, maxId);
-    }
-
-    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getGlobalTimeline(int maxCount, Comparable maxId, Comparable minId)
+    // TODO create a proper key that contains the values max / min
+    protected TimelineDTO getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId)
     {
         return userTimelineService.getGlobalTimeline(maxCount, maxId, minId);
     }
 
-    public BaseMiddleCallback<TimelineDTO> getGlobalTimeline(int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
+    protected BaseMiddleCallback<TimelineDTO> getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId, Callback<TimelineDTO> callback)
     {
         BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, minId, middleCallback);
@@ -89,48 +54,12 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    public TimelineDTO getTimeline(UserBaseKey userId)
-    {
-        return userTimelineService.getTimeline(userId.key);
-    }
-
-    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getTimeline(userId.key, middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getTimeline(UserBaseKey userId, int maxCount)
-    {
-        return userTimelineService.getTimeline(userId.key, maxCount);
-    }
-
-    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getTimeline(userId.key, maxCount, middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getTimeline(UserBaseKey userId, int maxCount, Comparable maxId)
-    {
-        return userTimelineService.getTimeline(userId.key, maxCount, maxId);
-    }
-
-    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, middleCallback);
-        return middleCallback;
-    }
-
-    public TimelineDTO getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Comparable minId)
+    public TimelineDTO getTimeline(UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         return userTimelineService.getTimeline(userId.key, maxCount, maxId, minId);
     }
 
-    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, int maxCount, Comparable maxId, Comparable minId, Callback<TimelineDTO> callback)
+    BaseMiddleCallback<TimelineDTO> getTimeline(UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId, Callback<TimelineDTO> callback)
     {
         BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, minId, middleCallback);
