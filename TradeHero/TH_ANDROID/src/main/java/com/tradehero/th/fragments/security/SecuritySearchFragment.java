@@ -40,7 +40,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public final class SecuritySearchFragment
+public class SecuritySearchFragment
         extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SecuritySearchFragment.class.getName() + ".currentSearchString";
@@ -55,7 +55,8 @@ public final class SecuritySearchFragment
     @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
-    @InjectView(R.id.search_empty_view) View searchEmptyView;
+    @InjectView(R.id.search_empty_textview) View searchEmptyTextView;
+    @InjectView(R.id.search_empty_textview_wrapper) View searchEmptyTextViewWrapper;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -432,10 +433,10 @@ public final class SecuritySearchFragment
         boolean hasItems = (securityItemViewAdapter != null) && (securityItemViewAdapter.getCount() > 0);
         searchEmptyContainer.setVisibility(hasItems ? View.GONE : View.VISIBLE);
 
-        searchEmptyView.setVisibility(hasEmptyResult() ? View.VISIBLE : View.GONE);
+        searchEmptyTextViewWrapper.setVisibility(hasEmptyResult() ? View.VISIBLE : View.GONE);
     }
 
-    private void pushTradeFragmentIn(SecurityId securityId)
+    protected void pushTradeFragmentIn(SecurityId securityId)
     {
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());

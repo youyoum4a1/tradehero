@@ -13,8 +13,6 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
-import retrofit.http.Path;
-import retrofit.http.Query;
 import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
@@ -58,18 +56,12 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public MessageHeaderDTO getMessageHeader(int commentId)
+    @Override public MessageHeaderDTO getMessageHeader(int commentId, Integer referencedUserId)
     {
-        return createMessageHeader(commentId, null, new Date());
+        return createMessageHeader(commentId, referencedUserId, new Date());
     }
 
-    @Override public MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId,
-            @Query("referencedUserId") int referencedUserId)
-    {
-        return null;
-    }
-
-    @Override public MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId)
+    @Override public MessageHeaderDTO getMessageThread(int correspondentId)
     {
         return null;
     }
@@ -102,14 +94,14 @@ public class MessageServiceStub implements MessageService
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public Response deleteMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
-            @Path("recipientUserId") int recipientUserId)
+    @Override public Response deleteMessage(int commentId, int senderUserId,
+            int recipientUserId)
     {
         return null;
     }
 
-    @Override public Response readMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
-            @Path("recipientUserId") int recipientUserId)
+    @Override public Response readMessage(int commentId, int senderUserId,
+            int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }

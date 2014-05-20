@@ -38,9 +38,8 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
+import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -240,9 +239,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 @Override public void onClick(View v)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
-                    bundle.putBoolean(SearchStockPeopleFragment.BUNDLE_KEY_FROM_WATCHLIST, true);
-                    getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+                    getNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
                 }
             });
         }

@@ -1,7 +1,9 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -34,6 +36,19 @@ public class GuideActivity extends Activity
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
+
+        createShortcut();
+    }
+
+    private void createShortcut()
+    {
+        Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        intent.putExtra("duplicate", false);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
+        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.launcher);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), SplashActivity.class));
+        sendBroadcast(intent);
     }
 
     @Override public void onClick(View v)

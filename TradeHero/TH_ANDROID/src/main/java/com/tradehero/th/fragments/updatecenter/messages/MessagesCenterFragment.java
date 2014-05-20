@@ -188,8 +188,11 @@ public class MessagesCenterFragment extends DashboardFragment
         swipeListView.setSwipeListViewListener(null);
         swipeListener = null;
         messagesView = null;
-        messageListAdapter.setElementClickedListener(null);
-        messageListAdapter = null;
+        if (messageListAdapter != null)
+        {
+            messageListAdapter.setElementClickedListener(null);
+            messageListAdapter = null;
+        }
         Timber.d("onDestroyView");
 
         super.onDestroyView();

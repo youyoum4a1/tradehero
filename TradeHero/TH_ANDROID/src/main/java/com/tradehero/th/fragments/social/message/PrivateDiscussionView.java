@@ -19,6 +19,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
@@ -124,7 +125,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        MessageHeaderId messageHeaderId = new MessageHeaderId(discussionKey.id);
+        MessageHeaderId messageHeaderId = new MessageHeaderUserId(discussionKey.id, recipient);
         this.messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         super.linkWith(discussionKey, andDisplay);
 
