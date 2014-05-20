@@ -1,9 +1,12 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -69,6 +72,18 @@ import retrofit.client.Response;
     {
         BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
+
+    public TimelineItemDTO getTimelineDetail(TimelineItemDTOKey key)
+    {
+        return userTimelineService.getTimelineDetail(key.id);
+    }
+
+    public MiddleCallback<TimelineItemDTO> getTimelineDetail(TimelineItemDTOKey key, Callback<TimelineItemDTO> callback)
+    {
+        MiddleCallback<TimelineItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineDetail(key.id, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

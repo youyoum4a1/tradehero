@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -35,6 +36,10 @@ interface UserTimelineServiceAsync
             @Query("maxId") Comparable maxId,
             @Query("minId") Comparable minId,
             Callback<TimelineDTO> callback);
+
+    @GET("/timeline/{timelineId}") void getTimelineDetail(
+            @Path("timelineId") int timelineId,
+            Callback<TimelineItemDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">

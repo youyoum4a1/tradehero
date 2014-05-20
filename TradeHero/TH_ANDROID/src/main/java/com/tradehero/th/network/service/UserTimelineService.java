@@ -11,7 +11,6 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-
 public interface UserTimelineService
 {
     //<editor-fold desc="Get Global Timeline">
@@ -21,9 +20,6 @@ public interface UserTimelineService
     @GET("/timeline")
     TimelineDTO getGlobalTimeline(
             @Query("maxCount") int maxCount);
-
-    @GET("/timeline/{timelineId}") TimelineItemDTO getTimelineDetail(
-            @Path("timelineId") int timelineId);
 
     @GET("/timeline")
     TimelineDTO getGlobalTimeline(
@@ -35,6 +31,9 @@ public interface UserTimelineService
             @Query("maxCount") int maxCount,
             @Query("maxId") Comparable maxId,
             @Query("minId") Comparable minId);
+
+    @GET("/timeline/{timelineId}") TimelineItemDTO getTimelineDetail(
+            @Path("timelineId") int timelineId);
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
