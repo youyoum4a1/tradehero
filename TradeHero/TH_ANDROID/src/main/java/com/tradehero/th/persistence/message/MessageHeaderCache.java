@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import javax.inject.Singleton;
 public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, MessageHeaderDTO>
 {
     MessageServiceWrapper messageServiceWrapper;
+    UserBaseKey userBaseKey;
 
     @Inject
     public MessageHeaderCache(@SingleCacheMaxSize IntPreference maxSize, MessageServiceWrapper messageServiceWrapper)
@@ -26,7 +28,7 @@ public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, Messag
     // TODO implement a fetch on server side
     @Override protected MessageHeaderDTO fetch(MessageHeaderId key) throws Throwable
     {
-        return messageServiceWrapper.getMessageHeader(key.key);
+        return messageServiceWrapper.getMessageHeader(key.key, userBaseKey);
     }
 
     public MessageHeaderDTOList getMessages(Collection<MessageHeaderId> list)
@@ -42,5 +44,10 @@ public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, Messag
             return result;
         }
         return null;
+    }
+
+    public void setUserBaseKey(UserBaseKey userBaseKey)
+    {
+        this.userBaseKey = userBaseKey;
     }
 }

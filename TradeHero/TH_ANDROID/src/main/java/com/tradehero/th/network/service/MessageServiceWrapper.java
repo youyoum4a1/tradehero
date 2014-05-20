@@ -178,9 +178,9 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Message Header">
-    public MessageHeaderDTO getMessageHeader(int commentId)
+    public MessageHeaderDTO getMessageHeader(int commentId, UserBaseKey userBaseKey)
     {
-        return messageService.getMessageHeader(commentId);
+        return messageService.getMessageHeader(commentId, userBaseKey.key);
     }
 
     public MiddleCallback<MessageHeaderDTO> getMessageHeader(int commentId, Callback<MessageHeaderDTO> callback)

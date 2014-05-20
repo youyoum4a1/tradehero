@@ -30,7 +30,15 @@ public interface MessageService
 
     //<editor-fold desc="Get Message Header">
     @GET("/messages/{commentId}")
-    MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId);
+    MessageHeaderDTO getMessageHeader(
+            @Path("commentId") int commentId
+    );
+
+    @GET("/messages/{commentId}")
+    MessageHeaderDTO getMessageHeader(
+            @Path("commentId") int commentId,
+            @Query("referencedUserId") int referencedUserId
+            );
 
     @GET("/messages/thread/{correspondentId}")
     MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId);
