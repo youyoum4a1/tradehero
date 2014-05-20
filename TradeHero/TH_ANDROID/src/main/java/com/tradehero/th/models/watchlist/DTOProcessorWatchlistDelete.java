@@ -8,6 +8,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import timber.log.Timber;
 
 public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>
 {
@@ -32,7 +33,18 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
     @Override public WatchlistPositionDTO process(WatchlistPositionDTO watchlistPositionDTO)
     {
         portfolioCompactListCache.invalidate(concernedUser);
-        SecurityId deletedSecurityId = watchlistPositionDTO.securityDTO.getSecurityId();
+        SecurityId deletedSecurityId = null;
+        if (watchlistPositionDTO.securityDTO != null)
+        {
+            deletedSecurityId = watchlistPositionDTO.securityDTO.getSecurityId();
+        }
+        else
+        {
+            Timber.e(
+                    new NullPointerException("watchlist or security null " + watchlistPositionDTO),
+                    null);
+        }
+
         SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
         if (currentIds != null)
         {
