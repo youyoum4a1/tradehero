@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 public class GuideActivity extends Activity
         implements
