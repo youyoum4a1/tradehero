@@ -35,6 +35,7 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -364,8 +365,7 @@ public class TrendingFragment extends SecurityListFragment
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
-        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
-        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
+        getNavigator().pushFragment(SecuritySearchFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

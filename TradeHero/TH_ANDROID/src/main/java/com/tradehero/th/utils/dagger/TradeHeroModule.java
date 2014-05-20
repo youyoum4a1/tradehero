@@ -67,6 +67,7 @@ import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
@@ -186,6 +187,7 @@ import javax.inject.Singleton;
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
                         SecurityListPagedLoader.class,
+                        SecuritySearchFragment.class,
                         MacquarieSecurityListPagedLoader.class,
                         SecurityItemViewAdapter.class,
                         MacquarieWarrantItemViewAdapter.class,
