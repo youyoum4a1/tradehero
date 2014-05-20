@@ -14,7 +14,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
 
-
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
     protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;

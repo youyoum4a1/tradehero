@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.DTO;
 import java.util.Collections;
 import java.util.List;
 
-
 public class RangedDTO<ListedType, ListType extends List<ListedType>> implements DTO
 {
     private ListType data;

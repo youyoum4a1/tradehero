@@ -7,11 +7,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class CompetitionDTOUtil
 {
-    public static final String TAG = CompetitionDTOUtil.class.getSimpleName();
-
     @Inject public CompetitionDTOUtil()
     {
         super();

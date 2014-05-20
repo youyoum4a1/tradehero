@@ -1,6 +1,5 @@
 package com.tradehero.th.api.market;
 
-
 public class SecuritySuperCompactDTO
 {
     public String n;    // name

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.pagination;
 
-
 public class RangeDTO
 {
     public final Integer maxCount;

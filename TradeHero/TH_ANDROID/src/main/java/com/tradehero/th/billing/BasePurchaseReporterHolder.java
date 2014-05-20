@@ -29,8 +29,6 @@ abstract public class BasePurchaseReporterHolder<
         THProductPurchaseType,
         BillingExceptionType>
 {
-    public static final String TAG = BasePurchaseReporterHolder.class.getSimpleName();
-
     protected Map<Integer /*requestCode*/, PurchaseReporterType> purchaseReporters;
     protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
@@ -160,7 +158,7 @@ abstract public class BasePurchaseReporterHolder<
         }
         else
         {
-            Timber.d(TAG, "handlePurchaseReportFailed No THIABPurchaseHandler for requestCode %d", requestCode);
+            Timber.d("handlePurchaseReportFailed No THIABPurchaseHandler for requestCode %d", requestCode);
         }
     }
 

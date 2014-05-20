@@ -2,8 +2,6 @@ package com.tradehero.common.persistence;
 
 import android.os.Bundle;
 
-
-
 /**
  * Use single long as an identity
  */

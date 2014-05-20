@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.security.SecurityId;
 
-
 public class SecurityPositionDetailQuery extends Query
 {
     public SecurityPositionDetailQuery ()

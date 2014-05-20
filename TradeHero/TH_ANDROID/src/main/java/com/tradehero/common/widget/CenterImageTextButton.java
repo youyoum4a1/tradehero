@@ -11,12 +11,9 @@ import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-/**
- *
- */
 public class CenterImageTextButton extends Button
 {
-
+    //<editor-fold desc="Constructors">
     public CenterImageTextButton(Context context)
     {
         super(context);
@@ -31,6 +28,7 @@ public class CenterImageTextButton extends Button
     {
         super(context, attrs, style);
     }
+    //</editor-fold>
 
     private Paint mPaint = new Paint();
     private String mText = null;

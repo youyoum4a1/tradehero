@@ -5,11 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.tradehero.th.R;
 
-
 public class StoreItemLikeButton extends StoreItemHasFurther
 {
-    public static final String TAG = StoreItemLikeButton.class.getSimpleName();
-
     protected ImageView imageButton;
     protected int imageButtonResId;
 

@@ -10,11 +10,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TimeSpanButtonSet extends LinearLayout
 {
-    public static final String TAG = TimeSpanButtonSet.class.getSimpleName();
-
     private List<TimeSpanButton> buttons;
     private WeakReference<OnTimeSpanButtonSelectedListener> listener = new WeakReference<>(null);
     private boolean enabled = true;

@@ -21,7 +21,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {

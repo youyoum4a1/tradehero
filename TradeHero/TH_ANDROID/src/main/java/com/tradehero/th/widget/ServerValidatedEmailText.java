@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-
 public class ServerValidatedEmailText extends ServerValidatedText
 {
     //<editor-fold desc="Constructors">

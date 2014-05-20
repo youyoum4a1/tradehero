@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.watchlist;
 import android.os.Bundle;
 import com.tradehero.th.api.security.SecurityId;
 
-
 public class WatchlistPositionId extends SecurityId
 {
     public WatchlistPositionId(String exchange, String securitySymbol)

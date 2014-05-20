@@ -5,7 +5,6 @@ import com.tradehero.common.application.PApplication;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 
-
 public class ColorUtils
 {
     public static final int MAX_RED_VALUE = 255;

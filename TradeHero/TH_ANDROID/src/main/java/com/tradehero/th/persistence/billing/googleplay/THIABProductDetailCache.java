@@ -7,7 +7,6 @@ import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class THIABProductDetailCache extends ProductDetailCache<IABSKU, THIABProductDetail, THIABProductDetailTuner>
 {
     private static final int DEFAULT_MAX_SIZE = 200;

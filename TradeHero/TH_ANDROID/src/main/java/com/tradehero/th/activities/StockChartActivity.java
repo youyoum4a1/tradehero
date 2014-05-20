@@ -7,7 +7,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.security.ChartFragment;
 
-
 public class StockChartActivity extends SherlockFragmentActivity
 {
     @Override

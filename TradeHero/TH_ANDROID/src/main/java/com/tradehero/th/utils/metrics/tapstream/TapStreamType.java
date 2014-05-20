@@ -2,9 +2,6 @@ package com.tradehero.th.utils.metrics.tapstream;
 
 import com.tradehero.th.R;
 
-/**
- * Created by alex on 14-5-9.
- */
 public enum TapStreamType
 {
     GooglePlay(0, R.string.tap_stream_type_google_install, R.string.tap_stream_type_google_open),

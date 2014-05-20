@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ViewAnimator;
 
-
 public class BetterViewAnimator extends ViewAnimator
 {
     //region Constructors

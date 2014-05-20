@@ -7,7 +7,6 @@ import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import javax.inject.Inject;
 
-
 public class BaseExpandingListViewListener implements ExpandingListView.ExpandingListItemListener
 {
     @Inject

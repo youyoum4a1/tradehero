@@ -8,11 +8,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class UserProfileRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, UserProfileDTO, UserProfileCache>
 {
-    public static final String TAG = UserProfileRetrievedMilestone.class.getSimpleName();
-
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     @Inject public UserProfileRetrievedMilestone(CurrentUserId currentUserId)

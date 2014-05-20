@@ -5,11 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import java.lang.ref.WeakReference;
 
-
 public class CurrentActivityHolder
 {
-    public static final String TAG = CurrentActivityHolder.class.getSimpleName();
-
     protected WeakReference<Activity> currentActivityWeak = new WeakReference<>(null);
     protected final Handler currentHandler;
 

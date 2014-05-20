@@ -13,7 +13,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-
 @Module(
         injects = {
                 DashboardActivity.class,

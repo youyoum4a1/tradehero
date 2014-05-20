@@ -3,7 +3,6 @@ package com.tradehero.th.api.security;
 import com.tradehero.th.api.timeline.form.TradePublishableFormDTO;
 import java.util.Map;
 
-
 public class TransactionFormDTO extends TradePublishableFormDTO
 {
     public static final String POST_KEY_SIGNED_QUOTE_DTO = "signedQuoteDto";

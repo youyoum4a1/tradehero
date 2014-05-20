@@ -2,11 +2,8 @@ package com.tradehero.th.api.security;
 
 import java.util.Date;
 
-
 public class WarrantDTO extends SecurityCompactDTO
 {
-    public static final String TAG = WarrantDTO.class.getSimpleName();
-
     public String warrantType;
     public Date expiryDate;
     public Double strikePrice;

@@ -26,7 +26,6 @@
         android:contentDescription="@null"
         />
 
-
     <LinearLayout
         android:id="@+id/revenue_block"
         android:orientation="vertical"

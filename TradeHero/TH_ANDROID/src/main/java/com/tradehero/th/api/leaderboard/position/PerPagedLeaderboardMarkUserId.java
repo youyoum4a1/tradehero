@@ -2,7 +2,6 @@ package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
 
-
 public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
 {
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardMarkUserId.class.getName() + ".perPage";

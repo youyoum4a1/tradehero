@@ -7,11 +7,8 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import javax.inject.Inject;
 
-
 public class PositionUtils
 {
-    public static final String TAG = PositionUtils.class.getSimpleName();
-
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
     @Inject public PositionUtils()

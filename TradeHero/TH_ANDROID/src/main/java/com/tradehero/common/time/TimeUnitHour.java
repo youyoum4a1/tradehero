@@ -2,10 +2,8 @@ package com.tradehero.common.time;
 
 import org.ocpsoft.prettytime.TimeUnit;
 
-
 abstract public class TimeUnitHour implements TimeUnit
 {
-    public static final String TAG = TimeUnitHour.class.getSimpleName();
     public static final long MILLIS_PER_HOUR = 3600000;
 
     public TimeUnitHour()

@@ -1,6 +1,5 @@
 package com.tradehero.th.auth;
 
-
 public enum AuthenticationMode
 {
     SignUp("users"),

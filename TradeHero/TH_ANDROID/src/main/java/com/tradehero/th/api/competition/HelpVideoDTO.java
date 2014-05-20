@@ -3,7 +3,6 @@ package com.tradehero.th.api.competition;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.HelpVideoId;
 
-
 public class HelpVideoDTO implements DTO
 {
     public int id;

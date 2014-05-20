@@ -2,7 +2,6 @@ package com.tradehero.th.ui;
 
 import android.view.ViewGroup;
 
-
 public interface ViewWrapper
 {
     ViewGroup get(ViewGroup viewGroup);

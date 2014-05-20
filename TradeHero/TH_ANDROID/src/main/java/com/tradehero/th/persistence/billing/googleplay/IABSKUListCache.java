@@ -7,7 +7,6 @@ import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class IABSKUListCache extends ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList>
 {
     public static final int MAX_SIZE = 5;

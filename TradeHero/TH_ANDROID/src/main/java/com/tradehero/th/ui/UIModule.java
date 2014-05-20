@@ -29,7 +29,6 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
-
 @Module(
         includes = {
                 UIComponents.class

@@ -3,11 +3,8 @@ package com.tradehero.th.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ExceptionUtils
 {
-    public static final String TAG = ExceptionUtils.class.getSimpleName();
-
     public static List<String> getElements(Exception exception)
     {
         List<String> reported = new ArrayList<>();

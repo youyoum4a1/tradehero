@@ -21,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZoneDTO, CompetitionZoneListItemView>
 {
     public static final int ITEM_TYPE_TRADE_NOW = 0;

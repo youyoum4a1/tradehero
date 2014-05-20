@@ -7,11 +7,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-
 public class StoreItemHasFurther extends RelativeLayout
 {
-    public static final String TAG = StoreItemHasFurther.class.getSimpleName();
-
     protected TextView title;
     protected int titleResId;
 
