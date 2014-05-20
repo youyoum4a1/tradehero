@@ -23,5 +23,4 @@ public class ExchangeDTOList extends ArrayList<ExchangeDTO> implements DTO
     }
     //</editor-fold>
 
-
 }

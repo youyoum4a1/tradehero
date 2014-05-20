@@ -2,7 +2,6 @@ package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 
-
 public class GaussianTransformation implements com.squareup.picasso.Transformation
 {
     @Override public Bitmap transform(Bitmap bitmap)

@@ -161,4 +161,3 @@ public class LeaderboardDefDTO extends ExtendedDTO
     }
 }
 
-

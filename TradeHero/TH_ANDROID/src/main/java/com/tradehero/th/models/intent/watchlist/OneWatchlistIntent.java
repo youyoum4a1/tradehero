@@ -35,7 +35,6 @@ abstract public class OneWatchlistIntent extends PortfolioIntent
                 portfolioId.key);
     }
 
-
     public int getIntentActionUriResId()
     {
         return R.string.intent_uri_action_one_watchlist;

@@ -39,7 +39,6 @@ public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View
         v.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
 

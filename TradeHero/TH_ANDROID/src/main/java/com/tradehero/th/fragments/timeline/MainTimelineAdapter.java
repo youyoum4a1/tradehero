@@ -140,7 +140,6 @@ public class MainTimelineAdapter extends ArrayAdapter
                 }
                 break;
 
-
         }
     }
     //</editor-fold>

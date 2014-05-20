@@ -245,4 +245,3 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
 
 
-

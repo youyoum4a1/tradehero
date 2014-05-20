@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 
-
 public class RetrofitSynchronousErrorHandler implements ErrorHandler
 {
     @Inject public RetrofitSynchronousErrorHandler()

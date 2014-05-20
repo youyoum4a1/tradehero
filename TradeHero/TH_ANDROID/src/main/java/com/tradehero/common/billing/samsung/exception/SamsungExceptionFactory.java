@@ -3,7 +3,6 @@ package com.tradehero.common.billing.samsung.exception;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 
-
 public class SamsungExceptionFactory
         implements BillingExceptionFactory
 {

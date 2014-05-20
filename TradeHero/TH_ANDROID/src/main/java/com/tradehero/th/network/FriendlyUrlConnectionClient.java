@@ -12,7 +12,6 @@ import retrofit.client.Request;
 import retrofit.client.UrlConnectionClient;
 import timber.log.Timber;
 
-
 @Singleton
 public class FriendlyUrlConnectionClient extends UrlConnectionClient
 {

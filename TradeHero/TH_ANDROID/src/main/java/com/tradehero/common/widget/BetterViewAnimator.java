@@ -50,5 +50,4 @@ public class BetterViewAnimator extends ViewAnimator
         }
     }
 
-
 }

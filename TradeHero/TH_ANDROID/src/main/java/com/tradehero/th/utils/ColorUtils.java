@@ -28,7 +28,6 @@ public class ColorUtils
                     0);
         }
 
-
     }
 
     public static int getColorResourceForNumber(double n)

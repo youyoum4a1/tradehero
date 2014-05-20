@@ -38,7 +38,6 @@ public class ExpandingLayout extends LinearLayout
         }
     }
 
-
     public void expand(boolean expand)
     {
         setVisibility(expand ? View.VISIBLE : View.GONE);

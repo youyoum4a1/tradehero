@@ -22,7 +22,6 @@ public class MessageServiceStub implements MessageService
         super();
     }
 
-
     @Override
     public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
     {

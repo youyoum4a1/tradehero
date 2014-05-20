@@ -2,7 +2,6 @@ package com.tradehero.common.text;
 
 import java.util.regex.Pattern;
 
-
 public class UserTagProcessor extends ClickableTagProcessor
 {
     private static final String THMarkdownURegexUser = "<@(.+?),(\\d+)@>";

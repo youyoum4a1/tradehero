@@ -87,7 +87,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);

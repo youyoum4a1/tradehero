@@ -3,7 +3,6 @@ package com.tradehero.common.text;
 import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
-
 public class BoldTagProcessor extends RichSpanTextProcessor
 {
     /* "**xxx**" = xxx in bold */

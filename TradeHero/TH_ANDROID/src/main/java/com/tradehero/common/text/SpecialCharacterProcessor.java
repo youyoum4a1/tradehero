@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class SpecialCharacterProcessor implements RichTextProcessor
 {
     private static Map<String, String> characterMap;

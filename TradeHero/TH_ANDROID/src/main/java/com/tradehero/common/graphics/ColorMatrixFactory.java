@@ -2,7 +2,6 @@ package com.tradehero.common.graphics;
 
 import android.graphics.ColorMatrix;
 
-
 public class ColorMatrixFactory
 {
     public static ColorMatrix getIdentityMatrix ()

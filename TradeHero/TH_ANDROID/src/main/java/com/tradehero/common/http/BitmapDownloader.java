@@ -1,6 +1,5 @@
 package com.tradehero.common.http;
 
-
 /*
 public class BitmapDownloader implements Runnable
 {

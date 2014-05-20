@@ -88,7 +88,6 @@ public class FollowerSummaryDTO implements DTO
     }
 
 
-
     @Override public String toString()
     {
         if (userFollowers != null)

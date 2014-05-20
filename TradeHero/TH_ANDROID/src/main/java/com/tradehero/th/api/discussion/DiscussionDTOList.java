@@ -3,7 +3,6 @@ package com.tradehero.th.api.discussion;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class DiscussionDTOList<T extends AbstractDiscussionDTO> extends ArrayList<T>
 {
     //<editor-fold desc="Constructors">

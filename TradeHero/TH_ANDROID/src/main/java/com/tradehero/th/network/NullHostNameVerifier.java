@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
-
 @Singleton
 public class NullHostNameVerifier implements HostnameVerifier
 {

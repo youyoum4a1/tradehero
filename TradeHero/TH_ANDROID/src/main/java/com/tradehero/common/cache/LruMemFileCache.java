@@ -41,7 +41,6 @@ public class LruMemFileCache extends LruCache
     final private Object setLock = new Object();
     final private Object getLock = new Object();
 
-
     private static MessageDigest getMd5()
     {
         if (md5 == null)
@@ -105,7 +104,6 @@ public class LruMemFileCache extends LruCache
         super(calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
-
 
     /**public*/ LruMemFileCache(int maxMemSize, long maxFileSize)
     {

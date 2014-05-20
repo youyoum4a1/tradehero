@@ -11,7 +11,6 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import timber.log.Timber;
 
-
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId();

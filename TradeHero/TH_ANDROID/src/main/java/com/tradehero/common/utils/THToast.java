@@ -10,7 +10,6 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.exception.THException;
 import timber.log.Timber;
 
-
 public class THToast
 {
     public static Handler toastHandler = null;

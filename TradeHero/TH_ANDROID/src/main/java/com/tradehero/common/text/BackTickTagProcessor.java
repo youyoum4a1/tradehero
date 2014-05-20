@@ -4,7 +4,6 @@ import android.graphics.Typeface;
 import android.text.style.StyleSpan;
 import java.util.regex.Pattern;
 
-
 public class BackTickTagProcessor extends RichSpanTextProcessor
 {
     /* "`xxx`" = xxx in Courier font */

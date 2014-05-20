@@ -95,7 +95,6 @@ public class MeTimelineFragment extends TimelineFragment
         return true;
     }
 
-
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_timeline;
