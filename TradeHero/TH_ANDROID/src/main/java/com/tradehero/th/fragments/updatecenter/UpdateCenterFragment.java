@@ -401,13 +401,7 @@ public class UpdateCenterFragment extends BaseFragment
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                // receiver is unregistered in onStop,so don't have to check null
-                UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-
-                if (userProfileDTO != null)
-                {
-                    linkWith(userProfileDTO, true);
-                }
+                fetchUserProfile();
             }
         };
     }
