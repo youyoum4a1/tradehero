@@ -122,5 +122,15 @@ public class RetrofitProtectedModule
     {
         return adapter.create(WatchlistServiceAsync.class);
     }
+
+    @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(WeChatServiceAsync.class);
+    }
+
+    @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
+    }
     //</editor-fold>
 }
