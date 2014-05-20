@@ -25,6 +25,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -73,14 +74,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         collectCorrespondentId();
     }
 
-    private void collectCorrespondentId()
+    private UserBaseKey collectCorrespondentId()
     {
         Bundle args = getArguments();
         if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
         {
-            correspondentId = new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
-            messageHeaderCache.setUserBaseKey(correspondentId);
+            return new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
         }
+        return null;
     }
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -188,7 +189,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.linkWith(discussionKey, andDisplay);
 
-        linkWith(new MessageHeaderId(discussionKey.id), true);
+        linkWith(new MessageHeaderUserId(discussionKey.id, collectCorrespondentId()), true);
     }
 
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)

@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
@@ -178,15 +179,31 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Message Header">
-    public MessageHeaderDTO getMessageHeader(int commentId, UserBaseKey userBaseKey)
+    public MessageHeaderDTO getMessageHeader(MessageHeaderId messageHeaderId)
     {
-        return messageService.getMessageHeader(commentId, userBaseKey.key);
+        if (messageHeaderId instanceof MessageHeaderUserId)
+        {
+            return messageService.getMessageHeader(
+                    messageHeaderId.commentId,
+                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key);
+        }
+        return messageService.getMessageHeader(messageHeaderId.commentId, null);
     }
 
-    public MiddleCallback<MessageHeaderDTO> getMessageHeader(int commentId, Callback<MessageHeaderDTO> callback)
+    public MiddleCallback<MessageHeaderDTO> getMessageHeader(MessageHeaderId messageHeaderId, Callback<MessageHeaderDTO> callback)
     {
         MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        messageServiceAsync.getMessageHeader(commentId, middleCallback);
+        if (messageHeaderId instanceof MessageHeaderUserId)
+        {
+            messageServiceAsync.getMessageHeader(
+                    messageHeaderId.commentId,
+                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key,
+                    middleCallback);
+        }
+        else
+        {
+            messageServiceAsync.getMessageHeader(messageHeaderId.commentId, null, middleCallback);
+        }
         return middleCallback;
     }
 
@@ -249,7 +266,7 @@ public class MessageServiceWrapper
             UserBaseKey readerId)
     {
         return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
-                messageService.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId));
+                messageService.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId));
     }
 
     public MiddleCallback<Response> deleteMessage(
@@ -262,7 +279,7 @@ public class MessageServiceWrapper
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
-        messageServiceAsync.deleteMessage(messageHeaderId.key, senderUserId, recipientUserId, middleCallback);
+        messageServiceAsync.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
