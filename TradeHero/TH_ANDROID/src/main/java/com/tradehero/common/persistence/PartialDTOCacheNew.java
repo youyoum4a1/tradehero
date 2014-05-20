@@ -93,6 +93,11 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
+    protected void notifyHurriedListenersPreReceived(DTOKeyType key, DTOType value)
+    {
+        getOrCreateCacheValue(key).notifyHurriedListenersPreReceived(key, value);
+    }
+
     protected void notifyListenersReceived(DTOKeyType key, DTOType value)
     {
         getOrCreateCacheValue(key).notifyListenersReceived(key, value);
@@ -147,6 +152,16 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
             super(key, forceUpdateCache);
         }
         //</editor-fold>
+
+        @Override protected void onPreExecute()
+        {
+            super.onPreExecute();
+            DTOType cached = PartialDTOCacheNew.this.get(key);
+            if (cached != null)
+            {
+                notifyHurriedListenersPreReceived(key, cached);
+            }
+        }
 
         @Override protected DTOType doInBackground(Void... voids)
         {
