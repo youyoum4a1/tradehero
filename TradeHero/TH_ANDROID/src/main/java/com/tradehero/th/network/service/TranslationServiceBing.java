@@ -5,7 +5,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
 
-public interface BingTranslationService
+public interface TranslationServiceBing
 {
     @GET("/v2/Http.svc/Translate") BingTranslationResult requestForTranslation(
             @Header("Authorization") String authorization,

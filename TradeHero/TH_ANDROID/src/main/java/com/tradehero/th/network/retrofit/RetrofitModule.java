@@ -33,7 +33,7 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
-import com.tradehero.th.network.service.BingTranslationService;
+import com.tradehero.th.network.service.TranslationServiceBing;
 import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
@@ -265,10 +265,10 @@ public class RetrofitModule
         return adapter.create(TranslationTokenService.class);
     }
 
-    @Provides @Singleton BingTranslationService provideBingTranslationService(RestAdapter.Builder builder)
+    @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
-                .build().create(BingTranslationService.class);
+                .build().create(TranslationServiceBing.class);
     }
 }

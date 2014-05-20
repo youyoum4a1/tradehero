@@ -9,24 +9,24 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 
-@Singleton public class BingTranslationServiceWrapper
+@Singleton public class TranslationServiceBingWrapper
 {
     private static final String PREFERRED_CONTENT_TYPE = "text/plain";
 
-    private final BingTranslationService bingTranslationService;
-    private final BingTranslationServiceAsync bingTranslationServiceAsync;
+    private final TranslationServiceBing translationServiceBing;
+    private final TranslationServiceBingAsync translationServiceBingAsync;
 
-    @Inject public BingTranslationServiceWrapper(
-            BingTranslationService bingTranslationService,
-            BingTranslationServiceAsync bingTranslationServiceAsync)
+    @Inject public TranslationServiceBingWrapper(
+            TranslationServiceBing translationServiceBing,
+            TranslationServiceBingAsync translationServiceBingAsync)
     {
-        this.bingTranslationService = bingTranslationService;
-        this.bingTranslationServiceAsync = bingTranslationServiceAsync;
+        this.translationServiceBing = translationServiceBing;
+        this.translationServiceBingAsync = translationServiceBingAsync;
     }
 
     public BingTranslationResult translate(BingTranslationToken token, String from, String to, String text)
     {
-        return bingTranslationService.requestForTranslation(
+        return translationServiceBing.requestForTranslation(
                 token.getPrefixedAccessToken(),
                 from, to, PREFERRED_CONTENT_TYPE, text);
     }
@@ -35,7 +35,7 @@ import retrofit.Callback;
             Callback<TranslationResult> callback)
     {
         BaseMiddleCallbackBingTranslationResult middleCallback = new BaseMiddleCallbackBingTranslationResult(callback);
-        bingTranslationServiceAsync.requestForTranslation(
+        translationServiceBingAsync.requestForTranslation(
                 token.getPrefixedAccessToken(),
                 from, to, PREFERRED_CONTENT_TYPE, text,
                 middleCallback);

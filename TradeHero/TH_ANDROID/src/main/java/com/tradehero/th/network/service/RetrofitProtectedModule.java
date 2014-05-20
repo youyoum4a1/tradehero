@@ -106,11 +106,11 @@ public class RetrofitProtectedModule
         return adapter.create(TranslationTokenServiceAsync.class);
     }
 
-    @Provides @Singleton BingTranslationServiceAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
+    @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
-                .build().create(BingTranslationServiceAsync.class);
+                .build().create(TranslationServiceBingAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
