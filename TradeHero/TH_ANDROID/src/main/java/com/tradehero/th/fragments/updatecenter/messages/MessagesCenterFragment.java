@@ -211,21 +211,21 @@ public class MessagesCenterFragment extends DashboardFragment
                 getResources().getString(R.string.sure_to_delete_message),
                 getResources().getString(android.R.string.cancel),
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if (which == DialogInterface.BUTTON_POSITIVE)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (which == DialogInterface.BUTTON_POSITIVE)
-                        {
-                            dialog.dismiss();
-                            removeMessageIfNecessary(position);
-                        }
-                        else if (which == DialogInterface.BUTTON_NEGATIVE)
-                        {
-                            dialog.dismiss();
-                        }
-                    }
+                    dialog.dismiss();
+                    removeMessageIfNecessary(position);
                 }
+                else if (which == DialogInterface.BUTTON_NEGATIVE)
+                {
+                    dialog.dismiss();
+                }
+            }
+        }
         );
     }
 
