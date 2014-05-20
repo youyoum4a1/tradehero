@@ -39,7 +39,15 @@ public class THWebViewClient extends WebViewClient
         if (thIntentFactory.isHandlableScheme(Uri.parse(url).getScheme()))
         {
             // This is a tradehero:// scheme. Is it a ProviderPageIntent?
-            THIntent thIntent = thIntentFactory.create(getPassedIntent(url));
+            THIntent thIntent = null;
+            try
+            {
+                thIntent = thIntentFactory.create(getPassedIntent(url));
+            }
+            catch (IndexOutOfBoundsException e)
+            {
+                Timber.e(e, "Failed to create intent with string %s", url);
+            }
             if (thIntent instanceof ProviderPageIntent)
             {
                 // Somewhat of a HACK to make sure we reload the competition
