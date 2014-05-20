@@ -193,7 +193,10 @@ public class SecurityDiscussionItemView
 
     private void displayUsername()
     {
-        userProfileName.setText(userBaseDTO.displayName);
+        if (userProfileName != null)
+        {
+            userProfileName.setText(userBaseDTO.displayName);
+        }
     }
 
     private void resetUserProfileName()
