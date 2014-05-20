@@ -440,7 +440,7 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         onFinish();
 
@@ -448,15 +448,15 @@ public class DiscussionView extends FrameLayout
 
         if (key.equals(startingDiscussionListKey))
         {
-            handleStartingDTOReceived(key, value, fromCache);
+            handleStartingDTOReceived(key, value, false);
         }
         else if (key.equals(prevDiscussionListKey))
         {
-            postHandlePrevDTOReceived(key, value, fromCache);
+            postHandlePrevDTOReceived(key, value, false);
         }
         else if (key.equals(nextDiscussionListKey))
         {
-            postHandleNextDTOReceived(key, value, fromCache);
+            postHandleNextDTOReceived(key, value, false);
         }
     }
 

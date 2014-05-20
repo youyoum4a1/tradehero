@@ -93,9 +93,9 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
-    protected void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
+    protected void notifyListenersReceived(DTOKeyType key, DTOType value)
     {
-        getOrCreateCacheValue(key).notifyListenersReceived(key, value, fromCache);
+        getOrCreateCacheValue(key).notifyListenersReceived(key, value);
     }
 
     protected void notifyListenersFailed(DTOKeyType key, Throwable error)
@@ -135,7 +135,6 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
     protected class PartialGetOrFetchTask extends GetOrFetchTask<DTOKeyType, DTOType>
     {
         private Throwable error = null;
-        private boolean shouldNotifyListenerOnCacheUpdated = true;
 
         //<editor-fold desc="Constructors">
         public PartialGetOrFetchTask(DTOKeyType key)
@@ -148,16 +147,6 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
             super(key, forceUpdateCache);
         }
         //</editor-fold>
-
-        @Override protected void onPreExecute()
-        {
-            DTOType cached = PartialDTOCacheNew.this.get(key);
-            if (cached != null)
-            {
-                notifyListenersReceived(key, cached, true);
-                shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
-            }
-        }
 
         @Override protected DTOType doInBackground(Void... voids)
         {
@@ -177,17 +166,17 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         {
             super.onPostExecute(value);
 
-            if (!isCancelled())
+            if (isCancelled())
             {
-                if (error != null)
-                {
-                    notifyListenersFailed(key, error);
-                }
-                // not to notify listener about data come from cache again
-                else if (shouldNotifyListenerOnCacheUpdated)
-                {
-                    notifyListenersReceived(key, value, !forceUpdateCache);
-                }
+                // Nothing to do
+            }
+            else if (error != null)
+            {
+                notifyListenersFailed(key, error);
+            }
+            else
+            {
+                notifyListenersReceived(key, value);
             }
         }
     }

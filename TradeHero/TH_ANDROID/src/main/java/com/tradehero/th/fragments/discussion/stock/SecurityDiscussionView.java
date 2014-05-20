@@ -85,6 +85,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         super.onAttachedToWindow();
 
+        ButterKnife.inject(this);
         securityDiscussionList.setEmptyView(emptyView);
         securityDiscussionList.setAdapter(securityDiscussionAdapter);
         securityDiscussionList.setOnScrollListener(securityDiscussionListScrollListener);
@@ -96,6 +97,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         detachSecurityCompactCacheTask();
         discussionListCache.unregister(this);
+        ButterKnife.reset(this);
 
         super.onDetachedFromWindow();
     }
@@ -160,13 +162,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     private boolean shouldAppend = false;
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList)
     {
-        if (fromCache)
-        {
-            return;
-        }
-
         onFinish();
 
         if (discussionKeyList != null)
@@ -205,17 +202,16 @@ public class SecurityDiscussionView extends BetterViewAnimator
         setDisplayedChildByLayoutId(securityDiscussionList.getId());
     }
 
-    private DTOCache.Listener<SecurityId,SecurityCompactDTO> createSecurityCompactCacheListener()
+    private DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new SecurityCompactCacheListener();
     }
 
-    private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId,SecurityCompactDTO>
+    private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
     {
         @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO securityCompactDTO, boolean fromCache)
         {
             discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
-
             nextPageDelta = 0;
             fetchNextPageIfNecessary(true);
         }
