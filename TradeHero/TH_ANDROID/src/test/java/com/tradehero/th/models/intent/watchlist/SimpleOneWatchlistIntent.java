@@ -4,11 +4,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.models.intent.position.OnePortfolioIntent;
 
-
 public class SimpleOneWatchlistIntent extends OneWatchlistIntent
 {
-    public static final String TAG = SimpleOneWatchlistIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected SimpleOneWatchlistIntent(PortfolioId portfolioId)
     {

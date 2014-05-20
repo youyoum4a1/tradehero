@@ -1,10 +1,7 @@
 package com.tradehero.th.api.position;
 
-
 abstract public class BasePositionDTOCompactTest
 {
-    public static final String TAG = BasePositionDTOCompactTest.class.getSimpleName();
-
     public boolean haveSameFields(PositionDTOCompact left, PositionDTOCompact right)
     {
         boolean have = left.id == right.id;

@@ -5,7 +5,6 @@ package com.tradehero.common.http;
 public class BitmapDownloader implements Runnable
 {
     private static final int IO_BUFFER_SIZE = 4 * 1024;
-    private static final String TAG = BitmapDownloader.class.getSimpleName();
 
     private String mUrl;
     private Bitmap mDownloaded;

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.leaderboard;
 
-import com.tradehero.th.api.leaderboard.key.BaseLeaderboardUserIdTest;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
@@ -9,18 +8,12 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardUserDTOUtilTest extends BaseLeaderboardUserDTOUtilTest
 {
-    public static final String TAG = LeaderboardUserDTOUtilTest.class.getSimpleName();
-
     private LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
     @Before public void setUp()

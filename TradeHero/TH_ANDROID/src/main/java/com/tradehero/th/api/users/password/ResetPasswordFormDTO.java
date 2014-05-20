@@ -1,10 +1,7 @@
 package com.tradehero.th.api.users.password;
 
-
 public class ResetPasswordFormDTO
 {
-    public static final String TAG = ResetPasswordFormDTO.class.getSimpleName();
-
     public String newPassword;
     public String newPasswordConfirmation;
     public String forgotEmailUrlGuid;

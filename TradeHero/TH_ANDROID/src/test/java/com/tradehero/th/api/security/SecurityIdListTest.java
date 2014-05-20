@@ -14,8 +14,6 @@ import static org.junit.Assert.assertTrue;
 @Config(manifest = Config.NONE)
 public class SecurityIdListTest
 {
-    public static final String TAG = SecurityIdListTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

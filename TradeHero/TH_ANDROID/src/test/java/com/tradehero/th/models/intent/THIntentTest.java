@@ -16,13 +16,10 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 public class THIntentTest
 {
-    public static final String TAG = THIntentTest.class.getSimpleName();
-
     @Before public void setUp()
     {
         THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());

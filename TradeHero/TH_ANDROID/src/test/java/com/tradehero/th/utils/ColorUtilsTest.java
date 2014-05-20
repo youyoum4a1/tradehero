@@ -10,7 +10,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class ColorUtilsTest

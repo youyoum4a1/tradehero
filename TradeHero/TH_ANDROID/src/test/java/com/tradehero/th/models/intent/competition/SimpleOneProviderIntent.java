@@ -4,11 +4,8 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 
-
 public class SimpleOneProviderIntent extends OneProviderIntent
 {
-    public static final String TAG = SimpleOneProviderIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected SimpleOneProviderIntent(ProviderId portfolioId)
     {
