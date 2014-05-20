@@ -114,8 +114,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
     }
 
-    @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value,
-            boolean fromCache)
+    @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
     {
         if (key.isSameName(getText().toString()))
         {
