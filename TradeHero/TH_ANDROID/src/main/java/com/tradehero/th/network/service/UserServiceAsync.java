@@ -212,6 +212,11 @@ interface UserServiceAsync
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);
 
+    @POST("/users/{userId}/follow/free")
+    void freeFollow(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
+
     @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,

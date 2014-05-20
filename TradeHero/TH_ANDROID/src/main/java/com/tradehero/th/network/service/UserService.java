@@ -194,21 +194,9 @@ public interface UserService
     UserProfileDTO follow(
             @Path("userId") int userId);
 
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/follow")
-    void follow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
-
     @POST("/users/{userId}/follow/free")
     UserProfileDTO freeFollow(
             @Path("userId") int userId);
-
-    @POST("/users/{userId}/follow/free")
-    void freeFollow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
 
     @POST("/users/{userId}/follow")
     UserProfileDTO follow(
