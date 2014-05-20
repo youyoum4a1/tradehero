@@ -76,7 +76,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
-    @InjectView(R.id.search_empty_view) View searchEmptyView;
+    @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
+    @InjectView(R.id.search_empty_textview_wrapper) RelativeLayout searchEmptyTextViewWrapper;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -141,6 +142,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setOnItemClickListener(new SearchOnItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
             listView.setEmptyView(searchEmptyContainer);
+        }
+        if (searchEmptyTextViewWrapper != null)
+        {
+            searchEmptyTextViewWrapper.setVisibility(View.GONE);
         }
     }
 
@@ -724,6 +729,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
+                    searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
@@ -775,11 +782,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.clear();
+                    searchEmptyTextView.setText(R.string.trending_search_no_people_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
             {
-                userBaseKeys.addAll(value);
+                if (userBaseKeys != null)
+                {
+                    userBaseKeys.addAll(value);
+                }
                 peopleItemViewAdapter.clear();
                 peopleItemViewAdapter.addAll(userBaseKeys);
             }

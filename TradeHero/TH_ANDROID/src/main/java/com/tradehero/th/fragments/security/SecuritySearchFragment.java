@@ -55,7 +55,8 @@ public class SecuritySearchFragment
     @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
-    @InjectView(R.id.search_empty_view) View searchEmptyView;
+    @InjectView(R.id.search_empty_textview) View searchEmptyTextView;
+    @InjectView(R.id.search_empty_textview_wrapper) View searchEmptyTextViewWrapper;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -432,7 +433,7 @@ public class SecuritySearchFragment
         boolean hasItems = (securityItemViewAdapter != null) && (securityItemViewAdapter.getCount() > 0);
         searchEmptyContainer.setVisibility(hasItems ? View.GONE : View.VISIBLE);
 
-        searchEmptyView.setVisibility(hasEmptyResult() ? View.VISIBLE : View.GONE);
+        searchEmptyTextViewWrapper.setVisibility(hasEmptyResult() ? View.VISIBLE : View.GONE);
     }
 
     protected void pushTradeFragmentIn(SecurityId securityId)
