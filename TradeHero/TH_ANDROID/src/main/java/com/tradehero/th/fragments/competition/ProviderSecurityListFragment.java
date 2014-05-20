@@ -24,6 +24,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -33,7 +34,6 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -116,6 +116,10 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             case R.id.btn_wizard:
                 pushWizardElement();
+                return true;
+
+            case R.id.btn_search:
+                pushSearchFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -214,6 +218,13 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+    }
+
+    private void pushSearchFragment()
+    {
+        Bundle args = new Bundle();
+        SecuritySearchProviderFragment.putProviderId(args, providerId);
+        getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     @Override public boolean isTabBarVisible()

@@ -268,17 +268,13 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO =
                 messageHeaderCache.get(getListAdapter().getItem(position));
+        updateReadStatus(messageHeaderDTO);
         if (messageHeaderDTO != null)
         {
             pushMessageFragment(
                     discussionKeyFactory.create(messageHeaderDTO),
                     messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
         }
-    }
-
-    private void pushUserProfileFragment(int position)
-    {
-        pushUserProfileFragment(messageHeaderCache.get(getListAdapter().getItem(position)));
     }
 
     private void pushUserProfileFragment(MessageHeaderDTO messageHeaderDTO)
@@ -713,22 +709,11 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void updateReadStatus(int position)
+    private void updateReadStatus(MessageHeaderDTO messageHeaderDTO)
     {
-        if (messageListAdapter == null)
+        if (messageHeaderDTO != null && messageHeaderDTO.unread)
         {
-            return;
-        }
-        MessageHeaderId messageHeaderId = messageListAdapter.getItem(position);
-        if (messageHeaderId != null)
-        {
-            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-            Timber.d("updateReadStatus :%d,unread:%s,title:%s", position, messageHeaderDTO.unread,
-                    messageHeaderDTO.title);
-            if (messageHeaderDTO != null && messageHeaderDTO.unread)
-            {
-                reportMessageRead(messageHeaderDTO);
-            }
+            reportMessageRead(messageHeaderDTO);
         }
     }
 

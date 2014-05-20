@@ -47,7 +47,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
+public class UpdateCenterFragment extends BaseFragment
         implements PopupMenu.OnMenuItemClickListener,
         OnTitleNumberChangeListener,
         TabHost.OnTabChangeListener,
@@ -65,7 +65,6 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Inject MessageHeaderCache messageHeaderCache;
 
     private FragmentTabHost mTabHost;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
     private ImageButton mNewMsgButton;
 
@@ -74,9 +73,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        fetchUserProfileListener = new FetchUserProfileListener();
-        initBroadcastReceiver();
+        broadcastReceiver = createBroadcastReceiver();
         Timber.d("onCreate");
     }
 
@@ -120,7 +117,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         detachUserProfileTask();
 
         fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
-                fetchUserProfileListener);
+                createUserProfileCacheListener());
         fetchUserProfileTask.execute();
     }
 
@@ -278,9 +275,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onDestroy()
     {
         Timber.d("onDestroy");
-        fetchUserProfileListener = null;
-        //clearTabs();
-        //removeOnTabChangeListener();
+        broadcastReceiver = null;
         super.onDestroy();
     }
 
@@ -367,6 +362,11 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         changeTabTitleNumber(tabType, number);
     }
 
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new FetchUserProfileListener();
+    }
+
     private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
@@ -395,19 +395,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         }
     }
 
-    private void initBroadcastReceiver()
+    private BroadcastReceiver createBroadcastReceiver()
     {
-        broadcastReceiver = new BroadcastReceiver()
+        return new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                // receiver is unregistered in onStop,so don't have to check null
-                UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-
-                if (userProfileDTO != null)
-                {
-                    linkWith(userProfileDTO, true);
-                }
+                fetchUserProfile();
             }
         };
     }

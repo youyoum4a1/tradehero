@@ -448,15 +448,15 @@ public class DiscussionView extends FrameLayout
 
         if (key.equals(startingDiscussionListKey))
         {
-            handleStartingDTOReceived(key, value, false);
+            handleStartingDTOReceived(key, value);
         }
         else if (key.equals(prevDiscussionListKey))
         {
-            postHandlePrevDTOReceived(key, value, false);
+            postHandlePrevDTOReceived(key, value);
         }
         else if (key.equals(nextDiscussionListKey))
         {
-            postHandleNextDTOReceived(key, value, false);
+            postHandleNextDTOReceived(key, value);
         }
     }
 
@@ -472,24 +472,24 @@ public class DiscussionView extends FrameLayout
         setLoaded();
     }
 
-    protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         fetchDiscussionListNextIfValid(value);
         fetchDiscussionListPrevIfValid(value);
     }
 
-    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value)
     {
         post(new Runnable()
         {
             @Override public void run()
             {
-                handleNextDTOReceived(key, value, fromCache);
+                handleNextDTOReceived(key, value);
             }
         });
     }
 
-    protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
         {
@@ -497,18 +497,18 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value)
     {
         post(new Runnable()
         {
             @Override public void run()
             {
-                handlePrevDTOReceived(key, value, fromCache);
+                handlePrevDTOReceived(key, value);
             }
         });
     }
 
-    protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         if (discussionList != null && discussionList.getFirstVisiblePosition() == 0)
         {

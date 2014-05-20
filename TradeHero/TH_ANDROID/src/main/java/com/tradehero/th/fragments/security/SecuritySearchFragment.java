@@ -60,11 +60,11 @@ public class SecuritySearchFragment
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
-    private int perPage = DEFAULT_PER_PAGE;
+    protected int perPage = DEFAULT_PER_PAGE;
     private FlagNearEdgeScrollListener nearEndScrollListener;
 
     private EditText mSearchTextField;
-    private String mSearchText;
+    protected String mSearchText;
     private SearchTextWatcher mSearchTextWatcher;
 
     private SecurityItemViewAdapterNew<SecurityCompactDTO> securityItemViewAdapter;
