@@ -76,7 +76,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
-    @InjectView(R.id.search_empty_view) TextView searchEmptyView;
+    @InjectView(R.id.search_empty_view) View searchEmptyView;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -724,7 +724,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
-                    searchEmptyView.setText(R.string.trending_search_no_stock_found);
                 }
             }
             else
@@ -776,7 +775,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.clear();
-                    searchEmptyView.setText(R.string.trending_search_no_people_found);
                 }
             }
             else
