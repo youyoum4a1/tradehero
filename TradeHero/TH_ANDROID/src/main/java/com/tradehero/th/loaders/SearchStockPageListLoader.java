@@ -58,7 +58,7 @@ public class SearchStockPageListLoader extends PaginationListLoader<ListedSecuri
         try
         {
             listed = ListedSecurityCompactFactory.createList(
-                    securityService.searchSecurities(searchText, page, getPerPage()),
+                    securityService.searchSecurities(searchText, page, getPerPage(), null),
                     page * getPerPage());
         }
         catch (RetrofitError retrofitError)

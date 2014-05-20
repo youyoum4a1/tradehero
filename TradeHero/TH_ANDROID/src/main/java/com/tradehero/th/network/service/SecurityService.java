@@ -53,7 +53,8 @@ public interface SecurityService
     List<SecurityCompactDTO> searchSecurities(
             @Query("q") String searchString,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage);
+            @Query("perPage") Integer perPage,
+            @Query("providerId") Integer providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Security">

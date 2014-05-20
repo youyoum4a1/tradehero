@@ -15,6 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
@@ -217,6 +218,11 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         {
             return null;
         }
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        throw new IllegalStateException("It has no securityId");
     }
 
     protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()

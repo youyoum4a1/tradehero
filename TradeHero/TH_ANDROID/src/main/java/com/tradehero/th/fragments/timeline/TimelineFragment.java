@@ -26,7 +26,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -472,9 +472,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 Object item = parent.getItemAtPosition(position);
 
-                if (item instanceof TimelineItemDTOEnhanced)
+                if (item instanceof TimelineItemDTO)
                 {
-                    pushDiscussion(((TimelineItemDTOEnhanced) item).getDiscussionKey());
+                    pushDiscussion(((TimelineItemDTO) item).getDiscussionKey());
                 }
             }
         };

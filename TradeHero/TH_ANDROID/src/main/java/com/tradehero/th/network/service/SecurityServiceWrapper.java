@@ -6,6 +6,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.security.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
@@ -112,10 +113,23 @@ import retrofit.Callback;
                 throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
             }
         }
+        else if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            received =  this.securityService.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    searchKey.providerId);
+        }
         else if (key instanceof SearchSecurityListType)
         {
             SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            received =  this.securityService.searchSecurities(searchKey.searchString, searchKey.getPage(), searchKey.perPage);
+            received =  this.securityService.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    null);
         }
         else if (key instanceof ProviderSecurityListType)
         {
@@ -168,6 +182,16 @@ import retrofit.Callback;
             }
             throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
         }
+        else if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            this.securityServiceAsync.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    searchKey.providerId,
+                    middleCallback);
+        }
         else if (key instanceof SearchSecurityListType)
         {
             SearchSecurityListType searchKey = (SearchSecurityListType) key;
@@ -175,6 +199,7 @@ import retrofit.Callback;
                     searchKey.searchString,
                     searchKey.getPage(),
                     searchKey.perPage,
+                    null,
                     middleCallback);
         }
         else if (key instanceof ProviderSecurityListType)

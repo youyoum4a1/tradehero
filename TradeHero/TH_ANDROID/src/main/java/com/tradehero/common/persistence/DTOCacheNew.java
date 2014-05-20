@@ -88,7 +88,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
                 {
                     listener.onDTOReceived(key, value, fromCache);
                 }
-                unregisterListener(listener);
+                //unregisterListener(listener);
             }
         }
 

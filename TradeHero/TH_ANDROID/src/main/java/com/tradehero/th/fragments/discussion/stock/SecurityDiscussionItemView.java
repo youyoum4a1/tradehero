@@ -18,6 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
@@ -31,10 +32,10 @@ import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
 import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
-import timber.log.Timber;
 
-public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey> implements
-        View.OnClickListener
+public class SecurityDiscussionItemView
+        extends AbstractDiscussionItemView<DiscussionKey>
+        implements View.OnClickListener
 {
     @InjectView(R.id.discussion_user_picture) ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) TextView userProfileName;
@@ -76,7 +77,6 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         discussionUserPicture.setOnClickListener(this);
-        Timber.d("VotePair: %s", discussionVotePair);
         if (discussionVotePair != null)
         {
             discussionVotePair.setDownVote(false);
@@ -153,7 +153,8 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
                 WeChatMessageType.Discussion.getType());
-        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
+        ((NewsDialogLayout) contentView).setMenuClickedListener(
+                createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
 
@@ -241,6 +242,12 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         Bundle bundle = new Bundle();
         bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseDTO.id);
         getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        // TODO there has to be a SecurityId here
+        throw new IllegalStateException("It has no securityId");
     }
 
     protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
