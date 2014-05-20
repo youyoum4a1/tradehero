@@ -14,6 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
@@ -60,6 +61,12 @@ public class MessageServiceStub implements MessageService
     @Override public MessageHeaderDTO getMessageHeader(int commentId)
     {
         return createMessageHeader(commentId, null, new Date());
+    }
+
+    @Override public MessageHeaderDTO getMessageHeader(@Path("commentId") int commentId,
+            @Query("referencedUserId") int referencedUserId)
+    {
+        return null;
     }
 
     @Override public MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId)

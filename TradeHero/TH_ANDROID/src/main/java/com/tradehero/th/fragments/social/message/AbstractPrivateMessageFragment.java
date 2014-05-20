@@ -79,6 +79,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
         {
             correspondentId = new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+            messageHeaderCache.setUserBaseKey(correspondentId);
         }
     }
 
