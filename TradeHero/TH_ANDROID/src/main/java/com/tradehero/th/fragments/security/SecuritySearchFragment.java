@@ -40,7 +40,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public final class SecuritySearchFragment
+public class SecuritySearchFragment
         extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SecuritySearchFragment.class.getName() + ".currentSearchString";
@@ -435,7 +435,7 @@ public final class SecuritySearchFragment
         searchEmptyView.setVisibility(hasEmptyResult() ? View.VISIBLE : View.GONE);
     }
 
-    private void pushTradeFragmentIn(SecurityId securityId)
+    protected void pushTradeFragmentIn(SecurityId securityId)
     {
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
