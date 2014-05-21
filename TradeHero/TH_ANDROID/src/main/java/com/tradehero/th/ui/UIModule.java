@@ -40,7 +40,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NotificationsView.class,
                 NotificationItemView.class,
 
-                UpdateCenterFragment.class,
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
                 UpdateCenterResideMenuItem.class,
