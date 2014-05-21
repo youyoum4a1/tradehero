@@ -8,10 +8,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class UserSearchResultCache extends StraightDTOCache<UserBaseKey, UserSearchResultDTO>
 {
-    public static final String TAG = UserSearchResultCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 5000;
 
     //<editor-fold desc="Constructors">

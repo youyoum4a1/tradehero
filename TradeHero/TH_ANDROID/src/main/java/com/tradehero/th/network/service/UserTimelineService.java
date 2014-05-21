@@ -11,54 +11,26 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-
 public interface UserTimelineService
 {
     //<editor-fold desc="Get Global Timeline">
     @GET("/timeline")
-    TimelineDTO getGlobalTimeline();
-
-    @GET("/timeline")
     TimelineDTO getGlobalTimeline(
-            @Query("maxCount") int maxCount);
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId);
 
     @GET("/timeline/{timelineId}") TimelineItemDTO getTimelineDetail(
             @Path("timelineId") int timelineId);
-
-    @GET("/timeline")
-    TimelineDTO getGlobalTimeline(
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId);
-
-    @GET("/timeline")
-    TimelineDTO getGlobalTimeline(
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            @Query("minId") Comparable minId);
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
     @GET("/users/{userId}/timeline")
     TimelineDTO getTimeline(
-            @Path("userId") int userId);
-
-    @GET("/users/{userId}/timeline")
-    TimelineDTO getTimeline(
             @Path("userId") int userId,
-            @Query("maxCount") int maxCount);
-
-    @GET("/users/{userId}/timeline")
-    TimelineDTO getTimeline(
-            @Path("userId") int userId,
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId);
-
-    @GET("/users/{userId}/timeline")
-    TimelineDTO getTimeline(
-            @Path("userId") int userId,
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            @Query("minId") Comparable minId);
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId);
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">

@@ -9,7 +9,6 @@ import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
-    public static final String TAG = AlertCreateFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     private MiddleCallbackCreateAlertCompact middleCallbackCreateAlertCompactDTO;

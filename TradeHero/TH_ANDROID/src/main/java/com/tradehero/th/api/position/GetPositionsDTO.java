@@ -5,11 +5,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class GetPositionsDTO extends AbstractGetPositionsDTO<PositionDTO>
 {
-    public static final String TAG = GetPositionsDTO.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public GetPositionsDTO()
     {

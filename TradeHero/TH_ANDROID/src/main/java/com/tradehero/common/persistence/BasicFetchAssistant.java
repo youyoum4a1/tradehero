@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 abstract public class BasicFetchAssistant<DTOKeyType, DTOType> implements FetchAssistant<DTOKeyType, DTOType>
 {
-    public static final String TAG = BasicFetchAssistant.class.getSimpleName();
-
     protected WeakReference<OnInfoFetchedListener<DTOKeyType, DTOType>> weakListener = new WeakReference<>(null);
 
     protected final Map<DTOKeyType, DTOType> fetched;

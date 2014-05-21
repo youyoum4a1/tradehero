@@ -13,7 +13,6 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";

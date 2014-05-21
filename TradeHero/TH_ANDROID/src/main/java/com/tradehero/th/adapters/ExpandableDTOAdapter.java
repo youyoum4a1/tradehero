@@ -8,7 +8,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import java.util.List;
 
-
 public abstract class ExpandableDTOAdapter<
             DTOType,
             WrappedDTOType extends ExpandableListItem<DTOType>,

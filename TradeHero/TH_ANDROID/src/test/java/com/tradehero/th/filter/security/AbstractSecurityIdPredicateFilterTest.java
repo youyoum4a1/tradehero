@@ -9,11 +9,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 
-
 abstract public class AbstractSecurityIdPredicateFilterTest
 {
-    public static final String TAG = AbstractSecurityIdPredicateFilterTest.class.getSimpleName();
-
     protected ListCharSequencePredicateFilter<SecurityId> securityIdPredicateFilter;
 
     @Before public void setUp()

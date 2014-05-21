@@ -163,7 +163,6 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
         username.setText(user.displayName);
     }
 
-
     private void displayUserProfilePicture(UserBaseDTO user)
     {
         displayDefaultUserProfilePicture();

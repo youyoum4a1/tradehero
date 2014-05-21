@@ -123,7 +123,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();

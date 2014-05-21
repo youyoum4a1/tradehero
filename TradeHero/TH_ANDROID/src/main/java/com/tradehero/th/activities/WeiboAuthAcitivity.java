@@ -6,7 +6,6 @@ import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 
-
 public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View.OnClickListener{
 
     //R.layout.authentication_sign_up;
@@ -39,7 +38,6 @@ public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View
         v.setVisibility(View.VISIBLE);
         v.setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View v) {

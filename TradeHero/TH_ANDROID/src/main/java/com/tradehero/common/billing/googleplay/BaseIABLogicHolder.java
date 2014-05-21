@@ -9,7 +9,6 @@ import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-
 abstract public class BaseIABLogicHolder<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

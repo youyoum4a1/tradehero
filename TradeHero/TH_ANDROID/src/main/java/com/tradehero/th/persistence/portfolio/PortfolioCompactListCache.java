@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-//used for cache main's , watchlist's , warrant's portfolio list
 @Singleton public class PortfolioCompactListCache extends StraightDTOCache<UserBaseKey, OwnedPortfolioIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;

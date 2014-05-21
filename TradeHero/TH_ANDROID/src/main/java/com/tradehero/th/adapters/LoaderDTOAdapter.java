@@ -10,7 +10,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.loaders.ListLoader;
 import java.util.List;
 
-
 public abstract class LoaderDTOAdapter<
             DTOType,
             DTOViewType extends DTOView<DTOType>,

@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-
 public class DateUtils
 {
     private static int MILLISECOND_PER_DAY = 1000 * 60 * 60 * 24;

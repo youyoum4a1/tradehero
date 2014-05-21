@@ -6,12 +6,9 @@ import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
-
 @Singleton
 public class LeaderboardPositionIdCache extends StraightDTOCache<LeaderboardMarkUserPositionId, OwnedLeaderboardPositionId>
 {
-
     public static final int DEFAULT_MAX_SIZE = 2000;
 
     @Inject public LeaderboardPositionIdCache()

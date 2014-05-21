@@ -14,13 +14,10 @@ import retrofit.mime.TypedInput;
 
 import static org.junit.Assert.assertEquals;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class JacksonObjectMapperTest
 {
-    public static final String TAG = JacksonObjectMapperTest.class.getSimpleName();
-
     @Test public void canParseDate() throws ConversionException, IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();

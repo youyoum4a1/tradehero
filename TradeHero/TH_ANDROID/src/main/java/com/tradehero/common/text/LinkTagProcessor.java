@@ -2,7 +2,6 @@ package com.tradehero.common.text;
 
 import java.util.regex.Pattern;
 
-
 public class LinkTagProcessor extends ClickableTagProcessor
 {
     private static final String THMarkdownRegexLink = "\\[(.+?)\\]\\((.+?)\\)";/* "[text](link)" = add link to text */

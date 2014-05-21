@@ -2,7 +2,6 @@ package com.tradehero.common.text;
 
 import java.util.regex.Pattern;
 
-
 public class BoldTagProcessor extends RichSpanTextProcessor
 {
     /* "**xxx**" = xxx in bold */

@@ -780,7 +780,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
                     providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
-
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null && !applicablePortfolioId.equals(defaultOwnedPortfolioId))
             {

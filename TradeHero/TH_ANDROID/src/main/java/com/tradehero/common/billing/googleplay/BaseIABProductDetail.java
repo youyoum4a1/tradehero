@@ -3,7 +3,6 @@ package com.tradehero.common.billing.googleplay;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class BaseIABProductDetail implements IABProductDetail<IABSKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";

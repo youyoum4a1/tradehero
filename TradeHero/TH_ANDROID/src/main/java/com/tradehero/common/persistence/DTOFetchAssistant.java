@@ -7,13 +7,10 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-
 abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends BasicFetchAssistant<DTOKeyType, DTOType>
         implements DTOCache.Listener<DTOKeyType, DTOType>
 {
-    public static final String TAG = DTOFetchAssistant.class.getSimpleName();
-
     private final Map<DTOKeyType, DTOCache.GetOrFetchTask<DTOKeyType, DTOType>> fetchTasks;
 
     public DTOFetchAssistant(List<DTOKeyType> keysToFetch)

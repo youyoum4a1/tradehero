@@ -4,11 +4,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
 
-
 public class PostDTO
 {
-    public static final String TAG = PostDTO.class.getSimpleName();
-
     public int id;
     public String text;
     public Date date_time;

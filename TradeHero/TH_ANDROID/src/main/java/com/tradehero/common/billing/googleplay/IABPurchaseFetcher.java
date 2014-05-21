@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import org.json.JSONException;
 import timber.log.Timber;
 
-
 abstract public class IABPurchaseFetcher<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,

@@ -3,7 +3,6 @@ package com.tradehero.common.billing.samsung;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.ProductPurchase;
 
-
 abstract public class SamsungPurchase<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId>

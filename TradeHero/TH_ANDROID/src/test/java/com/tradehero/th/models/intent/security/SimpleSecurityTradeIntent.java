@@ -3,11 +3,8 @@ package com.tradehero.th.models.intent.security;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 
-
 public class SimpleSecurityTradeIntent extends SecurityTradeIntent
 {
-    public static final String TAG = SimpleSecurityTradeIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected SimpleSecurityTradeIntent(SecurityId securityId)
     {

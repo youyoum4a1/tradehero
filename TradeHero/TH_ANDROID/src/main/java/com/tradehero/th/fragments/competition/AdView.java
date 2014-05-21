@@ -21,7 +21,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class AdView extends RelativeLayout
     implements DTOView<CompetitionZoneAdvertisementDTO>
 {

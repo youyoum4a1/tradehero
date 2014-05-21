@@ -11,7 +11,6 @@ import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
 
-
 @Module(
         injects = {
                 SplashActivity.class,

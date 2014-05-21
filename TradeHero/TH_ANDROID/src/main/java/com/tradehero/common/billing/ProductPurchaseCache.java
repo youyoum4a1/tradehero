@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
 import java.util.List;
 
-
 abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,
             OrderIdType extends OrderId,

@@ -7,7 +7,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import timber.log.Timber;
 
-
 abstract public class AbstractCompetitionZoneListItemView extends RelativeLayout implements DTOView<CompetitionZoneDTO>
 {
     protected CompetitionZoneDTO competitionZoneDTO;

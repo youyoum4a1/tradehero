@@ -8,7 +8,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<PositionInPeriodDTO>
 {
     //<editor-fold desc="Constructors">

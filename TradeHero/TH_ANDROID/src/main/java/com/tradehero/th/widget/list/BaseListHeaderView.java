@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-
 public class BaseListHeaderView extends RelativeLayout
 {
     private TextView headerTextView;

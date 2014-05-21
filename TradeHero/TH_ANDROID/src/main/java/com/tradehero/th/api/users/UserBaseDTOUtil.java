@@ -4,7 +4,6 @@ import android.content.Context;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 
-
 public class UserBaseDTOUtil
 {
     @Inject public UserBaseDTOUtil()

@@ -3,7 +3,6 @@ package com.tradehero.th.utils;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 
-
 public class EmailSignUtils
 {
     private static EmailAuthenticationProvider provider;

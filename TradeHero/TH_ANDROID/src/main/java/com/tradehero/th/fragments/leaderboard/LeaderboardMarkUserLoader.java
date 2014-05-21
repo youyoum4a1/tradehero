@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
     protected PagedLeaderboardKey pagedLeaderboardKey;

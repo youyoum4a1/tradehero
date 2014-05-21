@@ -23,10 +23,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class SecurityPositionDetailCache extends PartialDTOCache<SecurityId, SecurityPositionDetailDTO>
 {
-    public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected CurrentUserId currentUserId;

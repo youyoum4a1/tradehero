@@ -226,7 +226,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationListCache.get().put(firstPage,notificationKeyList);
     }
 
-
     private void refresh()
     {
         detachNotificationFetchTask();
@@ -237,7 +236,7 @@ public class NotificationsView extends BetterViewAnimator
     }
 
 
-    private void detachNotificationFetchTask()
+   private void detachNotificationFetchTask()
     {
         if (notificationFetchTask != null)
         {
@@ -360,7 +359,8 @@ public class NotificationsView extends BetterViewAnimator
     }
 
 
-    private class NotificationRefreshListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
+
+  private class NotificationRefreshListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
     {
 
 

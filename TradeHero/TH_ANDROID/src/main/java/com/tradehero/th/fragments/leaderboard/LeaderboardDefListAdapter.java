@@ -10,7 +10,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-
 public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
 {
     private LeaderboardSortType sortType;
@@ -29,7 +28,7 @@ public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefKey
         {
             for (LeaderboardDefKey leaderboardDefKey: items)
             {
-                leaderboardDefCache.get().get(leaderboardDefKey).put(LeaderboardSortType.TAG, sortType);
+                leaderboardDefCache.get().get(leaderboardDefKey).put(LeaderboardSortType.SORT_TYPE_KEY, sortType);
             }
         }
         this.sortType = sortType;

@@ -3,13 +3,10 @@ package com.tradehero.common.persistence;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class DTOKeyIdList<ListedDTOKeyType extends DTOKey>
         extends ArrayList<ListedDTOKeyType>
         implements DTO
 {
-    public static final String TAG = DTOKeyIdList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public DTOKeyIdList()
     {

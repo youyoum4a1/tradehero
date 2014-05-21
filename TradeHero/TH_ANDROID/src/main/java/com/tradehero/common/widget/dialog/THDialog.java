@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class THDialog {
 
     public interface OnDialogItemClickListener {
@@ -87,7 +86,7 @@ public class THDialog {
     }
 
 
-    public static Dialog showUpDialog(final Context context,final int layoutRes,final DialogCallback callback) {
+   public static Dialog showUpDialog(final Context context,final int layoutRes,final DialogCallback callback) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
         setDialogAttribute(dlg,null);
         if (callback != null) {
@@ -118,7 +117,8 @@ public class THDialog {
     }
 
 
-    public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, android.content.DialogInterface.OnCancelListener cancelListener) {
+
+  public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, android.content.DialogInterface.OnCancelListener cancelListener) {
         String cancel = null;//context.getString(android.R.string.cancel);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

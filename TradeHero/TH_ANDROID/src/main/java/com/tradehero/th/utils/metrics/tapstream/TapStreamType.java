@@ -2,9 +2,6 @@ package com.tradehero.th.utils.metrics.tapstream;
 
 import com.tradehero.th.R;
 
-/**
- * Created by alex on 14-5-9.
- */
 public enum TapStreamType
 {
     GooglePlay(0, R.string.tap_stream_type_google_install, R.string.tap_stream_type_google_open),
@@ -36,6 +33,9 @@ public enum TapStreamType
     DianKe3(26, R.string.tap_stream_type_dianke3_install, R.string.tap_stream_type_dianke3_open),
     DianKe4(27, R.string.tap_stream_type_dianke4_install, R.string.tap_stream_type_dianke4_open),
     DianKe5(28, R.string.tap_stream_type_dianke5_install, R.string.tap_stream_type_dianke5_open),
+    NineOneM(29, R.string.tap_stream_type_91m_install, R.string.tap_stream_type_91m_open),
+    DianPing(30, R.string.tap_stream_type_dianping_install, R.string.tap_stream_type_dianping_open),
+    AiQiYi(31, R.string.tap_stream_type_aiqiyi_install, R.string.tap_stream_type_aiqiyi_open),
     ;
 
     private final int type;

@@ -2,7 +2,6 @@ package com.tradehero.th.adapters;
 
 import java.util.List;
 
-
 public interface ExpandableListReporter
 {
     List<Boolean> getExpandedStatesPerPosition();

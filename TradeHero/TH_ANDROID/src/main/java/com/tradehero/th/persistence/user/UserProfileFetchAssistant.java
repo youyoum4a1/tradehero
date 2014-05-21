@@ -12,11 +12,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-
 public class UserProfileFetchAssistant extends DTOFetchAssistant<UserBaseKey, UserProfileDTO>
 {
-    public static final String TAG = UserProfileFetchAssistant.class.getSimpleName();
-
     private final Context context;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 

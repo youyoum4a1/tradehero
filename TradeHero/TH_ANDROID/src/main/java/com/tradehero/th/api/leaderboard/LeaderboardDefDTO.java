@@ -125,7 +125,7 @@ public class LeaderboardDefDTO extends ExtendedDTO
 
     public Integer getRank()
     {
-        LeaderboardSortType currentSortType = (LeaderboardSortType) get(LeaderboardSortType.TAG);
+        LeaderboardSortType currentSortType = (LeaderboardSortType) get(LeaderboardSortType.SORT_TYPE_KEY);
         if (currentSortType == null)
         {
             currentSortType = getDefaultSortType();
@@ -160,5 +160,4 @@ public class LeaderboardDefDTO extends ExtendedDTO
                 (toUtcRestricted == null || now.equals(toUtcRestricted) || now.before(toUtcRestricted));
     }
 }
-
 

@@ -6,7 +6,6 @@ import com.tradehero.th.api.security.SecurityId;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class SecurityCompactRetrievedMilestone extends DTORetrievedAsyncMilestone<SecurityId, SecurityCompactDTO, SecurityCompactCache>
 {
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;

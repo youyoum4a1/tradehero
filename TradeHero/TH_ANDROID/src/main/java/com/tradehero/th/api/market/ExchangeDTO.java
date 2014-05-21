@@ -4,7 +4,6 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import java.util.List;
 
-
 public class ExchangeDTO implements DTO
 {
     public static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";

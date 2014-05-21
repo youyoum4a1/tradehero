@@ -11,8 +11,6 @@ import javax.inject.Inject;
 
 public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
 {
-    public static final String TAG = CompetitionZonePortfolioView.class.getSimpleName();
-
     @Inject @ForUserPhoto protected Transformation zoneIconTransformation;
 
     //<editor-fold desc="Constructors">

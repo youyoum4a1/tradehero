@@ -6,7 +6,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 
-
 public class DashboardListFragment extends BaseListFragment
 {
     private DashboardNavigator navigator;

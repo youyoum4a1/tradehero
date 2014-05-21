@@ -34,10 +34,8 @@ import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    public static final String TAG = LeaderboardMarkUserListFragment.class.getSimpleName();
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
     @Inject protected LocalyticsSession localyticsSession;

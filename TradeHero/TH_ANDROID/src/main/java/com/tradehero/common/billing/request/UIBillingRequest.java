@@ -16,7 +16,6 @@ import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 
-
 public class UIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

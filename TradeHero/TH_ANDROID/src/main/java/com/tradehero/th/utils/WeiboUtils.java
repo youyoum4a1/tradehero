@@ -8,7 +8,6 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton
 public class WeiboUtils {
 

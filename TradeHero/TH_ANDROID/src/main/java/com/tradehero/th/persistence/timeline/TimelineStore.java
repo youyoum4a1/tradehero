@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";

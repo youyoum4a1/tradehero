@@ -340,7 +340,6 @@ public class Base64
         return outBuff;
     }
 
-
     /* ********  D E C O D I N G   M E T H O D S  ******** */
 
     /**

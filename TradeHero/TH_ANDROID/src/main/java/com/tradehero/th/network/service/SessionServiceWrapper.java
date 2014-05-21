@@ -2,6 +2,8 @@ package com.tradehero.th.network.service;
 
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorLogout;
@@ -18,17 +20,21 @@ import retrofit.Callback;
 @Singleton public class SessionServiceWrapper
 {
     private final SessionService sessionService;
+    private final SessionServiceAsync sessionServiceAsync;
     private final UserProfileCache userProfileCache;
     private final DTOCacheUtil dtoCacheUtil;
     private final Context context;
     private final StringPreference savedPushDeviceIdentifier;
 
-    @Inject public SessionServiceWrapper(SessionService sessionService,
+    @Inject public SessionServiceWrapper(
+            SessionService sessionService,
+            SessionServiceAsync sessionServiceAsync,
             UserProfileCache userProfileCache,
             DTOCacheUtil dtoCacheUtil, Context context,
             @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
     {
         this.sessionService = sessionService;
+        this.sessionServiceAsync = sessionServiceAsync;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
         this.context = context;
@@ -47,6 +53,20 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Login">
+    public UserLoginDTO login(String authorization, LoginFormDTO loginFormDTO)
+    {
+        return sessionService.login(authorization, loginFormDTO);
+    }
+
+    public MiddleCallback<UserLoginDTO> login(String authorization, LoginFormDTO loginFormDTO, Callback<UserLoginDTO> callback)
+    {
+        MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        sessionServiceAsync.login(authorization, loginFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Logout">
     public UserProfileDTO logout()
     {
@@ -56,7 +76,7 @@ import retrofit.Callback;
     public MiddleCallback<UserProfileDTO> logout(Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createLogoutProcessor());
-        sessionService.logout(middleCallback);
+        sessionServiceAsync.logout(middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -66,7 +86,7 @@ import retrofit.Callback;
     public MiddleCallback<UserProfileDTO> updateDevice(Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateDeviceProcessor());
-        sessionService.updateDevice(savedPushDeviceIdentifier.get(), middleCallback);
+        sessionServiceAsync.updateDevice(savedPushDeviceIdentifier.get(), middleCallback);
         return middleCallback;
     }
     //</editor-fold>

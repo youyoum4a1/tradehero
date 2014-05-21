@@ -5,7 +5,6 @@ import android.net.Uri;
 import com.squareup.picasso.UrlConnectionDownloader;
 import java.io.IOException;
 
-
 public class MyImageDownloader extends UrlConnectionDownloader {
 
     private Context context;

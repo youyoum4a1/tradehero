@@ -668,6 +668,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
+
+        PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
                 ownedPortfolioId.getArgs());
         DashboardNavigator navigator =

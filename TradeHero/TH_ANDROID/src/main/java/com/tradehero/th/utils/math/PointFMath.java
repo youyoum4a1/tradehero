@@ -3,11 +3,8 @@ package com.tradehero.th.utils.math;
 import android.graphics.Point;
 import android.graphics.PointF;
 
-
 public class PointFMath extends PointF
 {
-    public static final String TAG = PointFMath.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public PointFMath()
     {

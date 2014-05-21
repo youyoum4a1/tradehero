@@ -12,7 +12,6 @@ import retrofit.converter.ConversionException;
 import retrofit.converter.SimpleXMLConverter;
 import retrofit.mime.TypedInput;
 
-
 public class CustomXmlConverter extends SimpleXMLConverter {
 
     private final Serializer serializer;
@@ -36,7 +35,6 @@ public class CustomXmlConverter extends SimpleXMLConverter {
             throw new ConversionException(e);
         }
     }
-
 
 
 

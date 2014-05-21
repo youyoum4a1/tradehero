@@ -650,4 +650,3 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 }
 
 
-

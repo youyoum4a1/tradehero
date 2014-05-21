@@ -121,7 +121,6 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         }
     }
 
-
     private void registerOverlayHeaderListener()
     {
         if (this.header == null)

@@ -3,7 +3,6 @@ package com.tradehero.common.thread;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class KnownExecutorServices
 {
     public static final int DEFAULT_THREAD_COUNT = 1;

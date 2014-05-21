@@ -2,11 +2,8 @@ package com.tradehero.th.utils.touch;
 
 import android.view.MotionEvent;
 
-
 public class PointerCoordsLogger
 {
-    public static final String TAG = PointerCoordsLogger.class.getSimpleName();
-
     public static String toString(MotionEvent.PointerCoords pointerCoords)
     {
         if (pointerCoords == null)

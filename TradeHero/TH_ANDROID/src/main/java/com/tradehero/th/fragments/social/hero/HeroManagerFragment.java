@@ -262,4 +262,3 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
 }
 
-

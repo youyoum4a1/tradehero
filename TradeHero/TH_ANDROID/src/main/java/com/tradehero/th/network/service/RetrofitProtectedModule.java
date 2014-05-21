@@ -16,11 +16,6 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
-    {
-        return adapter.create(UserServiceAsync.class);
-    }
-
     @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
@@ -29,6 +24,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
     {
         return adapter.create(CompetitionServiceAsync.class);
+    }
+
+    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionServiceAsync.class);
     }
 
     @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
@@ -41,9 +41,19 @@ public class RetrofitProtectedModule
         return adapter.create(LeaderboardServiceAsync.class);
     }
 
+    @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(MessageServiceAsync.class);
+    }
+
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceAsync.class);
+    }
+
+    @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(NotificationServiceAsync.class);
     }
 
     @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
@@ -71,24 +81,14 @@ public class RetrofitProtectedModule
         return adapter.create(SecurityServiceAsync.class);
     }
 
+    @Provides @Singleton SessionServiceAsync provideSessionServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(SessionServiceAsync.class);
+    }
+
     @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
     {
         return adapter.create(SocialServiceAsync.class);
-    }
-
-    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionServiceAsync.class);
-    }
-
-    @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(MessageServiceAsync.class);
-    }
-
-    @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(NotificationServiceAsync.class);
     }
 
     @Provides @Singleton TradeServiceAsync provideTradeServiceAsync(RestAdapter adapter)
@@ -96,16 +96,21 @@ public class RetrofitProtectedModule
         return adapter.create(TradeServiceAsync.class);
     }
 
+    @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationServiceBingAsync.class);
+    }
+
     @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
     {
         return adapter.create(TranslationTokenServiceAsync.class);
     }
 
-    @Provides @Singleton BingTranslationServiceAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
+    @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
-                .build().create(BingTranslationServiceAsync.class);
+        return adapter.create(UserServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
@@ -116,6 +121,16 @@ public class RetrofitProtectedModule
     @Provides @Singleton WatchlistServiceAsync provideWatchlistServiceAsync(RestAdapter adapter)
     {
         return adapter.create(WatchlistServiceAsync.class);
+    }
+
+    @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(WeChatServiceAsync.class);
+    }
+
+    @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
+    {
+        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
     }
     //</editor-fold>
 }

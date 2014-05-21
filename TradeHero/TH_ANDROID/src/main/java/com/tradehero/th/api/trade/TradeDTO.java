@@ -3,7 +3,6 @@ package com.tradehero.th.api.trade;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
 
-
 public class TradeDTO implements DTO
 {
     public int id;

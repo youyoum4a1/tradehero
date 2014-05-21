@@ -8,11 +8,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-
 abstract public class BaseLeaderboardUserDTOUtilTest
 {
-    public static final String TAG = BaseLeaderboardUserDTOUtilTest.class.getSimpleName();
-
     protected LeaderboardUserDTO getUser1()
     {
         LeaderboardUserDTO value = new LeaderboardUserDTO();

@@ -1,6 +1,5 @@
 package com.tradehero.common.annotation;
 
-
 import java.lang.annotation.Retention;
 import javax.inject.Qualifier;
 

@@ -99,7 +99,6 @@ public class GaugeView extends View {
     public static final float PIVOT_X = 0.5f;
     public static final float PIVOT_Y = 1 - PADDING;
 
-
     // *--------------------------------------------------------------------- *//
     // Customizable properties
     // *--------------------------------------------------------------------- *//
@@ -944,7 +943,7 @@ public class GaugeView extends View {
                 }
 
 
-            }
+           }
         } else {
             mNeedleLastMoved = System.currentTimeMillis();
             computeCurrentValue2();
@@ -1052,7 +1051,8 @@ public class GaugeView extends View {
     }
 
 
-    public void setTargetValue(final float value) {
+
+  public void setTargetValue(final float value) {
         if (mShowScale || mShowRanges) {
             if (value < mScaleStartValue) {
                 mTargetValue = mScaleStartValue;

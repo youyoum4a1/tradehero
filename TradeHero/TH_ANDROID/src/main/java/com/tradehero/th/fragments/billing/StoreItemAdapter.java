@@ -8,11 +8,8 @@ import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import java.util.HashMap;
 
-
 public class StoreItemAdapter extends BaseAdapter
 {
-    public static final String TAG = StoreItemAdapter.class.getSimpleName();
-
     //<editor-fold desc="Known Positions">
     public static final int POSITION_IN_APP_PURCHASES = 0;
     public static final int POSITION_BUY_VIRTUAL_DOLLARS = 1;

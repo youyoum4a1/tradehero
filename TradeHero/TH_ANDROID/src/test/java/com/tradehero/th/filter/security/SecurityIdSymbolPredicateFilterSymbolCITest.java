@@ -14,13 +14,10 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityIdSymbolPredicateFilterSymbolCITest extends AbstractSecurityIdPredicateFilterTest
 {
-    public static final String TAG = SecurityIdSymbolPredicateFilterSymbolCITest.class.getSimpleName();
-
     @Override protected CharSequencePredicate<SecurityId> provideSecurityIdPredicate()
     {
         return new SecurityIdSymbolCIPredicate();

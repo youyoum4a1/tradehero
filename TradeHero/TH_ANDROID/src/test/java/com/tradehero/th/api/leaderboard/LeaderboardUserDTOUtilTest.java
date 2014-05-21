@@ -10,13 +10,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertNull;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardUserDTOUtilTest extends BaseLeaderboardUserDTOUtilTest
 {
-    public static final String TAG = LeaderboardUserDTOUtilTest.class.getSimpleName();
-
     private LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
     @Before public void setUp()

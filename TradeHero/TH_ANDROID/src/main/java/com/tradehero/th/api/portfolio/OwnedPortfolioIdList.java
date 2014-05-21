@@ -3,11 +3,8 @@ package com.tradehero.th.api.portfolio;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
 
-
 public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
 {
-    public static final String TAG = OwnedPortfolioIdList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public OwnedPortfolioIdList()
     {

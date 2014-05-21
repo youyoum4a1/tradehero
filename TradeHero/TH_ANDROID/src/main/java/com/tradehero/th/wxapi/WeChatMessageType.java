@@ -2,7 +2,6 @@ package com.tradehero.th.wxapi;
 
 import com.tradehero.th.R;
 
-
 public enum WeChatMessageType
 {
     News(1, R.string.share_to_wechat_timeline_news),

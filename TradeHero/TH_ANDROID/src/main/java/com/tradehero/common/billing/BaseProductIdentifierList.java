@@ -4,7 +4,6 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class BaseProductIdentifierList<ProductIdentifierType extends ProductIdentifier>
         extends ArrayList<ProductIdentifierType> implements DTO
 {

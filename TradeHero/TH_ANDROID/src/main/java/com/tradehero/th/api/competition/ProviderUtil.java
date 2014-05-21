@@ -10,8 +10,6 @@ import javax.inject.Singleton;
 
 @Singleton public class ProviderUtil
 {
-    public static final String TAG = ProviderUtil.class.getSimpleName();
-
     public static final String LANDING = "landing/";
     public static final String QUERY_KEY_PROVIDER_ID = "providerId";
     public static final String QUERY_KEY_USER_ID = "userId";

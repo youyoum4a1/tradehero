@@ -5,11 +5,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
 
-
 public class AlertCompactDTO implements DTO
 {
-    public static final String TAG = AlertCompactDTO.class.getSimpleName();
-
     public int id;
     public double targetPrice;
     public Boolean upOrDown;

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 
-
 public class AlertId implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = AlertId.class.getName() + ".userId";

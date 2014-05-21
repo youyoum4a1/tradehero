@@ -79,4 +79,3 @@ public class WebViewActivity extends Activity
     }
 }
 
-

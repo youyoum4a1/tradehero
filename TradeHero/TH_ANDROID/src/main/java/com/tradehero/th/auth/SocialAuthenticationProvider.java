@@ -3,7 +3,6 @@ package com.tradehero.th.auth;
 import android.content.Context;
 import java.lang.ref.WeakReference;
 
-
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
     protected static final String SCREEN_NAME_KEY = "screen_name";

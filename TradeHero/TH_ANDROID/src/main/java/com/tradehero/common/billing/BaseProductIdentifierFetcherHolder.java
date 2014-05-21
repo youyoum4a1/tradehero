@@ -4,7 +4,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

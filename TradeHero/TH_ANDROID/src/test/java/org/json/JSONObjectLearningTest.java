@@ -11,13 +11,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class JSONObjectLearningTest
 {
-    public static final String TAG = JSONObjectLearningTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

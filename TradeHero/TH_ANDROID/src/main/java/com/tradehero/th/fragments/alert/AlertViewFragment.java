@@ -46,7 +46,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-
 public class AlertViewFragment extends BasePurchaseManagerFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";

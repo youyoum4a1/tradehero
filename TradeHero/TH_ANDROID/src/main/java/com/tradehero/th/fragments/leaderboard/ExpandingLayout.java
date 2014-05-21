@@ -5,9 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
-/**
- * Created by wangliang on 14-5-15.
- */
 public class ExpandingLayout extends LinearLayout
 {
     private OnExpandListener mOnExpandListener;
@@ -40,7 +37,6 @@ public class ExpandingLayout extends LinearLayout
             mOnExpandListener.onExpand(expand);
         }
     }
-
 
     public void expand(boolean expand)
     {

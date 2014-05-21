@@ -34,8 +34,6 @@ import timber.log.Timber;
 public class StoreScreenFragment extends BasePurchaseManagerFragment
         implements WithTutorial
 {
-    public static final String TAG = StoreScreenFragment.class.getSimpleName();
-
     public static boolean alreadyNotifiedNeedCreateAccount = false;
     protected Integer showBillingAvailableRequestCode;
 

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.form;
 
-
 public class LinkedinUserFormDTO extends UserFormDTO
 {
     // linkedin

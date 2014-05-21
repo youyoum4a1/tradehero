@@ -16,7 +16,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class LeaderboardCompetitionView extends ImageView
         implements DTOView<ProviderId>
 {

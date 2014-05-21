@@ -3,7 +3,6 @@ package com.tradehero.th.models.intent;
 import android.content.Context;
 import com.tradehero.th.activities.CurrentActivityHolder;
 
-
 public class OpenCurrentActivityHolder extends CurrentActivityHolder
 {
     protected Context context;

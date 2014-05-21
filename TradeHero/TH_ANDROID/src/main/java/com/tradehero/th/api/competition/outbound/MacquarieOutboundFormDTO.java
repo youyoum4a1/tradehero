@@ -1,10 +1,7 @@
 package com.tradehero.th.api.competition.outbound;
 
-
 public class MacquarieOutboundFormDTO
 {
-    public static final String TAG = MacquarieOutboundFormDTO.class.getSimpleName();
-
     public String Name;
     public String Email;
     public String PhoneNumber;

@@ -37,7 +37,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
     private static final int EMAIL_CONTACT_ID_COLUMN = 1;
     private static final int EMAIL_ADDRESS_COLUMN = 2;
 
-
     private static final String EMAIL_SELECTION = "";
     private static final String CONTACT_SELECTION = "";
     private static final String CONTACT_ID_SORT_ORDER = Contacts._ID + " ASC";

@@ -10,13 +10,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOUnderlyerTypeComparatorTest extends WarrantDTOComparatorTestBase
 {
-    public static final String TAG = WarrantDTOUnderlyerTypeComparatorTest.class.getSimpleName();
-
     private TreeSet<WarrantDTO> treeSet;
 
     @Before public void setUp()

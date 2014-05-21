@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-
 public interface MiscService
 {
     //@GET("/misc/version")

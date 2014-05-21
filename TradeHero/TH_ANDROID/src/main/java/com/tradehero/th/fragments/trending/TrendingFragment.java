@@ -342,7 +342,6 @@ public class TrendingFragment extends SecurityListFragment
             }
             Collections.sort(exchangeDTOList, new ExchangeDTODescriptionNameComparator());
 
-
             filterSelectorView.setUpExchangeSpinner(exchangeDTOList);
             filterSelectorView.apply(trendingFilterTypeDTO);
         }

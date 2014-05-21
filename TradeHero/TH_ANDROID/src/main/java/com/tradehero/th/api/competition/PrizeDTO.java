@@ -1,10 +1,7 @@
 package com.tradehero.th.api.competition;
 
-
 public class PrizeDTO
 {
-    public static final String TAG = PrizeDTO.class.getSimpleName();
-
     public int id;
     public String title;
     public String description;

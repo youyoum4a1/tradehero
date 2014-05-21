@@ -1,11 +1,8 @@
 package com.tradehero.common.milestone;
 
-
 public class BaseDependentMilestoneGroup extends BaseMilestoneGroup
     implements DependentMilestone
 {
-    public static final String TAG = BaseDependentMilestoneGroup.class.getSimpleName();
-
     protected Milestone dependsOn;
     private final OnCompleteListener dependCompleteListener;
 

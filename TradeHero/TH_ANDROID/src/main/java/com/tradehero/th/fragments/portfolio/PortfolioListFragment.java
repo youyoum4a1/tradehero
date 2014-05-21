@@ -169,7 +169,6 @@ public class PortfolioListFragment extends DashboardFragment
 
             DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) portfolioListAdapter.getItem(position);
 
-
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 WatchlistPositionFragment.putOwnedPortfolioId(args, displayablePortfolioDTO.ownedPortfolioId);

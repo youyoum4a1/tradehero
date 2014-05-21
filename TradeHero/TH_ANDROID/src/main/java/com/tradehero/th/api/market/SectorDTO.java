@@ -2,7 +2,6 @@ package com.tradehero.th.api.market;
 
 import java.util.List;
 
-
 public class SectorDTO
 {
     public String name;

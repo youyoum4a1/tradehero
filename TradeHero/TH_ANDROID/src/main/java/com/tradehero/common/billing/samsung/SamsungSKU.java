@@ -2,7 +2,6 @@ package com.tradehero.common.billing.samsung;
 
 import com.tradehero.common.billing.ProductIdentifier;
 
-
 public class SamsungSKU implements ProductIdentifier
 {
     public final String groupId;

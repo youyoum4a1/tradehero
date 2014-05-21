@@ -29,7 +29,6 @@ import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 
-
 public class AlertItemView extends RelativeLayout
         implements DTOView<AlertId>
 {

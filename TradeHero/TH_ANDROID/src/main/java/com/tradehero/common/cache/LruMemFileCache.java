@@ -24,10 +24,8 @@ import timber.log.Timber;
 import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
 
-
 public class LruMemFileCache extends LruCache
 {
-    public static final String TAG = LruMemFileCache.class.getSimpleName();
     public static final String DEFAULT_DIR_NAME = LruMemFileCache.class.getPackage().getName();
     public static final int DEFAULT_BASE_64_PARAM = Base64.NO_PADDING | Base64.NO_WRAP;
 
@@ -40,7 +38,6 @@ public class LruMemFileCache extends LruCache
     final private Object dirLock = new Object();
     final private Object setLock = new Object();
     final private Object getLock = new Object();
-
 
     private static MessageDigest getMd5()
     {
@@ -105,7 +102,6 @@ public class LruMemFileCache extends LruCache
         super(calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
-
 
     /**public*/ LruMemFileCache(int maxMemSize, long maxFileSize)
     {
@@ -324,7 +320,7 @@ public class LruMemFileCache extends LruCache
                         retrieved = diskLruCache.get(key);
                         //String hashKey = hashKey(key);
                         //retrieved = diskLruCache.get(hashKey);
-                        Timber.d(TAG,TAG+" get from discache key:"+key);
+                        Timber.d("get from discache key: %s", key);
                         if (retrieved != null)
                         {
                             InputStream is = retrieved.getInputStream(DEFAULT_INDEX);

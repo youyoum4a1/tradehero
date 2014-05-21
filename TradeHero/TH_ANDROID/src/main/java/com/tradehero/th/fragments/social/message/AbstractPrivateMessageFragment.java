@@ -30,6 +30,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -89,7 +90,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
     }
@@ -132,18 +134,16 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        boolean handled = super.onOptionsItemSelected(item);
-        if (!handled)
+        switch (item.getItemId())
         {
-            switch (item.getItemId())
-            {
-                case R.id.private_message_refresh_btn:
-                    refresh();
-                    handled = true;
-                    break;
-            }
+            case R.id.private_message_refresh_btn:
+                refresh();
+                return true;
+            case android.R.id.home:
+                getDashboardNavigator().goToTab(DashboardTabType.UPDATE_CENTER);
+                return true;
         }
-        return handled;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
@@ -196,7 +196,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
     {
         detachMessageHeaderFetchTask();
-        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false, createMessageHeaderCacheListener());
+        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false,
+                createMessageHeaderCacheListener());
         messageHeaderFetchTask.execute();
     }
 
@@ -311,9 +312,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
+    private class MessageHeaderFetchListener
+            implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        @Override
+        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
             Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();

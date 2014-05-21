@@ -11,13 +11,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WatchlistPositionDTOTest extends BaseWatchlistPositionDTOTest
 {
-    public static final String TAG = WatchlistPositionDTOTest.class.getSimpleName();
-
     @Before @Override public void setUp()
     {
         super.setUp();
