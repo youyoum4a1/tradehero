@@ -7,8 +7,9 @@ import android.widget.LinearLayout;
 
 public class ExpandingLayout extends LinearLayout
 {
-    private OnExpandListener mOnExpandListener;
+    private OnExpandListener expandListener;
 
+    //<editor-fold desc="Constructors">
     public ExpandingLayout(Context context)
     {
         super(context);
@@ -23,6 +24,7 @@ public class ExpandingLayout extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onVisibilityChanged(View changedView, int visibility)
     {
@@ -32,9 +34,10 @@ public class ExpandingLayout extends LinearLayout
 
     private void notifyExpand(boolean expand)
     {
-        if (mOnExpandListener != null)
+        OnExpandListener expandListenerCopy = expandListener;
+        if (expandListenerCopy != null)
         {
-            mOnExpandListener.onExpand(expand);
+            expandListenerCopy.onExpand(expand);
         }
     }
 
@@ -44,14 +47,13 @@ public class ExpandingLayout extends LinearLayout
         notifyExpand(expand);
     }
 
-
-    public void addOnExpandListener(OnExpandListener onExpandListener)
+    public void setOnExpandListener(OnExpandListener expandListener)
     {
-        this.mOnExpandListener = onExpandListener;
+        this.expandListener = expandListener;
     }
 
-    public static interface OnExpandListener {
+    public static interface OnExpandListener
+    {
         void onExpand(boolean expand);
     }
-
 }
