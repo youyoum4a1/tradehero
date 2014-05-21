@@ -116,11 +116,18 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
 
     protected void handleTranslationRequested()
     {
-        detachTranslationTask();
-        TranslationKey key = newsItemDTO.createTranslationKey("zh");
-        translationTask =
-                new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
-                        .launchTranslation(key);
+        if (newsItemDTO != null && newsItemDTO.text != null)
+        {
+            detachTranslationTask();
+            TranslationKey key = newsItemDTO.createTranslationKey("zh");
+            translationTask =
+                    new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
+                            .launchTranslation(key);
+        }
+        else
+        {
+            // TODO do a callback for when the data is in?
+        }
     }
 
     /**

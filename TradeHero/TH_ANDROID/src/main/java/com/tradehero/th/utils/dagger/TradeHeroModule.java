@@ -8,6 +8,7 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
@@ -337,6 +338,7 @@ import javax.inject.Singleton;
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
                         AbstractDiscussionItemViewHolder.class,
+                        MessageHeaderDTO.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,
