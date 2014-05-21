@@ -77,7 +77,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
-    @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -122,9 +122,10 @@ public class SendMessageFragment extends DashboardFragment
     {
         if (item.getItemId() == 100)
         {
+            progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
             userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false,
-                            createUserProfileCacheListener()).execute();
+                    createUserProfileCacheListener()).execute();
             return true;
         }
 
@@ -157,6 +158,7 @@ public class SendMessageFragment extends DashboardFragment
     {
         DeviceUtil.dismissKeyboard(getActivity(), inputText);
         sendMessageDiscussionCallback = null;
+        progressDialogUtilLazy.get().dismiss(getActivity());
         super.onDestroy();
     }
 
@@ -237,6 +239,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private void sendMessage(int count)
     {
+        progressDialogUtilLazy.get().dismiss(getActivity());
         if (count <= 0)
         {
             THToast.show(getString(R.string.broadcast_message_no_follower_hint));
@@ -250,7 +253,7 @@ public class SendMessageFragment extends DashboardFragment
             return;
         }
         this.progressDialog =
-                progressDialogUtil.show(getActivity(),
+                progressDialogUtilLazy.get().show(getActivity(),
                         getString(R.string.broadcast_message_waiting),
                         getString(R.string.broadcast_message_sending_hint));
 
