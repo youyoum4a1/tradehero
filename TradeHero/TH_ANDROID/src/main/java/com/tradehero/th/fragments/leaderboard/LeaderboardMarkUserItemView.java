@@ -164,8 +164,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuOpenPositionsList.setOnClickListener(this);
         }
 
-        lbmuFollowUser.setEnabled(false);
-
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
