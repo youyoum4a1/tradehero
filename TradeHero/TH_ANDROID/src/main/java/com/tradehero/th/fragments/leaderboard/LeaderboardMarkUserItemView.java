@@ -596,7 +596,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
             boolean enableButton = isFollowing != null && !isFollowing;
-            lbmuFollowUser.setEnabled(enableButton);
         }
     }
 
