@@ -181,7 +181,7 @@ public class MessageServiceWrapper
     //<editor-fold desc="Get Message Header">
     public MessageHeaderDTO getMessageHeader(MessageHeaderId messageHeaderId)
     {
-        if (messageHeaderId instanceof MessageHeaderUserId)
+        if (messageHeaderId instanceof MessageHeaderUserId && ((MessageHeaderUserId) messageHeaderId).userBaseKey != null)
         {
             return messageService.getMessageHeader(
                     messageHeaderId.commentId,

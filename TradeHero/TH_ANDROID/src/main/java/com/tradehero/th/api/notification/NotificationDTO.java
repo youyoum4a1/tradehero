@@ -41,6 +41,8 @@ public class NotificationDTO implements DTO, KeyGenerator
                 .append(replyableId)
                 .append(" threadId=")
                 .append(threadId)
+                .append(" referencedUserId=")
+                .append(referencedUserId)
                 .toString();
     }
 }
