@@ -11,7 +11,6 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-
 import javax.inject.Singleton;
 
 @Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
@@ -45,17 +44,6 @@ import javax.inject.Singleton;
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);
-    }
-
-    @Override public GetOrFetchTask<UserBaseKey, UserProfileDTO> getOrFetch(
-            UserBaseKey key, boolean forceUpdateCache,
-            Listener<UserBaseKey, UserProfileDTO> initialListener)
-    {
-        if (key == null)
-        {
-            throw new NullPointerException("UserBaseKey cannot be null");
-        }
-        return super.getOrFetch(key, forceUpdateCache, initialListener);
     }
 
     public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
