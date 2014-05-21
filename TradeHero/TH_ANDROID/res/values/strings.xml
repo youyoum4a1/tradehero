@@ -137,6 +137,12 @@
   <string name="tap_stream_type_dianke4_open">android-tradehero-dianke4-open</string>
   <string name="tap_stream_type_dianke5_install">android-tradehero-dianke5-install</string>
   <string name="tap_stream_type_dianke5_open">android-tradehero-dianke5-open</string>
+  <string name="tap_stream_type_91m_install">android-tradehero-91m-install</string>
+  <string name="tap_stream_type_91m_open">android-tradehero-91m-open</string>
+  <string name="tap_stream_type_dianping_install">android-tradehero-dianping-install</string>
+  <string name="tap_stream_type_dianping_open">android-tradehero-dianping-open</string>
+  <string name="tap_stream_type_aiqiyi_install">android-tradehero-aiqiyi-install</string>
+  <string name="tap_stream_type_aiqiyi_open">android-tradehero-aiqiyi-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
