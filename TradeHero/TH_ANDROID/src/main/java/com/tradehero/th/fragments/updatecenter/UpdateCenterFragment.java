@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -301,6 +302,7 @@ public class UpdateCenterFragment extends BaseFragment
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
+        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 

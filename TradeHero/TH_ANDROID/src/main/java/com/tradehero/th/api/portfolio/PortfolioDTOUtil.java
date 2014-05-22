@@ -2,7 +2,6 @@ package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import dagger.Lazy;
@@ -32,11 +31,14 @@ public class PortfolioDTOUtil
             }
             if (portfolioDTO.providerId != null)
             {
-                ProviderId providerId = new ProviderId(portfolioDTO.providerId);
-                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResourcesDTO(providerId);
+                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResourcesDTO(portfolioDTO.getProviderIdKey());
                 if (resourcesDTO != null && resourcesDTO.competitionPortfolioTitleResId > 0)
                 {
                     return context.getString(resourcesDTO.competitionPortfolioTitleResId);
+                }
+                else if (portfolioDTO.title != null)
+                {
+                    return portfolioDTO.title;
                 }
                 return context.getString(R.string.competition_portfolio_unsure);
             }
