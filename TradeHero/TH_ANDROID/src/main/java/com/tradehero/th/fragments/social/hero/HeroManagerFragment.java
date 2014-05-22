@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -88,6 +89,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             addTab(resourceDTO);
         }
         setTitleColor();
+        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 
