@@ -268,7 +268,9 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO =
                 messageHeaderCache.get(getListAdapter().getItem(position));
-        updateReadStatus(messageHeaderDTO);
+        Timber.d("pushMessageFragment=%s",messageHeaderDTO);
+        //updateReadStatus(messageHeaderDTO);
+
         if (messageHeaderDTO != null)
         {
             pushMessageFragment(
