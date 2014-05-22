@@ -134,4 +134,6 @@
   <dimen name="stock_item_width">200dp</dimen>
 
   <dimen name="buysell_dialog_scroll_height">160dp</dimen>
+  <dimen name="guide_close_margin">15dp</dimen>
+
 </resources>

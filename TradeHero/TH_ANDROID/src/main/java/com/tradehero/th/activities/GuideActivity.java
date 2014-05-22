@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,8 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
+
+    private static final int CLOSE_IMAGE_ID = 0x88888;
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,30 @@ public class GuideActivity extends Activity
 
         @Override public Object instantiateItem(ViewGroup container, int position)
         {
+
+            View view = null;
             ImageView imageView = (ImageView) LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_layout, null);
+            if (position == getCount() - 1) {
+                RelativeLayout rl = new RelativeLayout(GuideActivity.this);
+                rl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                rl.addView(imageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                ImageView closeIv = new ImageView(GuideActivity.this);
+                closeIv.setId(CLOSE_IMAGE_ID);
+                closeIv.setImageResource(R.drawable.cross_red);
+                closeIv.setOnClickListener(GuideActivity.this);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT | RelativeLayout.ALIGN_PARENT_TOP);
+                lp.rightMargin = (int)GuideActivity.this.getResources().getDimension(R.dimen.guide_close_margin);
+                lp.topMargin = lp.rightMargin;
+                rl.addView(closeIv, lp);
+
+                view = rl;
+            }
+            else
+            {
+                view = imageView;
+            }
             try
             {
                 imageView.setBackgroundResource(drawableIdList.get(position));
@@ -99,8 +125,8 @@ public class GuideActivity extends Activity
             {
                 imageView.setOnClickListener(null);
             }
-            container.addView(imageView);
-            return imageView;
+            container.addView(view);
+            return view;
         }
 
         @Override public void destroyItem(ViewGroup container, int position, Object object)
