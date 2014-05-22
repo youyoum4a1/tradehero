@@ -3,7 +3,6 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
-
 public class LeaderboardDefListKey extends AbstractStringDTOKey
 {
     private static final String BUNDLE_KEY_KEY = LeaderboardDefKey.class.getName() + ".key";

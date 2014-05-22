@@ -17,10 +17,14 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.translation.TranslationCache;
+import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
 import com.tradehero.th.wxapi.WeChatMessageType;
 import javax.inject.Inject;
@@ -37,6 +41,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private NewsItemDTO mDetailNewsItemDTO;
 
     @Inject NewsCache newsCache;
+    @Inject TranslationCache translationCache;
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
 
@@ -61,8 +66,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTOKey newsItemDTOKey;
 
-    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> newsCacheFetchListener;
     private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
+    private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -82,19 +87,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
-    @Override public void onDestroyView()
-    {
-        detachNewsFetchTask();
-
-        super.onDestroyView();
-    }
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        newsCacheFetchListener = new NewsFetchListener();
     }
 
     @Override public void onResume()
@@ -107,11 +103,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         }
     }
 
-    @Override public void onDetach()
+    @Override public void onDestroyView()
     {
-        newsCacheFetchListener = null;
-
-        super.onDetach();
+        detachNewsFetchTask();
+        detachTranslationTask();
+        super.onDestroyView();
     }
 
     @Override public void onDestroy()
@@ -167,7 +163,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private void fetchNewsDetail(boolean force)
     {
         detachNewsFetchTask();
-        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, newsCacheFetchListener);
+        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
         newsFetchTask.execute();
     }
 
@@ -178,6 +174,15 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
             newsFetchTask.setListener(null);
         }
         newsFetchTask = null;
+    }
+
+    private void detachTranslationTask()
+    {
+        if (translationTask != null)
+        {
+            translationTask.setListener(null);
+        }
+        translationTask = null;
     }
 
     private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
@@ -205,17 +210,32 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         View contentView = LayoutInflater.from(getSherlockActivity())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO.text,
-                mDetailNewsItemDTO.description, mDetailNewsItemDTO.langCode, mDetailNewsItemDTO.id,
+        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
                 WeChatMessageType.CreateDiscussion.getType());
+        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
+        // TODO find a place to unset this listener
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
     //</editor-fold>
+
+    protected void handleTranslationRequested()
+    {
+        detachTranslationTask();
+        TranslationKey key = mDetailNewsItemDTO.createTranslationKey("zh");
+        translationTask =
+                new NewsTranslationSelfDisplayer(getActivity(), translationCache, null)
+                .launchTranslation(key);
+    }
 
     @Override
     public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> createNewsFetchListener()
+    {
+        return new NewsFetchListener();
     }
 
     private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
@@ -229,6 +249,24 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         @Override public void onErrorThrown(NewsItemDTOKey key, Throwable error)
         {
             THToast.show(new THException(error));
+        }
+    }
+
+    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
+    {
+        return new NewsDiscussionFragmentDialogMenuClickedListener();
+    }
+
+    private class NewsDiscussionFragmentDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
+    {
+        @Override public void onTranslationRequestedClicked()
+        {
+            handleTranslationRequested();
+        }
+
+        @Override public void onShareRequestedClicked()
+        {
+            // TODO
         }
     }
 }

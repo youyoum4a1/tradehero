@@ -4,11 +4,8 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class ExchangeDTOList extends ArrayList<ExchangeDTO> implements DTO
 {
-    public static final String TAG = ExchangeDTOList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public ExchangeDTOList()
     {
@@ -25,6 +22,5 @@ public class ExchangeDTOList extends ArrayList<ExchangeDTO> implements DTO
         super(collection);
     }
     //</editor-fold>
-
 
 }

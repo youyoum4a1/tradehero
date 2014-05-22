@@ -2,7 +2,6 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-
 public interface BillingAvailableTesterHolder<BillingExceptionType extends BillingException>
 {
     boolean isUnusedRequestCode(int requestCode);

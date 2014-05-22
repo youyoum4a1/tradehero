@@ -14,7 +14,6 @@ import timber.log.Timber;
 
 public class VisitedFriendListPrefs
 {
-    public static final String TAG = VisitedFriendListPrefs.class.getSimpleName();
     public static final String KEY_PREFS = VisitedFriendListPrefs.class.getName();
     public static final String KEY_VISITED_ID_SET = VisitedFriendListPrefs.class.getName() + ".VISITED_ID_SET";
 

@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-
 public interface BillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

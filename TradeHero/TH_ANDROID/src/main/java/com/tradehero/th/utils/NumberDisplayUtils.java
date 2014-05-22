@@ -6,7 +6,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import javax.inject.Inject;
 
-
 public class NumberDisplayUtils
 {
     public static final int[] SUFFIX_IDS =

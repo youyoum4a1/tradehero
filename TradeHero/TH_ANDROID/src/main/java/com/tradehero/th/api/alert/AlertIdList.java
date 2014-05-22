@@ -4,11 +4,8 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Collection;
 
-
 public class AlertIdList extends DTOKeyIdList<AlertId>
 {
-    public static final String TAG = AlertIdList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public AlertIdList()
     {

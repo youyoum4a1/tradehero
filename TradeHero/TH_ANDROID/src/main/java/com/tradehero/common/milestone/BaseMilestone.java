@@ -2,11 +2,8 @@ package com.tradehero.common.milestone;
 
 import java.lang.ref.WeakReference;
 
-
 abstract public class BaseMilestone implements Milestone
 {
-    public static final String TAG = BaseMilestone.class.getSimpleName();
-
     protected WeakReference<OnCompleteListener> parentCompleteListener = new WeakReference<>(null);
 
     public BaseMilestone()

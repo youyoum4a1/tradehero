@@ -39,5 +39,4 @@ public class TimelineListView extends PullToRefreshStickyListHeadersListView
         getRefreshableView().addFooterView(view);
     }
 
-
 }

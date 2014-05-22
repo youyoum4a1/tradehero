@@ -11,14 +11,17 @@
       >
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="48dp"
         >
 
       <TextView
           android:id="@+id/leaderboard_user_item_open_profile"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
+          android:gravity="center"
           android:layout_height="wrap_content"
+
           android:layout_centerInParent="true"
           android:text="@string/leaderboard_profile"
           style="@style/Leaderboard_ActionButton"
@@ -27,14 +30,16 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="48dp"
         android:layout_marginLeft="8dp"
         >
 
       <TextView
           android:id="@+id/leaderboard_user_item_open_positions_list"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
+          android:gravity="center"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
           android:text="@string/leaderboard_positions"
@@ -45,13 +50,15 @@
 
     <RelativeLayout
         android:id="@+id/leaderboard_user_item_follow"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="48dp"
         android:layout_marginLeft="8dp"
         >
 
       <TextView
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
+          android:gravity="center"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
           android:text="@string/leaderboard_follow"

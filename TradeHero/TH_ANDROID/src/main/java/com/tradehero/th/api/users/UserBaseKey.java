@@ -3,10 +3,8 @@ package com.tradehero.th.api.users;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class UserBaseKey extends AbstractIntegerDTOKey
 {
-    public final static String TAG = UserBaseKey.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = UserBaseKey.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
@@ -33,6 +31,6 @@ public class UserBaseKey extends AbstractIntegerDTOKey
 
     @Override public String toString()
     {
-        return String.format("[%s key=%d]", TAG, key);
+        return String.format("[UserBaseKey key=%d]", key);
     }
 }

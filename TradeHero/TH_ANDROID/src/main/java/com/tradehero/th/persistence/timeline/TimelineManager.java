@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class TimelineManager
 {
     @Inject DatabaseCache dbCache;

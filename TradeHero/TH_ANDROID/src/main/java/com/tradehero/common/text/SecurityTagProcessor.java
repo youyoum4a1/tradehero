@@ -2,7 +2,6 @@ package com.tradehero.common.text;
 
 import java.util.regex.Pattern;
 
-
 public class SecurityTagProcessor extends ClickableTagProcessor
 {
     /* <$LSE:VOD,123$> = security link for securityId 123*/

@@ -6,11 +6,8 @@ import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PositionInPeriodDTO extends PositionDTO
 {
-    public static final String TAG = PositionInPeriodDTO.class.getSimpleName();
-
     // This leaderboard Mark User Id needs to be populated by the service
     private Integer leaderboardMarkUserId;
 

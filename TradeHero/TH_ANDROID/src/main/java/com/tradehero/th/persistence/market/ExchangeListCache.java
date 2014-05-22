@@ -8,10 +8,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class ExchangeListCache extends StraightDTOCache<ExchangeListType, ExchangeDTOList>
 {
-    public static final String TAG = ExchangeCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
 
     @Inject Lazy<MarketService> marketService;

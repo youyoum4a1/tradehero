@@ -1,11 +1,9 @@
 package com.tradehero.th.models.intent.position;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.TestConstants;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
@@ -22,13 +20,10 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 public class OnePortfolioIntentTest
 {
-    public static final String TAG = OnePortfolioIntentTest.class.getSimpleName();
-
     @Before public void setUp()
     {
         THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());

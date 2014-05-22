@@ -3,11 +3,8 @@ package com.tradehero.common.time;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.TimeFormat;
 
-
 public class TimeFormatFloor implements TimeFormat
 {
-    public static final String TAG = TimeFormatFloor.class.getSimpleName();
-
     @Override public String format(Duration duration)
     {
         return "";

@@ -1,14 +1,10 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
-
 
 public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View.OnClickListener{
 
@@ -42,7 +38,6 @@ public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View
         v.setVisibility(View.VISIBLE);
         v.setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View v) {

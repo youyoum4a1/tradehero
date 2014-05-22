@@ -3,11 +3,8 @@ package com.tradehero.th.api.watchlist;
 import com.tradehero.th.api.position.BasePositionDTOTest;
 import com.tradehero.th.api.security.BaseSecurityCompactDTOTest;
 
-
 abstract public class BaseWatchlistPositionDTOTest extends BasePositionDTOTest
 {
-    public static final String TAG = BaseWatchlistPositionDTOTest.class.getSimpleName();
-
     protected BaseSecurityCompactDTOTest securityCompactDTOTest;
 
     public void setUp()

@@ -3,8 +3,6 @@ package com.tradehero.common.application;
 import android.app.Application;
 import android.content.Context;
 
-
-
 public class PApplication extends Application
 {
     private static Context context;

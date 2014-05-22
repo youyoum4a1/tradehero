@@ -15,6 +15,9 @@
   <string name="leaderboard_positions_count"># Positions</string>
   <string name="leaderboard_number_trades_in_period_title">Number of Trades In Period</string>
   <string name="leaderboard_win_ratio_title">Win Ratio</string>
+  <string name="leaderboard_performance_title">Relative Performance</string>
+  <string name="leaderboard_SP_500">S&amp;P 500</string>
+  <string name="leaderboard_consistency_title">Trade Consistency</string>
   <string name="leaderboard_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_followers_count"># Followers</string>
   <string name="leaderboard_comments_count"># Comments</string>
@@ -29,6 +32,8 @@
   <string name="leaderboard_action_bar_following">Following</string>
   <string name="leaderboard_profile">Profile</string>
   <string name="leaderboard_positions">Positions</string>
+  <string name="leaderboard_monthly_trade_count">Monthly Trade</string>
+  <string name="leaderboard_monthly_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_win_ratio">(win ratio: <b>%s</b>%%)</string>
   <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
   <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
@@ -56,6 +61,6 @@
 
   <string name="follower_type_premium">Paid Follower(s)</string>
   <string name="follower_type_free">Free Follower(s)</string>
-  <string name="follower_type_all">Free Follower(s)</string>
+  <string name="follower_type_all">All Follower(s)</string>
 
 </resources>

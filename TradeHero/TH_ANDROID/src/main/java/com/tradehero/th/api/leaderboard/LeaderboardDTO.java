@@ -62,4 +62,22 @@ public class LeaderboardDTO implements DTO
             return "Failed to json";
         }
     }
+
+    @JsonIgnore
+    public Double getAvgVolatility()
+    {
+        return avgStdDevPositionRoiInPeriod;
+    }
+
+    @JsonIgnore
+    public Double getAvgConsistency()
+    {
+        Double v = getAvgVolatility();
+        if (v != null && v != 0)
+        {
+            return 1/v;
+        }
+        return (double)2;
+    }
+
 }

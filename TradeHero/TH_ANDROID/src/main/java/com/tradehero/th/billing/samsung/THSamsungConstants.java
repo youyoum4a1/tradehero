@@ -4,7 +4,6 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.th.utils.Constants;
 
-
 public class THSamsungConstants extends SamsungConstants
 {
     public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;

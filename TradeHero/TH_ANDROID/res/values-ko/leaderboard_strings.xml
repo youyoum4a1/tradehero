@@ -15,6 +15,8 @@
   <string name="leaderboard_positions_count"># 종목</string>
   <string name="leaderboard_number_trades_in_period_title">기간내 거래 횟수</string>
   <string name="leaderboard_win_ratio_title">승률</string>
+  <string name="leaderboard_performance_title">Relative Performance</string>
+  <string name="leaderboard_consistency_title">Trade Consistency</string>
   <string name="leaderboard_avg_days_held">평균 보유일</string>
   <string name="leaderboard_followers_count"># 팔로워</string>
   <string name="leaderboard_comments_count"># 코멘트</string>
@@ -29,6 +31,8 @@
   <string name="leaderboard_action_bar_following">팔로우 중</string>
   <string name="leaderboard_profile">프로필</string>
   <string name="leaderboard_positions">거래목록</string>
+  <string name="leaderboard_monthly_trade_count">Monthly Trade</string>
+  <string name="leaderboard_monthly_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_win_ratio">(수익률: <b>%s</b>%%)</string>
   <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
   <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
@@ -55,6 +59,6 @@
 
   <string name="follower_type_premium">유료 팔로워</string>
   <string name="follower_type_free">무료 팔로워</string>
-  <string name="follower_type_all">무료 팔로워</string>
+  <string name="follower_type_all">모든 팔로워</string>
 
 </resources>

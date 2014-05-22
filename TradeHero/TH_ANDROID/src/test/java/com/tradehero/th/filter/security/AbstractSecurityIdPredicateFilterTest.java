@@ -1,6 +1,5 @@
 package com.tradehero.th.filter.security;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.widget.filter.BaseListCharSequencePredicateFilter;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
@@ -10,11 +9,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 
-
 abstract public class AbstractSecurityIdPredicateFilterTest
 {
-    public static final String TAG = AbstractSecurityIdPredicateFilterTest.class.getSimpleName();
-
     protected ListCharSequencePredicateFilter<SecurityId> securityIdPredicateFilter;
 
     @Before public void setUp()

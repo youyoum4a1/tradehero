@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
@@ -49,7 +48,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
-    private DTOCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
 
     //<editor-fold desc="Constructors">
     public SecurityDiscussionView(Context context)
@@ -70,7 +68,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        securityCompactCacheListener = new SecurityCompactCacheListener();
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
 
         securityDiscussionAdapter = createDiscussionAdapter(null);
@@ -88,6 +85,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         super.onAttachedToWindow();
 
+        ButterKnife.inject(this);
         securityDiscussionList.setEmptyView(emptyView);
         securityDiscussionList.setAdapter(securityDiscussionAdapter);
         securityDiscussionList.setOnScrollListener(securityDiscussionListScrollListener);
@@ -99,6 +97,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         detachSecurityCompactCacheTask();
         discussionListCache.unregister(this);
+        ButterKnife.reset(this);
 
         super.onDetachedFromWindow();
     }
@@ -127,7 +126,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Override public void display(SecurityId securityId)
     {
         detachSecurityCompactCacheTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, false, securityCompactCacheListener);
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, false, createSecurityCompactCacheListener());
         securityCompactCacheFetchTask.execute();
     }
 
@@ -163,13 +162,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     private boolean shouldAppend = false;
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList, boolean fromCache)
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList)
     {
-        if (fromCache)
-        {
-            return;
-        }
-
         onFinish();
 
         if (discussionKeyList != null)
@@ -208,12 +202,16 @@ public class SecurityDiscussionView extends BetterViewAnimator
         setDisplayedChildByLayoutId(securityDiscussionList.getId());
     }
 
-    private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId,SecurityCompactDTO>
+    private DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    {
+        return new SecurityCompactCacheListener();
+    }
+
+    private class SecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
     {
         @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO securityCompactDTO, boolean fromCache)
         {
             discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
-
             nextPageDelta = 0;
             fetchNextPageIfNecessary(true);
         }

@@ -1,10 +1,7 @@
 package com.tradehero.th.api.watchlist.key;
 
-
 abstract public class BasePerPagedWatchlistKeyTest extends BasePagedWatchlistKeyTest
 {
-    public static final String TAG = BasePerPagedWatchlistKeyTest.class.getSimpleName();
-
     protected PerPagedWatchlistKey getPagedNullPerPagedNull()
     {
         return new PerPagedWatchlistKey(null, null);

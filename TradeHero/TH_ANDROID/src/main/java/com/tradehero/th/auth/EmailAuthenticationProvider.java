@@ -5,11 +5,8 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
 
-
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
-    public static final String TAG = EmailAuthenticationProvider.class.getSimpleName();
-
     public static final String EMAIL_AUTH_TYPE = "Basic";
     private static JSONCredentials credentials;
 

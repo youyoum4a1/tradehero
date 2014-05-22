@@ -9,13 +9,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class PagedWatchlistKeyTest extends BasePagedWatchlistKeyTest
 {
-    public static final String TAG = PagedWatchlistKeyTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

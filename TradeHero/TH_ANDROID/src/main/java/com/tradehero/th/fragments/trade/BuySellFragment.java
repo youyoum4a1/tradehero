@@ -32,6 +32,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -129,6 +130,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.discussions) protected TextView mDiscussTextView;
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
+    @Inject ResideMenu resideMenu;
+
     //for dialog
     private AlertDialog mBuySellDialog;
     private TextView mTradeValueTextView;
@@ -169,7 +172,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
-
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
@@ -227,6 +229,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         View view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
         initViews(view);
+        resideMenu.addIgnoredView(mBottomViewPager);
         return view;
     }
 
@@ -320,8 +323,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(),
-                    ((Fragment) this).getChildFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
         }
         if (mBottomViewPager != null)
         {
@@ -549,6 +551,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         mConfirmButton = null;
 
+        resideMenu.removeIgnoredView(mBottomViewPager);
+
         super.onDestroyView();
     }
 
@@ -774,15 +778,10 @@ public class BuySellFragment extends AbstractBuySellFragment
             ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
                     providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
-            Bundle ownedPortfolioArgs =
-                    getArguments().getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
-            if (ownedPortfolioArgs != null)
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null && !applicablePortfolioId.equals(defaultOwnedPortfolioId))
             {
-                OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
-                if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
-                {
-                    otherPortfolioIds.add(ownedPortfolioId);
-                }
+                otherPortfolioIds.add(applicablePortfolioId);
             }
 
             for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
@@ -920,32 +919,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
         if (adapter != null)
         {
-            SecurityCompactDTO adapterDTO = adapter.getSecurityCompactDTO();
-            if (securityId != null && (adapterDTO == null || !securityId.equals(
-                    adapterDTO.getSecurityId())))
-            {
-                adapter.linkWith(providerId);
-                adapter.linkWith(securityCompactDTO);
-                //adaper of new versioned ViewPager must call notifyDataSetChanged when data changes
-                adapter.notifyDataSetChanged();
-
-                ViewPager viewPager = mBottomViewPager;
-                if (viewPager != null)
-                {
-                    viewPager.post(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
-                            if (adapter != null)
-                            {
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            }
+            adapter.linkWith(securityId);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -1369,8 +1344,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
-            args.putBundle(BaseAlertEditFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    getApplicablePortfolioId().getArgs());
+            BaseAlertEditFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
@@ -2048,6 +2022,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                 position == 1 ? R.color.white : R.color.btn_twitter_color_end));
         mNewsTextView.setTextColor(getResources().getColor(
                 position == 2 ? R.color.white : R.color.btn_twitter_color_end));
+
+        if(selectedPageIndex == 0)
+        {
+            resideMenu.clearIgnoredViewList();
+        }
+        else
+        {
+            resideMenu.addIgnoredView(mBottomViewPager);
+        }
     }
 
     protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
@@ -2123,8 +2106,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private class BuySellCallback
-            implements retrofit.Callback<SecurityPositionDetailDTO>
+    private class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
     {
         private final boolean isBuy;
 
@@ -2169,6 +2151,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
+            Timber.e(retrofitError, "Reporting the error to Crashlytics");
             THToast.show(new THException(retrofitError));
         }
     }

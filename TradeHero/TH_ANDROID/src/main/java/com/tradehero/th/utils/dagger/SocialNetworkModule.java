@@ -20,7 +20,6 @@ import dagger.Provides;
 import java.util.Collection;
 import javax.inject.Singleton;
 
-
 @Module(
         injects = {
                 AuthenticationActivity.class,
@@ -101,6 +100,5 @@ public class SocialNetworkModule
     {
         return weChatUtils;
     }
-
 
 }

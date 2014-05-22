@@ -14,11 +14,8 @@ import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-
 public class ProviderVideoListItem extends RelativeLayout implements DTOView<HelpVideoId>
 {
-    public static final String TAG = ProviderVideoListItem.class.getSimpleName();
-
     private HelpVideoId videoId;
     private HelpVideoDTO videoDTO;
     @Inject protected HelpVideoCache helpVideoCache;

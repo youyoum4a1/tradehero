@@ -21,10 +21,6 @@
   <string name="buy_sell_button_sell">%1$s %2$s에 매도</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
-  <string name="buy_sell_buy_details_unavailable">정보 불러오는 중...</string>
-  <string name="buy_sell_buy_details">매수 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n수수료: 게임머니 %6$s %7$,.2f\n총 거래금액: %8$s %9$,.2f</string>
-  <string name="buy_sell_sell_details_unavailable">정보 불러오는중…</string>
-  <string name="buy_sell_sell_details">매도 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n수수료: 게임머니 %6$s %7$,.2f\n순 거래금액: %8$s %9$,.2f</string>
   <string name="buy_sell_confirm_share_public">공개</string>
   <string name="buy_sell_confirm_share_private">비공개</string>
   <string name="buy_sell_confirm_buy_comment">코멘트 추가…</string>

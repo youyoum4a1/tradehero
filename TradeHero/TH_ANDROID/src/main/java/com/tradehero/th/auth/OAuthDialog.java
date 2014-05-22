@@ -1,7 +1,6 @@
 package com.tradehero.th.auth;
 
 
-
 import android.R;
 import android.app.Dialog;
 import android.app.ProgressDialog;

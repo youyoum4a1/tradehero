@@ -34,8 +34,6 @@ import timber.log.Timber;
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
 {
-    public static final String TAG = StoreScreenFragment.class.getSimpleName();
-
     public static boolean alreadyNotifiedNeedCreateAccount = false;
     protected Integer showBillingAvailableRequestCode;
 
@@ -205,7 +203,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -217,7 +215,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         pushFragment(FollowerManagerFragment.class, bundle);
     }

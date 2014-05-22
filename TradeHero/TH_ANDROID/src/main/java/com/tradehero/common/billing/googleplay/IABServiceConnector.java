@@ -18,7 +18,6 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class IABServiceConnector implements ServiceConnection
 {
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
@@ -148,7 +147,6 @@ public class IABServiceConnector implements ServiceConnection
         }
     }
     //</editor-fold>
-
 
     protected void checkInAppBillingV3Support() throws RemoteException, IABException
     {

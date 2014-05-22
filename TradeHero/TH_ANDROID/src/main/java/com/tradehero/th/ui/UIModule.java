@@ -29,7 +29,6 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
-
 @Module(
         includes = {
                 UIComponents.class
@@ -41,7 +40,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NotificationsView.class,
                 NotificationItemView.class,
 
-                UpdateCenterFragment.class,
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
                 UpdateCenterResideMenuItem.class,

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
@@ -18,7 +18,6 @@ import java.util.WeakHashMap;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
-
 
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
@@ -52,7 +51,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
                 List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
                 if (timelineDTO.getEnhancedItems() != null)
                 {
-                    for (TimelineItemDTOEnhanced itemDTO: timelineDTO.getEnhancedItems())
+                    for (TimelineItemDTO itemDTO: timelineDTO.getEnhancedItems())
                     {
                         itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
                         TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();

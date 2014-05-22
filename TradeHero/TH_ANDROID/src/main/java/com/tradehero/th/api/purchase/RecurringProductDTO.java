@@ -1,10 +1,7 @@
 package com.tradehero.th.api.purchase;
 
-
 public class RecurringProductDTO
 {
-    public static final String TAG = RecurringProductDTO.class.getSimpleName();
-
     public String appleProductId;
 
     public int thcc_perMonthValue;        // the # of Content Credits that this product buys the user per month

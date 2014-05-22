@@ -13,6 +13,11 @@ public class CenterCropTransformation implements Transformation
 
     @Override public Bitmap transform(Bitmap source)
     {
+        if (source == null)
+        {
+            return null;
+        }
+
         Bitmap dstBmp;
         if (source.getWidth() > source.getHeight())
         {

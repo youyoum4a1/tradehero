@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-
 public class ValidatedPasswordText extends SelfValidatedText
 {
     //<editor-fold desc="Constructors">

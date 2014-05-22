@@ -4,7 +4,6 @@ import com.tradehero.th.R;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum SecurityType
 {
     EQUITY (1, R.string.security_type_equity),
@@ -19,7 +18,6 @@ public enum SecurityType
     PREFERRED_SEC (10, R.string.security_type_preferred_sec),
     STAPLED_SEC (11, R.string.security_type_stapled_sec);
 
-    private static final String TAG = SecurityType.class.getSimpleName();
     private static Map<Integer, SecurityType> valuesMap;
 
     public final int value;

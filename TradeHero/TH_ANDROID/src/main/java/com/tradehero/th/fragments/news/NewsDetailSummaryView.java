@@ -80,6 +80,9 @@ public class NewsDetailSummaryView extends FrameLayout
 
     public void setBackground(int resId)
     {
-        mNewsDetailTitlePlaceholder.setBackgroundResource(resId);
+        if (mNewsDetailTitlePlaceholder != null)
+        {
+            mNewsDetailTitlePlaceholder.setBackgroundResource(resId);
+        }
     }
 }

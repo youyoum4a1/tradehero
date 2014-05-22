@@ -70,7 +70,6 @@ public class YahooChartDTO implements ChartDTO
     }
     //</editor-fold>
 
-
     @Override public void setSecurityCompactDTO(SecurityCompactDTO securityCompactDTO)
     {
         this.yahooSymbol = securityCompactDTO == null ? "" : securityCompactDTO.yahooSymbol;

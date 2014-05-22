@@ -2,11 +2,8 @@ package com.tradehero.th.api.users;
 
 import android.os.Bundle;
 
-
 public class UserTransactionHistoryListType extends UserBaseKey
 {
-    public static final String TAG = UserTransactionHistoryListType.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public UserTransactionHistoryListType(Integer key)
     {

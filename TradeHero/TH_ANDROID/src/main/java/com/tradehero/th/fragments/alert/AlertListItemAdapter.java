@@ -18,11 +18,9 @@ import java.util.Comparator;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-
 public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItemView>
     implements StickyListHeadersAdapter
 {
-    public static final String TAG = AlertListItemAdapter.class.getName();
     private static final long HEADER_ID_INACTIVE = 0;
     private static final long HEADER_ID_ACTIVE = 1;
 

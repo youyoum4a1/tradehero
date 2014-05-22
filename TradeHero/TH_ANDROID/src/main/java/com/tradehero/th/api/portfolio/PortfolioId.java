@@ -3,10 +3,8 @@ package com.tradehero.th.api.portfolio;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class PortfolioId extends AbstractIntegerDTOKey
 {
-    public final static String TAG = PortfolioId.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = PortfolioId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
@@ -28,6 +26,6 @@ public class PortfolioId extends AbstractIntegerDTOKey
 
     @Override public String toString()
     {
-        return String.format("[%s key=%d]", TAG, key);
+        return String.format("[PortfolioId key=%d]", key);
     }
 }

@@ -6,11 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 
-
 public class StoreItemHeader extends LinearLayout
 {
-    public static final String TAG = StoreItemHeader.class.getSimpleName();
-
     private TextView title;
     private int titleResId;
 

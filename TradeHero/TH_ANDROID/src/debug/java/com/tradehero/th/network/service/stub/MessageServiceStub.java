@@ -5,15 +5,14 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
-import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
-import retrofit.http.Path;
 import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
@@ -22,7 +21,6 @@ public class MessageServiceStub implements MessageService
     {
         super();
     }
-
 
     @Override
     public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
@@ -57,12 +55,12 @@ public class MessageServiceStub implements MessageService
         return paginatedDTO;
     }
 
-    @Override public MessageHeaderDTO getMessageHeader(int commentId)
+    @Override public MessageHeaderDTO getMessageHeader(int commentId, Integer referencedUserId)
     {
-        return createMessageHeader(commentId, null, new Date());
+        return createMessageHeader(commentId, referencedUserId, new Date());
     }
 
-    @Override public MessageHeaderDTO getMessageThread(@Path("correspondentId") int correspondentId)
+    @Override public MessageHeaderDTO getMessageThread(int correspondentId)
     {
         return null;
     }
@@ -95,14 +93,14 @@ public class MessageServiceStub implements MessageService
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public Response deleteMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
-            @Path("recipientUserId") int recipientUserId)
+    @Override public Response deleteMessage(int commentId, int senderUserId,
+            int recipientUserId)
     {
         return null;
     }
 
-    @Override public Response readMessage(@Path("commentId") int commentId, @Path("senderUserId") int senderUserId,
-            @Path("recipientUserId") int recipientUserId)
+    @Override public Response readMessage(int commentId, int senderUserId,
+            int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }

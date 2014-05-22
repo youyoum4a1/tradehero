@@ -8,15 +8,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import com.tradehero.th.R;
 
-
-
 public class AppRater
 {
     private final static int DAYS_UNTIL_PROMPT = 3;
     private final static int LAUNCHES_UNTIL_PROMPT = 7;
     private final static String DONT_SHOW_AGAIN = "dontshowagain";
     private final static String LAUNCH_COUNT = "launch_count";
-    private final static String TAG = AppRater.class.getSimpleName();
+    private final static String SHARED_PREF_KEY = AppRater.class.getSimpleName();
     private static final String DATE_FIRSTLAUNCH = "date_firstlaunch";
 
     /**
@@ -25,7 +23,7 @@ public class AppRater
      */
     public static void registerLaunch(Context context)
     {
-        SharedPreferences prefs = context.getSharedPreferences(TAG, 0);
+        SharedPreferences prefs = context.getSharedPreferences(SHARED_PREF_KEY, 0);
         if (prefs.getBoolean(DONT_SHOW_AGAIN, false))
         {
             return;

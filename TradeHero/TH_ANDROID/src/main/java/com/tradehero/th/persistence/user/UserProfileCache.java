@@ -11,7 +11,6 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-
 import javax.inject.Singleton;
 
 @Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
@@ -29,6 +28,17 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
     //</editor-fold>
+
+    @Override public GetOrFetchTask<UserBaseKey, UserProfileDTO> getOrFetch(
+            UserBaseKey key, boolean forceUpdateCache,
+            Listener<UserBaseKey, UserProfileDTO> initialListener)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException("UserBaseKey cannot be null");
+        }
+        return super.getOrFetch(key, forceUpdateCache, initialListener);
+    }
 
     @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {

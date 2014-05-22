@@ -7,7 +7,6 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-
 public interface UserTimelineMarkerService
 {
     //<editor-fold desc="Post Timeline Marker">

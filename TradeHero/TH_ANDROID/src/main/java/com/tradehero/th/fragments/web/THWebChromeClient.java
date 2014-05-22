@@ -5,7 +5,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import timber.log.Timber;
 
-
 public class THWebChromeClient extends WebChromeClient
 {
     private BaseWebViewFragment baseWebViewFragment;

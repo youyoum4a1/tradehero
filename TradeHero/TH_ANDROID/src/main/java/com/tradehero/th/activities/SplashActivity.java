@@ -36,7 +36,6 @@ import retrofit.RetrofitError;
 
 public class SplashActivity extends SherlockActivity
 {
-    public static final String TAG = SplashActivity.class.getSimpleName();
     public static final String KEY_PREFS = SplashActivity.class.getName();
     private static final String KEY_FIRST_BOOT = "key_first_boot";
 
@@ -114,6 +113,7 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
+        // TODO use Dagger to inject pref?
         SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 
         if (preferences.getBoolean(KEY_FIRST_BOOT, true))
@@ -146,7 +146,7 @@ public class SplashActivity extends SherlockActivity
 
     public boolean canLoadApp()
     {
-        // TODO HAcK to ensure DashboardActivity has exchange list
+        // TODO HACK to ensure DashboardActivity has exchange list
         boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
         try
         {

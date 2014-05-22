@@ -11,4 +11,13 @@
       android:showAsAction="always"
       />
 
+  <item
+      android:id="@+id/btn_search"
+      android:icon="@drawable/ic_action_search"
+      android:enabled="true"
+      android:visible="false"
+      android:title="@string/action_search"
+      android:showAsAction="ifRoom"
+      />
+
 </menu>

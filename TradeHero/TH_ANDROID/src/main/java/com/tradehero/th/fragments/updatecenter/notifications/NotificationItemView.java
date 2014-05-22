@@ -189,7 +189,6 @@ public class NotificationItemView
         }
     }
 
-
     //<editor-fold desc="Navigation">
     protected DashboardNavigator getNavigator()
     {

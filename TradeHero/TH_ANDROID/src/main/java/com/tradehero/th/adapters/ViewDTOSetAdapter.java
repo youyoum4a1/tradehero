@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
 import java.util.Collection;
 
-abstract public class ViewDTOSetAdapter<T, ViewType extends DTOView<T>>
+abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
         extends DTOSetAdapter<T>
 {
     //<editor-fold desc="Constructors">
@@ -22,7 +22,7 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends DTOView<T>>
     }
     //</editor-fold>
 
-    @Override public View getView(int position, View convertView, ViewGroup parent)
+    @Override public ViewType getView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {
@@ -32,7 +32,7 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends DTOView<T>>
         ViewType dtoView = (ViewType) convertView;
         fineTune(position, getItem(position), dtoView);
 
-        return convertView;
+        return dtoView;
     }
 
     abstract protected int getViewResId(int position);

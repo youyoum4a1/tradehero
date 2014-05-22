@@ -1,6 +1,5 @@
 package com.tradehero.th.api.form;
 
-
 public class WeiboUserFormDTO extends UserFormDTO {
 
 

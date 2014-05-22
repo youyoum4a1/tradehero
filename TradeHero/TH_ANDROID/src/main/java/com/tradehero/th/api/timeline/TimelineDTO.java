@@ -9,8 +9,7 @@ public class TimelineDTO
 {
     private List<UserProfileCompactDTO> users;
     private List<SecurityCompactDTO> securities;
-    //private List<TimelineItemDTO> items;
-    private List<TimelineItemDTOEnhanced> enhancedItems;
+    private List<TimelineItemDTO> enhancedItems;
 
     public UserProfileCompactDTO getUserById(int userId)
     {
@@ -25,7 +24,7 @@ public class TimelineDTO
         return null;
     }
 
-    public List<TimelineItemDTOEnhanced> getEnhancedItems()
+    public List<TimelineItemDTO> getEnhancedItems()
     {
         if (enhancedItems != null)
         {
@@ -37,7 +36,7 @@ public class TimelineDTO
         }
     }
 
-    public void setEnhancedItems(List<TimelineItemDTOEnhanced> enhancedItems)
+    public void setEnhancedItems(List<TimelineItemDTO> enhancedItems)
     {
         this.enhancedItems = enhancedItems;
     }

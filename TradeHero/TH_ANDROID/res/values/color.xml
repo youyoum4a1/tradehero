@@ -63,6 +63,9 @@
   <color name="authentication_welcome_bg">#f2f2f2</color>
   <color name="authentication_background_color">#f2f2f2</color>
 
+  <!-- Search stock fragment -->
+  <color name="empty_text_bg">#ddffffff</color>
+
   <!-- Trade Fragment -->
   <color name="trade_highlight_share_quantity">#40929CBA</color>
   <color name="projected_pl_gain">#ff00cc00</color>

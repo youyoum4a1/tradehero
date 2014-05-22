@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.exception.IABMissingTokenExceptio
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import timber.log.Timber;
 
-
 abstract public class IABPurchaseConsumer<
             IABSKUType extends IABSKU,
             IABOrderIdType extends IABOrderId,

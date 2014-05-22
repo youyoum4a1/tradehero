@@ -2,11 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import java.util.Comparator;
 
-
 public class OwnedPortfolioIdDisplayComparator implements Comparator<OwnedPortfolioId>
 {
-    public static final String TAG = OwnedPortfolioIdDisplayComparator.class.getSimpleName();
-
     public OwnedPortfolioIdDisplayComparator()
     {
     }

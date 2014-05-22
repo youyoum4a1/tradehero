@@ -76,7 +76,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject LocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
-    @InjectView(R.id.search_empty_view) TextView searchEmptyView;
+    @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
+    @InjectView(R.id.search_empty_textview_wrapper) RelativeLayout searchEmptyTextViewWrapper;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -89,9 +90,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private SearchTextWatcher mSearchTextWatcher;
 
     private boolean isQuerying;
-
-    private SecurityIdListCacheListener securityIdListCacheListener;
-    private PeopleListCacheListener peopleListCacheListener;
 
     private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
@@ -131,9 +129,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void initViews(View view, LayoutInflater inflater)
     {
-        nearEndScrollListener = new SearchFlagNearEdgeScrollListener();
-        securityIdListCacheListener = new SecurityIdListCacheListener();
-        peopleListCacheListener = new PeopleListCacheListener();
+        nearEndScrollListener = createFlagNearEdgeScrollListener();
 
         securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater,
                 R.layout.search_security_item);
@@ -146,6 +142,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setOnItemClickListener(new SearchOnItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
             listView.setEmptyView(searchEmptyContainer);
+        }
+        if (searchEmptyTextViewWrapper != null)
+        {
+            searchEmptyTextViewWrapper.setVisibility(View.GONE);
         }
     }
 
@@ -337,6 +337,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        cancelSearchTasks();
         DeviceUtil.dismissKeyboard(getActivity());
 
         if (listView != null)
@@ -344,6 +345,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setOnItemClickListener(null);
             listView.setOnScrollListener(null);
         }
+        listView = null;
+        nearEndScrollListener = null;
 
         View rootView = getView();
         if (rootView != null && requestDataTask != null)
@@ -354,10 +357,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityItemViewAdapter = null;
         peopleItemViewAdapter = null;
         listView = null;
-
-        cancelSearchTasks();
-        securityIdListCacheListener = null;
-        peopleListCacheListener = null;
 
         super.onDestroyView();
     }
@@ -456,7 +455,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, securityIdListCacheListener);
+                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
             securitySearchTask.execute();
         }
     }
@@ -470,7 +469,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             peopleSearchTask = userBaseKeyListCache.get()
-                    .getOrFetch(searchUserListType, peopleListCacheListener);
+                    .getOrFetch(searchUserListType, createUserCacheListener());
             peopleSearchTask.execute();
         }
     }
@@ -558,11 +557,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityId == null)
-        {
-            Timber.e("Cannot handle null SecurityId", new IllegalArgumentException());
-            return;
-        }
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);
@@ -625,6 +619,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
+    private FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
+    {
+        return new SearchFlagNearEdgeScrollListener();
+    }
+
     private class SearchFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
         @Override public void raiseEndFlag()
@@ -702,6 +701,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
+    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    {
+        return new SecurityIdListCacheListener();
+    }
+
     private class SecurityIdListCacheListener
             implements DTOCache.Listener<SecurityListType, SecurityIdList>
     {
@@ -725,7 +729,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
-                    searchEmptyView.setText(R.string.trending_search_no_stock_found);
+                    searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
@@ -747,6 +752,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             THToast.show(getString(R.string.error_fetch_security_list_info));
             Timber.e("Error fetching the list of securities " + key, error);
         }
+    }
+
+    private DTOCache.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
+    {
+        return new PeopleListCacheListener();
     }
 
     private class PeopleListCacheListener
@@ -772,12 +782,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.clear();
-                    searchEmptyView.setText(R.string.trending_search_no_people_found);
+                    searchEmptyTextView.setText(R.string.trending_search_no_people_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
             {
-                userBaseKeys.addAll(value);
+                if (userBaseKeys != null)
+                {
+                    userBaseKeys.addAll(value);
+                }
                 peopleItemViewAdapter.clear();
                 peopleItemViewAdapter.addAll(userBaseKeys);
             }

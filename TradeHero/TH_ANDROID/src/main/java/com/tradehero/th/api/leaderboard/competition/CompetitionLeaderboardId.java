@@ -4,11 +4,8 @@ import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
 
-
 public class CompetitionLeaderboardId implements DTOKey
 {
-    public static final String TAG = CompetitionLeaderboardId.class.getSimpleName();
-
     public final int providerId;
     public final int competitionId;
     public final Integer page;

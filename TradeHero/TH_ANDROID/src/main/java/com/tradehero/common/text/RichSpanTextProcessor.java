@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public abstract class RichSpanTextProcessor implements RichTextProcessor
 {
     @Override public SpannableStringBuilder process(SpannableStringBuilder source)

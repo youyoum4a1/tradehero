@@ -2,7 +2,6 @@ package com.tradehero.common.persistence;
 
 import java.util.Map;
 
-
 public interface FetchAssistant<DTOKeyType, DTOType>
 {
     void execute();

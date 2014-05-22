@@ -4,11 +4,8 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class NewsHeadlineList extends ArrayList<NewsHeadline> implements DTO
 {
-    public static final String TAG = NewsHeadlineList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public NewsHeadlineList()
     {

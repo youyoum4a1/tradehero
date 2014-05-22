@@ -14,13 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOTypeComparatorTest
 {
-    public static final String TAG = WarrantDTOTypeComparatorTest.class.getSimpleName();
-
     private TreeSet<WarrantDTO> treeSet;
 
     @Before public void setUp()

@@ -1,6 +1,5 @@
 package com.tradehero.common.persistence;
 
-
 public class LeaderboardQuery extends Query
 {
     private static final String SORT_TYPE = LeaderboardQuery.class.getName() + ".sortType";

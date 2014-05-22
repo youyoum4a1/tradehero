@@ -1,6 +1,5 @@
 package com.tradehero.th.api.timeline;
 
-
 public enum TimeLineItemType
 {
     TLI_TRADE(1),
@@ -17,5 +16,17 @@ public enum TimeLineItemType
     private TimeLineItemType(int value)
     {
         this.value = value;
+    }
+
+    public static TimeLineItemType valueOf(int value)
+    {
+        for (TimeLineItemType timeLineItemType : TimeLineItemType.values())
+        {
+            if (value == timeLineItemType.value)
+            {
+                return timeLineItemType;
+            }
+        }
+        throw new IllegalArgumentException("Unhandled value " + value);
     }
 }

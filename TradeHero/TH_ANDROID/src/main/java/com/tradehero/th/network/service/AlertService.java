@@ -10,7 +10,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 
-
 public interface AlertService
 {
     //<editor-fold desc="Get Alerts">

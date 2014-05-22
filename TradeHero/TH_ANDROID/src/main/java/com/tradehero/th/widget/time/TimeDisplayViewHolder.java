@@ -15,10 +15,8 @@ import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 
-
 public class TimeDisplayViewHolder
 {
-    public static final String TAG = TimeDisplayViewHolder.class.getSimpleName();
     public static final long MAX_DAY_COUNT = 99;
 
     protected Context context;

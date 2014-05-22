@@ -10,13 +10,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class PositionDTOTest extends BasePositionDTOTest
 {
-    public static final String TAG = PositionDTOTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

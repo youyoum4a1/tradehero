@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 @Config(manifest = Config.NONE)
 public class SecurityListTypeFactoryTest
 {
-    public static final String TAG = SecurityListTypeFactoryTest.class.getSimpleName();
-
     private SecurityListTypeFactory securityListTypeFactory;
 
     @Before public void setUp()

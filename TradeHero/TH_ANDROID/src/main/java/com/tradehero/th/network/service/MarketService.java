@@ -7,7 +7,6 @@ import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-
 public interface MarketService
 {
     //<editor-fold desc="GetExchanges">

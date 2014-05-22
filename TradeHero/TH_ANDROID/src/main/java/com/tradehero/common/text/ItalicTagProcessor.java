@@ -3,7 +3,6 @@ package com.tradehero.common.text;
 import android.graphics.Typeface;
 import java.util.regex.Pattern;
 
-
 public class ItalicTagProcessor extends RichSpanTextProcessor
 {
     /* "_xxx_" = xxx in italics */

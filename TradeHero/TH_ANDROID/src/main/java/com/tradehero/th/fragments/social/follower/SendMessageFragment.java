@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -32,8 +33,10 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
@@ -50,8 +53,10 @@ import timber.log.Timber;
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
-    public static final String KEY_DISCUSSION_TYPE = SendMessageFragment.class.getName() + ".discussionType";
-    public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
+    public static final String KEY_DISCUSSION_TYPE =
+            SendMessageFragment.class.getName() + ".discussionType";
+    public static final String KEY_MESSAGE_TYPE =
+            SendMessageFragment.class.getName() + ".messageType";
 
     private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
@@ -72,7 +77,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
-    @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -117,7 +122,10 @@ public class SendMessageFragment extends DashboardFragment
     {
         if (item.getItemId() == 100)
         {
-            sendMessage();
+            progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
+            userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+            userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false,
+                    createUserProfileCacheListener()).execute();
             return true;
         }
 
@@ -150,6 +158,7 @@ public class SendMessageFragment extends DashboardFragment
     {
         DeviceUtil.dismissKeyboard(getActivity(), inputText);
         sendMessageDiscussionCallback = null;
+        progressDialogUtilLazy.get().dismiss(getActivity());
         super.onDestroy();
     }
 
@@ -190,16 +199,20 @@ public class SendMessageFragment extends DashboardFragment
                 getActivity(),
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
-                MessageType.getShowingTypes()){
+                MessageType.getShowingTypes()) {
 
             @Override public View getView(int position, View convertView, ViewGroup parent)
             {
                 View view;
                 TextView text;
-                if (convertView == null) {
-                    LayoutInflater mInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    view =  mInflater.inflate(R.layout.common_dialog_item_layout, parent, false);
-                } else {
+                if (convertView == null)
+                {
+                    LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(
+                            Context.LAYOUT_INFLATER_SERVICE);
+                    view = mInflater.inflate(R.layout.common_dialog_item_layout, parent, false);
+                }
+                else
+                {
                     view = convertView;
                 }
                 text = (TextView) view.findViewById(R.id.popup_text);
@@ -224,11 +237,9 @@ public class SendMessageFragment extends DashboardFragment
         };
     }
 
-    private void sendMessage()
+    private void sendMessage(int count)
     {
-        int count = getFollowerCount(messageType);
-        //TODO
-        //Needn't to checkout for this, we don't know a user is following or unfollowing me unless we get the flesh data from server.
+        progressDialogUtilLazy.get().dismiss(getActivity());
         if (count <= 0)
         {
             THToast.show(getString(R.string.broadcast_message_no_follower_hint));
@@ -242,7 +253,7 @@ public class SendMessageFragment extends DashboardFragment
             return;
         }
         this.progressDialog =
-                progressDialogUtil.show(getActivity(),
+                progressDialogUtilLazy.get().show(getActivity(),
                         getString(R.string.broadcast_message_waiting),
                         getString(R.string.broadcast_message_sending_hint));
 
@@ -285,17 +296,8 @@ public class SendMessageFragment extends DashboardFragment
         return result;
     }
 
-    /**
-     * return how many followers whom you will send message to
-     */
-    private int getFollowerCount(MessageType messageType)
+    private int getCountFromCache(MessageType messageType)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            return getFollowerCountByUserProfile(messageType);
-        }
-
         FollowerSummaryDTO followerSummaryDTO =
                 followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
@@ -322,6 +324,31 @@ public class SendMessageFragment extends DashboardFragment
             return result;
         }
         return 0;
+    }
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            {
+                if (value != null)
+                {
+                    sendMessage(getFollowerCountByUserProfile(messageType));
+                }
+                else
+                {
+                    sendMessage(getCountFromCache(messageType));
+                }
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show(new THException(error));
+                sendMessage(getCountFromCache(messageType));
+            }
+        };
     }
 
     private void dismissDialog(Dialog dialog)

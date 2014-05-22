@@ -17,8 +17,6 @@ import static org.junit.Assert.assertTrue;
 @Config(manifest = Config.NONE)
 public class WarrantDTOTest
 {
-    public static final String TAG = WarrantDTOTest.class.getSimpleName();
-
     public static final String EXT_KEY_WARRANT_TYPE = "warrantType";
     public static final String EXT_KEY_EXPIRY_DATE = "expiryDate";
     public static final String EXT_KEY_STRIKE_PRICE = "strikePrice";

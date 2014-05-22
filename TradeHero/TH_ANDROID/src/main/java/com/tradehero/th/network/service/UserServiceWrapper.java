@@ -584,7 +584,7 @@ import java.util.List;
     public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
-        userService.freeFollow(userBaseKey.key, callback);
+        userServiceAsync.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 

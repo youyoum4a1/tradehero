@@ -44,7 +44,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-
 public class AuthenticationActivity extends SherlockFragmentActivity
         implements View.OnClickListener
 {

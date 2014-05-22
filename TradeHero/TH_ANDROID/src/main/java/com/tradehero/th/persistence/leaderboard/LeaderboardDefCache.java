@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class LeaderboardDefCache extends StraightDTOCache<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;

@@ -18,14 +18,14 @@ import timber.log.Timber;
 @Singleton public class TranslationServiceWrapper
 {
     private final TranslationTokenCache translationTokenCache;
-    private final BingTranslationServiceWrapper bingTranslationServiceWrapper;
+    private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
     @Inject public TranslationServiceWrapper(
             TranslationTokenCache translationTokenCache,
-            BingTranslationServiceWrapper bingTranslationServiceWrapper)
+            TranslationServiceBingWrapper translationServiceBingWrapper)
     {
         this.translationTokenCache = translationTokenCache;
-        this.bingTranslationServiceWrapper = bingTranslationServiceWrapper;
+        this.translationServiceBingWrapper = translationServiceBingWrapper;
     }
 
     public TranslationResult translate(String from, String to, String text)
@@ -34,7 +34,7 @@ import timber.log.Timber;
 
         if (token instanceof BingTranslationToken)
         {
-            return bingTranslationServiceWrapper.translate((BingTranslationToken) token,
+            return translationServiceBingWrapper.translate((BingTranslationToken) token,
                     from, to, text);
         }
         throw new IllegalArgumentException("Unhandled TranslationToken " + token);
@@ -54,7 +54,7 @@ import timber.log.Timber;
     {
         if (token instanceof BingTranslationToken)
         {
-            return bingTranslationServiceWrapper.translate((BingTranslationToken) token,
+            return translationServiceBingWrapper.translate((BingTranslationToken) token,
                     from, to, text, callback);
         }
         throw new IllegalArgumentException("Unhandled TranslationToken " + token);

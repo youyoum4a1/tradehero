@@ -8,7 +8,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-
 public class DiscussionActionButtonsView extends LinearLayout
 {
     @InjectView(R.id.discussion_action_button_comment_count) TextView comment;

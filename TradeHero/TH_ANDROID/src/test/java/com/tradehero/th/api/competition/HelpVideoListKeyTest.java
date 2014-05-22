@@ -9,13 +9,10 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class HelpVideoListKeyTest
 {
-    public static final String TAG = HelpVideoListKeyTest.class.getSimpleName();
-
     @Test public void notEqualsWhenNotType()
     {
         assertFalse(new HelpVideoListKey(new ProviderId(3)).equals(new Integer(4)));

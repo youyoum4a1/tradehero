@@ -3,6 +3,7 @@ package com.tradehero.th.models.provider;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
+import com.tradehero.th.models.provider.etoro.EToroProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
@@ -39,6 +40,9 @@ import javax.inject.Singleton;
                     break;
                 case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
                     created = new PhillipMacquarieProviderSpecificResourcesDTO();
+                    break;
+                case ProviderIdConstants.PROVIDER_ID_E_TORO:
+                    created = new EToroProviderSpecificResourcesDTO();
                     break;
             }
         }

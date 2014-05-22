@@ -23,7 +23,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
 {
     @Inject protected CurrentUserId currentUserId;

@@ -7,6 +7,7 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
@@ -67,6 +68,9 @@ import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
+import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
+import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
@@ -186,6 +190,9 @@ import javax.inject.Singleton;
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
                         SecurityListPagedLoader.class,
+                        SecuritySearchFragment.class,
+                        SecuritySearchWatchlistFragment.class,
+                        SecuritySearchProviderFragment.class,
                         MacquarieSecurityListPagedLoader.class,
                         SecurityItemViewAdapter.class,
                         MacquarieWarrantItemViewAdapter.class,
@@ -330,6 +337,7 @@ import javax.inject.Singleton;
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
                         AbstractDiscussionItemViewHolder.class,
+                        MessageHeaderDTO.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         PrivateDiscussionView.class,

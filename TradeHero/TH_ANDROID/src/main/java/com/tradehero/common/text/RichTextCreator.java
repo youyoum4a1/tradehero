@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-
 public class RichTextCreator
 {
     private static Map<String, Spanned> cachedTexts = new HashMap<>();

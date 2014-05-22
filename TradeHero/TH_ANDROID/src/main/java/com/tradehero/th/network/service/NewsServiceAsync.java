@@ -56,7 +56,6 @@ interface NewsServiceAsync
     @GET("/news/{newsId}")
     void getNewsDetails(@Path("newsId") long newsId, Callback<NewsItemDTO> callback);
 
-
     @POST("/discussions/news/{headlineItemId}/share")
     void shareHeadlineItem(
             @Path("headlineItemId") int headlineItemId,

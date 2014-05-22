@@ -3,10 +3,8 @@ package com.tradehero.th.api.users;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class UserTransactionHistoryId extends AbstractIntegerDTOKey
 {
-    public static final String TAG = UserTransactionHistoryId.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = UserTransactionHistoryId.class.getSimpleName() + ".key";
 
     //<editor-fold desc="Constructors">

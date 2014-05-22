@@ -1,6 +1,5 @@
 package com.tradehero.th.api.news;
 
-
 public class NewsItemMediaDTO
 {
     public Integer id;

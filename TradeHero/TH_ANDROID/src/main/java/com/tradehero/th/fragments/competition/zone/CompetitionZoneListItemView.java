@@ -14,8 +14,6 @@ import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {
-    public static final String TAG = CompetitionZoneListItemView.class.getSimpleName();
-
     protected ImageView zoneIcon;
     protected TextView title;
     protected TextView description;

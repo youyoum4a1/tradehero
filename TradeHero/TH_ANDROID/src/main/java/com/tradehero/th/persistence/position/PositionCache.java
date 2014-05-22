@@ -11,7 +11,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class PositionCache extends StraightDTOCache<OwnedPositionId, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;

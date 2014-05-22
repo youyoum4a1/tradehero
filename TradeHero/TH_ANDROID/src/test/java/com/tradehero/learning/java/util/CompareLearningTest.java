@@ -12,13 +12,10 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class CompareLearningTest
 {
-    public static final String TAG = CompareLearningTest.class.getSimpleName();
-
     @Test public void leftBigger_shouldReturn1()
     {
         assertThat(new Integer(12).compareTo(11), equalTo(1));

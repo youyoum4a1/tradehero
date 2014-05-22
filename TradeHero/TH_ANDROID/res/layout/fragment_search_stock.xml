@@ -18,6 +18,7 @@
       android:paddingTop="@dimen/search_stock_people_padding"
       android:clipToPadding="false"
       >
+
   </ListView>
 
   <RelativeLayout
@@ -33,15 +34,27 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/search_image_bg"/>
 
-    <TextView
-        android:id="@+id/search_empty_view"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/search_empty_textview_wrapper"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textSize="@dimen/text_header"
-        />
+        android:padding="24dp"
+        android:background="@color/empty_text_bg"
+        >
+
+      <TextView
+          android:id="@+id/search_empty_textview"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textSize="@dimen/text_header"
+          android:text="@string/trending_search_no_stock_found"
+          />
+
+    </RelativeLayout>
+
   </RelativeLayout>
 
   <ProgressBar

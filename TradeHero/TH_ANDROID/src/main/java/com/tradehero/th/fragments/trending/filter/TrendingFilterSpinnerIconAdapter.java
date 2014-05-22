@@ -12,7 +12,7 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
     private int itemResId;
     private int itemDropDrownResId;
 
-    public TrendingFilterSpinnerIconAdapter(Context context, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
+    public TrendingFilterSpinnerIconAdapter(Context context, CharSequence[] objects, int[] icons, int[] dropDownIcons)
     {
         super(context,
                 R.layout.trending_filter_spinner_item,

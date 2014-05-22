@@ -10,10 +10,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class AlertCache extends StraightDTOCache<AlertId, AlertDTO>
 {
-    public static final String TAG = AlertCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;

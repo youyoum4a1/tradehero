@@ -115,218 +115,73 @@ import retrofit.Callback;
     //<editor-fold desc="Query for watchlist">
     public WatchlistPositionDTOList getAllByUser(PagedWatchlistKey pagedWatchlistKey)
     {
-        if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
         {
-            return getAllByUser((PerPagedWatchlistKey) pagedWatchlistKey);
+            SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey = (SkipCacheSecurityPerPagedWatchlistKey) pagedWatchlistKey;
+            return watchlistService.getAllByUser(
+                    skipCacheSecurityPerPagedWatchlistKey.page,
+                    skipCacheSecurityPerPagedWatchlistKey.perPage,
+                    skipCacheSecurityPerPagedWatchlistKey.securityId,
+                    skipCacheSecurityPerPagedWatchlistKey.skipCache);
         }
-
-        if (pagedWatchlistKey.page == null)
+        else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
         {
-            return watchlistService.getAllByUser();
+            SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey = (SecurityPerPagedWatchlistKey) pagedWatchlistKey;
+            return watchlistService.getAllByUser(
+                    securityPerPagedWatchlistKey.page,
+                    securityPerPagedWatchlistKey.perPage,
+                    securityPerPagedWatchlistKey.securityId,
+                    null);
         }
-        return watchlistService.getAllByUser(pagedWatchlistKey.page);
+        else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        {
+            PerPagedWatchlistKey perPagedWatchlistKey = (PerPagedWatchlistKey) pagedWatchlistKey;
+            return watchlistService.getAllByUser(
+                    perPagedWatchlistKey.page,
+                    perPagedWatchlistKey.perPage,
+                    null,
+                    null);
+        }
+        return watchlistService.getAllByUser(pagedWatchlistKey.page, null, null, null);
     }
 
     public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PagedWatchlistKey pagedWatchlistKey,
             Callback<WatchlistPositionDTOList> callback)
     {
-        if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
-        {
-            return getAllByUser((PerPagedWatchlistKey) pagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (pagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(pagedWatchlistKey.page, middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey)
-    {
-        if (perPagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SecurityPerPagedWatchlistKey) perPagedWatchlistKey);
-        }
-
-        if (perPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (perPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(perPagedWatchlistKey.page);
-        }
-        return watchlistService.getAllByUser(
-                perPagedWatchlistKey.page,
-                perPagedWatchlistKey.perPage);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        if (perPagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SecurityPerPagedWatchlistKey) perPagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (perPagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else if (perPagedWatchlistKey.perPage == null)
-            {
-                watchlistServiceAsync.getAllByUser(perPagedWatchlistKey.page, middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(
-                        perPagedWatchlistKey.page,
-                        perPagedWatchlistKey.perPage,
-                        middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey)
-    {
-        if (securityPerPagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SkipCacheSecurityPerPagedWatchlistKey) securityPerPagedWatchlistKey);
-        }
-
-        if (securityPerPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (securityPerPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(securityPerPagedWatchlistKey.page);
-        }
-        if (securityPerPagedWatchlistKey.securityId == null)
-        {
-            return watchlistService.getAllByUser(
-                    securityPerPagedWatchlistKey.page,
-                    securityPerPagedWatchlistKey.perPage);
-        }
-        return watchlistService.getAllByUser(
-                securityPerPagedWatchlistKey.page,
-                securityPerPagedWatchlistKey.perPage,
-                securityPerPagedWatchlistKey.securityId);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        if (securityPerPagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SkipCacheSecurityPerPagedWatchlistKey) securityPerPagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (securityPerPagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else if (securityPerPagedWatchlistKey.perPage == null)
-            {
-                watchlistServiceAsync.getAllByUser(securityPerPagedWatchlistKey.page, middleCallback);
-            }
-            else if (securityPerPagedWatchlistKey.securityId == null)
-            {
-                watchlistServiceAsync.getAllByUser(
-                        securityPerPagedWatchlistKey.page,
-                        securityPerPagedWatchlistKey.perPage,
-                        middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(
-                        securityPerPagedWatchlistKey.page,
-                        securityPerPagedWatchlistKey.perPage,
-                        securityPerPagedWatchlistKey.securityId,
-                        middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey)
-    {
-        if (skipCacheSecurityPerPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(skipCacheSecurityPerPagedWatchlistKey.page);
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.securityId == null)
-        {
-            return watchlistService.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage);
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.skipCache == null)
-        {
-            return watchlistService.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage,
-                    skipCacheSecurityPerPagedWatchlistKey.securityId);
-        }
-        return watchlistService.getAllByUser(
-                skipCacheSecurityPerPagedWatchlistKey.page,
-                skipCacheSecurityPerPagedWatchlistKey.perPage,
-                skipCacheSecurityPerPagedWatchlistKey.securityId,
-                skipCacheSecurityPerPagedWatchlistKey.skipCache);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
         MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (skipCacheSecurityPerPagedWatchlistKey.page == null)
+        if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
         {
-            watchlistServiceAsync.getAllByUser(middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.perPage == null)
-        {
-            watchlistServiceAsync.getAllByUser(skipCacheSecurityPerPagedWatchlistKey.page, middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.securityId == null)
-        {
-            watchlistServiceAsync.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage,
-                    middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.skipCache == null)
-        {
-            watchlistServiceAsync.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage,
-                    skipCacheSecurityPerPagedWatchlistKey.securityId,
-                    middleCallback);
-        }
-        else
-        {
+            SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey = (SkipCacheSecurityPerPagedWatchlistKey) pagedWatchlistKey;
             watchlistServiceAsync.getAllByUser(
                     skipCacheSecurityPerPagedWatchlistKey.page,
                     skipCacheSecurityPerPagedWatchlistKey.perPage,
                     skipCacheSecurityPerPagedWatchlistKey.securityId,
                     skipCacheSecurityPerPagedWatchlistKey.skipCache,
                     middleCallback);
+        }
+        else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
+        {
+            SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey = (SecurityPerPagedWatchlistKey) pagedWatchlistKey;
+            watchlistServiceAsync.getAllByUser(
+                    securityPerPagedWatchlistKey.page,
+                    securityPerPagedWatchlistKey.perPage,
+                    securityPerPagedWatchlistKey.securityId,
+                    null,
+                    middleCallback);
+        }
+        else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        {
+            PerPagedWatchlistKey perPagedWatchlistKey = (PerPagedWatchlistKey) pagedWatchlistKey;
+            watchlistServiceAsync.getAllByUser(
+                    perPagedWatchlistKey.page,
+                    perPagedWatchlistKey.perPage,
+                    null,
+                    null,
+                    middleCallback);
+        }
+        else
+        {
+            watchlistServiceAsync.getAllByUser(pagedWatchlistKey.page, null, null, null, middleCallback);
         }
         return middleCallback;
     }

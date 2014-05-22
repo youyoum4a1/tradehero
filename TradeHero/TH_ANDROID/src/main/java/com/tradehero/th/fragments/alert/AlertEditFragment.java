@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.alert;
 
-import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -14,39 +13,14 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class AlertEditFragment extends BaseAlertEditFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     protected AlertId alertId;
     @Inject protected AlertCache alertCache;
-    protected DTOCache.Listener<AlertId, AlertDTO> alertCacheListener;
     protected DTOCache.GetOrFetchTask<AlertId, AlertDTO> alertCacheFetchTask;
     protected MiddleCallbackUpdateAlertCompact middleCallbackUpdateAlertCompactDTO;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        createAlertCacheListener();
-    }
-
-    protected void createAlertCacheListener()
-    {
-        alertCacheListener = new DTOCache.Listener<AlertId, AlertDTO>()
-        {
-            @Override public void onDTOReceived(AlertId key, AlertDTO value, boolean fromCache)
-            {
-                linkWith(value, true);
-            }
-
-            @Override public void onErrorThrown(AlertId key, Throwable error)
-            {
-                THToast.show(new THException(error));
-                Timber.e("Failed to get alertDTO", error);
-            }
-        };
-    }
 
     @Override public void onResume()
     {
@@ -54,12 +28,11 @@ public class AlertEditFragment extends BaseAlertEditFragment
         linkWith(new AlertId(getArguments().getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE)), true);
     }
 
-    @Override public void onDestroy()
+    @Override public void onDestroyView()
     {
-        alertCacheListener = null;
         detachAlertCacheFetchTask();
         detachMiddleCallbackUpdate();
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     protected void detachAlertCacheFetchTask()
@@ -93,7 +66,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     {
         this.alertId = alertId;
         detachAlertCacheFetchTask();
-        alertCacheFetchTask = alertCache.getOrFetch(alertId, alertCacheListener);
+        alertCacheFetchTask = alertCache.getOrFetch(alertId, createAlertCacheListener());
         alertCacheFetchTask.execute();
         if (andDisplay)
         {
@@ -106,6 +79,25 @@ public class AlertEditFragment extends BaseAlertEditFragment
         if (actionBar != null)
         {
             actionBar.setTitle(R.string.stock_alert_edit_alert);
+        }
+    }
+
+    protected DTOCache.Listener<AlertId, AlertDTO> createAlertCacheListener()
+    {
+        return new AlertEditFragmentAlertCacheListener();
+    }
+
+    protected class AlertEditFragmentAlertCacheListener implements DTOCache.Listener<AlertId, AlertDTO>
+    {
+        @Override public void onDTOReceived(AlertId key, AlertDTO value, boolean fromCache)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(AlertId key, Throwable error)
+        {
+            THToast.show(new THException(error));
+            Timber.e("Failed to get alertDTO", error);
         }
     }
 }

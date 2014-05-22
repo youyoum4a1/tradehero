@@ -173,6 +173,17 @@ public class LeaderboardUserDTO extends UserBaseDTO
     {
         this.put(ExpandableItem.class.getName(), expanded);
     }
+
+    @JsonIgnore
+    public Double getConsistency()
+    {
+        if (stdDevPositionRoiInPeriod != null && stdDevPositionRoiInPeriod != 0)
+        {
+            return 1 / stdDevPositionRoiInPeriod;
+        }
+        return null;
+    }
+
     //</editor-fold>
 }
 

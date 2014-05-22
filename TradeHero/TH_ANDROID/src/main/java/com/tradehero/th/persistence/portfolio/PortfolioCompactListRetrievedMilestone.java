@@ -9,11 +9,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, OwnedPortfolioIdList, PortfolioCompactListCache>
 {
-    public static final String TAG = PortfolioCompactListRetrievedMilestone.class.getSimpleName();
-
     @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
 

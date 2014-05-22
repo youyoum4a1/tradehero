@@ -2,11 +2,8 @@ package com.tradehero.th.api.social;
 
 import java.util.Date;
 
-
 public class FollowerTransactionDTO
 {
-    public static final String TAG = FollowerTransactionDTO.class.getSimpleName();
-
     public Date paidAt;
     public double value;
     public double freeCreditValue;

@@ -27,7 +27,6 @@ import retrofit.Callback;
     private final Lazy<PortfolioCompactCache> portfolioCompactCache;
     private final Lazy<PortfolioCache> portfolioCache;
 
-
     @Inject public PortfolioServiceWrapper(
             PortfolioService portfolioService,
             PortfolioServiceAsync portfolioServiceAsync,

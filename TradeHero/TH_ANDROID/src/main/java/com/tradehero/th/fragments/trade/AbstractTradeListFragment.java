@@ -15,8 +15,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -123,7 +121,6 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         }
     }
 
-
     private void registerOverlayHeaderListener()
     {
         if (this.header == null)
@@ -161,11 +158,16 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
             else
             {
                 Bundle args = new Bundle();
-                args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                populateBuySellArgs(args, isBuy, securityId);
                 getNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
+    }
+
+    protected void populateBuySellArgs(Bundle args, boolean isBuy, SecurityId securityId)
+    {
+        args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
     private void openUserProfile(UserBaseKey userId)

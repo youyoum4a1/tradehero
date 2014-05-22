@@ -7,13 +7,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 
-
 public class THSamsungProductDetail
         implements SamsungProductDetail<SamsungSKU>,
             THProductDetail<SamsungSKU>
 {
-    public static final String TAG = THSamsungProductDetail.class.getSimpleName();
-
     private final SamsungSKU samsungSKU;
     public int iconResId;
     public boolean hasFurtherDetails = false;

@@ -6,7 +6,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
 
-
 public interface BillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

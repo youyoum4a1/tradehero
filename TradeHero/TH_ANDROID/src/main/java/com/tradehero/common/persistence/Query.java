@@ -3,7 +3,6 @@ package com.tradehero.common.persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Query
 {
     private static final String idKey = Query.class.getName() + ".id";

@@ -1,16 +1,23 @@
 package com.tradehero.common.log;
 
+import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;
 import timber.log.Timber;
-
 
 public class CrashReportingTree extends Timber.HollowTree
 {
     @Override public void e(Throwable cause, String message, Object... args)
     {
-        Crashlytics.logException(new Exception(
+        if (message == null || TextUtils.isEmpty(message))
+        {
+            Crashlytics.logException(cause);
+        }
+        else
+        {
+            Crashlytics.logException(new Exception(
                     getConcatMessage(cause, message, args),
                     cause));
+        }
     }
 
     public String getConcatMessage(Throwable cause, String message, Object... args)

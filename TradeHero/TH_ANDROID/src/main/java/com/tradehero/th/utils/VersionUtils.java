@@ -10,7 +10,6 @@ import android.view.Display;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class VersionUtils
 {
     public static Intent getSupportEmailIntent(Context context)
