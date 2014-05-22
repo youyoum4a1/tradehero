@@ -2,10 +2,11 @@ package com.tradehero.th.models.push.handlers;
 
 import android.content.Context;
 import android.content.Intent;
-import com.urbanairship.UAirship;
-import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
+
+//import com.urbanairship.UAirship;
+//import com.urbanairship.push.PushManager;
 
 public class RegistrationFinishedHandler implements PushNotificationHandler
 {
@@ -19,16 +20,16 @@ public class RegistrationFinishedHandler implements PushNotificationHandler
 
     @Override public String getAction()
     {
-        return PushManager.ACTION_REGISTRATION_FINISHED;
+        return "com.urbanairship.push.REGISTRATION_FINISHED";
     }
 
     @Override public boolean handle(Intent intent)
     {
         Timber.i("Registration complete. APID: %s. Valid: %b",
-                intent.getStringExtra(PushManager.EXTRA_APID),
-                intent.getBooleanExtra(PushManager.EXTRA_REGISTRATION_VALID, false));
+                intent.getStringExtra("com.urbanairship.push.APID"),
+                intent.getBooleanExtra("com.urbanairship.push.REGISTRATION_VALID", false));
 
-        Intent launch = new Intent(UAirship.getPackageName() + APID_UPDATED_ACTION_SUFFIX);
+        Intent launch = new Intent("com.urbanairship.UAirship" + APID_UPDATED_ACTION_SUFFIX);
         context.sendBroadcast(launch);
         return true;
     }

@@ -5,9 +5,10 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
-import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
+
+//import com.urbanairship.push.PushManager;
 
 public class DeviceTokenHelper
 {
@@ -28,13 +29,13 @@ public class DeviceTokenHelper
      */
     public static String getDeviceToken()
     {
-        if (isChineseVersion())
-        {
+        //if (isChineseVersion())
+        //{
             String token = savedPushDeviceIdentifier.get();
             Timber.d("get saved the token from baidu %s", token);
             return token;
-        }
-        return PushManager.shared().getAPID();
+        //}
+        //return PushManager.shared().getAPID();
     }
 
     /**

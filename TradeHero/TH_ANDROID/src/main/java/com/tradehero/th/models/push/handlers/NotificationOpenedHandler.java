@@ -7,8 +7,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
+
+//import com.urbanairship.push.PushManager;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
@@ -22,7 +23,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
 
     @Override public String getAction()
     {
-        return PushManager.ACTION_NOTIFICATION_OPENED;
+        return "com.urbanairship.push.NOTIFICATION_OPENED";
     }
 
     @Override public boolean handle(Intent intent)

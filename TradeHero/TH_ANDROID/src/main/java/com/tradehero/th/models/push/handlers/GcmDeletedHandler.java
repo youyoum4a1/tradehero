@@ -1,9 +1,10 @@
 package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
-import com.urbanairship.push.GCMMessageHandler;
 import javax.inject.Inject;
 import timber.log.Timber;
+
+//import com.urbanairship.push.GCMMessageHandler;
 
 public class GcmDeletedHandler implements PushNotificationHandler
 {
@@ -14,12 +15,12 @@ public class GcmDeletedHandler implements PushNotificationHandler
 
     @Override public String getAction()
     {
-        return GCMMessageHandler.ACTION_GCM_DELETED_MESSAGES;
+        return "com.urbanairship.push.ACTION_GCM_DELETED_MESSAGES";
     }
 
     @Override public boolean handle(Intent intent)
     {
-        Timber.i("The GCM service deleted %s messages.", intent.getStringExtra(GCMMessageHandler.EXTRA_GCM_TOTAL_DELETED));
+        Timber.i("The GCM service deleted %s messages.", intent.getStringExtra("total_deleted"));
         return true;
     }
 }
