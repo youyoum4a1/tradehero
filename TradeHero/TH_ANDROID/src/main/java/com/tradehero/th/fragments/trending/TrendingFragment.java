@@ -22,6 +22,7 @@ import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -50,6 +51,7 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
+import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
@@ -342,8 +344,21 @@ public class TrendingFragment extends SecurityListFragment
             }
             Collections.sort(exchangeDTOList, new ExchangeDTODescriptionNameComparator());
 
+            setDefaultExchange(exchangeDTOs);
             filterSelectorView.setUpExchangeSpinner(exchangeDTOList);
             filterSelectorView.apply(trendingFilterTypeDTO);
+        }
+    }
+
+    private void setDefaultExchange(ExchangeDTOList exchangeDTOs) {
+        if (DeviceTokenHelper.isChineseVersion()) {
+            if (trendingFilterTypeDTO != null && exchangeDTOs != null) {
+                for (ExchangeDTO e : exchangeDTOs) {
+                    if (Exchange.SHA.name().equalsIgnoreCase(e.name)) {
+                        trendingFilterTypeDTO.exchange = e;
+                    }
+                }
+            }
         }
     }
 
