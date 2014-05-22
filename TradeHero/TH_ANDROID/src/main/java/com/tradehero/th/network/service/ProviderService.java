@@ -31,6 +31,15 @@ public interface ProviderService
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
+    //<editor-fold desc="Search Provider Securities">
+    @GET("/providers/{providerId}/securities")
+    List<SecurityCompactDTO> searchSecurities(
+            @Path("providerId") int providerId,
+            @Query("q") String searchString,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
     //<editor-fold desc="Get Help Videos">
     @GET("/providers/{providerId}/helpVideos")
     List<HelpVideoDTO> getHelpVideos(

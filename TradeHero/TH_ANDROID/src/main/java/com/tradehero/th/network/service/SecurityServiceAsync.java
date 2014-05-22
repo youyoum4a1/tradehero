@@ -60,7 +60,6 @@ interface SecurityServiceAsync
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            @Query("providerId") Integer providerId,
             Callback<List<SecurityCompactDTO>> callback);
     //</editor-fold>
 
