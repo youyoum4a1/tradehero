@@ -8,12 +8,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshInterceptedScrollSwipeListView;
+import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.th.R;
 
 public class MessagesView extends RelativeLayout
 {
-    @InjectView(R.id.message_list) PullToRefreshInterceptedScrollSwipeListView
+    @InjectView(R.id.message_list) PullToRefreshSwipeListView
             pullToRefreshSwipeListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
@@ -70,7 +71,7 @@ public class MessagesView extends RelativeLayout
         }
     }
 
-    public InterceptedScrollSwipeListView getListView()
+    public SwipeListView getListView()
     {
         return pullToRefreshSwipeListView.getRefreshableView();
     }
