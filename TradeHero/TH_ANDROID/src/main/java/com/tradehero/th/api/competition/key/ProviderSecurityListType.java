@@ -5,7 +5,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 
 abstract public class ProviderSecurityListType extends SecurityListType
 {
-    private final ProviderId providerId;
+    public final ProviderId providerId;
 
     //<editor-fold desc="Constructors">
     protected ProviderSecurityListType(ProviderSecurityListType other)

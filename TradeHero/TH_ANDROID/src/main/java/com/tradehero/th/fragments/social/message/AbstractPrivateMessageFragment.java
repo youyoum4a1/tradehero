@@ -34,10 +34,16 @@ import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -52,6 +58,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected Picasso picasso;
     @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
     @Inject protected UserProfileCache userProfileCache;
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
@@ -312,6 +320,58 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
+    private void updateMessageCacheReadStatus(int messageId)
+    {
+        // mark it as read in the cache
+        MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+        if (messageHeaderDTO != null && messageHeaderDTO.unread)
+        {
+            messageHeaderDTO.unread = false;
+            messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
+        }
+    }
+
+    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
+    {
+        updateMessageCacheReadStatus(messageHeaderDTO.id);
+        messageServiceWrapper.get().readMessage(
+                messageHeaderDTO.id,
+                messageHeaderDTO.senderUserId,
+                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getDTOKey(),
+                currentUserId.toUserBaseKey(),
+                createMessageAsReadCallback(messageHeaderDTO.id));
+    }
+
+    private Callback<Response> createMessageAsReadCallback(int pushId)
+    {
+        return new MessageMarkAsReadCallback(pushId);
+    }
+
+    private class MessageMarkAsReadCallback implements Callback<Response>
+    {
+        private final int messageId;
+
+        public MessageMarkAsReadCallback(int messageId)
+        {
+            this.messageId = messageId;
+        }
+
+        @Override public void success(Response response, Response response2)
+        {
+            if (response.getStatus() == 200)
+            {
+                updateMessageCacheReadStatus(messageId);
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            Timber.d("Report failure for Message: %d", messageId);
+        }
+    }
+
     private class MessageHeaderFetchListener
             implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
     {
@@ -324,6 +384,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             actionBar.setSubtitle(value.subTitle);
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
+            if (value != null && value.unread)
+            {
+                reportMessageRead(value);
+            }
         }
 
         @Override public void onErrorThrown(MessageHeaderId key, Throwable error)

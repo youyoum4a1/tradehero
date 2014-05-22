@@ -93,7 +93,7 @@
       android:src="@drawable/info"
       />
 
-  <LinearLayout
+  <com.tradehero.th.fragments.leaderboard.ExpandingLayout
       android:id="@+id/expanding_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -387,6 +387,6 @@
         android:layout_height="wrap_content"
         layout="@layout/lbmu_item_action_buttons"/>
 
-  </LinearLayout>
+  </com.tradehero.th.fragments.leaderboard.ExpandingLayout>
 
 </com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView>

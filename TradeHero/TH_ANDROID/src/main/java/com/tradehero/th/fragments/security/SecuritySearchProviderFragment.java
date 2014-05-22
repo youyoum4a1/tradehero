@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.security.key.SearchProviderSecurityListType;
+import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 
 public class SecuritySearchProviderFragment extends SecuritySearchFragment
@@ -33,7 +33,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
 
     @Override public SecurityListType makeSearchSecurityListType(int page)
     {
-        return new SearchProviderSecurityListType(providerId.key, mSearchText, page, perPage);
+        return new SearchProviderSecurityListType(providerId, mSearchText, page, perPage);
 
     }
 }

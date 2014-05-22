@@ -9,6 +9,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOFactory;
+import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -59,7 +60,16 @@ import retrofit.Callback;
     public List<SecurityCompactDTO> getProviderSecurities(ProviderSecurityListType key)
     {
         List<SecurityCompactDTO> received;
-        if (key instanceof BasicProviderSecurityListType)
+        if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            received = this.providerService.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+        else if (key instanceof BasicProviderSecurityListType)
         {
             received = this.providerService.getSecurities(
                     key.getProviderId().key,
@@ -83,7 +93,17 @@ import retrofit.Callback;
     public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
         MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback, createSecurityCompactListReceivedDTOProcessor());
-        if (key instanceof BasicProviderSecurityListType)
+        if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            this.providerServiceAsync.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    middleCallback);
+        }
+        else if (key instanceof BasicProviderSecurityListType)
         {
             this.providerServiceAsync.getSecurities(
                     key.getProviderId().key,

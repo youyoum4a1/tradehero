@@ -35,6 +35,16 @@ interface ProviderServiceAsync
             Callback<List<SecurityCompactDTO>> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Search Competition Securities">
+    @GET("/providers/{providerId}/securities")
+    void searchSecurities(
+            @Path("providerId") int providerId,
+            @Query("q") String searchString,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Get Help Videos">
     @GET("/providers/{providerId}/helpVideos")
     void getHelpVideos(
