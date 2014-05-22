@@ -152,4 +152,10 @@ public class VersionUtils
     {
         return getVersionName(context) + "." + getVersionCode(context);
     }
+
+    //TODO only for wandoujia pure version
+    public static String getVersionIdForPure(Context context)
+    {
+        return "100.1.0" + "." + getVersionCode(context);
+    }
 }

@@ -161,7 +161,9 @@ public class THUser
                 LoginFormDTO loginFormDTO = new LoginFormDTO(
                         DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                         DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                        VersionUtils.getVersionId(Application.context()));
+                        //VersionUtils.getVersionId(Application.context()));
+                        //Only for wandoujia pure version
+                        VersionUtils.getVersionIdForPure(Application.context()));
                 // TODO save middle callback?
                 sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
