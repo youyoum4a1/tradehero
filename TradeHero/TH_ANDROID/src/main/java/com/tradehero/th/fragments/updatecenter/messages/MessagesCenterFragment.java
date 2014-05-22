@@ -56,7 +56,7 @@ import timber.log.Timber;
 public class MessagesCenterFragment extends DashboardFragment
         implements
         MessageItemViewWrapper.OnElementClickedListener,
-        PullToRefreshBase.OnRefreshListener2<InterceptedScrollSwipeListView>,
+        PullToRefreshBase.OnRefreshListener2<SwipeListView>,
         ResideMenu.OnMenuListener
 {
     @Inject Lazy<MessageHeaderListCache> messageListCache;
@@ -242,12 +242,12 @@ public class MessagesCenterFragment extends DashboardFragment
         removeMessageOnServer(messageHeaderId);
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
+    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
     {
         doRefreshContent();
     }
 
-    @Override public void onPullUpToRefresh(PullToRefreshBase<InterceptedScrollSwipeListView> refreshView)
+    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
     {
     }
 
@@ -312,7 +312,7 @@ public class MessagesCenterFragment extends DashboardFragment
         DaggerUtils.inject(this);
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
-        InterceptedScrollSwipeListView listView = messagesView.getListView();
+        SwipeListView listView = messagesView.getListView();
         listView.setOnScrollListener(new OnScrollListener(null));
         SwipeListView swipeListView = listView;
 
