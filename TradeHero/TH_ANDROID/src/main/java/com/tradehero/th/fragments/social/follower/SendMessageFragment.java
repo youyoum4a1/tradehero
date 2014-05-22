@@ -68,7 +68,7 @@ public class SendMessageFragment extends DashboardFragment
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
     private Dialog chooseDialog;
-    /** callback for sending broadcast */
+    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
     protected List<WeakReference<MiddleCallback<DiscussionDTO>>> middleCallbackSendMessages;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
@@ -128,8 +128,10 @@ public class SendMessageFragment extends DashboardFragment
         {
             progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-            userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false,
-                    createUserProfileCacheListener()).execute();
+            detachUserProfileFetchTask();
+            userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false,
+                    createUserProfileCacheListener());
+            userProfileFetchTask.execute();
             return true;
         }
 
@@ -161,7 +163,17 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachSendMessageCallbacks();
+        detachUserProfileFetchTask();
         super.onDestroyView();
+    }
+
+    private void detachUserProfileFetchTask()
+    {
+        DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> taskCopy = userProfileFetchTask;
+        if (taskCopy != null)
+        {
+            taskCopy.setListener(null);
+        }
     }
 
     private void detachSendMessageCallbacks()
