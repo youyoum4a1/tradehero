@@ -131,7 +131,14 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             View imageView = container.findViewById(iconViewResourceId);
             if (imageView != null)
             {
-                ((ImageView) imageView).setImageResource(getIcon(position));
+                try
+                {
+                    ((ImageView) imageView).setImageResource(getIcon(position));
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "at position %d, text %s", position, getItem(position));
+                }
             }
         }
     }
