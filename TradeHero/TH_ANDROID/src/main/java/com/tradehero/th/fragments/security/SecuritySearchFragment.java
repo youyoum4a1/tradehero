@@ -109,6 +109,7 @@ public class SecuritySearchFragment
         mSearchText = getSearchString(savedInstanceState);
         perPage = getPerPage(getArguments());
         perPage = getPerPage(savedInstanceState);
+        securitySearchTasks = new HashMap<>();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,

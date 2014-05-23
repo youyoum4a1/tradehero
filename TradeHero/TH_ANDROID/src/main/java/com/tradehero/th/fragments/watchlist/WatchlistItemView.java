@@ -292,40 +292,49 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     public void displayPlPercentage(boolean showInPercentage)
     {
-        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
-
-        if (securityCompactDTO != null)
+        if (gainLossLabel != null)
         {
-            Double lastPrice = securityCompactDTO.lastPrice;
-            Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
-            // pl percentage
-            if (watchlistPrice != 0)
+            if (watchlistPositionDTO != null)
             {
-                double gainLoss = (lastPrice - watchlistPrice);
-                double pl = gainLoss * 100 / watchlistPrice;
-
-                if (showInPercentage)
+                SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+                if (securityCompactDTO != null)
                 {
-                    gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
-                            new DecimalFormat("##.##").format(pl)
-                    ));
+                    Double lastPrice = securityCompactDTO.lastPrice;
+                    Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
+                    // pl percentage
+                    if (watchlistPrice != 0)
+                    {
+                        double gainLoss = (lastPrice - watchlistPrice);
+                        double pl = gainLoss * 100 / watchlistPrice;
+
+                        if (showInPercentage)
+                        {
+                            gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
+                                    new DecimalFormat("##.##").format(pl)
+                            ));
+                        }
+                        else
+                        {
+                            gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
+                                    new DecimalFormat("##.##").format(gainLoss));
+                        }
+
+                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
+                    }
+                    else
+                    {
+                        gainLossLabel.setText("");
+                    }
                 }
                 else
                 {
-                    gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
-                            new DecimalFormat("##.##").format(gainLoss));
+                    gainLossLabel.setText("");
                 }
-
-                gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
             }
             else
             {
                 gainLossLabel.setText("");
             }
-        }
-        else
-        {
-            gainLossLabel.setText("");
         }
     }
 

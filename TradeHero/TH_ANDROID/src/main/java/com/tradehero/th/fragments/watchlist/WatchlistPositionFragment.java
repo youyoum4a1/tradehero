@@ -74,6 +74,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
     private TwoStateView.OnStateChange gainLossModeListener;
     private BroadcastReceiver broadcastReceiver;
+    private Runnable setOffsetRunnable;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
@@ -91,9 +92,9 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        createGainLossModeListener();
-        createBroadcastReceiver();
-        createPortfolioCacheListener();
+        gainLossModeListener = createGainLossModeListener();
+        broadcastReceiver =createBroadcastReceiver();
+        setOffsetRunnable = createSetOffsetRunnable();
     }
 
     protected Milestone.OnCompleteListener createWatchlistRetrievedMilestoneListener()
@@ -112,9 +113,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         };
     }
 
-    protected void createGainLossModeListener()
+    protected TwoStateView.OnStateChange createGainLossModeListener()
     {
-        gainLossModeListener = new TwoStateView.OnStateChange()
+        return new TwoStateView.OnStateChange()
         {
             @Override public void onStateChanged(View view, boolean state)
             {
@@ -127,9 +128,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         };
     }
 
-    protected void createBroadcastReceiver()
+    protected BroadcastReceiver createBroadcastReceiver()
     {
-        broadcastReceiver = new BroadcastReceiver()
+        return new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
             {
@@ -149,6 +150,11 @@ public class WatchlistPositionFragment extends DashboardFragment
         };
     }
 
+    protected Runnable createSetOffsetRunnable()
+    {
+        return new WatchlistPositionFragmentSetOffsetRunnable();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -166,19 +172,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             ButterKnife.inject(this, view);
 
             final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
-            watchlistListView.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    SwipeListView watchlistListViewCopy = watchlistListView;
-                    if (!isDetached() && watchlistListViewCopy != null)
-                    {
-                        watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
-                                getResources().getDimension(R.dimen.watchlist_item_button_width)
-                                        * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
-                    }
-                }
-            });
+            watchlistListView.post(setOffsetRunnable);
             watchlistListView.setEmptyView(
                     view.findViewById(R.id.watchlist_position_list_empty_view));
             watchlistListView.setSwipeListViewListener(createSwipeListViewListener());
@@ -299,11 +293,15 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
         watchlistPortfolioHeaderView = null;
 
-        if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
+        if (watchlistPositionListView != null)
         {
-            ((SwipeListView) watchlistPositionListView.getRefreshableView()).setSwipeListViewListener(null);
+            SwipeListView swipeListView = watchlistPositionListView.getRefreshableView();
+            if (swipeListView != null)
+            {
+                swipeListView.setSwipeListViewListener(null);
+                swipeListView.removeCallbacks(setOffsetRunnable);
+            }
         }
-        //watchlistListView = null;
 
         watchListAdapter = null;
 
@@ -353,6 +351,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         broadcastReceiver = null;
         gainLossModeListener = null;
+        setOffsetRunnable = null;
 
         super.onDestroy();
     }
@@ -505,6 +504,23 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             super.onDismiss(reverseSortedPositions);
             fetchSecurityIdList();
+        }
+    }
+
+    protected class WatchlistPositionFragmentSetOffsetRunnable implements Runnable
+    {
+        @Override public void run()
+        {
+            if (watchlistPositionListView != null)
+            {
+                SwipeListView watchlistListViewCopy = watchlistPositionListView.getRefreshableView();
+                if (watchlistListViewCopy != null)
+                {
+                    watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
+                            getResources().getDimension(R.dimen.watchlist_item_button_width)
+                                    * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+                }
+            }
         }
     }
 }

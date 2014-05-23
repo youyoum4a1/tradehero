@@ -262,9 +262,9 @@ public class HeroListItemView extends RelativeLayout
     {
         if (countryLogo != null)
         {
-            if (heroDTO != null)
+            if (heroDTO != null && heroDTO.countryCode != null)
             {
-                countryLogo.setImageResource(getConutryLogoId(heroDTO.countryCode));
+                countryLogo.setImageResource(getCountryLogoId(heroDTO.countryCode));
             }
             else
             {
@@ -273,17 +273,18 @@ public class HeroListItemView extends RelativeLayout
         }
     }
 
-    public int getConutryLogoId(String country)
+    public int getCountryLogoId(String country)
     {
-        return getConutryLogoId(0, country);
+        return getCountryLogoId(0, country);
     }
 
-    public int getConutryLogoId(int defaultResId, String country)
+    public int getCountryLogoId(int defaultResId, String country)
     {
         try
         {
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
+        }
+        catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }

@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.lang.ref.WeakReference;
+import timber.log.Timber;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>
@@ -100,6 +101,12 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     protected void notifyListenersReceived(DTOKeyType key, DTOType value)
     {
+        if (value == null)
+        {
+            Timber.e(new Exception(
+                    String.format("Null value returned for key %s, on cache %s", key,
+                            getCacheClass())), null);
+        }
         getOrCreateCacheValue(key).notifyListenersReceived(key, value);
     }
 
@@ -194,5 +201,10 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
                 notifyListenersReceived(key, value);
             }
         }
+    }
+
+    protected Class<?> getCacheClass()
+    {
+        return getClass();
     }
 }
