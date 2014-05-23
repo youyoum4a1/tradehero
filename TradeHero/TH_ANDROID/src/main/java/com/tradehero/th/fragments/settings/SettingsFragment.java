@@ -1015,6 +1015,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         {
                             @Override public void onClick(DialogInterface dialogInterface, int i)
                             {
+                                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
                                 effectSignOut();
                             }
                         });
