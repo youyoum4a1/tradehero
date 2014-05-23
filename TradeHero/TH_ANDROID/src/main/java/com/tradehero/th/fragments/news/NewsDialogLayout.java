@@ -19,22 +19,20 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.Callback;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCallback
@@ -63,10 +61,11 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     private String description;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    @Inject SocialSharer socialSharer;
+    @Inject Provider<SocialSharer> socialSharerProvider;
 
     private int mShareType;
     private OnMenuClickedListener menuClickedListener;
+    private SocialSharer currentSocialSharer;
 
     //<editor-fold desc="Constructors">
     public NewsDialogLayout(Context context)
@@ -102,8 +101,18 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
 
     @Override protected void onDetachedFromWindow()
     {
+        detachSocialSharer();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    private void detachSocialSharer()
+    {
+        SocialSharer socialSharerCopy = currentSocialSharer;
+        if (socialSharerCopy != null)
+        {
+            socialSharerCopy.setSharedListener(null);
+        }
     }
 
     private void fillData()
@@ -155,55 +164,70 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
 
     private void handleShareAction(int position)
     {
-        SocialNetworkEnum socialNetworkEnum = null;
-        switch (position)
+        SocialShareFormDTO shareFormDTO;
+        SocialSharer.OnSharedListener sharedListener = null;
+        if (position == 0)
         {
-            case 0:
-                shareNewsToWeChat();
-                return;
-            case 1:
-                socialNetworkEnum = SocialNetworkEnum.LN;
-                break;
-            case 2:
-                socialNetworkEnum = SocialNetworkEnum.FB;
-                break;
-            case 3:
-                socialNetworkEnum = SocialNetworkEnum.TW;
-                break;
-            default:
-                break;
+            shareFormDTO = createWeChatShareDTO();
+            // TODO add sharedListener
         }
-        DiscussionListKey key = new DiscussionListKey(DiscussionType.NEWS, id);
-        discussionServiceWrapper.get().share(key,
-                new TimelineItemShareRequestDTO(socialNetworkEnum),
-                createShareRequestCallback(socialNetworkEnum));
+        else
+        {
+            SocialNetworkEnum socialNetwork = null;
+            switch (position)
+            {
+                case 1:
+                    socialNetwork = SocialNetworkEnum.LN;
+                    break;
+                case 2:
+                    socialNetwork = SocialNetworkEnum.FB;
+                    break;
+                case 3:
+                    socialNetwork = SocialNetworkEnum.TW;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unhandled position " + position);
+            }
+            shareFormDTO = createTimelineItemShareFormDTO(socialNetwork);
+            sharedListener = createSharedListener(socialNetwork);
+        }
+        detachSocialSharer();
+        currentSocialSharer = socialSharerProvider.get();
+        currentSocialSharer.share(shareFormDTO, sharedListener);
     }
 
-    private void shareNewsToWeChat()
+    private WeChatDTO createWeChatShareDTO()
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = id;
         weChatDTO.type = mShareType;
         weChatDTO.title = title;
-        socialSharer.share(weChatDTO);
+        return weChatDTO;
     }
 
-    private Callback<DiscussionDTO> createShareRequestCallback(
+    private TimelineItemShareFormDTO createTimelineItemShareFormDTO(SocialNetworkEnum socialNetwork)
+    {
+        return new TimelineItemShareFormDTO(
+                new DiscussionListKey(DiscussionType.NEWS, id),
+                new TimelineItemShareRequestDTO(socialNetwork));
+    }
+
+    private SocialSharer.OnSharedListener createSharedListener(
             final SocialNetworkEnum socialNetworkEnum)
     {
-        return new THCallback<DiscussionDTO>()
+        return new SocialSharer.OnSharedListener()
         {
-            @Override protected void success(DiscussionDTO response, THResponse thResponse)
+            @Override public void onShared()
             {
                 THToast.show(String.format(
                         getContext().getString(R.string.timeline_post_to_social_network),
                         socialNetworkEnum.getName()));
             }
 
-            @Override protected void failure(THException ex)
+            @Override public void onShareFailed(Throwable throwable)
             {
                 THToast.show("Share error " + socialNetworkEnum.getName());
-                Timber.e(ex, "Share error");
+                Timber.e(throwable, "Share error");
             }
         };
     }
