@@ -55,7 +55,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -97,7 +96,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
-    @Inject Lazy<DTOCacheUtil> dtoCacheUtil;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -1015,7 +1013,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         {
                             @Override public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
                                 effectSignOut();
                             }
                         });
