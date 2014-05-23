@@ -267,6 +267,7 @@ public class SecuritySearchFragment
             }
             securityItemViewAdapter.notifyDataSetChanged();
         }
+        updateVisibilities();
     }
 
     protected Integer getNextPageToRequest()
@@ -507,7 +508,6 @@ public class SecuritySearchFragment
                     securityItemViewAdapter.clear();
                 }
             }
-            updateVisibilities();
             localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
         }
 
