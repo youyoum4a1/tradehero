@@ -1,4 +1,4 @@
-package com.tradehero.th.api.wechat;
+package com.tradehero.th.api.share.wechat;
 
 public class TrackShareFormDTO
 {

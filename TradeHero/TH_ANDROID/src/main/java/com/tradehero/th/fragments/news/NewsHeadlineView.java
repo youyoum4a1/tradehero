@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
@@ -107,7 +107,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getType());
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getValue());
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);

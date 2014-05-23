@@ -4,12 +4,11 @@ import android.content.Context;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class LinkedInUtils implements SocialSharer
+public class LinkedInUtils
 {
     private final LinkedInAuthenticationProvider provider;
 
@@ -24,10 +23,4 @@ public class LinkedInUtils implements SocialSharer
         provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
-
-    @Override public void share(Context context, WeChatDTO weChatDTO)
-    {
-        // TODO
-    }
-
 }

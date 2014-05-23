@@ -26,7 +26,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -211,7 +211,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
-                WeChatMessageType.CreateDiscussion.getType());
+                WeChatMessageType.CreateDiscussion.getValue());
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);

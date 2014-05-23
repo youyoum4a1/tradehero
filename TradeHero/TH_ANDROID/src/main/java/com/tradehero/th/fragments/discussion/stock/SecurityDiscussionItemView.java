@@ -30,7 +30,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 
 public class SecurityDiscussionItemView
@@ -152,7 +152,7 @@ public class SecurityDiscussionItemView
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
-                WeChatMessageType.Discussion.getType());
+                WeChatMessageType.Discussion.getValue());
         ((NewsDialogLayout) contentView).setMenuClickedListener(
                 createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);

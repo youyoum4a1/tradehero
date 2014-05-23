@@ -1,17 +1,15 @@
 package com.tradehero.th.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.wxapi.WeChatDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class FacebookUtils implements SocialSharer
+public class FacebookUtils
 {
     private final FacebookAuthenticationProvider provider;
 
@@ -33,10 +31,5 @@ public class FacebookUtils implements SocialSharer
         {
             provider.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override public void share(Context context, WeChatDTO weChatDTO)
-    {
-        // TODO implement way to share to facebook
     }
 }

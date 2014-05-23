@@ -38,7 +38,7 @@
         android:layout_marginLeft="65dp"
         android:layout_marginRight="65dp"
         android:id="@+id/news_action_share_switcher"
-        app:firstViewIsOnTheRight="false"
+        app:firstViewIsOnTheRight="true"
         >
 
       <LinearLayout
@@ -113,17 +113,17 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/news_action_list_switcher"
-      app:firstViewIsOnTheRight="false"
+      app:firstViewIsOnTheRight="true"
       >
 
-  <ListView
-      android:layout_gravity="center"
-      android:id="@+id/news_action_list_sharing_translation"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:listSelector="@drawable/common_dialog_item_bg"
-      android:cacheColorHint="@color/transparent"
-      />
+    <ListView
+        android:layout_gravity="center"
+        android:id="@+id/news_action_list_sharing_translation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@drawable/common_dialog_item_bg"
+        android:cacheColorHint="@color/transparent"
+        />
 
     <ListView
         android:layout_gravity="center"

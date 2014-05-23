@@ -87,14 +87,13 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ForWeChat;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.SocialSharer;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.wxapi.WeChatDTO;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;
@@ -175,7 +174,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     @Inject Picasso picasso;
-    @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
@@ -1690,7 +1689,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
-            weChatDTO.type = WeChatMessageType.Trade.getType();
+            weChatDTO.type = WeChatMessageType.Trade.getValue();
             if (isMyUrlOk())
             {
                 weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;
@@ -1707,7 +1706,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         + securityCompactDTO.name + " " + mQuantity + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
-            wechatSharerLazy.get().share(getActivity(), weChatDTO);
+            socialSharerLazy.get().share(weChatDTO);
         }
     }
 

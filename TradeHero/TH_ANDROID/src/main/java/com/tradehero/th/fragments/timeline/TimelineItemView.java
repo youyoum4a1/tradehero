@@ -48,11 +48,10 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.ForWeChat;
-import com.tradehero.th.utils.SocialSharer;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.wxapi.WeChatDTO;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -111,7 +110,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
-    @Inject @ForWeChat Lazy<SocialSharer> wechatSharerLazy;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private TimelineItemDTO timelineItemDTO;
     private PopupMenu sharePopupMenu;
@@ -441,8 +440,8 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     {
                         weChatDTO.imageURL = firstMediaWithLogo.url;
                     }
-                    weChatDTO.type = WeChatMessageType.Timeline.getType();
-                    wechatSharerLazy.get().share(getContext(), weChatDTO);
+                    weChatDTO.type = WeChatMessageType.Timeline.getValue();
+                    socialSharerLazy.get().share(weChatDTO);
                     return true;
             }
             if (socialNetworkEnum == null)

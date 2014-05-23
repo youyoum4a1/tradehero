@@ -30,9 +30,8 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ForWeChat;
-import com.tradehero.th.utils.SocialSharer;
-import com.tradehero.th.wxapi.WeChatDTO;
+import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -58,12 +57,13 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     private THDialog.DialogInterface dialogCallback;
     protected ProgressDialog dialog;
 
+    private AbstractDiscussionDTO abstractDiscussionDTO;
     private int id;
     private String title;
     private String description;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    @Inject @ForWeChat SocialSharer wechatSharer;
+    @Inject SocialSharer socialSharer;
 
     private int mShareType;
     private OnMenuClickedListener menuClickedListener;
@@ -185,7 +185,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         weChatDTO.id = id;
         weChatDTO.type = mShareType;
         weChatDTO.title = title;
-        wechatSharer.share(getContext(), weChatDTO);
+        socialSharer.share(weChatDTO);
     }
 
     private Callback<DiscussionDTO> createShareRequestCallback(
@@ -253,6 +253,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
 
     public void setNewsData(AbstractDiscussionDTO abstractDiscussionDTO, int shareType)
     {
+        this.abstractDiscussionDTO = abstractDiscussionDTO;
         this.title = abstractDiscussionDTO.text;
         this.id = abstractDiscussionDTO.id;
         setNewsTitle();

@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.wechat.TrackShareFormDTO;
+import com.tradehero.th.api.share.wechat.TrackShareFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.POST;
