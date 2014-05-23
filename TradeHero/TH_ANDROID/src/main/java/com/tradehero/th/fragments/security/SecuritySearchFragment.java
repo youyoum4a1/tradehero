@@ -105,11 +105,11 @@ public class SecuritySearchFragment
     {
         super.onCreate(savedInstanceState);
         pagedSecurityIds = new HashMap<>();
+        securitySearchTasks = new HashMap<>();
         mSearchText = getSearchString(getArguments());
         mSearchText = getSearchString(savedInstanceState);
         perPage = getPerPage(getArguments());
         perPage = getPerPage(savedInstanceState);
-        securitySearchTasks = new HashMap<>();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,8 +131,6 @@ public class SecuritySearchFragment
             listView.setOnScrollListener(nearEndScrollListener);
             listView.setEmptyView(searchEmptyContainer);
         }
-
-        securitySearchTasks = new HashMap<>();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -269,7 +267,7 @@ public class SecuritySearchFragment
     protected void startAnew()
     {
         detachSecuritySearchTasks();
-        this.pagedSecurityIds = new HashMap<>();
+        this.pagedSecurityIds.clear();
         if (nearEndScrollListener != null)
         {
             nearEndScrollListener.lowerEndFlag();
