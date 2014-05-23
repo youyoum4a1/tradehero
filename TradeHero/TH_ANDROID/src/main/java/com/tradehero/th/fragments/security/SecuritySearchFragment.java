@@ -130,6 +130,7 @@ public class SecuritySearchFragment
             listView.setOnItemClickListener(createItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
             listView.setEmptyView(searchEmptyContainer);
+            listView.setAdapter(securityItemViewAdapter);
         }
     }
 
@@ -157,16 +158,13 @@ public class SecuritySearchFragment
                 (EditText) securitySearchElements.getActionView().findViewById(R.id.search_field);
         if (mSearchTextField != null)
         {
+            mSearchTextField.setText(mSearchText);
             mSearchTextField.addTextChangedListener(mSearchTextWatcher);
             mSearchTextField.setFocusable(true);
             mSearchTextField.setFocusableInTouchMode(true);
             mSearchTextField.requestFocus();
             DeviceUtil.showKeyboardDelayed(mSearchTextField);
         }
-
-        updateSearchType();
-
-        populateSearchActionBar();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -179,54 +177,12 @@ public class SecuritySearchFragment
         mSearchTextWatcher = null;
         super.onDestroyOptionsMenu();
     }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.search_people:
-            case R.id.search_stock:
-                boolean checkedBefore = item.isChecked();
-                item.setChecked(true);
-                if (!checkedBefore)
-                {
-                    onSearchTypeChanged();
-                }
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void onSearchTypeChanged()
-    {
-        updateSearchType();
-        startAnew();
-        requestSecurities();
-    }
-
-    private void updateSearchType()
-    {
-        if (listView != null)
-        {
-            mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
-            listView.setAdapter(securityItemViewAdapter);
-        }
-    }
     //</editor-fold>
 
     @Override public void onResume()
     {
         super.onResume();
         loadAdapterWithAvailableData();
-    }
-
-    private void populateSearchActionBar()
-    {
-        if (mSearchTextField != null)
-        {
-            mSearchTextField.setText(mSearchText);
-        }
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
