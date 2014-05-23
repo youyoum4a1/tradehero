@@ -152,6 +152,7 @@ public class DiscussionView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
         discussionList.setAdapter(discussionListAdapter);
         scrollListener = createFlagNearEndScrollListener();
         discussionList.setOnScrollListener(scrollListener);
