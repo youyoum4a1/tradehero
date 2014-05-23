@@ -74,33 +74,6 @@
         tools:background="@color/gray_normal"
         />
 
-    <TextView
-        android:id="@+id/stock_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/common_margin_50"
-        android:layout_marginRight="@dimen/common_margin_50"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textStyle="bold"
-        tools:text="UOB Mb 1234567890UOB Mb 1234567890UOB Mb 1234567890"
-        />
-
-    <TextView
-        android:id="@+id/exchange_symbol"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/stock_name"
-        android:gravity="center"
-        android:ellipsize="end"
-        android:textSize="13sp"
-        android:textColor="#4e4e4e"
-        android:lines="1"
-        tools:text="GOOG"/>
-
     <ImageView
         android:id="@+id/market_icon"
         android:layout_width="40dp"
@@ -115,12 +88,11 @@
 
     <RelativeLayout
         android:id="@+id/logo_layout"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/exchange_symbol"
-        android:layout_marginTop="-10dp"
+        android:layout_width="@dimen/security_logo_midium"
+        android:layout_height="@dimen/security_logo_midium"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="@dimen/common_margin_15"
         >
 
       <ImageView
@@ -132,15 +104,6 @@
           android:scaleType="fitCenter"
           android:visibility="visible"/>
 
-      <ImageView
-          android:layout_width="40dp"
-          android:layout_height="40dp"
-          android:layout_alignParentTop="true"
-          android:layout_alignParentRight="true"
-          android:scaleType="centerInside"
-          android:src="@drawable/market_sleep_grey"
-          android:visibility="gone"
-          />
     </RelativeLayout>
 
     <TextView
@@ -148,7 +111,7 @@
         style="@style/TH.Value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="@dimen/common_margin_10"
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_toRightOf="@id/logo_layout"
         android:text="@string/buy_sell_loading_ask_price"
@@ -184,12 +147,12 @@
         android:layout_marginTop="-4dp"/>
 
     <LinearLayout
+        android:id="@+id/buy_sell_action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="@dimen/button_height_30"
         android:layout_below="@id/logo_layout"
         android:orientation="horizontal"
-        android:id="@+id/buy_sell_action_buttons"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/common_margin_15"
         android:layout_marginBottom="@dimen/common_margin_10"
         android:paddingLeft="@dimen/common_margin_10"
         android:paddingRight="@dimen/common_margin_10"
@@ -198,7 +161,6 @@
       <Button
           android:id="@+id/btn_add_trigger"
           style="@style/TH.Btn_BuySell_Action"
-
           android:text="@string/stock_alert_add_alert"
           android:background="@color/button_yellow"
           />
@@ -206,7 +168,6 @@
       <Button
           android:id="@+id/btn_add_watch_list"
           style="@style/TH.Btn_BuySell_Action"
-
           android:text="@string/watchlist_add_title"
           android:background="@color/gray_normal"
           />
@@ -246,6 +207,7 @@
         android:id="@+id/trade_bottom_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/common_margin_1"
         android:layout_below="@id/belt"
         />
 
