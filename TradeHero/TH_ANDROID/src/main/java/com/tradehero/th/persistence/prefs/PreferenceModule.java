@@ -6,6 +6,8 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
+import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
+import com.tradehero.th.models.user.auth.SavedPrefCredentials;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -38,9 +40,14 @@ public class PreferenceModule
         return new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, null);
     }
 
-    @Provides @Singleton @SavedCredentials StringSetPreference provideSavedCredentials(SharedPreferences sharedPreferences)
+    @Provides @Singleton SavedPrefCredentials provideSavedPrefCredentials(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
-        return new StringSetPreference(sharedPreferences, PREF_SAVED_CREDENTIALS_KEY, new HashSet<String>());
+        return new SavedPrefCredentials(credentialsDTOFactory, sharedPreferences, PREF_SAVED_CREDENTIALS_KEY, new HashSet<String>());
+    }
+
+    @Provides @Singleton @SavedCredentials StringSetPreference provideSavedPrefCredentials(SavedPrefCredentials savedPrefCredentials)
+    {
+        return savedPrefCredentials;
     }
 
     @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(SharedPreferences sharedPreferences)
