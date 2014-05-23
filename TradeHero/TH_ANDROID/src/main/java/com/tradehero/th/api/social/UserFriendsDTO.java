@@ -4,12 +4,10 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.loaders.ContactEntry;
 import com.tradehero.th.utils.Constants;
 
-
 public class UserFriendsDTO extends ExtendedDTO
 {
-    public static final String TAG = UserFriendsDTO.class.getSimpleName();
-    private static final String PROPERTY_KEY_SELECTED = TAG + ".selected";
-    private static final String PROPERTY_KEY_EMAIL = TAG + ".email";
+    private static final String PROPERTY_KEY_SELECTED = UserFriendsDTO.class.getSimpleName() + ".selected";
+    private static final String PROPERTY_KEY_EMAIL = UserFriendsDTO.class.getSimpleName() + ".email";
 
     public String name;       // name
 

@@ -20,13 +20,10 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOComparableTest
 {
-    public static final String TAG = DisplayablePortfolioDTOComparableTest.class.getSimpleName();
-
     @Before public void setUp() throws IOException
     {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

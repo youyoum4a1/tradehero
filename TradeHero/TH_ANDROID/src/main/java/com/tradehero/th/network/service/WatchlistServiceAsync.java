@@ -31,27 +31,6 @@ interface WatchlistServiceAsync
 
     //<editor-fold desc="Query for watchlist">
     @GET("/watchlistPositions")
-    void getAllByUser(Callback<WatchlistPositionDTOList> callback);
-
-    @GET("/watchlistPositions")
-    void getAllByUser(
-            @Query("pageNumber") Integer pageNumber,
-            Callback<WatchlistPositionDTOList> callback);
-
-    @GET("/watchlistPositions")
-    void getAllByUser(
-            @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage,
-            Callback<WatchlistPositionDTOList> callback);
-
-    @GET("/watchlistPositions")
-    void getAllByUser(
-            @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage,
-            @Query("securityId") Integer securityId,
-            Callback<WatchlistPositionDTOList> callback);
-
-    @GET("/watchlistPositions")
     void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,

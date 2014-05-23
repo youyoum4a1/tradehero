@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
@@ -28,7 +27,6 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -158,15 +156,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             }
         }
     }
-
-    public void displayExchangeSymbol(ActionBar actionBar)
-    {
-        if (actionBar != null)
-        {
-            actionBar.setTitle(
-                    securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-        }
-    }
     //</editor-fold>
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -278,82 +267,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         fetchUserProfileTask.execute();
     }
 
-    protected boolean hasValidInfoForBuy()
-    {
-        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.ask != null;
-    }
-
-    protected boolean hasValidInfoForSell()
-    {
-        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.bid != null;
-    }
-
-    protected Double getTotalCostForBuy()
-    {
-        if (mBuyQuantity == null)
-        {
-            return null;
-        }
-        if (quoteDTO.toUSDRate == null)
-        {
-            return mBuyQuantity * quoteDTO.ask;
-        }
-        return mBuyQuantity * quoteDTO.ask * quoteDTO.toUSDRate + SecurityUtils.DEFAULT_TRANSACTION_COST;
-    }
-
-    protected Double getNetProceedsForSell()
-    {
-        if (mSellQuantity == null)
-        {
-            return null;
-        }
-        if (quoteDTO.toUSDRate == null)
-        {
-            return mSellQuantity * quoteDTO.bid;
-        }
-        return mSellQuantity * quoteDTO.bid * quoteDTO.toUSDRate - SecurityUtils.DEFAULT_TRANSACTION_COST;
-    }
-
-    public String getBuyDetails()
-    {
-        if (!hasValidInfoForBuy())
-        {
-            return getResources().getString(R.string.buy_sell_buy_details_unavailable);
-        }
-
-        return String.format(
-                getResources().getString(R.string.buy_sell_buy_details),
-                mBuyQuantity,
-                securityId.exchange,
-                securityId.securitySymbol,
-                securityCompactDTO.currencyDisplay,
-                quoteDTO.ask,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
-                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere else
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
-                getTotalCostForBuy());
-    }
-
-    public String getSellDetails()
-    {
-        if (!hasValidInfoForSell())
-        {
-            return getResources().getString(R.string.buy_sell_sell_details_unavailable);
-        }
-
-        return String.format(
-                getResources().getString(R.string.buy_sell_sell_details),
-                mSellQuantity,
-                securityId.exchange,
-                securityId.securitySymbol,
-                securityCompactDTO.currencyDisplay,
-                quoteDTO.bid,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
-                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
-                getNetProceedsForSell());
-    }
-
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
@@ -403,6 +316,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
         if (securityPositionDetailDTO != null)
         {
             linkWith(securityPositionDetailDTO.security, andDisplay);

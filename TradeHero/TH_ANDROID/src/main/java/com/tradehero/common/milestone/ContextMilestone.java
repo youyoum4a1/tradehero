@@ -2,7 +2,6 @@ package com.tradehero.common.milestone;
 
 import android.content.Context;
 
-
 public abstract class ContextMilestone extends BaseMilestone
 {
     private final Context context;

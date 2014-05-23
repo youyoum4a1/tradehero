@@ -1,11 +1,11 @@
 package com.tradehero.th.api.news;
 
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;
-
 
 public class NewsItemDTO extends AbstractDiscussionDTO
 {
@@ -30,9 +30,18 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public SecurityCompactDTO topReferencedSecurity;
 
+    //<editor-fold desc="Constructors">
     public NewsItemDTO()
     {
+        super();
     }
+
+    public <ExtendedDTOType extends ExtendedDTO> NewsItemDTO(ExtendedDTOType other,
+            Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
 
     public List<NewsItemMediaDTO> getTextEntities()
     {
@@ -64,7 +73,6 @@ public class NewsItemDTO extends AbstractDiscussionDTO
         this.categories = categories;
     }
 
-    //convenient method
     @Override public NewsItemDTOKey getDiscussionKey()
     {
         return new NewsItemDTOKey(id);

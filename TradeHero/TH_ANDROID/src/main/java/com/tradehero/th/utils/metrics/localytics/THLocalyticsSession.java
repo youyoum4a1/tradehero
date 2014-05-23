@@ -10,7 +10,6 @@ import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class THLocalyticsSession extends LocalyticsSession
 {
     public static final String SECURITY_ID_FORMAT = "%s:%s";

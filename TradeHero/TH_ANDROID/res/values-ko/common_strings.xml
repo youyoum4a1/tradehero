@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="app_name">TradeHero</string>
+
+  <string name="na">N/A</string>
+  <string name="empty"/>
+  <string name="cancel">취소</string>
+  <string name="action_menu_settings">설정</string>
+
+  <string name="network_error">네트워크 상태를 확인하세요!</string>
+  <!-- data format-->
+  <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
+  <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
+  <string name="data_format_d_mmm_yyyy_kk_mm">마지막 업데이트된 시간: d MMM yyyy kk</string>
+  <string name="data_format_dd_mmm_yyyy">yyyy MM월 dd일</string>
+  <string name="data_format_dd_mmm_hh_mm">MM월 dd일 HH:mm</string>
+  <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy MM월 dd일 kk:mm z</string>
+  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">MM월 dd일 HH:mm \'GMT\'</string>
+
+  <!-- TEMP stuff -->
+  <string name="test_email">dev@tradehero.mobi</string>
+  <string name="test_password">asd123</string>
+
+  <!-- Splash screen -->
+  <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
+  <string name="splash_copyright_3">Patents Pending</string>
+
+  <!-- Dashboard -->
+  <string name="dashboard_trending">주식거래</string>
+  <string name="dashboard_community">소셜</string>
+  <string name="dashboard_home">홈</string>
+  <string name="dashboard_portfolio">포트폴리오</string>
+  <string name="dashboard_store">스토어</string>
+  <string name="dashboard_headline">헤드라인</string>
+  <string name="message_center">메세지</string>
+  <string name="dashboard_admin_settings">어드민 설정</string>
+
+  <!-- To get rid of? -->
+  <string name="image_url">image_url</string>
+  <string name="key_price">주가</string>
+
+  <!-- Number presentation -->
+  <string name="number_presentation_unit_suffix"/>
+  <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_trillion_suffix">Tr</string>
+  <string name="arrow_prefix_positive">▲</string>
+  <string name="arrow_prefix_negative">▼</string>
+  <string name="arrow_prefix_zero"/>
+  <string name="sign_prefix_positive">+</string>
+  <string name="sign_prefix_negative">-</string>
+  <string name="sign_prefix_zero"/>
+
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
+  <string name="th_help_url">http://www.tradehero.mobi/about</string>
+  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
+
+  <string name="plus">+</string>
+
+  <!-- TimeDisplayViewHolder -->
+  <string name="time_display_view_holder_format_day">%02d</string>
+  <string name="time_display_view_holder_format_hour">%02d</string>
+  <string name="time_display_view_holder_format_minute">%02d</string>
+  <string name="time_display_view_holder_format_second">%02d</string>
+
+  <string name="help">도움말</string>
+  <string name="tab_to_dismiss">무시하려면 탭하세요</string>
+  <string name="sharing">공유</string>
+  <string name="translation">번역</string>
+  <string name="translating">번역중…</string>
+  <string name="translation_result">거래 결과:</string>
+
+  <string name="ok">OK</string>
+  <string name="downloading_relations">다운로드중...</string>
+  <string name="upgrade_now">지금 업그레이드하세요!</string>
+</resources>

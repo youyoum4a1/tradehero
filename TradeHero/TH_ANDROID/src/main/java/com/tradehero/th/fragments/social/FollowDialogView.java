@@ -111,7 +111,6 @@ public class FollowDialogView extends LinearLayout
         }
     }
 
-
     private void initFreeFollowDialog()
     {
         mNotFollowArea.setVisibility(View.GONE);

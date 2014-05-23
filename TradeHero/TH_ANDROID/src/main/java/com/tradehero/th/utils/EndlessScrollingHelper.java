@@ -1,6 +1,5 @@
 package com.tradehero.th.utils;
 
-
 public class EndlessScrollingHelper
 {
     private static final int DEFAULT_MULTIPLIER = 2;

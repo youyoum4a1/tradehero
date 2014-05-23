@@ -5,7 +5,6 @@ import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
 import timber.log.Timber;
 
-
 public class PagedWatchlistKey
 {
     public static final String BUNDLE_KEY_PAGE = PagedWatchlistKey.class.getName() + ".page";

@@ -4,14 +4,11 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -19,6 +16,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -28,11 +26,12 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.List;
+import retrofit.Callback;
+import retrofit.client.Response;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
-import retrofit.RetrofitError;
+import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -80,6 +79,11 @@ import retrofit.RetrofitError;
     protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(UserBaseKey playerId)
     {
         return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+    }
+
+    protected DTOProcessor<Response> createUserDeletedProcessor(UserBaseKey playerId)
+    {
+        return new DTOProcessorUserDeleted(userProfileCache, playerId);
     }
     //</editor-fold>
 
@@ -294,7 +298,6 @@ import retrofit.RetrofitError;
     public UserProfileDTO updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled)
-            throws RetrofitError
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
@@ -314,7 +317,6 @@ import retrofit.RetrofitError;
     public UserProfileDTO updateProfilePropertyPushNotifications(
             UserBaseKey userBaseKey,
             Boolean pushNotificationsEnabled)
-            throws RetrofitError
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
@@ -332,6 +334,38 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Check Display Name Available">
+    public UserAvailabilityDTO checkDisplayNameAvailable(String username)
+    {
+        return userService.checkDisplayNameAvailable(username);
+    }
+
+    public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
+            String username,
+            Callback<UserAvailabilityDTO> callback)
+    {
+        MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Forgot Password">
+    public ForgotPasswordDTO forgotPassword(ForgotPasswordFormDTO forgotPasswordFormDTO)
+    {
+        return userService.forgotPassword(forgotPasswordFormDTO);
+    }
+
+    public MiddleCallback<ForgotPasswordDTO> forgotPassword(
+            ForgotPasswordFormDTO forgotPasswordFormDTO,
+            Callback<ForgotPasswordDTO> callback)
+    {
+        MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.forgotPassword(forgotPasswordFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Search Users">
     public List<UserSearchResultDTO> searchUsers(UserListType key)
     {
@@ -346,17 +380,32 @@ import retrofit.RetrofitError;
     {
         if (key.searchString == null)
         {
-            throw new IllegalArgumentException("SearchUserListType.searchString cannot be null");
-        }
-        else if (key.page == null)
-        {
-            return this.userService.searchUsers(key.searchString);
-        }
-        else if (key.perPage == null)
-        {
-            return this.userService.searchUsers(key.searchString, key.page);
+            return this.userService.searchUsers(null, null, null);
         }
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
+    }
+
+    public MiddleCallback<List<UserSearchResultDTO>> searchUsers(UserListType key, Callback<List<UserSearchResultDTO>> callback)
+    {
+        if (key instanceof SearchUserListType)
+        {
+            return searchUsers((SearchUserListType) key, callback);
+        }
+        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+    }
+
+    protected MiddleCallback<List<UserSearchResultDTO>> searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
+    {
+        MiddleCallback<List<UserSearchResultDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        if (key.searchString == null)
+        {
+            this.userServiceAsync.searchUsers(null, null, null, middleCallback);
+        }
+        else
+        {
+            this.userServiceAsync.searchUsers(key.searchString, key.page, key.perPage, middleCallback);
+        }
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -365,17 +414,9 @@ import retrofit.RetrofitError;
     {
         if (key == null)
         {
-            return userService.searchAllowableRecipients();
+            return userService.searchAllowableRecipients(null, null, null);
         }
-        else if (key.page == null)
-        {
-            return userService.searchAllowableRecipients(key.searchString);
-        }
-        else if (key.perPage == null)
-        {
-            return userService.searchAllowableRecipients(key.searchString, key.page);
-        }
-        return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
+         return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
     public BaseMiddleCallback<PaginatedDTO<AllowableRecipientDTO>> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedDTO<AllowableRecipientDTO>> callback)
@@ -384,15 +425,7 @@ import retrofit.RetrofitError;
                 middleCallback = new BaseMiddleCallback<>(callback);
         if (key == null)
         {
-            userServiceAsync.searchAllowableRecipients(middleCallback);
-        }
-        else if (key.page == null)
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, middleCallback);
-        }
-        else if (key.perPage == null)
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, middleCallback);
+            userServiceAsync.searchAllowableRecipients(null, null, null, middleCallback);
         }
         else
         {
@@ -402,10 +435,33 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Get User">
+    public UserProfileDTO getUser(UserBaseKey userKey)
+    {
+        return userService.getUser(userKey.key);
+    }
+
+    public MiddleCallback<UserProfileDTO> getUser(
+            UserBaseKey userKey,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getUser(userKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Get User Transactions History">
     public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
     {
         return userService.getUserTransactions(userBaseKey.key);
+    }
+
+    public MiddleCallback<List<UserTransactionHistoryDTO>> getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    {
+        MiddleCallback<List<UserTransactionHistoryDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
@@ -451,6 +507,62 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Delete User">
+    public Response deleteUser(UserBaseKey userKey)
+    {
+        return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
+    }
+
+    public MiddleCallback<Response> deleteUser(UserBaseKey userKey, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
+        userServiceAsync.deleteUser(userKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Friends">
+    public List<UserFriendsDTO> getFriends(UserBaseKey userKey)
+    {
+        return userService.getFriends(userKey.key);
+    }
+
+    public MiddleCallback<List<UserFriendsDTO>> getFriends(UserBaseKey userKey, Callback<List<UserFriendsDTO>> callback)
+    {
+        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getFriends(userKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Invite Friends">
+    public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
+    {
+        return userService.inviteFriends(userKey.key, inviteFormDTO);
+    }
+
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Add Credit">
+    public UserProfileDTO addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO)
+    {
+        return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
+    }
+
+    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Follow Hero">
     public UserProfileDTO follow(UserBaseKey userBaseKey)
     {
@@ -472,7 +584,7 @@ import retrofit.RetrofitError;
     public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
-        userService.freeFollow(userBaseKey.key, callback);
+        userServiceAsync.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 

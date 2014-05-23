@@ -1,10 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
-
 public class CompetitionZoneTradeNowDTO extends CompetitionZoneDTO
 {
-    public static final String TAG = CompetitionZoneTradeNowDTO.class.getSimpleName();
-
     public final int imageResId;
     public final String imageUrl;
 

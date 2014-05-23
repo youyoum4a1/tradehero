@@ -22,5 +22,4 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
     }
     //</editor-fold>
 
-
 }

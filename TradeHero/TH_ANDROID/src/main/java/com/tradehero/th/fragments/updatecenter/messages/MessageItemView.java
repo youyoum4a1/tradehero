@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -36,7 +37,9 @@ public class MessageItemView extends LinearLayout
     @InjectView(R.id.message_item_content) TextView mMessageContent;
     @InjectView(R.id.message_unread_flag) View mUnreadFlag;
 
+    private MessageHeaderId messageHeaderId;
     private MessageHeaderDTO messageHeaderDTO;
+    private OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
     public MessageItemView(Context context)
@@ -57,8 +60,15 @@ public class MessageItemView extends LinearLayout
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
     @Override protected void onDetachedFromWindow()
     {
+        setElementClickedListener(null);
         resetMessageIcon();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -66,6 +76,7 @@ public class MessageItemView extends LinearLayout
 
     @Override public void display(MessageHeaderId dto)
     {
+        this.messageHeaderId = dto;
         this.messageHeaderDTO = messageHeaderCache.get(dto);
         if (messageHeaderDTO != null)
         {
@@ -114,5 +125,30 @@ public class MessageItemView extends LinearLayout
                     .transform(userPhotoTransformation)
                     .into(iconViewCopy);
         }
+    }
+
+    public void setElementClickedListener(OnElementClickedListener elementClickedListener)
+    {
+        this.elementClickedListener = elementClickedListener;
+    }
+
+    @OnClick({R.id.message_item_icon, R.id.message_item_title})
+    protected void handleUserClicked()
+    {
+        notifyUserClicked();
+    }
+
+    protected void notifyUserClicked()
+    {
+        OnElementClickedListener userClickedListenerCopy = elementClickedListener;
+        if (userClickedListenerCopy != null)
+        {
+            userClickedListenerCopy.onUserClicked(messageHeaderId);
+        }
+    }
+
+    public static interface OnElementClickedListener
+    {
+        void onUserClicked(MessageHeaderId messageHeaderId);
     }
 }

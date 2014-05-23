@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.exception;
 
-
 public class BillingException extends Exception
 {
     //<editor-fold desc="Constructors">

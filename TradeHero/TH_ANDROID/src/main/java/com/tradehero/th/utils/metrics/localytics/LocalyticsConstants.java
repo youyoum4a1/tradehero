@@ -1,6 +1,5 @@
 package com.tradehero.th.utils.metrics.localytics;
 
-
 public class LocalyticsConstants
 {
     public static final String AppLaunch = "AppLaunch";

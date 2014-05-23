@@ -8,7 +8,6 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 
-
 public class THSKUDetailAdapter
         extends ProductDetailAdapter<
             IABSKU,

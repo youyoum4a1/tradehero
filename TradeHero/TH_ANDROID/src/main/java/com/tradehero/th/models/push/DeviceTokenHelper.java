@@ -3,7 +3,7 @@ package com.tradehero.th.models.push;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.persistence.prefs.SavedBaiduPushDeviceIdentifier;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import timber.log.Timber;
 
 public class DeviceTokenHelper
 {
-    @Inject @SavedBaiduPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;
+    @Inject @SavedPushDeviceIdentifier static StringPreference savedPushDeviceIdentifier;
     @Inject static Context context;
 
     public static boolean isChineseVersion()

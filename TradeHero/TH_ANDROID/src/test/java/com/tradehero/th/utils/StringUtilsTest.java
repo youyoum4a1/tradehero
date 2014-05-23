@@ -11,12 +11,9 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)public class StringUtilsTest
 {
-    public static final String TAG = StringUtilsTest.class.getSimpleName();
-
     @Test public void joinListNull_shouldReturnNull()
     {
         assertNull(StringUtils.join(",", (List<String>) null));

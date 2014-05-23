@@ -7,11 +7,8 @@ import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-
 public class ProviderListRetrievedMilestone extends DTORetrievedAsyncMilestone<ProviderListKey, ProviderIdList, ProviderListCache>
 {
-    public static final String TAG = ProviderListRetrievedMilestone.class.getSimpleName();
-
     @Inject ProviderListCache providerListCache;
     @Inject ProviderCache providerCache;
 

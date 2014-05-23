@@ -25,7 +25,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
-import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
@@ -62,7 +62,7 @@ public class THUser
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject static Lazy<SessionService> sessionService;
+    @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
     @Inject static Lazy<UserProfileCache> userProfileCache;
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
@@ -162,7 +162,8 @@ public class THUser
                         DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                         DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                         VersionUtils.getVersionId(Application.context()));
-                sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                // TODO save middle callback?
+                sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }
     }

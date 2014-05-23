@@ -8,7 +8,6 @@ import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
-
 public class UserProfileDTOUtil
 {
     public final static int IS_NOT_FOLLOWER_WANT_MSG = -1;

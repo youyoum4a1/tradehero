@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="invite_friends">친구 초대</string>
+  <string name="invite_friend_refer_friend_empty_view">친구 목록이 없습니다. 페이스북, 트위터, LinkedIn 계정을 연결하여 친구를 초대하세요</string>
+  <string name="invite_friend_send_invitations">초대하기</string>
+  <string name="invite_friend_refer_friend_announcement">초대한 친구가 조인할때마다 트레이드히어로 게임머니를 받으세요</string>
+  <string name="invite_friend_search_friends">친구 검색</string>
+  <string name="invite_friend_add_all">모두 선택</string>
+  <string name="invite_friend_remove_all">모두 선택취소</string>
+  <string name="invite_friend_success">성공</string>
+  <string name="invite_friend_facebook_tradehero_refer_friend_message">트레이드히어로 다운받기: 최고의 주식 트레이더의 투자패턴을 배우며 수익을 만드세요!</string>
+  <string name="invite_friend_request_canceled">요청사항이 취소됨</string>
+  <string name="invite_friend_request_sent">요청사항 보냄</string>
+
+  <string name="error_fetch_friends">친구목록 불러오기 실패</string>
+  <string name="error_fetch_local_contacts">연락처 불러오기 실패</string>
+  <string name="error_fetch_server_friends">서버에서 친구목록 불러오기 실패</string>
+
+</resources>

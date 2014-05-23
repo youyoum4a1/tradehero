@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Full page elements -->
+  <string name="leaderboard_filter_top_ranking_reminder">랭킹에 진입하기 위해서는 적어도 2개의 거래목록이 있어야합니다.</string>
+  <string name="leaderboard_filter_reset_filter">필터 초기화</string>
+  <string name="leaderboard_filter_menu_title">필터옵션</string>
+  <string name="leaderboard_filter_menu_button_done">완료</string>
+
+  <!-- For individual LeaderboardFilterValueSlider -->
+  <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
+  <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
+
+  <!-- For Monthly Activity -->
+  <string name="leaderboard_filter_monthly_activity_header">월별 활동내역</string>
+  <string name="leaderboard_filter_monthly_activity_value_unit">거래 횟수 (평균)</string>
+  <string name="leaderboard_filter_monthly_activity_description">월별 거래횟수</string>
+  <string name="leaderboard_filter_monthly_activity_min_description">수동적</string>
+  <string name="leaderboard_filter_monthly_activity_max_description">능동적</string>
+
+  <!-- For Win Ratio -->
+  <string name="leaderboard_filter_win_ratio_header">승률</string>
+  <string name="leaderboard_filter_win_ratio_value_unit">%</string>
+  <string name="leaderboard_filter_win_ratio_description">수익 vs. 손해를 낸 거래 - 높을 수록 좋아요!</string>
+  <string name="leaderboard_filter_win_ratio_min_description">수익을 낸적 없음</string>
+  <string name="leaderboard_filter_win_ratio_max_description">항상 수익을 냄</string>
+
+  <!-- For Holding Period -->
+  <string name="leaderboard_filter_holding_period_header">보유기간</string>
+  <string name="leaderboard_filter_holding_period_value_unit">일</string>
+  <string name="leaderboard_filter_holding_period_description">평균 보유시간</string>
+  <string name="leaderboard_filter_holding_period_min_description">최저</string>
+  <string name="leaderboard_filter_holding_period_max_description">최장</string>
+
+</resources>

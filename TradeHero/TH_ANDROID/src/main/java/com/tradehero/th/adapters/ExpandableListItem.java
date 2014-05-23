@@ -1,6 +1,5 @@
 package com.tradehero.th.adapters;
 
-
 public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListener
 {
     protected boolean expanded;

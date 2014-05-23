@@ -21,4 +21,13 @@ public class PushMessageDTO
         this.description = description;
         this.discussionType = discussionType;
     }
+
+    @Override public String toString()
+    {
+        return "PushMessageDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

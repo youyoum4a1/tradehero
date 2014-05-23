@@ -33,8 +33,6 @@ public class MainTimelineAdapter extends ArrayAdapter
         AbsListView.OnScrollListener,
         PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>
 {
-    public static final String TAG = MainTimelineAdapter.class.getSimpleName();
-
     public static final int TIMELINE_ITEM_TYPE = 0;
     public static final int PORTFOLIO_ITEM_TYPE = 1;
     public static final int STATS_ITEM_TYPE = 2;
@@ -142,7 +140,6 @@ public class MainTimelineAdapter extends ArrayAdapter
                 }
                 break;
 
-
         }
     }
     //</editor-fold>
@@ -194,13 +191,11 @@ public class MainTimelineAdapter extends ArrayAdapter
                 break;
 
             case PORTFOLIO_LIST:
-                // TODO
                 notifyBeginRefresh(currentTabType);
                 break;
 
             case STATS:
-                // TODO
-                notifyLoadFinished();
+                notifyBeginRefresh(currentTabType);
                 break;
 
             default:

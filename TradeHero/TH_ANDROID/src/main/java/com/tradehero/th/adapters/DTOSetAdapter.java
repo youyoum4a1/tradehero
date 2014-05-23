@@ -33,6 +33,12 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     }
     //</editor-fold>
 
+    public void clear()
+    {
+        set.clear();
+        items.clear();
+    }
+
     protected Set<T> createSet(Collection<T> objects)
     {
         if (objects == null)

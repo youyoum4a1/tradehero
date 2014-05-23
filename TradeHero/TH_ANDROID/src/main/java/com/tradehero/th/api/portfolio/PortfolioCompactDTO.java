@@ -37,7 +37,8 @@ public class PortfolioCompactDTO implements DTO
         return new PortfolioId(id);
     }
 
-    @JsonIgnore public ProviderId getProviderId()
+    // Do NOT rename to getProviderId or providerId will always be null
+    @JsonIgnore public ProviderId getProviderIdKey()
     {
         return new ProviderId(providerId);
     }

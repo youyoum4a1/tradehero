@@ -10,12 +10,12 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
 
-public interface NewsServiceAsync
+interface NewsServiceAsync
 {
     //countries
     @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);
 
-    //social catefories
+    //social categories
     @GET("/news/categories") void getCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback);
 
     @GET("/news/sources") void getSources(Callback<PaginatedDTO<NewsItemSourceDTO>> callback);
@@ -47,7 +47,6 @@ public interface NewsServiceAsync
             @Query("perPage") int perPage/* = 42*/,
             Callback<PaginatedDTO<NewsItemDTO>> callback);
 
-
     @GET("/news/securities") void getSecuritiesNewsList(
             @Query("securityId") int securityId,
             @Query("page") int page/*    = 1*/,
@@ -56,7 +55,6 @@ public interface NewsServiceAsync
 
     @GET("/news/{newsId}")
     void getNewsDetails(@Path("newsId") long newsId, Callback<NewsItemDTO> callback);
-
 
     @POST("/discussions/news/{headlineItemId}/share")
     void shareHeadlineItem(

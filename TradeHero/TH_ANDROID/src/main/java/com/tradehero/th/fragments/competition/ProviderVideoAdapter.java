@@ -7,8 +7,6 @@ import com.tradehero.th.api.competition.key.HelpVideoId;
 
 public class ProviderVideoAdapter extends ArrayDTOAdapter<HelpVideoId, ProviderVideoListItem>
 {
-    private final static String TAG = ProviderVideoAdapter.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public ProviderVideoAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {

@@ -1,10 +1,7 @@
 package com.tradehero.th.api.security.key;
 
-
 public class SearchSecurityListType extends SecurityListType
 {
-    public static final String TAG = SearchSecurityListType.class.getSimpleName();
-
     public final String searchString;
 
     //<editor-fold desc="Constructors">

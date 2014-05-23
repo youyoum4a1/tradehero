@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
 
-
 public class THLog
 {
     /** Display KeyHash which is required by Facebook Application */

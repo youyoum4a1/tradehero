@@ -11,13 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardKeyTest extends BaseLeaderboardKeyTest
 {
-    public static final String TAG = LeaderboardKeyTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

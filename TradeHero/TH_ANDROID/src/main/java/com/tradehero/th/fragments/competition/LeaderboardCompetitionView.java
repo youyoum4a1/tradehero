@@ -15,7 +15,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-
+import timber.log.Timber;
 
 public class LeaderboardCompetitionView extends ImageView
         implements DTOView<ProviderId>
@@ -80,7 +80,14 @@ public class LeaderboardCompetitionView extends ImageView
             int joinBannerResId = providerSpecificResourcesDTO == null ? 0 : providerSpecificResourcesDTO.getJoinBannerResId(providerDTO.isUserEnrolled);
             if (joinBannerResId != 0)
             {
-                setImageResource(joinBannerResId);
+                try
+                {
+                    setImageResource(joinBannerResId);
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "providerId %d", providerDTO.id);
+                }
             }
             else
             {

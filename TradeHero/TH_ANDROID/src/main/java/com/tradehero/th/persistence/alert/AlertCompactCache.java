@@ -14,10 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class AlertCompactCache extends PartialDTOCache<AlertId, AlertCompactDTO>
 {
-    public static final String TAG = AlertCompactCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
     private THLruCache<AlertId, AlertCompactCutDTO> lruCache;

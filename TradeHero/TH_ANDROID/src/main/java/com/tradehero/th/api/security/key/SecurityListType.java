@@ -2,7 +2,6 @@ package com.tradehero.th.api.security.key;
 
 import com.tradehero.common.api.PagedDTOKey;
 
-
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {
     public final Integer page;

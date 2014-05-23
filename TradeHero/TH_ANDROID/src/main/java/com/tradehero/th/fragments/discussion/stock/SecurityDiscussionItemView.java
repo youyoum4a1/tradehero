@@ -12,24 +12,30 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.persistence.translation.TranslationCache;
+import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
-import timber.log.Timber;
 
-public class SecurityDiscussionItemView extends AbstractDiscussionItemView<DiscussionKey> implements
-        View.OnClickListener
+public class SecurityDiscussionItemView
+        extends AbstractDiscussionItemView<DiscussionKey>
+        implements View.OnClickListener
 {
     @InjectView(R.id.discussion_user_picture) ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) TextView userProfileName;
@@ -37,10 +43,11 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userProfilePictureTransformation;
+    @Inject TranslationCache translationCache;
 
     private DiscussionDTO discussionDTO;
-
     private UserBaseDTO userBaseDTO;
+    private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
     //<editor-fold desc="Constructors">
     public SecurityDiscussionItemView(Context context)
@@ -70,7 +77,6 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         discussionUserPicture.setOnClickListener(this);
-        Timber.d("VotePair: %s", discussionVotePair);
         if (discussionVotePair != null)
         {
             discussionVotePair.setDownVote(false);
@@ -79,10 +85,20 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     @Override protected void onDetachedFromWindow()
     {
+        detachTranslationTask();
         resetView();
         discussionUserPicture.setOnClickListener(null);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    private void detachTranslationTask()
+    {
+        if (translationTask != null)
+        {
+            translationTask.setListener(null);
+        }
+        translationTask = null;
     }
 
     @Override
@@ -135,9 +151,20 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(discussionDTO.text, "", "", discussionDTO.id,
-                WeChatMessageType.Discussion.getType());
+        ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
+                WeChatMessageType.Discussion.getValue());
+        ((NewsDialogLayout) contentView).setMenuClickedListener(
+                createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);
+    }
+
+    protected void handleTranslationRequested()
+    {
+        detachTranslationTask();
+        TranslationKey key = discussionDTO.createTranslationKey("zh");
+        translationTask =
+                new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
+                        .launchTranslation(key);
     }
 
     private void linkWith(UserBaseDTO user, boolean andDisplay)
@@ -166,7 +193,10 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
 
     private void displayUsername()
     {
-        userProfileName.setText(userBaseDTO.displayName);
+        if (userProfileName != null)
+        {
+            userProfileName.setText(userBaseDTO.displayName);
+        }
     }
 
     private void resetUserProfileName()
@@ -215,5 +245,29 @@ public class SecurityDiscussionItemView extends AbstractDiscussionItemView<Discu
         Bundle bundle = new Bundle();
         bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseDTO.id);
         getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        // TODO there has to be a SecurityId here
+        throw new IllegalStateException("It has no securityId");
+    }
+
+    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
+    {
+        return new SecurityDiscussionItemViewDialogMenuClickedListener();
+    }
+
+    private class SecurityDiscussionItemViewDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
+    {
+        @Override public void onTranslationRequestedClicked()
+        {
+            handleTranslationRequested();
+        }
+
+        @Override public void onShareRequestedClicked()
+        {
+            // TODO
+        }
     }
 }

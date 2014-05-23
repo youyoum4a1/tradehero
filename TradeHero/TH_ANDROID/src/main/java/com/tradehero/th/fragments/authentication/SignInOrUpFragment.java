@@ -11,7 +11,6 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import timber.log.Timber;
 
-
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId();
@@ -45,21 +44,29 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
-
     }
 
-    private void checkLocale() {
+    private void checkLocale()
+    {
         boolean isChineseLocale = DeviceTokenHelper.isChineseVersion();
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s",language);
-        if (isChineseLocale) {
+        if (isChineseLocale)
+        {
             showViewForChinese();
+        }
+        // TODO remove this shit
+        else if (language != null && language.startsWith("ko"))
+        {
+            getView().findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
         }
     }
 
-    private void showViewForChinese() {
+    private void showViewForChinese()
+    {
         View root = getView();
         root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
         root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);

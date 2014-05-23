@@ -18,13 +18,10 @@ import twitter4j.TimeZone;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class TimeUnitHourInDayTest
 {
-    public static final String TAG = TimeUnitHourInDayTest.class.getSimpleName();
-
     @Test public void calculatePreciseDurationOnlyDay()
     {
         Date later = new Date(2013, 1, 12);

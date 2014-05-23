@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.lang.ref.WeakReference;
+import timber.log.Timber;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>
@@ -93,9 +94,20 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
-    protected void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
+    protected void notifyHurriedListenersPreReceived(DTOKeyType key, DTOType value)
     {
-        getOrCreateCacheValue(key).notifyListenersReceived(key, value, fromCache);
+        getOrCreateCacheValue(key).notifyHurriedListenersPreReceived(key, value);
+    }
+
+    protected void notifyListenersReceived(DTOKeyType key, DTOType value)
+    {
+        if (value == null)
+        {
+            Timber.e(new Exception(
+                    String.format("Null value returned for key %s, on cache %s", key,
+                            getCacheClass())), null);
+        }
+        getOrCreateCacheValue(key).notifyListenersReceived(key, value);
     }
 
     protected void notifyListenersFailed(DTOKeyType key, Throwable error)
@@ -135,7 +147,6 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
     protected class PartialGetOrFetchTask extends GetOrFetchTask<DTOKeyType, DTOType>
     {
         private Throwable error = null;
-        private boolean shouldNotifyListenerOnCacheUpdated = true;
 
         //<editor-fold desc="Constructors">
         public PartialGetOrFetchTask(DTOKeyType key)
@@ -151,11 +162,11 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
         @Override protected void onPreExecute()
         {
+            super.onPreExecute();
             DTOType cached = PartialDTOCacheNew.this.get(key);
             if (cached != null)
             {
-                notifyListenersReceived(key, cached, true);
-                shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
+                notifyHurriedListenersPreReceived(key, cached);
             }
         }
 
@@ -177,18 +188,23 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         {
             super.onPostExecute(value);
 
-            if (!isCancelled())
+            if (isCancelled())
             {
-                if (error != null)
-                {
-                    notifyListenersFailed(key, error);
-                }
-                // not to notify listener about data come from cache again
-                else if (shouldNotifyListenerOnCacheUpdated)
-                {
-                    notifyListenersReceived(key, value, !forceUpdateCache);
-                }
+                // Nothing to do
+            }
+            else if (error != null)
+            {
+                notifyListenersFailed(key, error);
+            }
+            else
+            {
+                notifyListenersReceived(key, value);
             }
         }
+    }
+
+    protected Class<?> getCacheClass()
+    {
+        return getClass();
     }
 }

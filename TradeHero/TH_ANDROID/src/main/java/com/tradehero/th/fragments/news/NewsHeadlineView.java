@@ -9,16 +9,22 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.persistence.translation.TranslationCache;
+import com.tradehero.th.persistence.translation.TranslationKey;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.inject.Inject;
 
 public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
@@ -27,7 +33,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @InjectView(R.id.news_title_title) TextView newsTitle;
     @InjectView(R.id.news_source) TextView newsSource;
 
+    @Inject TranslationCache translationCache;
+
     private NewsItemDTO newsItemDTO;
+    private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -52,11 +61,27 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
     @Override
     protected void onDetachedFromWindow()
     {
+        detachTranslationTask();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    private void detachTranslationTask()
+    {
+        if (translationTask != null)
+        {
+            translationTask.setListener(null);
+        }
+        translationTask = null;
     }
 
     //<editor-fold desc="Related to share dialog">
@@ -82,11 +107,28 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO.title, newsItemDTO.description,
-                newsItemDTO.langCode, newsItemDTO.id, WeChatMessageType.News.getType());
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getValue());
+        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
+        // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
     //</editor-fold>
+
+    protected void handleTranslationRequested()
+    {
+        if (newsItemDTO != null && newsItemDTO.text != null)
+        {
+            detachTranslationTask();
+            TranslationKey key = newsItemDTO.createTranslationKey("zh");
+            translationTask =
+                    new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
+                            .launchTranslation(key);
+        }
+        else
+        {
+            // TODO do a callback for when the data is in?
+        }
+    }
 
     /**
      * TODO this event should be handled by DiscussionActionButtonsView,
@@ -182,6 +224,29 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         } catch (MalformedURLException e)
         {
             return null;
+        }
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        throw new IllegalStateException("It has no securityId");
+    }
+
+    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
+    {
+        return new NewsHeadlineViewDialogMenuClickedListener();
+    }
+
+    private class NewsHeadlineViewDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
+    {
+        @Override public void onTranslationRequestedClicked()
+        {
+            handleTranslationRequested();
+        }
+
+        @Override public void onShareRequestedClicked()
+        {
+            // TODO
         }
     }
 }

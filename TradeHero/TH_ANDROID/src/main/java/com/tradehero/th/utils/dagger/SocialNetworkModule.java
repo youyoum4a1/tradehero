@@ -11,15 +11,12 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
-import com.tradehero.th.utils.ForBaiduPush;
-import com.tradehero.th.utils.ForWeChat;
-import com.tradehero.th.utils.SocialSharer;
-import com.tradehero.th.utils.WeChatUtils;
+import com.tradehero.th.network.share.SocialSharerImpl;
+import com.tradehero.th.network.share.SocialSharer;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collection;
 import javax.inject.Singleton;
-
 
 @Module(
         injects = {
@@ -97,10 +94,9 @@ public class SocialNetworkModule
         return weChatApi;
     }
 
-    @Provides @ForWeChat SocialSharer provideWeChatSocialSharer(WeChatUtils weChatUtils)
+    @Provides SocialSharer provideSocialSharer(SocialSharerImpl socialSharerImpl)
     {
-        return weChatUtils;
+        return socialSharerImpl;
     }
-
 
 }

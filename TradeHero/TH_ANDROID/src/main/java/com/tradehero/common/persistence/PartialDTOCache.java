@@ -3,6 +3,7 @@ package com.tradehero.common.persistence;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * The registered listeners are kept as weak references. So they should be strongly referenced elsewhere.
@@ -51,7 +52,6 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     }
 
     /**
-     * The listener should be strongly referenced elsewhere
      * @param key
      * @param forceUpdateCache
      * @param initialListener
@@ -76,8 +76,6 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                     shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
                 }
                 start = System.currentTimeMillis();
-
-
             }
 
             @Override protected DTOType doInBackground(Void... voids)
@@ -110,6 +108,10 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                         // not to notify listener about data come from cache again
                         else if (shouldNotifyListenerOnCacheUpdated)
                         {
+                            if (value == null)
+                            {
+                                Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getCacheClass())), null);
+                            }
                             currentListener.onDTOReceived(key, value, !forceUpdateCache);
                         }
                     }
@@ -244,5 +246,10 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         {
             autoFetch(key, force);
         }
+    }
+
+    private Class<?> getCacheClass()
+    {
+        return getClass();
     }
 }

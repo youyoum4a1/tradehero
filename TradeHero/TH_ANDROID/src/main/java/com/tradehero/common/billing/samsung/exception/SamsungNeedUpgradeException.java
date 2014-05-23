@@ -2,7 +2,6 @@ package com.tradehero.common.billing.samsung.exception;
 
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 
-
 public class SamsungNeedUpgradeException extends SamsungOneCodeException
 {
     public static final int VALID_ERROR_CODE = SamsungIapHelper.IAP_ERROR_NEED_APP_UPGRADE;

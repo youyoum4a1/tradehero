@@ -3,7 +3,6 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
 
-
 public class PixelBitWiseMaskTransformation implements Transformation
 {
     // The default mask negates the colors and leaves alpha unchanged

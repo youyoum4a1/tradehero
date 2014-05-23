@@ -19,7 +19,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;

@@ -21,13 +21,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
 public class SecuritySellIntentTest
 {
-    public static final String TAG = SecuritySellIntentTest.class.getSimpleName();
-
     @Before public void setUp()
     {
         THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());

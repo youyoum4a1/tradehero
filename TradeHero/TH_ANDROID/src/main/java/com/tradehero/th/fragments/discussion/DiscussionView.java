@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -151,9 +152,21 @@ public class DiscussionView extends FrameLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
         discussionList.setAdapter(discussionListAdapter);
         scrollListener = createFlagNearEndScrollListener();
         discussionList.setOnScrollListener(scrollListener);
+        discussionList.setOnTouchListener(new OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                if (postCommentView != null)
+                {
+                    postCommentView.dismissKeypad();
+                }
+                return false;
+            }
+        });
         if (postCommentView != null)
         {
             postCommentView.setCommentPostedListener(createCommentPostedListener());
@@ -169,8 +182,10 @@ public class DiscussionView extends FrameLayout
         }
         discussionList.setAdapter(null);
         discussionList.setOnScrollListener(null);
+        discussionList.setOnTouchListener(null);
 
         ButterKnife.reset(this);
+        removeCallbacks(null);
         super.onDetachedFromWindow();
     }
 
@@ -328,7 +343,7 @@ public class DiscussionView extends FrameLayout
             {
                 ((DTOView<DiscussionKey>) topicView).display(discussionKey);
             }
-            catch (Exception ex)
+            catch (ClassCastException ex)
             {
                 Timber.e(ex, "topicView should implement DTOView<DiscussionKey>");
             }
@@ -426,7 +441,7 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         onFinish();
 
@@ -434,15 +449,15 @@ public class DiscussionView extends FrameLayout
 
         if (key.equals(startingDiscussionListKey))
         {
-            handleStartingDTOReceived(key, value, fromCache);
+            handleStartingDTOReceived(key, value);
         }
         else if (key.equals(prevDiscussionListKey))
         {
-            postHandlePrevDTOReceived(key, value, fromCache);
+            postHandlePrevDTOReceived(key, value);
         }
         else if (key.equals(nextDiscussionListKey))
         {
-            postHandleNextDTOReceived(key, value, fromCache);
+            postHandleNextDTOReceived(key, value);
         }
     }
 
@@ -458,24 +473,24 @@ public class DiscussionView extends FrameLayout
         setLoaded();
     }
 
-    protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handleStartingDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         fetchDiscussionListNextIfValid(value);
         fetchDiscussionListPrevIfValid(value);
     }
 
-    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    protected void postHandleNextDTOReceived(final DiscussionListKey key, final DiscussionKeyList value)
     {
         post(new Runnable()
         {
             @Override public void run()
             {
-                handleNextDTOReceived(key, value, fromCache);
+                handleNextDTOReceived(key, value);
             }
         });
     }
 
-    protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
         {
@@ -483,18 +498,18 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value, final boolean fromCache)
+    protected void postHandlePrevDTOReceived(final DiscussionListKey key, final DiscussionKeyList value)
     {
         post(new Runnable()
         {
             @Override public void run()
             {
-                handlePrevDTOReceived(key, value, fromCache);
+                handlePrevDTOReceived(key, value);
             }
         });
     }
 
-    protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value, boolean fromCache)
+    protected void handlePrevDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
         if (discussionList != null && discussionList.getFirstVisiblePosition() == 0)
         {

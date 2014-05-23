@@ -2,7 +2,6 @@ package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 
-
 public class BaseTypedMessageListKeyTest extends BaseMessageListKeyTest
 {
     protected TypedMessageListKey key1_1_p()

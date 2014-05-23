@@ -6,7 +6,6 @@ import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-
 public class OwnedPortfolioId  implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";

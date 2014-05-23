@@ -2,7 +2,6 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductIdentifier;
 
-
 public class IABSKU implements ProductIdentifier
 {
     public final String identifier;

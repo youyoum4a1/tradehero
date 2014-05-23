@@ -7,7 +7,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.List;
 
-
 public class SecurityPositionDetailDTO implements DTO
 {
     public SecurityCompactDTO security;

@@ -94,7 +94,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.listView = (AbsListView) view.findViewById(R.id.competition_zone_list);
         if (this.listView != null)
         {
-            this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
+            this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
         }
         placeAdapterInList();
     }
@@ -326,9 +326,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(
-                ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                getApplicablePortfolioId().getArgs());
+        ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
@@ -349,8 +347,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                providerDTO.associatedPortfolio.getPortfolioId().getArgs());
+        ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         getNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
@@ -381,9 +378,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
-        args.putBundle(
-                CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                getApplicablePortfolioId().getArgs());
+        CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
             getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,

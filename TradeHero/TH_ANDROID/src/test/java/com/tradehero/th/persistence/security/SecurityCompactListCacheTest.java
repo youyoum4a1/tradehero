@@ -14,13 +14,10 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityCompactListCacheTest
 {
-    public static final String TAG = SecurityCompactListCacheTest.class.getSimpleName();
-
     private SecurityCompactListCache securityCompactListCache;
 
     @Before public void setUp()

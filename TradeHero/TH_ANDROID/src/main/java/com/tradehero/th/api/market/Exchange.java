@@ -2,7 +2,6 @@ package com.tradehero.th.api.market;
 
 import com.tradehero.th.R;
 
-
 public enum Exchange
 {
     // United Kingdom

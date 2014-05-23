@@ -19,8 +19,9 @@ import com.tencent.mm.sdk.openapi.WXWebpageObject;
 import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.wechat.TrackShareFormDTO;
+import com.tradehero.th.api.share.wechat.TrackShareFormDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -62,6 +63,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        // TODO take this intent extraction into a separate method and use a new
+        // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         int msgType = getIntent().getIntExtra(WECHAT_MESSAGE_TYPE_KEY, WECHAT_MESSAGE_TYPE_NONE);
         mMsgNewsId = getIntent().getIntExtra(WECHAT_MESSAGE_ID_KEY, 0);
@@ -69,7 +72,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         mMsgImageURL = getIntent().getStringExtra(WECHAT_MESSAGE_IMAGE_URL_KEY);
         loadImage();
 
-        WeChatMessageType weChatMessageType = WeChatMessageType.fromType(msgType);
+        WeChatMessageType weChatMessageType = WeChatMessageType.fromValue(msgType);
 
         boolean isWXInstalled = mWeChatApi.isWXAppInstalled();
         if (isWXInstalled && weChatMessageType != null)
@@ -134,7 +137,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                         mBitmap = Bitmap.createBitmap(picassoLazy.get().load(mMsgImageURL).get());
                         if (mBitmap != null)
                         {
-                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 50, 50, false);
+                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
                         }
                     } catch (IOException e)
                     {
@@ -151,7 +154,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         if (mBitmap == null)
         {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
+            //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
         }
     }
 

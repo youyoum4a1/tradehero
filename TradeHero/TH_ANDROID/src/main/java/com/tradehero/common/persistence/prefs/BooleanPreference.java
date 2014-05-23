@@ -3,7 +3,6 @@ package com.tradehero.common.persistence.prefs;
 import android.content.SharedPreferences;
 import javax.inject.Inject;
 
-
 public class BooleanPreference extends AbstractPreference<Boolean>
 {
     @Inject public BooleanPreference(SharedPreferences preference, String key, Boolean defaultValue)

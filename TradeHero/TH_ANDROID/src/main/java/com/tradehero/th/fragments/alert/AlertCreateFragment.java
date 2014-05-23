@@ -7,10 +7,8 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
 
-
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
-    public static final String TAG = AlertCreateFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     private MiddleCallbackCreateAlertCompact middleCallbackCreateAlertCompactDTO;
@@ -61,6 +59,6 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         middleCallbackCreateAlertCompactDTO = alertServiceWrapper.get().createAlert(
                 currentUserId.toUserBaseKey(),
                 alertFormDTO,
-                alertUpdateCallback);
+                createAlertUpdateCallback());
     }
 }

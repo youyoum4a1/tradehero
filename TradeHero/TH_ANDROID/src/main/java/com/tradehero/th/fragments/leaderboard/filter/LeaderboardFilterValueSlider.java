@@ -10,11 +10,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 
-
 public class LeaderboardFilterValueSlider extends RelativeLayout
 {
-    public static final String TAG = LeaderboardFilterValueSlider.class.getSimpleName();
-
     @InjectView(R.id.leaderboard_filter_value) protected TextView valueText;
     @InjectView(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
 

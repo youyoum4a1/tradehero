@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
     >
+
   <RelativeLayout android:id="@+id/main_content_wrapper"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -104,6 +105,9 @@
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_marginRight="@dimen/timeline_side_spacing"
       >
+
     <include layout="@layout/discussion_action_buttons_big"/>
+
   </FrameLayout>
+
 </com.tradehero.th.fragments.timeline.TimelineItemView>

@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-
+// TODO use a paginated key instead of SecurityId
 @Singleton
 public class SecurityNewsCache extends StraightDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>>
 {

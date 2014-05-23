@@ -11,10 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
 {
-    public static final String TAG = SecurityCompactListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;

@@ -6,7 +6,6 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PositionDTOCompact extends ExtendedDTO
 {
     public int id;

@@ -1,6 +1,5 @@
 package com.tradehero.th.api.security.key;
 
-
 public class TrendingVolumeSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">

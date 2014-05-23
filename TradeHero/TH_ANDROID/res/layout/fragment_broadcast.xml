@@ -58,7 +58,7 @@
       android:textSize="@dimen/stock_symbol_header"
       android:gravity="left|top"
       android:padding="5dp"
-      android:inputType="text"
+      android:inputType="textMultiLine"
       android:focusable="true"
       tools:text="NASDAQ:GOOG"
       android:background="@drawable/et_bg"

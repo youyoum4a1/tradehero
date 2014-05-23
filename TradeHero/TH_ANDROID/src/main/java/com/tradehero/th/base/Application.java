@@ -14,11 +14,8 @@ import com.tradehero.th.utils.EmailSignUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class Application extends PApplication
 {
-    public static final String TAG = Application.class.getSimpleName();
-
     @Inject protected PushNotificationManager pushNotificationManager;
 
     @Override protected void init()

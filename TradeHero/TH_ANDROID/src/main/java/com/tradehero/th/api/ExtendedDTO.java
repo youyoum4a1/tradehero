@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-
 public class ExtendedDTO implements DTO
 {
     public static final boolean VERBOSE = false;

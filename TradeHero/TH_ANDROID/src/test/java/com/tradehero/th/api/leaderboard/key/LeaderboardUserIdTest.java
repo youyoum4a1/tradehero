@@ -11,13 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardUserIdTest extends BaseLeaderboardUserIdTest
 {
-    public static final String TAG = LeaderboardUserIdTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

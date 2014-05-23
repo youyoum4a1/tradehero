@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
@@ -20,7 +19,9 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
@@ -28,6 +29,7 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
 {
@@ -123,7 +125,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        MessageHeaderId messageHeaderId = new MessageHeaderId(discussionKey.id);
+        MessageHeaderId messageHeaderId = new MessageHeaderUserId(discussionKey.id, recipient);
         this.messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         super.linkWith(discussionKey, andDisplay);
 
@@ -292,7 +294,7 @@ public class PrivateDiscussionView extends DiscussionView
                     R.layout.private_message_bubble_other);
         }
 
-        @Override public View getView(int position, View convertView, ViewGroup parent)
+        @Override public AbstractDiscussionItemView<DiscussionKey> getView(int position, View convertView, ViewGroup parent)
         {
             if (position == 0)
             {
@@ -303,10 +305,14 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
+    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
+            if (value == null)
+            {
+                Timber.e(new NullPointerException("Server returned MessageHeaderDTO null for key " + key), "");
+            }
             setRecipient(new UserBaseKey(value.recipientUserId));
             linkWith(discussionKey, true);
             refresh();

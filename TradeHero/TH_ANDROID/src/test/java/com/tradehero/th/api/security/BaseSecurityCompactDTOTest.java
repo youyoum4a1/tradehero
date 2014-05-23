@@ -1,12 +1,7 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.th.api.position.PositionDTOCompact;
-
-
 abstract public class BaseSecurityCompactDTOTest
 {
-    public static final String TAG = BaseSecurityCompactDTOTest.class.getSimpleName();
-
     public boolean haveSameFields(SecurityCompactDTO left, SecurityCompactDTO right)
     {
         boolean have = left.id == null ? right.id == null : left.id.equals(right.id);

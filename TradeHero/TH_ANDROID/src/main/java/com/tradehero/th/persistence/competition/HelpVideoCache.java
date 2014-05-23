@@ -8,10 +8,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class HelpVideoCache extends StraightDTOCache<HelpVideoId, HelpVideoDTO>
 {
-    public static final String TAG = HelpVideoCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 200;
 
     //<editor-fold desc="Constructors">

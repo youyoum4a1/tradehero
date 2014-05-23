@@ -10,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class CompetitionListCache extends StraightDTOCache<ProviderId, CompetitionIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;

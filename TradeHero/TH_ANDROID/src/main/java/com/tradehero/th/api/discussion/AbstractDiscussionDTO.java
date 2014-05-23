@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.persistence.translation.TranslationKey;
 import java.util.Date;
 
 public abstract class AbstractDiscussionDTO extends ExtendedDTO
@@ -53,6 +54,11 @@ public abstract class AbstractDiscussionDTO extends ExtendedDTO
     public boolean isInProcess()
     {
         return stubKey != null && stubKey.id.equals(id);
+    }
+
+    public TranslationKey createTranslationKey(String toLanguage)
+    {
+        return new TranslationKey(langCode, toLanguage, text);
     }
 
     @Override public String toString()

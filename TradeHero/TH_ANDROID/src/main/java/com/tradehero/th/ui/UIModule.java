@@ -3,6 +3,7 @@ package com.tradehero.th.ui;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.MentionActionButtonsView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
@@ -28,7 +29,6 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
-
 @Module(
         includes = {
                 UIComponents.class
@@ -40,7 +40,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NotificationsView.class,
                 NotificationItemView.class,
 
-                UpdateCenterFragment.class,
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
                 UpdateCenterResideMenuItem.class,
@@ -62,6 +61,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 DiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
+                MentionActionButtonsView.class,
 
                 FollowDialogView.class,
 

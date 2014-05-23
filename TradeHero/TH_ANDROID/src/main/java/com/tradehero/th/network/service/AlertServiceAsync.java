@@ -11,7 +11,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 
-
 interface AlertServiceAsync
 {
     //<editor-fold desc="Get Alerts">

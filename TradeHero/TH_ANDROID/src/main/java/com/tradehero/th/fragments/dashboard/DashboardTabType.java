@@ -14,7 +14,6 @@ import com.tradehero.th.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public enum DashboardTabType
 {
     //NEWS(R.string.dashboard_headline, R.drawable.trending_selector, HeadlineFragment.class),

@@ -12,15 +12,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.billing.THProductDetail;
 
-
 abstract public class ProductDetailView<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends THProductDetail<ProductIdentifierType>>
         extends RelativeLayout
         implements DTOView<ProductDetailType>
 {
-    public static final String TAG = ProductDetailView.class.getSimpleName();
-
     public static int BG_COLOR_DISABLED_RES_ID = R.color.gray_2;
     public static int BG_COLOR_ENABLED_RES_ID = R.color.gray_3;
 

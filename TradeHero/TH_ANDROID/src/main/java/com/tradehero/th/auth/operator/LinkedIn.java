@@ -17,7 +17,6 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 import timber.log.Timber;
 
-
 public class LinkedIn extends SocialOperator
 {
     private static final String REQUEST_TOKEN_URL = "https://www.linkedin.com/uas/oauth/requestToken";

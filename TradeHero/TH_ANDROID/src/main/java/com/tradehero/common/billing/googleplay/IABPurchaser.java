@@ -17,7 +17,6 @@ import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedEx
 import org.json.JSONException;
 import timber.log.Timber;
 
-
 abstract public class IABPurchaser<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,

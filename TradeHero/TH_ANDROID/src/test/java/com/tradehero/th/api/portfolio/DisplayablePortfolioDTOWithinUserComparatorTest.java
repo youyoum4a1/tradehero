@@ -9,13 +9,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOWithinUserComparatorTest
 {
-    public static final String TAG = DisplayablePortfolioDTOWithinUserComparatorTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

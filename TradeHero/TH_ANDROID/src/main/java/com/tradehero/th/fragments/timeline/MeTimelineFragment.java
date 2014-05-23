@@ -21,7 +21,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {
@@ -95,7 +94,6 @@ public class MeTimelineFragment extends TimelineFragment
     {
         return true;
     }
-
 
     @Override public int getTutorialLayout()
     {

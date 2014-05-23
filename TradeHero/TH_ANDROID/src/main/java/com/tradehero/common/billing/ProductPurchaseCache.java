@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,
             OrderIdType extends OrderId,

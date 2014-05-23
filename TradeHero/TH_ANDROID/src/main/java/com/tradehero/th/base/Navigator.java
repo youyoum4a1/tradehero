@@ -13,7 +13,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 
-
 public class Navigator
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
@@ -204,5 +203,10 @@ public class Navigator
     protected void resetBackPressCount()
     {
         backPressedCount = 0;
+    }
+
+    public Fragment getCurrentFragment()
+    {
+        return manager.findFragmentById(R.id.realtabcontent);
     }
 }

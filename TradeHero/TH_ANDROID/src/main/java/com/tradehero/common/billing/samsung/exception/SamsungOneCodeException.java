@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.samsung.exception;
 
-
 abstract public class SamsungOneCodeException extends SamsungException
 {
     public final int errorCode;

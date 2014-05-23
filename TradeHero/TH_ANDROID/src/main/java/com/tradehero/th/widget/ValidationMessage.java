@@ -2,7 +2,6 @@ package com.tradehero.th.widget;
 
 import android.view.View;
 
-
 public class ValidationMessage
 {
     private View sender;

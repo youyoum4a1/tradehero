@@ -8,7 +8,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class PositionCompactCache extends StraightDTOCache<PositionCompactId, PositionDTOCompact>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;

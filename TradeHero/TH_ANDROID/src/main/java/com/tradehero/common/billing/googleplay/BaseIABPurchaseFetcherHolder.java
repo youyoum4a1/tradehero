@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 abstract public class BaseIABPurchaseFetcherHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,

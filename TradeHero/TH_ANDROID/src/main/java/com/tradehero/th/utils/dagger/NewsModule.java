@@ -4,7 +4,6 @@ import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
 import dagger.Module;
 
-
 @Module(
         injects = {
                 NewsDetailSummaryView.class,

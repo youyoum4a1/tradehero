@@ -126,12 +126,18 @@
   <dimen name="comment_count_drawable_padding">4dp</dimen>
   <dimen name="notification_logo_padding">5dp</dimen>
   <!--common margin should not change-->
+  <dimen name="common_margin_1">1dp</dimen>
   <dimen name="common_margin_2">2dp</dimen>
   <dimen name="common_margin_4">4dp</dimen>
   <dimen name="common_margin_10">10dp</dimen>
+  <dimen name="common_margin_15">15dp</dimen>
   <dimen name="common_margin_50">50dp</dimen>
   <dimen name="common_height_40">40dp</dimen>
   <dimen name="stock_item_width">200dp</dimen>
 
   <dimen name="buysell_dialog_scroll_height">160dp</dimen>
+  <dimen name="guide_close_margin">15dp</dimen>
+  <dimen name="security_logo_midium">60dp</dimen>
+  <dimen name="button_height_30">30dp</dimen>
+
 </resources>

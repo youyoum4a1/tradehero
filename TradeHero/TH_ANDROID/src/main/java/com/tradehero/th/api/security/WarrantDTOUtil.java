@@ -4,11 +4,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class WarrantDTOUtil
 {
-    public static final String TAG = WarrantDTOUtil.class.getSimpleName();
-
     @Inject public WarrantDTOUtil()
     {
     }

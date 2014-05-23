@@ -12,6 +12,8 @@ public class ArrayDTOAdapterNew<
         ViewType extends View & DTOView<DTOType>>
     extends ArrayAdapter<DTOType>
 {
+    protected static final int DEFAULT_VIEW_TYPE = 0;
+
     protected int layoutResourceId;
 
     public ArrayDTOAdapterNew(Context context, int layoutResourceId)
@@ -36,6 +38,16 @@ public class ArrayDTOAdapterNew<
     public void setLayoutResourceId(int layoutResourceId)
     {
         this.layoutResourceId = layoutResourceId;
+    }
+
+    @Override public int getViewTypeCount()
+    {
+        return 1;
+    }
+
+    @Override public int getItemViewType(int position)
+    {
+        return DEFAULT_VIEW_TYPE;
     }
 
     public int getViewResId(int position)

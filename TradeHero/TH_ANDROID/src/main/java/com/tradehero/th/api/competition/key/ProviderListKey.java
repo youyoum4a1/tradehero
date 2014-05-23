@@ -2,10 +2,8 @@ package com.tradehero.th.api.competition.key;
 
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class ProviderListKey extends AbstractIntegerDTOKey
 {
-    public static final String TAG = ProviderListKey.class.getSimpleName();
     public final static String BUNDLE_KEY_KEY = ProviderListKey.class.getName() + ".key";
     public static final Integer ALL_PROVIDERS = 0;
 
@@ -28,6 +26,6 @@ public class ProviderListKey extends AbstractIntegerDTOKey
 
     @Override public String toString()
     {
-        return String.format("[%s key=%d]", TAG, key);
+        return String.format("[ProviderListKey key=%d]", key);
     }
 }

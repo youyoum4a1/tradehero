@@ -141,6 +141,21 @@ public class NotificationClickHandler
                 break;
 
                 case PRIVATE_MESSAGE:
+                {
+                    Bundle args = new Bundle();
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                    }
+
+                    if (notificationDTO.threadId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    }
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                }
+                break;
+
                 case BROADCAST_MESSAGE:
                 {
                     Bundle args = new Bundle();

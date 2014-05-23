@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-
 abstract public class BaseBillingPurchaserHolder<
         ProductIdentifierType extends ProductIdentifier,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,

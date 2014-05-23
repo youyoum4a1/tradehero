@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -16,52 +17,23 @@ interface UserTimelineServiceAsync
     //<editor-fold desc="Get Global Timeline">
     @GET("/timeline")
     void getGlobalTimeline(
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
 
-    @GET("/timeline")
-    void getGlobalTimeline(
-            @Query("maxCount") int maxCount,
-            Callback<TimelineDTO> callback);
-
-    @GET("/timeline")
-    void getGlobalTimeline(
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            Callback<TimelineDTO> callback);
-
-    @GET("/timeline")
-    void getGlobalTimeline(
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            @Query("minId") Comparable minId,
-            Callback<TimelineDTO> callback);
+    @GET("/timeline/{timelineId}") void getTimelineDetail(
+            @Path("timelineId") int timelineId,
+            Callback<TimelineItemDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
     @GET("/users/{userId}/timeline")
     void getTimeline(
             @Path("userId") int userId,
-            Callback<TimelineDTO> callback);
-
-    @GET("/users/{userId}/timeline")
-    void getTimeline(
-            @Path("userId") int userId,
-            @Query("maxCount") int maxCount,
-            Callback<TimelineDTO> callback);
-
-    @GET("/users/{userId}/timeline")
-    void getTimeline(
-            @Path("userId") int userId,
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            Callback<TimelineDTO> callback);
-
-    @GET("/users/{userId}/timeline")
-    void getTimeline(
-            @Path("userId") int userId,
-            @Query("maxCount") int maxCount,
-            @Query("maxId") Comparable maxId,
-            @Query("minId") Comparable minId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
     //</editor-fold>
 

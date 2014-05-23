@@ -10,11 +10,8 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDT
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-
 public class CompetitionZoneListItemTradeNowView extends AbstractCompetitionZoneListItemView
 {
-    public static final String TAG = CompetitionZoneListItemTradeNowView.class.getSimpleName();
-
     private ImageView tradeNowIcon;
     @Inject Picasso picasso;
 

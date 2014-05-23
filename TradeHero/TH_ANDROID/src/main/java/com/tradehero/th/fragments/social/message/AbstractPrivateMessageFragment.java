@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -24,17 +25,25 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -49,6 +58,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected Picasso picasso;
     @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
     @Inject protected UserProfileCache userProfileCache;
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
@@ -72,13 +83,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         collectCorrespondentId();
     }
 
-    private void collectCorrespondentId()
+    private UserBaseKey collectCorrespondentId()
     {
         Bundle args = getArguments();
         if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
         {
-            correspondentId = new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
+            return new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
         }
+        return null;
     }
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -86,7 +98,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_private_message, container, false);
     }
@@ -104,6 +117,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
+        correspondentId = collectCorrespondentId();
         if (discussionView != null)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
@@ -118,40 +132,43 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setSubtitle(R.string.private_message_subtitle);
+        //actionBar.setSubtitle(R.string.private_message_subtitle);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
-        displayTitle();
+        //displayTitle();
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        boolean handled = super.onOptionsItemSelected(item);
-        if (!handled)
+        switch (item.getItemId())
         {
-            switch (item.getItemId())
-            {
-                case R.id.private_message_refresh_btn:
-                    refresh();
-                    handled = true;
-                    break;
-            }
+            case R.id.private_message_refresh_btn:
+                refresh();
+                return true;
+            case android.R.id.home:
+                getDashboardNavigator().goToTab(DashboardTabType.UPDATE_CENTER);
+                return true;
         }
-        return handled;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        fetchCorrespondentProfile();
+        //TODO need this? temp remove by alex
+        //fetchCorrespondentProfile();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setSubtitle(null);
+        SherlockFragmentActivity activity = getSherlockActivity();
+        if (activity != null)
+        {
+            ActionBar actionBar = activity.getSupportActionBar();
+            actionBar.setSubtitle(null);
+        }
         super.onDestroyOptionsMenu();
     }
 
@@ -181,13 +198,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.linkWith(discussionKey, andDisplay);
 
-        linkWith(new MessageHeaderId(discussionKey.id), true);
+        linkWith(new MessageHeaderUserId(discussionKey.id, collectCorrespondentId()), true);
     }
 
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
     {
         detachMessageHeaderFetchTask();
-        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false, createMessageHeaderCacheListener());
+        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false,
+                createMessageHeaderCacheListener());
         messageHeaderFetchTask.execute();
     }
 
@@ -229,7 +247,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (andDisplay)
         {
             displayCorrespondentImage();
-            displayTitle();
+            //displayTitle();
             getSherlockActivity().invalidateOptionsMenu();
         }
     }
@@ -237,7 +255,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     public void display()
     {
         displayCorrespondentImage();
-        displayTitle();
+        //displayTitle();
     }
 
     protected void displayCorrespondentImage()
@@ -260,20 +278,21 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    protected void displayTitle()
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (correspondentProfile != null)
-        {
-            String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
-            Timber.d("Display title " + title);
-            actionBar.setTitle(title);
-        }
-        else
-        {
-            actionBar.setTitle(R.string.loading_loading);
-        }
-    }
+    //TODO set actionBar with MessageHeaderDTO by alex
+    //protected void displayTitle()
+    //{
+    //    ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+    //    if (correspondentProfile != null)
+    //    {
+    //        String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
+    //        Timber.d("Display title " + title);
+    //        actionBar.setTitle(title);
+    //    }
+    //    else
+    //    {
+    //        actionBar.setTitle(R.string.loading_loading);
+    //    }
+    //}
 
     @Override public boolean isTabBarVisible()
     {
@@ -301,12 +320,74 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
+    private void updateMessageCacheReadStatus(int messageId)
     {
-        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        // mark it as read in the cache
+        MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+        if (messageHeaderDTO != null && messageHeaderDTO.unread)
         {
+            messageHeaderDTO.unread = false;
+            messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
+        }
+    }
+
+    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
+    {
+        updateMessageCacheReadStatus(messageHeaderDTO.id);
+        messageServiceWrapper.get().readMessage(
+                messageHeaderDTO.id,
+                messageHeaderDTO.senderUserId,
+                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getDTOKey(),
+                currentUserId.toUserBaseKey(),
+                createMessageAsReadCallback(messageHeaderDTO.id));
+    }
+
+    private Callback<Response> createMessageAsReadCallback(int pushId)
+    {
+        return new MessageMarkAsReadCallback(pushId);
+    }
+
+    private class MessageMarkAsReadCallback implements Callback<Response>
+    {
+        private final int messageId;
+
+        public MessageMarkAsReadCallback(int messageId)
+        {
+            this.messageId = messageId;
+        }
+
+        @Override public void success(Response response, Response response2)
+        {
+            if (response.getStatus() == 200)
+            {
+                updateMessageCacheReadStatus(messageId);
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            Timber.d("Report failure for Message: %d", messageId);
+        }
+    }
+
+    private class MessageHeaderFetchListener
+            implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
+    {
+        @Override
+        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        {
+            Timber.d("MessageHeaderDTO=%s", value);
+            ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+            actionBar.setTitle(value.title);
+            actionBar.setSubtitle(value.subTitle);
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
+            if (value != null && value.unread)
+            {
+                reportMessageRead(value);
+            }
         }
 
         @Override public void onErrorThrown(MessageHeaderId key, Throwable error)

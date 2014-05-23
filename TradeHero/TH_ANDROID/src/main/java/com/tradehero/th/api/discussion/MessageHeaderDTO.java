@@ -3,13 +3,19 @@ package com.tradehero.th.api.discussion;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.Date;
 import java.util.Random;
+import javax.inject.Inject;
 
 public class MessageHeaderDTO implements DTO, KeyGenerator
 {
     private static final Random idGenerator = new Random();
+
+    @Inject CurrentUserId currentUserId;
 
     // must be set by client when creating new message
     public String title;
@@ -29,9 +35,11 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
     public String latestMessage;
     public Date latestMessageAtUtc;
 
+    //<editor-fold desc="Constructors">
     public MessageHeaderDTO()
     {
         super();
+        init();
     }
 
     @Deprecated
@@ -49,10 +57,22 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
         this.message = message;
         this.createdAtUtc = createdAtUtc;
         this.unread = unread;
+        init();
+    }
+    //</editor-fold>
+
+    protected void init()
+    {
+        DaggerUtils.inject(this);
     }
 
     @Override public MessageHeaderId getDTOKey()
     {
+        UserBaseKey correspondentId = getCorrespondentId(currentUserId.toUserBaseKey());
+        if (correspondentId != null)
+        {
+            return new MessageHeaderUserId(id, correspondentId);
+        }
         return new MessageHeaderId(id);
     }
 
@@ -63,7 +83,11 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
 
     public UserBaseKey getRecipientId()
     {
-        return new UserBaseKey(recipientUserId);
+        if (recipientUserId != null)
+        {
+            return new UserBaseKey(recipientUserId);
+        }
+        return null;
     }
 
     /**

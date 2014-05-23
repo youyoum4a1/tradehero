@@ -57,6 +57,5 @@ public class IABResult
         return "IabResult: " + message;
     }
 
-
 }
 

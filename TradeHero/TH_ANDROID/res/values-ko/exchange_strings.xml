@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="error_fetch_exchange_list_info">증시 정보를 불러오는데 오류가 발생하였습니다</string>
+
+</resources>

@@ -6,7 +6,6 @@ import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
 
-
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
     private static JSONCredentials credentials;

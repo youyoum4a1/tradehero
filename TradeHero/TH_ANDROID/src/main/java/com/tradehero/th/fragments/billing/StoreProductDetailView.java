@@ -8,7 +8,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THProductDetail;
 
-
 public class StoreProductDetailView<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends THProductDetail<ProductIdentifierType>>

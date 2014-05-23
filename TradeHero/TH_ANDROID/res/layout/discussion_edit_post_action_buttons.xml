@@ -2,7 +2,6 @@
 
 <com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/discussion_new_post_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,19 +11,7 @@
     android:background="@color/gray_3"
     >
 
-  <TextView
-      android:id="@+id/btn_mention"
-      style="@style/TH.TextSocialButtons"
-      android:text="@string/at"
-      android:textSize="15sp"
-      />
-
-  <TextView
-      android:id="@+id/btn_security_tag"
-      style="@style/TH.TextSocialButtons"
-      android:text="@string/hashtag"
-      android:textSize="15sp"
-      />
+  <include layout="@layout/discussion_edit_post_mention_buttons"/>
 
   <ToggleButton
       android:id="@+id/btn_share_fb"
