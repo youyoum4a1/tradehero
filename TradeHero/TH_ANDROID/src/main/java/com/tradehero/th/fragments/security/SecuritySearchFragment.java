@@ -490,7 +490,14 @@ public class SecuritySearchFragment
 
     protected void handleSecurityClicked(SecurityCompactDTO clicked)
     {
-        pushTradeFragmentIn(clicked.getSecurityId());
+        if (clicked == null)
+        {
+            Timber.e(new NullPointerException("clicked was null"), null);
+        }
+        else
+        {
+            pushTradeFragmentIn(clicked.getSecurityId());
+        }
     }
 
     private class SearchTextWatcher implements TextWatcher
