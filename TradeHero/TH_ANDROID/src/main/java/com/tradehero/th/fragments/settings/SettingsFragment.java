@@ -546,41 +546,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 getString(R.string.key_settings_sharing_facebook));
         if (facebookSharing != null)
         {
-            facebookSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
-                        }
-                    });
+            facebookSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.FB));
         }
         twitterSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_twitter));
         if (twitterSharing != null)
         {
-            twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing(SocialNetworkEnum.TW, (boolean) newValue);
-                }
-            });
+            twitterSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.TW));
         }
         linkedInSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_linked_in));
         if (linkedInSharing != null)
         {
-            linkedInSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
-                        }
-                    });
+            linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
 
         // notification
@@ -747,6 +725,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
+    }
+
+    private Preference.OnPreferenceChangeListener createPreferenceChangeListenerSharing(
+            final SocialNetworkEnum socialNetwork)
+    {
+        return new Preference.OnPreferenceChangeListener()
+        {
+            @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                return changeSharing(socialNetwork, (boolean) newValue);
+            }
+        };
     }
 
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
@@ -1070,10 +1060,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
-
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
         }
 
         @Override protected void failure(THException ex)
