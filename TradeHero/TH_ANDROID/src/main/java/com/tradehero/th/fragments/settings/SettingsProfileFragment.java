@@ -249,11 +249,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         fetchUserProfileTask.execute();
         try
         {
-            this.profileView.populateCredentials(THUser.currentCredentials().createJSON());
+            this.profileView.populateCredentials(THUser.getCurrentCredentials().createJSON());
         }
         catch (JSONException e)
         {
-            Timber.e(e, "Failed to populate current user %s", THUser.currentCredentials());
+            Timber.e(e, "Failed to populate current user %s", THUser.getCurrentCredentials());
         }
     }
 

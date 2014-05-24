@@ -8,11 +8,11 @@ import java.util.Set;
 import org.json.JSONException;
 import timber.log.Timber;
 
-public class SavedPrefCredentials extends StringSetPreference
+public class CredentialsSetPreference extends StringSetPreference
 {
     private final CredentialsDTOFactory credentialsDTOFactory;
 
-    public SavedPrefCredentials(
+    public CredentialsSetPreference(
             CredentialsDTOFactory credentialsDTOFactory,
             SharedPreferences preference,
             String key,
@@ -71,6 +71,21 @@ public class SavedPrefCredentials extends StringSetPreference
             }
         }
         credentials.add(credentialsDTO);
+        setCredentials(credentials);
+    }
+
+    public void replaceOrSkipCredentials(CredentialsDTO credentialsDTO)
+    {
+        Set<CredentialsDTO> credentials = getCredentials();
+        for (CredentialsDTO existingCredentialsDTO : new HashSet<>(credentials))
+        {
+            if (existingCredentialsDTO.getAuthType().equals(credentialsDTO.getAuthType()))
+            {
+                credentials.remove(existingCredentialsDTO);
+                credentials.add(credentialsDTO);
+                break;
+            }
+        }
         setCredentials(credentials);
     }
 }

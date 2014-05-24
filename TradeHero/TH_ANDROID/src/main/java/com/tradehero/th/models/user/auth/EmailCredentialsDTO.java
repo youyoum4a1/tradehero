@@ -1,5 +1,6 @@
 package com.tradehero.th.models.user.auth;
 
+import android.util.Base64;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import org.json.JSONException;
@@ -15,7 +16,8 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
     //<editor-fold desc="Constructors">
     public EmailCredentialsDTO(JSONObject object) throws JSONException
     {
-        this(object.getString(UserFormFactory.KEY_EMAIL), UserFormFactory.KEY_PASSWORD);
+        this(object.getString(UserFormFactory.KEY_EMAIL),
+                object.getString(UserFormFactory.KEY_PASSWORD));
     }
 
     public EmailCredentialsDTO(String email, String password)
@@ -29,6 +31,13 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
     @Override public String getAuthType()
     {
         return EMAIL_AUTH_TYPE;
+    }
+
+    @Override public String getAuthHeaderParameter()
+    {
+        return  Base64.encodeToString(
+                String.format("%1$s:%2$s", email, password).getBytes(),
+                Base64.NO_WRAP);
     }
 
     @Override protected void populate(JSONObject object) throws JSONException

@@ -7,6 +7,7 @@ import org.json.JSONException;
 public interface CredentialsDTO
 {
     String getAuthType();
+    String getAuthHeaderParameter();
     JSONCredentials createJSON() throws JSONException; // TODO make it a simple JSONObject
     UserFormDTO createUserFormDTO();
 }

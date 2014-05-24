@@ -40,6 +40,11 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
         return FACEBOOK_AUTH_TYPE;
     }
 
+    @Override public String getAuthHeaderParameter()
+    {
+        return accessToken;
+    }
+
     @Override protected void populate(JSONObject object) throws JSONException
     {
         super.populate(object);

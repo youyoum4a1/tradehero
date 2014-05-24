@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -26,13 +25,12 @@ import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
-import com.tradehero.th.models.user.auth.SavedPrefCredentials;
+import com.tradehero.th.models.user.auth.CredentialsSetPreference;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ForDeviceToken;
-import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -52,11 +50,11 @@ public class THUser
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
+    private static CredentialsDTO currentCredentials;
     private static HashMap<String, CredentialsDTO> typedCredentials;
 
-    @Inject @SessionToken static StringPreference currentSessionToken;
-    @Inject @AuthenticationType public /* TODO, remove public */ static StringPreference currentAuthenticationType;
-    @Inject static SavedPrefCredentials savedPrefCredentials;
+    @Inject static MainCredentialsPreference mainCredentialsPreference;
+    @Inject static CredentialsSetPreference credentialsSetPreference;
     @Inject static CurrentUserId currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
@@ -72,10 +70,11 @@ public class THUser
     public static void initialize()
     {
         typedCredentials = new HashMap<>();
-        for (CredentialsDTO credentialsDTO : savedPrefCredentials.getCredentials())
+        for (CredentialsDTO credentialsDTO : credentialsSetPreference.getCredentials())
         {
             typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         }
+        currentCredentials = mainCredentialsPreference.getCredentials();
     }
 
     public static void logInWithAsync(String authType, LogInCallback callback)
@@ -287,38 +286,36 @@ public class THUser
      */
     public static void saveCredentialsToUserDefaults(CredentialsDTO credentialsDTO)
     {
-        if (typedCredentials == null)
-        {
-            Timber.d("saveCredentialsToUserDefaults: Credentials were null");
-            return;
-        }
-
         Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        currentAuthenticationType.set(credentialsDTO.getAuthType());
-        typedCredentials.put(currentAuthenticationType.get(), credentialsDTO);
-        savedPrefCredentials.replaceOrAddCredentials(credentialsDTO);
+        currentCredentials = credentialsDTO;
+        mainCredentialsPreference.setCredentials(credentialsDTO);
+        typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
+        credentialsSetPreference.replaceOrAddCredentials(credentialsDTO);
 
-        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType.get());
-        currentSessionToken.set(currentProvider.getAuthHeaderParameter());
+        THAuthenticationProvider currentProvider = authenticationProviders.get(credentialsDTO.getAuthType());
     }
 
     public static void clearCurrentUser()
     {
-        currentSessionToken.delete();
-        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+        typedCredentials.clear();
         dtoCacheUtil.get().clearUserRelatedCaches();
         currentUserId.delete();
-        typedCredentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
 
-        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType.get());
-        if (currentProvider != null)
+        if (currentCredentials != null)
         {
-            currentProvider.deauthenticate();
+            THAuthenticationProvider currentProvider = authenticationProviders.get(currentCredentials.getAuthType());
+            if (currentProvider != null)
+            {
+                currentProvider.deauthenticate();
+            }
         }
 
         // clear all preferences
+        currentCredentials = null;
+        mainCredentialsPreference.delete();
+        credentialsSetPreference.delete();
         SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
         prefEditor.clear();
         prefEditor.commit();
@@ -329,14 +326,14 @@ public class THUser
         THUser.authenticationMode = authenticationMode;
     }
 
-    public static CredentialsDTO currentCredentials()
+    public static CredentialsDTO getCurrentCredentials()
     {
-        return typedCredentials.get(currentAuthenticationType.get());
+        return currentCredentials;
     }
 
     public static String getAuthHeader()
     {
-        return currentAuthenticationType.get() + " " + currentSessionToken.get();
+        return String.format("%1$s %2$s", currentCredentials.getAuthType(), currentCredentials.getAuthHeaderParameter());
     }
 
     public static void removeCredential(String authenticationHeader)
@@ -350,6 +347,6 @@ public class THUser
         Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
         typedCredentials.remove(authenticationHeader);
-        savedPrefCredentials.delete();
+        credentialsSetPreference.delete();
     }
 }

@@ -36,6 +36,11 @@ public class QQCredentialsDTO extends BaseCredentialsDTO
         return QQ_AUTH_TYPE;
     }
 
+    @Override public String getAuthHeaderParameter()
+    {
+        throw new IllegalStateException("NotImplemented");
+    }
+
     @Override protected void populate(JSONObject object) throws JSONException
     {
         super.populate(object);

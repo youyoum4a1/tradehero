@@ -42,6 +42,11 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
         return TWITTER_AUTH_TYPE;
     }
 
+    @Override public String getAuthHeaderParameter()
+    {
+        return String.format("%1$s:%2$s", token, tokenSecret);
+    }
+
     @Override protected void populate(JSONObject object) throws JSONException
     {
         super.populate(object);

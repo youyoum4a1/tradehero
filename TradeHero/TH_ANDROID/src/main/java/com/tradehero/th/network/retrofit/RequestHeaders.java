@@ -1,11 +1,9 @@
 package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
-import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.models.push.DeviceTokenHelper;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.prefs.LanguageCode;
-import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
@@ -13,16 +11,16 @@ import retrofit.RequestInterceptor;
 
 public class RequestHeaders implements RequestInterceptor
 {
-    private final StringPreference sessionToken;
+    private final MainCredentialsPreference mainCredentialsPreference;
     private final String version;
     private final String languageCode;
 
     @Inject public RequestHeaders(
             Context context,
-            @SessionToken StringPreference sessionToken,
+            MainCredentialsPreference mainCredentialsPreference,
             @LanguageCode String languageCode)
     {
-        this.sessionToken = sessionToken;
+        this.mainCredentialsPreference = mainCredentialsPreference;
         this.version = VersionUtils.getVersionId(context);
         this.languageCode = languageCode;
     }
@@ -30,7 +28,7 @@ public class RequestHeaders implements RequestInterceptor
     @Override
     public void intercept(RequestFacade request)
     {
-        if (sessionToken.isSet())
+        if (mainCredentialsPreference.getCredentials() != null)
         {
             buildAuthorizationHeader(request);
         }
@@ -41,7 +39,7 @@ public class RequestHeaders implements RequestInterceptor
     private void buildAuthorizationHeader(RequestFacade request)
     {
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
-        request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
+        request.addHeader(Constants.AUTHORIZATION, mainCredentialsPreference.getCredentials().getAuthHeaderParameter());
         //request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
         //Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
     }
