@@ -14,7 +14,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.news.NewsCache;
+import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.translation.TranslationResult;
@@ -40,7 +40,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTO mDetailNewsItemDTO;
 
-    @Inject NewsCache newsCache;
+    @Inject NewsItemCache newsItemCache;
     @Inject TranslationCache translationCache;
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
@@ -132,7 +132,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
         if (newsItemDTOKey != null)
         {
-            NewsItemDTO cachedNews = newsCache.get(newsItemDTOKey);
+            NewsItemDTO cachedNews = newsItemCache.get(newsItemDTOKey);
 
             linkWith(cachedNews, andDisplay);
 
@@ -163,7 +163,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private void fetchNewsDetail(boolean force)
     {
         detachNewsFetchTask();
-        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
+        newsFetchTask = newsItemCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
         newsFetchTask.execute();
     }
 

@@ -18,9 +18,10 @@ import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
@@ -55,7 +56,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     private THDialog.DialogInterface dialogCallback;
     protected ProgressDialog dialog;
 
-    private AbstractDiscussionDTO abstractDiscussionDTO;
+    private AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
     private int id;
     private String title;
     private String description;
@@ -269,16 +270,23 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         this.dialogCallback = listener;
     }
 
+    public void setNewsData(NewsItemCompactDTO newsItemCompactDTO, int shareType)
+    {
+        this.description = newsItemCompactDTO.description;
+        this.title = null;
+        setNewsData((AbstractDiscussionCompactDTO) newsItemCompactDTO, shareType);
+    }
+
     public void setNewsData(NewsItemDTO newsItemDTO, int shareType)
     {
         this.description = newsItemDTO.description;
-        setNewsData((AbstractDiscussionDTO) newsItemDTO, shareType);
+        this.title = newsItemDTO.text;
+        setNewsData((AbstractDiscussionCompactDTO) newsItemDTO, shareType);
     }
 
-    public void setNewsData(AbstractDiscussionDTO abstractDiscussionDTO, int shareType)
+    public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, int shareType)
     {
-        this.abstractDiscussionDTO = abstractDiscussionDTO;
-        this.title = abstractDiscussionDTO.text;
+        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         this.id = abstractDiscussionDTO.id;
         setNewsTitle();
         mShareType = shareType;

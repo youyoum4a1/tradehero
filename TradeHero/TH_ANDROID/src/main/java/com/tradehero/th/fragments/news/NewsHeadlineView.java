@@ -10,18 +10,20 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
@@ -33,9 +35,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @InjectView(R.id.news_title_title) TextView newsTitle;
     @InjectView(R.id.news_source) TextView newsSource;
 
+    @Inject NewsItemCompactCacheNew newsItemCompactCache;
     @Inject TranslationCache translationCache;
 
-    private NewsItemDTO newsItemDTO;
+    private NewsItemCompactDTO newsItemDTO;
     private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
     //<editor-fold desc="Constructors">
@@ -114,22 +117,6 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     }
     //</editor-fold>
 
-    protected void handleTranslationRequested()
-    {
-        if (newsItemDTO != null && newsItemDTO.text != null)
-        {
-            detachTranslationTask();
-            TranslationKey key = newsItemDTO.createTranslationKey("zh");
-            translationTask =
-                    new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
-                            .launchTranslation(key);
-        }
-        else
-        {
-            // TODO do a callback for when the data is in?
-        }
-    }
-
     /**
      * TODO this event should be handled by DiscussionActionButtonsView,
      */
@@ -147,20 +134,22 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @Override public void display(NewsItemDTOKey discussionKey)
     {
         super.display(discussionKey);
+        linkWith(newsItemCompactCache.get(discussionKey), true);
+
     }
 
-    @Override
-    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    //@Override
+    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        super.linkWith(abstractDiscussionDTO, andDisplay);
+        //super.linkWith(abstractDiscussionDTO, andDisplay);
 
-        if (abstractDiscussionDTO instanceof NewsItemDTO)
+        if (abstractDiscussionDTO instanceof NewsItemCompactDTO)
         {
-            linkWith((NewsItemDTO) abstractDiscussionDTO, andDisplay);
+            linkWith((NewsItemCompactDTO) abstractDiscussionDTO, andDisplay);
         }
     }
 
-    protected void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
+    protected void linkWith(NewsItemCompactDTO newsItemDTO, boolean andDisplay)
     {
         this.newsItemDTO = newsItemDTO;
 
@@ -241,7 +230,8 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     {
         @Override public void onTranslationRequestedClicked()
         {
-            handleTranslationRequested();
+            // TODO better
+            THToast.show("Temp click for translation");
         }
 
         @Override public void onShareRequestedClicked()

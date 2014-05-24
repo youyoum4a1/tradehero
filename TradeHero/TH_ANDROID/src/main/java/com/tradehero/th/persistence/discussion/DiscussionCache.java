@@ -5,7 +5,7 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.news.NewsCache;
+import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -19,12 +19,12 @@ import javax.inject.Singleton;
 public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final NewsCache newsCache;
+    private final NewsItemCache newsItemCache;
     private final UserTimelineServiceWrapper timelineServiceWrapper;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            NewsCache newsCache,
+            NewsItemCache newsItemCache,
             UserTimelineServiceWrapper userTimelineServiceWrapper,
             DiscussionServiceWrapper discussionServiceWrapper)
     {
@@ -33,7 +33,7 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         this.discussionServiceWrapper = discussionServiceWrapper;
 
         // very hacky, but server hacks it first :(
-        this.newsCache = newsCache;
+        this.newsItemCache = newsItemCache;
         this.timelineServiceWrapper = userTimelineServiceWrapper;
     }
 
@@ -45,7 +45,7 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsCache.getOrFetch((NewsItemDTOKey) discussionKey);
+            return newsItemCache.getOrFetch((NewsItemDTOKey) discussionKey);
         }
         else
         {
