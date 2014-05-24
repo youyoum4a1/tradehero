@@ -293,6 +293,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
+            EmailCredentialsDTO emailCredentialsDTO = profileView.getEmailCredentialsDTO();
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
             UserFormDTO userFormDTO = profileView.createForm();
@@ -305,11 +306,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
                     currentUserId.toUserBaseKey(),
                     userFormDTO,
-                    createUpdateUserProfileCallback());
+                    createUpdateUserProfileCallback(emailCredentialsDTO));
         }
     }
 
-    private THCallback<UserProfileDTO> createUpdateUserProfileCallback()
+    private THCallback<UserProfileDTO> createUpdateUserProfileCallback(final EmailCredentialsDTO emailCredentialsDTO)
     {
         return new THCallback<UserProfileDTO>()
         {
@@ -319,6 +320,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 THToast.show(R.string.settings_update_profile_successful);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
+                if (emailCredentialsDTO != null && THUser.getCurrentCredentials() instanceof EmailCredentialsDTO)
+                {
+                    THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
+                }
             }
 
             @Override protected void failure(THException ex)
