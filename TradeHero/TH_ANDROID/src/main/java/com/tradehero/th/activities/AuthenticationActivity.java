@@ -27,7 +27,9 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -37,6 +39,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.*;
 import dagger.Lazy;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -54,7 +57,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
-    private JSONCredentials twitterJson;
+    private TwitterCredentialsDTO twitterJson;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -63,6 +66,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject CredentialsDTOFactory credentialsDTOFactory;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -296,7 +300,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 }
                 // twitter does not return email for authentication user,
                 // we need to ask user for that
-                setTwitterData(json);
+                try
+                {
+                    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
+                }
+                catch (JSONException|ParseException e)
+                {
+                    Timber.e(e, "Failed to create twitter credentials with %s", json);
+                }
                 progressDialog.hide();
                 setCurrentFragmentByClass(TwitterEmailFragment.class);
                 return false;
@@ -307,17 +318,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private void complementEmailForTwitterAuthentication()
     {
         EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
-        try
-        {
-            twitterJson.put("email", txtTwitterEmail.getText());
-            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
-            progressDialog.show();
-            THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
-        }
-        catch (JSONException e)
-        {
-            //nothing for now
-        }
+        twitterJson.email =txtTwitterEmail.getText().toString();
+        progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
+        progressDialog.show();
+        THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
     }
 
     private LogInCallback createCallbackForTwitterComplementEmail ()
@@ -359,7 +363,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 
-    private void setTwitterData(JSONCredentials json)
+    private void setTwitterData(TwitterCredentialsDTO json)
     {
         twitterJson = json;
     }

@@ -3,12 +3,13 @@ package com.tradehero.th.api.form;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
+import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
+import com.tradehero.th.models.user.auth.QQCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
-import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +62,10 @@ public class UserFormFactory
         {
             return new EmailUserFormDTO();
         }
+        if (type.equals(QQCredentialsDTO.QQ_AUTH_TYPE))
+        {
+            return new QQUserFormDTO();
+        }
         if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {
             return new WeiboUserFormDTO();
@@ -110,26 +115,31 @@ public class UserFormFactory
     {
         if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
         {
-            ((FacebookUserFormDTO) userFormDTO).facebook_access_token =
+            ((FacebookUserFormDTO) userFormDTO).accessToken =
                     json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
         }
         else if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
         {
-            ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token =
+            ((LinkedinUserFormDTO) userFormDTO).accessToken =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
-            ((LinkedinUserFormDTO) userFormDTO).linkedin_access_token_secret =
+            ((LinkedinUserFormDTO) userFormDTO).accessTokenSecret =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
         }
         else if (type.equals(TwitterCredentialsDTO.TWITTER_AUTH_TYPE))
         {
-            ((TwitterUserFormDTO) userFormDTO).twitter_access_token =
+            ((TwitterUserFormDTO) userFormDTO).accessToken =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);
-            ((TwitterUserFormDTO) userFormDTO).twitter_access_token_secret =
+            ((TwitterUserFormDTO) userFormDTO).accessTokenSecret =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_SECRET_KEY);
+        }
+        else if (type.equals(QQCredentialsDTO.QQ_AUTH_TYPE))
+        {
+            ((QQUserFormDTO) userFormDTO).openId = json.getString(SocialAuthenticationProvider.ID_KEY);
+            ((QQUserFormDTO) userFormDTO).accessToken = json.getString(QQCredentialsDTO.KEY_ACCESS_TOKEN);
         }
         else if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {
-            ((WeiboUserFormDTO) userFormDTO).weibo_access_token =
+            ((WeiboUserFormDTO) userFormDTO).accessToken =
                     json.getString(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN);
         }
     }

@@ -59,4 +59,18 @@ public class SavedPrefCredentials extends StringSetPreference
         }
         set(savedTokens);
     }
+
+    public void replaceOrAddCredentials(CredentialsDTO credentialsDTO)
+    {
+        Set<CredentialsDTO> credentials = getCredentials();
+        for (CredentialsDTO existingCredentialsDTO : new HashSet<>(credentials))
+        {
+            if (existingCredentialsDTO.getAuthType().equals(credentialsDTO.getAuthType()))
+            {
+                credentials.remove(existingCredentialsDTO);
+            }
+        }
+        credentials.add(credentialsDTO);
+        setCredentials(credentials);
+    }
 }

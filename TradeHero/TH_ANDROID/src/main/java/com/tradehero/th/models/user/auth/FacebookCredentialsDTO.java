@@ -1,5 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
+import com.tradehero.th.api.form.FacebookUserFormDTO;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import java.text.ParseException;
@@ -46,5 +48,12 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
         object.put(
                 FacebookAuthenticationProvider.EXPIRATION_DATE_KEY,
                 FacebookAuthenticationProvider.preciseDateFormat.format(expirationDate));
+    }
+
+    @Override public UserFormDTO createUserFormDTO()
+    {
+        FacebookUserFormDTO userFormDTO = new FacebookUserFormDTO();
+        userFormDTO.accessToken = accessToken;
+        return userFormDTO;
     }
 }

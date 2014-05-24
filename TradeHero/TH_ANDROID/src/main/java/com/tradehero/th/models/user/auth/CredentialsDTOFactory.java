@@ -42,6 +42,10 @@ public class CredentialsDTOFactory
 
             // TODO WeChat
 
+            case QQCredentialsDTO.QQ_AUTH_TYPE:
+                created = new QQCredentialsDTO(object);
+                break;
+
             case WeiboCredentialsDTO.WEIBO_AUTH_TYPE:
                 created = new WeiboCredentialsDTO(object);
                 break;

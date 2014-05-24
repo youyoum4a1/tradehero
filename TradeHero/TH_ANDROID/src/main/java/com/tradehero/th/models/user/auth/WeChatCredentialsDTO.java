@@ -1,5 +1,6 @@
 package com.tradehero.th.models.user.auth;
 
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,5 +23,10 @@ public class WeChatCredentialsDTO extends BaseCredentialsDTO
     {
         super.populate(object);
         // TODO
+    }
+
+    @Override public UserFormDTO createUserFormDTO()
+    {
+        return null;
     }
 }

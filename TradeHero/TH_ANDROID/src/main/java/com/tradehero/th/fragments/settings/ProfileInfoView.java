@@ -367,6 +367,7 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    // TODO pass something else
     public void populateCredentials(JSONObject credentials)
     {
         if (credentials == null)

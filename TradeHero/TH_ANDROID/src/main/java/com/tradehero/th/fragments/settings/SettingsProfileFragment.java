@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import org.json.JSONException;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -246,7 +247,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         detachUserProfileFetchTask();
         fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileCacheListener());
         fetchUserProfileTask.execute();
-        this.profileView.populateCredentials(THUser.currentCredentials());
+        try
+        {
+            this.profileView.populateCredentials(THUser.currentCredentials().createJSON());
+        }
+        catch (JSONException e)
+        {
+            Timber.e(e, "Failed to populate current user %s", THUser.currentCredentials());
+        }
     }
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()

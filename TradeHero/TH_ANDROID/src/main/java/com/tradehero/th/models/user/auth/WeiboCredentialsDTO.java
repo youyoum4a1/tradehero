@@ -1,5 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
+import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.form.WeiboUserFormDTO;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,5 +42,12 @@ public class WeiboCredentialsDTO extends BaseCredentialsDTO
         object.put(WeiboAuthenticationProvider.KEY_UID, uid);
         object.put(WeiboAuthenticationProvider.KEY_ACCESS_TOKEN, token);
         object.put(WeiboAuthenticationProvider.KEY_EXPIRES_IN, expiresTime);
+    }
+
+    @Override public UserFormDTO createUserFormDTO()
+    {
+        WeiboUserFormDTO userFormDTO = new WeiboUserFormDTO();
+        userFormDTO.accessToken = token;
+        return userFormDTO;
     }
 }
